@@ -1,58 +1,61 @@
 /* @echo EXPORT */
+
 class Animation {
+
   /**
-   * constructor - Description
+   * constructor - creates an instance of  Animation class
    *
-   * @param {AnimationController}    controller  Description
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    frames      Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {AnimationController}    controller  Animation controller
+   * @param {string}    name        Name
+   * @param {Array<Texture>}    frames      Array of Texture associated with frames
+   * @param {number}  [fps=14]    FPS, must be greater than 0
+   * @param {boolean} [loop=true] Flag to specify whether animation will be playing in loop
    */
   constructor(controller, name, frames, fps = 14, loop = true) {
     Assert.is(fps > 0, 'FPS must be greater than 0.');
 
     this.mController = controller;
 
-    /** @type {string} */
+    /** @member @private @type {string} */
     this.mName = name;
 
-    /** @type {Array<Texture>} */
+    /** @member @private @type {Array<Texture>} */
     this.mFrames = frames;
 
-    /** @type {number} */
+    /** @member @private @type {number} */
     this.mCurrentFrame = 0;
 
-    /** @type {number} */
+    /** @member @private @type {number} */
     this.mNextFrameAt = 0;
 
-    /** @type {number} */
+    /** @member @private @type {number} */
     this.mFPS = fps;
 
-    /** @type {number} */
+    /** @member @private @type {number} */
     this.mFrameDuration = 1 / this.mFPS;
 
-    /** @type {boolean} */
+    /** @member @private @type {boolean} */
     this.mLoop = loop;
 
-    /** @type {boolean} */
+    /** @member @private @type {boolean} */
     this.mPaused = false;
 
-    /** @type {number} */
+    /** @member @private @type {number} */
     this.mElapsed = 0;
 
-    /** @type {boolean} */
+    /** @member @private @type {boolean} */
     this.mStopped = false;
 
-    /** @type {boolean} */
+    /** @member @private @type {boolean} */
     this.mCompleted = false;
   }
 
 
   /**
-   * play - Description
+   * play - Plays animation . If Animation is
+   * completed, current frame is reset to 0
    *
-   * @return {Texture} Description
+   * @return {Texture} Texture associated with current frame.
    */
   play() {
     if (this.mCompleted === true) {
@@ -72,7 +75,7 @@ class Animation {
 
 
   /**
-   * stop - Description
+   * stop - Stops animation and resets the value of current frame
    *
    * @return {void} Description
    */
@@ -83,7 +86,7 @@ class Animation {
 
 
   /**
-   * pause - Description
+   * pause - Pause animation
    *
    * @return {void} Description
    */
@@ -124,21 +127,23 @@ class Animation {
     return texture;
   }
 
+
+
   /**
-   * fps - Description
+   * fps  Gets/Sets annimation speed in Frames per Second
    *
-   * @return {number} Description
+   * @return {number}
    */
   get fps() {
+
     return this.mFPS;
   }
 
   /**
-   * fps - Description
+   *@ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @param  {number} value description
+   * @return {void}       description
    */
   set fps(value) {
     Assert.is(value > 0, 'FPS must be greater than 0.');
@@ -152,18 +157,18 @@ class Animation {
   }
 
   /**
-   * loop - Description
+   * loop - Specifies whether animation is plaing in loop
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get loop() {
     return this.mLoop;
   }
 
   /**
-   * loop - Description
+   * loop - Sets value of Loop flag
    *
-   * @param {boolean} value Description
+   * @param {boolean} value New value of Loop flag
    *
    * @return {void} Description
    */
@@ -173,9 +178,9 @@ class Animation {
 
 
   /**
-   * frames - Description
+   * frames - Array of Texture for frames
    *
-   * @return {Array<Texture>} Description
+   * @return {Array<Texture>} current value of Texture array
    */
   get frames() {
     return this.mFrames;
@@ -185,7 +190,7 @@ class Animation {
   /**
    * playing - Description
    *
-   * @return {boolean} Description
+   * @return {boolean} Returns true if Animation is playing (neither stopped nor paused)
    */
   get isPlaying(){
     return this.mPaused === false && this.mStopped === false;
@@ -194,7 +199,7 @@ class Animation {
   /**
    * playing - Description
    *
-   * @return {boolean} Description
+   * @return {boolean} Returns true if animation is completed
    */
   get isComplete(){
     return this.mCompleted;
