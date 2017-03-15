@@ -1,0 +1,58 @@
+# COMPILED SOURCES #
+####################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# PACKAGES #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# LOGS AND DATABASES #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS GENEREATED FILES #
+#######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# NODEJS FILES #
+################
+black/node_modules/*
+node_modules/*
+node_modules/**/*.*
+npm*.log.*
+.tern-project
+
+# MISC #
+########
+.tags
+.tags_swap
+
+# BLACK #
+#########
+examples/index.html
+examples-es5
+dist/*
+dist
+doc

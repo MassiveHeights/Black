@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Black tests</title>
+  <link rel="stylesheet" media="all" href="vendor/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+
+  <canvas id="canvas" style="background-color: gray; width: 770px; height: 495px; display: none">
+    Your browser doesn't appear to support the HTML5 element.
+  </canvas>
+
+  <script src="vendor/mocha.js"></script>
+  <script src="vendor/chai.js"></script>
+  <script src="../dist/black-es6.js"></script>
+
+  <script>mocha.setup('bdd')</script>
+
+  <script>
+  'use strict';
+  var assert = chai.assert;
+  var expect = chai.expect;
+  </script>
+
+  <script src="black/geom/Matrix.js"></script>
+  <script src="black/geom/Rectangle.js"></script>
+  <script src="black/geom/Vector.js"></script>
+  <script src="black/geom/Circle.js"></script>
+  <script src="black/geom/Line.js"></script>
+  <script src="black/geom/Polygon.js"></script>
+  <script src="black/geom/Curve.js"></script>
+  <script src="black/math/FMath.js"></script>
+
+  <script src="black/system/Device.js"></script>
+
+  <script src="black/core/GameObject.js"></script>
+
+  <script>mocha.run();</script>
+</body>
+</html>

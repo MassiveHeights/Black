@@ -1,0 +1,39 @@
+{
+  "name": "black",
+  "version": "0.1.4a",
+  "description": "",
+  "main": "src/Black.js",
+  "directories": {},
+  "scripts": {
+    "dev": "gulp && gulp watch",
+    "build": "gulp",
+    "build:prod": "gulp build:prod",
+    "test": "gulp && gulp test",
+    "docs": "gulp docs"
+  },
+  "author": "62316e",
+  "license": "EULA",
+  "devDependencies": {
+    "babel-concat": "^1.0.3",
+    "babel-core": "^6.5.2",
+    "babel-preset-es2015": "^6.5.0",
+    "browser-sync": "^2.11.1",
+    "chai": "^3.5.0",
+    "google-closure-compiler": "^20161024.3.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-jsdoc3": "^1.0.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-preprocess": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-template": "^4.0.0",
+    "gulp-watch": "^4.3.5",
+    "jsdoc": "^3.4.3",
+    "minami": "^1.1.1",
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
+}
