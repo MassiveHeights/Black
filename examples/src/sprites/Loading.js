@@ -4,6 +4,7 @@
 class MyGame extends GameObject {
   constructor() {
     super();
+    this.mLoadComplete = false;
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
@@ -14,17 +15,18 @@ class MyGame extends GameObject {
   }
 
   onProgressChanged(p) {
-
+    
     if ((p * 100).toFixed(2) > 100) {
       this.rect.visible = false;
       this.levelComliteText();
+      this.mLoadComplete = true;
       return;
     }
-    console.log(`loading progress ${(p*100).toFixed(2)}%`);
+    let textProgres = `Loading progress ${(p*100).toFixed(2)}%`;
+    this.textLevel.text = textProgres;
   }
 
-  onAssetsLoadded()
-  {
+  onAssetsLoadded() {
     console.log('assets loaded');
 
     let tBg = 'blueprint-landscape';
@@ -49,19 +51,20 @@ class MyGame extends GameObject {
     this.rect.alignPivot();
     this.view.addChild(this.rect);
 
-  }
-  levelComliteText()
-   {
-    if (this.textLevel)
-      return;
-
-    this.textLevel = new TextField('Level load complite', 45);
-    this.textLevel.y = 300;
+    this.textLevel = new TextField('Level load complete', 45);
+    this.textLevel.y = 380;
     this.textLevel.autoSize = false;
     this.textLevel.fieldWidth = 960;
     this.textLevel.color = 0xffff00;
     this.textLevel.align = 'center';
     this.view.addChild(this.textLevel);
+
+  }
+  levelComliteText() {
+    if (this.mLoadComplete)
+      return;
+    this.textLevel.text = 'Level load complete'
+    console.log('Level load complete');
   }
 
   onUpdate() {
