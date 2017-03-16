@@ -4,22 +4,18 @@
 class MyGame extends GameObject {
   constructor(){
     super();
-
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('rect', 'rect55.png');
-    this.assets.enqueue('bp', 'blueprint-landscape.png');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
 
   onAssetsLoadded(){
-    let tBg = this.assets.getAsset('bp');
-    let img = this.assets.getAsset('rect');
+    let tBg = 'blueprint-landscape';
+    let img = 'rect55-red';
 
     // Add background sprite
     this.addChild(new Sprite(tBg));
@@ -60,5 +56,5 @@ class MyGame extends GameObject {
 }
 
 // Create and start engine
-var black  = new Black('container', MyGame, 'dom');
+let black  = new Black('container', MyGame, 'dom');
 black.start();

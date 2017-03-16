@@ -4,14 +4,11 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueAtlas('img-atlas', 'atlas.png', 'atlas.json');
-
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
@@ -59,7 +56,8 @@ class MyGame extends GameObject {
     Input.on('pointerDown', this.onDown, this);
   }
 
-  onDown(){
+  onDown()
+  {
     //Time.scale = 0.05;
   }
 
@@ -77,7 +75,6 @@ class MyGame extends GameObject {
 
     this.emitter.x = (x * 12) + 480;
     this.emitter.y = (y * 12) + 320;
-
     Time.scale = 0.3 + Math.clamp(Math.pow(Math.sin(t), 2), 0, 1);
   }
 }

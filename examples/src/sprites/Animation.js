@@ -4,14 +4,11 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueAtlas('assets', 'atlas.png', 'atlas.json');
-
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();

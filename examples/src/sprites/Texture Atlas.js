@@ -4,16 +4,12 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
-    // Create own asset manager
-    this.assets = Black.assets;
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueueAtlas('assets', 'atlas.png', 'atlas.json');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
-    this.assets.load();
+    this.assets.loadQueue();
   }
 
   onAssetsLoadded() {
@@ -21,7 +17,6 @@ class MyGame extends GameObject {
     this.view = new GameObject();
     this.view.addComponent(mr);
     this.addChild(this.view);
-
     // Add background sprite
     var bg = new Sprite('blueprint-landscape');
     this.view.addChild(bg);
@@ -31,7 +26,7 @@ class MyGame extends GameObject {
     this.sun.y = 640 / 2;
     this.sun.name = 'sun';
     this.sun.alpha = 0.7;
-    this.sun.center();
+    this.sun.alignPivot();
     this.sun.scaleX = this.sun.scaleY = 1.28;
 
     this.earth = new Sprite('earth');
@@ -51,7 +46,7 @@ class MyGame extends GameObject {
     this.sun.addChild(this.earth);
     this.earth.addChild(this.moon);
 
-    console.log('bounds', this.sun.getLocalBounds());
+    console.log('bounds', this.sun.onGetLocalBounds());
   }
 
   onUpdate(dt) {

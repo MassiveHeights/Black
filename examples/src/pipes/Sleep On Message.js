@@ -6,14 +6,10 @@ class MyGame extends GameObject {
     super();
 
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('rect', 'rect55-red.png');
-    this.assets.enqueue('bp', 'blueprint-landscape.png');
-
-    // Pass on load complete handler and this for correct context
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
@@ -21,8 +17,8 @@ class MyGame extends GameObject {
   onAssetsLoadded() {
     this.addComponent(new MRComponent(960, 640));
 
-    let tBg = this.assets.getAsset('bp');
-    let img = this.assets.getAsset('rect');
+    let tBg = 'blueprint-landscape';
+    let img = 'rect55-red';
 
     // Add background sprite
     let bg = new Sprite(tBg)

@@ -4,15 +4,11 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('img-atlas', 'atlas.png');
-    this.assets.enqueue('json-atlas', 'atlas.json');
-
+    this.assets.enqueueAtlas('img-atlas', 'atlas.png', 'atlas.json');
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
@@ -24,45 +20,30 @@ class MyGame extends GameObject {
     this.view.addComponent(mr);
     this.addChild(this.view);
 
-    let atlas = new AtlasTexture(this.assets.getAsset('img-atlas'), this.assets.getAsset('json-atlas'));
-
-    var tBg = atlas.getTexture('blueprint-landscape');
-
     // Add background sprite
-    var bg = new Sprite(tBg);
+    let bg = new Sprite('blueprint-landscape');
     this.view.addChild(bg);
 
-    var tCross = atlas.getTexture('cross');
-    var tHeart = atlas.getTexture('heart');
-
-    let t1 = atlas.getTexture('sun');
-    let t2 = atlas.getTexture('earth');
-    let t3 = atlas.getTexture('moon');
-
-    var sh = new Sprite(tHeart);
-    sh.center();
-    sh.scaleX = sh.scaleY = 0.5;
-    sh.rotation = Math.PI * 0.5;
+    let tHeart = AssetManager.default.getTexture('heart');
 
     let e = new Emitter();
-    e.emitCount = new FloatScatter(1, 1);
+    e.emitCount = new FloatScatter(3);
     e.emitDelay = new FloatScatter(0);
-    e.emitInterval = new FloatScatter(1/60);
+    e.emitInterval = new FloatScatter(1/200);
     e.emitNumRepeats = new FloatScatter(Infinity);
-    e.textures = [t3, t2, t1];
+    e.textures = [tHeart];
 
     e.x = 960 / 2;
     e.y = 640 / 2;
     e.space = this.view;
-    e.addInitializer(new Life(new FloatScatter(0.1, 1)));
-    e.addInitializer(new Position(new VectorScatter(-0, -0, 0, 0)));
-    //e.addInitializer(new RandomTexture(new FloatScatter(0, 10)));
+    e.addInitializer(new Life(new FloatScatter(1.15)));
 
-    e.addAction(new Acceleration(new VectorScatter(0, 200, 0, 2000)));
-    e.addAction(new ScaleOverLife(new FloatScatter(0.5, 0, Ease.bounceOut)));
-    e.addAction(new TextureOverLife(new FloatScatter(0, 3)));
+    e.addAction(new ScaleOverLife(new FloatScatter(1, 0, Ease.backIn)));
+    e.addAction(new Acceleration(new VectorScatter(-800, -800, 800, 800)));
+    e.addAction(new RotationOverLife(new FloatScatter(0, -Math.PI * 2, Ease.backInOut)));
 
     this.view.addChild(e);
+    this.emitter = e;
 
     this.emitter = e;
   }
@@ -85,7 +66,6 @@ class MyGame extends GameObject {
     this.emitter.rotation = -Math.PI / 2;
   }
 }
-
 // Create and start engine
-var black  = new Black('container', MyGame, 'canvas');
+let black  = new Black('container', MyGame, 'canvas');
 black.start();

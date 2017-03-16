@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>4</int>
         <key>texturePackerVersion</key>
-        <string>4.2.3</string>
+        <string>4.3.1</string>
         <key>fileName</key>
-        <string>D:/MassiveHeights.Blacksmith/Black/examples/assets/atlas.tps</string>
+        <string>D:/Black/examples/assets/atlas.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -47,6 +47,8 @@
         <uint>32768</uint>
         <key>etc1CompressionQuality</key>
         <enum type="SettingsBase::Etc1CompressionQuality">ETC1_QUALITY_LOW_PERCEPTUAL</enum>
+        <key>etc2CompressionQuality</key>
+        <enum type="SettingsBase::Etc2CompressionQuality">ETC2_QUALITY_LOW_PERCEPTUAL</enum>
         <key>dxtCompressionMode</key>
         <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
         <key>jxrColorFormat</key>
@@ -79,6 +81,8 @@
         <uint>101</uint>
         <key>textureSubPath</key>
         <string>D:/MassiveHeights.Blacksmith/black/assets/atlas.json</string>
+        <key>atfFormats</key>
+        <string></string>
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
@@ -118,6 +122,11 @@
                 <enum type="AlgorithmBasicSettings::SortBy">Best</enum>
                 <key>order</key>
                 <enum type="AlgorithmBasicSettings::Order">Ascending</enum>
+            </struct>
+            <key>polygon</key>
+            <struct type="AlgorithmPolygonSettings">
+                <key>alignToGrid</key>
+                <uint>1</uint>
             </struct>
         </struct>
         <key>andEngine</key>
@@ -190,29 +199,159 @@
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">160x160.png</key>
             <key type="filename">160x160w.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>40,40,80,80</rect>
+                <key>scale9Paddings</key>
+                <rect>40,40,80,80</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">96x64.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>24,16,48,32</rect>
+                <key>scale9Paddings</key>
+                <rect>24,16,48,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">anim_1.png</key>
             <key type="filename">anim_2.png</key>
             <key type="filename">anim_3.png</key>
-            <key type="filename">blueprint-landscape.png</key>
-            <key type="filename">cross-red.png</key>
-            <key type="filename">cross-white.png</key>
-            <key type="filename">cross.png</key>
-            <key type="filename">earth.png</key>
-            <key type="filename">heart.png</key>
             <key type="filename">idle_1.png</key>
             <key type="filename">idle_2.png</key>
             <key type="filename">idle_3.png</key>
+            <key type="filename">rect64.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9Paddings</key>
+                <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">arrow16.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9Paddings</key>
+                <rect>4,4,8,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">arrow32.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9Paddings</key>
+                <rect>8,8,16,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">blueprint-landscape.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>240,160,480,320</rect>
+                <key>scale9Paddings</key>
+                <rect>240,160,480,320</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cross-red.png</key>
+            <key type="filename">cross-white.png</key>
+            <key type="filename">cross.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>1,1,3,3</rect>
+                <key>scale9Paddings</key>
+                <rect>1,1,3,3</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">earth.png</key>
             <key type="filename">moon.png</key>
+            <key type="filename">sun.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9Paddings</key>
+                <rect>32,32,64,64</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">heart.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>15,15,30,30</rect>
+                <key>scale9Paddings</key>
+                <rect>15,15,30,30</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">rect55-red.png</key>
             <key type="filename">rect55.png</key>
-            <key type="filename">rect64.png</key>
-            <key type="filename">sun.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>14,14,28,28</rect>
+                <key>scale9Paddings</key>
+                <rect>14,14,28,28</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">sunt.png</key>
             <key type="filename">target.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>64,64,128,128</rect>
+                <key>scale9Paddings</key>
+                <rect>64,64,128,128</rect>
+                <key>scale9FromFile</key>
+                <false/>
             </struct>
         </map>
         <key>fileList</key>
@@ -239,6 +378,8 @@
             <filename>idle_1.png</filename>
             <filename>idle_2.png</filename>
             <filename>idle_3.png</filename>
+            <filename>arrow16.png</filename>
+            <filename>arrow32.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
@@ -260,5 +401,7 @@
         <string></string>
         <key>normalMapSheetFileName</key>
         <filename></filename>
+        <key>exporterProperties</key>
+        <map type="ExporterProperties"/>
     </struct>
 </data>

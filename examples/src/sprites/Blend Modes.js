@@ -2,28 +2,29 @@
 
 // Define own game object
 class MyGame extends GameObject {
-  constructor(){
+  constructor() {
     super();
-
-    // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('rect', 'rect55-red.png');
-    this.assets.enqueue('bp', 'blueprint-landscape.png');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
 
-  onAssetsLoadded(){
-    let tBg = this.assets.getAsset('bp');
-    let img = this.assets.getAsset('rect');
+  onAssetsLoadded() {
+
+    let mr = new MRComponent(960, 640);
+    this.view = new GameObject();
+    this.view.addComponent(mr);
+    this.addChild(this.view);
+
+    let tBg = 'blueprint-landscape';
+    let img = 'rect55-red';
 
     // Add background sprite
     let bg = new Sprite(tBg)
-    this.addChild(bg);
+    this.view.addChild(bg);
 
     // Add rectangles
     this.sprite1 = new Sprite(img);
@@ -37,7 +38,7 @@ class MyGame extends GameObject {
     this.sprite3 = new Sprite(img);
     this.sprite3.x = 960 / 2;
     this.sprite3.y = 640 / 2;
-    this.sprite3.center();
+    this.sprite3.alignPivot();
 
     let obj = new GameObject();
 
@@ -48,21 +49,20 @@ class MyGame extends GameObject {
     this.sprite2.alpha = 0.85;
     this.sprite1.alpha = 0.85;
 
-    this.addChild(this.sprite3);
+    this.view.addChild(this.sprite3);
 
     this.sprite3.addChild(obj);
     obj.addChild(this.sprite2);
     this.sprite2.addChild(this.sprite1);
   }
 
-  onUpdate(dt){
+  onUpdate(dt) {
     if (!this.sprite1)
       return;
 
     this.sprite3.rotation += 1 / 60;
   }
 }
-
 // Create and start engine
-var black  = new Black('container', MyGame, 'canvas');
+var black = new Black('container', MyGame, 'canvas');
 black.start();

@@ -4,49 +4,47 @@
 class MyGame extends GameObject {
   constructor(){
     super();
-
-    // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('rect', 'rect55-red.png');
-    this.assets.enqueue('bp', 'blueprint-landscape.png');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
 
   onAssetsLoadded(){
-    let tBg = this.assets.getAsset('bp');
-    let img = this.assets.getAsset('rect');
+    let tBg = 'blueprint-landscape';
+    let img = 'rect55-red';
 
-    // Add background sprite
-    let bg = new Sprite(tBg)
-    this.addChild(bg);
+    let mr = new MRComponent(960, 640);
+    this.view = new GameObject();
+    this.view.addComponent(mr);
+    this.addChild(this.view);
 
+    let bg = new Sprite('blueprint-landscape');
+    bg.x = 960 / 2;
+    bg.y = 640 / 2;
+    bg.alignPivot();
+
+    this.view.addChild(bg);
     // Add rectangles
     this.sprite1 = new Sprite(img);
     this.sprite1.x = 960 / 2;
     this.sprite1.y = 640 / 2;
-    this.sprite1.center();
+    this.sprite1.alignPivot();
 
     this.sprite2 = new Sprite(img);
     this.sprite2.x = 0;
     this.sprite2.y = 0;
-
-    // this.addChild(this.sprite1);
-     this.addChild(this.sprite2);
+     this.view.addChild(this.sprite2);
   }
 
   onUpdate(dt){
     if (!this.sprite1)
      return;
-    //
-    // this.sprite1.x += 0.3051;
+
     this.sprite2.x += 0.3051;
-    //
-    // this.sprite1.rotation = this.sprite2.rotation = this.sprite2.rotation + 0.01;
+
   }
 }
 
