@@ -157,7 +157,7 @@ class Animation {
   }
 
   /**
-   * loop - Specifies whether animation is plaing in loop
+   * loop - Gets/Sets loop flag
    *
    * @return {boolean}
    */
@@ -166,7 +166,7 @@ class Animation {
   }
 
   /**
-   * loop - Sets value of Loop flag
+   * @ignore
    *
    * @param {boolean} value New value of Loop flag
    *
@@ -178,7 +178,7 @@ class Animation {
 
 
   /**
-   * frames - Array of Texture for frames
+   * frames -  Gets array of Texture
    *
    * @return {Array<Texture>} current value of Texture array
    */
@@ -188,23 +188,29 @@ class Animation {
 
 
   /**
-   * playing - Description
+   * playing - Returns true if Animation is playing (neither stopped nor paused)
    *
-   * @return {boolean} Returns true if Animation is playing (neither stopped nor paused)
+   * @return {boolean}
    */
   get isPlaying(){
     return this.mPaused === false && this.mStopped === false;
   }
 
   /**
-   * playing - Description
+   * playing - Returns true if animation is completed
    *
-   * @return {boolean} Returns true if animation is completed
+   * @return {boolean}
    */
   get isComplete(){
     return this.mCompleted;
   }
 
+
+  /**
+   * get name - Returs name
+   *
+   * @return {string}  Name
+   */
   get name() {
     return this.mName;
   }
