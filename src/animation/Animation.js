@@ -50,7 +50,7 @@ class Animation {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
-   * 
+   *
    *
    * @return {Texture} Texture associated with current frame.
    */
@@ -148,7 +148,7 @@ class Animation {
   }
 
   /**
-   * Gets/Sets loop flag.
+   * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
    *
    * @return {boolean}
    */
