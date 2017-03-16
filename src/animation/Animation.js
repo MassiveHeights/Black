@@ -1,7 +1,5 @@
 /* @echo EXPORT */
-
 class Animation {
-
   /**
    * constructor - creates an instance of  Animation class
    *
@@ -50,12 +48,11 @@ class Animation {
     this.mCompleted = false;
   }
 
-
   /**
-   * Plays animation . If Animation is
-   * completed, current frame is reset to 0
+   * Plays animation. If Animation is completed, current frame is reset to 0.
+   * 
    *
-   * @return {Texture} Texture associated with current frame
+   * @return {Texture} Texture associated with current frame.
    */
   play() {
     if (this.mCompleted === true) {
@@ -73,9 +70,8 @@ class Animation {
     return this.mFrames[this.mCurrentFrame];
   }
 
-
   /**
-   *  Stops animation and resets the value of current frame
+   *  Stops animation and resets the value of current frame.
    *
    * @return {void}
    */
@@ -84,9 +80,8 @@ class Animation {
     this.mCurrentFrame = 0;
   }
 
-
   /**
-   * Pauses animation
+   * Pauses animation.
    *
    * @return {void}
    */
@@ -95,11 +90,8 @@ class Animation {
     this.mElapsed = this.mNextFrameAt - Black.instance.uptime;
   }
 
-
   /**
    * @ignore
-   * __update -
-   *
    * @param {number} dt
    * @param {number} t
    *
@@ -127,8 +119,6 @@ class Animation {
     let texture = this.mFrames[this.mCurrentFrame];
     return texture;
   }
-
-
 
   /**
    * Gets/Sets annimation speed in Frames per Second
@@ -158,7 +148,7 @@ class Animation {
   }
 
   /**
-   * Gets/Sets loop flag
+   * Gets/Sets loop flag.
    *
    * @return {boolean}
    */
@@ -169,7 +159,7 @@ class Animation {
   /**
    * @ignore
    *
-   * @param {boolean} value New value of Loop flag
+   * @param {boolean} value New value of Loop flag.
    *
    * @return {void}
    */
@@ -177,19 +167,17 @@ class Animation {
     this.mLoop = value;
   }
 
-
   /**
-   * Gets array of Texture
+   * Gets array of Texture.
    *
-   * @return {Array<Texture>} current value of Texture array
+   * @return {Array<Texture>} current value of Texture array.
    */
   get frames() {
     return this.mFrames;
   }
 
-
   /**
-   * Returns true if Animation is playing (neither stopped nor paused)
+   * Returns true if Animation is playing (neither stopped nor paused).
    *
    * @return {boolean}
    */
@@ -198,7 +186,7 @@ class Animation {
   }
 
   /**
-   * Returns true if animation is completed
+   * Returns true if animation is completed.
    *
    * @return {boolean}
    */
@@ -206,11 +194,10 @@ class Animation {
     return this.mCompleted;
   }
 
-
   /**
-   *  Returns name
+   *  Returns name.
    *
-   * @return {string}  Name
+   * @return {string}
    */
   get name() {
     return this.mName;
