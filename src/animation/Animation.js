@@ -52,10 +52,10 @@ class Animation {
 
 
   /**
-   * play - Plays animation . If Animation is
+   * Plays animation . If Animation is
    * completed, current frame is reset to 0
    *
-   * @return {Texture} Texture associated with current frame.
+   * @return {Texture} Texture associated with current frame
    */
   play() {
     if (this.mCompleted === true) {
@@ -75,9 +75,9 @@ class Animation {
 
 
   /**
-   * stop - Stops animation and resets the value of current frame
+   *  Stops animation and resets the value of current frame
    *
-   * @return {void} Description
+   * @return {void}
    */
   stop() {
     this.mStopped = true;
@@ -86,9 +86,9 @@ class Animation {
 
 
   /**
-   * pause - Pause animation
+   * Pauses animation
    *
-   * @return {void} Description
+   * @return {void}
    */
   pause() {
     this.mPaused = true;
@@ -97,12 +97,13 @@ class Animation {
 
 
   /**
-   * __update - Description
+   * @ignore
+   * __update -
    *
-   * @param {number} dt Description
-   * @param {number} t  Description
+   * @param {number} dt
+   * @param {number} t
    *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   __update(dt, t) {
     if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
@@ -130,7 +131,7 @@ class Animation {
 
 
   /**
-   * fps  Gets/Sets annimation speed in Frames per Second
+   * Gets/Sets annimation speed in Frames per Second
    *
    * @return {number}
    */
@@ -142,8 +143,8 @@ class Animation {
   /**
    *@ignore
    *
-   * @param  {number} value description
-   * @return {void}       description
+   * @param  {number} value
+   * @return {void}
    */
   set fps(value) {
     Assert.is(value > 0, 'FPS must be greater than 0.');
@@ -157,7 +158,7 @@ class Animation {
   }
 
   /**
-   * loop - Gets/Sets loop flag
+   * Gets/Sets loop flag
    *
    * @return {boolean}
    */
@@ -170,7 +171,7 @@ class Animation {
    *
    * @param {boolean} value New value of Loop flag
    *
-   * @return {void} Description
+   * @return {void}
    */
   set loop(value) {
     this.mLoop = value;
@@ -178,7 +179,7 @@ class Animation {
 
 
   /**
-   * frames -  Gets array of Texture
+   * Gets array of Texture
    *
    * @return {Array<Texture>} current value of Texture array
    */
@@ -188,7 +189,7 @@ class Animation {
 
 
   /**
-   * playing - Returns true if Animation is playing (neither stopped nor paused)
+   * Returns true if Animation is playing (neither stopped nor paused)
    *
    * @return {boolean}
    */
@@ -197,7 +198,7 @@ class Animation {
   }
 
   /**
-   * playing - Returns true if animation is completed
+   * Returns true if animation is completed
    *
    * @return {boolean}
    */
@@ -207,7 +208,7 @@ class Animation {
 
 
   /**
-   * get name - Returs name
+   *  Returns name
    *
    * @return {string}  Name
    */

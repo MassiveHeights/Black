@@ -1,12 +1,19 @@
 /* @echo EXPORT */
 class AnimationController extends Component {
+
+
+  /**
+   * constructor - creates an instance of AnimationController
+   *
+   * @return {type}  description
+   */
   constructor() {
     super();
 
-    /** @type {Object<string, Animation>} */
+    /** @member @private @type {Object<string, Animation>} */
     this.mAnimations = {};
 
-    /** @type {Animation|null} */
+    /** @member @private  @type {Animation|null} */
     this.mCurrentAnim = null;
   }
 
