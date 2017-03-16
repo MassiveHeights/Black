@@ -4,15 +4,11 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('img-atlas', 'atlas.png');
-    this.assets.enqueue('json-atlas', 'atlas.json');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
@@ -23,31 +19,23 @@ class MyGame extends GameObject {
     this.view = new GameObject();
     this.view.addComponent(mr);
     this.addChild(this.view);
-
-    let atlas = new AtlasTexture(this.assets.getAsset('img-atlas'), this.assets.getAsset('json-atlas'));
-
-    var tBg = atlas.getTexture('blueprint-landscape');
-
     // Add background sprite
-    var bg = new Sprite(tBg);
+    var bg = new Sprite('blueprint-landscape');
     this.view.addChild(bg);
 
-
-    let target = atlas.getTexture('sun');
-
-    this.sun = new Sprite(target);
+    this.sun = new Sprite('sun');
     this.sun.x = 960 / 2;
     this.sun.y = 640 / 2;
     this.sun.name = 'sun';
     this.sun.alpha = 0.7;
-    this.sun.center();
+    this.sun.alignPivot();
     this.sun.scaleX = this.sun.scaleY = 1.28;
 
-    this.earth = new Sprite(atlas.getTexture('earth'));
+    this.earth = new Sprite('earth');
     this.earth.pivotX = this.earth.pivotY = 64;
     this.earth.setTransform(200, 200, 0, 0.5, 0.5);
 
-    this.moon = new Sprite(atlas.getTexture('moon'));
+    this.moon = new Sprite('moon');
     this.moon.x = 64;
     this.moon.y = 64;
 
@@ -55,7 +43,6 @@ class MyGame extends GameObject {
     this.moon.pivotY = 500;
 
     this.moon.setTransform(64, 64, 0, 0.2, 0.2);
-
 
     this.view.addChild(this.sun);
     this.sun.addChild(this.earth);
@@ -66,9 +53,9 @@ class MyGame extends GameObject {
     this.numUpdate = 0;
   }
 
-  onDown() {
-    console.log('scale');
-    //Time.scale = 0.5;
+  onDown()
+   {
+
   }
 
   onUpdate(dt) {

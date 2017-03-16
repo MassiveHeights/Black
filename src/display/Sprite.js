@@ -14,7 +14,7 @@ class Sprite extends DisplayObject {
      * @type {Texture|null} */
     this.mTexture = null;
 
-    if (texture != null && texture.constructor === String)
+    if (texture !== null && texture.constructor === String)
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);

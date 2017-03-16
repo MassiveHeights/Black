@@ -11,7 +11,6 @@ class MyGame extends GameObject {
     this.assets.enqueueImage('160x160', '160x160.png');
     this.assets.enqueueImage('cross', 'cross.png');
     this.assets.enqueueImage('bp', 'blueprint-landscape.png');
-
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }

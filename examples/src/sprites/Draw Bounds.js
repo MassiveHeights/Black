@@ -7,11 +7,9 @@ class BoundsComponent extends Component {
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueImage('rect', '160x160.png');
     this.assets.enqueueImage('cross', 'cross-white.png');
@@ -63,25 +61,9 @@ class MyGame extends GameObject {
     this.sprite3 = sprite3;
 
     this.drawBounds(container.getBounds());
-
-    //console.log('getBounds children: false', sprite2.getBounds(false));
-    //console.log('getBounds children: true', sprite2.getBounds(true));
-    //console.log('getLocalBounds children: false', sprite2.getLocalBounds(false));
-    //console.log('getLocalBounds children: true', sprite2.getLocalBounds(true));
     console.log('---------------------------------------------------------');
     console.log('getBounds children: false', sprite2.getBounds(this.view, false));
     console.log('getBounds children: true', sprite2.getBounds(this.view, true));
-  //console.log('getLocalBounds children: false', sprite2.getLocalBounds(false));
-    //console.log('getLocalBounds children: true', sprite2.getLocalBounds(true));
-
-    /*
-    Rectangle { x: 468.30, y: 320.00, width: 59.70, height: 108.46 }
-    Draw Bounds.js:65 getBounds children: false Rectangle {x: 484.28718757629395, y: 352, width: 43.712812662124634, height: 43.712812662124634}
-    Draw Bounds.js:66 getBounds children: true Rectangle {x: 468.29611253738403, y: 352, width: 59.703887701034546, height: 76.45897817611694}
-    Draw Bounds.js:67 getLocalBounds children: false Rectangle {x: 0, y: 0, width: 160, height: 160}
-    Draw Bounds.js:68 getLocalBounds children: true Rectangle {x: 0, y: 0, width: 160, height: 160}
-    */
-
   }
 
   drawBounds(bounds) {
@@ -98,7 +80,6 @@ class MyGame extends GameObject {
     s.y = ~~yy;
     s.pivotX = s.pivotY = 2;
     this.view.addChild(s);
-
     return s;
   }
 
@@ -109,10 +90,7 @@ class MyGame extends GameObject {
 
     let bounds = this.sprite2.getBounds(this.sprite2.parent);
     this.container.rotation += 0.01;
-    //this.sprite2.rotation -= 0.02;
 
-    //this.sprite3.scaleX += 0.01;
-    //console.log(bounds.toString(0));
     this.b1.x = bounds.x;
     this.b1.y = bounds.y;
 

@@ -28,31 +28,33 @@ class MyGame extends GameObject {
     super();
 
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueueImage('rect', '160x160w.png');
-    this.assets.enqueueImage('bp', 'blueprint-landscape.png');
-
-    // Pass on load complete handler and this for correct context
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
-    this.assets.load();
+    this.assets.loadQueue();
   }
 
   onAssetsLoadded() {
-    let bg = new Sprite('bp');
+
+    let mr = new MRComponent(960, 640);
+    this.view = new GameObject();
+    this.view.addComponent(mr);
+    this.addChild(this.view);
+
+    let bg = new Sprite('blueprint-landscape');
     bg.x = 960 / 2;
     bg.y = 640 / 2;
-    bg.center();
+    bg.alignPivot();
 
-    this.addChild(bg);
+    this.view.addChild(bg);
 
-    let s = new Sprite('rect');
+    let s = new Sprite('rect55-red');
     s.x = 960 / 2;
     s.y = 640 / 2;
     s.alpha = 0.5;
-    s.center();
+    s.alignPivot();
 
     let rc = new ScaleUpComponent();
     s.addComponent(rc);
@@ -60,13 +62,13 @@ class MyGame extends GameObject {
     let cc = s.getComponent(ScaleUpComponent);
     console.log(cc);
 
-    this.addChild(s);
+    this.view.addChild(s);
   }
 
   onUpdate(dt) {
-    for (var i = 1; i < this.numChildren; i++) {
-      //let c = this.getChildAt(i);
-      //c.scaleX = c.scaleY = Math.sin(c.rotation);
+    for (let i = 1; i < this.numChildren; i++) {
+      // let c = this.getChildAt(i);
+      // c.scaleX = c.scaleY = Math.sin(c.rotation);
     }
   }
 }

@@ -7,7 +7,7 @@ class MyGame extends GameObject {
     this.assets.defaultPath = '/examples/assets/';
 
     // Preload some images
-    this.assets.enqueueImage('bp', 'blueprint-landscape.png');
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
 
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
@@ -15,6 +15,12 @@ class MyGame extends GameObject {
 
   onAssetsLoadded() {
     let mr = new MRComponent(960, 640);
+    this.view = new GameObject();
+    this.view.addComponent(mr);
+    this.addChild(this.view);
+
+    let bg = new Sprite('blueprint-landscape');
+    this.view.addChild(bg);
 
     Input.on('pointerUp', this.onUp, this);
   }
@@ -28,5 +34,5 @@ class MyGame extends GameObject {
 }
 
 // Create and start engine
-var black  = new Black('container', MyGame, 'canvas');
+let black  = new Black('container', MyGame, 'canvas');
 black.start();

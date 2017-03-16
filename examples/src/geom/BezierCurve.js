@@ -6,12 +6,11 @@ class MyGame extends GameObject {
     super();
 
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
 
     // Preload some images
-    this.assets.enqueue('img-atlas', 'atlas.png');
-    this.assets.enqueue('json-atlas', 'atlas.json');
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
 
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
@@ -24,23 +23,17 @@ class MyGame extends GameObject {
     this.view.addComponent(mr);
     this.addChild(this.view);
 
-    let atlas = this.atlas = new AtlasTexture(this.assets.getAsset('img-atlas'), this.assets.getAsset('json-atlas'));
-
-    var tBg = atlas.getTexture('blueprint-landscape');
-
     // Add background sprite
-    var bg = new Sprite(tBg);
+    var bg = new Sprite('blueprint-landscape');
     this.view.addChild(bg);
 
-    var tHeart = atlas.getTexture('heart');
-    var tSun = atlas.getTexture('sun');
 
-    var heart = this.heart = new Sprite(tHeart);
-    heart.center();
+    var heart = this.heart = new Sprite('heart');
+    heart.alignPivot();
     heart.scaleX = heart.scaleY = 0.5;
     heart.rotation = Math.PI * 0.5;
     this.view.addChild(heart);
-    
+
     this.start1 = new Vector(0, 400);
     this.cps1 = new Vector(0, 500);
     this.cpe1 = new Vector(200, 500);
@@ -49,18 +42,18 @@ class MyGame extends GameObject {
     this.cps2 = new Vector(200, 100);
     this.cpe2 = new Vector(500, 100);
     this.end2 = new Vector(480, 320);
-    
+
     this.pointViews = [];
     for (let point of [this.start1, this.cps1, this.cpe1,
       this.start2, this.cps2, this.cpe2, this.end2]) {
-      var sun = new Sprite(tSun);
-      sun.center();
+      var sun = new Sprite('sun');
+      sun.alignPivot();
       sun.scaleX = sun.scaleY = 0.1;
       this.pointViews.push(sun);
       this.view.addChild(sun);
     }
     this.resetPointViews();
-    
+
     this.curve = new Curve();
     // this.curve.baked = true;
     this.resetCurve();
@@ -70,16 +63,16 @@ class MyGame extends GameObject {
     Input.on('pointerDown', () => this.isDown = true, this);
     Input.on('pointerUp', () => this.isDown = false, this);
   }
-  
+
   resetCurve() {
     this.curve.set(this.start1.x, this.start1.y, this.cps1.x, this.cps1.y, this.cpe1.x, this.cpe1.y,
       this.start2.x, this.start2.y, this.cps2.x, this.cps2.y, this.cpe2.x, this.cpe2.y, this.end2.x, this.end2.y)
   }
-  
+
   resetPointViews() {
     let points = [this.start1, this.cps1, this.cpe1,
       this.start2, this.cps2, this.cpe2, this.end2];
-    
+
     for (let i = 0; i < points.length; i++) {
       let point = points[i];
       let pointView = this.pointViews[i];
@@ -90,12 +83,12 @@ class MyGame extends GameObject {
 
   onMove() {
     if (!this.isDown) return;
-    
+
     let p = this.view.globalToLocal(Input.pointerPosition);
     let nearest = this.start1;
     let minDistance = nearest.distance(p);
     let d;
-    
+
     for (let point of [this.start1, this.cps1, this.cpe1,
       this.start2, this.cps2, this.cpe2, this.end2]) {
       if ((d = point.distance(p)) < minDistance) {
@@ -103,9 +96,9 @@ class MyGame extends GameObject {
         minDistance = d;
       }
     }
-    
+
     this.resetPointViews();
-    nearest.copyFrom(p);   
+    nearest.copyFrom(p);
     this.resetCurve();
   }
 
@@ -114,7 +107,7 @@ class MyGame extends GameObject {
     this.t = (this.t + dt) % 1;
 
     this.curve.interpolate(this.t, Vector.__cache);
-    
+
     this.heart.x = Vector.__cache.x;
     this.heart.y = Vector.__cache.y;
   }

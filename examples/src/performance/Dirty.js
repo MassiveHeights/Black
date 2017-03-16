@@ -10,19 +10,17 @@ class MyGame extends GameObject {
     this.assets.defaultPath = '/examples/assets/';
 
     // Preload some images
-    this.assets.enqueueImage('rect', 'dot.png');
-    this.assets.enqueueImage('bp', 'blueprint-landscape.png');
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
 
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
+
   }
 
   onAssetsLoadded(){
-    let tBg = this.assets.getTexture('bp');
-    let img = this.assets.getTexture('rect');
 
     // Add background sprite
-    let bg = new Sprite(tBg);
+    let bg = new Sprite('blueprint-landscape');
     this.addChild(bg);
 
     let count = 20;
@@ -31,7 +29,7 @@ class MyGame extends GameObject {
 
     for (var xx = 0; xx < count; xx++) {
       for (var yy = 0; yy < count; yy++) {
-        let s = new Sprite('rect');
+        let s = new Sprite('rect55-red');
         s.x = (spacingh * xx) + 20;
         s.y = (spacingv * yy) + 20;
         s.scaleX = s.scaleY = 0.1;
@@ -42,23 +40,23 @@ class MyGame extends GameObject {
         this.addChild(s);
 
         // TRIPPLED SPRITES
-        let s2 = new Sprite('rect');
+        let s2 = new Sprite('rect55-red');
         s2.x = s2.y = 10;
         s.addChild(s2);
 
-        let s3 = new Sprite('rect');
+        let s3 = new Sprite('rect55-red');
         s3.x = s3.y = 10;
         s2.addChild(s3);
 
-        let s4 = new Sprite('rect');
+        let s4 = new Sprite('rect55-red');
         s4.x = s4.y = 10;
         s3.addChild(s4);
 
-        let s5 = new Sprite('rect');
+        let s5 = new Sprite('rect55-red');
         s5.x = s5.y = 10;
         s2.addChild(s5);
 
-        let s6 = new Sprite('rect');
+        let s6 = new Sprite('rect55-red');
         s6.x = s6.y = 10;
         s2.addChild(s6);
       }

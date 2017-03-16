@@ -6,11 +6,9 @@ class MyGame extends GameObject {
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueImage('rect', 'rect55-red.png');
     this.assets.enqueueImage('bp', 'blueprint-landscape.png');
-
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
@@ -19,11 +17,9 @@ class MyGame extends GameObject {
     this.view = new GameObject();
     this.view.addComponent(new MRComponent(960, 640));
     this.addChild(this.view);
-
     this.view.addChild(new Sprite('bp'));
 
     this.sprite = new Sprite(this.getTextureFromCanvas());
-
     this.sprite.alignPivot(0.5, 0.5);
     this.sprite.x = 480;
     this.sprite.y = 320;

@@ -4,14 +4,11 @@
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueAtlas('img-atlas', 'atlas.png', 'atlas.json');
-
     // Pass on load complete handler and this for correct context
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
@@ -24,10 +21,10 @@ class MyGame extends GameObject {
     this.addChild(this.view);
 
     // Add background sprite
-    var bg = new Sprite('blueprint-landscape');
+    let bg = new Sprite('blueprint-landscape');
     this.view.addChild(bg);
 
-    var tHeart = AssetManager.default.getTexture('heart');
+    let tHeart = AssetManager.default.getTexture('heart');
 
     let e = new Emitter();
     e.name = 'emmy';
@@ -55,17 +52,16 @@ class MyGame extends GameObject {
     let p = this.view.globalToLocal(Input.pointerPosition);
     this.emitter.x = p.x;
     this.emitter.y = p.y;
-
     this.emitter.resetState();
     this.emitter.emitDuration = new FloatScatter(0.001);
     this.emitter.emitCount = new FloatScatter(5);
     this.emitter.emitNumRepeats = new FloatScatter(1);
   }
 
-  onPostUpdate(dt) {
+  onPostUpdate(dt)
+  {
   }
 }
-
 // Create and start engine
-var black  = new Black('container', MyGame, 'canvas');
+let black  = new Black('container', MyGame, 'canvas');
 black.start();

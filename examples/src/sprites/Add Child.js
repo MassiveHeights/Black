@@ -1,28 +1,14 @@
 "use strict";
-
-class MyButton extends GameObject {
-  onAdded() {
-    console.log('my button added');
-  }
-
-  onRemoved() {
-    console.log('my button removed');
-  }
-}
-
 // Define own game object
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueImage('rect', 'rect55-red.png');
     this.assets.enqueueImage('bp', 'blueprint-landscape.png');
-
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }

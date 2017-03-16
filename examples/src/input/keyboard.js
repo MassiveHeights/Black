@@ -6,10 +6,8 @@ class MyGame extends GameObject {
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueImage('bp', 'blueprint-landscape.png');
-
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
     this.input = Input.instance;
@@ -25,7 +23,7 @@ class MyGame extends GameObject {
     let bg = new Sprite('bp');
     this.view.addChild(bg);
 
-    let text = new TextField('PRESS ANY KEY', 45);
+    let text = new TextField('PRESS ANY KEY ', 45);
     text.y = 320;
     text.autoSize = false;
     text.fieldWidth = 960;
@@ -41,7 +39,6 @@ class MyGame extends GameObject {
 
   onKeyPress(msg, keyInfo) {
     this.pressed.push(keyInfo.code);
-
     this.textField.text = this.pressed.join(' ');
   }
 
@@ -49,13 +46,11 @@ class MyGame extends GameObject {
     this.pressed.splice(this.pressed.indexOf(keyInfo.code, 1));
 
     if (this.pressed.lenght > 0)
-      this.textField.text = this.pressed.join(' ');
+      this.textField.text = this.pressed.join('  ');
     else
-      this.textField.text = 'PRESS ANY KEY';
+      this.textField.text = 'PRESS ANY KEY ';
   }
 }
-
-
 // Create and start engine
-var black = new Black('container', MyGame, 'dom');
+let black = new Black('container', MyGame, 'dom');
 black.start();

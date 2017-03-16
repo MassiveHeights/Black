@@ -7,31 +7,36 @@ class BoundsComponent extends Component{
 class MyGame extends GameObject {
   constructor() {
     super();
-
     // Create own asset manager
-    this.assets = new AssetManager();
+    this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
-    this.assets.enqueue('rect', '160x160.png');
-    this.assets.enqueue('cross', 'cross.png');
-    this.assets.enqueue('bp', 'blueprint-landscape.png');
-
+    this.assets.enqueueAtlas('atlas', 'atlas.png', 'atlas.json');
     this.assets.on('complete', this.onAssetsLoadded, this);
     this.assets.loadQueue();
   }
 
-  onAssetsLoadded() {
-    var img = this.assets.getAsset('rect');
-    var tBg = this.assets.getAsset('bp');
-    var tCross = this.assets.getAsset('cross');
+  onAssetsLoadded(){
+    let tBg = 'blueprint-landscape';
+    let img = 'rect55-red';
 
-    this.bg = new Sprite(tBg);
-    this.addChild(this.bg);
+    var tCross = 'cross';
+
+    let mr = new MRComponent(960, 640);
+    this.view = new GameObject();
+    this.view.addComponent(mr);
+    this.addChild(this.view);
+
+    let bg = new Sprite(tBg);
+    bg.x = 960 / 2;
+    bg.y = 640 / 2;
+    bg.alignPivot();
+
+    this.view.addChild(bg);
 
     let container = new Sprite();
     container.name = 'CONTAINER';
-    this.addChild(container);
+    this.view.addChild(container);
 
     let sprite1 = new Sprite(img);
     sprite1.name = 'Sprite 1';
@@ -59,13 +64,7 @@ class MyGame extends GameObject {
     this.sprite1 = sprite1;
     this.sprite2 = sprite2;
     this.sprite3 = sprite3;
-
     this.drawBounds(sprite3.getBounds());
-
-    // this.b1 = this.addCross();
-    // this.b2 = this.addCross();
-    // this.b3 = this.addCross();
-    // this.b4 = this.addCross();
   }
 
   drawBounds(bounds){
@@ -76,7 +75,7 @@ class MyGame extends GameObject {
   }
 
   addCross(xx = 0, yy = 0) {
-    var img = this.assets.getAsset('cross');
+    var img = 'cross';
 
     var s = new Sprite(img);
     s.x = xx;
@@ -94,7 +93,7 @@ class MyGame extends GameObject {
     return;
     //let bounds = sprite1.getGlobalBounds();
     //this.container.rotation += 0.01;
-    let bounds = this.container.getBounds();
+    var bounds = this.container.getBounds();
     //this.bg.rotation++;
     //console.log(bounds);
 

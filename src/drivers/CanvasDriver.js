@@ -39,7 +39,6 @@ class CanvasDriver extends NullDriver {
     this.mCtx.canvas.height = this.mClientHeight;
   }
 
-
   /**
    * setTransform
    *
@@ -82,7 +81,6 @@ class CanvasDriver extends NullDriver {
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
   }
-
 
   /**
    * drawImage

@@ -4,11 +4,9 @@
 class MyGame extends GameObject {
   constructor(){
     super();
-
     // Create own asset manager
     this.assets = AssetManager.default;
     this.assets.defaultPath = '/examples/assets/';
-
     // Preload some images
     this.assets.enqueueImage('rect', 'rect55-red.png');
     this.assets.enqueueImage('bp', 'blueprint-landscape.png');
