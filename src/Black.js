@@ -196,9 +196,11 @@ class Black extends MessageDispatcher {
   __bootVideo() {
     if (this.mVideoName === 'canvas')
       this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom') {
+    else if (this.mVideoName === 'dom')
       this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    } else
+    else if (this.mVideoName === 'null' || this.mVideoName == null)
+      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
+    else
       Assert.is(false, 'Unsupported video driver. Use canvas or dom.');
   }
 
