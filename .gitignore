@@ -53,6 +53,4 @@ npm*.log.*
 #########
 examples/index.html
 examples-es5
-dist/*
-dist
 doc
