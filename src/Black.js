@@ -24,7 +24,7 @@ class Black extends MessageDispatcher {
     window['Black']['instance'] = this;
 
     var css = "background: #000; color: #fff;";
-    console.log('%c ~ Black ~ ', css);
+    console.log('%c ~Black ', css);
 
     /** @type {string} */
     this.mContainerElementId = containerElementId;
