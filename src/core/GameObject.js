@@ -89,17 +89,32 @@ class GameObject extends MessageDispatcher {
    */
   onRemoved() {}
 
+
+  /**
+   * add - Sugar method for adding child GameObjects or Components.
+   *
+   * @param {GameObject|Component} gameObjectOrComponent A GameObject or Component to add.
+   *
+   * @return {GameObject|Component} The passed GameObject or Component.
+   */
+  add(gameObjectOrComponent) {
+    if (gameObjectOrComponent instanceof GameObject)
+      return this.addChild(/* @type {!GameObject} */ (gameObjectOrComponent));
+    else
+      return this.addComponent(/* @type {!Component} */ (gameObjectOrComponent));
+  }
+
   /**
    * Adds a child GameObject instance to this GameObject instance. The child is added to the top of all other children in this GameObject instance.
    *
    * @param  {...GameObject} child The GameObject instance or instances to add as a child of this GameObject instance.
-   * @return {GameObject} The GameObject last instance that you pass in the child parameter.
+   * @return {...GameObject} The GameObject last instance that you pass in the child parameter.
    */
   addChild(...child) {
     for (var i = 0; i < child.length; i++)
       this.addChildAt(child[i], this.mChildren.length);
 
-    return child[child.length - 1];
+    return child;
   }
 
   /**
@@ -286,7 +301,7 @@ class GameObject extends MessageDispatcher {
         Black.instance.onComponentAdded(this, instance);
     }
 
-    return instances[instances.length - 1];
+    return instances;
   }
 
   /**
@@ -324,7 +339,7 @@ class GameObject extends MessageDispatcher {
   getComponent(instance) {
     for (let i = 0; i < this.mComponents.length; i++) {
       let c = this.mComponents[i];
-      if (c.constructor === instance)
+      if (c instanceof instance)
         return c;
     }
 
@@ -1247,7 +1262,7 @@ class GameObject extends MessageDispatcher {
     let f = function(gameObject, type) {
       for (let i = 0; i < gameObject.mComponents.length; i++) {
         let c = gameObject.mComponents[i];
-        if (c.constructor === type)
+        if (c instanceof type)
           list.push(c);
       }
 
