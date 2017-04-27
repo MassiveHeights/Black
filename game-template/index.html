@@ -1,0 +1,51 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Hello Black!</title>
+  <meta name="description" content="Basic Black Game Template">
+  <meta name="author" content="~">
+
+</head>
+
+<body>
+  <div id="container" style="width: 640px; height: 480px; touch-action: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: auto;">
+  </div>
+
+  <script src="../dist/black-es5.js"></script>
+
+  <script>
+    class MyGame extends GameObject {
+      constructor() {
+        super();
+
+        // Take default AssetManager instead of creating new one. Some internal system are using default AssetManager.
+        this.assets = AssetManager.default;
+
+        // Add one image to the queue
+        this.assets.enqueueImage('cube', '160x160.png');
+
+        // Add listener for 'complete' event
+        this.assets.on('complete', this.onAssetsLoadded, this);
+
+        // Load whole queue
+        this.assets.loadQueue();
+      }
+
+      onAssetsLoadded() {
+        let sprite = new Sprite('cube');
+        this.addChild(sprite);
+      }
+
+      onAdded() {
+        // Called when MyGame is added onto the stage
+      }
+    }
+
+    var black = new Black('container', MyGame, 'canvas');
+    black.start();
+  </script>
+</body>
+</html>
