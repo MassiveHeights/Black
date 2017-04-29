@@ -21,8 +21,10 @@ class MyGame extends GameObject {
 
     this.add(player, enemy);
 
+    // Adding direct listener
     enemy.on('attack', this.onEnemyAttacked, this);
 
+    // Lets listen to enemies messages without having a reference
     player.on('attack@root/enemy', this.onEnemyAttackedPrivate, this);
 
     // send 100 damage

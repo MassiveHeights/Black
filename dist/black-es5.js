@@ -12510,14 +12510,21 @@ var Black = function (_MessageDispatcher) {
         return _this2.__onVisbilityChange(event);
       };
 
-      if (document.hidden && this.mPauseOnHide === true) this.mPaused = true;
+      if (document.hidden && this.mPauseOnHide === true) {
+        console.log('paused');
+        this.mPaused = true;
+      }
     }
   }, {
     key: '__onVisbilityChange',
     value: function __onVisbilityChange(event) {
       var type = event.type;
 
-      if (type === 'blur' && this.mPauseOnBlur === true) this.mPaused = true;else if (type === 'pagehide' && this.mPauseOnHide === true) this.mPaused = true;else if (type === 'focus' || type === 'pageshow') this.mUnpausing = true;
+      if (type === 'blur' && this.mPauseOnBlur === true) this.mPaused = true;else if (type === 'pagehide' && this.mPauseOnHide === true) this.mPaused = true;else if (type === 'focus' || type === 'pageshow') {
+        if (document.hidden === false) this.mUnpausing = true;
+      }
+
+      console.log('mUnpausing', this.mUnpausing, event);
     }
 
     /**
@@ -12660,7 +12667,7 @@ var Black = function (_MessageDispatcher) {
           this.mFrameAccum -= this.mSimulationTimestep;
 
           if (++this.mNumUpdateSteps >= 60 * 3) {
-            console.log('[KERNEL]: PANIC!');
+            console.log('[BLACK]: Not enough time to calculate update logic.');
             this.mIsPanic = true;
             break;
           }

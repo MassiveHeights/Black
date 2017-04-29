@@ -148,8 +148,10 @@ class Black extends MessageDispatcher {
     window.onpagehide = event => this.__onVisbilityChange(event);
     window.onpageshow = event => this.__onVisbilityChange(event);
 
-    if (document.hidden && this.mPauseOnHide === true)
+    if (document.hidden && this.mPauseOnHide === true) {
+      console.log('paused');
       this.mPaused = true;
+    }
   }
 
   __onVisbilityChange(event) {
@@ -159,8 +161,12 @@ class Black extends MessageDispatcher {
       this.mPaused = true;
     else if (type === 'pagehide' && this.mPauseOnHide === true)
       this.mPaused = true;
-    else if (type === 'focus' || type === 'pageshow')
-      this.mUnpausing = true;
+    else if (type === 'focus' || type === 'pageshow') {
+      if (document.hidden === false)
+        this.mUnpausing = true;
+    }
+
+    console.log('mUnpausing', this.mUnpausing, event);
   }
 
 
@@ -305,7 +311,7 @@ class Black extends MessageDispatcher {
         this.mFrameAccum -= this.mSimulationTimestep;
 
         if (++this.mNumUpdateSteps >= (60 * 3)) {
-          console.log('[KERNEL]: PANIC!');
+          console.log('[BLACK]: Not enough time to calculate update logic.');
           this.mIsPanic = true;
           break;
         }
