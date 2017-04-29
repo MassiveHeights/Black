@@ -113,7 +113,7 @@ class Animation {
       }
       else {
         this.mCurrentFrame = this.mFrames.length - 1;
-        this.mController.sendMessage('complete', this);
+        this.mController.post('complete', this);
         this.mCompleted = true;
         return null;
       }

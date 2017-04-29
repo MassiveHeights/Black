@@ -3227,13 +3227,13 @@ var MessageDispatcher = function () {
   }
 
   /**
-   * on - Description
+   * on - Listens to message by given name
    *
-   * @param {string} name           Description
-   * @param {Function} callback       Description
-   * @param {Object=} [context=null] Description
+   * @param {string} name           Name of a message to listen
+   * @param {Function} callback       The callback function
+   * @param {Object=} [context=null] The context for callback function
    *
-   * @return {void} Description
+   * @return {void}
    */
 
 
@@ -3242,18 +3242,42 @@ var MessageDispatcher = function () {
     value: function on(name, callback) {
       var context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
+      Assert.is(name !== null, 'name cannot be null.');
+      Assert.is(callback !== null, 'callback cannot be null.');
+
+      // TODO: refactor, expore dispatching provider
+      var filterIx = name.indexOf('@');
+      if (filterIx !== -1) {
+        // global handler
+
+        var pureName = name.substring(0, filterIx);
+        var pathMask = name.substring(filterIx + 1);
+
+        //console.log(pureName, pathMask);
+
+        if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false) MessageDispatcher.mGlobalHandlers[pureName] = [];
+
+        var _dispatchers = MessageDispatcher.mGlobalHandlers[pureName];
+        for (var i = 0; i < _dispatchers.length; i++) {
+          if (_dispatchers[i].callback === callback) return;
+        }_dispatchers.push({
+          callback: callback,
+          context: context,
+          pathMask: pathMask
+        });
+
+        return;
+      }
+
       if (this.mListeners === null) this.mListeners = {};
 
       if (this.mListeners.hasOwnProperty(name) === false) this.mListeners[name] = [];
 
       var dispatchers = /** @type {Array<{callback: Function, context}>} */this.mListeners[name];
 
-      for (var i = 0; i < dispatchers.length; i++) {
-        if (dispatchers[i].callback === callback) return;
-      } // if (dispatchers.indexOf(callback) !== -1)
-      //   return;
-
-      dispatchers.push({
+      for (var _i = 0; _i < dispatchers.length; _i++) {
+        if (dispatchers[_i].callback === callback) return;
+      }dispatchers.push({
         callback: callback,
         context: context
       });
@@ -3295,19 +3319,21 @@ var MessageDispatcher = function () {
     }
 
     /**
-     * sendMessage - Description
+     * post - Sends message with given pattern and params
      *
-     * @param {string}  name   Description
-     * @param {...*} params Description
+     * @param {string}  name   The name of a message
+     * @param {...*} params A list of params to send
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
-    key: 'sendMessage',
-    value: function sendMessage(name) {
+    key: 'post',
+    value: function post(name) {
       // TODO: add wildcard support and name mask annotation support
-      if (name === null || name.length === 0) throw new Error('Name cannot be null.');
+      Assert.is(name !== null, 'name cannot be null.');
+      // if (name === null || name.length === 0)
+      //   throw new Error('Name cannot be null.');
 
       var message = this.__parseMessage(this, name);
 
@@ -3321,10 +3347,16 @@ var MessageDispatcher = function () {
 
       if (message.mDirection === 'none') {
         this.__invoke.apply(this, [this, message].concat(params));
+        this.__invokeGlobal.apply(this, [this, message].concat(params));
       } else if (message.mDirection === 'down') {
         message.mOrigin = /** @type {GameObject} */this.root;
 
-        if (message.mSibblings === true) this.__sendGlobal.apply(this, [this, message, null].concat(params));else this.__sendBubbles.apply(this, [this, message, false].concat(params));
+        if (message.mSibblings === true) {
+          var _message$mOrigin;
+
+          this.__sendGlobal.apply(this, [this, message, null].concat(params));
+          (_message$mOrigin = message.mOrigin).__invokeGlobal.apply(_message$mOrigin, [this, message].concat(params));
+        } else this.__sendBubbles.apply(this, [this, message, false].concat(params));
       } else if (message.mDirection === 'up') {
         this.__sendBubbles.apply(this, [this, message, true].concat(params));
       } else {
@@ -3346,6 +3378,8 @@ var MessageDispatcher = function () {
   }, {
     key: '__sendBubbles',
     value: function __sendBubbles(sender, message, toTop) {
+      var _message$sender;
+
       message.mOrigin = toTop === true ? this : /** @type {GameObject} */this.root;
 
       var list = [this];
@@ -3366,11 +3400,13 @@ var MessageDispatcher = function () {
           dispatcher.__invoke.apply(dispatcher, [sender, message].concat(params));
         }
       } else {
-        for (var _i = list.length - 1; _i >= 0; _i--) {
-          var _dispatcher = /** @type {GameObject} */list[_i];
+        for (var _i2 = list.length - 1; _i2 >= 0; _i2--) {
+          var _dispatcher = /** @type {GameObject} */list[_i2];
           _dispatcher.__invoke.apply(_dispatcher, [sender, message].concat(params));
         }
       }
+
+      (_message$sender = message.sender).__invokeGlobal.apply(_message$sender, [message.sender, message].concat(params));
     }
 
     /**
@@ -3404,13 +3440,11 @@ var MessageDispatcher = function () {
     }
 
     /**
-     * __invoke - Description
+     * @param {*}  sender
+     * @param {Message}  message
+     * @param {...*} params
      *
-     * @param {*}  sender  Description
-     * @param {Message}  message Description
-     * @param {...*} params  Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -3422,9 +3456,13 @@ var MessageDispatcher = function () {
 
       if (dispatchers === undefined || dispatchers.length === 0) return;
 
+      if (message.mPathMask !== null) {
+        var inPath = this.__checkPath(this.path, message.mPathMask);
+        if (!inPath) return;
+      }
+
       // no path filter found - just invoke it
       var clone = dispatchers.slice(0);
-      //let msg = new Message(sender, queryObject.name);
 
       for (var _len4 = arguments.length, params = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
         params[_key4 - 2] = arguments[_key4];
@@ -3437,6 +3475,56 @@ var MessageDispatcher = function () {
         message.mTarget = this;
         (_dispatcher$callback = dispatcher.callback).call.apply(_dispatcher$callback, [dispatcher.context, message].concat(params));
       }
+    }
+
+    /**
+     * @param {*}  sender
+     * @param {Message}  message
+     * @param {...*} params
+     *
+     * @return {void}
+     */
+
+  }, {
+    key: '__invokeGlobal',
+    value: function __invokeGlobal(sender, message) {
+      var dispatchers = MessageDispatcher.mGlobalHandlers[message.mName];
+
+      if (dispatchers === undefined || dispatchers.length === 0) return;
+
+      var clone = dispatchers.slice(0);
+
+      for (var _len5 = arguments.length, params = Array(_len5 > 2 ? _len5 - 2 : 0), _key5 = 2; _key5 < _len5; _key5++) {
+        params[_key5 - 2] = arguments[_key5];
+      }
+
+      for (var i = 0; i < clone.length; i++) {
+        var _dispatcher$callback2;
+
+        var dispatcher = /** @type {{callback: Function, context: *}} */clone[i];
+
+        if (!this.__checkPath(sender.path, dispatcher.pathMask)) continue;
+
+        message.mTarget = this;
+        (_dispatcher$callback2 = dispatcher.callback).call.apply(_dispatcher$callback2, [dispatcher.context, message].concat(params));
+      }
+    }
+
+    /**
+     * @param {string} path
+     * @param {string} pattern
+     *
+     * @return {boolean}
+     */
+
+  }, {
+    key: '__checkPath',
+    value: function __checkPath(path, pathMask) {
+      if (path == null || pathMask == null) return false;
+
+      if (path === pathMask) return true;
+
+      if (pathMask.indexOf('*') === -1) return path === pathMask;else return new RegExp("^" + pathMask.split("*").join(".*") + "$").test(path);
     }
 
     // TODO: parse exception path'ses like: ~tatata@@@omg####imnotidiout###@@~~
@@ -3454,6 +3542,22 @@ var MessageDispatcher = function () {
     value: function __parseMessage(sender, info) {
       // TODO: make message pool... this type of objects shall not be
       // but dont forget to take care about cancel property
+
+      // EXAMPLES:
+      //  this.post('clicked', data); // Sends to all listeners of this
+      //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
+      //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
+      //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
+      //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
+      //  this.post('~clicked@mySprite#ColliderComponent');
+
+      // DIRECTIONS
+      // clicked - none, direct
+      // ~clicked - up, bubbling
+      // clicked@ - down starting from root, with no filter to everyone
+      // clicked@mySpriter - down with 'mySprite' filter
+      // ~clicked@ - inversed bubbling starting from the root, ending at this
+
       var result = new Message();
       result.mSender = sender;
       result.mDirection = 'none';
@@ -3493,6 +3597,7 @@ var MessageDispatcher = function () {
         }
 
         if (info.length === ixHash + 1) result.mComponentMask = null;else result.mComponentMask = info.substring(ixHash + 1);
+
         return result;
       }
     }
@@ -3500,6 +3605,8 @@ var MessageDispatcher = function () {
 
   return MessageDispatcher;
 }();
+
+MessageDispatcher.mGlobalHandlers = {};
 
 var Message = function () {
   function Message() {
@@ -3867,7 +3974,7 @@ var Viewport = function (_MessageDispatcher) {
       var size = this.mContainerElement.getBoundingClientRect();
       this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-      this.sendMessage('resize', this.mSize);
+      this.post('resize', this.mSize);
     }
 
     /**
@@ -4049,8 +4156,8 @@ var GameObject = function (_MessageDispatcher) {
 
     _this.mId = ++GameObject.ID;
 
-    /** @type {string} */
-    _this.mName = '';
+    /** @type {string|null} */
+    _this.mName = null;
 
     /** @type {Array<Component>} */
     _this.mComponents = [];
@@ -4136,34 +4243,38 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * add - Sugar method for adding child GameObjects or Components.
      *
-     * @param {GameObject|Component} gameObjectOrComponent A GameObject or Component to add.
+     * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
      *
-     * @return {GameObject|Component} The passed GameObject or Component.
+     * @return {Array<GameObject|Component>} The passed GameObject or Component.
      */
 
   }, {
     key: 'add',
-    value: function add(gameObjectOrComponent) {
-      if (gameObjectOrComponent instanceof GameObject) return this.addChild( /* @type {!GameObject} */gameObjectOrComponent);else return this.addComponent( /* @type {!Component} */gameObjectOrComponent);
+    value: function add() {
+      for (var _len = arguments.length, gameObjectsAndOrComponents = Array(_len), _key = 0; _key < _len; _key++) {
+        gameObjectsAndOrComponents[_key] = arguments[_key];
+      }
+
+      for (var i = 0; i < gameObjectsAndOrComponents.length; i++) {
+        var gooc = gameObjectsAndOrComponents[i];
+
+        if (gooc instanceof GameObject) this.addChild( /* @type {!GameObject} */gooc);else this.addComponent( /* @type {!Component} */gooc);
+      }
+
+      return gameObjectsAndOrComponents;
     }
 
     /**
      * Adds a child GameObject instance to this GameObject instance. The child is added to the top of all other children in this GameObject instance.
      *
-     * @param  {...GameObject} child The GameObject instance or instances to add as a child of this GameObject instance.
-     * @return {...GameObject} The GameObject last instance that you pass in the child parameter.
+     * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+     * @return {GameObject}
      */
 
   }, {
     key: 'addChild',
-    value: function addChild() {
-      for (var _len = arguments.length, child = Array(_len), _key = 0; _key < _len; _key++) {
-        child[_key] = arguments[_key];
-      }
-
-      for (var i = 0; i < child.length; i++) {
-        this.addChildAt(child[i], this.mChildren.length);
-      }return child;
+    value: function addChild(child) {
+      return this.addChildAt(child, this.mChildren.length);
     }
 
     /**
@@ -4346,27 +4457,21 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * addComponent - Adds Component instance to the end of the list,
      *
-     * @param  {...Component} instances Component instance or instances.
+     * @param  {Component} instances Component instance or instances.
      * @return {Component} The Component instance you pass in the instances parameter.
      */
 
   }, {
     key: 'addComponent',
-    value: function addComponent() {
-      for (var _len2 = arguments.length, instances = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        instances[_key2] = arguments[_key2];
-      }
+    value: function addComponent(component) {
+      var instance = component;
 
-      for (var i = 0; i < instances.length; i++) {
-        var instance = instances[i];
+      if (instance.gameObject) throw new Error('Component cannot be added to two game objects at the same time.');
 
-        if (instance.gameObject) throw new Error('Component cannot be added to two game objects at the same time.');
+      this.mComponents.push(instance);
+      instance.gameObject = this;
 
-        this.mComponents.push(instance);
-        instance.gameObject = this;
-
-        if (this.root !== null) Black.instance.onComponentAdded(this, instance);
-      }
+      if (this.root !== null) Black.instance.onComponentAdded(this, instance);
 
       return instances;
     }
@@ -4956,7 +5061,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * name - Description
      *
-     * @return {string} Description
+     * @return {string|null} Description
      */
 
   }, {
@@ -4968,7 +5073,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * name - Description
      *
-     * @param {string} value Description
+     * @param {string|null} value Description
      *
      * @return {void} Description
      */
@@ -5434,14 +5539,14 @@ var GameObject = function (_MessageDispatcher) {
     value: function intersectsWith(gameObject, point) {
       var obj = null;
       for (var i = gameObject.numChildren - 1; i >= 0; --i) {
-        var _child = gameObject.mChildren[i];
+        var child = gameObject.mChildren[i];
 
-        obj = GameObject.intersectsWith(_child, point);
+        obj = GameObject.intersectsWith(child, point);
         if (obj != null) return obj;
 
-        var inside = GameObject.intersects(_child, point);
+        var inside = GameObject.intersects(child, point);
         if (inside) {
-          obj = _child;
+          obj = child;
           break;
         }
       }
@@ -6095,7 +6200,7 @@ var Asset = function (_MessageDispatcher) {
     key: 'onLoaded',
     value: function onLoaded() {
       this.mIsLoaded = true;
-      this.sendMessage('complete');
+      this.post('complete');
     }
 
     /**
@@ -6474,13 +6579,13 @@ var AssetManager = function (_MessageDispatcher) {
       // TODO: check for dups
       if (item.constructor === TextureAsset) this.mTextures[item.name] = item.data;else if (item.constructor === AtlasTextureAsset) this.mAtlases[item.name] = item.data;else if (item.constructor === JSONAsset) this.mJsons[item.name] = item.data;else console.error('Unable to handle asset type.', item);
 
-      this.sendMessage(Message.PROGRESS, this.mLoadingProgress);
+      this.post(Message.PROGRESS, this.mLoadingProgress);
 
       if (this.mTotalLoaded === this.mQueue.length) {
         this.mQueue.splice(0, this.mQueue.length);
 
         this.mIsAllLoaded = true;
-        this.sendMessage(Message.COMPLETE);
+        this.post(Message.COMPLETE);
       }
     }
 
@@ -9422,7 +9527,7 @@ var Emitter = function (_DisplayObject) {
           if (this.mEmitNumRepeatsLeft <= 0) {
             this.mState = EmitterState.FINISHED;
 
-            this.sendMessage('complete');
+            this.post('complete');
             return;
           } else {
             this.mState = EmitterState.PENDING;
@@ -10266,10 +10371,10 @@ var Input = function (_System) {
 
           if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
 
-          currentComponent.gameObject.sendMessage('~' + fnName);
+          currentComponent.gameObject.post('~' + fnName);
         }
 
-        this.sendMessage(fnName);
+        this.post(fnName);
       }
 
       for (var _i2 = 0; _i2 < this.mKeyQueue.length; _i2++) {
@@ -10284,7 +10389,7 @@ var Input = function (_System) {
           _fnName = 'keyPress';
         }
 
-        this.sendMessage(_fnName, new KeyInfo(_nativeEvent), _nativeEvent);
+        this.post(_fnName, new KeyInfo(_nativeEvent), _nativeEvent);
       }
 
       this.mMouseQueue.splice(0, this.mMouseQueue.length);
@@ -11610,7 +11715,7 @@ var Tween = function (_Component) {
       // since values may change
       if (this.mStarted === false) {
         this.mStarted = true;
-        this.sendMessage('start', this.gameObject);
+        this.post('start', this.gameObject);
 
         for (var f in this.mValues) {
           if (!this.mInitiated && Array.isArray(this.mValues[f])) {
@@ -11639,7 +11744,7 @@ var Tween = function (_Component) {
         }
       }
 
-      this.sendMessage('update', this.gameObject);
+      this.post('update', this.gameObject);
 
       if (this.mElapsed === 1) {
         if (this.mRepeatTimes > 0) {
@@ -11655,10 +11760,10 @@ var Tween = function (_Component) {
 
           this.mStartTime = t + this.mDelay;
 
-          this.sendMessage('loop', this.gameObject);
+          this.post('loop', this.gameObject);
         } else {
           this.mIsPlaying = false;
-          this.sendMessage('complete', this.gameObject);
+          this.post('complete', this.gameObject);
 
           if (this.mRemoveOnComplete) {
             this.dispose();
@@ -11957,7 +12062,7 @@ var Animation = function () {
           this.mCurrentFrame = 0;
         } else {
           this.mCurrentFrame = this.mFrames.length - 1;
-          this.mController.sendMessage('complete', this);
+          this.mController.post('complete', this);
           this.mCompleted = true;
           return null;
         }
@@ -12465,6 +12570,7 @@ var Black = function (_MessageDispatcher) {
       this.__bootStage();
 
       this.mRoot = new this.mRootClass();
+      this.mRoot.name = 'root';
       this.mRoot.mAdded = true; // why are not added actually?
       this.mRoot.onAdded();
 

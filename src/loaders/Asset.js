@@ -72,7 +72,7 @@ class Asset extends MessageDispatcher {
    */
   onLoaded() {
     this.mIsLoaded = true;
-    this.sendMessage('complete');
+    this.post('complete');
   }
 
   /**

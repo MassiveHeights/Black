@@ -2774,15 +2774,45 @@ class MessageDispatcher {
   }
 
   /**
-   * on - Description
+   * on - Listens to message by given name
    *
-   * @param {string} name           Description
-   * @param {Function} callback       Description
-   * @param {Object=} [context=null] Description
+   * @param {string} name           Name of a message to listen
+   * @param {Function} callback       The callback function
+   * @param {Object=} [context=null] The context for callback function
    *
-   * @return {void} Description
+   * @return {void}
    */
   on(name, callback, context = null) {
+    Assert.is(name !== null, 'name cannot be null.');
+    Assert.is(callback !== null, 'callback cannot be null.');
+
+    // TODO: refactor, expore dispatching provider
+    let filterIx = name.indexOf('@') ;
+    if (filterIx !== -1) {
+      // global handler
+
+      let pureName = name.substring(0, filterIx);
+      let pathMask = name.substring(filterIx + 1);
+
+      //console.log(pureName, pathMask);
+
+      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
+        MessageDispatcher.mGlobalHandlers[pureName] = [];
+
+      let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
+      for (let i = 0; i < dispatchers.length; i++)
+        if (dispatchers[i].callback === callback)
+          return;
+
+      dispatchers.push({
+        callback: callback,
+        context: context,
+        pathMask: pathMask
+      });
+
+      return;
+    }
+
     if (this.mListeners === null)
       this.mListeners = {};
 
@@ -2795,15 +2825,11 @@ class MessageDispatcher {
       if (dispatchers[i].callback === callback)
         return;
 
-      // if (dispatchers.indexOf(callback) !== -1)
-      //   return;
-
     dispatchers.push({
       callback: callback,
       context: context
     });
   }
-
 
   /**
    * removeOn - Description
@@ -2838,19 +2864,19 @@ class MessageDispatcher {
     }
   }
 
-
   /**
-   * sendMessage - Description
+   * post - Sends message with given pattern and params
    *
-   * @param {string}  name   Description
-   * @param {...*} params Description
+   * @param {string}  name   The name of a message
+   * @param {...*} params A list of params to send
    *
-   * @return {void} Description
+   * @return {void}
    */
-  sendMessage(name, ...params) {
+  post(name, ...params) {
     // TODO: add wildcard support and name mask annotation support
-    if (name === null || name.length === 0)
-      throw new Error('Name cannot be null.');
+    Assert.is(name !== null, 'name cannot be null.');
+    // if (name === null || name.length === 0)
+    //   throw new Error('Name cannot be null.');
 
     let message = this.__parseMessage(this, name);
 
@@ -2861,11 +2887,14 @@ class MessageDispatcher {
 
     if (message.mDirection === 'none') {
       this.__invoke(this, message, ...params);
+      this.__invokeGlobal(this, message, ...params);
     } else if (message.mDirection === 'down') {
-      message.mOrigin = (/** @type {GameObject} */ (this)).root;
+      message.mOrigin = ( /** @type {GameObject} */ (this)).root;
 
-      if (message.mSibblings === true)
+      if (message.mSibblings === true) {
         this.__sendGlobal(this, message, null, ...params);
+        message.mOrigin.__invokeGlobal(this, message, ...params);
+      }
       else
         this.__sendBubbles(this, message, false, ...params);
     } else if (message.mDirection === 'up') {
@@ -2874,7 +2903,6 @@ class MessageDispatcher {
       throw new Error('Unknown message type.');
     }
   }
-
 
   /**
    * __sendBubbles - Description
@@ -2887,7 +2915,7 @@ class MessageDispatcher {
    * @return {void} Description
    */
   __sendBubbles(sender, message, toTop, ...params) {
-    message.mOrigin = toTop === true ? this : (/** @type {GameObject} */ (this)).root;
+    message.mOrigin = toTop === true ? this : ( /** @type {GameObject} */ (this)).root;
 
     let list = [this];
 
@@ -2908,8 +2936,9 @@ class MessageDispatcher {
         dispatcher.__invoke(sender, message, ...params);
       }
     }
-  }
 
+    message.sender.__invokeGlobal(message.sender, message, ...params);
+  }
 
   /**
    * __sendGlobal - Description
@@ -2933,15 +2962,12 @@ class MessageDispatcher {
     }
   }
 
-
   /**
-   * __invoke - Description
+   * @param {*}  sender
+   * @param {Message}  message
+   * @param {...*} params
    *
-   * @param {*}  sender  Description
-   * @param {Message}  message Description
-   * @param {...*} params  Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __invoke(sender, message, ...params) {
     if (this.mListeners === null)
@@ -2952,15 +2978,65 @@ class MessageDispatcher {
     if (dispatchers === undefined || dispatchers.length === 0)
       return;
 
+    if (message.mPathMask !== null) {
+      let inPath = this.__checkPath(this.path, message.mPathMask);
+      if (!inPath)
+        return;
+    }
+
     // no path filter found - just invoke it
     let clone = dispatchers.slice(0);
-    //let msg = new Message(sender, queryObject.name);
 
     for (let i = 0; i < clone.length; i++) {
       let dispatcher = /** @type {{callback: Function, context: *}} */ (clone[i]);
       message.mTarget = this;
       dispatcher.callback.call(dispatcher.context, message, ...params);
     }
+  }
+
+  /**
+   * @param {*}  sender
+   * @param {Message}  message
+   * @param {...*} params
+   *
+   * @return {void}
+   */
+  __invokeGlobal(sender, message, ...params) {
+    let dispatchers = MessageDispatcher.mGlobalHandlers[message.mName];
+
+    if (dispatchers === undefined || dispatchers.length === 0)
+      return;
+
+    let clone = dispatchers.slice(0);
+
+    for (let i = 0; i < clone.length; i++) {
+      let dispatcher = /** @type {{callback: Function, context: *}} */ (clone[i]);
+
+      if (!this.__checkPath(sender.path, dispatcher.pathMask))
+        continue;
+
+      message.mTarget = this;
+      dispatcher.callback.call(dispatcher.context, message, ...params);
+    }
+  }
+
+  /**
+   * @param {string} path
+   * @param {string} pattern
+   *
+   * @return {boolean}
+   */
+  __checkPath(path, pathMask) {
+    if (path == null || pathMask == null)
+      return false;
+
+    if (path === pathMask)
+      return true;
+
+    if (pathMask.indexOf('*') === -1)
+      return path === pathMask;
+    else
+      return new RegExp("^" + pathMask.split("*").join(".*") + "$").test(path);
   }
 
   // TODO: parse exception path'ses like: ~tatata@@@omg####imnotidiout###@@~~
@@ -2975,13 +3051,28 @@ class MessageDispatcher {
   __parseMessage(sender, info) {
     // TODO: make message pool... this type of objects shall not be
     // but dont forget to take care about cancel property
+
+    // EXAMPLES:
+    //  this.post('clicked', data); // Sends to all listeners of this
+    //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
+    //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
+    //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
+    //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
+    //  this.post('~clicked@mySprite#ColliderComponent');
+
+    // DIRECTIONS
+    // clicked - none, direct
+    // ~clicked - up, bubbling
+    // clicked@ - down starting from root, with no filter to everyone
+    // clicked@mySpriter - down with 'mySprite' filter
+    // ~clicked@ - inversed bubbling starting from the root, ending at this
+
     let result = new Message();
     result.mSender = sender;
     result.mDirection = 'none';
     result.mSibblings = true;
     result.mPathMask = null;
     result.mComponentMask = null;
-
 
     if (info.charAt(0) === '~') {
       result.mSibblings = false;
@@ -3020,10 +3111,13 @@ class MessageDispatcher {
         result.mComponentMask = null;
       else
         result.mComponentMask = info.substring(ixHash + 1);
+
       return result;
     }
   }
 }
+
+MessageDispatcher.mGlobalHandlers = {};
 
 
 class Message {
@@ -3056,7 +3150,6 @@ class Message {
     this.mCanceled = false;
   }
 
-
   /**
    * sender - Who send the message
    *
@@ -3065,7 +3158,6 @@ class Message {
   get sender() {
     return this.mSender;
   }
-
 
   /**
    * name - The name of the message
@@ -3076,7 +3168,6 @@ class Message {
     return this.mName;
   }
 
-
   /**
    * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
    *
@@ -3085,7 +3176,6 @@ class Message {
   get direction() {
     return this.mDirection;
   }
-
 
   /**
    * sibblings - Indicates if sibblings should be included into dispatching process.
@@ -3096,7 +3186,6 @@ class Message {
     return this.mSibblings;
   }
 
-
   /**
    * pathMask - The GameObject.name mask string if was used.
    *
@@ -3105,7 +3194,6 @@ class Message {
   get pathMask() {
     return this.mPathMask;
   }
-
 
   /**
    * componentMask - Component mask string if was used.
@@ -3116,7 +3204,6 @@ class Message {
     return this.mComponentMask;
   }
 
-
   /**
    * origin - The original sender of a message.
    *
@@ -3125,7 +3212,6 @@ class Message {
   get origin() {
     return this.mOrigin;
   }
-
 
   /**
    * target - The destination object for this message.
@@ -3136,7 +3222,6 @@ class Message {
     return this.mTarget;
   }
 
-
   /**
    * cancel - Stops propagation of the message.
    *
@@ -3145,7 +3230,6 @@ class Message {
   cancel() {
     this.mCanceled = true;
   }
-
 
   /**
    * canceled - True/False if
@@ -3156,8 +3240,12 @@ class Message {
     return this.mCanceled;
   }
 
-  static get PROGRESS() { return 'progress'; }
-  static get COMPLETE() { return 'complete'; }
+  static get PROGRESS() {
+    return 'progress';
+  }
+  static get COMPLETE() {
+    return 'complete';
+  }
 }
 
 
@@ -3305,7 +3393,7 @@ class Viewport extends MessageDispatcher {
     let size = this.mContainerElement.getBoundingClientRect();
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    this.sendMessage('resize', this.mSize);
+    this.post('resize', this.mSize);
   }
 
   /**
@@ -3425,8 +3513,8 @@ class GameObject extends MessageDispatcher {
     /** @type {number} */
     this.mId = ++GameObject.ID;
 
-    /** @type {string} */
-    this.mName = '';
+    /** @type {string|null} */
+    this.mName = null;
 
     /** @type {Array<Component>} */
     this.mComponents = [];
@@ -3507,28 +3595,31 @@ class GameObject extends MessageDispatcher {
   /**
    * add - Sugar method for adding child GameObjects or Components.
    *
-   * @param {GameObject|Component} gameObjectOrComponent A GameObject or Component to add.
+   * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
    *
-   * @return {GameObject|Component} The passed GameObject or Component.
+   * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
-  add(gameObjectOrComponent) {
-    if (gameObjectOrComponent instanceof GameObject)
-      return this.addChild(/* @type {!GameObject} */ (gameObjectOrComponent));
-    else
-      return this.addComponent(/* @type {!Component} */ (gameObjectOrComponent));
+  add(...gameObjectsAndOrComponents) {
+    for (let i = 0; i < gameObjectsAndOrComponents.length; i++) {
+      let gooc = gameObjectsAndOrComponents[i];
+
+      if (gooc instanceof GameObject)
+        this.addChild(/* @type {!GameObject} */ (gooc));
+      else
+        this.addComponent(/* @type {!Component} */ (gooc));
+    }
+
+    return gameObjectsAndOrComponents;
   }
 
   /**
    * Adds a child GameObject instance to this GameObject instance. The child is added to the top of all other children in this GameObject instance.
    *
-   * @param  {...GameObject} child The GameObject instance or instances to add as a child of this GameObject instance.
-   * @return {...GameObject} The GameObject last instance that you pass in the child parameter.
+   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @return {GameObject}
    */
-  addChild(...child) {
-    for (var i = 0; i < child.length; i++)
-      this.addChildAt(child[i], this.mChildren.length);
-
-    return child;
+  addChild(child) {
+    return this.addChildAt(child, this.mChildren.length);
   }
 
   /**
@@ -3698,22 +3789,20 @@ class GameObject extends MessageDispatcher {
   /**
    * addComponent - Adds Component instance to the end of the list,
    *
-   * @param  {...Component} instances Component instance or instances.
+   * @param  {Component} instances Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
    */
-  addComponent(...instances) {
-    for (let i = 0; i < instances.length; i++) {
-      let instance = instances[i];
+  addComponent(component) {
+    let instance = component;
 
-      if (instance.gameObject)
-        throw new Error('Component cannot be added to two game objects at the same time.');
+    if (instance.gameObject)
+      throw new Error('Component cannot be added to two game objects at the same time.');
 
-      this.mComponents.push(instance);
-      instance.gameObject = this;
+    this.mComponents.push(instance);
+    instance.gameObject = this;
 
-      if (this.root !== null)
-        Black.instance.onComponentAdded(this, instance);
-    }
+    if (this.root !== null)
+      Black.instance.onComponentAdded(this, instance);
 
     return instances;
   }
@@ -4078,7 +4167,7 @@ class GameObject extends MessageDispatcher {
   /**
    * name - Description
    *
-   * @return {string} Description
+   * @return {string|null} Description
    */
   get name() {
     return this.mName;
@@ -4087,7 +4176,7 @@ class GameObject extends MessageDispatcher {
   /**
    * name - Description
    *
-   * @param {string} value Description
+   * @param {string|null} value Description
    *
    * @return {void} Description
    */
@@ -5175,7 +5264,7 @@ class Asset extends MessageDispatcher {
    */
   onLoaded() {
     this.mIsLoaded = true;
-    this.sendMessage('complete');
+    this.post('complete');
   }
 
   /**
@@ -5440,13 +5529,13 @@ class AssetManager extends MessageDispatcher {
     else
       console.error('Unable to handle asset type.', item);
 
-    this.sendMessage(Message.PROGRESS, this.mLoadingProgress);
+    this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
-      this.sendMessage(Message.COMPLETE);
+      this.post(Message.COMPLETE);
     }
   }
 
@@ -7688,7 +7777,7 @@ class Emitter extends DisplayObject {
         if (this.mEmitNumRepeatsLeft <= 0) {
           this.mState = EmitterState.FINISHED;
 
-          this.sendMessage('complete');
+          this.post('complete');
           return;
         } else {
           this.mState = EmitterState.PENDING;
@@ -8463,10 +8552,10 @@ class Input extends System {
         else if (ix === Input.POINTER_UP)
           this.mIsPointerDown = false;
 
-        currentComponent.gameObject.sendMessage('~' + fnName);
+        currentComponent.gameObject.post('~' + fnName);
       }
 
-      this.sendMessage(fnName);
+      this.post(fnName);
     }
 
     for (let i = 0; i < this.mKeyQueue.length; i++) {
@@ -8484,7 +8573,7 @@ class Input extends System {
         fnName = 'keyPress';
       }
 
-      this.sendMessage(fnName, new KeyInfo(nativeEvent), nativeEvent);
+      this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
 
     this.mMouseQueue.splice(0, this.mMouseQueue.length);
@@ -9669,7 +9758,7 @@ class Tween extends Component {
     // since values may change
     if (this.mStarted === false) {
       this.mStarted = true;
-      this.sendMessage('start', this.gameObject);
+      this.post('start', this.gameObject);
 
       for (let f in this.mValues) {
         if (!this.mInitiated && Array.isArray(this.mValues[f])) {
@@ -9699,7 +9788,7 @@ class Tween extends Component {
       }
     }
 
-    this.sendMessage('update', this.gameObject);
+    this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
       if (this.mRepeatTimes > 0) {
@@ -9713,10 +9802,10 @@ class Tween extends Component {
 
         this.mStartTime = t + this.mDelay;
 
-        this.sendMessage('loop', this.gameObject);
+        this.post('loop', this.gameObject);
       } else {
         this.mIsPlaying = false;
-        this.sendMessage('complete', this.gameObject);
+        this.post('complete', this.gameObject);
 
         if (this.mRemoveOnComplete) {
           this.dispose();
@@ -9867,7 +9956,7 @@ class Animation {
       }
       else {
         this.mCurrentFrame = this.mFrames.length - 1;
-        this.mController.sendMessage('complete', this);
+        this.mController.post('complete', this);
         this.mCompleted = true;
         return null;
       }
@@ -10306,6 +10395,7 @@ class Black extends MessageDispatcher {
     this.__bootStage();
 
     this.mRoot = new this.mRootClass();
+    this.mRoot.name = 'root';
     this.mRoot.mAdded = true; // why are not added actually?
     this.mRoot.onAdded();
 

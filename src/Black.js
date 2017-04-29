@@ -216,6 +216,7 @@ class Black extends MessageDispatcher {
     this.__bootStage();
 
     this.mRoot = new this.mRootClass();
+    this.mRoot.name = 'root';
     this.mRoot.mAdded = true; // why are not added actually?
     this.mRoot.onAdded();
 

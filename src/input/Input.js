@@ -290,10 +290,10 @@ class Input extends System {
         else if (ix === Input.POINTER_UP)
           this.mIsPointerDown = false;
 
-        currentComponent.gameObject.sendMessage('~' + fnName);
+        currentComponent.gameObject.post('~' + fnName);
       }
 
-      this.sendMessage(fnName);
+      this.post(fnName);
     }
 
     for (let i = 0; i < this.mKeyQueue.length; i++) {
@@ -311,7 +311,7 @@ class Input extends System {
         fnName = 'keyPress';
       }
 
-      this.sendMessage(fnName, new KeyInfo(nativeEvent), nativeEvent);
+      this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
 
     this.mMouseQueue.splice(0, this.mMouseQueue.length);

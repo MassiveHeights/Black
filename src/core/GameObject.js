@@ -11,8 +11,8 @@ class GameObject extends MessageDispatcher {
     /** @type {number} */
     this.mId = ++GameObject.ID;
 
-    /** @type {string} */
-    this.mName = '';
+    /** @type {string|null} */
+    this.mName = null;
 
     /** @type {Array<Component>} */
     this.mComponents = [];
@@ -93,28 +93,31 @@ class GameObject extends MessageDispatcher {
   /**
    * add - Sugar method for adding child GameObjects or Components.
    *
-   * @param {GameObject|Component} gameObjectOrComponent A GameObject or Component to add.
+   * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
    *
-   * @return {GameObject|Component} The passed GameObject or Component.
+   * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
-  add(gameObjectOrComponent) {
-    if (gameObjectOrComponent instanceof GameObject)
-      return this.addChild(/* @type {!GameObject} */ (gameObjectOrComponent));
-    else
-      return this.addComponent(/* @type {!Component} */ (gameObjectOrComponent));
+  add(...gameObjectsAndOrComponents) {
+    for (let i = 0; i < gameObjectsAndOrComponents.length; i++) {
+      let gooc = gameObjectsAndOrComponents[i];
+
+      if (gooc instanceof GameObject)
+        this.addChild(/* @type {!GameObject} */ (gooc));
+      else
+        this.addComponent(/* @type {!Component} */ (gooc));
+    }
+
+    return gameObjectsAndOrComponents;
   }
 
   /**
    * Adds a child GameObject instance to this GameObject instance. The child is added to the top of all other children in this GameObject instance.
    *
-   * @param  {...GameObject} child The GameObject instance or instances to add as a child of this GameObject instance.
-   * @return {...GameObject} The GameObject last instance that you pass in the child parameter.
+   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @return {GameObject}
    */
-  addChild(...child) {
-    for (var i = 0; i < child.length; i++)
-      this.addChildAt(child[i], this.mChildren.length);
-
-    return child;
+  addChild(child) {
+    return this.addChildAt(child, this.mChildren.length);
   }
 
   /**
@@ -284,22 +287,20 @@ class GameObject extends MessageDispatcher {
   /**
    * addComponent - Adds Component instance to the end of the list,
    *
-   * @param  {...Component} instances Component instance or instances.
+   * @param  {Component} instances Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
    */
-  addComponent(...instances) {
-    for (let i = 0; i < instances.length; i++) {
-      let instance = instances[i];
+  addComponent(component) {
+    let instance = component;
 
-      if (instance.gameObject)
-        throw new Error('Component cannot be added to two game objects at the same time.');
+    if (instance.gameObject)
+      throw new Error('Component cannot be added to two game objects at the same time.');
 
-      this.mComponents.push(instance);
-      instance.gameObject = this;
+    this.mComponents.push(instance);
+    instance.gameObject = this;
 
-      if (this.root !== null)
-        Black.instance.onComponentAdded(this, instance);
-    }
+    if (this.root !== null)
+      Black.instance.onComponentAdded(this, instance);
 
     return instances;
   }
@@ -664,7 +665,7 @@ class GameObject extends MessageDispatcher {
   /**
    * name - Description
    *
-   * @return {string} Description
+   * @return {string|null} Description
    */
   get name() {
     return this.mName;
@@ -673,7 +674,7 @@ class GameObject extends MessageDispatcher {
   /**
    * name - Description
    *
-   * @param {string} value Description
+   * @param {string|null} value Description
    *
    * @return {void} Description
    */
