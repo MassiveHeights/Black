@@ -148,10 +148,8 @@ class Black extends MessageDispatcher {
     window.onpagehide = event => this.__onVisbilityChange(event);
     window.onpageshow = event => this.__onVisbilityChange(event);
 
-    if (document.hidden && this.mPauseOnHide === true) {
-      console.log('paused');
+    if (document.hidden && this.mPauseOnHide === true)
       this.mPaused = true;
-    }
   }
 
   __onVisbilityChange(event) {
@@ -165,8 +163,6 @@ class Black extends MessageDispatcher {
       if (document.hidden === false)
         this.mUnpausing = true;
     }
-
-    console.log('mUnpausing', this.mUnpausing, event);
   }
 
 

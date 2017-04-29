@@ -4473,7 +4473,7 @@ var GameObject = function (_MessageDispatcher) {
 
       if (this.root !== null) Black.instance.onComponentAdded(this, instance);
 
-      return instances;
+      return instance;
     }
 
     /**
@@ -4504,17 +4504,17 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * getComponent
      *
-     * @param {*} instance
+     * @param {*} typeName
      *
      * @return {Component|null}
      */
 
   }, {
     key: 'getComponent',
-    value: function getComponent(instance) {
+    value: function getComponent(typeName) {
       for (var i = 0; i < this.mComponents.length; i++) {
         var c = this.mComponents[i];
-        if (c instanceof instance) return c;
+        if (c instanceof typeName) return c;
       }
 
       return null;
@@ -7800,6 +7800,21 @@ var Sprite = function (_DisplayObject) {
       if (this.mTexture === texture) return;
 
       this.mTexture = texture;
+    }
+  }, {
+    key: "touchable",
+    set: function set(value) {
+      var c = this.getComponent(InputComponent);
+
+      if (value === true) {
+        if (c === null) this.addComponent(new InputComponent());else c.touchable = true;
+      } else {
+        if (c !== null) this.removeComponent(c);
+      }
+    },
+    get: function get() {
+      var c = this.getComponent(InputComponent);
+      return c !== null && c.touchable === true;
     }
   }]);
 
@@ -12510,10 +12525,7 @@ var Black = function (_MessageDispatcher) {
         return _this2.__onVisbilityChange(event);
       };
 
-      if (document.hidden && this.mPauseOnHide === true) {
-        console.log('paused');
-        this.mPaused = true;
-      }
+      if (document.hidden && this.mPauseOnHide === true) this.mPaused = true;
     }
   }, {
     key: '__onVisbilityChange',
@@ -12523,8 +12535,6 @@ var Black = function (_MessageDispatcher) {
       if (type === 'blur' && this.mPauseOnBlur === true) this.mPaused = true;else if (type === 'pagehide' && this.mPauseOnHide === true) this.mPaused = true;else if (type === 'focus' || type === 'pageshow') {
         if (document.hidden === false) this.mUnpausing = true;
       }
-
-      console.log('mUnpausing', this.mUnpausing, event);
     }
 
     /**

@@ -88,4 +88,23 @@ class Sprite extends DisplayObject {
 
     this.mTexture = texture;
   }
+
+  set touchable(value) {
+    let c = this.getComponent(InputComponent);
+
+    if (value === true) {
+      if (c === null)
+        this.addComponent(new InputComponent());
+      else
+        c.touchable = true;
+    } else {
+      if (c !== null)
+        this.removeComponent(c);
+    }
+  }
+
+  get touchable() {
+    let c = this.getComponent(InputComponent);
+    return c !== null && c.touchable === true;
+  }
 }

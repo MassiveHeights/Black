@@ -302,7 +302,7 @@ class GameObject extends MessageDispatcher {
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
 
-    return instances;
+    return instance;
   }
 
   /**
@@ -333,14 +333,14 @@ class GameObject extends MessageDispatcher {
   /**
    * getComponent
    *
-   * @param {*} instance
+   * @param {*} typeName
    *
    * @return {Component|null}
    */
-  getComponent(instance) {
+  getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
       let c = this.mComponents[i];
-      if (c instanceof instance)
+      if (c instanceof typeName)
         return c;
     }
 

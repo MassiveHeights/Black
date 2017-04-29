@@ -20,13 +20,21 @@ class MyGame extends GameObject {
     this.addChild(this.view);
 
     let bg = new Sprite('blueprint-landscape');
+    bg.touchable = false;
+    bg.on('pointerDown', this.onBgDown);
+    //bg.scaleX = bg.scaleY = 0.5;
     this.view.addChild(bg);
 
-    Input.on('pointerUp', this.onUp, this);
+    //Input.on('pointerUp', this.onUp, this);
+    //Input.on('pointerEnter', this.onUp, this);
   }
 
-  onUp() {
-    console.log('up');
+  onBgDown() {
+    console.log('bg clicked');
+  }
+
+  onUp(msg) {
+    console.log(msg.name);
   }
 
   onUpdate(dt) {

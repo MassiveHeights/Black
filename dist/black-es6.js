@@ -3804,7 +3804,7 @@ class GameObject extends MessageDispatcher {
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
 
-    return instances;
+    return instance;
   }
 
   /**
@@ -3835,14 +3835,14 @@ class GameObject extends MessageDispatcher {
   /**
    * getComponent
    *
-   * @param {*} instance
+   * @param {*} typeName
    *
    * @return {Component|null}
    */
-  getComponent(instance) {
+  getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
       let c = this.mComponents[i];
-      if (c instanceof instance)
+      if (c instanceof typeName)
         return c;
     }
 
@@ -6547,6 +6547,25 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTexture = texture;
+  }
+
+  set touchable(value) {
+    let c = this.getComponent(InputComponent);
+
+    if (value === true) {
+      if (c === null)
+        this.addComponent(new InputComponent());
+      else
+        c.touchable = true;
+    } else {
+      if (c !== null)
+        this.removeComponent(c);
+    }
+  }
+
+  get touchable() {
+    let c = this.getComponent(InputComponent);
+    return c !== null && c.touchable === true;
   }
 }
 
@@ -10327,10 +10346,8 @@ class Black extends MessageDispatcher {
     window.onpagehide = event => this.__onVisbilityChange(event);
     window.onpageshow = event => this.__onVisbilityChange(event);
 
-    if (document.hidden && this.mPauseOnHide === true) {
-      console.log('paused');
+    if (document.hidden && this.mPauseOnHide === true)
       this.mPaused = true;
-    }
   }
 
   __onVisbilityChange(event) {
@@ -10344,8 +10361,6 @@ class Black extends MessageDispatcher {
       if (document.hidden === false)
         this.mUnpausing = true;
     }
-
-    console.log('mUnpausing', this.mUnpausing, event);
   }
 
 
