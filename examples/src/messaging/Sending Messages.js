@@ -1,12 +1,3 @@
-class Player extends GameObject {
-  constructor() {
-  }
-
-  onAdded() {
-    this.post('addedOnStage');
-  }
-}
-
 class MyGame extends GameObject {
   constructor() {
     super();
