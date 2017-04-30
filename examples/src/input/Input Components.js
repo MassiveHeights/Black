@@ -25,16 +25,20 @@ class MyGame extends GameObject {
     bg.touchable = true;
     bg.scaleX = bg.scaleY = 0.5;
     bg.alignPivot(0.5, 0.5);
-    bg.on('pointerEnter', this.onBgDown);
+    bg.on('pointerIn', this.onPointerInOut, this);
+    bg.on('pointerOut', this.onPointerInOut, this);
     this.view.addChild(bg);
+
+    Input.on('pointerIn', this.onGlobalPointerInOut, this);
+    Input.on('pointerOut', this.onGlobalPointerInOut, this);
   }
 
-  onBgDown() {
-    console.log('bg clicked');
+  onGlobalPointerInOut(msg) {
+    console.log('Global in/out:', msg.name);
   }
 
-  onUp(msg) {
-    console.log(msg.name);
+  onPointerInOut(msg) {
+    console.log('Pointer in/out:', msg.name);
   }
 
   onUpdate(dt) {

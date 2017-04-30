@@ -10113,7 +10113,7 @@ var Input = function (_System) {
     _this.__initListeners();
 
     /** @type {Array<{e: Event, x: number, y:number}>} */
-    _this.mMouseQueue = [];
+    _this.mPointerQueue = [];
 
     /** @type {Array<Event>} */
     _this.mKeyQueue = [];
@@ -10196,7 +10196,7 @@ var Input = function (_System) {
       this.mPointerPosition.x = p.x;
       this.mPointerPosition.y = p.y;
 
-      this.mMouseQueue.push({
+      this.mPointerQueue.push({
         e: e,
         x: p.x,
         y: p.y
@@ -10362,8 +10362,8 @@ var Input = function (_System) {
     value: function onUpdate(dt) {
       var pointerPos = new Vector();
 
-      for (var i = 0; i < this.mMouseQueue.length; i++) {
-        var nativeEvent = this.mMouseQueue[i];
+      for (var i = 0; i < this.mPointerQueue.length; i++) {
+        var nativeEvent = this.mPointerQueue[i];
 
         var ix = this.mEventList.indexOf(nativeEvent.e.type);
         var fnName = Input.mInputEventsLookup[ix];
@@ -10375,16 +10375,32 @@ var Input = function (_System) {
         for (var k = 0; k < this.mInputListeners.length; k++) {
           currentComponent = this.mInputListeners[k];
 
-          if (currentComponent.gameObject === null) console.log(currentComponent);
+          // if (currentComponent.gameObject === null)
+          //   console.log(currentComponent);
 
-          if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) continue;
+          if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
+            // check for out events
+            if (currentComponent.mPointerInside === true) {
+              currentComponent.mPointerInside = false;
+              currentComponent.gameObject.post('~pointerOut');
+            }
+
+            continue;
+          }
+
+          // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
 
           if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
 
-          console.log(fnName);
+          if (currentComponent.mPointerInside === false) {
+            currentComponent.mPointerInside = true;
+            currentComponent.gameObject.post('~pointerIn');
+          }
+
           currentComponent.gameObject.post('~' + fnName);
         }
 
+        //console.log(fnName);
         this.post(fnName);
       }
 
@@ -10403,7 +10419,7 @@ var Input = function (_System) {
         this.post(_fnName, new KeyInfo(_nativeEvent), _nativeEvent);
       }
 
-      this.mMouseQueue.splice(0, this.mMouseQueue.length);
+      this.mPointerQueue.splice(0, this.mPointerQueue.length);
       this.mKeyQueue.splice(0, this.mKeyQueue.length);
     }
 
@@ -10512,12 +10528,12 @@ Input.POINTER_CANCEL = 3;
 /** @type {number}
  *  @const
  */
-Input.POINTER_ENTER = 4;
+Input.POINTER_IN = 4;
 
 /** @type {number}
  *  @const
  */
-Input.POINTER_LEAVE = 5;
+Input.POINTER_OUT = 5;
 
 /** @type {Array<string>}
  *  @const
@@ -10527,13 +10543,13 @@ Input.mKeyEventList = ['keydown', 'keyup'];
 /** @type {Array<string>}
  *  @const
  */
-Input.mKeyEventsLookup = ['keyDown', 'keyUp', ' keyPress'];
+Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
 /** @type {Array<string>}
  *  @const
  */
 
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerEnter', 'pointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
@@ -10563,22 +10579,27 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var InputComponent = function (_Component) {
-  _inherits(InputComponent, _Component);
+    _inherits(InputComponent, _Component);
 
-  /**
-   * @return {void}
-   */
-  function InputComponent() {
-    _classCallCheck(this, InputComponent);
+    /**
+     * @return {void}
+     */
+    function InputComponent() {
+        _classCallCheck(this, InputComponent);
 
-    /** @type {boolean} */
-    var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
+        /** @type {boolean} */
+        var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
 
-    _this.touchable = true;
-    return _this;
-  }
+        _this.touchable = true;
 
-  return InputComponent;
+        /* INTERNAL */
+
+        /** @type {boolean} */
+        _this.mPointerInside = false;
+        return _this;
+    }
+
+    return InputComponent;
 }(Component);
 'use strict';
 

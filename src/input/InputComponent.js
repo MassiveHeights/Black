@@ -8,5 +8,10 @@ class InputComponent extends Component {
 
     /** @type {boolean} */
     this.touchable = true;
+
+    /* INTERNAL */
+
+    /** @type {boolean} */
+    this.mPointerInside = false;
   }
 }

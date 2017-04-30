@@ -8309,7 +8309,7 @@ class Input extends System {
     this.__initListeners();
 
     /** @type {Array<{e: Event, x: number, y:number}>} */
-    this.mMouseQueue = [];
+    this.mPointerQueue = [];
 
     /** @type {Array<Event>} */
     this.mKeyQueue = [];
@@ -8386,7 +8386,7 @@ class Input extends System {
     this.mPointerPosition.x = p.x;
     this.mPointerPosition.y = p.y;
 
-    this.mMouseQueue.push({
+    this.mPointerQueue.push({
       e: e,
       x: p.x,
       y: p.y
@@ -8542,8 +8542,8 @@ class Input extends System {
   onUpdate(dt) {
     let pointerPos = new Vector();
 
-    for (let i = 0; i < this.mMouseQueue.length; i++) {
-      let nativeEvent = this.mMouseQueue[i];
+    for (let i = 0; i < this.mPointerQueue.length; i++) {
+      let nativeEvent = this.mPointerQueue[i];
 
       let ix = this.mEventList.indexOf(nativeEvent.e.type);
       let fnName = Input.mInputEventsLookup[ix];
@@ -8555,21 +8555,35 @@ class Input extends System {
       for (let k = 0; k < this.mInputListeners.length; k++) {
         currentComponent = this.mInputListeners[k];
 
-        if (currentComponent.gameObject === null)
-          console.log(currentComponent);
+        // if (currentComponent.gameObject === null)
+        //   console.log(currentComponent);
 
-        if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false)
+        if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
+          // check for out events
+          if (currentComponent.mPointerInside === true) {
+            currentComponent.mPointerInside = false;
+            currentComponent.gameObject.post('~pointerOut');
+          }
+
           continue;
+        }
+
+        // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
 
         if (ix === Input.POINTER_DOWN)
           this.mIsPointerDown = true;
         else if (ix === Input.POINTER_UP)
           this.mIsPointerDown = false;
 
-        console.log(fnName);
+        if (currentComponent.mPointerInside === false) {
+          currentComponent.mPointerInside = true;
+          currentComponent.gameObject.post('~pointerIn');
+        }
+
         currentComponent.gameObject.post('~' + fnName);
       }
 
+      //console.log(fnName);
       this.post(fnName);
     }
 
@@ -8591,7 +8605,7 @@ class Input extends System {
       this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
 
-    this.mMouseQueue.splice(0, this.mMouseQueue.length);
+    this.mPointerQueue.splice(0, this.mPointerQueue.length);
     this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
@@ -8682,12 +8696,12 @@ Input.POINTER_CANCEL = 3;
 /** @type {number}
  *  @const
  */
-Input.POINTER_ENTER = 4;
+Input.POINTER_IN = 4;
 
 /** @type {number}
  *  @const
  */
-Input.POINTER_LEAVE = 5;
+Input.POINTER_OUT = 5;
 
 /** @type {Array<string>}
  *  @const
@@ -8697,13 +8711,13 @@ Input.mKeyEventList = ['keydown', 'keyup'];
 /** @type {Array<string>}
  *  @const
  */
-Input.mKeyEventsLookup = ['keyDown', 'keyUp', ' keyPress'];
+Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
 /** @type {Array<string>}
  *  @const
  */
 
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerEnter', 'pointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
@@ -8735,6 +8749,11 @@ class InputComponent extends Component {
 
     /** @type {boolean} */
     this.touchable = true;
+
+    /* INTERNAL */
+
+    /** @type {boolean} */
+    this.mPointerInside = false;
   }
 }
 
