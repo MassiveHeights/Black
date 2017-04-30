@@ -36,6 +36,10 @@
 
       onAssetsLoadded() {
         let sprite = new Sprite('cube');
+        sprite.touchable = true;
+        sprite.on('pointerDown', x => {
+          sprite.scaleX = sprite.scaleY = sprite.scaleX + 0.1;
+        });
         this.addChild(sprite);
       }
 
