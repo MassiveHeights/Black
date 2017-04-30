@@ -13,6 +13,12 @@ class Viewport extends MessageDispatcher {
     /** @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
+    this.mContainerElement.style.userSelect = 'none';
+    this.mContainerElement.style.touchAction = 'none';
+    this.mContainerElement.style.overflow = 'hidden';
+    this.mContainerElement.style.cursor = 'auto';
+    this.mContainerElement.style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+
     let size = this.mContainerElement.getBoundingClientRect();
 
     /** @type {Rectangle} */
