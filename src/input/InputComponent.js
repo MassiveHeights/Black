@@ -1,9 +1,7 @@
 /* @echo EXPORT */
 class InputComponent extends Component {
   /**
-   * constructor - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   constructor() {
     super();

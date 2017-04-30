@@ -20,13 +20,13 @@ class MyGame extends GameObject {
     this.addChild(this.view);
 
     let bg = new Sprite('blueprint-landscape');
-    bg.touchable = false;
-    bg.on('pointerDown', this.onBgDown);
-    //bg.scaleX = bg.scaleY = 0.5;
+    bg.x = 960 * 0.5;
+    bg.y = 640 * 0.5;
+    bg.touchable = true;
+    bg.scaleX = bg.scaleY = 0.5;
+    bg.alignPivot(0.5, 0.5);
+    bg.on('pointerEnter', this.onBgDown);
     this.view.addChild(bg);
-
-    //Input.on('pointerUp', this.onUp, this);
-    //Input.on('pointerEnter', this.onUp, this);
   }
 
   onBgDown() {

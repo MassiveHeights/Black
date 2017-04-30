@@ -105,8 +105,6 @@ class Input extends System {
     this.mPointerPosition.x = p.x;
     this.mPointerPosition.y = p.y;
 
-    //console.log(this.mPointerPosition, e.type);
-
     this.mMouseQueue.push({
       e: e,
       x: p.x,
@@ -170,9 +168,6 @@ class Input extends System {
       if (this.mInputListeners.indexOf(item) === -1)
         this.mInputListeners.push(item);
     }
-
-    // if (this.mInputListeners.length > 16)
-    //   debugger;
 
     this.__sortListeners();
   }
@@ -290,6 +285,7 @@ class Input extends System {
         else if (ix === Input.POINTER_UP)
           this.mIsPointerDown = false;
 
+        console.log(fnName);
         currentComponent.gameObject.post('~' + fnName);
       }
 

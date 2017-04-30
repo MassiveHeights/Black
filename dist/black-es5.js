@@ -10196,8 +10196,6 @@ var Input = function (_System) {
       this.mPointerPosition.x = p.x;
       this.mPointerPosition.y = p.y;
 
-      //console.log(this.mPointerPosition, e.type);
-
       this.mMouseQueue.push({
         e: e,
         x: p.x,
@@ -10266,9 +10264,6 @@ var Input = function (_System) {
 
         if (this.mInputListeners.indexOf(item) === -1) this.mInputListeners.push(item);
       }
-
-      // if (this.mInputListeners.length > 16)
-      //   debugger;
 
       this.__sortListeners();
     }
@@ -10386,6 +10381,7 @@ var Input = function (_System) {
 
           if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
 
+          console.log(fnName);
           currentComponent.gameObject.post('~' + fnName);
         }
 
@@ -10570,9 +10566,7 @@ var InputComponent = function (_Component) {
   _inherits(InputComponent, _Component);
 
   /**
-   * constructor - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   function InputComponent() {
     _classCallCheck(this, InputComponent);
