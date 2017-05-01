@@ -16,7 +16,7 @@ class Time {
   }
 
   static set scale(value) {
-    Assert.is(value >= 0, 'Time.scale must be >= 0.');
+    Debug.assert(value >= 0, 'Time.scale must be >= 0.');
 
     Time.mScale = value;
   }

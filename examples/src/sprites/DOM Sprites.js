@@ -36,7 +36,7 @@ class MyGame extends GameObject {
     this.sprite2 = new Sprite(img);
     this.sprite2.x = 0;
     this.sprite2.y = 0;
-     this.view.addChild(this.sprite2);
+    this.view.addChild(this.sprite2);
   }
 
   onUpdate(dt){

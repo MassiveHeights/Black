@@ -1253,8 +1253,8 @@ class GameObject extends MessageDispatcher {
    * @return {Array<Component>}
    */
   static findComponents(gameObject, type) {
-    Assert.is(gameObject !== null, 'gameObject cannot be null.');
-    Assert.is(type !== null, 'type cannot be null.');
+    Debug.assert(gameObject !== null, 'gameObject cannot be null.');
+    Debug.assert(type !== null, 'type cannot be null.');
 
     /** @type {Array<Component>} */
     let list = [];

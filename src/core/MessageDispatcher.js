@@ -21,8 +21,8 @@ class MessageDispatcher {
    * @return {void}
    */
   on(name, callback, context = null) {
-    Assert.is(name !== null, 'name cannot be null.');
-    Assert.is(callback !== null, 'callback cannot be null.');
+    Debug.assert(name !== null, 'name cannot be null.');
+    Debug.assert(callback !== null, 'callback cannot be null.');
 
     // TODO: refactor, expore dispatching provider
     let filterIx = name.indexOf('@') ;
@@ -112,7 +112,7 @@ class MessageDispatcher {
    */
   post(name, ...params) {
     // TODO: add wildcard support and name mask annotation support
-    Assert.is(name !== null, 'name cannot be null.');
+    Debug.assert(name !== null, 'name cannot be null.');
     // if (name === null || name.length === 0)
     //   throw new Error('Name cannot be null.');
 

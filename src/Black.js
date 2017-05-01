@@ -203,7 +203,7 @@ class Black extends MessageDispatcher {
     else if (this.mVideoName === 'null' || this.mVideoName == null)
       this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
     else
-      Assert.is(false, 'Unsupported video driver. Use canvas or dom.');
+      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
   }
 
   start() {

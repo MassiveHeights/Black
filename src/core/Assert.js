@@ -1,20 +1,22 @@
 /* @echo EXPORT */
-class Assert {
+class Debug {
   constructor() {
-    Assert.is(false, 'Static class');
+    Debug.assert(false, 'Static class.');
   }
 
-  static is(value, message) {
+  static assert(value, message) {
     if (value === true)
       return;
 
-    if (Assert.logOnFail)
+    message = message == null ? 'Assertation failed.' : message;
+
+    if (Debug.logOnFail)
       console.error('[ASSERT]', message);
 
-    if (Assert.throwOnFail)
+    if (Debug.throwOnFail)
       throw new Error(message);
   }
 }
 
-Assert.throwOnFail = false;
-Assert.logOnFail = true;
+Debug.throwOnFail = false;
+Debug.logOnFail = true;
