@@ -13,7 +13,7 @@
     "src/geom/Polygon.js",
     "src/geom/Curve.js",
 
-    "src/core/Assert.js",
+    "src/core/Debug.js",
 
     "src/core/MessageDispatcher.js",
 
