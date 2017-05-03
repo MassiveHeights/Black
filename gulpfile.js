@@ -80,7 +80,7 @@ gulp.task('build:prod', function() {
   return gulp.src(files)
     .pipe(preprocess({context: { EXPORT: 'export' }}))
     .pipe(sourcemaps.init())
-    .pipe(concat('black-es6.js'))
+    .pipe(concat('black-es6-module.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
 });
