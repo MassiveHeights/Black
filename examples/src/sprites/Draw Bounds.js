@@ -88,7 +88,7 @@ class MyGame extends GameObject {
     if (!this.assets.isAllLoaded)
       return;
 
-    let bounds = this.sprite2.getBounds(this.sprite2.parent);
+    let bounds = this.container.getBounds(this.container.parent, true);
     this.container.rotation += 0.01;
 
     this.b1.x = bounds.x;

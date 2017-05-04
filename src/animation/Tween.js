@@ -371,7 +371,7 @@ class Tween extends Component {
     // since values may change
     if (this.mStarted === false) {
       this.mStarted = true;
-      this.sendMessage('start', this.gameObject);
+      this.post('start', this.gameObject);
 
       for (let f in this.mValues) {
         if (!this.mInitiated && Array.isArray(this.mValues[f])) {
@@ -401,7 +401,7 @@ class Tween extends Component {
       }
     }
 
-    this.sendMessage('update', this.gameObject);
+    this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
       if (this.mRepeatTimes > 0) {
@@ -415,10 +415,10 @@ class Tween extends Component {
 
         this.mStartTime = t + this.mDelay;
 
-        this.sendMessage('loop', this.gameObject);
+        this.post('loop', this.gameObject);
       } else {
         this.mIsPlaying = false;
-        this.sendMessage('complete', this.gameObject);
+        this.post('complete', this.gameObject);
 
         if (this.mRemoveOnComplete) {
           this.dispose();

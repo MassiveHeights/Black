@@ -19,7 +19,7 @@ class AnimationController extends Component {
    * @return {Animation} Description
    */
   get(name){
-    Assert.is(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
     return this.mAnimations[name];
   }
@@ -36,8 +36,8 @@ class AnimationController extends Component {
    * @return {Animation} Description
    */
   set(name, textures, fps = 14, loop = true) {
-    Assert.is(textures.length > 0, 'Animation cannot be empty.');
-    Assert.is(fps > 0, 'FPS must be greater than 0.');
+    Debug.assert(textures.length > 0, 'Animation cannot be empty.');
+    Debug.assert(fps > 0, 'FPS must be greater than 0.');
 
     let anim = new Animation(this, name, textures, fps, loop);
     this.mAnimations[name] = anim;
@@ -54,7 +54,7 @@ class AnimationController extends Component {
    * @return {void} Description
    */
   play(name) {
-    Assert.is(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
     this.mCurrentAnim = this.mAnimations[name];
 

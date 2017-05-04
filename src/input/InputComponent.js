@@ -1,14 +1,17 @@
 /* @echo EXPORT */
 class InputComponent extends Component {
   /**
-   * constructor - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   constructor() {
     super();
 
     /** @type {boolean} */
     this.touchable = true;
+
+    /* INTERNAL */
+
+    /** @type {boolean} */
+    this.mPointerInside = false;
   }
 }

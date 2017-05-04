@@ -13,6 +13,12 @@ class Viewport extends MessageDispatcher {
     /** @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
+    this.mContainerElement.style.userSelect = 'none';
+    this.mContainerElement.style.touchAction = 'none';
+    this.mContainerElement.style.overflow = 'hidden';
+    this.mContainerElement.style.cursor = 'auto';
+    this.mContainerElement.style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+
     let size = this.mContainerElement.getBoundingClientRect();
 
     /** @type {Rectangle} */
@@ -25,7 +31,7 @@ class Viewport extends MessageDispatcher {
     let size = this.mContainerElement.getBoundingClientRect();
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    this.sendMessage('resize', this.mSize);
+    this.post('resize', this.mSize);
   }
 
   /**

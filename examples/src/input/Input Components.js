@@ -20,13 +20,25 @@ class MyGame extends GameObject {
     this.addChild(this.view);
 
     let bg = new Sprite('blueprint-landscape');
+    bg.x = 960 * 0.5;
+    bg.y = 640 * 0.5;
+    bg.touchable = true;
+    bg.scaleX = bg.scaleY = 0.5;
+    bg.alignPivot(0.5, 0.5);
+    bg.on('pointerIn', this.onPointerInOut, this);
+    bg.on('pointerOut', this.onPointerInOut, this);
     this.view.addChild(bg);
 
-    Input.on('pointerUp', this.onUp, this);
+    Input.on('pointerIn', this.onGlobalPointerInOut, this);
+    Input.on('pointerOut', this.onGlobalPointerInOut, this);
   }
 
-  onUp() {
-    console.log('up');
+  onGlobalPointerInOut(msg) {
+    console.log('Global in/out:', msg.name);
+  }
+
+  onPointerInOut(msg) {
+    console.log('Pointer in/out:', msg.name);
   }
 
   onUpdate(dt) {

@@ -10,7 +10,8 @@ class Animation {
    * @param {boolean} [loop=true] Description
    */
   constructor(controller, name, frames, fps = 14, loop = true) {
-    Assert.is(fps > 0, 'FPS must be greater than 0.');
+    Debug.assert(fps > 0, 'FPS must be greater than 0.');
+    assert(fps > 0, '');
 
     this.mController = controller;
 
@@ -113,7 +114,7 @@ class Animation {
       }
       else {
         this.mCurrentFrame = this.mFrames.length - 1;
-        this.mController.sendMessage('complete', this);
+        this.mController.post('complete', this);
         this.mCompleted = true;
         return null;
       }
@@ -141,7 +142,7 @@ class Animation {
    * @return {void} Description
    */
   set fps(value) {
-    Assert.is(value > 0, 'FPS must be greater than 0.');
+    Debug.assert(value > 0, 'FPS must be greater than 0.');
 
     this.mFPS = value;
     this.mFrameDuration = 1 / this.mFPS;

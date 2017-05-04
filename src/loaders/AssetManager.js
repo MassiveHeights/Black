@@ -86,13 +86,13 @@ class AssetManager extends MessageDispatcher {
     else
       console.error('Unable to handle asset type.', item);
 
-    this.sendMessage(Message.PROGRESS, this.mLoadingProgress);
+    this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
-      this.sendMessage(Message.COMPLETE);
+      this.post(Message.COMPLETE);
     }
   }
 

@@ -24,7 +24,7 @@ class Black extends MessageDispatcher {
     window['Black']['instance'] = this;
 
     var css = "background: #000; color: #fff;";
-    console.log('%c ~ Black ~ ', css);
+    console.log('%c ~Black ', css);
 
     /** @type {string} */
     this.mContainerElementId = containerElementId;
@@ -159,8 +159,10 @@ class Black extends MessageDispatcher {
       this.mPaused = true;
     else if (type === 'pagehide' && this.mPauseOnHide === true)
       this.mPaused = true;
-    else if (type === 'focus' || type === 'pageshow')
-      this.mUnpausing = true;
+    else if (type === 'focus' || type === 'pageshow') {
+      if (document.hidden === false)
+        this.mUnpausing = true;
+    }
   }
 
 
@@ -196,10 +198,12 @@ class Black extends MessageDispatcher {
   __bootVideo() {
     if (this.mVideoName === 'canvas')
       this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom') {
+    else if (this.mVideoName === 'dom')
       this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    } else
-      Assert.is(false, 'Unsupported video driver. Use canvas or dom.');
+    else if (this.mVideoName === 'null' || this.mVideoName == null)
+      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
+    else
+      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
   }
 
   start() {
@@ -214,6 +218,7 @@ class Black extends MessageDispatcher {
     this.__bootStage();
 
     this.mRoot = new this.mRootClass();
+    this.mRoot.name = 'root';
     this.mRoot.mAdded = true; // why are not added actually?
     this.mRoot.onAdded();
 
@@ -302,7 +307,7 @@ class Black extends MessageDispatcher {
         this.mFrameAccum -= this.mSimulationTimestep;
 
         if (++this.mNumUpdateSteps >= (60 * 3)) {
-          console.log('[KERNEL]: PANIC!');
+          console.log('[BLACK]: Not enough time to calculate update logic.');
           this.mIsPanic = true;
           break;
         }
