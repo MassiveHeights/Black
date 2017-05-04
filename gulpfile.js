@@ -20,7 +20,7 @@ browserSync.create();
 
 gulp.task('examples', function() {});
 
-gulp.task('examples-index', ['examples', 'build', 'build-es5'], function() {
+gulp.task('examples-index', ['examples', 'build-es5'], function() {
   function walk(dir) {
     var results = []
     var list = fs.readdirSync(dir)
@@ -67,7 +67,7 @@ gulp.task('examples-index', ['examples', 'build', 'build-es5'], function() {
     .pipe(gulp.dest('./examples/'))
 });
 
-gulp.task('build', function() {
+gulp.task('build-es6', function() {
   return gulp.src(files)
     .pipe(preprocess({context: { EXPORT: '', DEBUG: true }}))
     .pipe(sourcemaps.init())
@@ -76,7 +76,7 @@ gulp.task('build', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build:prod', function() {
+gulp.task('build-es6-module', function() {
   return gulp.src(files)
     .pipe(preprocess({context: { EXPORT: 'export' }}))
     .pipe(sourcemaps.init())
@@ -100,7 +100,7 @@ gulp.task('js-watch', ['examples-index'], function(cb) {
   cb();
 });
 
-gulp.task('watch', ['build', 'examples-index'], function() {
+gulp.task('watch', ['build-es5', 'examples-index'], function() {
   var options = {
     server: {
       baseDir: './',
@@ -119,4 +119,6 @@ gulp.task('docs', function(cb) {
   .pipe(jsdoc(config, cb));
 });
 
-gulp.task('default', ['examples-index', 'build-es5', 'build']);
+//gulp.task('build', ['build-es5', 'build-es6', 'build-es6-module']);
+gulp.task('default', ['examples-index', 'build-es5']);
+gulp.task('bundle', ['examples-index', 'build-es5', 'build-es6', 'build-es6-module']);

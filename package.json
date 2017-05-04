@@ -5,9 +5,8 @@
   "main": "src/Black.js",
   "directories": {},
   "scripts": {
-    "dev": "gulp && gulp watch",
-    "build": "gulp",
-    "build:prod": "gulp build:prod",
+    "start": "gulp && gulp watch",
+    "bundle": "gulp bundle",
     "test": "gulp && gulp test",
     "docs": "gulp docs"
   },

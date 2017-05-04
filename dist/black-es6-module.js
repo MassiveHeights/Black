@@ -153,7 +153,7 @@ Math.RAD2DEG = 57.295779513082320876798154814105;
 //   console.log('%s %c%s', title + ' ' + '.'.repeat(88 - title.length), r ? colors[0] : colors[1], r ? statuses[0] : statuses[1]);
 // }
 
-
+export
 class Vector {
   /**
    * @param  {number=} x = 0 description
@@ -466,16 +466,6 @@ class Vector {
     return outVector;
   }
 
-  /**
-   * toString - Description
-   *
-   * @param {number=} [digits=2] Description
-   *
-   * @return {string} Description
-   */
-  toString(digits = 2) {
-    return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
-  }
 }
 
 /** @type {Vector}
@@ -483,7 +473,7 @@ class Vector {
  */
 Vector.__cache = new Vector();
 
-
+export
 class Matrix {
   /**
    * @param  {number} a = 1  description
@@ -939,15 +929,6 @@ class Matrix {
     return this._matrix;
   }
 
-  /**
-   * @param  {number=} digits = 2
-   * @return {string}
-   */
-  toString(digits = 2) {
-    return `        | ${this.value[0].toFixed(digits)} | ${this.value[1].toFixed(digits)} | ${this.value[4].toFixed(digits)} |
-Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |
-        | ${(0).toFixed(digits)} | ${(0).toFixed(digits)} | ${(1).toFixed(digits)} |`;
-  }
 }
 
 /**
@@ -956,7 +937,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
  */
 Matrix.__cache = new Matrix();
 
-
+export
 class Rectangle {
   /**
    * @param  {number=} y = 0 description
@@ -1403,16 +1384,6 @@ class Rectangle {
   }
 
 
-  /**
-   * toString - Description
-   *
-   * @param {number=} [digits=2] Description
-   *
-   * @return {string} Description
-   */
-  toString(digits = 2) {
-    return `Rectangle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, width: ${this.width.toFixed(digits)}, height: ${this.height.toFixed(digits)} }`;
-  }
 }
 
 /** @type {Rectangle}
@@ -1420,7 +1391,7 @@ class Rectangle {
   */
 Rectangle.__cache = new Rectangle();
 
-
+export
 class Circle {
   /**
    * @param  {number=} x = 0 Position x.
@@ -1655,16 +1626,6 @@ class Circle {
     return outVector.set(this.x, this.y);
   }
 
-  /**
-   * toString - String representation of this circle.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Description.
-   */
-  toString(digits = 2) {
-    return `Circle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, r: ${this.r.toFixed(digits)} }`;
-  }
 }
 
 /** @type {Circle}
@@ -1672,7 +1633,7 @@ class Circle {
  */
 Circle.__cache = new Circle();
 
-
+export
 class Line {
   /**
    * @param  {Vector} start Start point.
@@ -1962,16 +1923,6 @@ class Line {
     return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y > Math.min(y1, y2) && y < Math.max(y1, y2);
   }
 
-  /**
-   * toString - String representation of this line.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Description.
-   */
-  toString(digits = 2) {
-    return `Line { start: ${this.start.toString(digits)}, end: ${this.end.toString(digits)} }`;
-  }
 }
 
 /** @type {Line}
@@ -1979,7 +1930,7 @@ class Line {
  */
 Line.__cache = new Line(new Vector(), new Vector());
 
-
+export
 class Polygon {
 
   /**
@@ -2467,32 +2418,6 @@ class Polygon {
     return this.refresh();
   }
 
-  /**
-   * toString - String representation of this polygon.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Description.
-   */
-  toString(digits = 2) {
-    let thisLines = this.lines;
-    let thisVertices = this.vertices;
-    let len = thisLines.length;
-    let vertices = '';
-    let lines = '';
-
-    for (let i = 0; i < len; i++) {
-      lines += thisLines[i].toString(digits);
-    }
-
-    len = thisVertices.length;
-    for (let i = 0; i < len; i++) {
-      vertices += thisVertices[i].toString(digits);
-    }
-
-    return `Polygon { vertices: ${vertices}, bounds: ${this.bounds.toString(digits)}, center: ${this.center.toString()}, lines: ${lines} }`;
-  }
-
 }
 
 /** @type {Polygon}
@@ -2500,7 +2425,7 @@ class Polygon {
  */
 Polygon.__cache = new Polygon();
 
-
+export
 class Curve {
   constructor() {
 
@@ -2739,7 +2664,7 @@ class Curve {
  */
 Curve.__cache = new Curve();
 
-
+export
 class Debug {
   constructor() {
     Debug.assert(false, 'Static class.');
@@ -2766,7 +2691,7 @@ Debug.logOnFail = true;
  * MessageDispatcher - Description
  * @unrestricted
  */
-
+export
 class MessageDispatcher {
   constructor() {
     // object of arrays
@@ -3121,7 +3046,7 @@ class MessageDispatcher {
 
 MessageDispatcher.mGlobalHandlers = {};
 
-
+export
 class Message {
   constructor() {
     /** @private @type {*} */
@@ -3250,7 +3175,7 @@ class Message {
   }
 }
 
-
+export
 class Time {
   constructor() {
   }
@@ -3283,7 +3208,7 @@ Time.mDeltaTime = 0;
 /** @type {number} */
 Time.mScale = 1;
 
-
+export
 class System extends MessageDispatcher {
   constructor(){
     super();
@@ -3368,7 +3293,7 @@ class System extends MessageDispatcher {
   {}
 }
 
-
+export
 class Viewport extends MessageDispatcher {
   /**
    * constructor - Description
@@ -3430,7 +3355,7 @@ class Viewport extends MessageDispatcher {
  * @unrestricted
  * @extends MessageDispatcher
  */
-
+export
 class Component extends MessageDispatcher {
   /**
    * constructor - description
@@ -3513,7 +3438,7 @@ Component.ID = 0;
  * @unrestricted
  * @extends MessageDispatcher
  */
-
+export
 class GameObject extends MessageDispatcher {
   constructor() {
     super();
@@ -4838,7 +4763,7 @@ GameObject.ID = 0;
 /**
  * @enum {number}
  */
-
+export
 var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
@@ -4853,7 +4778,7 @@ var DirtyFlag = {
 // source size - the original size of a texture to
 //
 
-
+export
 class Texture {
   /**
    * @param  {Image} nativeTexture description
@@ -5070,7 +4995,7 @@ Texture.__ID = 0;
  */
 Texture.MISSING_IMAGE_CACHE = null;
 
-
+export
 class AtlasTexture extends Texture {
   /**
    * constructor - Creates an Texture Atlas
@@ -5202,7 +5127,7 @@ class AtlasTexture extends Texture {
 // TODO: v2: parallel loading?
 //
 //
-
+export
 class Asset extends MessageDispatcher {
   /**
    * @param  {string} name description
@@ -5320,7 +5245,7 @@ class Asset extends MessageDispatcher {
   }
 }
 
-
+export
 class TextureAsset extends Asset {
   /**
    * constructor - Description
@@ -5372,7 +5297,7 @@ class TextureAsset extends Asset {
   }
 }
 
-
+export
 class JSONAsset extends Asset {
   /**
    * constructor
@@ -5398,7 +5323,7 @@ class JSONAsset extends Asset {
   }
 }
 
-
+export
 class AtlasTextureAsset extends Asset {
   /**
    * constructor
@@ -5457,7 +5382,7 @@ TODO:
   4. load progress
 */
 
-
+export
 class AssetManager extends MessageDispatcher {
   constructor() {
     super();
@@ -5617,7 +5542,7 @@ AssetManager.default = new AssetManager();
  * A blend mode enum.
  * @enum {string}
  */
-
+export
 var BlendMode = {
   AUTO: 'auto',
   NORMAL: 'source-over',
@@ -5639,7 +5564,7 @@ var BlendMode = {
   LUMINOSITY: 'luminosity'
 };
 
-
+export
 class NullDriver {
   /**
    * @param  {HTMLElement} containerElement description
@@ -5817,7 +5742,7 @@ class NullDriver {
   }
 }
 
-
+export
 class CanvasDriver extends NullDriver {
   /**
    * @param  {HTMLElement} containerElement description
@@ -6020,7 +5945,7 @@ class CanvasDriver extends NullDriver {
   }
 }
 
-
+export
 class DOMDriver extends NullDriver {
   /**
    * @param  {HTMLElement} containerElement description
@@ -6319,7 +6244,7 @@ class DOMDriver extends NullDriver {
   }
 }
 
-
+export
 class DisplayObject extends GameObject {
   constructor() {
     super();
@@ -6400,7 +6325,7 @@ class DisplayObject extends GameObject {
   }
 }
 
-
+export
 class TextInfo {
   /**
    * @param  {string=} name = 'sans-serif' description
@@ -6466,7 +6391,7 @@ TextInfo.FontAlign = {
   CENTER: 'center'
 };
 
-
+export
 class Sprite extends DisplayObject {
 
   /**
@@ -6577,7 +6502,7 @@ class Sprite extends DisplayObject {
   }
 }
 
-
+export
 class TextField extends DisplayObject {
   /**
    * @param  {string=} text = ''            description
@@ -6982,7 +6907,7 @@ class TextField extends DisplayObject {
   }
 }
 
-
+export
 class Device {
   constructor() {
     /** @type {Device} */
@@ -7070,7 +6995,7 @@ class Device {
  */
 Device.mInstance = null;
 
-
+export
 class Scatter {
   constructor() {}
 
@@ -7092,7 +7017,7 @@ class Scatter {
   getValueAt(t) {}
 }
 
-
+export
 class FloatScatter extends Scatter {
   constructor(min, max = undefined, ease = null) {
     super();
@@ -7128,7 +7053,7 @@ class FloatScatter extends Scatter {
   }
 }
 
-
+export
 class VectorScatter extends Scatter {
   constructor(minX, minY, maxX, maxY) {
     super();
@@ -7169,7 +7094,7 @@ class VectorScatter extends Scatter {
   }
 }
 
-
+export
 class FloatCurveScatter extends Scatter {
   /**
    * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
@@ -7196,7 +7121,7 @@ class FloatCurveScatter extends Scatter {
   }
 }
 
-
+export
 class VectorCurveScatter extends Scatter {
   /**
    * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
@@ -7225,7 +7150,7 @@ class VectorCurveScatter extends Scatter {
   }
 }
 
-
+export
 class Action {
 
   /**
@@ -7264,7 +7189,7 @@ class Action {
 /**
  * @extends Action
  */
-
+export
 class Acceleration extends Action {
   constructor(vectorScatter) {
     super();
@@ -7292,7 +7217,7 @@ class Acceleration extends Action {
 /**
  * @extends Action
  */
-
+export
 class AlphaOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -7317,7 +7242,7 @@ class AlphaOverLife extends Action {
 /**
  * @extends Action
  */
-
+export
 class ScaleOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -7342,7 +7267,7 @@ class ScaleOverLife extends Action {
 /**
  * @extends Action
  */
-
+export
 class RotationOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -7367,7 +7292,7 @@ class RotationOverLife extends Action {
 /**
  * @extends Action
  */
-
+export
 class TextureOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -7389,7 +7314,7 @@ class TextureOverLife extends Action {
   }
 }
 
-
+export
 class Initializer {
   /**
    * @param {Particle} particle
@@ -7399,7 +7324,7 @@ class Initializer {
   initialize(particle) {}
 }
 
-
+export
 class Life extends Initializer {
   /**
    * constructor - Description
@@ -7426,7 +7351,7 @@ class Life extends Initializer {
   }
 }
 
-
+export
 class Mass extends Initializer {
 
   /**
@@ -7454,7 +7379,7 @@ class Mass extends Initializer {
   }
 }
 
-
+export
 class Scale extends Initializer {
   /**
    * constructor - Description
@@ -7481,7 +7406,7 @@ class Scale extends Initializer {
   }
 }
 
-
+export
 class Velocity extends Initializer {
   /**
    * constructor - Description
@@ -7511,7 +7436,7 @@ class Velocity extends Initializer {
   }
 }
 
-
+export
 class Position extends Initializer {
 
   /**
@@ -7542,7 +7467,7 @@ class Position extends Initializer {
   }
 }
 
-
+export
 class Rotation extends Initializer {
   /**
    * constructor - Description
@@ -7569,7 +7494,7 @@ class Rotation extends Initializer {
   }
 }
 
-
+export
 class RandomTexture extends Initializer {
   /**
    * constructor - Description
@@ -7605,7 +7530,7 @@ var EmitterState = {
   FINISHED: 2
 };
 
-
+export
 class Particle {
   constructor() {
     this.reset();
@@ -7689,7 +7614,7 @@ class Particle {
   }
 }
 
-
+export
 class Emitter extends DisplayObject {
   constructor() {
     super();
@@ -8165,7 +8090,7 @@ class Emitter extends DisplayObject {
 /**
  * @enum {number}
  */
-
+export
 var Key = {
   A: 65,
   B: 66,
@@ -8267,7 +8192,7 @@ var Key = {
   SINGLE_QUOTE: 222,
 };
 
-
+export
 class KeyInfo {
 
   /**
@@ -8294,7 +8219,7 @@ Has to be static class.
 - check root object! add collider automatically? or do it on demand?
 */
 
-
+export
 class Input extends System {
   constructor() {
     super();
@@ -8747,7 +8672,7 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mo
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
 
-
+export
 class InputComponent extends Component {
   /**
    * @return {void}
@@ -8765,7 +8690,7 @@ class InputComponent extends Component {
   }
 }
 
-
+export
 class FPSComponent extends Component  {
   constructor() {
     super();
@@ -8789,7 +8714,7 @@ class FPSComponent extends Component  {
   }
 }
 
-
+export
 class MRComponent extends Component {
 
   /**
@@ -8876,7 +8801,7 @@ class MRComponent extends Component {
   }
 }
 
-
+export
 class Ease {
   constructor() {}
 
@@ -9298,7 +9223,7 @@ class Ease {
   }
 }
 
-
+export
 class Interpolation {
   constructor() {}
 
@@ -9430,7 +9355,7 @@ Interpolation.__factorial = (function() {
  * @unrestricted
  * @extends Component
  */
-
+export
 class Tween extends Component {
   /**
    * constructor - Description
@@ -9881,7 +9806,7 @@ class Tween extends Component {
   }
 }
 
-
+export
 class Animation {
   /**
    * constructor - Description
@@ -10089,7 +10014,7 @@ class Animation {
   }
 }
 
-
+export
 class AnimationController extends Component {
   constructor() {
     super();
@@ -10227,7 +10152,7 @@ class AnimationController extends Component {
 // ########:: ########: ##:::: ##:. ######:: ##::. ##:
 //........:::........::..:::::..:::......:::..::::..::
 
-
+export
 class Black extends MessageDispatcher {
 
   /**
@@ -10879,4 +10804,4 @@ class Black extends MessageDispatcher {
   }
 }
 
-//# sourceMappingURL=black-es6.js.map
+//# sourceMappingURL=black-es6-module.js.map

@@ -3182,29 +3182,31 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Assert = function () {
-  function Assert() {
-    _classCallCheck(this, Assert);
+var Debug = function () {
+  function Debug() {
+    _classCallCheck(this, Debug);
 
-    Assert.is(false, 'Static class');
+    Debug.assert(false, 'Static class.');
   }
 
-  _createClass(Assert, null, [{
-    key: 'is',
-    value: function is(value, message) {
+  _createClass(Debug, null, [{
+    key: 'assert',
+    value: function assert(value, message) {
       if (value === true) return;
 
-      if (Assert.logOnFail) console.error('[ASSERT]', message);
+      message = message == null ? 'Assertation failed.' : message;
 
-      if (Assert.throwOnFail) throw new Error(message);
+      if (Debug.logOnFail) console.error('[ASSERT]', message);
+
+      if (Debug.throwOnFail) throw new Error(message);
     }
   }]);
 
-  return Assert;
+  return Debug;
 }();
 
-Assert.throwOnFail = false;
-Assert.logOnFail = true;
+Debug.throwOnFail = false;
+Debug.logOnFail = true;
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3242,8 +3244,8 @@ var MessageDispatcher = function () {
     value: function on(name, callback) {
       var context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-      Assert.is(name !== null, 'name cannot be null.');
-      Assert.is(callback !== null, 'callback cannot be null.');
+      Debug.assert(name !== null, 'name cannot be null.');
+      Debug.assert(callback !== null, 'callback cannot be null.');
 
       // TODO: refactor, expore dispatching provider
       var filterIx = name.indexOf('@');
@@ -3331,7 +3333,7 @@ var MessageDispatcher = function () {
     key: 'post',
     value: function post(name) {
       // TODO: add wildcard support and name mask annotation support
-      Assert.is(name !== null, 'name cannot be null.');
+      Debug.assert(name !== null, 'name cannot be null.');
       // if (name === null || name.length === 0)
       //   throw new Error('Name cannot be null.');
 
@@ -3801,7 +3803,7 @@ var Time = function () {
       return Time.mScale;
     },
     set: function set(value) {
-      Assert.is(value >= 0, 'Time.scale must be >= 0.');
+      Debug.assert(value >= 0, 'Time.scale must be >= 0.');
 
       Time.mScale = value;
     }
@@ -3956,6 +3958,12 @@ var Viewport = function (_MessageDispatcher) {
     var _this = _possibleConstructorReturn(this, (Viewport.__proto__ || Object.getPrototypeOf(Viewport)).call(this));
 
     _this.mContainerElement = containerElement;
+
+    _this.mContainerElement.style.userSelect = 'none';
+    _this.mContainerElement.style.touchAction = 'none';
+    _this.mContainerElement.style.overflow = 'hidden';
+    _this.mContainerElement.style.cursor = 'auto';
+    _this.mContainerElement.style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
 
     var size = _this.mContainerElement.getBoundingClientRect();
 
@@ -5586,8 +5594,8 @@ var GameObject = function (_MessageDispatcher) {
   }, {
     key: 'findComponents',
     value: function findComponents(gameObject, type) {
-      Assert.is(gameObject !== null, 'gameObject cannot be null.');
-      Assert.is(type !== null, 'type cannot be null.');
+      Debug.assert(gameObject !== null, 'gameObject cannot be null.');
+      Debug.assert(type !== null, 'type cannot be null.');
 
       /** @type {Array<Component>} */
       var list = [];
@@ -11982,7 +11990,8 @@ var Animation = function () {
 
     _classCallCheck(this, Animation);
 
-    Assert.is(fps > 0, 'FPS must be greater than 0.');
+    Debug.assert(fps > 0, 'FPS must be greater than 0.');
+    assert(fps > 0, '');
 
     this.mController = controller;
 
@@ -12124,7 +12133,7 @@ var Animation = function () {
      */
     ,
     set: function set(value) {
-      Assert.is(value > 0, 'FPS must be greater than 0.');
+      Debug.assert(value > 0, 'FPS must be greater than 0.');
 
       this.mFPS = value;
       this.mFrameDuration = 1 / this.mFPS;
@@ -12240,7 +12249,7 @@ var AnimationController = function (_Component) {
   _createClass(AnimationController, [{
     key: 'get',
     value: function get(name) {
-      Assert.is(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
+      Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
       return this.mAnimations[name];
     }
@@ -12262,8 +12271,8 @@ var AnimationController = function (_Component) {
       var fps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
       var loop = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
-      Assert.is(textures.length > 0, 'Animation cannot be empty.');
-      Assert.is(fps > 0, 'FPS must be greater than 0.');
+      Debug.assert(textures.length > 0, 'Animation cannot be empty.');
+      Debug.assert(fps > 0, 'FPS must be greater than 0.');
 
       var anim = new Animation(this, name, textures, fps, loop);
       this.mAnimations[name] = anim;
@@ -12282,7 +12291,7 @@ var AnimationController = function (_Component) {
   }, {
     key: 'play',
     value: function play(name) {
-      Assert.is(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
+      Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
       this.mCurrentAnim = this.mAnimations[name];
 
@@ -12587,7 +12596,7 @@ var Black = function (_MessageDispatcher) {
   }, {
     key: '__bootVideo',
     value: function __bootVideo() {
-      if (this.mVideoName === 'canvas') this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'dom') this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'null' || this.mVideoName == null) this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else Assert.is(false, 'Unsupported video driver. Use canvas or dom.');
+      if (this.mVideoName === 'canvas') this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'dom') this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'null' || this.mVideoName == null) this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
     }
   }, {
     key: 'start',
