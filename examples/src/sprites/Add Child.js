@@ -28,7 +28,7 @@ class MyGame extends GameObject {
 
     this.sTopRight = new Sprite('rect');
     this.sTopRight.x = 960 - 55;
-    this.sTopRight.y = 10;
+    this.sTopRight.y = 0;
     this.view.addChild(this.sTopRight);
 
     this.sBottomLeft = new Sprite('rect');
