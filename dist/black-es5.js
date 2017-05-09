@@ -4481,6 +4481,8 @@ var GameObject = function (_MessageDispatcher) {
 
       if (this.root !== null) Black.instance.onComponentAdded(this, instance);
 
+      instance.onAdded(this);
+
       return instance;
     }
 
@@ -10693,8 +10695,6 @@ var MRComponent = function (_Component) {
 
     /** @type {number} */
     _this.mAspect = 0;
-
-    _this.setSize(_this.mWidth, _this.mHeight);
 
     Black.instance.viewport.on('resize', _this.__onResize, _this);
     return _this;

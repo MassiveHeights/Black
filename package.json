@@ -1,6 +1,6 @@
 {
   "name": "black",
-  "version": "0.1.4a",
+  "version": "0.0.10a",
   "description": "",
   "main": "src/Black.js",
   "directories": {},
@@ -10,7 +10,11 @@
     "test": "gulp && gulp test",
     "docs": "gulp docs"
   },
-  "author": "62316e",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MassiveHeights/Black.git"
+  },
+  "author": "Massive Heights",
   "license": "EULA",
   "devDependencies": {
     "babel-concat": "^1.0.3",

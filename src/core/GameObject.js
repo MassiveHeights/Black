@@ -302,6 +302,8 @@ class GameObject extends MessageDispatcher {
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
 
+    instance.onAdded(this);
+
     return instance;
   }
 

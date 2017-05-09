@@ -3812,6 +3812,8 @@ class GameObject extends MessageDispatcher {
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
 
+    instance.onAdded(this);
+
     return instance;
   }
 
@@ -8815,8 +8817,6 @@ class MRComponent extends Component {
 
     /** @type {number} */
     this.mAspect = 0;
-
-    this.setSize(this.mWidth, this.mHeight);
 
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
