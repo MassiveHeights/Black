@@ -1,6 +1,6 @@
 {
   "name": "black",
-  "version": "0.0.9a",
+  "version": "0.0.10a",
   "description": "",
   "main": "src/Black.js",
   "directories": {},
@@ -12,9 +12,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:MassiveHeights/Black.git"
+    "url": "https://github.com/MassiveHeights/Black.git"
   },
-  "author": "62316e",
+  "author": "Massive Heights",
   "license": "EULA",
   "devDependencies": {
     "babel-concat": "^1.0.3",
