@@ -404,9 +404,7 @@ class Tween extends Component {
     this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
-      if (this.mRepeatTimes > 0) {
-        this.mRepeatTimes -= 1;
-
+      if (--this.mRepeatTimes > 0) {
         if (this.mReverse) {
           for (let f in this.mValues) {
             [this.mValues[f], this.mValuesStart[f]] = [this.mValuesStart[f], this.mValues[f]];
