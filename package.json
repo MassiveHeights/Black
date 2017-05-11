@@ -6,7 +6,6 @@
   "directories": {},
   "scripts": {
     "start": "gulp",
-    "bundle": "gulp",
     "examples": "gulp examples",
     "test": "gulp && gulp test",
     "docs": "gulp docs"

@@ -58,5 +58,4 @@ gulp.task('docs', function(cb) {
   .pipe(jsdoc(config, cb));
 });
 
-gulp.task('bundle', ['build-es5', 'build-es6', 'build-es6-module']);
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
