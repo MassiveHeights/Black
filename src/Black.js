@@ -14,9 +14,9 @@ class Black extends MessageDispatcher {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  constructor(containerElementId, rootClass, videoDriverName = 'canvas') {
+  constructor(containerElementId, rootClass, videoDriverClass) {
     super();
 
     // Dirty GCC workaround
@@ -35,8 +35,8 @@ class Black extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {string} */
-    this.mVideoName = videoDriverName;
+    /** @type {function(new: VideoNullDriver)} */
+    this.mVideoDriverClass = videoDriverClass;
 
     /** @type {number} */
     this.mStageWidth = this.mContainerElement.clientWidth;
@@ -101,7 +101,7 @@ class Black extends MessageDispatcher {
     /** @type {Viewport} */
     this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /** @type {VideoNullDriver} */
     this.mVideo = null;
 
     /** @type {boolean} */
@@ -196,14 +196,7 @@ class Black extends MessageDispatcher {
   }
 
   __bootVideo() {
-    if (this.mVideoName === 'canvas')
-      this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom')
-      this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'null' || this.mVideoName == null)
-      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else
-      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+    this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
   start() {
@@ -397,7 +390,7 @@ class Black extends MessageDispatcher {
   /**
    * video - Description
    *
-   * @return {NullDriver} Description
+   * @return {VideoNullDriver} Description
    */
   get video() {
     return this.mVideo;

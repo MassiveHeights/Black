@@ -1,5 +1,5 @@
 /* @echo EXPORT */
-class DOMDriver extends NullDriver {
+class DOMDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description

@@ -16,7 +16,7 @@ class DisplayObject extends GameObject {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description

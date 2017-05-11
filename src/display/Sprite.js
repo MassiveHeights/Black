@@ -23,7 +23,7 @@ class Sprite extends DisplayObject {
   /**
    * @override
    * @private
-   * @param {NullDriver} video
+   * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
