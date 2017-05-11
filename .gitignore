@@ -51,6 +51,4 @@ npm*.log.*
 
 # BLACK #
 #########
-examples/index.html
-examples-es5
 doc
