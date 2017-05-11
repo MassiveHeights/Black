@@ -16,6 +16,14 @@ class Debug {
     if (Debug.throwOnFail)
       throw new Error(message);
   }
+
+  static info(...message) {
+    console.info(...message);
+  }
+
+  static warn(...message) {
+    console.warn(...message);
+  }
 }
 
 Debug.throwOnFail = false;
