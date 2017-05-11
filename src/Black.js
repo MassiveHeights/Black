@@ -114,7 +114,7 @@ class Black extends MessageDispatcher {
     this.mPauseOnHide = true;
 
     /** @type {boolean} */
-    this.mPauseOnBlur = false;
+    this.mPauseOnBlur = true;
 
     /** @type {Object<string, Array>} */
     this.mTagCache = {};
