@@ -43,12 +43,12 @@ gulp.task('build-es6-module', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-examples', ['bundle'], function() {
-  return gulp.src('./dist/*.*')
+gulp.task('copy-examples', ['build-es6'], function() {
+  return gulp.src('./dist/black-es6.js')
     .pipe(gulp.dest('../Black-Examples/node_modules/black/dist/'));
 });
 
-gulp.task('examples', [], function() {
+gulp.task('examples', ['build-es6'], function() {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
 });
 
