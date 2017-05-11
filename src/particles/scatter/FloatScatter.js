@@ -3,8 +3,10 @@ class FloatScatter extends Scatter {
   constructor(min, max = undefined, ease = null) {
     super();
 
-    this.mMin = min;
-    this.mMax = max == null ? min : max;
+    // NOTE: dont make us @private @member
+    this.min = min;
+    this.max = max == null ? min : max;
+    
     this.ease = ease;
   }
 
@@ -15,7 +17,7 @@ class FloatScatter extends Scatter {
    * @return {number}
    */
   getValue() {
-    return Math.random() * (this.mMax - this.mMin) + this.mMin;
+    return Math.random() * (this.max - this.min) + this.min;
   }
 
 
@@ -30,6 +32,6 @@ class FloatScatter extends Scatter {
     if (this.ease !== null)
       t = this.ease(t);
 
-    return this.mMin + t * (this.mMax - this.mMin);
+    return this.min + t * (this.max - this.min);
   }
 }

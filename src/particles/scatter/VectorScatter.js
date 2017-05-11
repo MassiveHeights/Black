@@ -3,9 +3,9 @@ class VectorScatter extends Scatter {
   constructor(minX, minY, maxX, maxY) {
     super();
 
+    // NOTE: dont make us @private @member
     this.minX = minX;
     this.minY = minY;
-
     this.maxX = maxX;
     this.maxY = maxY;
   }
