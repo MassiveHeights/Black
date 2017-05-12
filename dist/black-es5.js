@@ -591,7 +591,7 @@ var Matrix = function () {
   }
 
   /**
-     * @param  {number} a  description
+    * @param  {number} a  description
    * @param  {number} b  description
    * @param  {number} c  description
    * @param  {number} d  description
@@ -3200,6 +3200,20 @@ var Debug = function () {
 
       if (Debug.throwOnFail) throw new Error(message);
     }
+  }, {
+    key: 'info',
+    value: function info() {
+      var _console;
+
+      (_console = console).info.apply(_console, arguments);
+    }
+  }, {
+    key: 'warn',
+    value: function warn() {
+      var _console2;
+
+      (_console2 = console).warn.apply(_console2, arguments);
+    }
   }]);
 
   return Debug;
@@ -4671,7 +4685,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * __render - Description
      *
-     * @param {NullDriver} video           Description
+     * @param {VideoNullDriver} video           Description
      * @param {number} time            Description
      * @param {number} parentAlpha     Description
      * @param {string} parentBlendMode Description
@@ -4694,7 +4708,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * onRender - Description
      *
-     * @param {NullDriver} video Description
+     * @param {VideoNullDriver} video Description
      * @param {number} time  Description
      *
      * @return {void} Description
@@ -6712,14 +6726,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var NullDriver = function () {
+var VideoNullDriver = function () {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
    * @param  {number} height           description
    */
-  function NullDriver(containerElement, width, height) {
-    _classCallCheck(this, NullDriver);
+  function VideoNullDriver(containerElement, width, height) {
+    _classCallCheck(this, VideoNullDriver);
 
     /** @type {string} */
     this.mGlobalBlendMode = 'auto';
@@ -6747,7 +6761,7 @@ var NullDriver = function () {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  _createClass(NullDriver, [{
+  _createClass(VideoNullDriver, [{
     key: '__onResize',
     value: function __onResize(msg, rect) {
       var w = this.mContainerElement.clientWidth;
@@ -6926,9 +6940,9 @@ var NullDriver = function () {
     }
   }]);
 
-  return NullDriver;
+  return VideoNullDriver;
 }();
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6940,8 +6954,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasDriver = function (_NullDriver) {
-  _inherits(CanvasDriver, _NullDriver);
+var CanvasDriver = function (_VideoNullDriver) {
+  _inherits(CanvasDriver, _VideoNullDriver);
 
   /**
    * @param  {HTMLElement} containerElement description
@@ -6971,10 +6985,10 @@ var CanvasDriver = function (_NullDriver) {
 
 
   _createClass(CanvasDriver, [{
-    key: "__createCanvas",
+    key: '__createCanvas',
     value: function __createCanvas() {
-      var cvs = /** @type {HTMLCanvasElement} */document.createElement("canvas");
-      cvs.id = "canvas";
+      var cvs = /** @type {HTMLCanvasElement} */document.createElement('canvas');
+      cvs.id = 'canvas';
       this.mContainerElement.appendChild(cvs);
 
       this.mCtx = /** @type {CanvasRenderingContext2D} */cvs.getContext('2d');
@@ -6982,9 +6996,9 @@ var CanvasDriver = function (_NullDriver) {
       this.mCtx.canvas.height = this.mClientHeight;
     }
   }, {
-    key: "__onResize",
+    key: '__onResize',
     value: function __onResize(msg, rect) {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "__onResize", this).call(this, msg, rect);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), '__onResize', this).call(this, msg, rect);
 
       this.mCtx.canvas.width = this.mClientWidth;
       this.mCtx.canvas.height = this.mClientHeight;
@@ -6999,9 +7013,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "setTransform",
+    key: 'setTransform',
     value: function setTransform(m) {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "setTransform", this).call(this, m);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'setTransform', this).call(this, m);
 
       var v = m.value;
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
@@ -7016,7 +7030,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "drawImage",
+    key: 'drawImage',
 
 
     /**
@@ -7049,13 +7063,13 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "drawText",
+    key: 'drawText',
     value: function drawText(text, style, bounds, textWidth, textHeight) {
       this.mCtx.beginPath();
       this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
       this.mCtx.clip();
 
-      this.mCtx.font = style.style + " " + style.weight + " " + style.size + "px \"" + style.name + "\"";
+      this.mCtx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
       this.mCtx.fillStyle = this.hexColorToString(style.color);
 
       var x = 0;
@@ -7079,7 +7093,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "clear",
+    key: 'clear',
     value: function clear() {
       this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
@@ -7091,9 +7105,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "beginFrame",
+    key: 'beginFrame',
     value: function beginFrame() {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "beginFrame", this).call(this);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'beginFrame', this).call(this);
 
       this.clear();
       this.mCtx.save();
@@ -7106,9 +7120,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "endFrame",
+    key: 'endFrame',
     value: function endFrame() {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "endFrame", this).call(this);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'endFrame', this).call(this);
 
       this.mCtx.restore();
     }
@@ -7122,7 +7136,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "getTextureFromCanvas",
+    key: 'getTextureFromCanvas',
     value: function getTextureFromCanvas(canvas) {
       return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
     }
@@ -7137,7 +7151,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "save",
+    key: 'save',
     value: function save(gameObject) {
       this.mCtx.save();
     }
@@ -7149,12 +7163,12 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "restore",
+    key: 'restore',
     value: function restore() {
       this.mCtx.restore();
     }
   }, {
-    key: "globalAlpha",
+    key: 'globalAlpha',
     set: function set(value) {
       this.mGlobalAlpha = value;
       this.mCtx.globalAlpha = value;
@@ -7169,7 +7183,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "globalBlendMode",
+    key: 'globalBlendMode',
     set: function set(blendMode) {
       if (blendMode === BlendMode.AUTO) return;
 
@@ -7179,7 +7193,7 @@ var CanvasDriver = function (_NullDriver) {
   }]);
 
   return CanvasDriver;
-}(NullDriver);
+}(VideoNullDriver);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7190,8 +7204,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DOMDriver = function (_NullDriver) {
-  _inherits(DOMDriver, _NullDriver);
+var DOMDriver = function (_VideoNullDriver) {
+  _inherits(DOMDriver, _VideoNullDriver);
 
   /**
    * @param  {HTMLElement} containerElement description
@@ -7511,7 +7525,7 @@ var DOMDriver = function (_NullDriver) {
   }]);
 
   return DOMDriver;
-}(NullDriver);
+}(VideoNullDriver);
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7544,7 +7558,7 @@ var DisplayObject = function (_GameObject) {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -7634,40 +7648,40 @@ var TextInfo =
  * @param  {number=} strokeColor = '0xffffff' description
  */
 function TextInfo() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
-    var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
-    var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
-    var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
-    var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
-    var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
-    var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
-    var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
+  var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
+  var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
+  var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
+  var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
+  var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
+  var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+  var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
 
-    _classCallCheck(this, TextInfo);
+  _classCallCheck(this, TextInfo);
 
-    /** @type {string} */
-    this.name = name;
+  /** @type {string} */
+  this.name = name;
 
-    /** @type {number} */
-    this.size = size;
+  /** @type {number} */
+  this.size = size;
 
-    /** @type {number} */
-    this.color = color;
+  /** @type {number} */
+  this.color = color;
 
-    /** @type {TextInfo.FontStyle} */
-    this.style = style;
+  /** @type {TextInfo.FontStyle} */
+  this.style = style;
 
-    /** @type {TextInfo.FontWeight} */
-    this.weight = weight;
+  /** @type {TextInfo.FontWeight} */
+  this.weight = weight;
 
-    /** @type {TextInfo.FontAlign} */
-    this.align = align;
+  /** @type {TextInfo.FontAlign} */
+  this.align = align;
 
-    /** @type {number} */
-    this.strokeThickness = strokeThickness;
+  /** @type {number} */
+  this.strokeThickness = strokeThickness;
 
-    /** @type {number} */
-    this.strokeColor = strokeColor;
+  /** @type {number} */
+  this.strokeColor = strokeColor;
 };
 
 /**
@@ -7676,26 +7690,26 @@ function TextInfo() {
 
 
 TextInfo.FontStyle = {
-    NORMAL: 'normal',
-    ITALIC: 'italic'
+  NORMAL: 'normal',
+  ITALIC: 'italic'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontWeight = {
-    NORMAL: '400',
-    BOLD: '700',
-    SUPERBOLD: '800'
+  NORMAL: '400',
+  BOLD: '700',
+  SUPERBOLD: '800'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontAlign = {
-    LEFT: 'left',
-    RIGHT: 'right',
-    CENTER: 'center'
+  LEFT: 'left',
+  RIGHT: 'right',
+  CENTER: 'center'
 };
 "use strict";
 
@@ -7736,7 +7750,7 @@ var Sprite = function (_DisplayObject) {
   /**
    * @override
    * @private
-   * @param {NullDriver} video
+   * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
@@ -7901,7 +7915,7 @@ var TextField = function (_DisplayObject) {
   /**
    * __render - Description
    * @private @override
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -8471,10 +8485,12 @@ var FloatScatter = function (_Scatter) {
 
     _classCallCheck(this, FloatScatter);
 
+    // NOTE: dont make us @private @member
     var _this = _possibleConstructorReturn(this, (FloatScatter.__proto__ || Object.getPrototypeOf(FloatScatter)).call(this));
 
-    _this.mMin = min;
-    _this.mMax = max == null ? min : max;
+    _this.min = min;
+    _this.max = max == null ? min : max;
+
     _this.ease = ease;
     return _this;
   }
@@ -8489,7 +8505,7 @@ var FloatScatter = function (_Scatter) {
   _createClass(FloatScatter, [{
     key: "getValue",
     value: function getValue() {
-      return Math.random() * (this.mMax - this.mMin) + this.mMin;
+      return Math.random() * (this.max - this.min) + this.min;
     }
 
     /**
@@ -8505,7 +8521,7 @@ var FloatScatter = function (_Scatter) {
     value: function getValueAt(t) {
       if (this.ease !== null) t = this.ease(t);
 
-      return this.mMin + t * (this.mMax - this.mMin);
+      return this.min + t * (this.max - this.min);
     }
   }]);
 
@@ -8527,11 +8543,11 @@ var VectorScatter = function (_Scatter) {
   function VectorScatter(minX, minY, maxX, maxY) {
     _classCallCheck(this, VectorScatter);
 
+    // NOTE: dont make us @private @member
     var _this = _possibleConstructorReturn(this, (VectorScatter.__proto__ || Object.getPrototypeOf(VectorScatter)).call(this));
 
     _this.minX = minX;
     _this.minY = minY;
-
     _this.maxX = maxX;
     _this.maxY = maxY;
     return _this;
@@ -9323,96 +9339,96 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Particle = function () {
-    function Particle() {
-        _classCallCheck(this, Particle);
+  function Particle() {
+    _classCallCheck(this, Particle);
 
-        this.reset();
+    this.reset();
+  }
+
+  _createClass(Particle, [{
+    key: "reset",
+    value: function reset() {
+      /** @type {number} */
+      this.textureIndex = 0;
+
+      /** @type {number} */
+      this.scale = 1;
+
+      /** @type {number} */
+      this.alpha = 1;
+
+      /** @type {number} */
+      this.life = 1;
+
+      /** @type {number} */
+      this.age = 0;
+
+      /** @type {number} */
+      this.energy = this.age / this.life;
+
+      /** @type {number} */
+      this.mass = 0;
+
+      /** @type {number} */
+      this.x = 0;
+
+      /** @type {number} */
+      this.y = 0;
+
+      /** @type {number} */
+      this.r = 0;
+
+      /** @type {number} */
+      this.vx = 0;
+
+      /** @type {number} */
+      this.vy = 0;
+
+      /** @type {number} */
+      this.ax = 0;
+
+      /** @type {number} */
+      this.ay = 0;
     }
 
-    _createClass(Particle, [{
-        key: "reset",
-        value: function reset() {
-            /** @type {number} */
-            this.textureIndex = 0;
+    /**
+     * update
+     *
+     * @param {number} dt
+     *
+     * @return {void}
+     */
 
-            /** @type {number} */
-            this.scale = 1;
+  }, {
+    key: "update",
+    value: function update(dt) {
+      if (this.life <= 0) {
+        this.life = 0;
+        return;
+      }
 
-            /** @type {number} */
-            this.alpha = 1;
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
 
-            /** @type {number} */
-            this.life = 1;
+      if (this.mass > 0) {
+        this.ax *= 1 / this.mass;
+        this.ay *= 1 / this.mass;
+      }
 
-            /** @type {number} */
-            this.age = 0;
+      this.vx += this.ax * dt;
+      this.vy += this.ay * dt;
 
-            /** @type {number} */
-            this.energy = this.age / this.life;
+      this.ax = 0;
+      this.ay = 0;
 
-            /** @type {number} */
-            this.mass = 0;
+      this.life -= dt;
+      this.age += dt;
 
-            /** @type {number} */
-            this.x = 0;
+      this.energy = this.age / (this.age + this.life);
+    }
+  }]);
 
-            /** @type {number} */
-            this.y = 0;
-
-            /** @type {number} */
-            this.r = 0;
-
-            /** @type {number} */
-            this.vx = 0;
-
-            /** @type {number} */
-            this.vy = 0;
-
-            /** @type {number} */
-            this.ax = 0;
-
-            /** @type {number} */
-            this.ay = 0;
-        }
-
-        /**
-         * update
-         *
-         * @param {number} dt
-         *
-         * @return {void}
-         */
-
-    }, {
-        key: "update",
-        value: function update(dt) {
-            if (this.life <= 0) {
-                this.life = 0;
-                return;
-            }
-
-            this.x += this.vx * dt;
-            this.y += this.vy * dt;
-
-            if (this.mass > 0) {
-                this.ax *= 1 / this.mass;
-                this.ay *= 1 / this.mass;
-            }
-
-            this.vx += this.ax * dt;
-            this.vy += this.ay * dt;
-
-            this.ax = 0;
-            this.ay = 0;
-
-            this.life -= dt;
-            this.age += dt;
-
-            this.energy = this.age / (this.age + this.life);
-        }
-    }]);
-
-    return Particle;
+  return Particle;
 }();
 'use strict';
 
@@ -9462,7 +9478,7 @@ var Emitter = function (_DisplayObject) {
     _this.mEmitCount = new FloatScatter(10);
 
     /** @type {FloatScatter} */
-    _this.mEmitNumRepeats = new FloatScatter(10);
+    _this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /** @type {number} */
     _this.mEmitNumRepeatsLeft = _this.mEmitNumRepeats.getValue();
@@ -9567,6 +9583,7 @@ var Emitter = function (_DisplayObject) {
           } else {
             this.mEmitIntervalLeft -= dt;
             this.mNextUpdateAt = t + this.mEmitIntervalLeft;
+            //console.log(this.mEmitIntervalLeft);
 
             // reset interval
             if (this.mEmitIntervalLeft <= 0) this.mEmitIntervalLeft = this.mEmitInterval.getValue();
@@ -10134,6 +10151,8 @@ var Input = function (_System) {
     /** @type {boolean} */
     _this.mIsPointerDown = false;
 
+    _this.mNeedUpEvent = false;
+
     /** @type {Array<InputComponent>} */
     _this.mInputListeners = [];
     return _this;
@@ -10145,18 +10164,19 @@ var Input = function (_System) {
       var _this2 = this;
 
       this.mKeyEventList = Input.mKeyEventList;
+      //debugger;
 
-      if (window.PointerEvent) this.mEventList = Input.mPointerEventList;
-      // else if (window.MSPointerEvent)
-      //   this.mEventList = Input.mMSPointerEventList;
-      else if (Device.isTouch && Device.isMobile) this.mEventList = Input.mTouchEventList;else this.mEventList = Input.mMouseEventList;
+      if (window.PointerEvent) this.mEventList = Input.mPointerEventList;else if (Device.isTouch && Device.isMobile) this.mEventList = Input.mTouchEventList;else this.mEventList = Input.mMouseEventList;
 
-      // TODO: handle enter, cancel events too
       for (var i = 0; i < 6; i++) {
         this.mDom.addEventListener(this.mEventList[i], function (e) {
           return _this2.__onPointerEvent(e);
         }, false);
-      }for (var _i = 0; _i < this.mKeyEventList.length; _i++) {
+      }document.addEventListener(this.mEventList[Input.POINTER_UP], function (e) {
+        return _this2.__onPointerEventDoc(e);
+      }, false);
+
+      for (var _i = 0; _i < this.mKeyEventList.length; _i++) {
         document.addEventListener(this.mKeyEventList[_i], function (e) {
           return _this2.__onKeyEvent(e);
         }, false);
@@ -10173,11 +10193,9 @@ var Input = function (_System) {
     }
 
     /**
-     * __onKeyEvent - Description
+     * @param {Event} e
      *
-     * @param {Event} e Description
-     *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -10186,10 +10204,18 @@ var Input = function (_System) {
       this.mKeyQueue.push(e);
       return true;
     }
+  }, {
+    key: '__onPointerEventDoc',
+    value: function __onPointerEventDoc(e) {
+      var over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+      if (over === false && this.mNeedUpEvent === true) {
+        this.mNeedUpEvent = false;
+        this.__pushEvent(e);
+      }
+    }
 
     /**
-     * __onPointerEvent - Description
-     *
      * @param {Event} e Description
      *
      * @return {boolean} Description
@@ -10200,6 +10226,13 @@ var Input = function (_System) {
     value: function __onPointerEvent(e) {
       e.preventDefault();
 
+      this.__pushEvent(e);
+
+      return true;
+    }
+  }, {
+    key: '__pushEvent',
+    value: function __pushEvent(e) {
       var /** @type {Vector|null} */p = null;
       if (e.type.indexOf('touch') === 0) p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */e);else p = this.__getPointerPos(this.mDom, e);
 
@@ -10211,8 +10244,6 @@ var Input = function (_System) {
         x: p.x,
         y: p.y
       });
-
-      return true;
     }
 
     /**
@@ -10249,8 +10280,8 @@ var Input = function (_System) {
 
       /** @type {Touch} */
       var touch = evt.changedTouches[0]; // ios? what about android?
-      var x = touch.pageX;
-      var y = touch.pageY;
+      var x = touch.clientX;
+      var y = touch.clientY;
 
       var scaleX = canvas.clientWidth / rect.width;
       var scaleY = canvas.clientHeight / rect.height;
@@ -10334,8 +10365,6 @@ var Input = function (_System) {
       if (component.constructor !== InputComponent) return;
 
       this.__addListener([component]);
-      //this.mInputListeners.push(/** @type {InputComponent} */ (component));
-      //this.__sortListeners();
     }
 
     /**
@@ -10378,6 +10407,8 @@ var Input = function (_System) {
         var ix = this.mEventList.indexOf(nativeEvent.e.type);
         var fnName = Input.mInputEventsLookup[ix];
 
+        if (fnName === 'pointerDown') this.mNeedUpEvent = true;
+
         pointerPos.set(nativeEvent.x, nativeEvent.y);
 
         /** @type {InputComponent|null} */
@@ -10399,7 +10430,6 @@ var Input = function (_System) {
           }
 
           // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-
           if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
 
           if (currentComponent.mPointerInside === false) {
@@ -10410,7 +10440,6 @@ var Input = function (_System) {
           currentComponent.gameObject.post('~' + fnName);
         }
 
-        //console.log(fnName);
         this.post(fnName);
       }
 
@@ -10558,28 +10587,22 @@ Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 /** @type {Array<string>}
  *  @const
  */
-
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
-
-/** @type {Array<string>}
- *  @const
- */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointercancel', 'pointerenter', 'pointerleave'];
-
-// /** @type {Array<string>}
-//  *  @const
-//  */
-// Input.mMSPointerEventList = ['MSPointerMove', 'MSPointerDown', 'MSPointerUp', 'MSPointerCancel', 'MSPointerEnter', 'MSPointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mouseenter', 'mouseleave'];
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10589,27 +10612,27 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var InputComponent = function (_Component) {
-    _inherits(InputComponent, _Component);
+  _inherits(InputComponent, _Component);
 
-    /**
-     * @return {void}
-     */
-    function InputComponent() {
-        _classCallCheck(this, InputComponent);
+  /**
+   * @return {void}
+   */
+  function InputComponent() {
+    _classCallCheck(this, InputComponent);
 
-        /** @type {boolean} */
-        var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
+    /** @type {boolean} */
+    var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
 
-        _this.touchable = true;
+    _this.touchable = true;
 
-        /* INTERNAL */
+    /* INTERNAL */
 
-        /** @type {boolean} */
-        _this.mPointerInside = false;
-        return _this;
-    }
+    /** @type {boolean} */
+    _this.mPointerInside = false;
+    return _this;
+  }
 
-    return InputComponent;
+  return InputComponent;
 }(Component);
 'use strict';
 
@@ -11785,9 +11808,7 @@ var Tween = function (_Component) {
       this.post('update', this.gameObject);
 
       if (this.mElapsed === 1) {
-        if (this.mRepeatTimes > 0) {
-          this.mRepeatTimes -= 1;
-
+        if (this.mRepeatTimes-- > 0) {
           if (this.mReverse) {
             for (var _f2 in this.mValues) {
               var _ref = [this.mValuesStart[_f2], this.mValues[_f2]];
@@ -12395,11 +12416,9 @@ var Black = function (_MessageDispatcher) {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  function Black(containerElementId, rootClass) {
-    var videoDriverName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
-
+  function Black(containerElementId, rootClass, videoDriverClass) {
     _classCallCheck(this, Black);
 
     // Dirty GCC workaround
@@ -12419,8 +12438,8 @@ var Black = function (_MessageDispatcher) {
 
     if (!_this.mContainerElement) throw new Error('Container element was not found');
 
-    /** @type {string} */
-    _this.mVideoName = videoDriverName;
+    /** @type {function(new: VideoNullDriver)} */
+    _this.mVideoDriverClass = videoDriverClass;
 
     /** @type {number} */
     _this.mStageWidth = _this.mContainerElement.clientWidth;
@@ -12485,7 +12504,7 @@ var Black = function (_MessageDispatcher) {
     /** @type {Viewport} */
     _this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /** @type {VideoNullDriver} */
     _this.mVideo = null;
 
     /** @type {boolean} */
@@ -12498,7 +12517,7 @@ var Black = function (_MessageDispatcher) {
     _this.mPauseOnHide = true;
 
     /** @type {boolean} */
-    _this.mPauseOnBlur = false;
+    _this.mPauseOnBlur = true;
 
     /** @type {Object<string, Array>} */
     _this.mTagCache = {};
@@ -12508,6 +12527,9 @@ var Black = function (_MessageDispatcher) {
 
     /** @type {GameObject|null} */
     _this.mRoot = null;
+
+    /** @type {boolean} */
+    _this.mEnableFixedTimeStep = false;
     return _this;
   }
 
@@ -12596,7 +12618,7 @@ var Black = function (_MessageDispatcher) {
   }, {
     key: '__bootVideo',
     value: function __bootVideo() {
-      if (this.mVideoName === 'canvas') this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'dom') this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'null' || this.mVideoName == null) this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+      this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
     }
   }, {
     key: 'start',
@@ -12633,6 +12655,9 @@ var Black = function (_MessageDispatcher) {
           self.__update(x);
         });
       });
+
+      // TODO: show only when needed, eg required by any system
+      if (this.mEnableFixedTimeStep === false) Debug.warn('Fixed time-step is disabled, some systems may not work.');
     }
   }, {
     key: 'stop',
@@ -12695,15 +12720,18 @@ var Black = function (_MessageDispatcher) {
         this.mCurrentTime = timestamp;
         Time.mDeltaTime = dt;
 
-        while (this.mFrameAccum >= this.mSimulationTimestep) {
-          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
+        if (this.mEnableFixedTimeStep === true) {
+          while (this.mFrameAccum >= this.mSimulationTimestep) {
+            this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
 
-          this.mFrameAccum -= this.mSimulationTimestep;
+            this.mFrameAccum -= this.mSimulationTimestep;
 
-          if (++this.mNumUpdateSteps >= 60 * 3) {
-            console.log('[BLACK]: Not enough time to calculate update logic.');
-            this.mIsPanic = true;
-            break;
+            if (++this.mNumUpdateSteps >= 60 * 3) {
+              // 3 seconds window
+              console.log('[BLACK]: Not enough time to calculate update logic.');
+              this.mIsPanic = true;
+              break;
+            }
           }
         }
 
@@ -12932,7 +12960,7 @@ var Black = function (_MessageDispatcher) {
     /**
      * video - Description
      *
-     * @return {NullDriver} Description
+     * @return {VideoNullDriver} Description
      */
 
   }, {
@@ -13081,15 +13109,27 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * videoName
+     * When disabled the physics system and other systems may not work.
      *
-     * @return {string}
+     * @return {boolean}
      */
 
   }, {
-    key: 'videoName',
+    key: 'enableFixedTimeStep',
     get: function get() {
-      return this.mVideoName;
+      return this.mEnableFixedTimeStep;
+    }
+
+    /**
+     * enableFixedTimeStep
+     *
+     * @param {boolean} value
+     *
+     * @return {void}
+     */
+    ,
+    set: function set(value) {
+      this.mEnableFixedTimeStep = value;
     }
   }]);
 
