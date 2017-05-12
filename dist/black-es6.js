@@ -2757,6 +2757,14 @@ class Debug {
     if (Debug.throwOnFail)
       throw new Error(message);
   }
+
+  static info(...message) {
+    console.info(...message);
+  }
+
+  static warn(...message) {
+    console.warn(...message);
+  }
 }
 
 Debug.throwOnFail = false;
@@ -4032,7 +4040,7 @@ class GameObject extends MessageDispatcher {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -4052,7 +4060,7 @@ class GameObject extends MessageDispatcher {
   /**
    * onRender - Description
    *
-   * @param {NullDriver} video Description
+   * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
    * @return {void} Description
@@ -5642,7 +5650,7 @@ var BlendMode = {
 };
 
 
-class NullDriver {
+class VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -5820,7 +5828,7 @@ class NullDriver {
 }
 
 
-class CanvasDriver extends NullDriver {
+class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -5844,8 +5852,8 @@ class CanvasDriver extends NullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
-    cvs.id = "canvas";
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.id = 'canvas';
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
@@ -6023,7 +6031,7 @@ class CanvasDriver extends NullDriver {
 }
 
 
-class DOMDriver extends NullDriver {
+class DOMDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -6339,7 +6347,7 @@ class DisplayObject extends GameObject {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -6493,7 +6501,7 @@ class Sprite extends DisplayObject {
   /**
    * @override
    * @private
-   * @param {NullDriver} video
+   * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
@@ -6629,7 +6637,7 @@ class TextField extends DisplayObject {
   /**
    * __render - Description
    * @private @override
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -7099,8 +7107,10 @@ class FloatScatter extends Scatter {
   constructor(min, max = undefined, ease = null) {
     super();
 
-    this.mMin = min;
-    this.mMax = max == null ? min : max;
+    // NOTE: dont make us @private @member
+    this.min = min;
+    this.max = max == null ? min : max;
+    
     this.ease = ease;
   }
 
@@ -7111,7 +7121,7 @@ class FloatScatter extends Scatter {
    * @return {number}
    */
   getValue() {
-    return Math.random() * (this.mMax - this.mMin) + this.mMin;
+    return Math.random() * (this.max - this.min) + this.min;
   }
 
 
@@ -7126,7 +7136,7 @@ class FloatScatter extends Scatter {
     if (this.ease !== null)
       t = this.ease(t);
 
-    return this.mMin + t * (this.mMax - this.mMin);
+    return this.min + t * (this.max - this.min);
   }
 }
 
@@ -7135,9 +7145,9 @@ class VectorScatter extends Scatter {
   constructor(minX, minY, maxX, maxY) {
     super();
 
+    // NOTE: dont make us @private @member
     this.minX = minX;
     this.minY = minY;
-
     this.maxX = maxX;
     this.maxY = maxY;
   }
@@ -7724,7 +7734,7 @@ class Emitter extends DisplayObject {
     this.mEmitCount = new FloatScatter(10);
 
     /** @type {FloatScatter} */
-    this.mEmitNumRepeats = new FloatScatter(10);
+    this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /** @type {number} */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
@@ -7822,6 +7832,7 @@ class Emitter extends DisplayObject {
         else {
           this.mEmitIntervalLeft -= dt;
           this.mNextUpdateAt = t + this.mEmitIntervalLeft;
+          //console.log(this.mEmitIntervalLeft);
 
           // reset interval
           if (this.mEmitIntervalLeft <= 0)
@@ -8330,26 +8341,27 @@ class Input extends System {
     /** @type {boolean} */
     this.mIsPointerDown = false;
 
+    this.mNeedUpEvent = false;
+
     /** @type {Array<InputComponent>} */
     this.mInputListeners = [];
   }
 
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
+    //debugger;
 
     if (window.PointerEvent)
       this.mEventList = Input.mPointerEventList;
-    // else if (window.MSPointerEvent)
-    //   this.mEventList = Input.mMSPointerEventList;
     else if (Device.isTouch && Device.isMobile)
       this.mEventList = Input.mTouchEventList;
     else
       this.mEventList = Input.mMouseEventList;
 
-    // TODO: handle enter, cancel events too
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
+    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
@@ -8365,21 +8377,26 @@ class Input extends System {
 
 
   /**
-   * __onKeyEvent - Description
+   * @param {Event} e
    *
-   * @param {Event} e Description
-   *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onKeyEvent(e) {
     this.mKeyQueue.push(e);
     return true;
   }
 
+  __onPointerEventDoc(e) {
+    let over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+    if (over === false && this.mNeedUpEvent === true) {
+      this.mNeedUpEvent = false;
+      this.__pushEvent(e);
+    }
+  }
+
 
   /**
-   * __onPointerEvent - Description
-   *
    * @param {Event} e Description
    *
    * @return {boolean} Description
@@ -8387,6 +8404,12 @@ class Input extends System {
   __onPointerEvent(e) {
     e.preventDefault();
 
+    this.__pushEvent(e);
+
+    return true;
+  }
+
+  __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
       p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */ (e));
@@ -8401,8 +8424,6 @@ class Input extends System {
       x: p.x,
       y: p.y
     });
-
-    return true;
   }
 
 
@@ -8421,7 +8442,6 @@ class Input extends System {
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
 
-
   /**
    * __getTouchPos - Description
    *
@@ -8435,8 +8455,8 @@ class Input extends System {
 
     /** @type {Touch} */
     let touch = evt.changedTouches[0]; // ios? what about android?
-    let x = touch.pageX;
-    let y = touch.pageY;
+    let x = touch.clientX;
+    let y = touch.clientY;
 
     let scaleX = canvas.clientWidth / rect.width;
     let scaleY = canvas.clientHeight / rect.height;
@@ -8517,8 +8537,6 @@ class Input extends System {
       return;
 
     this.__addListener([component]);
-    //this.mInputListeners.push(/** @type {InputComponent} */ (component));
-    //this.__sortListeners();
   }
 
 
@@ -8558,6 +8576,9 @@ class Input extends System {
       let ix = this.mEventList.indexOf(nativeEvent.e.type);
       let fnName = Input.mInputEventsLookup[ix];
 
+      if (fnName === 'pointerDown')
+        this.mNeedUpEvent = true;
+
       pointerPos.set(nativeEvent.x, nativeEvent.y);
 
       /** @type {InputComponent|null} */
@@ -8579,7 +8600,6 @@ class Input extends System {
         }
 
         // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-
         if (ix === Input.POINTER_DOWN)
           this.mIsPointerDown = true;
         else if (ix === Input.POINTER_UP)
@@ -8593,7 +8613,6 @@ class Input extends System {
         currentComponent.gameObject.post('~' + fnName);
       }
 
-      //console.log(fnName);
       this.post(fnName);
     }
 
@@ -8726,28 +8745,22 @@ Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 /** @type {Array<string>}
  *  @const
  */
-
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
-
-/** @type {Array<string>}
- *  @const
- */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointercancel', 'pointerenter', 'pointerleave'];
-
-// /** @type {Array<string>}
-//  *  @const
-//  */
-// Input.mMSPointerEventList = ['MSPointerMove', 'MSPointerDown', 'MSPointerUp', 'MSPointerCancel', 'MSPointerEnter', 'MSPointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mouseenter', 'mouseleave'];
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
 
 class InputComponent extends Component {
@@ -9831,9 +9844,7 @@ class Tween extends Component {
     this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
-      if (this.mRepeatTimes > 0) {
-        this.mRepeatTimes -= 1;
-
+      if (this.mRepeatTimes-- > 0) {
         if (this.mReverse) {
           for (let f in this.mValues) {
             [this.mValues[f], this.mValuesStart[f]] = [this.mValuesStart[f], this.mValues[f]];
@@ -10234,9 +10245,9 @@ class Black extends MessageDispatcher {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  constructor(containerElementId, rootClass, videoDriverName = 'canvas') {
+  constructor(containerElementId, rootClass, videoDriverClass) {
     super();
 
     // Dirty GCC workaround
@@ -10255,8 +10266,8 @@ class Black extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {string} */
-    this.mVideoName = videoDriverName;
+    /** @type {function(new: VideoNullDriver)} */
+    this.mVideoDriverClass = videoDriverClass;
 
     /** @type {number} */
     this.mStageWidth = this.mContainerElement.clientWidth;
@@ -10321,7 +10332,7 @@ class Black extends MessageDispatcher {
     /** @type {Viewport} */
     this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /** @type {VideoNullDriver} */
     this.mVideo = null;
 
     /** @type {boolean} */
@@ -10334,7 +10345,7 @@ class Black extends MessageDispatcher {
     this.mPauseOnHide = true;
 
     /** @type {boolean} */
-    this.mPauseOnBlur = false;
+    this.mPauseOnBlur = true;
 
     /** @type {Object<string, Array>} */
     this.mTagCache = {};
@@ -10344,6 +10355,9 @@ class Black extends MessageDispatcher {
 
     /** @type {GameObject|null} */
     this.mRoot = null;
+
+    /** @type {boolean} */
+    this.mEnableFixedTimeStep = false;
   }
 
   pause() {
@@ -10385,7 +10399,6 @@ class Black extends MessageDispatcher {
     }
   }
 
-
   /**
    * addSystem - Adds a given system to the system list.
    *
@@ -10396,7 +10409,6 @@ class Black extends MessageDispatcher {
     this.mSystems.push(system);
     return system;
   }
-
 
   /**
    * removeSystem - Removes the given system to the system list.
@@ -10416,14 +10428,7 @@ class Black extends MessageDispatcher {
   }
 
   __bootVideo() {
-    if (this.mVideoName === 'canvas')
-      this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom')
-      this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'null' || this.mVideoName == null)
-      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else
-      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+    this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
   start() {
@@ -10447,7 +10452,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
+    this.mRAFHandle = requestAnimationFrame(function(timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -10460,15 +10465,17 @@ class Black extends MessageDispatcher {
         self.__update(x);
       });
     });
-  }
 
+    // TODO: show only when needed, eg required by any system
+    if (this.mEnableFixedTimeStep === false)
+      Debug.warn('Fixed time-step is disabled, some systems may not work.');
+  }
 
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
     cancelAnimationFrame(this.mRAFHandle);
   }
-
 
   /**
    * __update - Description
@@ -10521,15 +10528,17 @@ class Black extends MessageDispatcher {
       this.mCurrentTime = timestamp;
       Time.mDeltaTime = dt;
 
-      while (this.mFrameAccum >= this.mSimulationTimestep) {
-        this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
+      if (this.mEnableFixedTimeStep === true) {
+        while (this.mFrameAccum >= this.mSimulationTimestep) {
+          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
 
-        this.mFrameAccum -= this.mSimulationTimestep;
+          this.mFrameAccum -= this.mSimulationTimestep;
 
-        if (++this.mNumUpdateSteps >= (60 * 3)) {
-          console.log('[BLACK]: Not enough time to calculate update logic.');
-          this.mIsPanic = true;
-          break;
+          if (++this.mNumUpdateSteps >= (60 * 3)) { // 3 seconds window
+            console.log('[BLACK]: Not enough time to calculate update logic.');
+            this.mIsPanic = true;
+            break;
+          }
         }
       }
 
@@ -10550,7 +10559,6 @@ class Black extends MessageDispatcher {
     this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
   }
 
-
   /**
    * __internalFixedUpdate - Description
    *
@@ -10564,7 +10572,6 @@ class Black extends MessageDispatcher {
 
     this.mRoot.__fixedUpdate(dt);
   }
-
 
   /**
    * __internalUpdate - Description
@@ -10603,7 +10610,6 @@ class Black extends MessageDispatcher {
     return this.mBounds;
   }
 
-
   /**
    * root - Description
    *
@@ -10613,16 +10619,14 @@ class Black extends MessageDispatcher {
     return this.mRoot;
   }
 
-
   /**
    * video - Description
    *
-   * @return {NullDriver} Description
+   * @return {VideoNullDriver} Description
    */
   get video() {
     return this.mVideo;
   }
-
 
   /**
    * simulationTimestep - Description
@@ -10632,7 +10636,6 @@ class Black extends MessageDispatcher {
   get simulationTimestep() {
     return this.mSimulationTimestep;
   }
-
 
   /**
    * simulationTimestep - Description
@@ -10645,7 +10648,6 @@ class Black extends MessageDispatcher {
     this.mSimulationTimestep = timestep;
   }
 
-
   /**
    * FPS - Description
    *
@@ -10655,7 +10657,6 @@ class Black extends MessageDispatcher {
     return this.mFPS;
   }
 
-
   /**
    * maxFPS - Description
    *
@@ -10664,7 +10665,6 @@ class Black extends MessageDispatcher {
   get maxFPS() {
     return 1000 / this.mMinFrameDelay;
   }
-
 
   /**
    * maxAllowedFPS - Description
@@ -10680,7 +10680,6 @@ class Black extends MessageDispatcher {
       this.mMinFrameDelay = 1000 / fps;
   }
 
-
   /**
    * viewport - Description
    *
@@ -10690,7 +10689,6 @@ class Black extends MessageDispatcher {
     return this.mViewport;
   }
 
-
   /**
    * containerElement - Description
    *
@@ -10699,7 +10697,6 @@ class Black extends MessageDispatcher {
   get containerElement() {
     return this.mContainerElement;
   }
-
 
   /**
    * uptime - Description
@@ -10809,7 +10806,6 @@ class Black extends MessageDispatcher {
     component.onAdded(child);
   }
 
-
   /**
    * @param  {GameObject} child     description
    * @param  {Component} component description
@@ -10869,13 +10865,25 @@ class Black extends MessageDispatcher {
     this.mPauseOnBlur = value;
   }
 
+
   /**
-   * videoName
+   * When disabled the physics system and other systems may not work.
    *
-   * @return {string}
+   * @return {boolean}
    */
-  get videoName() {
-    return this.mVideoName;
+  get enableFixedTimeStep() {
+    return this.mEnableFixedTimeStep;
+  }
+
+  /**
+   * enableFixedTimeStep
+   *
+   * @param {boolean} value
+   *
+   * @return {void}
+   */
+  set enableFixedTimeStep(value) {
+    this.mEnableFixedTimeStep = value;
   }
 }
 
