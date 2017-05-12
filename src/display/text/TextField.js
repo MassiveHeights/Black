@@ -48,7 +48,7 @@ class TextField extends DisplayObject {
   /**
    * __render - Description
    * @private @override
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description

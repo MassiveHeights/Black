@@ -14,9 +14,9 @@ class Black extends MessageDispatcher {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  constructor(containerElementId, rootClass, videoDriverName = 'canvas') {
+  constructor(containerElementId, rootClass, videoDriverClass) {
     super();
 
     // Dirty GCC workaround
@@ -35,8 +35,8 @@ class Black extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {string} */
-    this.mVideoName = videoDriverName;
+    /** @type {function(new: VideoNullDriver)} */
+    this.mVideoDriverClass = videoDriverClass;
 
     /** @type {number} */
     this.mStageWidth = this.mContainerElement.clientWidth;
@@ -101,7 +101,7 @@ class Black extends MessageDispatcher {
     /** @type {Viewport} */
     this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /** @type {VideoNullDriver} */
     this.mVideo = null;
 
     /** @type {boolean} */
@@ -114,7 +114,7 @@ class Black extends MessageDispatcher {
     this.mPauseOnHide = true;
 
     /** @type {boolean} */
-    this.mPauseOnBlur = false;
+    this.mPauseOnBlur = true;
 
     /** @type {Object<string, Array>} */
     this.mTagCache = {};
@@ -124,6 +124,9 @@ class Black extends MessageDispatcher {
 
     /** @type {GameObject|null} */
     this.mRoot = null;
+
+    /** @type {boolean} */
+    this.mEnableFixedTimeStep = false;
   }
 
   pause() {
@@ -165,7 +168,6 @@ class Black extends MessageDispatcher {
     }
   }
 
-
   /**
    * addSystem - Adds a given system to the system list.
    *
@@ -176,7 +178,6 @@ class Black extends MessageDispatcher {
     this.mSystems.push(system);
     return system;
   }
-
 
   /**
    * removeSystem - Removes the given system to the system list.
@@ -196,14 +197,7 @@ class Black extends MessageDispatcher {
   }
 
   __bootVideo() {
-    if (this.mVideoName === 'canvas')
-      this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom')
-      this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'null' || this.mVideoName == null)
-      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else
-      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+    this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
   start() {
@@ -227,7 +221,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
+    this.mRAFHandle = requestAnimationFrame(function(timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -240,15 +234,17 @@ class Black extends MessageDispatcher {
         self.__update(x);
       });
     });
-  }
 
+    // TODO: show only when needed, eg required by any system
+    if (this.mEnableFixedTimeStep === false)
+      Debug.warn('Fixed time-step is disabled, some systems may not work.');
+  }
 
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
     cancelAnimationFrame(this.mRAFHandle);
   }
-
 
   /**
    * __update - Description
@@ -301,15 +297,17 @@ class Black extends MessageDispatcher {
       this.mCurrentTime = timestamp;
       Time.mDeltaTime = dt;
 
-      while (this.mFrameAccum >= this.mSimulationTimestep) {
-        this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
+      if (this.mEnableFixedTimeStep === true) {
+        while (this.mFrameAccum >= this.mSimulationTimestep) {
+          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
 
-        this.mFrameAccum -= this.mSimulationTimestep;
+          this.mFrameAccum -= this.mSimulationTimestep;
 
-        if (++this.mNumUpdateSteps >= (60 * 3)) {
-          console.log('[BLACK]: Not enough time to calculate update logic.');
-          this.mIsPanic = true;
-          break;
+          if (++this.mNumUpdateSteps >= (60 * 3)) { // 3 seconds window
+            console.log('[BLACK]: Not enough time to calculate update logic.');
+            this.mIsPanic = true;
+            break;
+          }
         }
       }
 
@@ -330,7 +328,6 @@ class Black extends MessageDispatcher {
     this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
   }
 
-
   /**
    * __internalFixedUpdate - Description
    *
@@ -344,7 +341,6 @@ class Black extends MessageDispatcher {
 
     this.mRoot.__fixedUpdate(dt);
   }
-
 
   /**
    * __internalUpdate - Description
@@ -383,7 +379,6 @@ class Black extends MessageDispatcher {
     return this.mBounds;
   }
 
-
   /**
    * root - Description
    *
@@ -393,16 +388,14 @@ class Black extends MessageDispatcher {
     return this.mRoot;
   }
 
-
   /**
    * video - Description
    *
-   * @return {NullDriver} Description
+   * @return {VideoNullDriver} Description
    */
   get video() {
     return this.mVideo;
   }
-
 
   /**
    * simulationTimestep - Description
@@ -412,7 +405,6 @@ class Black extends MessageDispatcher {
   get simulationTimestep() {
     return this.mSimulationTimestep;
   }
-
 
   /**
    * simulationTimestep - Description
@@ -425,7 +417,6 @@ class Black extends MessageDispatcher {
     this.mSimulationTimestep = timestep;
   }
 
-
   /**
    * FPS - Description
    *
@@ -435,7 +426,6 @@ class Black extends MessageDispatcher {
     return this.mFPS;
   }
 
-
   /**
    * maxFPS - Description
    *
@@ -444,7 +434,6 @@ class Black extends MessageDispatcher {
   get maxFPS() {
     return 1000 / this.mMinFrameDelay;
   }
-
 
   /**
    * maxAllowedFPS - Description
@@ -460,7 +449,6 @@ class Black extends MessageDispatcher {
       this.mMinFrameDelay = 1000 / fps;
   }
 
-
   /**
    * viewport - Description
    *
@@ -470,7 +458,6 @@ class Black extends MessageDispatcher {
     return this.mViewport;
   }
 
-
   /**
    * containerElement - Description
    *
@@ -479,7 +466,6 @@ class Black extends MessageDispatcher {
   get containerElement() {
     return this.mContainerElement;
   }
-
 
   /**
    * uptime - Description
@@ -589,7 +575,6 @@ class Black extends MessageDispatcher {
     component.onAdded(child);
   }
 
-
   /**
    * @param  {GameObject} child     description
    * @param  {Component} component description
@@ -649,12 +634,24 @@ class Black extends MessageDispatcher {
     this.mPauseOnBlur = value;
   }
 
+
   /**
-   * videoName
+   * When disabled the physics system and other systems may not work.
    *
-   * @return {string}
+   * @return {boolean}
    */
-  get videoName() {
-    return this.mVideoName;
+  get enableFixedTimeStep() {
+    return this.mEnableFixedTimeStep;
+  }
+
+  /**
+   * enableFixedTimeStep
+   *
+   * @param {boolean} value
+   *
+   * @return {void}
+   */
+  set enableFixedTimeStep(value) {
+    this.mEnableFixedTimeStep = value;
   }
 }

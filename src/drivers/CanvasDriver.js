@@ -1,5 +1,5 @@
 /* @echo EXPORT */
-class CanvasDriver extends NullDriver {
+class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -23,8 +23,8 @@ class CanvasDriver extends NullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
-    cvs.id = "canvas";
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.id = 'canvas';
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));

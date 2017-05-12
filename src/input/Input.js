@@ -39,26 +39,27 @@ class Input extends System {
     /** @type {boolean} */
     this.mIsPointerDown = false;
 
+    this.mNeedUpEvent = false;
+
     /** @type {Array<InputComponent>} */
     this.mInputListeners = [];
   }
 
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
+    //debugger;
 
     if (window.PointerEvent)
       this.mEventList = Input.mPointerEventList;
-    // else if (window.MSPointerEvent)
-    //   this.mEventList = Input.mMSPointerEventList;
     else if (Device.isTouch && Device.isMobile)
       this.mEventList = Input.mTouchEventList;
     else
       this.mEventList = Input.mMouseEventList;
 
-    // TODO: handle enter, cancel events too
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
+    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
@@ -74,21 +75,26 @@ class Input extends System {
 
 
   /**
-   * __onKeyEvent - Description
+   * @param {Event} e
    *
-   * @param {Event} e Description
-   *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onKeyEvent(e) {
     this.mKeyQueue.push(e);
     return true;
   }
 
+  __onPointerEventDoc(e) {
+    let over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+    if (over === false && this.mNeedUpEvent === true) {
+      this.mNeedUpEvent = false;
+      this.__pushEvent(e);
+    }
+  }
+
 
   /**
-   * __onPointerEvent - Description
-   *
    * @param {Event} e Description
    *
    * @return {boolean} Description
@@ -96,6 +102,12 @@ class Input extends System {
   __onPointerEvent(e) {
     e.preventDefault();
 
+    this.__pushEvent(e);
+
+    return true;
+  }
+
+  __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
       p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */ (e));
@@ -110,8 +122,6 @@ class Input extends System {
       x: p.x,
       y: p.y
     });
-
-    return true;
   }
 
 
@@ -130,7 +140,6 @@ class Input extends System {
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
 
-
   /**
    * __getTouchPos - Description
    *
@@ -144,8 +153,8 @@ class Input extends System {
 
     /** @type {Touch} */
     let touch = evt.changedTouches[0]; // ios? what about android?
-    let x = touch.pageX;
-    let y = touch.pageY;
+    let x = touch.clientX;
+    let y = touch.clientY;
 
     let scaleX = canvas.clientWidth / rect.width;
     let scaleY = canvas.clientHeight / rect.height;
@@ -226,8 +235,6 @@ class Input extends System {
       return;
 
     this.__addListener([component]);
-    //this.mInputListeners.push(/** @type {InputComponent} */ (component));
-    //this.__sortListeners();
   }
 
 
@@ -267,6 +274,9 @@ class Input extends System {
       let ix = this.mEventList.indexOf(nativeEvent.e.type);
       let fnName = Input.mInputEventsLookup[ix];
 
+      if (fnName === 'pointerDown')
+        this.mNeedUpEvent = true;
+
       pointerPos.set(nativeEvent.x, nativeEvent.y);
 
       /** @type {InputComponent|null} */
@@ -288,7 +298,6 @@ class Input extends System {
         }
 
         // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-
         if (ix === Input.POINTER_DOWN)
           this.mIsPointerDown = true;
         else if (ix === Input.POINTER_UP)
@@ -302,7 +311,6 @@ class Input extends System {
         currentComponent.gameObject.post('~' + fnName);
       }
 
-      //console.log(fnName);
       this.post(fnName);
     }
 
@@ -435,25 +443,19 @@ Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 /** @type {Array<string>}
  *  @const
  */
-
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
-
-/** @type {Array<string>}
- *  @const
- */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointercancel', 'pointerenter', 'pointerleave'];
-
-// /** @type {Array<string>}
-//  *  @const
-//  */
-// Input.mMSPointerEventList = ['MSPointerMove', 'MSPointerDown', 'MSPointerUp', 'MSPointerCancel', 'MSPointerEnter', 'MSPointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mouseenter', 'mouseleave'];
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];

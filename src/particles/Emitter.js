@@ -31,7 +31,7 @@ class Emitter extends DisplayObject {
     this.mEmitCount = new FloatScatter(10);
 
     /** @type {FloatScatter} */
-    this.mEmitNumRepeats = new FloatScatter(10);
+    this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /** @type {number} */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
@@ -129,6 +129,7 @@ class Emitter extends DisplayObject {
         else {
           this.mEmitIntervalLeft -= dt;
           this.mNextUpdateAt = t + this.mEmitIntervalLeft;
+          //console.log(this.mEmitIntervalLeft);
 
           // reset interval
           if (this.mEmitIntervalLeft <= 0)

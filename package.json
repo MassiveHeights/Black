@@ -5,8 +5,8 @@
   "main": "src/Black.js",
   "directories": {},
   "scripts": {
-    "start": "gulp && gulp watch",
-    "bundle": "gulp bundle",
+    "start": "gulp",
+    "examples": "gulp examples",
     "test": "gulp && gulp test",
     "docs": "gulp docs"
   },
@@ -20,7 +20,6 @@
     "babel-concat": "^1.0.3",
     "babel-core": "^6.5.2",
     "babel-preset-es2015": "^6.5.0",
-    "browser-sync": "^2.11.1",
     "chai": "^3.5.0",
     "google-closure-compiler": "^20161024.3.0",
     "gulp-babel": "^6.1.2",

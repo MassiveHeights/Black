@@ -33,7 +33,7 @@
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
-    "src/drivers/NullDriver.js",
+    "src/drivers/VideoNullDriver.js",
     "src/drivers/CanvasDriver.js",
     "src/drivers/DOMDriver.js",
 

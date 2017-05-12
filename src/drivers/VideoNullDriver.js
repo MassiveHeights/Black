@@ -1,5 +1,5 @@
 /* @echo EXPORT */
-class NullDriver {
+class VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
