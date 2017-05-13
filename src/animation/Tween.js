@@ -1,73 +1,127 @@
 /**
- * Tween
- * @unrestricted
+  * @unrestricted
  * @extends Component
  */
 /* @echo EXPORT */
 class Tween extends Component {
   /**
-   * constructor - Description
-   * @param {Object}   values            Description
-   * @param {number} [duration=0.25]   Description
-   * @param {Object|null}   [properties=null] Description
+   * Creates new instance of Tween Component.
+   * @param {Object}        values            The values to tween.
+   * @param {number}        [duration=0.25]   Duraction in seconds.
+   * @param {Object|null}   [properties=null] Tween properties Object.
    */
   constructor(values, duration = 0.250, properties = null) {
     super();
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValues = values;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDuration = duration;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mProperties = properties;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPlaying = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStartTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPausedTime = 0;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValuesStart = {};
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {function (v:?Array, e:number):number} */
+    /**
+     * @private
+     * @type {function (v:?Array, e:number):number}
+     */
     this.mInterpolation = Interpolation.linear;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDelay = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRepeatTimes = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mInitiated = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mReverse = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mRemoveOnComplete = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPlayOnAdded = true;
 
-   /** @type {function(e:number):number} */
+   /**
+    * @private
+    * @type {function(e:number):number}
+    */
     this.mEase = Ease.smootherStep;
 
+    // TODO: fix ESDOC issue
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
         this[f] = /** @dict */ (this.mProperties[f]);
@@ -76,121 +130,113 @@ class Tween extends Component {
   }
 
   /**
-   * ease - Description
+   * Returns active ease function.
    *
-   * @return {function(e:number):number} Description
+   * @return {function(e:number):number}
    */
   get ease() {
     return this.mEase;
   }
 
   /**
-   * ease - Description
+   * Sets easing function to use.
    *
-   * @param {function(e:number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(e:number):number} value The easing function.
+   * @return {void}
    */
   set ease(value) {
     this.mEase = value;
   }
 
   /**
-   * interpolation - Description
+   * Returns the interpolation algorithm.
    *
-   * @return {function(p:Array, v:number):number} Description
+   * @return {function(p:Array, v:number):number}
    */
   get interpolation() {
     return this.mInterpolation;
   }
 
   /**
-   * interpolation - Description
+   * Sets the interpolation algorithm. Possible values Interpolation.linear, Interpolation.bezier, Interpolation.catmullRom or your custom function.
    *
-   * @param {function(p:Array, v:number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(p:Array, v:number):number} value The interpolation function.
+   * @return {void}
    */
   set interpolation(value) {
     this.mInterpolation = value;
   }
 
   /**
-   * elapsed - Description
+   * Time elapsed since tween start in seconds.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get elapsed() {
     return this.mElapsed;
   }
 
   /**
-   * delay - Description
+   * Returns amount of seconds to wait before tweening.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get delay() {
     return this.mDelay;
   }
 
   /**
-   * delay - Description
+   * Set amount of seconds to wait before tweening.
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @param {number} value Seconds to wait.
+   * @return {void}
    */
   set delay(value) {
     this.mDelay = value;
   }
 
   /**
-   * removeOnComplete - Description
+   * Returns if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get removeOnComplete() {
     return this.mRemoveOnComplete;
   }
 
   /**
-   * removeOnComplete - Description
+   * Sets if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set removeOnComplete(value) {
     this.mRemoveOnComplete = value;
   }
 
   /**
-   * playOnAdded - Description
-   *
-   * @return {boolean} Description
+   * Returns whether the tween should start playing automatically when added to the root.
+   * @return {boolean}
    */
   get playOnAdded() {
     return this.mPlayOnAdded;
   }
 
   /**
-   * playOnAdded - Description
+   * Sets whether the tween should start playing automatically when added to the root.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set playOnAdded(value) {
     this.mPlayOnAdded = value;
   }
 
-
   /**
-   * __start - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __start(t) {
     this.mIsPlaying = true;
@@ -198,9 +244,9 @@ class Tween extends Component {
   }
 
   /**
-   * play - Description
+   * Starts tweening.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   play() {
     if (!this.mIsPaused) {
@@ -213,9 +259,9 @@ class Tween extends Component {
   }
 
   /**
-   * stop - Description
+   * Stops current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   stop() {
     if (!this.mIsPlaying)
@@ -227,12 +273,12 @@ class Tween extends Component {
   }
 
   /**
-   * to - Description
+   * Sets the values for tweening.
    *
-   * @param {Object} values - Description
-   * @param {number} duration - Description
+   * @param {Object} values   Values to tween.
+   * @param {number} duration Duration in seconds.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   to(values = {}, duration = 0.250) {
     this.mValues = values;
@@ -245,9 +291,9 @@ class Tween extends Component {
   }
 
   /**
-   * pause - Description
+   * Pauses current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   pause() {
     if (!this.mIsPlaying)
@@ -260,8 +306,7 @@ class Tween extends Component {
   }
 
   /**
-   * __resume - Description
-   *
+   * @private
    * @return {void} Description
    */
   __resume() {
@@ -274,28 +319,27 @@ class Tween extends Component {
 
 
   /**
+   * @protected
    * @return {void}
    */
-  remove() {
+  removeFromParent() {
     if (this.mIsPlaying)
       this.stop();
 
-    this.gameObject.removeComponent(this);
+    super.removeFromParent();
   }
 
   /**
-   * dispose - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   dispose() {
     this.remove();
   }
 
   /**
-   * repeat - Description
+   * Sets the number of times the tween wiil be repeated after first execution.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   repeat(times) {
     this.mRepeatTimes = times;
@@ -304,31 +348,29 @@ class Tween extends Component {
   }
 
   /**
-   * loop - Description
+   * Sets if tween should be looped over.
    *
-   * @return {Tween} Description
+   * @return {Tween} Return this.
    */
   loop(value = true) {
     this.mRepeatTimes = value ? Infinity : 0;
-
     return this;
   }
 
    /**
-   * reverse - Description
+   * Enables/disables reversing of tween values.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   reverse(value = true) {
     this.mReverse = value;
-
     return this;
   }
 
   /**
-   * chain - Description
+   * Add specified tween object into the queue. The specified tween will be executed after completation of this tween,
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   chain(tween) {
     if (!tween) {
@@ -345,11 +387,10 @@ class Tween extends Component {
   }
 
   /**
-   * onAdded - description
-   *
    * @override
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject
+   * @return {void}
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
@@ -358,13 +399,38 @@ class Tween extends Component {
   }
 
   /**
-   * __update - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(t) {
+
+  }
+
+  /**
+   * Updates tween values.
+   *
+   * @param {Object} values The Object to get values from.
+   * @return {void}
+   */
+  set(values) {
+    this.mValues = values;
+
+    for (let f in this.mValues)
+      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
+  }
+
+  /**
+   * @protected
+   * @override
+   * @param {number} dt
+   *
+   * @returns {void}
+   */
+  onPostUpdate(dt){
+    let t = Time.time;
+
     if (t < this.mStartTime || !this.mIsPlaying || this.mIsPaused)
       return;
 
@@ -432,25 +498,5 @@ class Tween extends Component {
         }
       }
     }
-  }
-
-
-  /**
-   * set - Description
-   *
-   * @param {Object} values Description
-   *
-   * @return {void} Description
-   */
-  set(values) {
-    this.mValues = values;
-
-    for (let f in this.mValues)
-      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
-  }
-
-  onPostUpdate(dt){
-    let t = Black.instance.uptime;
-    this.__update(t);
   }
 }

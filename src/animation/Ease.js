@@ -3,44 +3,42 @@ class Ease {
   constructor() {}
 
   /**
-   * linear - Description
-   *
-   * @param {number} k Description
-   *
-   * @return {number} Description
+   * linear
+   * @param {number} k
+   * @return {number}
    */
   static linear(k) {
     return k;
   }
 
   /**
-   * quadraticIn - Description
+   * quadraticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticIn(k) {
     return k * k;
   }
 
   /**
-   * quadraticOut - Description
+   * quadraticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticOut(k) {
     return k * (2 - k);
   }
 
   /**
-   * quadraticInOut - Description
+   * quadraticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticInOut(k) {
     if ((k *= 2) < 1)
@@ -50,33 +48,33 @@ class Ease {
   }
 
   /**
-   * cubicIn - Description
+   * cubicIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicIn(k) {
     return k * k * k;
   }
 
   /**
-   * cubicOut - Description
+   * cubicOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicOut(k) {
     return --k * k * k + 1;
   }
 
   /**
-   * cubicInOut - Description
+   * cubicInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicInOut(k) {
     if ((k *= 2) < 1)
@@ -86,33 +84,33 @@ class Ease {
   }
 
   /**
-   * quarticIn - Description
+   * quarticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticIn(k) {
     return k * k * k * k;
   }
 
   /**
-   * quarticOut - Description
+   * quarticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticOut(k) {
     return 1 - (--k * k * k * k);
   }
 
   /**
-   * quarticInOut - Description
+   * quarticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticInOut(k) {
     if ((k *= 2) < 1)
@@ -122,33 +120,33 @@ class Ease {
   }
 
   /**
-   * quinticIn - Description
+   * quinticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticIn(k) {
     return k * k * k * k * k;
   }
 
   /**
-   * quinticOut - Description
+   * quinticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticOut(k) {
     return --k * k * k * k * k + 1;
   }
 
   /**
-   * quinticInOut - Description
+   * quinticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticInOut(k) {
     if ((k *= 2) < 1)
@@ -158,66 +156,66 @@ class Ease {
   }
 
   /**
-   * sinusoidalIn - Description
+   * sinusoidalIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalIn(k) {
     return 1 - Math.cos(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalOut - Description
+   * sinusoidalOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalOut(k) {
     return Math.sin(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalInOut - Description
+   * sinusoidalInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalInOut(k) {
     return 0.5 * (1 - Math.cos(Math.PI * k));
   }
 
   /**
-   * exponentialIn - Description
+   * exponentialIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialIn(k) {
     return k === 0 ? 0 : Math.pow(1024, k - 1);
   }
 
   /**
-   * exponentialOut - Description
+   * exponentialOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialOut(k) {
     return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
   }
 
   /**
-   * exponentialInOut - Description
+   * exponentialInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialInOut(k) {
     if (k === 0)
@@ -233,33 +231,33 @@ class Ease {
   }
 
   /**
-   * circularIn - Description
+   * circularIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularIn(k) {
     return 1 - Math.sqrt(1 - k * k);
   }
 
   /**
-   * circularOut - Description
+   * circularOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularOut(k) {
     return Math.sqrt(1 - (--k * k));
   }
 
   /**
-   * circularInOut - Description
+   * circularInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularInOut(k) {
     if ((k *= 2) < 1)
@@ -269,11 +267,11 @@ class Ease {
   }
 
   /**
-   * elasticIn - Description
+   * elasticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticIn(k) {
     if (k === 0)
@@ -286,11 +284,11 @@ class Ease {
   }
 
   /**
-   * elasticOut - Description
+   * elasticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticOut(k) {
     if (k === 0)
@@ -303,11 +301,11 @@ class Ease {
   }
 
   /**
-   * elasticInOut - Description
+   * elasticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticInOut(k) {
     if (k === 0)
@@ -326,11 +324,11 @@ class Ease {
   }
 
   /**
-   * backIn - Description
+   * backIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backIn(k) {
     const s = 1.70158;
@@ -338,11 +336,11 @@ class Ease {
   }
 
   /**
-   * backOut - Description
+   * backOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backOut(k) {
     const s = 1.70158;
@@ -350,11 +348,11 @@ class Ease {
   }
 
   /**
-   * backInOut - Description
+   * backInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backInOut(k) {
     const s = 1.70158 * 1.525;
@@ -366,22 +364,22 @@ class Ease {
   }
 
   /**
-   * bounceIn - Description
+   * bounceIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceIn(k) {
     return 1 - Ease.bounceOut(1 - k);
   }
 
   /**
-   * bounceOut - Description
+   * bounceOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceOut(k) {
     if (k < (1 / 2.75))
@@ -395,11 +393,11 @@ class Ease {
   }
 
   /**
-   * bounceInOut - Description
+   * bounceInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceInOut(k) {
     if (k < 0.5)
@@ -409,11 +407,11 @@ class Ease {
   }
 
   /**
-   * smoothstep - Description
+   * smoothstep
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static smootherStep(k) {
     return k * k * k * (k * (6.0 * k - 15.0) + 10.0);

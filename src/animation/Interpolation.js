@@ -3,13 +3,11 @@ class Interpolation {
   constructor() {}
 
   /**
-   * linear - Description
+   * linear
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static linear(v, k) {
     let m = v.length - 1;
@@ -32,13 +30,11 @@ class Interpolation {
   }
 
   /**
-   * bezier - Description
+   * bezier
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static bezier(v, k) {
     let b = 0;
@@ -58,13 +54,11 @@ class Interpolation {
   }
 
   /**
-   * catmullRom - Description
+   * catmullRom
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static catmullRom(v, k) {
     let m = v.length - 1;
@@ -100,8 +94,7 @@ class Interpolation {
 }
 
 /**
- * __factorial
- *
+ * @private
  * @param {number} n
  *
  * @return {number}
