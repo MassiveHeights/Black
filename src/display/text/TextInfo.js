@@ -1,14 +1,14 @@
 /* @echo EXPORT */
 class TextInfo {
   /**
-   * @param  {string=} name = 'sans-serif' description
-   * @param  {number=} color = '0x000000' description
-   * @param  {number=} size = '14' description
-   * @param  {TextInfo.FontStyle=} style = 'normal' description
-   * @param  {TextInfo.FontWeight=} weight = '400' description
-   * @param  {TextInfo.FontAlign=} align = 'left' description
-   * @param  {number=} strokeThickness = '0' description
-   * @param  {number=} strokeColor = '0xffffff' description
+   * @param  {string=} name Font name
+   * @param  {number=} color = Text color as hexadecimal number eg 0xff0000 (total red)
+   * @param  {number=} size = Text size
+   * @param  {TextInfo.FontStyle=} style = Text style eg italic
+   * @param  {TextInfo.FontWeight=} weight = font thick. The value is set from 100 to 900 in increments of 100.
+   * @param  {TextInfo.FontAlign=} align = horizontal alignment left | center | right
+   * @param  {number=} strokeThickness = thickness of the stroke. 0 means that no stroke
+   * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
   constructor(name = 'sans-serif', color = 0x000000, size = 14, style = TextInfo.FontStyle.NORMAL, weight = TextInfo.FontWeight.NORMAL, align = TextInfo.FontAlign.LEFT, strokeThickness = 0, strokeColor = 0xffffff) {
 
