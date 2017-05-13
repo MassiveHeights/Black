@@ -239,10 +239,8 @@ class Emitter extends DisplayObject {
     let alength = this.mActions.length;
     let plength = this.mParticles.length;
 
-    let t = Black.instance.uptime;
-
     for (let i = 0; i < alength; i++)
-      this.mActions[i].preUpdate(dt, t);
+      this.mActions[i].preUpdate(dt);
 
     let particle;
 
@@ -251,7 +249,7 @@ class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt, t);
+        this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -262,7 +260,7 @@ class Emitter extends DisplayObject {
     }
 
     for (let j = 0; j < alength; j++)
-      this.mActions[j].postUpdate(dt, t);
+      this.mActions[j].postUpdate(dt);
   }
 
   __create(amount) {

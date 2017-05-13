@@ -1,35 +1,47 @@
+/**
+ * A base class for particle system actions. Every frame each action executed over each particle.
+ * @abstract
+ * @memberof particles.actions
+ */
 /* @echo EXPORT */
 class Action {
+  /**
+   * Creates new Action instance.
+   */
+  constructor(){
+  }
 
   /**
-   * preUpdate - Description
+   * Called for every particle before any update method called.
    *
-   * @param {number} dt Description
-   * @param {number} t  Description
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
    *
    * @return {void} Description
    */
-  preUpdate(dt, t) {}
+  preUpdate(dt) {}
 
 
   /**
-   * @param {Emitter} emmiter
-   * @param {Particle} particle
-   * @param {number} dt
-   * @param {number} t
+   * Called for every particle.
+   *
+   * @protected
+   * @param {Emitter} emmiter   The owner of the particle.
+   * @param {Particle} particle The particle to execute update on.
+   * @param {number} dt         Amount of seconds since the last update.
    *
    * @return {void}
    */
-  update(emmiter, particle, dt, t) {}
+  update(emmiter, particle, dt) {}
 
 
   /**
-   * postUpdate
+   * Called after all updates have been executed.
    *
-   * @param {number} dt
-   * @param {number} t
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
    *
    * @return {void}
    */
-  postUpdate(dt, t) {}
+  postUpdate(dt) {}
 }
