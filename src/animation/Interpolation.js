@@ -1,5 +1,8 @@
 /* @echo EXPORT */
 class Interpolation {
+  /**
+   * Singleton.
+   */
   constructor() {}
 
   /**

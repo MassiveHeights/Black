@@ -1,0 +1,34 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc"]
+    },
+    "source": {
+        "include": ["./src", "package.json", "README.md"],
+        "includePattern": ".js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": [
+      "plugins/markdown"
+    ],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "useLongnameInNav": false,
+        "default"       : {
+            "outputSourceFiles" : true
+        },
+        "applicationName": "Black",
+        "footer": "",
+        "copyright": "© Massive Heights 2017",
+        "googleAnalytics": "",
+        "linenums": true
+    },
+    "opts": {
+        "destination": "./docs/",
+        "encoding": "utf8",
+        "private": false,
+        "recurse": true,
+        "template": "node_modules/jaguarjs-jsdoc"
+    }
+}

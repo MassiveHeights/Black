@@ -118,8 +118,10 @@ class AnimationController extends Component {
   }
 
   /**
+   * @ignore
+   * @override
    * @protected
-   * @param {number} dt Amount of seconds since the last update
+   * @param  {number} dt
    * @return {void}
    */
   onPostUpdate(dt) {
@@ -137,7 +139,7 @@ class AnimationController extends Component {
 
   /**
    * Returns currently active animation.
-   * 
+   *
    * @returns {Animation|null}
    */
   get currentAnimation() {

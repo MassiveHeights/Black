@@ -87,7 +87,7 @@ class Animation {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
-   * 
+   *
    * @return {Texture}
    */
   play() {
@@ -156,7 +156,7 @@ class Animation {
   }
 
   /**
-   * Returns animation speed in frames per second.
+   * Get/Set animation speed in frames per second.
    *
    * @return {number}
    */
@@ -165,8 +165,7 @@ class Animation {
   }
 
   /**
-   * Sets animation speed in frames per second.
-   *
+   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -182,7 +181,7 @@ class Animation {
   }
 
   /**
-   * Returns if animation should be looped.
+   * Get/Set if animation should be looped.
    * @return {boolean}
    */
   get loop() {
@@ -190,8 +189,7 @@ class Animation {
   }
 
   /**
-   * Sets if this animation should be looped over after end.
-   *
+   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -225,7 +223,6 @@ class Animation {
   get isComplete() {
     return this.mCompleted;
   }
-
 
   /**
    * Returns name of this animation.

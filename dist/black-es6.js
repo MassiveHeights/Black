@@ -2787,7 +2787,10 @@ class MessageDispatcher {
   constructor() {
     // object of arrays
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mListeners = null;
   }
 
@@ -2925,6 +2928,7 @@ class MessageDispatcher {
   /**
    * __sendBubbles - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {string}  message Description
    * @param {boolean}  toTop   Description
@@ -2961,6 +2965,7 @@ class MessageDispatcher {
   /**
    * __sendGlobal - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {Message}  message Description
    * @param {GameObject=}  origin  Description
@@ -2981,6 +2986,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -3013,6 +3019,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -3039,6 +3046,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {string} path
    * @param {string} pattern
    *
@@ -3061,6 +3069,7 @@ class MessageDispatcher {
   /**
    * __parseMessage - Description
    *
+   * @private
    * @param {*} sender Description
    * @param {string} info   Description
    *
@@ -3440,14 +3449,13 @@ class Viewport extends MessageDispatcher {
 }
 
 /**
- * Component - Description
  * @unrestricted
  * @extends MessageDispatcher
  */
 
 class Component extends MessageDispatcher {
   /**
-   * Creates new Component instance
+   * Creates new Component instance.
    */
   constructor() {
     super();
@@ -3543,64 +3551,124 @@ Component.ID = 0;
  */
 
 class GameObject extends MessageDispatcher {
+  /**
+   * Creates new instance of GameObject.
+   */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mName = null;
 
-    /** @type {Array<Component>} */
+    /**
+     * @private
+     * @type {Array<Component>}
+     */
     this.mComponents = [];
 
-    /** @type {Array<GameObject>} */
+    /**
+     * @private
+     * @type {Array<GameObject>}
+     */
     this.mChildren = [];
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleX = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleY = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRotation = 0;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mBounds = null;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mLocalTransform = new Matrix();
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mWorldTransform = new Matrix();
 
-    /** @type {DirtyFlag} */
+    /**
+     * @private
+     * @type {DirtyFlag}
+     */
     this.mDirty = DirtyFlag.DIRTY;
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mParent = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mTag = null;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mIndex = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
@@ -4600,7 +4668,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * @return {function(gen:*):*}
+   * @return {function(*):*}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
@@ -4612,7 +4680,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} message The name of the message to wait for
    *
-   * @return {function(gen:*):*} Description
+   * @return {function(*):*} Description
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
@@ -6683,7 +6751,8 @@ class TextField extends DisplayObject {
   /**
    * onGetLocalBounds - Description
    *
-   * @protected @override
+   * @protected
+   * @override
    * @param {Rectangle=} outRect Description
    *
    * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
@@ -6725,7 +6794,6 @@ class TextField extends DisplayObject {
   /**
    * size - Description
    *
-   * @public
    * @return {number} Description
    */
   get size() {
@@ -6736,7 +6804,6 @@ class TextField extends DisplayObject {
    * size - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6748,21 +6815,19 @@ class TextField extends DisplayObject {
   /**
    * font - Description
    *
-   * @public
    * @return {string} Description
    */
   get font() {
-      return this.mStyle.name;
-    }
-    /**
-     * font - Description
-     *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
-     */
+    return this.mStyle.name;
+  }
 
+  /**
+   * font - Description
+   *
+   * @param {string} value Description
+   *
+   * @return {void} Description
+   */
   set font(value) {
     this.mStyle.name = value;
     this.mNeedInvalidate = true;
@@ -6771,7 +6836,6 @@ class TextField extends DisplayObject {
   /**
    * color - Description
    *
-   * @public
    * @return {number} Description
    */
   get color() {
@@ -6782,7 +6846,6 @@ class TextField extends DisplayObject {
    * color - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6793,7 +6856,6 @@ class TextField extends DisplayObject {
   /**
    * style - Description
    *
-   * @public
    * @return {TextInfo.FontStyle} Description
    */
   get style() {
@@ -6804,7 +6866,6 @@ class TextField extends DisplayObject {
    * style - Description
    *
    * @param {TextInfo.FontStyle} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6816,7 +6877,6 @@ class TextField extends DisplayObject {
   /**
    * weight - Description
    *
-   * @public
    * @return {TextInfo.FontWeight} Description
    */
   get weight() {
@@ -6827,7 +6887,6 @@ class TextField extends DisplayObject {
    * weight - Description
    *
    * @param {TextInfo.FontWeight} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6839,7 +6898,6 @@ class TextField extends DisplayObject {
   /**
    * align - Description
    *
-   * @public
    * @return {TextInfo.FontAlign} Description
    */
   get align() {
@@ -6850,7 +6908,6 @@ class TextField extends DisplayObject {
    * align - Description
    *
    * @param {TextInfo.FontAlign} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6861,7 +6918,6 @@ class TextField extends DisplayObject {
   /**
    * strokeColor - Description
    *
-   * @public
    * @return {number} Description
    */
   get strokeColor() {
@@ -6872,7 +6928,6 @@ class TextField extends DisplayObject {
    * strokeColor - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6883,7 +6938,6 @@ class TextField extends DisplayObject {
   /**
    * strokeThickness - Description
    *
-   * @public
    * @return {number} Description
    */
   get strokeThickness() {
@@ -6893,7 +6947,6 @@ class TextField extends DisplayObject {
   //noinspection JSAnnotator
   /**
    * strokeThickness - Description
-   * @public
    *
    * @param {number} value Description
    *
@@ -6910,7 +6963,6 @@ class TextField extends DisplayObject {
   /**
    * fieldWidth - Description
    *
-   * @public
    * @return {number} Description
    */
   get fieldWidth() {
@@ -6921,7 +6973,6 @@ class TextField extends DisplayObject {
    * fieldWidth - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6936,7 +6987,6 @@ class TextField extends DisplayObject {
   /**
    * fieldHeight - Description
    *
-   * @public
    * @return {number} Description
    */
   get fieldHeight() {
@@ -6948,7 +6998,6 @@ class TextField extends DisplayObject {
    * fieldHeight - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -6961,7 +7010,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @public text - Description
+   * text - Description
    *
    * @return {string} Description
    */
@@ -6973,7 +7022,6 @@ class TextField extends DisplayObject {
    * text - Description
    *
    * @param {string} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -8803,7 +8851,10 @@ class FPSComponent extends Component  {
   constructor() {
     super();
 
-    /** @type {TextField} */
+    /**
+     * @private
+     * @type {TextField}
+     */
     this.txtFPS = null;
   }
 
@@ -8824,29 +8875,44 @@ class FPSComponent extends Component  {
 
 
 class MRComponent extends Component {
-
   /**
-   * constructor - Description
+   * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+   * Simplified version of scale manager.
    *
-   * @param {number} [width=960]  Description
-   * @param {number} [height=640] Description
+   * @param {number} [width=960]  The width.
+   * @param {number} [height=640] The height.
    */
   constructor(width = 960, height = 640) {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mHeight = height;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mInvScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAspect = 0;
 
     Black.instance.viewport.on('resize', this.__onResize, this);
@@ -8857,11 +8923,11 @@ class MRComponent extends Component {
   }
 
   /**
-   * setSize - description
+   * Sets size of the latout.
    *
-   * @param  {number} width = 960  description
-   * @param  {number} height = 640 description
-   * @return {void}              description
+   * @param  {number} width = 960  The width.
+   * @param  {number} height = 640 The height.
+   * @return {void}
    */
   setSize(width = 960, height = 640){
     this.mWidth = width;
@@ -8871,9 +8937,9 @@ class MRComponent extends Component {
   }
 
   /**
-   * updateLayout - description
+   * Updates layout to match specified settings.
    *
-   * @return {void}  description
+   * @return {void}
    */
   updateLayout() {
     if (!this.gameObject)
@@ -8896,60 +8962,55 @@ class MRComponent extends Component {
     this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
   }
 
-  onAdded(){
+  onAdded() {
     this.updateLayout();
-  }
-
-  onRemoved(){
-  }
-
-  onUpdate(){
   }
 }
 
 
 class Ease {
+  /**
+   * Singleton.
+   */
   constructor() {}
 
   /**
-   * linear - Description
-   *
-   * @param {number} k Description
-   *
-   * @return {number} Description
+   * linear
+   * @param {number} k
+   * @return {number}
    */
   static linear(k) {
     return k;
   }
 
   /**
-   * quadraticIn - Description
+   * quadraticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticIn(k) {
     return k * k;
   }
 
   /**
-   * quadraticOut - Description
+   * quadraticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticOut(k) {
     return k * (2 - k);
   }
 
   /**
-   * quadraticInOut - Description
+   * quadraticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticInOut(k) {
     if ((k *= 2) < 1)
@@ -8959,33 +9020,33 @@ class Ease {
   }
 
   /**
-   * cubicIn - Description
+   * cubicIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicIn(k) {
     return k * k * k;
   }
 
   /**
-   * cubicOut - Description
+   * cubicOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicOut(k) {
     return --k * k * k + 1;
   }
 
   /**
-   * cubicInOut - Description
+   * cubicInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicInOut(k) {
     if ((k *= 2) < 1)
@@ -8995,33 +9056,33 @@ class Ease {
   }
 
   /**
-   * quarticIn - Description
+   * quarticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticIn(k) {
     return k * k * k * k;
   }
 
   /**
-   * quarticOut - Description
+   * quarticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticOut(k) {
     return 1 - (--k * k * k * k);
   }
 
   /**
-   * quarticInOut - Description
+   * quarticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticInOut(k) {
     if ((k *= 2) < 1)
@@ -9031,33 +9092,33 @@ class Ease {
   }
 
   /**
-   * quinticIn - Description
+   * quinticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticIn(k) {
     return k * k * k * k * k;
   }
 
   /**
-   * quinticOut - Description
+   * quinticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticOut(k) {
     return --k * k * k * k * k + 1;
   }
 
   /**
-   * quinticInOut - Description
+   * quinticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticInOut(k) {
     if ((k *= 2) < 1)
@@ -9067,66 +9128,66 @@ class Ease {
   }
 
   /**
-   * sinusoidalIn - Description
+   * sinusoidalIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalIn(k) {
     return 1 - Math.cos(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalOut - Description
+   * sinusoidalOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalOut(k) {
     return Math.sin(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalInOut - Description
+   * sinusoidalInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalInOut(k) {
     return 0.5 * (1 - Math.cos(Math.PI * k));
   }
 
   /**
-   * exponentialIn - Description
+   * exponentialIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialIn(k) {
     return k === 0 ? 0 : Math.pow(1024, k - 1);
   }
 
   /**
-   * exponentialOut - Description
+   * exponentialOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialOut(k) {
     return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
   }
 
   /**
-   * exponentialInOut - Description
+   * exponentialInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialInOut(k) {
     if (k === 0)
@@ -9142,33 +9203,33 @@ class Ease {
   }
 
   /**
-   * circularIn - Description
+   * circularIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularIn(k) {
     return 1 - Math.sqrt(1 - k * k);
   }
 
   /**
-   * circularOut - Description
+   * circularOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularOut(k) {
     return Math.sqrt(1 - (--k * k));
   }
 
   /**
-   * circularInOut - Description
+   * circularInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularInOut(k) {
     if ((k *= 2) < 1)
@@ -9178,11 +9239,11 @@ class Ease {
   }
 
   /**
-   * elasticIn - Description
+   * elasticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticIn(k) {
     if (k === 0)
@@ -9195,11 +9256,11 @@ class Ease {
   }
 
   /**
-   * elasticOut - Description
+   * elasticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticOut(k) {
     if (k === 0)
@@ -9212,11 +9273,11 @@ class Ease {
   }
 
   /**
-   * elasticInOut - Description
+   * elasticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticInOut(k) {
     if (k === 0)
@@ -9235,11 +9296,11 @@ class Ease {
   }
 
   /**
-   * backIn - Description
+   * backIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backIn(k) {
     const s = 1.70158;
@@ -9247,11 +9308,11 @@ class Ease {
   }
 
   /**
-   * backOut - Description
+   * backOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backOut(k) {
     const s = 1.70158;
@@ -9259,11 +9320,11 @@ class Ease {
   }
 
   /**
-   * backInOut - Description
+   * backInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backInOut(k) {
     const s = 1.70158 * 1.525;
@@ -9275,22 +9336,22 @@ class Ease {
   }
 
   /**
-   * bounceIn - Description
+   * bounceIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceIn(k) {
     return 1 - Ease.bounceOut(1 - k);
   }
 
   /**
-   * bounceOut - Description
+   * bounceOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceOut(k) {
     if (k < (1 / 2.75))
@@ -9304,11 +9365,11 @@ class Ease {
   }
 
   /**
-   * bounceInOut - Description
+   * bounceInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceInOut(k) {
     if (k < 0.5)
@@ -9318,11 +9379,11 @@ class Ease {
   }
 
   /**
-   * smoothstep - Description
+   * smoothstep
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static smootherStep(k) {
     return k * k * k * (k * (6.0 * k - 15.0) + 10.0);
@@ -9331,16 +9392,17 @@ class Ease {
 
 
 class Interpolation {
+  /**
+   * Singleton.
+   */
   constructor() {}
 
   /**
-   * linear - Description
+   * linear
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static linear(v, k) {
     let m = v.length - 1;
@@ -9363,13 +9425,11 @@ class Interpolation {
   }
 
   /**
-   * bezier - Description
+   * bezier
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static bezier(v, k) {
     let b = 0;
@@ -9389,13 +9449,11 @@ class Interpolation {
   }
 
   /**
-   * catmullRom - Description
+   * catmullRom
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static catmullRom(v, k) {
     let m = v.length - 1;
@@ -9431,8 +9489,7 @@ class Interpolation {
 }
 
 /**
- * __factorial
- *
+ * @private
  * @param {number} n
  *
  * @return {number}
@@ -9457,75 +9514,130 @@ Interpolation.__factorial = (function() {
 })();
 
 /**
- * Tween
+ * @memberof module:animation
  * @unrestricted
  * @extends Component
  */
 
 class Tween extends Component {
   /**
-   * constructor - Description
-   * @param {Object}   values            Description
-   * @param {number} [duration=0.25]   Description
-   * @param {Object|null}   [properties=null] Description
+   * Creates new instance of Tween Component.
+   * @param {Object}        values            The values to tween.
+   * @param {number}        [duration=0.25]   Duraction in seconds.
+   * @param {Object|null}   [properties=null] Tween properties Object.
    */
   constructor(values, duration = 0.250, properties = null) {
     super();
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValues = values;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDuration = duration;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mProperties = properties;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPlaying = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStartTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPausedTime = 0;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValuesStart = {};
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {function (v:?Array, e:number):number} */
+    /**
+     * @private
+     * @type {function (Array, number):number}
+     */
     this.mInterpolation = Interpolation.linear;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDelay = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRepeatTimes = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mInitiated = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mReverse = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mRemoveOnComplete = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPlayOnAdded = true;
 
-   /** @type {function(e:number):number} */
+   /**
+    * @private
+    * @type {function(number):number}
+    */
     this.mEase = Ease.smootherStep;
 
+    // TODO: fix ESDOC issue
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
         this[f] = /** @dict */ (this.mProperties[f]);
@@ -9534,121 +9646,113 @@ class Tween extends Component {
   }
 
   /**
-   * ease - Description
+   * Returns active ease function.
    *
-   * @return {function(e:number):number} Description
+   * @return {function(number):number}
    */
   get ease() {
     return this.mEase;
   }
 
   /**
-   * ease - Description
+   * Sets easing function to use.
    *
-   * @param {function(e:number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(number):number} value The easing function.
+   * @return {void}
    */
   set ease(value) {
     this.mEase = value;
   }
 
   /**
-   * interpolation - Description
+   * Returns the interpolation algorithm.
    *
-   * @return {function(p:Array, v:number):number} Description
+   * @return {function(Array, number):number}
    */
   get interpolation() {
     return this.mInterpolation;
   }
 
   /**
-   * interpolation - Description
+   * Sets the interpolation algorithm. Possible values Interpolation.linear, Interpolation.bezier, Interpolation.catmullRom or your custom function.
    *
-   * @param {function(p:Array, v:number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(Array, number):number} value The interpolation function.
+   * @return {void}
    */
   set interpolation(value) {
     this.mInterpolation = value;
   }
 
   /**
-   * elapsed - Description
+   * Time elapsed since tween start in seconds.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get elapsed() {
     return this.mElapsed;
   }
 
   /**
-   * delay - Description
+   * Returns amount of seconds to wait before tweening.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get delay() {
     return this.mDelay;
   }
 
   /**
-   * delay - Description
+   * Set amount of seconds to wait before tweening.
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @param {number} value Seconds to wait.
+   * @return {void}
    */
   set delay(value) {
     this.mDelay = value;
   }
 
   /**
-   * removeOnComplete - Description
+   * Returns if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get removeOnComplete() {
     return this.mRemoveOnComplete;
   }
 
   /**
-   * removeOnComplete - Description
+   * Sets if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set removeOnComplete(value) {
     this.mRemoveOnComplete = value;
   }
 
   /**
-   * playOnAdded - Description
-   *
-   * @return {boolean} Description
+   * Returns whether the tween should start playing automatically when added to the root.
+   * @return {boolean}
    */
   get playOnAdded() {
     return this.mPlayOnAdded;
   }
 
   /**
-   * playOnAdded - Description
+   * Sets whether the tween should start playing automatically when added to the root.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set playOnAdded(value) {
     this.mPlayOnAdded = value;
   }
 
-
   /**
-   * __start - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __start(t) {
     this.mIsPlaying = true;
@@ -9656,9 +9760,9 @@ class Tween extends Component {
   }
 
   /**
-   * play - Description
+   * Starts tweening.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   play() {
     if (!this.mIsPaused) {
@@ -9671,9 +9775,9 @@ class Tween extends Component {
   }
 
   /**
-   * stop - Description
+   * Stops current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   stop() {
     if (!this.mIsPlaying)
@@ -9685,12 +9789,12 @@ class Tween extends Component {
   }
 
   /**
-   * to - Description
+   * Sets the values for tweening.
    *
-   * @param {Object} values - Description
-   * @param {number} duration - Description
+   * @param {Object} values   Values to tween.
+   * @param {number} duration Duration in seconds.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   to(values = {}, duration = 0.250) {
     this.mValues = values;
@@ -9703,9 +9807,9 @@ class Tween extends Component {
   }
 
   /**
-   * pause - Description
+   * Pauses current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   pause() {
     if (!this.mIsPlaying)
@@ -9718,8 +9822,7 @@ class Tween extends Component {
   }
 
   /**
-   * __resume - Description
-   *
+   * @private
    * @return {void} Description
    */
   __resume() {
@@ -9732,28 +9835,27 @@ class Tween extends Component {
 
 
   /**
+   * @protected
    * @return {void}
    */
-  remove() {
+  removeFromParent() {
     if (this.mIsPlaying)
       this.stop();
 
-    this.gameObject.removeComponent(this);
+    super.removeFromParent();
   }
 
   /**
-   * dispose - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   dispose() {
     this.remove();
   }
 
   /**
-   * repeat - Description
+   * Sets the number of times the tween wiil be repeated after first execution.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   repeat(times) {
     this.mRepeatTimes = times;
@@ -9762,31 +9864,29 @@ class Tween extends Component {
   }
 
   /**
-   * loop - Description
+   * Sets if tween should be looped over.
    *
-   * @return {Tween} Description
+   * @return {Tween} Return this.
    */
   loop(value = true) {
     this.mRepeatTimes = value ? Infinity : 0;
-
     return this;
   }
 
    /**
-   * reverse - Description
+   * Enables/disables reversing of tween values.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   reverse(value = true) {
     this.mReverse = value;
-
     return this;
   }
 
   /**
-   * chain - Description
+   * Add specified tween object into the queue. The specified tween will be executed after completation of this tween,
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   chain(tween) {
     if (!tween) {
@@ -9803,11 +9903,10 @@ class Tween extends Component {
   }
 
   /**
-   * onAdded - description
-   *
    * @override
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject
+   * @return {void}
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
@@ -9816,13 +9915,38 @@ class Tween extends Component {
   }
 
   /**
-   * __update - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(t) {
+
+  }
+
+  /**
+   * Updates tween values.
+   *
+   * @param {Object} values The Object to get values from.
+   * @return {void}
+   */
+  set(values) {
+    this.mValues = values;
+
+    for (let f in this.mValues)
+      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
+  }
+
+  /**
+   * @protected
+   * @override
+   * @param {number} dt
+   *
+   * @returns {void}
+   */
+  onPostUpdate(dt){
+    let t = Time.time;
+
     if (t < this.mStartTime || !this.mIsPlaying || this.mIsPaused)
       return;
 
@@ -9890,26 +10014,6 @@ class Tween extends Component {
         }
       }
     }
-  }
-
-
-  /**
-   * set - Description
-   *
-   * @param {Object} values Description
-   *
-   * @return {void} Description
-   */
-  set(values) {
-    this.mValues = values;
-
-    for (let f in this.mValues)
-      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
-  }
-
-  onPostUpdate(dt){
-    let t = Black.instance.uptime;
-    this.__update(t);
   }
 }
 
@@ -10002,7 +10106,7 @@ class Animation {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
-   * 
+   *
    * @return {Texture}
    */
   play() {
@@ -10071,7 +10175,7 @@ class Animation {
   }
 
   /**
-   * Returns animation speed in frames per second.
+   * Get/Set animation speed in frames per second.
    *
    * @return {number}
    */
@@ -10080,8 +10184,7 @@ class Animation {
   }
 
   /**
-   * Sets animation speed in frames per second.
-   *
+   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -10097,7 +10200,7 @@ class Animation {
   }
 
   /**
-   * Returns if animation should be looped.
+   * Get/Set if animation should be looped.
    * @return {boolean}
    */
   get loop() {
@@ -10105,8 +10208,7 @@ class Animation {
   }
 
   /**
-   * Sets if this animation should be looped over after end.
-   *
+   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -10140,7 +10242,6 @@ class Animation {
   get isComplete() {
     return this.mCompleted;
   }
-
 
   /**
    * Returns name of this animation.
@@ -10272,8 +10373,10 @@ class AnimationController extends Component {
   }
 
   /**
+   * @ignore
+   * @override
    * @protected
-   * @param {number} dt Amount of seconds since the last update
+   * @param  {number} dt
    * @return {void}
    */
   onPostUpdate(dt) {
@@ -10291,7 +10394,7 @@ class AnimationController extends Component {
 
   /**
    * Returns currently active animation.
-   * 
+   *
    * @returns {Animation|null}
    */
   get currentAnimation() {
@@ -10674,12 +10777,8 @@ class Black extends MessageDispatcher {
     });
 
     // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false) {
-      Debug.log('Fixed time-step is disabled, some systems may not work.');
+    if (this.mEnableFixedTimeStep === false)
       Debug.info('Fixed time-step is disabled, some systems may not work.');
-      Debug.warn('Fixed time-step is disabled, some systems may not work.');
-      Debug.error('Fixed time-step is disabled, some systems may not work.');
-    }
   }
 
   /**

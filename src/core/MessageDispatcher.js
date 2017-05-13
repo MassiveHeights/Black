@@ -7,7 +7,10 @@ class MessageDispatcher {
   constructor() {
     // object of arrays
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mListeners = null;
   }
 
@@ -145,6 +148,7 @@ class MessageDispatcher {
   /**
    * __sendBubbles - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {string}  message Description
    * @param {boolean}  toTop   Description
@@ -181,6 +185,7 @@ class MessageDispatcher {
   /**
    * __sendGlobal - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {Message}  message Description
    * @param {GameObject=}  origin  Description
@@ -201,6 +206,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -233,6 +239,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -259,6 +266,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {string} path
    * @param {string} pattern
    *
@@ -281,6 +289,7 @@ class MessageDispatcher {
   /**
    * __parseMessage - Description
    *
+   * @private
    * @param {*} sender Description
    * @param {string} info   Description
    *

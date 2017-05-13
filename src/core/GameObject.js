@@ -5,64 +5,124 @@
  */
 /* @echo EXPORT */
 class GameObject extends MessageDispatcher {
+  /**
+   * Creates new instance of GameObject.
+   */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mName = null;
 
-    /** @type {Array<Component>} */
+    /**
+     * @private
+     * @type {Array<Component>}
+     */
     this.mComponents = [];
 
-    /** @type {Array<GameObject>} */
+    /**
+     * @private
+     * @type {Array<GameObject>}
+     */
     this.mChildren = [];
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleX = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleY = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRotation = 0;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mBounds = null;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mLocalTransform = new Matrix();
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mWorldTransform = new Matrix();
 
-    /** @type {DirtyFlag} */
+    /**
+     * @private
+     * @type {DirtyFlag}
+     */
     this.mDirty = DirtyFlag.DIRTY;
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mParent = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mTag = null;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mIndex = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
@@ -1062,7 +1122,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * @return {function(gen:*):*}
+   * @return {function(*):*}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
@@ -1074,7 +1134,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} message The name of the message to wait for
    *
-   * @return {function(gen:*):*} Description
+   * @return {function(*):*} Description
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));

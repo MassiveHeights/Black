@@ -8,7 +8,7 @@
     "start": "gulp",
     "examples": "gulp examples",
     "test": "gulp && gulp test",
-    "docs": "gulp build-es6-module && esdoc"
+    "docs": "jsdoc -c .jsdoc -R README.md"
   },
   "repository": {
     "type": "git",
@@ -30,11 +30,10 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-template": "^4.0.0",
     "gulp-watch": "^4.3.5",
-    "minami": "^1.1.1",
+    "jaguarjs-jsdoc": "^1.0.2",
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "esdoc": "^0.5.2",
     "gulp": "^3.9.1"
   }
 }

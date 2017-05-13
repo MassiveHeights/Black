@@ -1,5 +1,6 @@
 /**
-  * @unrestricted
+ * @memberof module:animation
+ * @unrestricted
  * @extends Component
  */
 /* @echo EXPORT */
@@ -69,7 +70,7 @@ class Tween extends Component {
 
     /**
      * @private
-     * @type {function (v:?Array, e:number):number}
+     * @type {function (Array, number):number}
      */
     this.mInterpolation = Interpolation.linear;
 
@@ -117,7 +118,7 @@ class Tween extends Component {
 
    /**
     * @private
-    * @type {function(e:number):number}
+    * @type {function(number):number}
     */
     this.mEase = Ease.smootherStep;
 
@@ -132,7 +133,7 @@ class Tween extends Component {
   /**
    * Returns active ease function.
    *
-   * @return {function(e:number):number}
+   * @return {function(number):number}
    */
   get ease() {
     return this.mEase;
@@ -141,7 +142,7 @@ class Tween extends Component {
   /**
    * Sets easing function to use.
    *
-   * @param {function(e:number):number} value The easing function.
+   * @param {function(number):number} value The easing function.
    * @return {void}
    */
   set ease(value) {
@@ -151,7 +152,7 @@ class Tween extends Component {
   /**
    * Returns the interpolation algorithm.
    *
-   * @return {function(p:Array, v:number):number}
+   * @return {function(Array, number):number}
    */
   get interpolation() {
     return this.mInterpolation;
@@ -160,7 +161,7 @@ class Tween extends Component {
   /**
    * Sets the interpolation algorithm. Possible values Interpolation.linear, Interpolation.bezier, Interpolation.catmullRom or your custom function.
    *
-   * @param {function(p:Array, v:number):number} value The interpolation function.
+   * @param {function(Array, number):number} value The interpolation function.
    * @return {void}
    */
   set interpolation(value) {

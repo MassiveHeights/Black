@@ -1,12 +1,11 @@
 /**
- * Component - Description
  * @unrestricted
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
 class Component extends MessageDispatcher {
   /**
-   * Creates new Component instance
+   * Creates new Component instance.
    */
   constructor() {
     super();

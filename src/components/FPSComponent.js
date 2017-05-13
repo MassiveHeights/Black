@@ -3,7 +3,10 @@ class FPSComponent extends Component  {
   constructor() {
     super();
 
-    /** @type {TextField} */
+    /**
+     * @private
+     * @type {TextField}
+     */
     this.txtFPS = null;
   }
 

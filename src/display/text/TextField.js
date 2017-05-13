@@ -76,7 +76,8 @@ class TextField extends DisplayObject {
   /**
    * onGetLocalBounds - Description
    *
-   * @protected @override
+   * @protected
+   * @override
    * @param {Rectangle=} outRect Description
    *
    * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
@@ -118,7 +119,6 @@ class TextField extends DisplayObject {
   /**
    * size - Description
    *
-   * @public
    * @return {number} Description
    */
   get size() {
@@ -129,7 +129,6 @@ class TextField extends DisplayObject {
    * size - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -141,21 +140,19 @@ class TextField extends DisplayObject {
   /**
    * font - Description
    *
-   * @public
    * @return {string} Description
    */
   get font() {
-      return this.mStyle.name;
-    }
-    /**
-     * font - Description
-     *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
-     */
+    return this.mStyle.name;
+  }
 
+  /**
+   * font - Description
+   *
+   * @param {string} value Description
+   *
+   * @return {void} Description
+   */
   set font(value) {
     this.mStyle.name = value;
     this.mNeedInvalidate = true;
@@ -164,7 +161,6 @@ class TextField extends DisplayObject {
   /**
    * color - Description
    *
-   * @public
    * @return {number} Description
    */
   get color() {
@@ -175,7 +171,6 @@ class TextField extends DisplayObject {
    * color - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -186,7 +181,6 @@ class TextField extends DisplayObject {
   /**
    * style - Description
    *
-   * @public
    * @return {TextInfo.FontStyle} Description
    */
   get style() {
@@ -197,7 +191,6 @@ class TextField extends DisplayObject {
    * style - Description
    *
    * @param {TextInfo.FontStyle} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -209,7 +202,6 @@ class TextField extends DisplayObject {
   /**
    * weight - Description
    *
-   * @public
    * @return {TextInfo.FontWeight} Description
    */
   get weight() {
@@ -220,7 +212,6 @@ class TextField extends DisplayObject {
    * weight - Description
    *
    * @param {TextInfo.FontWeight} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -232,7 +223,6 @@ class TextField extends DisplayObject {
   /**
    * align - Description
    *
-   * @public
    * @return {TextInfo.FontAlign} Description
    */
   get align() {
@@ -243,7 +233,6 @@ class TextField extends DisplayObject {
    * align - Description
    *
    * @param {TextInfo.FontAlign} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -254,7 +243,6 @@ class TextField extends DisplayObject {
   /**
    * strokeColor - Description
    *
-   * @public
    * @return {number} Description
    */
   get strokeColor() {
@@ -265,7 +253,6 @@ class TextField extends DisplayObject {
    * strokeColor - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -276,7 +263,6 @@ class TextField extends DisplayObject {
   /**
    * strokeThickness - Description
    *
-   * @public
    * @return {number} Description
    */
   get strokeThickness() {
@@ -286,7 +272,6 @@ class TextField extends DisplayObject {
   //noinspection JSAnnotator
   /**
    * strokeThickness - Description
-   * @public
    *
    * @param {number} value Description
    *
@@ -303,7 +288,6 @@ class TextField extends DisplayObject {
   /**
    * fieldWidth - Description
    *
-   * @public
    * @return {number} Description
    */
   get fieldWidth() {
@@ -314,7 +298,6 @@ class TextField extends DisplayObject {
    * fieldWidth - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -329,7 +312,6 @@ class TextField extends DisplayObject {
   /**
    * fieldHeight - Description
    *
-   * @public
    * @return {number} Description
    */
   get fieldHeight() {
@@ -341,7 +323,6 @@ class TextField extends DisplayObject {
    * fieldHeight - Description
    *
    * @param {number} value Description
-   * @public
    *
    * @return {void} Description
    */
@@ -354,7 +335,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @public text - Description
+   * text - Description
    *
    * @return {string} Description
    */
@@ -366,7 +347,6 @@ class TextField extends DisplayObject {
    * text - Description
    *
    * @param {string} value Description
-   * @public
    *
    * @return {void} Description
    */

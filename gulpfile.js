@@ -52,10 +52,4 @@ gulp.task('examples', ['build-es6'], function() {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
 });
 
-gulp.task('docs', function(cb) {
-  var config = require('./.jsdoc.json');
-  gulp.src(['README.md', './src/**/*.js'], {read: false})
-  .pipe(jsdoc(config, cb));
-});
-
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);

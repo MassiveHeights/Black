@@ -1,5 +1,8 @@
 /* @echo EXPORT */
 class Ease {
+  /**
+   * Singleton.
+   */
   constructor() {}
 
   /**
