@@ -1,5 +1,4 @@
 /**
- * @memberof module:animation
  * @unrestricted
  * @extends Component
  */
