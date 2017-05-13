@@ -51,4 +51,4 @@ npm*.log.*
 
 # BLACK #
 #########
-docs
+docs/*
