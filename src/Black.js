@@ -373,12 +373,8 @@ class Black extends MessageDispatcher {
     });
 
     // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false) {
-      Debug.log('Fixed time-step is disabled, some systems may not work.');
+    if (this.mEnableFixedTimeStep === false)
       Debug.info('Fixed time-step is disabled, some systems may not work.');
-      Debug.warn('Fixed time-step is disabled, some systems may not work.');
-      Debug.error('Fixed time-step is disabled, some systems may not work.');
-    }
   }
 
   /**
