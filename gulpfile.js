@@ -9,7 +9,6 @@ const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
 const rename = require('gulp-rename');
-const jsdoc = require('gulp-jsdoc3');
 const preprocess = require('gulp-preprocess');
 
 const info = JSON.parse(fs.readFileSync('./build.json'));

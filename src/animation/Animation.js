@@ -1,3 +1,6 @@
+/**
+ * @fires complete
+ */
 /* @echo EXPORT */
 class Animation {
   /**
@@ -88,7 +91,8 @@ class Animation {
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
    *
-   * @return {Texture}
+   * @internal
+   * @return {Texture} Returns the current frame Texture.
    */
   play() {
     if (this.mCompleted === true) {

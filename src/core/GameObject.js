@@ -127,24 +127,26 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * id - Unique object id.
+   * Returns unique object id.
    *
-   * @returns {number} Unique object id.
+   * @returns {number}
    */
   get id() {
     return this.mId;
   }
 
   /**
-   * onAdded - This method called each time object added to stage.
+   * This method called each time object added to stage.
    *
+   * @protected
    * @return {void}
    */
-  onAdded() { }
+  onAdded() {}
 
   /**
-   * onRemoved - Called when object is removed from stage.
+   * Called when object is removed from stage.
    *
+   * @protected
    * @return {void}
    */
   onRemoved() {}
@@ -154,7 +156,6 @@ class GameObject extends MessageDispatcher {
    * add - Sugar method for adding child GameObjects or Components.
    *
    * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
-   *
    * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
   add(...gameObjectsAndOrComponents) {
@@ -162,9 +163,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild(/* @type {!GameObject} */ (gooc));
+        this.addChild( /* @type {!GameObject} */ (gooc));
       else
-        this.addComponent(/* @type {!Component} */ (gooc));
+        this.addComponent( /* @type {!Component} */ (gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -210,9 +211,10 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @protected
-   * @param {GameObject} value Description
+   * @ignore
+   * @param {GameObject} value
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __setParent(value) {
     let p = value;
@@ -257,7 +259,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {boolean} [dispose=false]
    *
-   * @return {void} Description
+   * @return {void}
    */
   removeFromParent(dispose = false) {
     if (this.mParent)
@@ -288,7 +290,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * getChildByName
+   * get child by name
    *
    * @param {string} name
    *
@@ -304,7 +306,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeChildAt - Removes GameObjects instance from specified index.
+   *Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
    * @param {boolean} [dispose=false]
@@ -334,7 +336,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getChildAt - Returns GameObject at specified index.
+   * Returns GameObject at specified index.
    *
    * @param {number} index The index of child GameObject.
    *
@@ -345,7 +347,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * addComponent - Adds Component instance to the end of the list,
+   * Adds Component instance to the end of the list,
    *
    * @param  {Component} component Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
@@ -368,11 +370,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeComponent - Description
+   * Remove specified component
    *
-   * @param {Component} instance Description
+   * @param {Component} instance
    *
-   * @return {Component|null} Description
+   * @return {Component|null}
    */
   removeComponent(instance) {
     if (!instance)
@@ -393,7 +395,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getComponent
+   * get component by type
    *
    * @param {*} typeName
    *
@@ -411,7 +413,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * numComponenets - Returns number of component's
+   * Returns number of component's
    *
    * @return {number}
    */
@@ -421,7 +423,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * getComponentAt - Retrives Component at given index.
+   * Retrives Component at given index.
    *
    * @param {number} index
    *
@@ -435,9 +437,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localTransformation - Description
+   * Retun local transformation Matrix
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get localTransformation() {
     if (this.mDirty & DirtyFlag.LOCAL) {
@@ -464,7 +466,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformation - returns cloned Matrix object which represents object orientation in world space.
+   *  returns cloned Matrix object which represents object orientation in world space.
    *
    * @return {Matrix}
    */
@@ -482,9 +484,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformationInversed - Description
+   * returns cloned and inversed Matrix object which represents object orientation in world space
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get worldTransformationInversed() {
     // TODO: optimize, cache
@@ -492,11 +494,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __fixedUpdate - Description
+   * @param {number} dt
+   * @private
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
@@ -512,11 +513,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @param {number} dt time since the last frame
+   * @private
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(dt) {
     this.onUpdate(dt);
@@ -532,11 +532,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
    *
-   * @param {number} dt Description
+   * @param {number} dt time since the last frame
+   * @private
    *
-   * @return {void} Description
+   * @return {void}
    */
   __postUpdate(dt) {
     this.onPostUpdate(dt);
@@ -553,26 +553,26 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onFixedUpdate - Description
+   * Called at every fixed frame update.
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - Description
+   * Called at every engine update.
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - Description
-   *
+   * Called after all updates have been executed.
+   * @protected
    * @param {number} dt Description
    *
    * @return {void} Description
@@ -580,14 +580,14 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) {}
 
   /**
-   * __render - Description
+   * @param {VideoNullDriver} video
+   * @protected
+   * @ignore
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     this.onRender(video, time);
@@ -600,8 +600,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onRender - Description
-   *
+   * @protected
    * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
@@ -690,24 +689,24 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localToGlobal - Description
+   * Calculate global position of the object.
    *
-   * @param {Vector} localPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} localPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   localToGlobal(localPoint, outVector = null) {
     return this.worldTransformation.transformVector(localPoint, outVector);
   }
 
   /**
-   * globalToLocal - Description
+   * Calculate local position of the object
    *
-   * @param {Vector} globalPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} globalPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInversed.transformVector(globalPoint, outVector);
@@ -1151,7 +1150,7 @@ class GameObject extends MessageDispatcher {
    */
   setDirty(flag, includeChildren = true) {
     if (includeChildren) {
-      GameObject.forEach(this, x=> {
+      GameObject.forEach(this, x => {
         x.mDirty |= flag;
       });
     } else {
@@ -1169,8 +1168,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  dispose() {
-  }
+  dispose() {}
 
   // TODO: rename method
   /**
