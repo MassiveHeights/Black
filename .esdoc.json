@@ -1,0 +1,20 @@
+{
+  "source": "./dist/",
+  "excludes": ["black-es5.js", "black-es6.js"],
+  "destination": "./doc",
+  "access": ["public", "protected"],
+  "autoPrivate": true,
+  "index": "./README.md",
+  "includeSource": true,
+  "title": "Black Engine",
+  "experimentalProposal": {
+    "classProperties": true,
+    "objectRestSpread": true,
+    "decorators": true,
+    "doExpressions": true,
+    "functionBind": true,
+    "asyncGenerators": true,
+    "exportExtensions": true,
+    "dynamicImport": true
+  }
+}

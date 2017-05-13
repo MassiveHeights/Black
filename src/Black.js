@@ -11,10 +11,10 @@
 class Black extends MessageDispatcher {
 
   /**
-   * constructor
-   * @param {string}   containerElementId
-   * @param {function(new: GameObject)}   rootClass
-   * @param {function(new: VideoNullDriver)} [videoDriverClass]
+   * Creates a new Black instance.
+   * @param {string}                          containerElementId The id of an DOM element.
+   * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
    */
   constructor(containerElementId, rootClass, videoDriverClass) {
     super();
@@ -23,128 +23,248 @@ class Black extends MessageDispatcher {
     window['Black'] = {};
     window['Black']['instance'] = this;
 
-    var css = "background: #000; color: #fff;";
-    console.log('%c ~Black ', css);
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mContainerElementId = containerElementId;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {function(new: VideoNullDriver)} */
+    /**
+     * @private
+     * @type {function(new: VideoNullDriver)}
+     */
     this.mVideoDriverClass = videoDriverClass;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mSimulationTimestep = 1000 / 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mUptime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameAccum = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameTimeMs = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFpsUpdate = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFramesThisSecond = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNumUpdateSteps = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMinFrameDelay = 0;
 
-    /** @type {Array<System>} */
+    /**
+     * @private
+     * @type {Array<System>}
+     */
     this.mSystems = [];
 
-    /** @type {Rectangle} */
-    this.mBounds = new Rectangle();
-
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsRunning = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPanic = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameUpdateTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameRenderTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRAFHandle = -1; // not sure
 
-    /** @type {Viewport} */
+    /**
+     * @private
+     * @type {Viewport}
+     */
     this.mViewport = null;
 
-    /** @type {VideoNullDriver} */
+    /**
+     * @private
+     * @type {VideoNullDriver}
+     */
     this.mVideo = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mUnpausing = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPauseOnHide = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPauseOnBlur = true;
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mTagCache = {};
 
-    /** @type {function(new: GameObject)|null} */
+    /**
+     * @private
+     * @type {function(new: GameObject)|null}
+     */
     this.mRootClass = rootClass;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.mRoot = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mEnableFixedTimeStep = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mWasStopped = false;
   }
 
+  /**
+   * Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
+   *
+   * @return {void}
+   */
   pause() {
     this.mPaused = true;
   }
 
+  /**
+   * Resumes update execution.
+   *
+   * @return {void}
+   */
   resume() {
     this.mUnpausing = true;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootViewport() {
     this.mViewport = new Viewport(this.mContainerElement);
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootSystems() {
     this.addSystem(new Input());
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootStage() {
     window.onblur = event => this.__onVisbilityChange(event);
     window.onfocus = event => this.__onVisbilityChange(event);
@@ -155,6 +275,10 @@ class Black extends MessageDispatcher {
       this.mPaused = true;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __onVisbilityChange(event) {
     let type = event.type;
 
@@ -169,9 +293,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * addSystem - Adds a given system to the system list.
+   * Adds a given system to the execution list.
    *
-   * @param  {System} system
+   * @param  {System} system The System object you want to add.
    * @return {System}
    */
   addSystem(system) {
@@ -180,10 +304,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * removeSystem - Removes the given system to the system list.
+   * Removes the given system from execution list.
    *
-   * @param {System} system
-   *
+   * @param {System} system The System instance to remove.
    * @return {System|null}
    */
   removeSystem(system) {
@@ -196,14 +319,28 @@ class Black extends MessageDispatcher {
     return system;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootVideo() {
     this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
+  /**
+   * Boots up the engine!
+   *
+   * @return {void}
+   */
   start() {
+    if (this.mWasStopped === true) {
+      Debug.error('Black engine cannot be re-started.');
+      return;
+    }
+
     this.constructor.instance = this;
 
-    if (this.mIsStarted)
+    if (this.mIsStarted === true)
       return;
 
     this.__bootViewport();
@@ -236,10 +373,19 @@ class Black extends MessageDispatcher {
     });
 
     // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false)
+    if (this.mEnableFixedTimeStep === false) {
+      Debug.log('Fixed time-step is disabled, some systems may not work.');
+      Debug.info('Fixed time-step is disabled, some systems may not work.');
       Debug.warn('Fixed time-step is disabled, some systems may not work.');
+      Debug.error('Fixed time-step is disabled, some systems may not work.');
+    }
   }
 
+  /**
+   * Stops any executions, destroys resources and scene.
+   *
+   * @return {void}
+   */
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
@@ -247,11 +393,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @private
+   * @param {number} timestamp
    *
-   * @param {number} timestamp Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(timestamp) {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
@@ -329,11 +474,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalFixedUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalFixedUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -343,11 +486,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -357,11 +498,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalPostUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -371,76 +510,59 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * bounds - Description
-   *
-   * @return {Rectangle} Description
-   */
-  get bounds() {
-    return this.mBounds;
-  }
-
-  /**
-   * root - Description
-   *
-   * @return {GameObject} Description
+   * Returns the root GameObject.
+   * @return {GameObject}
    */
   get root() {
     return this.mRoot;
   }
 
   /**
-   * video - Description
-   *
-   * @return {VideoNullDriver} Description
+   * Returns current video driver instance.
+   * @return {VideoNullDriver}
    */
   get video() {
     return this.mVideo;
   }
 
   /**
-   * simulationTimestep - Description
-   *
-   * @return {number} Description
+   * If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+   * @return {number}
    */
   get simulationTimestep() {
     return this.mSimulationTimestep;
   }
 
   /**
-   * simulationTimestep - Description
+   * Sets the number of milliseconds for fixed-time-step to run over.
    *
-   * @param {number} timestep Description
-   *
-   * @return {void} Description
+   * @param {type} timestep
+   * @return {void}
    */
   set simulationTimestep(timestep) {
     this.mSimulationTimestep = timestep;
   }
 
   /**
-   * FPS - Description
-   *
-   * @return {number} Description
+   * Returns current frame rate
+   * @return {number}
    */
   get FPS() {
     return this.mFPS;
   }
 
   /**
-   * maxFPS - Description
-   *
-   * @return {number} Description
+   * Returns max number of updates engine must do in a second.
+   * @return {number}
    */
-  get maxFPS() {
+  get maxAllowedFPS() {
     return 1000 / this.mMinFrameDelay;
   }
 
   /**
-   * maxAllowedFPS - Description
-   *
-   * @param {number} fps Description
-   *
-   * @return {void} Description
+   * maxAllowedFPS - Sets the number of update engine must do per second.
+   * @param {number} fps The max allowed FPS. If less then zero engine will be stopped.
+   * @return {void}
    */
   set maxAllowedFPS(fps) {
     if (fps <= 0)
@@ -450,40 +572,36 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * viewport - Description
-   *
-   * @return {Viewport} Description
+   * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+   * @return {Viewport}
    */
   get viewport() {
     return this.mViewport;
   }
 
   /**
-   * containerElement - Description
-   *
-   * @return {Element} Description
+   * Retruns the DOM element the engine runs in.
+   * @return {Element}
    */
   get containerElement() {
     return this.mContainerElement;
   }
 
   /**
-   * uptime - Description
-   *
-   * @return {number} Description
+   * Returns amount of seconds since engine start.
+   * @return {number}
    */
   get uptime() {
     return this.mUptime;
   }
 
   /**
-   * onTagUpdated - Description
+   * @protected
+   * @param {GameObject} child
+   * @param {string|null} oldTag
+   * @param {string|null} newTag
    *
-   * @param {GameObject} child Description
-   * @param {string|null} oldTag   Description
-   * @param {string|null} newTag   Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onTagUpdated(child, oldTag, newTag) {
     if (oldTag !== null) {
@@ -503,8 +621,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenAdded(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -532,8 +651,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenRemoved(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -560,9 +680,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentAdded(child, component) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -576,14 +697,11 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentRemoved(child, component) {
-    //child.mBlack = null;
-    //console.log('onComponentRemoved', child, component);
-
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onComponentRemoved(child, component);
 
@@ -595,8 +713,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * Returns if engine should be automatically paused when window is hidden.
    * @return {boolean}
    */
   get pauseOnHide() {
@@ -604,10 +721,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * Sets if engine should be automatically paused when window is hidden.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnHide(value) {
@@ -615,8 +730,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * Returns if engine should be automatically paused when container element is blured.
    * @return {boolean}
    */
   get pauseOnBlur() {
@@ -624,10 +738,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * Sets if engine should be automatically paused when container element is blured.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnBlur(value) {
@@ -636,8 +748,7 @@ class Black extends MessageDispatcher {
 
 
   /**
-   * When disabled the physics system and other systems may not work.
-   *
+   * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    * @return {boolean}
    */
   get enableFixedTimeStep() {
@@ -645,13 +756,16 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * enableFixedTimeStep
+   * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    *
    * @param {boolean} value
-   *
    * @return {void}
    */
   set enableFixedTimeStep(value) {
     this.mEnableFixedTimeStep = value;
+  }
+
+  get magic() {
+    return Math.random();
   }
 }

@@ -41,7 +41,7 @@ class Tween extends Component {
     /** @type {number} */
     this.mElapsed = 0;
 
-    /** @type {function ((Array|null), number):number} */
+    /** @type {function (v:?Array, e:number):number} */
     this.mInterpolation = Interpolation.linear;
 
     /** @type {number} */
@@ -65,7 +65,7 @@ class Tween extends Component {
     /** @type {boolean} */
     this.mPlayOnAdded = true;
 
-   /** @type {function(number):number} */
+   /** @type {function(e:number):number} */
     this.mEase = Ease.smootherStep;
 
     if (this.mProperties !== null) {
@@ -78,7 +78,7 @@ class Tween extends Component {
   /**
    * ease - Description
    *
-   * @return {function(number):number} Description
+   * @return {function(e:number):number} Description
    */
   get ease() {
     return this.mEase;
@@ -87,7 +87,7 @@ class Tween extends Component {
   /**
    * ease - Description
    *
-   * @param {function(number):number} value Description
+   * @param {function(e:number):number} value Description
    *
    * @return {void} Description
    */
@@ -98,7 +98,7 @@ class Tween extends Component {
   /**
    * interpolation - Description
    *
-   * @return {function(Array, number):number} Description
+   * @return {function(p:Array, v:number):number} Description
    */
   get interpolation() {
     return this.mInterpolation;
@@ -107,7 +107,7 @@ class Tween extends Component {
   /**
    * interpolation - Description
    *
-   * @param {function(Array, number):number} value Description
+   * @param {function(p:Array, v:number):number} value Description
    *
    * @return {void} Description
    */
@@ -230,6 +230,7 @@ class Tween extends Component {
    * to - Description
    *
    * @param {Object} values - Description
+   * @param {number} duration - Description
    *
    * @return {Tween} Description
    */

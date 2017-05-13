@@ -6,60 +6,69 @@
 /* @echo EXPORT */
 class Component extends MessageDispatcher {
   /**
-   * constructor - description
-   *
-   * @return {void}          description
+   * Creates new Component instance
    */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.gameObject = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
   /**
-   * onAdded - description
+   * Called when attached to GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onAdded(gameObject) {}
 
   /**
-   * onRemoved - description
+   * Called when detached from GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onRemoved(gameObject) {}
 
   /**
-   * onFixedUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every fixed frame update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every engine update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called after all updates have been executed.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onPostUpdate(dt) {}
 
@@ -67,6 +76,11 @@ class Component extends MessageDispatcher {
   dispose() {}
 
   // TODO: finish
+
+  /**
+   * Detaches this Component from its parent GameObject.
+   * @returns {void}
+   */
   removeFromParent() {
     if (this.gameObject === null)
       return;

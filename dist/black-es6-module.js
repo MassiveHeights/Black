@@ -2429,19 +2429,19 @@ export
 class Curve {
   constructor() {
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /** @type {Array<Vector>} */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mEachT = [];
   }
 
@@ -2681,6 +2681,22 @@ class Debug {
 
     if (Debug.throwOnFail)
       throw new Error(message);
+  }
+
+  static log(...message) {
+    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+  }
+
+  static info(...message) {
+    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
+  }
+
+  static warn(...message) {
+    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+  }
+
+  static error(...message) {
+    console.info('%c%s', 'color: #d50000;', 'ERROR:', ...message);
   }
 }
 
@@ -3049,31 +3065,31 @@ MessageDispatcher.mGlobalHandlers = {};
 export
 class Message {
   constructor() {
-    /** @private @type {*} */
+    /** @type {*} */
     this.mSender = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mName;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mPathMask = null;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mComponentMask = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mDirection = 'none';
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mSibblings = false;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mOrigin = null;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mTarget = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mCanceled = false;
   }
 
@@ -3230,6 +3246,7 @@ class System extends MessageDispatcher {
    * onUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -3240,6 +3257,7 @@ class System extends MessageDispatcher {
    * onPostUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -3296,11 +3314,9 @@ class System extends MessageDispatcher {
 export
 class Viewport extends MessageDispatcher {
   /**
-   * constructor - Description
-   *
-   * @param {HTMLElement} containerElement Description
-   *
-   * @return {void} Description
+   * constructor
+   * @param {HTMLElement} containerElement
+   * @return {void}
    */
   constructor(containerElement) {
     super();
@@ -3330,18 +3346,16 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * size - Description
-   *
-   * @return {Rectangle} Description
+   * size - Returns the size of a viewport.
+   * @return {Rectangle}
    */
   get size(){
     return this.mSize;
   }
 
   /**
-   * nativeDOM - Description
-   *
-   * @return {Element} Description
+   * nativeDOM - Retruns the HTML container element the engine runs in.
+   * @return {Element}
    */
   get nativeDOM(){
     return this.mContainerElement;
@@ -3358,60 +3372,69 @@ class Viewport extends MessageDispatcher {
 export
 class Component extends MessageDispatcher {
   /**
-   * constructor - description
-   *
-   * @return {void}          description
+   * Creates new Component instance
    */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.gameObject = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
   /**
-   * onAdded - description
+   * Called when attached to GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onAdded(gameObject) {}
 
   /**
-   * onRemoved - description
+   * Called when detached from GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onRemoved(gameObject) {}
 
   /**
-   * onFixedUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every fixed frame update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every engine update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called after all updates have been executed.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onPostUpdate(dt) {}
 
@@ -3419,6 +3442,11 @@ class Component extends MessageDispatcher {
   dispose() {}
 
   // TODO: finish
+
+  /**
+   * Detaches this Component from its parent GameObject.
+   * @returns {void}
+   */
   removeFromParent() {
     if (this.gameObject === null)
       return;
@@ -3722,7 +3750,7 @@ class GameObject extends MessageDispatcher {
   /**
    * addComponent - Adds Component instance to the end of the list,
    *
-   * @param  {Component} instances Component instance or instances.
+   * @param  {Component} component Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
    */
   addComponent(component) {
@@ -3957,7 +3985,7 @@ class GameObject extends MessageDispatcher {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -3977,7 +4005,7 @@ class GameObject extends MessageDispatcher {
   /**
    * onRender - Description
    *
-   * @param {NullDriver} video Description
+   * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
    * @return {void} Description
@@ -4079,7 +4107,7 @@ class GameObject extends MessageDispatcher {
   /**
    * globalToLocal - Description
    *
-   * @param {Vector} localPoint       Description
+   * @param {Vector} globalPoint       Description
    * @param {Vector|null} [outVector=null] Description
    *
    * @return {Vector} Description
@@ -4219,8 +4247,8 @@ class GameObject extends MessageDispatcher {
   /**
    * alignPivot
    *
-   * @param {number}  [px=0.5]
-   * @param {number}  [py=0.5]
+   * @param {number}  [ax=0.5]
+   * @param {number}  [ay=0.5]
    * @param {boolean} [includeChildren=true]
    *
    * @return {GameObject}
@@ -4497,9 +4525,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * @param {number} [seconds=1]
-   *
-   * @return {function(*):*}
+   * @return {function(gen:*):*}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
@@ -4511,7 +4537,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} message The name of the message to wait for
    *
-   * @return {function(?):?} Description
+   * @return {function(gen:*):*} Description
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
@@ -4717,7 +4743,7 @@ class GameObject extends MessageDispatcher {
    * forEach - Runs action accross all object mathing the name.
    *
    * @param {GameObject} node   Description
-   * @param {function(GameObject)} action Description
+   * @param {function(node:GameObject)} action Description
    *
    * @return {void} Description
    */
@@ -5567,7 +5593,7 @@ var BlendMode = {
 };
 
 export
-class NullDriver {
+class VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -5745,7 +5771,7 @@ class NullDriver {
 }
 
 export
-class CanvasDriver extends NullDriver {
+class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -5769,8 +5795,8 @@ class CanvasDriver extends NullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
-    cvs.id = "canvas";
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.id = 'canvas';
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
@@ -5948,7 +5974,7 @@ class CanvasDriver extends NullDriver {
 }
 
 export
-class DOMDriver extends NullDriver {
+class DOMDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
@@ -6264,7 +6290,7 @@ class DisplayObject extends GameObject {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -6418,7 +6444,7 @@ class Sprite extends DisplayObject {
   /**
    * @override
    * @private
-   * @param {NullDriver} video
+   * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
@@ -6515,37 +6541,37 @@ class TextField extends DisplayObject {
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mText = text;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mNeedInvalidate = true;
 
-    /** @private @type {Rectangle} */
+    /** @type {Rectangle} */
     this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mFieldHeight = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
+    /** @type {TextInfo} */
     this.mStyle = style || new TextInfo();
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mStyle.name = name || style.name;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mStyle.size = size || style.size;
 
-    /** @public @type {boolean} */
+    /** @type {boolean} */
     this.mAutoSize = true;
 
     this.__validate(this.mCacheBounds);
@@ -6553,8 +6579,8 @@ class TextField extends DisplayObject {
 
   /**
    * __render - Description
-   * @private @override
-   * @param {NullDriver} video           Description
+   * @override
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -7024,8 +7050,10 @@ class FloatScatter extends Scatter {
   constructor(min, max = undefined, ease = null) {
     super();
 
-    this.mMin = min;
-    this.mMax = max == null ? min : max;
+    // NOTE: dont make us @private @member
+    this.min = min;
+    this.max = max == null ? min : max;
+    
     this.ease = ease;
   }
 
@@ -7036,7 +7064,7 @@ class FloatScatter extends Scatter {
    * @return {number}
    */
   getValue() {
-    return Math.random() * (this.mMax - this.mMin) + this.mMin;
+    return Math.random() * (this.max - this.min) + this.min;
   }
 
 
@@ -7051,7 +7079,7 @@ class FloatScatter extends Scatter {
     if (this.ease !== null)
       t = this.ease(t);
 
-    return this.mMin + t * (this.mMax - this.mMin);
+    return this.min + t * (this.max - this.min);
   }
 }
 
@@ -7060,9 +7088,9 @@ class VectorScatter extends Scatter {
   constructor(minX, minY, maxX, maxY) {
     super();
 
+    // NOTE: dont make us @private @member
     this.minX = minX;
     this.minY = minY;
-
     this.maxX = maxX;
     this.maxY = maxY;
   }
@@ -7649,7 +7677,7 @@ class Emitter extends DisplayObject {
     this.mEmitCount = new FloatScatter(10);
 
     /** @type {FloatScatter} */
-    this.mEmitNumRepeats = new FloatScatter(10);
+    this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /** @type {number} */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
@@ -7747,6 +7775,7 @@ class Emitter extends DisplayObject {
         else {
           this.mEmitIntervalLeft -= dt;
           this.mNextUpdateAt = t + this.mEmitIntervalLeft;
+          //console.log(this.mEmitIntervalLeft);
 
           // reset interval
           if (this.mEmitIntervalLeft <= 0)
@@ -8255,26 +8284,27 @@ class Input extends System {
     /** @type {boolean} */
     this.mIsPointerDown = false;
 
+    this.mNeedUpEvent = false;
+
     /** @type {Array<InputComponent>} */
     this.mInputListeners = [];
   }
 
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
+    //debugger;
 
     if (window.PointerEvent)
       this.mEventList = Input.mPointerEventList;
-    // else if (window.MSPointerEvent)
-    //   this.mEventList = Input.mMSPointerEventList;
     else if (Device.isTouch && Device.isMobile)
       this.mEventList = Input.mTouchEventList;
     else
       this.mEventList = Input.mMouseEventList;
 
-    // TODO: handle enter, cancel events too
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
+    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
@@ -8290,21 +8320,26 @@ class Input extends System {
 
 
   /**
-   * __onKeyEvent - Description
+   * @param {Event} e
    *
-   * @param {Event} e Description
-   *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onKeyEvent(e) {
     this.mKeyQueue.push(e);
     return true;
   }
 
+  __onPointerEventDoc(e) {
+    let over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+    if (over === false && this.mNeedUpEvent === true) {
+      this.mNeedUpEvent = false;
+      this.__pushEvent(e);
+    }
+  }
+
 
   /**
-   * __onPointerEvent - Description
-   *
    * @param {Event} e Description
    *
    * @return {boolean} Description
@@ -8312,6 +8347,12 @@ class Input extends System {
   __onPointerEvent(e) {
     e.preventDefault();
 
+    this.__pushEvent(e);
+
+    return true;
+  }
+
+  __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
       p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */ (e));
@@ -8326,8 +8367,6 @@ class Input extends System {
       x: p.x,
       y: p.y
     });
-
-    return true;
   }
 
 
@@ -8346,7 +8385,6 @@ class Input extends System {
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
 
-
   /**
    * __getTouchPos - Description
    *
@@ -8360,8 +8398,8 @@ class Input extends System {
 
     /** @type {Touch} */
     let touch = evt.changedTouches[0]; // ios? what about android?
-    let x = touch.pageX;
-    let y = touch.pageY;
+    let x = touch.clientX;
+    let y = touch.clientY;
 
     let scaleX = canvas.clientWidth / rect.width;
     let scaleY = canvas.clientHeight / rect.height;
@@ -8442,8 +8480,6 @@ class Input extends System {
       return;
 
     this.__addListener([component]);
-    //this.mInputListeners.push(/** @type {InputComponent} */ (component));
-    //this.__sortListeners();
   }
 
 
@@ -8483,6 +8519,9 @@ class Input extends System {
       let ix = this.mEventList.indexOf(nativeEvent.e.type);
       let fnName = Input.mInputEventsLookup[ix];
 
+      if (fnName === 'pointerDown')
+        this.mNeedUpEvent = true;
+
       pointerPos.set(nativeEvent.x, nativeEvent.y);
 
       /** @type {InputComponent|null} */
@@ -8504,7 +8543,6 @@ class Input extends System {
         }
 
         // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-
         if (ix === Input.POINTER_DOWN)
           this.mIsPointerDown = true;
         else if (ix === Input.POINTER_UP)
@@ -8518,7 +8556,6 @@ class Input extends System {
         currentComponent.gameObject.post('~' + fnName);
       }
 
-      //console.log(fnName);
       this.post(fnName);
     }
 
@@ -8651,28 +8688,22 @@ Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 /** @type {Array<string>}
  *  @const
  */
-
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
-
-/** @type {Array<string>}
- *  @const
- */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointercancel', 'pointerenter', 'pointerleave'];
-
-// /** @type {Array<string>}
-//  *  @const
-//  */
-// Input.mMSPointerEventList = ['MSPointerMove', 'MSPointerDown', 'MSPointerUp', 'MSPointerCancel', 'MSPointerEnter', 'MSPointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mouseenter', 'mouseleave'];
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
 export
 class InputComponent extends Component {
@@ -9393,7 +9424,7 @@ class Tween extends Component {
     /** @type {number} */
     this.mElapsed = 0;
 
-    /** @type {function ((Array|null), number):number} */
+    /** @type {function (v:?Array, e:number):number} */
     this.mInterpolation = Interpolation.linear;
 
     /** @type {number} */
@@ -9417,7 +9448,7 @@ class Tween extends Component {
     /** @type {boolean} */
     this.mPlayOnAdded = true;
 
-   /** @type {function(number):number} */
+   /** @type {function(e:number):number} */
     this.mEase = Ease.smootherStep;
 
     if (this.mProperties !== null) {
@@ -9430,7 +9461,7 @@ class Tween extends Component {
   /**
    * ease - Description
    *
-   * @return {function(number):number} Description
+   * @return {function(e:number):number} Description
    */
   get ease() {
     return this.mEase;
@@ -9439,7 +9470,7 @@ class Tween extends Component {
   /**
    * ease - Description
    *
-   * @param {function(number):number} value Description
+   * @param {function(e:number):number} value Description
    *
    * @return {void} Description
    */
@@ -9450,7 +9481,7 @@ class Tween extends Component {
   /**
    * interpolation - Description
    *
-   * @return {function(Array, number):number} Description
+   * @return {function(p:Array, v:number):number} Description
    */
   get interpolation() {
     return this.mInterpolation;
@@ -9459,7 +9490,7 @@ class Tween extends Component {
   /**
    * interpolation - Description
    *
-   * @param {function(Array, number):number} value Description
+   * @param {function(p:Array, v:number):number} value Description
    *
    * @return {void} Description
    */
@@ -9582,6 +9613,7 @@ class Tween extends Component {
    * to - Description
    *
    * @param {Object} values - Description
+   * @param {number} duration - Description
    *
    * @return {Tween} Description
    */
@@ -9809,59 +9841,93 @@ class Tween extends Component {
 export
 class Animation {
   /**
-   * constructor - Description
+   * Creates an instance of Animation class
    *
-   * @param {AnimationController}    controller  Description
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    frames      Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {AnimationController}    controller  Animation controller
+   * @param {string}                 name        The name of animation
+   * @param {Array<Texture>}         frames      Array of Textures for this animation
+   * @param {number}                 [fps=14]    Frame rate
+   * @param {boolean}                [loop=true] Is animations should be looped
    */
   constructor(controller, name, frames, fps = 14, loop = true) {
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
-    assert(fps > 0, '');
 
+    /**
+     * @private
+     * @type {AnimationController}
+     */
     this.mController = controller;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mFrames = frames;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentFrame = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextFrameAt = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = fps;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameDuration = 1 / this.mFPS;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mLoop = loop;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStopped = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCompleted = false;
   }
 
-
   /**
-   * play - Description
-   *
-   * @return {Texture} Description
+   * Plays animation. If Animation is completed, current frame is reset to 0.
+   * @return {Texture}
    */
   play() {
     if (this.mCompleted === true) {
@@ -9879,36 +9945,30 @@ class Animation {
     return this.mFrames[this.mCurrentFrame];
   }
 
-
   /**
-   * stop - Description
-   *
-   * @return {void} Description
+   * Stops animation and resets the value of current frame.
+   * @return {void}
    */
   stop() {
     this.mStopped = true;
     this.mCurrentFrame = 0;
   }
 
-
   /**
-   * pause - Description
-   *
-   * @return {void} Description
+   * Pauses animation.
+   * @return {void}
    */
   pause() {
     this.mPaused = true;
     this.mElapsed = this.mNextFrameAt - Black.instance.uptime;
   }
 
-
   /**
-   * __update - Description
+   * @private
+   * @param {number} dt
+   * @param {number} t
    *
-   * @param {number} dt Description
-   * @param {number} t  Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   __update(dt, t) {
     if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
@@ -9919,8 +9979,7 @@ class Animation {
     if (this.mCurrentFrame >= this.mFrames.length) {
       if (this.mLoop === true) {
         this.mCurrentFrame = 0;
-      }
-      else {
+      } else {
         this.mCurrentFrame = this.mFrames.length - 1;
         this.mController.post('complete', this);
         this.mCompleted = true;
@@ -9934,7 +9993,7 @@ class Animation {
   }
 
   /**
-   * fps - Description
+   * Gets/Sets annimation speed in Frames per Second
    *
    * @return {number} Description
    */
@@ -9943,11 +10002,9 @@ class Animation {
   }
 
   /**
-   * fps - Description
-   *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * Gets/Sets annimation speed in Frames per Second
+   * @param {number} value
+   * @return {void}
    */
   set fps(value) {
     Debug.assert(value > 0, 'FPS must be greater than 0.');
@@ -9961,54 +10018,51 @@ class Animation {
   }
 
   /**
-   * loop - Description
-   *
-   * @return {boolean} Description
+   * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+   * @return {boolean}
    */
   get loop() {
     return this.mLoop;
   }
 
   /**
-   * loop - Description
-   *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+   * @param {boolean} value
+   * @return {void}
    */
   set loop(value) {
     this.mLoop = value;
   }
 
-
   /**
-   * frames - Description
-   *
-   * @return {Array<Texture>} Description
+   * Gets array of Texture.
+   * @return {Array<Texture>}
    */
   get frames() {
     return this.mFrames;
   }
 
-
   /**
-   * playing - Description
-   *
-   * @return {boolean} Description
+   * Returns true if Animation is playing (neither stopped nor paused).
+   * @return {boolean}
    */
-  get isPlaying(){
+  get isPlaying() {
     return this.mPaused === false && this.mStopped === false;
   }
 
   /**
-   * playing - Description
-   *
-   * @return {boolean} Description
+   * Returns true if animation is completed.
+   * @return {boolean}
    */
-  get isComplete(){
+  get isComplete() {
     return this.mCompleted;
   }
 
+
+  /**
+   * Returns name of this animation.
+   * @return {string}
+   */
   get name() {
     return this.mName;
   }
@@ -10016,44 +10070,70 @@ class Animation {
 
 export
 class AnimationController extends Component {
+  /**
+   * Creates an instance of AnimationController
+   */
   constructor() {
     super();
 
-    /** @type {Object<string, Animation>} */
+    /**
+     * @private
+     * @type {Object<string, Animation>}
+     */
     this.mAnimations = {};
 
-    /** @type {Animation|null} */
+    /**
+     * @private
+     * @type {Animation|null}
+     */
     this.mCurrentAnim = null;
   }
 
-
   /**
-   * get - Description
-   *
-   * @param {string} name Description
-   *
-   * @return {Animation} Description
+   * Returns the Animation object that exists with the specified name.
+   * @param {string} name The name of the child to return.
+   * @returns {Animation} Returns the Animation object that exists with the specified name.
    */
-  get(name){
+  getByName(name){
+    Debug.assert(name !== null, 'Animation must be set first.');
     Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
     return this.mAnimations[name];
   }
 
+  /**
+   * Removes Animation object that exists with the specified name. If animation is playing right now it will be stopped.
+   * @param {string} name The name of the animation to remove.
+   * @returns {void}
+   */
+  remove(name) {
+    Debug.assert(name !== null, 'Animation name shall not be null.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name) === true, 'Unable to find animation.');
+
+    let anim = this.mAnimations[name];
+
+    if (this.mCurrentAnim !== null && this.mCurrentAnim === anim) {
+      this.stop();
+      delete this.mAnimations[name];
+    }
+
+    this.mCurrentAnim = null;
+  }
 
   /**
-   * set - Description
+   * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
    *
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    textures    Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {string}          name        The name of animation to update
+   * @param {Array<Texture>}  textures    Array of Textures
+   * @param {number}          [fps=14]    Frames Per Second
+   * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
    *
-   * @return {Animation} Description
+   * @return {Animation} The newly created Animation Object.
    */
-  set(name, textures, fps = 14, loop = true) {
+  add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animatation with same name alredy exists');
 
     let anim = new Animation(this, name, textures, fps, loop);
     this.mAnimations[name] = anim;
@@ -10061,13 +10141,10 @@ class AnimationController extends Component {
     return anim;
   }
 
-
   /**
-   * play - Description
-   *
-   * @param {string} name Description
-   *
-   * @return {void} Description
+   * Plays animation that exists with the specified name.
+   * @param {string} name The name of animation to play.
+   * @return {void}
    */
   play(name) {
     Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
@@ -10084,11 +10161,9 @@ class AnimationController extends Component {
       sprite.texture = texture;
   }
 
-
   /**
-   * stop - Description
-   *
-   * @return {void} Description
+   * Stops active animation. If no animations are playing at the moment nothing will happen.
+   * @return {void}
    */
   stop() {
     if (this.mCurrentAnim === null)
@@ -10097,11 +10172,9 @@ class AnimationController extends Component {
     this.mCurrentAnim.stop();
   }
 
-
   /**
-   * pause - Description
-   *
-   * @return {void} Description
+   * Pauses active animation.
+   * @return {void}
    */
   pause() {
     if (this.mCurrentAnim === null)
@@ -10110,14 +10183,11 @@ class AnimationController extends Component {
     this.mCurrentAnim.pause();
   }
 
-
   /**
-   * onPostUpdate - Description
+   * @protected
+   * @param {number} dt Amount of seconds since the last update
    *
-   * @override
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onPostUpdate(dt) {
     if (this.mCurrentAnim === null)
@@ -10132,11 +10202,9 @@ class AnimationController extends Component {
     sprite.texture = newTexture;
   }
 
-
   /**
-   * currentAnimation
-   *
-   * @return {Animation|null}
+   * Returns currently active animation.
+   * @returns {Animation|null}
    */
   get currentAnimation() {
     return this.mCurrentAnim;
@@ -10159,122 +10227,239 @@ class Black extends MessageDispatcher {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  constructor(containerElementId, rootClass, videoDriverName = 'canvas') {
+  constructor(containerElementId, rootClass, videoDriverClass) {
     super();
 
     // Dirty GCC workaround
     window['Black'] = {};
     window['Black']['instance'] = this;
 
-    var css = "background: #000; color: #fff;";
-    console.log('%c ~Black ', css);
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mContainerElementId = containerElementId;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {string} */
-    this.mVideoName = videoDriverName;
+    /**
+     * @private
+     * @type {function(new: VideoNullDriver)}
+     */
+    this.mVideoDriverClass = videoDriverClass;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mSimulationTimestep = 1000 / 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mUptime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameAccum = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameTimeMs = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFpsUpdate = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFramesThisSecond = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNumUpdateSteps = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMinFrameDelay = 0;
 
-    /** @type {Array<System>} */
+    /**
+     * @private
+     * @type {Array<System>}
+     */
     this.mSystems = [];
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mBounds = new Rectangle();
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsRunning = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPanic = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameUpdateTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameRenderTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRAFHandle = -1; // not sure
 
-    /** @type {Viewport} */
+    /**
+     * @private
+     * @type {Viewport}
+     */
     this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /**
+     * @private
+     * @type {VideoNullDriver}
+     */
     this.mVideo = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mUnpausing = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPauseOnHide = true;
 
-    /** @type {boolean} */
-    this.mPauseOnBlur = false;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mPauseOnBlur = true;
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mTagCache = {};
 
-    /** @type {function(new: GameObject)|null} */
+    /**
+     * @private
+     * @type {function(new: GameObject)|null}
+     */
     this.mRootClass = rootClass;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.mRoot = null;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mEnableFixedTimeStep = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mWasStopped = false;
   }
 
+  /**
+   * pause - Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
+   *
+   * @return {void}
+   */
   pause() {
     this.mPaused = true;
   }
 
+  /**
+   * resume - Resumes update execution.
+   *
+   * @return {void}
+   */
   resume() {
     this.mUnpausing = true;
   }
@@ -10310,7 +10495,6 @@ class Black extends MessageDispatcher {
     }
   }
 
-
   /**
    * addSystem - Adds a given system to the system list.
    *
@@ -10321,7 +10505,6 @@ class Black extends MessageDispatcher {
     this.mSystems.push(system);
     return system;
   }
-
 
   /**
    * removeSystem - Removes the given system to the system list.
@@ -10341,20 +10524,24 @@ class Black extends MessageDispatcher {
   }
 
   __bootVideo() {
-    if (this.mVideoName === 'canvas')
-      this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'dom')
-      this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else if (this.mVideoName === 'null' || this.mVideoName == null)
-      this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);
-    else
-      Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+    this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
+
+  /**
+   * start - Main method to make magic happen.
+   *
+   * @return {void}
+   */
   start() {
+    if (this.mWasStopped === true) {
+      Debug.error('Black engine cannot be re-started.');
+      return;
+    }
+
     this.constructor.instance = this;
 
-    if (this.mIsStarted)
+    if (this.mIsStarted === true)
       return;
 
     this.__bootViewport();
@@ -10372,7 +10559,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
+    this.mRAFHandle = requestAnimationFrame(function(timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -10385,19 +10572,29 @@ class Black extends MessageDispatcher {
         self.__update(x);
       });
     });
+
+    // TODO: show only when needed, eg required by any system
+    if (this.mEnableFixedTimeStep === false) {
+      Debug.log('Fixed time-step is disabled, some systems may not work.');
+      Debug.info('Fixed time-step is disabled, some systems may not work.');
+      Debug.warn('Fixed time-step is disabled, some systems may not work.');
+      Debug.error('Fixed time-step is disabled, some systems may not work.');
+    }
   }
 
 
+  /**
+   * stop - Stops execution, destroys resources and scene. Cannot be started again.
+   *
+   * @return {type} Description
+   */
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
     cancelAnimationFrame(this.mRAFHandle);
   }
 
-
   /**
-   * __update - Description
-   *
    * @param {number} timestamp Description
    *
    * @return {void} Description
@@ -10446,15 +10643,17 @@ class Black extends MessageDispatcher {
       this.mCurrentTime = timestamp;
       Time.mDeltaTime = dt;
 
-      while (this.mFrameAccum >= this.mSimulationTimestep) {
-        this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
+      if (this.mEnableFixedTimeStep === true) {
+        while (this.mFrameAccum >= this.mSimulationTimestep) {
+          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
 
-        this.mFrameAccum -= this.mSimulationTimestep;
+          this.mFrameAccum -= this.mSimulationTimestep;
 
-        if (++this.mNumUpdateSteps >= (60 * 3)) {
-          console.log('[BLACK]: Not enough time to calculate update logic.');
-          this.mIsPanic = true;
-          break;
+          if (++this.mNumUpdateSteps >= (60 * 3)) { // 3 seconds window
+            console.log('[BLACK]: Not enough time to calculate update logic.');
+            this.mIsPanic = true;
+            break;
+          }
         }
       }
 
@@ -10475,13 +10674,9 @@ class Black extends MessageDispatcher {
     this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
   }
 
-
   /**
-   * __internalFixedUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @param {number} dt
+   * @return {void}
    */
   __internalFixedUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10490,13 +10685,9 @@ class Black extends MessageDispatcher {
     this.mRoot.__fixedUpdate(dt);
   }
 
-
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @param {number} dt
+   * @return {void}
    */
   __internalUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10506,11 +10697,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @param {number} dt
+   * @return {void}
    */
   __internalPostUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10520,39 +10708,31 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * bounds - Description
-   *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   get bounds() {
     return this.mBounds;
   }
 
-
   /**
-   * root - Description
-   *
-   * @return {GameObject} Description
+   * root - Returns the root GameObject.
+   * @return {GameObject}
    */
   get root() {
     return this.mRoot;
   }
 
-
   /**
-   * video - Description
-   *
-   * @return {NullDriver} Description
+   * video - Returns current video driver.
+   * @return {VideoNullDriver} Description
    */
   get video() {
     return this.mVideo;
   }
 
-
   /**
-   * simulationTimestep - Description
-   *
-   * @return {number} Description
+   * simulationTimestep - If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+   * @return {number}
    */
   get simulationTimestep() {
     return this.mSimulationTimestep;
@@ -10560,43 +10740,35 @@ class Black extends MessageDispatcher {
 
 
   /**
-   * simulationTimestep - Description
+   * simulationTimestep - Sets the number of milliseconds for fixed-time-step to run over.
    *
-   * @param {number} timestep Description
-   *
-   * @return {void} Description
+   * @param {type} timestep
+   * @return {void}
    */
   set simulationTimestep(timestep) {
     this.mSimulationTimestep = timestep;
   }
 
-
   /**
-   * FPS - Description
-   *
-   * @return {number} Description
+   * FPS - Returns current frame rate
+   * @return {number}
    */
   get FPS() {
     return this.mFPS;
   }
 
-
   /**
-   * maxFPS - Description
-   *
-   * @return {number} Description
+   * maxAllowedFPS - Gets max amount updates engine can do in a second.
+   * @return {number}
    */
-  get maxFPS() {
+  get maxAllowedFPS() {
     return 1000 / this.mMinFrameDelay;
   }
 
-
   /**
-   * maxAllowedFPS - Description
-   *
-   * @param {number} fps Description
-   *
-   * @return {void} Description
+   * maxAllowedFPS - Sets the number of update engine will do per second.
+   * @param {number} fps
+   * @return {void}
    */
   set maxAllowedFPS(fps) {
     if (fps <= 0)
@@ -10605,44 +10777,38 @@ class Black extends MessageDispatcher {
       this.mMinFrameDelay = 1000 / fps;
   }
 
-
   /**
-   * viewport - Description
-   *
-   * @return {Viewport} Description
+   * viewport - Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+   * @return {Viewport}
    */
   get viewport() {
     return this.mViewport;
   }
 
-
   /**
-   * containerElement - Description
-   *
-   * @return {Element} Description
+   * containerElement - Retruns the HTML container element the engine runs in.
+   * @return {Element}
    */
   get containerElement() {
     return this.mContainerElement;
   }
 
-
   /**
-   * uptime - Description
-   *
-   * @return {number} Description
+   * uptime - Amounts of seconds since engine start.
+   * @return {number}
    */
   get uptime() {
     return this.mUptime;
   }
 
   /**
-   * onTagUpdated - Description
+   * onTagUpdated
+   * @protected
+   * @param {GameObject} child
+   * @param {string|null} oldTag
+   * @param {string|null} newTag
    *
-   * @param {GameObject} child Description
-   * @param {string|null} oldTag   Description
-   * @param {string|null} newTag   Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onTagUpdated(child, oldTag, newTag) {
     if (oldTag !== null) {
@@ -10662,8 +10828,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenAdded(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10691,8 +10858,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenRemoved(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10719,9 +10887,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentAdded(child, component) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10734,16 +10903,12 @@ class Black extends MessageDispatcher {
     component.onAdded(child);
   }
 
-
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentRemoved(child, component) {
-    //child.mBlack = null;
-    //console.log('onComponentRemoved', child, component);
-
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onComponentRemoved(child, component);
 
@@ -10755,8 +10920,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
    * @return {boolean}
    */
   get pauseOnHide() {
@@ -10764,10 +10928,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnHide(value) {
@@ -10775,8 +10937,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
    * @return {boolean}
    */
   get pauseOnBlur() {
@@ -10784,23 +10945,36 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnBlur(value) {
     this.mPauseOnBlur = value;
   }
 
+
   /**
-   * videoName
-   *
-   * @return {string}
+   * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+   * @return {boolean}
    */
-  get videoName() {
-    return this.mVideoName;
+  get enableFixedTimeStep() {
+    return this.mEnableFixedTimeStep;
+  }
+
+  /**
+   * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+   *
+   * @param {boolean} value
+   *
+   * @return {void}
+   */
+  set enableFixedTimeStep(value) {
+    this.mEnableFixedTimeStep = value;
+  }
+
+  get magic() {
+    return Math.random();
   }
 }
 

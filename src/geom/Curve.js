@@ -2,19 +2,19 @@
 class Curve {
   constructor() {
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /** @type {Array<Vector>} */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mEachT = [];
   }
 

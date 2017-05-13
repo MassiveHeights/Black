@@ -1,11 +1,9 @@
 /* @echo EXPORT */
 class Viewport extends MessageDispatcher {
   /**
-   * constructor - Description
-   *
-   * @param {HTMLElement} containerElement Description
-   *
-   * @return {void} Description
+   * constructor
+   * @param {HTMLElement} containerElement
+   * @return {void}
    */
   constructor(containerElement) {
     super();
@@ -35,18 +33,16 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * size - Description
-   *
-   * @return {Rectangle} Description
+   * size - Returns the size of a viewport.
+   * @return {Rectangle}
    */
   get size(){
     return this.mSize;
   }
 
   /**
-   * nativeDOM - Description
-   *
-   * @return {Element} Description
+   * nativeDOM - Retruns the HTML container element the engine runs in.
+   * @return {Element}
    */
   get nativeDOM(){
     return this.mContainerElement;

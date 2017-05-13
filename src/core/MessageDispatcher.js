@@ -360,31 +360,31 @@ MessageDispatcher.mGlobalHandlers = {};
 /* @echo EXPORT */
 class Message {
   constructor() {
-    /** @private @type {*} */
+    /** @type {*} */
     this.mSender = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mName;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mPathMask = null;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mComponentMask = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mDirection = 'none';
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mSibblings = false;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mOrigin = null;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mTarget = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mCanceled = false;
   }
 

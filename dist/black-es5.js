@@ -2907,19 +2907,19 @@ var Curve = function () {
   function Curve() {
     _classCallCheck(this, Curve);
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /** @type {Array<Vector>} */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /** @type {Array<number>} */
     this.mEachT = [];
   }
 
@@ -3199,6 +3199,27 @@ var Debug = function () {
       if (Debug.logOnFail) console.error('[ASSERT]', message);
 
       if (Debug.throwOnFail) throw new Error(message);
+    }
+  }, {
+    key: 'info',
+    value: function info() {
+      var _console;
+
+      (_console = console).info.apply(_console, arguments);
+    }
+  }, {
+    key: 'warn',
+    value: function warn() {
+      var _console2;
+
+      (_console2 = console).warn.apply(_console2, arguments);
+    }
+  }, {
+    key: 'error',
+    value: function error() {
+      var _console3;
+
+      (_console3 = console).error.apply(_console3, arguments);
     }
   }]);
 
@@ -3614,31 +3635,31 @@ var Message = function () {
   function Message() {
     _classCallCheck(this, Message);
 
-    /** @private @type {*} */
+    /** @type {*} */
     this.mSender = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mName;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mPathMask = null;
 
-    /** @private @type {string|null} */
+    /** @type {string|null} */
     this.mComponentMask = null;
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mDirection = 'none';
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mSibblings = false;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mOrigin = null;
 
-    /** @private @type {Object} */
+    /** @type {Object} */
     this.mTarget = null;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mCanceled = false;
   }
 
@@ -3858,6 +3879,7 @@ var System = function (_MessageDispatcher) {
      * onUpdate - Description
      *
      * @param {number} dt Description
+     * @param {number} t Description
      *
      * @return {void} Description
      */
@@ -3870,6 +3892,7 @@ var System = function (_MessageDispatcher) {
      * onPostUpdate - Description
      *
      * @param {number} dt Description
+     * @param {number} t Description
      *
      * @return {void} Description
      */
@@ -3945,11 +3968,9 @@ var Viewport = function (_MessageDispatcher) {
   _inherits(Viewport, _MessageDispatcher);
 
   /**
-   * constructor - Description
-   *
-   * @param {HTMLElement} containerElement Description
-   *
-   * @return {void} Description
+   * constructor
+   * @param {HTMLElement} containerElement
+   * @return {void}
    */
   function Viewport(containerElement) {
     _classCallCheck(this, Viewport);
@@ -3986,9 +4007,8 @@ var Viewport = function (_MessageDispatcher) {
     }
 
     /**
-     * size - Description
-     *
-     * @return {Rectangle} Description
+     * size - Returns the size of a viewport.
+     * @return {Rectangle}
      */
 
   }, {
@@ -3998,9 +4018,8 @@ var Viewport = function (_MessageDispatcher) {
     }
 
     /**
-     * nativeDOM - Description
-     *
-     * @return {Element} Description
+     * nativeDOM - Retruns the HTML container element the engine runs in.
+     * @return {Element}
      */
 
   }, {
@@ -4465,7 +4484,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * addComponent - Adds Component instance to the end of the list,
      *
-     * @param  {Component} instances Component instance or instances.
+     * @param  {Component} component Component instance or instances.
      * @return {Component} The Component instance you pass in the instances parameter.
      */
 
@@ -4671,7 +4690,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * __render - Description
      *
-     * @param {NullDriver} video           Description
+     * @param {VideoNullDriver} video           Description
      * @param {number} time            Description
      * @param {number} parentAlpha     Description
      * @param {string} parentBlendMode Description
@@ -4694,7 +4713,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * onRender - Description
      *
-     * @param {NullDriver} video Description
+     * @param {VideoNullDriver} video Description
      * @param {number} time  Description
      *
      * @return {void} Description
@@ -4826,7 +4845,7 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * globalToLocal - Description
      *
-     * @param {Vector} localPoint       Description
+     * @param {Vector} globalPoint       Description
      * @param {Vector|null} [outVector=null] Description
      *
      * @return {Vector} Description
@@ -4855,8 +4874,8 @@ var GameObject = function (_MessageDispatcher) {
     /**
      * alignPivot
      *
-     * @param {number}  [px=0.5]
-     * @param {number}  [py=0.5]
+     * @param {number}  [ax=0.5]
+     * @param {number}  [ay=0.5]
      * @param {boolean} [includeChildren=true]
      *
      * @return {GameObject}
@@ -4911,9 +4930,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * @param {number} [seconds=1]
-     *
-     * @return {function(*):*}
+     * @return {function(gen:*):*}
      */
 
   }, {
@@ -4933,7 +4950,7 @@ var GameObject = function (_MessageDispatcher) {
      *
      * @param {string} message The name of the message to wait for
      *
-     * @return {function(?):?} Description
+     * @return {function(gen:*):*} Description
      */
 
   }, {
@@ -5623,7 +5640,7 @@ var GameObject = function (_MessageDispatcher) {
      * forEach - Runs action accross all object mathing the name.
      *
      * @param {GameObject} node   Description
-     * @param {function(GameObject)} action Description
+     * @param {function(node:GameObject)} action Description
      *
      * @return {void} Description
      */
@@ -6712,14 +6729,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var NullDriver = function () {
+var VideoNullDriver = function () {
   /**
    * @param  {HTMLElement} containerElement description
    * @param  {number} width            description
    * @param  {number} height           description
    */
-  function NullDriver(containerElement, width, height) {
-    _classCallCheck(this, NullDriver);
+  function VideoNullDriver(containerElement, width, height) {
+    _classCallCheck(this, VideoNullDriver);
 
     /** @type {string} */
     this.mGlobalBlendMode = 'auto';
@@ -6747,7 +6764,7 @@ var NullDriver = function () {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  _createClass(NullDriver, [{
+  _createClass(VideoNullDriver, [{
     key: '__onResize',
     value: function __onResize(msg, rect) {
       var w = this.mContainerElement.clientWidth;
@@ -6926,9 +6943,9 @@ var NullDriver = function () {
     }
   }]);
 
-  return NullDriver;
+  return VideoNullDriver;
 }();
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6940,8 +6957,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasDriver = function (_NullDriver) {
-  _inherits(CanvasDriver, _NullDriver);
+var CanvasDriver = function (_VideoNullDriver) {
+  _inherits(CanvasDriver, _VideoNullDriver);
 
   /**
    * @param  {HTMLElement} containerElement description
@@ -6971,10 +6988,10 @@ var CanvasDriver = function (_NullDriver) {
 
 
   _createClass(CanvasDriver, [{
-    key: "__createCanvas",
+    key: '__createCanvas',
     value: function __createCanvas() {
-      var cvs = /** @type {HTMLCanvasElement} */document.createElement("canvas");
-      cvs.id = "canvas";
+      var cvs = /** @type {HTMLCanvasElement} */document.createElement('canvas');
+      cvs.id = 'canvas';
       this.mContainerElement.appendChild(cvs);
 
       this.mCtx = /** @type {CanvasRenderingContext2D} */cvs.getContext('2d');
@@ -6982,9 +6999,9 @@ var CanvasDriver = function (_NullDriver) {
       this.mCtx.canvas.height = this.mClientHeight;
     }
   }, {
-    key: "__onResize",
+    key: '__onResize',
     value: function __onResize(msg, rect) {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "__onResize", this).call(this, msg, rect);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), '__onResize', this).call(this, msg, rect);
 
       this.mCtx.canvas.width = this.mClientWidth;
       this.mCtx.canvas.height = this.mClientHeight;
@@ -6999,9 +7016,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "setTransform",
+    key: 'setTransform',
     value: function setTransform(m) {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "setTransform", this).call(this, m);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'setTransform', this).call(this, m);
 
       var v = m.value;
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
@@ -7016,7 +7033,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "drawImage",
+    key: 'drawImage',
 
 
     /**
@@ -7049,13 +7066,13 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "drawText",
+    key: 'drawText',
     value: function drawText(text, style, bounds, textWidth, textHeight) {
       this.mCtx.beginPath();
       this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
       this.mCtx.clip();
 
-      this.mCtx.font = style.style + " " + style.weight + " " + style.size + "px \"" + style.name + "\"";
+      this.mCtx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
       this.mCtx.fillStyle = this.hexColorToString(style.color);
 
       var x = 0;
@@ -7079,7 +7096,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "clear",
+    key: 'clear',
     value: function clear() {
       this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
@@ -7091,9 +7108,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "beginFrame",
+    key: 'beginFrame',
     value: function beginFrame() {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "beginFrame", this).call(this);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'beginFrame', this).call(this);
 
       this.clear();
       this.mCtx.save();
@@ -7106,9 +7123,9 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "endFrame",
+    key: 'endFrame',
     value: function endFrame() {
-      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), "endFrame", this).call(this);
+      _get(CanvasDriver.prototype.__proto__ || Object.getPrototypeOf(CanvasDriver.prototype), 'endFrame', this).call(this);
 
       this.mCtx.restore();
     }
@@ -7122,7 +7139,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "getTextureFromCanvas",
+    key: 'getTextureFromCanvas',
     value: function getTextureFromCanvas(canvas) {
       return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
     }
@@ -7137,7 +7154,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "save",
+    key: 'save',
     value: function save(gameObject) {
       this.mCtx.save();
     }
@@ -7149,12 +7166,12 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "restore",
+    key: 'restore',
     value: function restore() {
       this.mCtx.restore();
     }
   }, {
-    key: "globalAlpha",
+    key: 'globalAlpha',
     set: function set(value) {
       this.mGlobalAlpha = value;
       this.mCtx.globalAlpha = value;
@@ -7169,7 +7186,7 @@ var CanvasDriver = function (_NullDriver) {
      */
 
   }, {
-    key: "globalBlendMode",
+    key: 'globalBlendMode',
     set: function set(blendMode) {
       if (blendMode === BlendMode.AUTO) return;
 
@@ -7179,7 +7196,7 @@ var CanvasDriver = function (_NullDriver) {
   }]);
 
   return CanvasDriver;
-}(NullDriver);
+}(VideoNullDriver);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7190,8 +7207,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DOMDriver = function (_NullDriver) {
-  _inherits(DOMDriver, _NullDriver);
+var DOMDriver = function (_VideoNullDriver) {
+  _inherits(DOMDriver, _VideoNullDriver);
 
   /**
    * @param  {HTMLElement} containerElement description
@@ -7511,7 +7528,7 @@ var DOMDriver = function (_NullDriver) {
   }]);
 
   return DOMDriver;
-}(NullDriver);
+}(VideoNullDriver);
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -7544,7 +7561,7 @@ var DisplayObject = function (_GameObject) {
   /**
    * __render - Description
    *
-   * @param {NullDriver} video           Description
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -7736,7 +7753,7 @@ var Sprite = function (_DisplayObject) {
   /**
    * @override
    * @private
-   * @param {NullDriver} video
+   * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
@@ -7859,39 +7876,39 @@ var TextField = function (_DisplayObject) {
 
     _classCallCheck(this, TextField);
 
-    /** @private @type {string} */
+    /** @type {string} */
     var _this = _possibleConstructorReturn(this, (TextField.__proto__ || Object.getPrototypeOf(TextField)).call(this));
 
     _this.mText = text;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     _this.mNeedInvalidate = true;
 
-    /** @private @type {Rectangle} */
+    /** @type {Rectangle} */
     _this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** @type {number} */
     _this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     _this.mFieldHeight = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     _this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     _this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
+    /** @type {TextInfo} */
     _this.mStyle = style || new TextInfo();
 
-    /** @private @type {string} */
+    /** @type {string} */
     _this.mStyle.name = name || style.name;
 
-    /** @private @type {number} */
+    /** @type {number} */
     _this.mStyle.size = size || style.size;
 
-    /** @public @type {boolean} */
+    /** @type {boolean} */
     _this.mAutoSize = true;
 
     _this.__validate(_this.mCacheBounds);
@@ -7900,8 +7917,8 @@ var TextField = function (_DisplayObject) {
 
   /**
    * __render - Description
-   * @private @override
-   * @param {NullDriver} video           Description
+   * @override
+   * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description
    * @param {string} parentBlendMode Description
@@ -8471,10 +8488,12 @@ var FloatScatter = function (_Scatter) {
 
     _classCallCheck(this, FloatScatter);
 
+    // NOTE: dont make us @private @member
     var _this = _possibleConstructorReturn(this, (FloatScatter.__proto__ || Object.getPrototypeOf(FloatScatter)).call(this));
 
-    _this.mMin = min;
-    _this.mMax = max == null ? min : max;
+    _this.min = min;
+    _this.max = max == null ? min : max;
+
     _this.ease = ease;
     return _this;
   }
@@ -8489,7 +8508,7 @@ var FloatScatter = function (_Scatter) {
   _createClass(FloatScatter, [{
     key: "getValue",
     value: function getValue() {
-      return Math.random() * (this.mMax - this.mMin) + this.mMin;
+      return Math.random() * (this.max - this.min) + this.min;
     }
 
     /**
@@ -8505,7 +8524,7 @@ var FloatScatter = function (_Scatter) {
     value: function getValueAt(t) {
       if (this.ease !== null) t = this.ease(t);
 
-      return this.mMin + t * (this.mMax - this.mMin);
+      return this.min + t * (this.max - this.min);
     }
   }]);
 
@@ -8527,11 +8546,11 @@ var VectorScatter = function (_Scatter) {
   function VectorScatter(minX, minY, maxX, maxY) {
     _classCallCheck(this, VectorScatter);
 
+    // NOTE: dont make us @private @member
     var _this = _possibleConstructorReturn(this, (VectorScatter.__proto__ || Object.getPrototypeOf(VectorScatter)).call(this));
 
     _this.minX = minX;
     _this.minY = minY;
-
     _this.maxX = maxX;
     _this.maxY = maxY;
     return _this;
@@ -9462,7 +9481,7 @@ var Emitter = function (_DisplayObject) {
     _this.mEmitCount = new FloatScatter(10);
 
     /** @type {FloatScatter} */
-    _this.mEmitNumRepeats = new FloatScatter(10);
+    _this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /** @type {number} */
     _this.mEmitNumRepeatsLeft = _this.mEmitNumRepeats.getValue();
@@ -9567,6 +9586,7 @@ var Emitter = function (_DisplayObject) {
           } else {
             this.mEmitIntervalLeft -= dt;
             this.mNextUpdateAt = t + this.mEmitIntervalLeft;
+            //console.log(this.mEmitIntervalLeft);
 
             // reset interval
             if (this.mEmitIntervalLeft <= 0) this.mEmitIntervalLeft = this.mEmitInterval.getValue();
@@ -10134,6 +10154,8 @@ var Input = function (_System) {
     /** @type {boolean} */
     _this.mIsPointerDown = false;
 
+    _this.mNeedUpEvent = false;
+
     /** @type {Array<InputComponent>} */
     _this.mInputListeners = [];
     return _this;
@@ -10145,18 +10167,19 @@ var Input = function (_System) {
       var _this2 = this;
 
       this.mKeyEventList = Input.mKeyEventList;
+      //debugger;
 
-      if (window.PointerEvent) this.mEventList = Input.mPointerEventList;
-      // else if (window.MSPointerEvent)
-      //   this.mEventList = Input.mMSPointerEventList;
-      else if (Device.isTouch && Device.isMobile) this.mEventList = Input.mTouchEventList;else this.mEventList = Input.mMouseEventList;
+      if (window.PointerEvent) this.mEventList = Input.mPointerEventList;else if (Device.isTouch && Device.isMobile) this.mEventList = Input.mTouchEventList;else this.mEventList = Input.mMouseEventList;
 
-      // TODO: handle enter, cancel events too
       for (var i = 0; i < 6; i++) {
         this.mDom.addEventListener(this.mEventList[i], function (e) {
           return _this2.__onPointerEvent(e);
         }, false);
-      }for (var _i = 0; _i < this.mKeyEventList.length; _i++) {
+      }document.addEventListener(this.mEventList[Input.POINTER_UP], function (e) {
+        return _this2.__onPointerEventDoc(e);
+      }, false);
+
+      for (var _i = 0; _i < this.mKeyEventList.length; _i++) {
         document.addEventListener(this.mKeyEventList[_i], function (e) {
           return _this2.__onKeyEvent(e);
         }, false);
@@ -10173,11 +10196,9 @@ var Input = function (_System) {
     }
 
     /**
-     * __onKeyEvent - Description
+     * @param {Event} e
      *
-     * @param {Event} e Description
-     *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -10186,10 +10207,18 @@ var Input = function (_System) {
       this.mKeyQueue.push(e);
       return true;
     }
+  }, {
+    key: '__onPointerEventDoc',
+    value: function __onPointerEventDoc(e) {
+      var over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+      if (over === false && this.mNeedUpEvent === true) {
+        this.mNeedUpEvent = false;
+        this.__pushEvent(e);
+      }
+    }
 
     /**
-     * __onPointerEvent - Description
-     *
      * @param {Event} e Description
      *
      * @return {boolean} Description
@@ -10200,6 +10229,13 @@ var Input = function (_System) {
     value: function __onPointerEvent(e) {
       e.preventDefault();
 
+      this.__pushEvent(e);
+
+      return true;
+    }
+  }, {
+    key: '__pushEvent',
+    value: function __pushEvent(e) {
       var /** @type {Vector|null} */p = null;
       if (e.type.indexOf('touch') === 0) p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */e);else p = this.__getPointerPos(this.mDom, e);
 
@@ -10211,8 +10247,6 @@ var Input = function (_System) {
         x: p.x,
         y: p.y
       });
-
-      return true;
     }
 
     /**
@@ -10249,8 +10283,8 @@ var Input = function (_System) {
 
       /** @type {Touch} */
       var touch = evt.changedTouches[0]; // ios? what about android?
-      var x = touch.pageX;
-      var y = touch.pageY;
+      var x = touch.clientX;
+      var y = touch.clientY;
 
       var scaleX = canvas.clientWidth / rect.width;
       var scaleY = canvas.clientHeight / rect.height;
@@ -10334,8 +10368,6 @@ var Input = function (_System) {
       if (component.constructor !== InputComponent) return;
 
       this.__addListener([component]);
-      //this.mInputListeners.push(/** @type {InputComponent} */ (component));
-      //this.__sortListeners();
     }
 
     /**
@@ -10378,6 +10410,8 @@ var Input = function (_System) {
         var ix = this.mEventList.indexOf(nativeEvent.e.type);
         var fnName = Input.mInputEventsLookup[ix];
 
+        if (fnName === 'pointerDown') this.mNeedUpEvent = true;
+
         pointerPos.set(nativeEvent.x, nativeEvent.y);
 
         /** @type {InputComponent|null} */
@@ -10399,7 +10433,6 @@ var Input = function (_System) {
           }
 
           // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-
           if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
 
           if (currentComponent.mPointerInside === false) {
@@ -10410,7 +10443,6 @@ var Input = function (_System) {
           currentComponent.gameObject.post('~' + fnName);
         }
 
-        //console.log(fnName);
         this.post(fnName);
       }
 
@@ -10558,28 +10590,22 @@ Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 /** @type {Array<string>}
  *  @const
  */
-
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerCancel', 'pointerIn', 'pointerOut'];
-
-/** @type {Array<string>}
- *  @const
- */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointercancel', 'pointerenter', 'pointerleave'];
-
-// /** @type {Array<string>}
-//  *  @const
-//  */
-// Input.mMSPointerEventList = ['MSPointerMove', 'MSPointerDown', 'MSPointerUp', 'MSPointerCancel', 'MSPointerEnter', 'MSPointerLeave'];
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mousecancel', 'mouseenter', 'mouseleave'];
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /** @type {Array<string>}
  *  @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchcancel', 'touchenter', 'touchleave'];
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11481,7 +11507,7 @@ var Tween = function (_Component) {
     /** @type {number} */
     _this.mElapsed = 0;
 
-    /** @type {function ((Array|null), number):number} */
+    /** @type {function (v:?Array, e:number):number} */
     _this.mInterpolation = Interpolation.linear;
 
     /** @type {number} */
@@ -11505,7 +11531,7 @@ var Tween = function (_Component) {
     /** @type {boolean} */
     _this.mPlayOnAdded = true;
 
-    /** @type {function(number):number} */
+    /** @type {function(e:number):number} */
     _this.mEase = Ease.smootherStep;
 
     if (_this.mProperties !== null) {
@@ -11519,7 +11545,7 @@ var Tween = function (_Component) {
   /**
    * ease - Description
    *
-   * @return {function(number):number} Description
+   * @return {function(e:number):number} Description
    */
 
 
@@ -11577,6 +11603,7 @@ var Tween = function (_Component) {
      * to - Description
      *
      * @param {Object} values - Description
+     * @param {number} duration - Description
      *
      * @return {Tween} Description
      */
@@ -11848,7 +11875,7 @@ var Tween = function (_Component) {
     /**
      * ease - Description
      *
-     * @param {function(number):number} value Description
+     * @param {function(e:number):number} value Description
      *
      * @return {void} Description
      */
@@ -11860,7 +11887,7 @@ var Tween = function (_Component) {
     /**
      * interpolation - Description
      *
-     * @return {function(Array, number):number} Description
+     * @return {function(p:Array, v:number):number} Description
      */
 
   }, {
@@ -11872,7 +11899,7 @@ var Tween = function (_Component) {
     /**
      * interpolation - Description
      *
-     * @param {function(Array, number):number} value Description
+     * @param {function(p:Array, v:number):number} value Description
      *
      * @return {void} Description
      */
@@ -11976,13 +12003,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Animation = function () {
   /**
-   * constructor - Description
+   * Creates an instance of Animation class
    *
-   * @param {AnimationController}    controller  Description
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    frames      Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {AnimationController}    controller  Animation controller
+   * @param {string}                 name        The name of animation
+   * @param {Array<Texture>}         frames      Array of Textures for this animation
+   * @param {number}                 [fps=14]    Frame rate
+   * @param {boolean}                [loop=true] Is animations should be looped
    */
   function Animation(controller, name, frames) {
     var fps = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
@@ -11991,48 +12018,83 @@ var Animation = function () {
     _classCallCheck(this, Animation);
 
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
-    assert(fps > 0, '');
 
+    /**
+     * @private
+     * @type {AnimationController}
+     */
     this.mController = controller;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mFrames = frames;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentFrame = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextFrameAt = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = fps;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameDuration = 1 / this.mFPS;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mLoop = loop;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStopped = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCompleted = false;
   }
 
   /**
-   * play - Description
-   *
-   * @return {Texture} Description
+   * Plays animation. If Animation is completed, current frame is reset to 0.
+   * @return {Texture}
    */
 
 
@@ -12055,9 +12117,8 @@ var Animation = function () {
     }
 
     /**
-     * stop - Description
-     *
-     * @return {void} Description
+     * Stops animation and resets the value of current frame.
+     * @return {void}
      */
 
   }, {
@@ -12068,9 +12129,8 @@ var Animation = function () {
     }
 
     /**
-     * pause - Description
-     *
-     * @return {void} Description
+     * Pauses animation.
+     * @return {void}
      */
 
   }, {
@@ -12081,12 +12141,11 @@ var Animation = function () {
     }
 
     /**
-     * __update - Description
+     * @private
+     * @param {number} dt
+     * @param {number} t
      *
-     * @param {number} dt Description
-     * @param {number} t  Description
-     *
-     * @return {Texture|null} Description
+     * @return {Texture|null}
      */
 
   }, {
@@ -12113,7 +12172,7 @@ var Animation = function () {
     }
 
     /**
-     * fps - Description
+     * Gets/Sets annimation speed in Frames per Second
      *
      * @return {number} Description
      */
@@ -12125,11 +12184,9 @@ var Animation = function () {
     }
 
     /**
-     * fps - Description
-     *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * Gets/Sets annimation speed in Frames per Second
+     * @param {number} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -12144,9 +12201,8 @@ var Animation = function () {
     }
 
     /**
-     * loop - Description
-     *
-     * @return {boolean} Description
+     * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+     * @return {boolean}
      */
 
   }, {
@@ -12156,11 +12212,9 @@ var Animation = function () {
     }
 
     /**
-     * loop - Description
-     *
-     * @param {boolean} value Description
-     *
-     * @return {void} Description
+     * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+     * @param {boolean} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -12168,9 +12222,8 @@ var Animation = function () {
     }
 
     /**
-     * frames - Description
-     *
-     * @return {Array<Texture>} Description
+     * Gets array of Texture.
+     * @return {Array<Texture>}
      */
 
   }, {
@@ -12180,9 +12233,8 @@ var Animation = function () {
     }
 
     /**
-     * playing - Description
-     *
-     * @return {boolean} Description
+     * Returns true if Animation is playing (neither stopped nor paused).
+     * @return {boolean}
      */
 
   }, {
@@ -12192,9 +12244,8 @@ var Animation = function () {
     }
 
     /**
-     * playing - Description
-     *
-     * @return {boolean} Description
+     * Returns true if animation is completed.
+     * @return {boolean}
      */
 
   }, {
@@ -12202,6 +12253,12 @@ var Animation = function () {
     get: function get() {
       return this.mCompleted;
     }
+
+    /**
+     * Returns name of this animation.
+     * @return {string}
+     */
+
   }, {
     key: 'name',
     get: function get() {
@@ -12224,50 +12281,60 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var AnimationController = function (_Component) {
   _inherits(AnimationController, _Component);
 
+  /**
+   * Creates an instance of AnimationController
+   */
   function AnimationController() {
     _classCallCheck(this, AnimationController);
 
-    /** @type {Object<string, Animation>} */
+    /**
+     * @private
+     * @type {Object<string, Animation>}
+     */
     var _this = _possibleConstructorReturn(this, (AnimationController.__proto__ || Object.getPrototypeOf(AnimationController)).call(this));
 
     _this.mAnimations = {};
 
-    /** @type {Animation|null} */
+    /**
+     * @private
+     * @type {Animation|null}
+     */
     _this.mCurrentAnim = null;
     return _this;
   }
 
   /**
-   * get - Description
+   * Returns the Animation object that exists with the specified name.
    *
-   * @param {string} name Description
+   * @param {string} name The name of the child to return.
    *
-   * @return {Animation} Description
+   * @returns {Animation} Returns the Animation object that exists with the specified name.
    */
 
 
   _createClass(AnimationController, [{
-    key: 'get',
-    value: function get(name) {
+    key: 'getAnimation',
+    value: function getAnimation(name) {
+      Debug.assert(name !== null, 'Animation must be set first.');
       Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
       return this.mAnimations[name];
     }
 
     /**
-     * set - Description
+     * Updates the Animation object with new values.
      *
-     * @param {string}    name        Description
-     * @param {Array<Texture>}    textures    Description
-     * @param {number}  [fps=14]    Description
-     * @param {boolean} [loop=true] Description
+     * @param {string}          name        The name of animation to update
+     * @param {Array<Texture>}  textures    Description
+     * @param {number}          [fps=14]    Description
+     * @param {boolean}         [loop=true] Description
      *
      * @return {Animation} Description
      */
 
   }, {
-    key: 'set',
-    value: function set(name, textures) {
+    key: 'updateAnimation',
+    value: function updateAnimation(name, textures) {
       var fps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
       var loop = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
@@ -12395,11 +12462,9 @@ var Black = function (_MessageDispatcher) {
    * constructor
    * @param {string}   containerElementId
    * @param {function(new: GameObject)}   rootClass
-   * @param {string=} [videoDriverName=canvas]
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
    */
-  function Black(containerElementId, rootClass) {
-    var videoDriverName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
-
+  function Black(containerElementId, rootClass, videoDriverClass) {
     _classCallCheck(this, Black);
 
     // Dirty GCC workaround
@@ -12408,114 +12473,235 @@ var Black = function (_MessageDispatcher) {
     window['Black'] = {};
     window['Black']['instance'] = _this;
 
-    var css = "background: #000; color: #fff;";
-    console.log('%c ~Black ', css);
+    console.log('%c ~Black ', 'background: #000; color: #fff;');
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.mContainerElementId = containerElementId;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     _this.mContainerElement = /** @type {!HTMLElement} */document.getElementById(_this.mContainerElementId);
 
     if (!_this.mContainerElement) throw new Error('Container element was not found');
 
-    /** @type {string} */
-    _this.mVideoName = videoDriverName;
+    /**
+     * @private
+     * @type {function(new: VideoNullDriver)}
+     */
+    _this.mVideoDriverClass = videoDriverClass;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mStageWidth = _this.mContainerElement.clientWidth;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mStageHeight = _this.mContainerElement.clientHeight;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mSimulationTimestep = 1000 / 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mUptime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mFrameAccum = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mLastFrameTimeMs = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mCurrentTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mFPS = 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mLastFpsUpdate = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mFramesThisSecond = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mNumUpdateSteps = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mMinFrameDelay = 0;
 
-    /** @type {Array<System>} */
+    /**
+     * @private
+     * @type {Array<System>}
+     */
     _this.mSystems = [];
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     _this.mBounds = new Rectangle();
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsRunning = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsPanic = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mLastFrameUpdateTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mLastFrameRenderTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mRAFHandle = -1; // not sure
 
-    /** @type {Viewport} */
+    /**
+     * @private
+     * @type {Viewport}
+     */
     _this.mViewport = null;
 
-    /** @type {NullDriver} */
+    /**
+     * @private
+     * @type {VideoNullDriver}
+     */
     _this.mVideo = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mPaused = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mUnpausing = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mPauseOnHide = true;
 
-    /** @type {boolean} */
-    _this.mPauseOnBlur = false;
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _this.mPauseOnBlur = true;
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     _this.mTagCache = {};
 
-    /** @type {function(new: GameObject)|null} */
+    /**
+     * @private
+     * @type {function(new: GameObject)|null}
+     */
     _this.mRootClass = rootClass;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     _this.mRoot = null;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _this.mEnableFixedTimeStep = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _this.mWasStopped = false;
     return _this;
   }
+
+  /**
+   * pause - Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
+   *
+   * @return {void}
+   */
+
 
   _createClass(Black, [{
     key: 'pause',
     value: function pause() {
       this.mPaused = true;
     }
+
+    /**
+     * resume - Resumes update execution.
+     *
+     * @return {void}
+     */
+
   }, {
     key: 'resume',
     value: function resume() {
@@ -12596,14 +12782,26 @@ var Black = function (_MessageDispatcher) {
   }, {
     key: '__bootVideo',
     value: function __bootVideo() {
-      if (this.mVideoName === 'canvas') this.mVideo = new CanvasDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'dom') this.mVideo = new DOMDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else if (this.mVideoName === 'null' || this.mVideoName == null) this.mVideo = new NullDriver(this.mContainerElement, this.mStageWidth, this.mStageHeight);else Debug.assert(false, 'Unsupported video driver. Use canvas or dom.');
+      this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
     }
+
+    /**
+     * start - Main method to make magic happen.
+     *
+     * @return {void}
+     */
+
   }, {
     key: 'start',
     value: function start() {
+      if (this.mWasStopped === true) {
+        Debug.error('Black engine cannot be re-started.');
+        return;
+      }
+
       this.constructor.instance = this;
 
-      if (this.mIsStarted) return;
+      if (this.mIsStarted === true) return;
 
       this.__bootViewport();
       this.__bootSystems();
@@ -12633,7 +12831,17 @@ var Black = function (_MessageDispatcher) {
           self.__update(x);
         });
       });
+
+      // TODO: show only when needed, eg required by any system
+      if (this.mEnableFixedTimeStep === false) Debug.warn('Fixed time-step is disabled, some systems may not work.');
     }
+
+    /**
+     * stop - Stops execution, destroys resources and scene. Cannot be started again.
+     *
+     * @return {type} Description
+     */
+
   }, {
     key: 'stop',
     value: function stop() {
@@ -12643,8 +12851,6 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * __update - Description
-     *
      * @param {number} timestamp Description
      *
      * @return {void} Description
@@ -12695,15 +12901,18 @@ var Black = function (_MessageDispatcher) {
         this.mCurrentTime = timestamp;
         Time.mDeltaTime = dt;
 
-        while (this.mFrameAccum >= this.mSimulationTimestep) {
-          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
+        if (this.mEnableFixedTimeStep === true) {
+          while (this.mFrameAccum >= this.mSimulationTimestep) {
+            this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
 
-          this.mFrameAccum -= this.mSimulationTimestep;
+            this.mFrameAccum -= this.mSimulationTimestep;
 
-          if (++this.mNumUpdateSteps >= 60 * 3) {
-            console.log('[BLACK]: Not enough time to calculate update logic.');
-            this.mIsPanic = true;
-            break;
+            if (++this.mNumUpdateSteps >= 60 * 3) {
+              // 3 seconds window
+              console.log('[BLACK]: Not enough time to calculate update logic.');
+              this.mIsPanic = true;
+              break;
+            }
           }
         }
 
@@ -12725,11 +12934,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * __internalFixedUpdate - Description
-     *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @param {number} dt
+     * @return {void}
      */
 
   }, {
@@ -12741,11 +12947,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * __internalUpdate - Description
-     *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @param {number} dt
+     * @return {void}
      */
 
   }, {
@@ -12757,11 +12960,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * __internalUpdate - Description
-     *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @param {number} dt
+     * @return {void}
      */
 
   }, {
@@ -12773,9 +12973,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * bounds - Description
-     *
-     * @return {Rectangle} Description
+     * @return {Rectangle}
      */
 
   }, {
@@ -12783,13 +12981,13 @@ var Black = function (_MessageDispatcher) {
 
 
     /**
-     * onTagUpdated - Description
+     * onTagUpdated
+     * @protected
+     * @param {GameObject} child
+     * @param {string|null} oldTag
+     * @param {string|null} newTag
      *
-     * @param {GameObject} child Description
-     * @param {string|null} oldTag   Description
-     * @param {string|null} newTag   Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     value: function onTagUpdated(child, oldTag, newTag) {
       if (oldTag !== null) {
@@ -12807,8 +13005,9 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @param  {GameObject} child     description
-     * @return {void}           description
+     * @protected
+     * @param  {GameObject} child
+     * @return {void}
      */
 
   }, {
@@ -12838,8 +13037,9 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @param  {GameObject} child     description
-     * @return {void}           description
+     * @protected
+     * @param  {GameObject} child
+     * @return {void}
      */
 
   }, {
@@ -12869,9 +13069,10 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @param  {GameObject} child     description
-     * @param  {Component} component description
-     * @return {void}           description
+     * @protected
+     * @param  {GameObject} child
+     * @param  {Component} component
+     * @return {void}
      */
 
   }, {
@@ -12886,17 +13087,14 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @param  {GameObject} child     description
-     * @param  {Component} component description
-     * @return {void}           description
+     * @param  {GameObject} child
+     * @param  {Component} component
+     * @return {void}
      */
 
   }, {
     key: 'onComponentRemoved',
     value: function onComponentRemoved(child, component) {
-      //child.mBlack = null;
-      //console.log('onComponentRemoved', child, component);
-
       for (var i = 0; i < this.mSystems.length; i++) {
         this.mSystems[i].onComponentRemoved(child, component);
       }if (component.mAdded === false) return;
@@ -12906,8 +13104,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnHide
-     *
+     * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
      * @return {boolean}
      */
 
@@ -12918,9 +13115,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * root - Description
-     *
-     * @return {GameObject} Description
+     * root - Returns the root GameObject.
+     * @return {GameObject}
      */
 
   }, {
@@ -12930,9 +13126,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * video - Description
-     *
-     * @return {NullDriver} Description
+     * video - Returns current video driver.
+     * @return {VideoNullDriver} Description
      */
 
   }, {
@@ -12942,9 +13137,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * simulationTimestep - Description
-     *
-     * @return {number} Description
+     * simulationTimestep - If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+     * @return {number}
      */
 
   }, {
@@ -12954,11 +13148,10 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * simulationTimestep - Description
+     * simulationTimestep - Sets the number of milliseconds for fixed-time-step to run over.
      *
-     * @param {number} timestep Description
-     *
-     * @return {void} Description
+     * @param {type} timestep
+     * @return {void}
      */
     ,
     set: function set(timestep) {
@@ -12966,9 +13159,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * FPS - Description
-     *
-     * @return {number} Description
+     * FPS - Returns current frame rate
+     * @return {number}
      */
 
   }, {
@@ -12978,35 +13170,29 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * maxFPS - Description
-     *
-     * @return {number} Description
+     * maxAllowedFPS - Gets max amount updates engine can do in a second.
+     * @return {number}
      */
 
   }, {
-    key: 'maxFPS',
+    key: 'maxAllowedFPS',
     get: function get() {
       return 1000 / this.mMinFrameDelay;
     }
 
     /**
-     * maxAllowedFPS - Description
-     *
-     * @param {number} fps Description
-     *
-     * @return {void} Description
+     * maxAllowedFPS - Sets the number of update engine will do per second.
+     * @param {number} fps
+     * @return {void}
      */
-
-  }, {
-    key: 'maxAllowedFPS',
+    ,
     set: function set(fps) {
       if (fps <= 0) this.stop();else this.mMinFrameDelay = 1000 / fps;
     }
 
     /**
-     * viewport - Description
-     *
-     * @return {Viewport} Description
+     * viewport - Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+     * @return {Viewport}
      */
 
   }, {
@@ -13016,9 +13202,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * containerElement - Description
-     *
-     * @return {Element} Description
+     * containerElement - Retruns the HTML container element the engine runs in.
+     * @return {Element}
      */
 
   }, {
@@ -13028,9 +13213,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * uptime - Description
-     *
-     * @return {number} Description
+     * uptime - Amounts of seconds since engine start.
+     * @return {number}
      */
 
   }, {
@@ -13045,10 +13229,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnHide
-     *
+     * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
      * @param {boolean} value
-     *
      * @return {void}
      */
     ,
@@ -13057,8 +13239,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnBlur
-     *
+     * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
      * @return {boolean}
      */
 
@@ -13069,10 +13250,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnBlur
-     *
+     * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
      * @param {boolean} value
-     *
      * @return {void}
      */
     ,
@@ -13081,15 +13260,31 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * videoName
-     *
-     * @return {string}
+     * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+     * @return {boolean}
      */
 
   }, {
-    key: 'videoName',
+    key: 'enableFixedTimeStep',
     get: function get() {
-      return this.mVideoName;
+      return this.mEnableFixedTimeStep;
+    }
+
+    /**
+     * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+     *
+     * @param {boolean} value
+     *
+     * @return {void}
+     */
+    ,
+    set: function set(value) {
+      this.mEnableFixedTimeStep = value;
+    }
+  }, {
+    key: 'magic',
+    get: function get() {
+      return Math.random();
     }
   }]);
 

@@ -20,6 +20,7 @@ class System extends MessageDispatcher {
    * onUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -30,6 +31,7 @@ class System extends MessageDispatcher {
    * onPostUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */

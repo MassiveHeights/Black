@@ -17,12 +17,20 @@ class Debug {
       throw new Error(message);
   }
 
+  static log(...message) {
+    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+  }
+
   static info(...message) {
-    console.info(...message);
+    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
   }
 
   static warn(...message) {
-    console.warn(...message);
+    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+  }
+
+  static error(...message) {
+    console.info('%c%s', 'color: #d50000;', 'ERROR:', ...message);
   }
 }
 

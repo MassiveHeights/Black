@@ -9,37 +9,37 @@ class TextField extends DisplayObject {
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mText = text;
 
-    /** @private @type {boolean} */
+    /** @type {boolean} */
     this.mNeedInvalidate = true;
 
-    /** @private @type {Rectangle} */
+    /** @type {Rectangle} */
     this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mFieldHeight = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
+    /** @type {TextInfo} */
     this.mStyle = style || new TextInfo();
 
-    /** @private @type {string} */
+    /** @type {string} */
     this.mStyle.name = name || style.name;
 
-    /** @private @type {number} */
+    /** @type {number} */
     this.mStyle.size = size || style.size;
 
-    /** @public @type {boolean} */
+    /** @type {boolean} */
     this.mAutoSize = true;
 
     this.__validate(this.mCacheBounds);
@@ -47,7 +47,7 @@ class TextField extends DisplayObject {
 
   /**
    * __render - Description
-   * @private @override
+   * @override
    * @param {VideoNullDriver} video           Description
    * @param {number} time            Description
    * @param {number} parentAlpha     Description

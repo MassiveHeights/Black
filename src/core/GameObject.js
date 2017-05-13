@@ -287,7 +287,7 @@ class GameObject extends MessageDispatcher {
   /**
    * addComponent - Adds Component instance to the end of the list,
    *
-   * @param  {Component} instances Component instance or instances.
+   * @param  {Component} component Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
    */
   addComponent(component) {
@@ -644,7 +644,7 @@ class GameObject extends MessageDispatcher {
   /**
    * globalToLocal - Description
    *
-   * @param {Vector} localPoint       Description
+   * @param {Vector} globalPoint       Description
    * @param {Vector|null} [outVector=null] Description
    *
    * @return {Vector} Description
@@ -784,8 +784,8 @@ class GameObject extends MessageDispatcher {
   /**
    * alignPivot
    *
-   * @param {number}  [px=0.5]
-   * @param {number}  [py=0.5]
+   * @param {number}  [ax=0.5]
+   * @param {number}  [ay=0.5]
    * @param {boolean} [includeChildren=true]
    *
    * @return {GameObject}
@@ -1062,9 +1062,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * @param {number} [seconds=1]
-   *
-   * @return {function(*):*}
+   * @return {function(gen:*):*}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
@@ -1076,7 +1074,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} message The name of the message to wait for
    *
-   * @return {function(?):?} Description
+   * @return {function(gen:*):*} Description
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
@@ -1282,7 +1280,7 @@ class GameObject extends MessageDispatcher {
    * forEach - Runs action accross all object mathing the name.
    *
    * @param {GameObject} node   Description
-   * @param {function(GameObject)} action Description
+   * @param {function(node:GameObject)} action Description
    *
    * @return {void} Description
    */
