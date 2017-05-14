@@ -1,4 +1,7 @@
 /**
+ * A tweening component.
+ *
+ * @cat animation
  * @unrestricted
  * @extends Component
  */

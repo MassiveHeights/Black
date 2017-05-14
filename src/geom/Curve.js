@@ -1,20 +1,43 @@
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Curve {
-  constructor() {
 
-    /** @type {Array<number>} */
+  /**
+   * Creates new Curve instance.
+   */
+  constructor() {
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPoints = [];
 
-    /** @type {Array<Vector>} */
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
     this.mLookup = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStep = 1 / 60;
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mEachT = [];
   }
 
@@ -60,7 +83,7 @@ class Curve {
 
   /**
    * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
-   *
+   * @private
    * @param  {Array<number>} points Array of points coordinates.
    *
    * @return {Array<number>} Points coordinates array.
@@ -77,6 +100,8 @@ class Curve {
 
   /**
    * __refreshCache - Refresh cache (lookup) for fast interpolations.
+   *
+   * @private
    *
    * @return {Curve} This curve.
    */
@@ -100,7 +125,7 @@ class Curve {
 
   /**
    * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
-   *
+   * @private
    * @return {Curve} This curve.
    */
   __refreshEachT() {

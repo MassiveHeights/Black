@@ -1,3 +1,10 @@
+/**
+ * Sets particle's life.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Life extends Initializer {
   /**

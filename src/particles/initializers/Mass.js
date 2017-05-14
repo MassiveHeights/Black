@@ -1,3 +1,10 @@
+/**
+ * Sets particle's mass.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Mass extends Initializer {
 

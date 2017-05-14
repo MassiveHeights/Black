@@ -1,3 +1,10 @@
+/**
+ * Sets particle's default rotation.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Rotation extends Initializer {
   /**

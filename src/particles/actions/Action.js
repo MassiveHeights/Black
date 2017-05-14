@@ -1,7 +1,9 @@
 /**
  * A base class for particle system actions. Every frame each action executed over each particle.
+ * 
+ * @category particles.actions
  * @abstract
- * @memberof particles.actions
+ * @class
  */
 /* @echo EXPORT */
 class Action {

@@ -1,3 +1,10 @@
+/**
+ * Sets particle's starting velocity.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Velocity extends Initializer {
   /**

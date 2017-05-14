@@ -1,0 +1,22 @@
+{
+  "components": "Components",
+  "core": "Core",
+  "display": "Display",
+  "display.text": "Text",
+  "animation": "Animation",
+  "drivers": "Drivers",
+  "geom": "Geometry",
+  "input": "Input",
+  "loaders": "Loaders",
+  "math": "Math",
+  "net": "Network",
+  "particles": "Particles",
+  "particles.actions": "Actions",
+  "particles.initializers": "Initializers",
+  "particles.scatter": "Scatters",
+  "physics": "Physics",
+  "sound": "Sound",
+  "system": "System",
+  "utils": "Utils",
+  "video": "Video"
+}

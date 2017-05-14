@@ -1,10 +1,11 @@
+/**
+ * A static class with many static easing functions.
+ *
+ * @cat animation
+ * @static
+ */
 /* @echo EXPORT */
 class Ease {
-  /**
-   * Singleton.
-   */
-  constructor() {}
-
   /**
    * linear
    * @param {number} k

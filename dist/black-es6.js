@@ -153,27 +153,41 @@ Math.RAD2DEG = 57.295779513082320876798154814105;
 //   console.log('%s %c%s', title + ' ' + '.'.repeat(88 - title.length), r ? colors[0] : colors[1], r ? statuses[0] : statuses[1]);
 // }
 
+/**
+ * Mathematical representation of a vector.
+ *
+ * @cat geom
+ */
 
 class Vector {
   /**
-   * @param  {number=} x = 0 description
-   * @param  {number=} y = 0 description
+   * Creates new Vector instance.
+   *
+   * @param  {number=} x = 0 X-component.
+   * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
-    /** @type {number} */
+    /**
+     * X coordinate of a point in the space.
+     *
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * Y coordinate of a point in the space.
+     * @type {number}
+     */
     this.y = y;
   }
 
   /**
-   * set - Description
+   * Updates values of this vector with a given.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] y-component
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   set(x = 0, y = 0) {
     this.x = x;
@@ -183,11 +197,11 @@ class Vector {
   }
 
   /**
-   * add - Description
+   * Adds two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be added to this.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   add(vector) {
     this.x += vector.x;
@@ -197,11 +211,11 @@ class Vector {
   }
 
   /**
-   * subtract - Description
+   * Subtract two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be subtracted.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   subtract(vector) {
     this.x -= vector.x;
@@ -211,11 +225,11 @@ class Vector {
   }
 
   /**
-   * distance - Description
+   * Returns distance between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to check distance with.
    *
-   * @return {number} Description
+   * @return {number} The distance between two vectors.
    */
   distance(vector) {
     let x = this.x - vector.x;
@@ -225,11 +239,11 @@ class Vector {
   }
 
   /**
-   * multiply - Description
+   * Multiplies two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector A second vector to multiply with.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiply(vector) {
     this.x *= vector.x;
@@ -239,11 +253,11 @@ class Vector {
   }
 
   /**
-   * multiplyScalar - Description
+   * Multiplies this vector by scalar value.
    *
-   * @param {number} scalar Description
+   * @param {number} scalar The values to mul by.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiplyScalar(scalar) {
     this.x *= scalar;
@@ -253,20 +267,20 @@ class Vector {
   }
 
   /**
-   * dot - Description
+   * Find dot product between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to find angle with.
    *
-   * @return {number} Description
+   * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
     return this.x * vector.x + this.y * vector.y;
   }
 
   /**
-   * length - Description
+   * Returns the length of this vector.
    *
-   * @return {number} Description
+   * @return {number} The length of the vector.
    */
   length() {
     let x = this.x;
@@ -276,9 +290,9 @@ class Vector {
   }
 
   /**
-   * lengthSqr - Description
+   * Returns the squared length of this vector.
    *
-   * @return {number} Description
+   * @return {number} Squared length.
    */
   lengthSqr() {
     let x = this.x;
@@ -287,6 +301,11 @@ class Vector {
     return x * x + y * y;
   }
 
+  /**
+   * Creates unit vector out of this one.
+   *
+   * @returns {Vector} This.
+   */
   normalize() {
     let sum = this.lengthSqr();
 
@@ -303,12 +322,12 @@ class Vector {
   }
 
   /**
-   * clamp - Description
+   * Clamps values of this vector to given range.
    *
-   * @param {number} min Description
-   * @param {number} max Description
+   * @param {number} min Min value.
+   * @param {number} max Max value.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   clamp(min, max) {
     this.x = Math.clamp(this.x, min, max);
@@ -318,12 +337,12 @@ class Vector {
   }
 
   /**
-   * lerp - Description
+   * Linearly interpolates between two vectors.
    *
-   * @param {Vector} vector Description
-   * @param {number} t      Description
+   * @param {Vector} vector The second vector to interpolate values between.
+   * @param {number} t      Interpolant.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   lerp(vector, t) {
     this.x = Math.lerp(this.x, vector.x, t);
@@ -333,11 +352,11 @@ class Vector {
   }
 
   /**
-   * copyTo - Description
+   * Copies this vector values into given vector.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} Given vector.
    */
   copyTo(vector) {
     vector.x = this.x;
@@ -347,11 +366,11 @@ class Vector {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given vector into this.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to copy values from.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   copyFrom(vector) {
     this.x = vector.x;
@@ -361,37 +380,37 @@ class Vector {
   }
 
   /**
-   * clone - Description
+   * Clones this vector object.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector instance.
    */
   clone() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * equals - Description
+   * Compares two vectors for equality.
    *
-   * @param {Vector} vector Description
-   * @param {number=} epsilon Description
+   * @param {Vector} vector Second vector to compare with.
+   * @param {number=} epsilon Threshold.
    *
-   * @return {boolean}
+   * @return {boolean} True if equal.
    */
   equals(vector, epsilon = Number.EPSILON) {
     return vector !== null && (Math.abs(vector.x - this.x) < epsilon) && (Math.abs(vector.y - this.y) < epsilon);
   }
 
   /**
-   * isEmpty - Description
+   * Checks if this vector is empty.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if both components equal to zero,
    */
   isEmpty() {
     return this.x === 0 && this.y === 0;
   }
 
   /**
-   * setRotationFrom - Rotates this vector around specified point.
+   * Rotates this vector around specified point.
    *
    * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
@@ -406,7 +425,7 @@ class Vector {
   }
 
   /**
-   * setRotation - Rotates this vector around zero vector
+   *  Rotates this vector around zero vector.
    *
    * @param {number} rotation Angle in radians
    *
@@ -420,7 +439,7 @@ class Vector {
   }
 
   /**
-   * theta - Calculates angle in radians within this and specified vectors.
+   * Calculates angle in radians within this and specified vectors.
    *
    * @return {number} Angle in radians.
    */
@@ -429,7 +448,7 @@ class Vector {
   }
 
   /**
-   * perp - Rotates this vector to normal.
+   * Rotates this vector to normal.
    *
    * @return {Vector} This vector.
    */
@@ -438,18 +457,18 @@ class Vector {
   }
 
   /**
-   * fromAngle - Description
+   * Creates new Vector from given angle in radians.
    *
-   * @param {number=} [angle=0] Description
+   * @param {number=} [angle=0] Angle.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector object.
    */
   static fromAngle(angle = 0) {
     return new Vector(Math.cos(angle), Math.sin(angle));
   }
 
   /**
-   * randomRange
+   * @ignore
    *
    * @param {Vector} vectorMin
    * @param {Vector} vectorMax
@@ -478,21 +497,29 @@ class Vector {
   }
 }
 
-/** @type {Vector}
+/**
+ * @ignore
+ * @type {Vector}
  * @nocollapse
  */
 Vector.__cache = new Vector();
 
+/**
+ * A 2x3 matrix allows you to transform objects in space.
+ *
+ * @cat geom
+ */
 
 class Matrix {
   /**
-   * @param  {number} a = 1  description
-   * @param  {number} b = 0  description
-   * @param  {number} c = 0  description
-   * @param  {number} d = 1  description
-   * @param  {number} tx = 0 description
-   * @param  {number} ty = 0 description
-   * @return {number}        description
+   * Creates new Matrix instance.
+   *
+   * @param  {number} a = 1  A-component.
+   * @param  {number} b = 0  B-component.
+   * @param  {number} c = 0  C-component.
+   * @param  {number} d = 1  D-component.
+   * @param  {number} tx = 0 TX-component.
+   * @param  {number} ty = 0 TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     /** @type {Float32Array} */
@@ -502,14 +529,15 @@ class Matrix {
   }
 
   /**
-
-   * @param  {number} a  description
-   * @param  {number} b  description
-   * @param  {number} c  description
-   * @param  {number} d  description
-   * @param  {number} tx description
-   * @param  {number} ty description
-   * @return {Matrix}    description
+   * Sets components of this matrix to the given values.
+   *
+   * @param  {number} a  A-component.
+   * @param  {number} b  B-component.
+   * @param  {number} c  C-component.
+   * @param  {number} d  D-component.
+   * @param  {number} tx TX-component.
+   * @param  {number} ty TY-component.
+   * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     let m = this._matrix;
@@ -525,12 +553,12 @@ class Matrix {
   }
 
   /**
-   * translate - Description
+   * Translates the matrix by x and y axes.
    *
-   * @param {number} dx Description
-   * @param {number} dy Description
+   * @param {number} dx Amount along x-axis.
+   * @param {number} dy Amount along y-axis.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   translate(dx, dy) {
     let a = this._matrix;
@@ -549,12 +577,12 @@ class Matrix {
   }
 
   /**
-   * setTranslation - Description
+   * Sets tx and ty components to given values.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The tx component to update.
+   * @param {number} y The ty component to update.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   setTranslation(x, y) {
     this._matrix[4] = x;
@@ -564,8 +592,10 @@ class Matrix {
   }
 
   /**
-   * @param  {number} theta     description
-   * @param  {number} scale = 1 description
+   * Sets absolute rotation of this matrix to specified angle.
+   *
+   * @param  {number} theta     Theta value.
+   * @param  {number} scale = 1 Scale value.
    */
   setRotation(theta, scale = 1) {
     let m = this._matrix;
@@ -578,10 +608,10 @@ class Matrix {
   }
 
   /**
-   * rotate - angle
+   * Applies rotation to this matrix.
    *
-   * @param  {number} angle description
-   * @return {Matrix}       description
+   * @param  {number} angle Angle in radians.
+   * @return {Matrix} This.
    */
   rotate(angle) {
     let a = this._matrix;
@@ -602,12 +632,12 @@ class Matrix {
   }
 
   /**
-   * scale - Description
+   * Scales current matrix.
    *
-   * @param {number} sx Description
-   * @param {number} sy Description
+   * @param {number} sx Abscissa of the scaling vector.
+   * @param {number} sy Ordinate of the scaling vector.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   scale(sx, sy) {
     let a = this._matrix;
@@ -627,18 +657,19 @@ class Matrix {
   }
 
   /**
-   * identity - Description
+   * Resets current matrix to identity state.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   identity() {
     return this.set(1, 0, 0, 1, 0, 0);
   }
 
   /**
-   * Same as concat in flash
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Concatenates a given matrix with the current one.
+   *
+   * @param  {Matrix} b The matrix to be concatenated.
+   * @return {Matrix}   This.
    */
   prepend(b) {
     let a = this._matrix;
@@ -673,8 +704,10 @@ class Matrix {
   }
 
   /**
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Appends values to this matrix.
+   *
+   * @param  {Matrix} b The matrix to be appended.
+   * @return {Matrix} This.
    */
   append(b) {
     let a = this._matrix;
@@ -703,10 +736,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given and x- and y- components of a point from a local space to
+   * world space.
+   *
+   * @param  {number} x          The x- component of a point.
+   * @param  {number} y          The y- component of a point.
+   * @param  {Vector=} outVector If given stores resulting values in it.
+   * @return {Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
     outVector = outVector || new Vector();
@@ -719,10 +755,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given point from a local space to world space without applying
+   * scalling.
+   *
+   * @param  {number} x          The x- component.
+   * @param  {number} y          The y- component.
+   * @param  {Vector=} outVector If given stores results in it.
+   * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
     let m = this._matrix;
@@ -735,11 +774,11 @@ class Matrix {
   }
 
   /**
-   * transformVector - transforms vector by current matrix object.
+   * Transforms vector by current matrix object.
    *
-   * @param  {Vector} vector    description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * @param  {Vector} vector     Vector to apply transformation on.
+   * @param  {Vector=} outVector Out Vector to store results in.
+   * @return {Vector} New transformed vector.
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
@@ -752,11 +791,11 @@ class Matrix {
   }
 
   /**
-   * transformRect - transforms rectangle by current matrix object.
+   * Transforms rectangle by current matrix object.
    *
-   * @param  {Rectangle} rect    description
-   * @param  {Rectangle|null} outRect description
-   * @return {Rectangle}         description
+   * @param  {Rectangle} rect         Rectangle to apply transformation on.
+   * @param  {Rectangle|null} outRect When given stores results in it.
+   * @return {Rectangle} Tranformed Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -796,9 +835,9 @@ class Matrix {
   }
 
   /**
-   * invert - inverts current matrix.
+   * Inverts current matrix.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} This.
    */
   invert() {
     let a = this._matrix;
@@ -829,7 +868,12 @@ class Matrix {
     return this;
   }
 
-  // NOTE: remove or finish
+  /**
+   * TODO: remove or finish
+   * @ignore
+   *
+   * @returns {Array<number>} Description
+   */
   __decompose() {
     let m = this._matrix;
     let a = m[0];
@@ -872,9 +916,9 @@ class Matrix {
   }
 
   /**
-   * clone - clones the current matrix and returns new cloned object.
+   * Clones the current matrix and returns new cloned object.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} New cloned object.
    */
   clone() {
     let m = new Matrix();
@@ -884,10 +928,10 @@ class Matrix {
   }
 
   /**
-   * copyTo - copies
+   * Copies values to given matrix.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The destination matrix.
+   * @return {Matrix} This.
    */
   copyTo(matrix) {
     let a = this._matrix;
@@ -904,21 +948,21 @@ class Matrix {
   }
 
   /**
-   * copyFrom - description
+   * Copies values from given matrix into this.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The matrix to copy values from.
+   * @return {Matrix} This.
    */
   copyFrom(matrix) {
     return matrix.copyTo(this);
   }
 
   /**
-   * equals - description
+   * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param  {Matrix} matrix                   description
-   * @param  {number} epsilon = Number.EPSILON description
-   * @return {boolean}                          description
+   * @param  {Matrix} matrix                   Matrix object to compare with.
+   * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+   * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
     let a = this._matrix;
@@ -931,9 +975,9 @@ class Matrix {
   }
 
   /**
-   * get - description
+   * Returns array of values representing this matrix object.
    *
-   * @return {Float32Array}  description
+   * @return {Float32Array}
    */
   get value() {
     return this._matrix;
@@ -956,37 +1000,56 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
  */
 Matrix.__cache = new Matrix();
 
+/**
+ * Mathematical representation of a rectangle.
+ *
+ * @cat geom
+ */
 
 class Rectangle {
   /**
-   * @param  {number=} y = 0 description
-   * @param  {number=} x = 0 description
-   * @param  {number=} w = 0 description
-   * @param  {number=} h = 0 description
+   * Creates new instance of Rectangle.
+   *
+   * @param  {number=} y = 0 X-component.
+   * @param  {number=} x = 0 Y-component.
+   * @param  {number=} w = 0 The width.
+   * @param  {number=} h = 0 The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
-    /** @type {number} */
+    /**
+     * The x coordinate of the rectangle.
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * The y coordinate of the rectangle.
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * The width of the rectangle.
+     * @type {number}
+     */
     this.width = w;
 
-    /** @type {number} */
+    /**
+     * The height of the rectangle.
+     * @type {number}
+     */
     this.height = h;
   }
 
   /**
-   * set - Description
+   * Update rectangle values with a given.
    *
-   * @param {number} x Description
-   * @param {number} y Description
-   * @param {number} w Description
-   * @param {number} h Description
+   * @param {number} x X-component.
+   * @param {number} y Y-component.
+   * @param {number} w The width.
+   * @param {number} h The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   set(x, y, w, h) {
     this.x = x;
@@ -998,11 +1061,11 @@ class Rectangle {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given rectangle into this one.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The Rectangle to copy values from.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   copyFrom(rect) {
     this.x = rect.x;
@@ -1014,11 +1077,11 @@ class Rectangle {
   }
 
   /**
-   * copyTo - Description
+   * Copies values from this rectangle into description.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The destination rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
     rect.x = this.x;
@@ -1029,63 +1092,62 @@ class Rectangle {
     return rect;
   }
 
-
   /**
-   * left - Description
+   * Get/Sets the leftmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get left() {
     return this.x;
   }
 
   /**
-   * left - Description
+   * @ignore
    *
-   * @param {number} left Left x position.
+   * @param {number} keft
    */
   set left(left) {
     this.x = left;
   }
 
   /**
-   * right - Description
+   * Get/Sets the rightmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get right() {
     return this.x + this.width;
   }
 
   /**
-   * right - Description
+   * @ignore
    *
-   * @param {number} right Right x position.
+   * @param {number} right
    */
   set right(right) {
     this.x = right - this.width;
   }
 
   /**
-   * top - Description
+   * Get/Sets the topmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get top() {
     return this.y;
   }
 
   /**
-   * top - Description
+   * @ignore
    *
-   * @param {number} top Top y position.
+   * @param {number} top
    */
   set top(top) {
     this.y = top;
   }
 
   /**
-   * bottom - Description
+   * Get/Sets the bottommost point of this rectangle.
    *
    * @return {number} Description
    */
@@ -1094,27 +1156,27 @@ class Rectangle {
   }
 
   /**
-   * bottom - Description
+   * @ignore
    *
-   * @param {number} bottom Bottom y position.
+   * @param {number} bottom
    */
   set bottom(bottom) {
     this.y = bottom - this.height;
   }
 
   /**
-   * topLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topLeft() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * topLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Top left position.
+   * @param {Vector} vector
    */
   set topLeft(vector) {
     this.left = vector.x;
@@ -1122,7 +1184,7 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * Get/Sets the top right point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1131,9 +1193,9 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Top right position.
+   * @param {Vector} vector
    */
   set topRight(vector) {
     this.right = vector.x;
@@ -1141,7 +1203,7 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1150,9 +1212,9 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Right bottom position.
+   * @param {Vector} vector
    */
   set bottomRight(vector) {
     this.right = vector.x;
@@ -1160,7 +1222,7 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1169,9 +1231,9 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Left bottom position.
+   * @param {Vector} vector
    */
   set bottomLeft(vector) {
     this.left = vector.x;
@@ -1179,11 +1241,12 @@ class Rectangle {
   }
 
   /**
-   * size - Description
+   * Creates a new Rectangle instance with width and height equal to current
+   * instance.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector Resulting rect to save values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1191,9 +1254,9 @@ class Rectangle {
   }
 
   /**
-   * zero - Description
+   * Sets all components of this Rectangle to zero.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   zero() {
     return this.set(0, 0, 0, 0);
@@ -1201,12 +1264,12 @@ class Rectangle {
 
 
   /**
-   * equals - Description
+   * Compares this Rectangle with a given one.
    *
-   * @param {Rectangle} rect Description
-   * @param {number=} epsilon Description
+   * @param {Rectangle} rect                  Rect to compare values with.
+   * @param {number} epsilon = Number.EPSILON
    *
-   * @return {boolean}
+   * @return {boolean} True if rects are equal.
    */
   equals(rect, epsilon = Number.EPSILON) {
     return rect !== null && (Math.abs(this.x - rect.x) < epsilon) && (Math.abs(this.y - rect.y) < epsilon) &&
@@ -1215,12 +1278,12 @@ class Rectangle {
 
 
   /**
-   * containsXY - Description
+   * Checks if a given point is inside this rectangle.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The x-component of a point.
+   * @param {number} y The y-component of a point.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if point is inside.
    */
   containsXY(x, y) {
     return x >= this.x && x <= this.right && y >= this.y && y <= this.bottom;
@@ -1228,22 +1291,22 @@ class Rectangle {
 
 
   /**
-   * contains - Description
+   * Checks if a given rectangle is inside this rect.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect Rectangle to check with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
     return rect.x >= this.x && rect.y >= this.y && rect.right <= this.right && rect.bottom <= this.bottom;
   }
 
   /**
-   * intersects - Description
+   * Checks if this rect intersects with a given rectangle.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The rect to check intersection with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   intersects(rect) {
     return rect.right > this.x && rect.bottom > this.y &&
@@ -1252,11 +1315,11 @@ class Rectangle {
 
 
   /**
-   * union - Description
+   * Adds two rects ]
    *
-   * @param {Rectangle} toUnion Description
+   * @param {Rectangle} toUnion A rectangle object to add to this rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
     if (this.width === 0 || this.height === 0)
@@ -1274,9 +1337,9 @@ class Rectangle {
 
 
   /**
-   * volume - Description
+   * Returns volume of this Rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get volume() {
     return this.width * this.height;
@@ -1284,14 +1347,14 @@ class Rectangle {
 
 
   /**
-   * expand - Description
+   * Expands this rectangle object by given values.
    *
-   * @param {number} x      Description
-   * @param {number} y      Description
-   * @param {number} width  Description
-   * @param {number} height Description
+   * @param {number} x      X-component.
+   * @param {number} y      Y-component
+   * @param {number} width  The width.
+   * @param {number} height The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
     if (this.volume === 0)
@@ -1319,14 +1382,13 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * inflate - Description
+   * Increases the size of this rectangle by given x- and y- values.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] Y-component.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
     this.x -= x;
@@ -1337,11 +1399,10 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * clone - Description
+   * Clones this Rectangle object into new one.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object.
    */
   clone() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -1358,11 +1419,11 @@ class Rectangle {
 
 
   /**
-   * center - Description
+   * Returns the center point of this rectangle.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector The out-Vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1370,7 +1431,7 @@ class Rectangle {
   }
 
   /**
-   * scale - Scales this rectangle.
+   *  Scales this rectangle.
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
@@ -1385,7 +1446,7 @@ class Rectangle {
   }
 
   /**
-   * isEmpty - Checks rectangle has area.
+   * Checks if rectangle has area.
    *
    * @return {boolean} True if has.
    */
@@ -1402,7 +1463,6 @@ class Rectangle {
     ];
   }
 
-
   /**
    * toString - Description
    *
@@ -1415,31 +1475,49 @@ class Rectangle {
   }
 }
 
-/** @type {Rectangle}
-  * @nocollapse
-  */
+/**
+ * @ignore
+ * @type {Rectangle}
+ * @nocollapse
+ */
 Rectangle.__cache = new Rectangle();
 
+/**
+ * Mathematical representation of a circle.
+ *
+ * @cat geom
+ */
 
 class Circle {
   /**
+   * Creates new Circle instance.
+   * 
    * @param  {number=} x = 0 Position x.
    * @param  {number=} y = 0 Position y.
    * @param  {number=} r = 1 Radius.
    */
   constructor(x = 0, y = 0, r = 1) {
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.r = r;
   }
 
   /**
-   * set - Sets new circle properties
+   * Sets new circle properties
    *
    * @param {number} x Position x.
    * @param {number} y Position y.
@@ -1456,7 +1534,7 @@ class Circle {
   }
 
   /**
-   * clone - Clones this circle.
+   * Clones this circle.
    *
    * @return {Circle} Created circle.
    */
@@ -1465,7 +1543,7 @@ class Circle {
   }
 
   /**
-   * copyTo - Copy this properties to another circle.
+   * Copy this properties to another circle.
    *
    * @param {Circle} circle Object to copy to.
    *
@@ -1476,7 +1554,7 @@ class Circle {
   }
 
   /**
-   * copyFrom - Copy another circle properties to this.
+   * Copy another circle properties to this.
    *
    * @param {Circle} circle Object to copy from.
    *
@@ -1487,7 +1565,7 @@ class Circle {
   }
 
   /**
-   * equals - Shows whether circles are identical.
+   * Shows whether circles are identical.
    *
    * @param {Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
@@ -1500,7 +1578,7 @@ class Circle {
   }
 
   /**
-   * containsXY - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
@@ -1512,7 +1590,7 @@ class Circle {
   }
 
   /**
-   * contains - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {Vector} vector Point to check.
    *
@@ -1523,7 +1601,7 @@ class Circle {
   }
 
   /**
-   * left - Finds left X position.
+   * Finds left X position.
    *
    * @return {number} Left X position.
    */
@@ -1532,7 +1610,7 @@ class Circle {
   }
 
   /**
-   * right - Finds right X position.
+   * Finds right X position.
    *
    * @return {number} Right X position.
    */
@@ -1541,7 +1619,7 @@ class Circle {
   }
 
   /**
-   * top - Finds top Y position.
+   * Finds top Y position.
    *
    * @return {number} Top Y position.
    */
@@ -1550,7 +1628,7 @@ class Circle {
   }
 
   /**
-   * bottom - Finds bottom Y position.
+   * Finds bottom Y position.
    *
    * @return {number} Bottom Y position.
    */
@@ -1559,34 +1637,34 @@ class Circle {
   }
 
   /**
-   * topPoint - Description
+   * Returns top point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topPoint() {
     return new Vector(this.x, this.top);
   }
 
   /**
-   * bottomPoint - Description
+   * Returns bottom point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
   }
 
   /**
-   * zero - Description
+   * Resets all values to zero.
    *
-   * @return {Circle} Description
+   * @return {Circle} Returns this.
    */
   zero() {
     return this.set(0, 0, 0);
   }
 
   /**
-   * intersects - Shows whether this circle intersects another.
+   * Shows whether this circle intersects another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -1598,7 +1676,7 @@ class Circle {
   }
 
   /**
-   * collide - Shows whether this circle collide with another.
+   * Shows whether this circle collide with another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -1626,7 +1704,7 @@ class Circle {
   }
 
   /**
-   * volume - Area of this circle.
+   * Returns area of this circle.
    *
    * @return {number} area.
    */
@@ -1635,7 +1713,7 @@ class Circle {
   }
 
   /**
-   * perimeter - Perimeter of this circle.
+   * Returns perimeter of this circle.
    *
    * @return {number} perimeter.
    */
@@ -1644,7 +1722,7 @@ class Circle {
   }
 
   /**
-   * center - Represents center as vector.
+   * Represents center as vector.
    *
    * @param {Vector=} outVector Object for result.
    *
@@ -1656,11 +1734,11 @@ class Circle {
   }
 
   /**
-   * toString - String representation of this circle.
+   * String representation of this circle.
    *
    * @param {number=} [digits=2] Number of digits after float point.
    *
-   * @return {string} Description.
+   * @return {string} Returns string representation of this circle.
    */
   toString(digits = 2) {
     return `Circle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, r: ${this.r.toFixed(digits)} }`;
@@ -1672,9 +1750,15 @@ class Circle {
  */
 Circle.__cache = new Circle();
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 
 class Line {
   /**
+   * Creates new Line instance.
    * @param  {Vector} start Start point.
    * @param  {Vector} end End point.
    */
@@ -1958,7 +2042,7 @@ class Line {
     let y1 = this.start.y;
     let x2 = this.end.x;
     let y2 = this.end.y;
-    
+
     return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y > Math.min(y1, y2) && y < Math.max(y1, y2);
   }
 
@@ -1979,25 +2063,41 @@ class Line {
  */
 Line.__cache = new Line(new Vector(), new Vector());
 
+/**
+ * @cat geom
+ */
 
 class Polygon {
-
   /**
+   * Creates new Polygon instance.
+   *
    * @param  {Array<Vector>} vertices = [] Array of vertex points;
    */
   constructor(vertices = []) {
 
-    /** @type {Array<Vector>} */
-    this.vertices = vertices;
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
+    this.mVertices = vertices;
 
-    /** @type {Array<Line>} */
-    this.lines = [];
+    /**
+     * @private
+     * @type {Array<Line>}
+     */
+    this.mLines = [];
 
-    /** @type {Rectangle} */
-    this.bounds = new Rectangle();
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mBounds = new Rectangle();
 
-    /** @type {Vector} */
-    this.center = new Vector();
+    /**
+     * @private
+     * @type {Vector}
+     */
+    this.mCenter = new Vector();
 
     this.refresh();
   }
@@ -2010,7 +2110,7 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   set(vertices) {
-    this.vertices = vertices;
+    this.mVertices = vertices;
     this.refresh();
     return this;
   }
@@ -2023,11 +2123,11 @@ class Polygon {
    * @return {Polygon} Passed polygon.
    */
   copyTo(polygon) {
-    let len = this.vertices.length;
+    let len = this.mVertices.length;
     let vertices = [];
 
     for (let i = 0; i < len; i++) {
-      vertices.push(this.vertices[i].clone());
+      vertices.push(this.mVertices[i].clone());
     }
 
     return polygon.set(vertices);
@@ -2058,7 +2158,7 @@ class Polygon {
    * @return {Polygon} Created polygon.
    */
   clone() {
-    let thisVertices = this.vertices;
+    let thisVertices = this.mVertices;
     let len = thisVertices.length;
     let vertices = [];
 
@@ -2070,11 +2170,11 @@ class Polygon {
   }
 
   get width() {
-    return this.bounds.width;
+    return this.mBounds.width;
   }
 
   get height() {
-    return this.bounds.height;
+    return this.mBounds.height;
   }
 
   /**
@@ -2097,8 +2197,8 @@ class Polygon {
    * @return {boolean} True if polygon contains point.
    */
   contains(vector) {
-    let center = this.center;
-    let lines = this.lines;
+    let center = this.mCenter;
+    let lines = this.mLines;
     let len = lines.length;
 
     if (center.equals(vector)) {
@@ -2122,7 +2222,7 @@ class Polygon {
    * @return {number} perimeter.
    */
   get perimeter() {
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let len = thisLines.length;
     let perimeter = 0;
 
@@ -2141,11 +2241,11 @@ class Polygon {
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
-    if (!this.bounds.intersects(polygon.bounds)) {
+    if (!this.mBounds.intersects(polygon.bounds)) {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let polygonLines = polygon.lines;
     let polygonLen = polygonLines.length;
@@ -2169,8 +2269,8 @@ class Polygon {
    * @return {boolean} True if polygon collides with circle.
    */
   collideCircle(circle) {
-    let bounds = this.bounds;
-    let lines = this.lines;
+    let bounds = this.mBounds;
+    let lines = this.mLines;
 
     if (bounds.left > circle.right || bounds.right < circle.left || bounds.top > circle.bottom || bounds.bottom < circle.top) {
       return false;
@@ -2194,11 +2294,11 @@ class Polygon {
    * @return {boolean} True if polygon collides with rectangle.
    */
   collideRectangle(rectangle) {
-    if (!this.bounds.intersects(rectangle)) {
+    if (!this.mBounds.intersects(rectangle)) {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let rectangleLines = rectangle.lines;
     let rectangleLen = rectangleLines.length;
@@ -2222,7 +2322,7 @@ class Polygon {
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
-    if (this.bounds.width < polygon.bounds.width || this.bounds.height < polygon.bounds.height) {
+    if (this.mBounds.width < polygon.bounds.width || this.mBounds.height < polygon.bounds.height) {
       return false;
     }
 
@@ -2230,7 +2330,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let polygonLines = polygon.lines;
     let polygonLen = polygonLines.length;
@@ -2258,7 +2358,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let len = thisLines.length;
 
     for (let i = 0; i < len; i++) {
@@ -2282,7 +2382,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let rectangleLines = rectangle.lines;
     let rectangleLen = rectangleLines.length;
@@ -2304,10 +2404,10 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refresh() {
-    let center = this.center;
-    let bounds = this.bounds;
-    let vertices = this.vertices;
-    let lines = this.lines = [];
+    let center = this.mCenter;
+    let bounds = this.mBounds;
+    let vertices = this.mVertices;
+    let lines = this.mLines = [];
     center.set(0, 0);
 
     // bounds
@@ -2345,8 +2445,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshCenter() {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let len = vertices.length;
     center.set(0, 0);
 
@@ -2365,8 +2465,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshBounds() {
-    let bounds = this.bounds;
-    let vertices = this.vertices;
+    let bounds = this.mBounds;
+    let vertices = this.mVertices;
     let maxX = -Number.MAX_VALUE;
     let maxY = -Number.MAX_VALUE;
     let minX = Number.MAX_VALUE;
@@ -2395,8 +2495,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshLines() {
-    let vertices = this.vertices;
-    let lines = this.lines = [];
+    let vertices = this.mVertices;
+    let lines = this.mLines = [];
 
     for (let i = 0; i < vertices.length; i += 2) {
       lines.push(new Line(vertices[i], vertices[i + 1] || vertices[0]));
@@ -2431,8 +2531,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   setRotation(rotation) {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let cos = Math.cos(rotation).toFixed(15);
     let sin = Math.sin(rotation).toFixed(15);
 
@@ -2455,8 +2555,8 @@ class Polygon {
    * @return {Polygon} This vertices.
    */
   setTranslation(point) {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let len = vertices.length;
     point.subtract(center);
 
@@ -2475,8 +2575,8 @@ class Polygon {
    * @return {string} Description.
    */
   toString(digits = 2) {
-    let thisLines = this.lines;
-    let thisVertices = this.vertices;
+    let thisLines = this.mLines;
+    let thisVertices = this.mVertices;
     let len = thisLines.length;
     let vertices = '';
     let lines = '';
@@ -2490,7 +2590,7 @@ class Polygon {
       vertices += thisVertices[i].toString(digits);
     }
 
-    return `Polygon { vertices: ${vertices}, bounds: ${this.bounds.toString(digits)}, center: ${this.center.toString()}, lines: ${lines} }`;
+    return `Polygon { vertices: ${vertices}, bounds: ${this.mBounds.toString(digits)}, center: ${this.mCenter.toString()}, lines: ${lines} }`;
   }
 
 }
@@ -2500,23 +2600,46 @@ class Polygon {
  */
 Polygon.__cache = new Polygon();
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 
 class Curve {
-  constructor() {
 
-    /** @type {Array<number>} */
+  /**
+   * Creates new Curve instance.
+   */
+  constructor() {
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPoints = [];
 
-    /** @type {Array<Vector>} */
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
     this.mLookup = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStep = 1 / 60;
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mEachT = [];
   }
 
@@ -2562,7 +2685,7 @@ class Curve {
 
   /**
    * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
-   *
+   * @private
    * @param  {Array<number>} points Array of points coordinates.
    *
    * @return {Array<number>} Points coordinates array.
@@ -2579,6 +2702,8 @@ class Curve {
 
   /**
    * __refreshCache - Refresh cache (lookup) for fast interpolations.
+   *
+   * @private
    *
    * @return {Curve} This curve.
    */
@@ -2602,7 +2727,7 @@ class Curve {
 
   /**
    * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
-   *
+   * @private
    * @return {Curve} This curve.
    */
   __refreshEachT() {
@@ -2739,6 +2864,11 @@ class Curve {
  */
 Curve.__cache = new Curve();
 
+/**
+ * Utility class for logging and debugging.
+ *
+ * @cat core
+ */
 
 class Debug {
   constructor() {
@@ -2779,7 +2909,9 @@ Debug.throwOnFail = false;
 Debug.logOnFail = true;
 
 /**
- * MessageDispatcher - Description
+ * The MessageDispatcher class is the base class for all classes that posts messages.
+ *
+ * @cat core
  * @unrestricted
  */
 
@@ -3275,6 +3407,12 @@ class Message {
   }
 }
 
+/**
+ * Provides time related methods.
+ *
+ * @cat core
+ * @static
+ */
 
 class Time {
   constructor() {
@@ -3308,6 +3446,12 @@ Time.mDeltaTime = 0;
 /** @type {number} */
 Time.mScale = 1;
 
+/**
+ * Base class for custom systems. System is used to listen scene changes.
+ *
+ * @cat core
+ * @extends MessageDispatcher
+ */
 
 class System extends MessageDispatcher {
   constructor(){
@@ -3395,6 +3539,13 @@ class System extends MessageDispatcher {
   {}
 }
 
+/**
+ * Manages viewport, handles DOM container resize events and updates internal data.
+ *
+ * @cat core
+ * @fires resize
+ * @extends MessageDispatcher
+ */
 
 class Viewport extends MessageDispatcher {
   /**
@@ -3449,6 +3600,9 @@ class Viewport extends MessageDispatcher {
 }
 
 /**
+ * A base class for custom components.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -3546,6 +3700,8 @@ Component.ID = 0;
 
 /**
  * GameObject - Base class for all black game objects.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -3673,24 +3829,26 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * id - Unique object id.
+   * Returns unique object id.
    *
-   * @returns {number} Unique object id.
+   * @returns {number}
    */
   get id() {
     return this.mId;
   }
 
   /**
-   * onAdded - This method called each time object added to stage.
+   * This method called each time object added to stage.
    *
+   * @protected
    * @return {void}
    */
-  onAdded() { }
+  onAdded() {}
 
   /**
-   * onRemoved - Called when object is removed from stage.
+   * Called when object is removed from stage.
    *
+   * @protected
    * @return {void}
    */
   onRemoved() {}
@@ -3700,7 +3858,6 @@ class GameObject extends MessageDispatcher {
    * add - Sugar method for adding child GameObjects or Components.
    *
    * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
-   *
    * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
   add(...gameObjectsAndOrComponents) {
@@ -3708,9 +3865,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild(/* @type {!GameObject} */ (gooc));
+        this.addChild( /* @type {!GameObject} */ (gooc));
       else
-        this.addComponent(/* @type {!Component} */ (gooc));
+        this.addComponent( /* @type {!Component} */ (gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -3756,9 +3913,10 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @protected
-   * @param {GameObject} value Description
+   * @ignore
+   * @param {GameObject} value
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __setParent(value) {
     let p = value;
@@ -3803,7 +3961,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {boolean} [dispose=false]
    *
-   * @return {void} Description
+   * @return {void}
    */
   removeFromParent(dispose = false) {
     if (this.mParent)
@@ -3834,7 +3992,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * getChildByName
+   * get child by name
    *
    * @param {string} name
    *
@@ -3850,7 +4008,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeChildAt - Removes GameObjects instance from specified index.
+   *Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
    * @param {boolean} [dispose=false]
@@ -3880,7 +4038,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getChildAt - Returns GameObject at specified index.
+   * Returns GameObject at specified index.
    *
    * @param {number} index The index of child GameObject.
    *
@@ -3891,7 +4049,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * addComponent - Adds Component instance to the end of the list,
+   * Adds Component instance to the end of the list,
    *
    * @param  {Component} component Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
@@ -3914,11 +4072,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeComponent - Description
+   * Remove specified component
    *
-   * @param {Component} instance Description
+   * @param {Component} instance
    *
-   * @return {Component|null} Description
+   * @return {Component|null}
    */
   removeComponent(instance) {
     if (!instance)
@@ -3939,7 +4097,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getComponent
+   * get component by type
    *
    * @param {*} typeName
    *
@@ -3957,7 +4115,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * numComponenets - Returns number of component's
+   * Returns number of component's
    *
    * @return {number}
    */
@@ -3967,7 +4125,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * getComponentAt - Retrives Component at given index.
+   * Retrives Component at given index.
    *
    * @param {number} index
    *
@@ -3981,9 +4139,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localTransformation - Description
+   * Retun local transformation Matrix
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get localTransformation() {
     if (this.mDirty & DirtyFlag.LOCAL) {
@@ -4010,7 +4168,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformation - returns cloned Matrix object which represents object orientation in world space.
+   *  returns cloned Matrix object which represents object orientation in world space.
    *
    * @return {Matrix}
    */
@@ -4028,9 +4186,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformationInversed - Description
+   * returns cloned and inversed Matrix object which represents object orientation in world space
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get worldTransformationInversed() {
     // TODO: optimize, cache
@@ -4038,11 +4196,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __fixedUpdate - Description
+   * @param {number} dt
+   * @private
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
@@ -4058,11 +4215,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @param {number} dt time since the last frame
+   * @private
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(dt) {
     this.onUpdate(dt);
@@ -4078,11 +4234,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
    *
-   * @param {number} dt Description
+   * @param {number} dt time since the last frame
+   * @private
    *
-   * @return {void} Description
+   * @return {void}
    */
   __postUpdate(dt) {
     this.onPostUpdate(dt);
@@ -4099,26 +4255,26 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onFixedUpdate - Description
+   * Called at every fixed frame update.
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - Description
+   * Called at every engine update.
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - Description
-   *
+   * Called after all updates have been executed.
+   * @protected
    * @param {number} dt Description
    *
    * @return {void} Description
@@ -4126,14 +4282,14 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) {}
 
   /**
-   * __render - Description
+   * @param {VideoNullDriver} video
+   * @protected
+   * @ignore
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     this.onRender(video, time);
@@ -4146,8 +4302,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onRender - Description
-   *
+   * @protected
    * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
@@ -4236,24 +4391,24 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localToGlobal - Description
+   * Calculate global position of the object.
    *
-   * @param {Vector} localPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} localPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   localToGlobal(localPoint, outVector = null) {
     return this.worldTransformation.transformVector(localPoint, outVector);
   }
 
   /**
-   * globalToLocal - Description
+   * Calculate local position of the object
    *
-   * @param {Vector} globalPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} globalPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInversed.transformVector(globalPoint, outVector);
@@ -4697,7 +4852,7 @@ class GameObject extends MessageDispatcher {
    */
   setDirty(flag, includeChildren = true) {
     if (includeChildren) {
-      GameObject.forEach(this, x=> {
+      GameObject.forEach(this, x => {
         x.mDirty |= flag;
       });
     } else {
@@ -4715,8 +4870,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  dispose() {
-  }
+  dispose() {}
 
   // TODO: rename method
   /**
@@ -5711,6 +5865,7 @@ AssetManager.default = new AssetManager();
 
 /**
  * A blend mode enum.
+ * @cat drivers
  * @enum {string}
  */
 
@@ -5735,33 +5890,63 @@ var BlendMode = {
   LUMINOSITY: 'luminosity'
 };
 
+/**
+ * Base class for custom video drivers. VideoDriver is used to render things
+ * onto the screen.
+ *
+ * @cat drivers
+ */
 
 class VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement
+   * @param  {number} width
+   * @param  {number} height
    */
   constructor(containerElement, width, height) {
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mGlobalBlendMode = 'auto';
 
-    /** @type {HTMLElement} */
-    this.mContainerElement = /** @type {HTMLElement} */ (containerElement);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mContainerElement = /**
+     * @private
+     * @type {HTMLElement} */ (containerElement
+   );
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientHeight = height;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mTransform = new Matrix();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mGlobalAlpha = 1;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mMeasureElement = /** @type {HTMLElement} */ (document.createElement('span'));
     this.mMeasureElement.style.position = 'absolute';
     this.mContainerElement.appendChild(this.mMeasureElement);
@@ -5769,6 +5954,15 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+
+  /**
+   * @protected
+   * @ignore
+   * @param {type} msg
+   * @param {type} rect
+   *
+   * @returns {type}
+   */
   __onResize(msg, rect) {
     let w = this.mContainerElement.clientWidth;
     let h = this.mContainerElement.clientHeight;
@@ -5778,124 +5972,172 @@ class VideoNullDriver {
   }
 
   /**
-   * start - Description
+   * Initialization function.
    *
-   * @return {void} Description
+   * @protected
+   *
+   * @return {void}
    */
   start() {}
 
-  beginFrame() {}
 
-  endFrame() {}
+  /**
+   * Called before rendering anything. Usually used to clear back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
+  beginFrame() {}
 
 
   /**
-   * getTextureFromCanvas - Description
+   * Called after rendering is finished.
+   * @protected
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @returns {void}
+   */
+  endFrame() {}
+
+  /**
+   * @ignore
+   * @param {HTMLElement} canvas
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas){
     return null;
   }
 
   /**
-   * setTransform - Description
+   * Sets world transformation for future use.
    *
-   * @param {Matrix} m Description
+   * @protected
+   * @param {Matrix} m An transformation matrix to store.
    *
-   * @return {void} Description
+   * @return {void}
    */
   setTransform(m) {
     this.mTransform = m;
   }
 
   /**
-   * globalAlpha - Description
+   * Gets/Sets the global alpha. Used to calculate alpha relative to parent
+   * object.
    *
-   * @return {number} Description
+   * @protected
+   *
+   * @return {number}
    */
   get globalAlpha() {
     return this.mGlobalAlpha;
   }
 
   /**
-   * globalAlpha - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalAlpha(value) {
     this.mGlobalAlpha = value;
   }
 
   /**
-   * mGlobalBlendMode - Description
+   * Gets/Sets global blending mode. Used to calculate blend mode relative to
+   * parent object.
    *
-   * @return {string} Description
+   * @return {string}
    */
   get globalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
   /**
-   * globalBlendMode - Description
+   * @ignore
+   * @param {string} value
    *
-   * @param {string} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalBlendMode(value) {
     this.mGlobalBlendMode = value;
   }
 
   /**
-   * drawImage - description
+   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * matrix must be set prior to calling this method.
    *
-   * @param  {Texture} texture description
+   * @protected
+   *
+   * @param  {Texture} texture
    */
   drawImage(texture) {}
 
   /**
-   * drawText
+   * Draws text onto back-buffer.
    *
-   * @param {string} text
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
+   * @protected
+   *
+   * @param {string} text Text string to draw.
+   * @param {TextInfo} style The style information.
+   * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
+   * @param {number} textWidth The width of the text.
+   * @param {number} textHeight The height of the text.
    *
    * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {}
 
+
+  /**
+   * Clears back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
   clear() {}
 
   /**
-   * save - Description
+   * Used to save context if extists.
    *
+   * @ignore
+   * @protected
    * @param {GameObject|null} gameObject Used for internal binding.
    *
-   * @return {void} Description
+   * @return {void}
    */
   save(gameObject) {}
 
+
+  /**
+   * Used to restore context if extists.
+   *
+   * @protected
+   * @ignore
+   * @returns {type}
+   */
   restore() {}
 
+
+  /**
+   * Convers number color to hex string.
+   *
+   * @param {number} color The color to convert.
+   *
+   * @returns {string} The resuling hex string.
+   */
   hexColorToString(color) {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
   }
 
   /**
-   * measureText - Description
+   * Measures text with a given style.
    *
-   * @param {string} text  Description
-   * @param {TextInfo} style Description
+   * @param {string} text    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
    *
-   * @return {Vector} Description
+   * @return {Vector} A Vector with width and height of the text bounds.
    */
   measureText(text, style) {
     let el = this.mMeasureElement;
@@ -5913,17 +6155,26 @@ class VideoNullDriver {
   }
 }
 
+/**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 
 class CanvasDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @type {CanvasRenderingContext2D|null} */
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D|null}
+     */
     this.mCtx = null;
 
     this.mGlobalAlpha = 1;
@@ -5933,8 +6184,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * __createCanvas
-   *
+   * @private
    * @return {void}
    */
   __createCanvas() {
@@ -5947,6 +6197,14 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.canvas.height = this.mClientHeight;
   }
 
+
+  /**
+   * @private
+   * @param {Message} msg
+   * @param {Rectangle} rect
+   *
+   * @returns {void}
+   */
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
@@ -5955,8 +6213,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * setTransform
-   *
+   * @ignore
    * @param {Matrix} m
    *
    * @return {void}
@@ -5968,10 +6225,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   }
 
-
   /**
-   * globalAlpha
-   *
    * @param {number} value
    *
    * @return {void}
@@ -5981,9 +6235,9 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.globalAlpha = value;
   }
 
-
   /**
-   * globalBlendMode
+   * @inheritdoc
+   * @override
    *
    * @param {string} blendMode
    *
@@ -5999,6 +6253,9 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * drawImage
+   *
+   * @inheritdoc
+   * @override
    *
    * @param {Texture} texture
    *
@@ -6016,7 +6273,9 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * drawText
    *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
@@ -6053,6 +6312,8 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * clear
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -6061,7 +6322,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -6073,7 +6335,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -6084,11 +6347,10 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
@@ -6116,12 +6378,18 @@ class CanvasDriver extends VideoNullDriver {
   }
 }
 
+/**
+ * An video driver that draw everything into DOM elements itself.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 
 class DOMDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
@@ -6144,8 +6412,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * save - Description
-   *
+   * @inheritdoc
    * @override
    * @param {GameObject|null} gameObject Used for internal binding.
    *
@@ -6156,7 +6423,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __initCSS - description
+   * @private
    *
    * @return {void}  description
    */
@@ -6187,7 +6454,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -6196,7 +6464,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -6216,21 +6485,21 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return Texture.fromCanvasAsImage(canvas);
   }
 
   /**
-   * drawImage - description
+   * @override
+   * @inheritdoc
    *
-   * @param  {Texture} texture description
-   * @return {void}         description
+   * @param  {Texture} texture
+   * @return {void}
    */
   drawImage(texture) {
     /** @type {Matrix|null} */
@@ -6249,16 +6518,16 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * drawText - description
-   *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
    * @param {number} textWidth
    * @param {number} textHeight
    *
-   * @return {void}                      description
+   * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {
     let el = this.__popElement('text');
@@ -6269,11 +6538,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __popElement - Description
+   * @private
+   * @param {string} className
    *
-   * @param {string} className Description
-   *
-   * @return {Element} Description
+   * @return {Element}
    */
   __popElement(className) {
     this.mCounter++;
@@ -6290,11 +6558,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateElementCommon - Description
+   * @private
+   * @param {Element} el
    *
-   * @param {Element} el Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateElementCommon(el) {
     let v = this.mTransform.value;
@@ -6329,8 +6596,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateImageElement - description
-   *
+   * @private
    * @param  {Element} el      description
    * @param  {Texture} texture description
    * @return {void}         description
@@ -6363,14 +6629,13 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateTextElement - Description
+   * @private
+   * @param {HTMLElement} el
+   * @param {string} text
+   * @param {TextInfo} style
+   * @param {Rectangle} bounds
    *
-   * @param {HTMLElement} el     Description
-   * @param {string} text   Description
-   * @param {TextInfo} style  Description
-   * @param {Rectangle} bounds Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateTextElement(el, text, style, bounds) {
     el.innerHTML = text;
@@ -6415,30 +6680,44 @@ class DOMDriver extends VideoNullDriver {
   }
 }
 
+/**
+ * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+ *
+ * @cat display
+ * @extends GameObject
+ */
 
 class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAlpha = 1;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.blendMode = BlendMode.AUTO;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mVisible = true;
   }
 
   /**
-   * __render - Description
+   * @ignore
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mVisible === false)
@@ -6454,20 +6733,18 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * alpha - Description
+   * Gets/Sets the opacity of the object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get alpha() {
     return this.mAlpha;
   }
 
   /**
-   * alpha - Description
-   *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {number} value
+   * @return {void}
    */
   set alpha(value) {
     this.mAlpha = Math.clamp(value, 0, 1);
@@ -6475,9 +6752,9 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
+   * Gets/Sets visibility of the object.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get visible() {
     return this.mVisible;
@@ -6485,28 +6762,31 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
-   *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
    */
   set visible(value) {
     this.mVisible = value;
   }
 }
 
+/**
+ * Holds TextField's style details.
+ *
+ * @cat display.text
+ */
 
 class TextInfo {
   /**
-   * @param  {string=} name = 'sans-serif' description
-   * @param  {number=} color = '0x000000' description
-   * @param  {number=} size = '14' description
-   * @param  {TextInfo.FontStyle=} style = 'normal' description
-   * @param  {TextInfo.FontWeight=} weight = '400' description
-   * @param  {TextInfo.FontAlign=} align = 'left' description
-   * @param  {number=} strokeThickness = '0' description
-   * @param  {number=} strokeColor = '0xffffff' description
+   * @param  {string=} name Font name
+   * @param  {number=} color = Text color as hexadecimal number eg 0xff0000 (total red)
+   * @param  {number=} size = Text size
+   * @param  {TextInfo.FontStyle=} style = Text style eg italic
+   * @param  {TextInfo.FontWeight=} weight = font thick. The value is set from 100 to 900 in increments of 100.
+   * @param  {TextInfo.FontAlign=} align = horizontal alignment left | center | right
+   * @param  {number=} strokeThickness = thickness of the stroke. 0 means that no stroke
+   * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
   constructor(name = 'sans-serif', color = 0x000000, size = 14, style = TextInfo.FontStyle.NORMAL, weight = TextInfo.FontWeight.NORMAL, align = TextInfo.FontAlign.LEFT, strokeThickness = 0, strokeColor = 0xffffff) {
 
@@ -6562,6 +6842,12 @@ TextInfo.FontAlign = {
   CENTER: 'center'
 };
 
+/**
+ * Sprite is used to render Texture onto screen.
+ *
+ * @cat display
+ * @extends DisplayObject
+ */
 
 class Sprite extends DisplayObject {
 
@@ -6673,62 +6959,102 @@ class Sprite extends DisplayObject {
   }
 }
 
+/**
+ * This class is used to create display text.
+ *
+ * @cat display.text
+ * @extends DisplayObject
+ */
 
 class TextField extends DisplayObject {
   /**
-   * @param  {string=} text = ''            description
-   * @param  {number=} size = 14        description
-   * @param  {string=} name = "sans-serif" description
-   * @param {TextInfo=} style
+   * @param  {string=} text Text to be displayed inside this text field
+   * @param  {number=} size text size
+   * @param  {string=} name font name
+   * @param {TextInfo=} style TextInfo object
    */
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mText = text;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedInvalidate = true;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mCacheBounds = new Rectangle();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldWidth = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldHeight = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextWidth = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextHeight = 0;
 
-    /** @type {TextInfo} */
+    /**
+     * @private
+     * @type {TextInfo}
+     */
     this.mStyle = style || new TextInfo();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mStyle.name = name || style.name;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStyle.size = size || style.size;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAutoSize = true;
 
     this.__validate(this.mCacheBounds);
   }
 
   /**
-   * __render - Description
+   * @ignore
    * @override
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
+   * @protected
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mAlpha <= 0 || this.mVisible === false)
@@ -6749,27 +7075,24 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Description
-   *
    * @protected
    * @override
-   * @param {Rectangle=} outRect Description
+   * @ignore
+   * @param {Rectangle=} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
     return this.__validate(outRect);
   }
 
-
   /**
-   * __validate - Description
-   *
    * @private
-   * @param {Rectangle} outRect Description
+   * @ignore
+   * @param {Rectangle} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   __validate(outRect) {
     let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
@@ -6792,20 +7115,19 @@ class TextField extends DisplayObject {
 
 
   /**
-   * size - Description
+   * Get/Set text size.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get size() {
     return this.mStyle.size;
   }
 
   /**
-   * size - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set size(value) {
     this.mStyle.size = value;
@@ -6813,20 +7135,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * font - Description
+   * Get/Set text font.
    *
-   * @return {string} Description
+   * @return {string}
    */
   get font() {
     return this.mStyle.name;
   }
 
   /**
-   * font - Description
+   * @param {string} value
+   * @ignore
    *
-   * @param {string} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set font(value) {
     this.mStyle.name = value;
@@ -6834,40 +7155,39 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * color - Description
+   * Specifies text color as hexadecimal number eg 0xff0000 (total red)
    *
-   * @return {number} Description
+   * @return {number}
    */
   get color() {
     return this.mStyle.color;
   }
 
   /**
-   * color - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set color(value) {
     this.mStyle.color = value;
   }
 
   /**
-   * style - Description
+   * Get/Set text style.
    *
-   * @return {TextInfo.FontStyle} Description
+   * @return {TextInfo.FontStyle}
    */
   get style() {
     return this.mStyle.style;
   }
 
   /**
-   * style - Description
    *
-   * @param {TextInfo.FontStyle} value Description
+   * @param {TextInfo.FontStyle} value
+   * @ignore
    *
-   * @return {void} Description
+   * @return {void}
    */
   set style(value) {
     this.mStyle.style = value;
@@ -6875,20 +7195,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * weight - Description
+   * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @return {TextInfo.FontWeight} Description
+   * @return {TextInfo.FontWeight}
    */
   get weight() {
     return this.mStyle.weight;
   }
 
   /**
-   * weight - Description
+   * @param {TextInfo.FontWeight} value
+   * @ignore
    *
-   * @param {TextInfo.FontWeight} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set weight(value) {
     this.mStyle.weight = value;
@@ -6896,61 +7215,55 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * align - Description
+   * Specifies the horizontal alignment left | center | right
    *
-   * @return {TextInfo.FontAlign} Description
+   * @return {TextInfo.FontAlign}
    */
   get align() {
     return this.mStyle.align;
   }
 
   /**
-   * align - Description
+   * @param {TextInfo.FontAlign} value
+   * @ignore
    *
-   * @param {TextInfo.FontAlign} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set align(value) {
     this.mStyle.align = value;
   }
 
   /**
-   * strokeColor - Description
-   *
-   * @return {number} Description
+   * Specifies stroke color as hexadecimal number eg 0xff0000 (total red)
+   * @return {number}
    */
   get strokeColor() {
     return this.mStyle.strokeColor;
   }
 
   /**
-   * strokeColor - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeColor(value) {
     this.mStyle.strokeColor = value;
   }
 
   /**
-   * strokeThickness - Description
-   *
-   * @return {number} Description
+   * Specifies the thickness of the stroke. 0 means that no stroke
+   * @return {number}
    */
   get strokeThickness() {
     return this.mStyle.strokeThickness;
   }
 
-  //noinspection JSAnnotator
   /**
-   * strokeThickness - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeThickness(value) {
     if (value === this.mStyle.strokeThickness)
@@ -6961,20 +7274,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * fieldWidth - Description
+   * Specifies the width of the text field. If autoSize set as false
    *
-   * @return {number} Description
+   * @return {number}
    */
   get fieldWidth() {
     return this.mFieldWidth;
   }
 
   /**
-   * fieldWidth - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldWidth(value) {
     if (this.mAutoSize || value === this.mFieldWidth)
@@ -6984,10 +7296,9 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * fieldHeight - Description
+  /** Specifies the height of the text field, if autoSize set as false
    *
-   * @return {number} Description
+   * @return {number}
    */
   get fieldHeight() {
     return this.mFieldHeight;
@@ -6995,11 +7306,10 @@ class TextField extends DisplayObject {
 
 
   /**
-   * fieldHeight - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldHeight(value) {
     if (this.mAutoSize || value === this.mFieldHeight)
@@ -7009,21 +7319,19 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * text - Description
-   *
-   * @return {string} Description
+  /**Text to be displayed inside this text field.
+
+   * @return {string}
    */
   get text() {
     return this.mText;
   }
 
   /**
-   * text - Description
+   * @param {string} value
+   * @ignore
    *
-   * @param {string} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set text(value) {
     if (this.mText === value)
@@ -7034,20 +7342,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * autoSize - Description
+   * Determines whether the size of the field will adjust to the size of the text. Note: if this set as true, you need to specify fieldHeight and fieldWidth manually
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get autoSize() {
     return this.mAutoSize;
   }
 
   /**
-   * autoSize - Description
+   * @param {boolean} value
+   * @ignore
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set autoSize(value) {
     if (this.mAutoSize === value)
@@ -7303,54 +7610,82 @@ class VectorCurveScatter extends Scatter {
   }
 }
 
-
-class Action {
-
-  /**
-   * preUpdate - Description
-   *
-   * @param {number} dt Description
-   * @param {number} t  Description
-   *
-   * @return {void} Description
-   */
-  preUpdate(dt, t) {}
-
-
-  /**
-   * @param {Emitter} emmiter
-   * @param {Particle} particle
-   * @param {number} dt
-   * @param {number} t
-   *
-   * @return {void}
-   */
-  update(emmiter, particle, dt, t) {}
-
-
-  /**
-   * postUpdate
-   *
-   * @param {number} dt
-   * @param {number} t
-   *
-   * @return {void}
-   */
-  postUpdate(dt, t) {}
-}
-
 /**
- * @extends Action
+ * A base class for particle system actions. Every frame each action executed over each particle.
+ * 
+ * @category particles.actions
+ * @abstract
+ * @class
  */
 
-class Acceleration extends Action {
-  constructor(vectorScatter) {
-    super();
-
-    this.scatter = vectorScatter;
+class Action {
+  /**
+   * Creates new Action instance.
+   */
+  constructor(){
   }
 
   /**
+   * Called for every particle before any update method called.
+   *
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
+   *
+   * @return {void} Description
+   */
+  preUpdate(dt) {}
+
+
+  /**
+   * Called for every particle.
+   *
+   * @protected
+   * @param {Emitter} emmiter   The owner of the particle.
+   * @param {Particle} particle The particle to execute update on.
+   * @param {number} dt         Amount of seconds since the last update.
+   *
+   * @return {void}
+   */
+  update(emmiter, particle, dt) {}
+
+
+  /**
+   * Called after all updates have been executed.
+   *
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
+   *
+   * @return {void}
+   */
+  postUpdate(dt) {}
+}
+
+/**
+ * Adds acceleration to particles along given direction.
+ * 
+ * @category particles.actions
+ * @extends Action
+ * @class
+ */
+
+class Acceleration extends Action {
+  /**
+   * Creates new Acceleration instance.
+   *
+   * @param {VectorScatter} vectorScatter An VectorScatter which defines acceleration direction.
+   */
+  constructor(vectorScatter) {
+    super();
+
+    /**
+     * @private
+     * @type {VectorScatter}
+     */
+    this.mScatter = vectorScatter;
+  }
+
+  /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7360,25 +7695,49 @@ class Acceleration extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    let v = this.scatter.getValue();
+    let v = this.mScatter.getValue();
 
     particle.ax += v.x;
     particle.ay += v.y;
   }
+
+
+  /**
+   * Returns VectorScatter object that defines acceleration direction.
+   * @member {VectorScatter}
+   * @return {VectorScatter}
+   */
+  get scatter() {
+    return this.mScatter;
+  }
 }
 
 /**
+ * Sets particle's alpha value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 class AlphaOverLife extends Action {
+  /**
+   * Creates new AlphaOverLife instance.
+   *
+   * @param {FloatScatter} floatScatter A starting and ending values of alpha property.
+   */
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7388,22 +7747,40 @@ class AlphaOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.alpha = this.scatter.getValueAt(particle.energy);
+    particle.alpha = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines alpha value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's scale value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 class ScaleOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7413,22 +7790,40 @@ class ScaleOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.scale = this.scatter.getValueAt(particle.energy);
+    particle.scale = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines scale value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's rotation value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 class RotationOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7438,22 +7833,40 @@ class RotationOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.r = this.scatter.getValueAt(particle.energy);
+    particle.r = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines rotation value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's texture according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 class TextureOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7463,20 +7876,42 @@ class TextureOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.textureIndex = ~~this.scatter.getValueAt(particle.energy);
+    particle.textureIndex = ~~this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines texture value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
+/**
+ * Base class for particle's initializators. Each initializer updates particle data once at start, eg when particle added to scene.
+ *
+ * @category particles.initializers
+ * @class
+ */
 
 class Initializer {
   /**
    * @param {Particle} particle
    *
    * @return {void}
-   */  
+   */
   initialize(particle) {}
 }
 
+/**
+ * Sets particle's life.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Life extends Initializer {
   /**
@@ -7504,6 +7939,13 @@ class Life extends Initializer {
   }
 }
 
+/**
+ * Sets particle's mass.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Mass extends Initializer {
 
@@ -7532,6 +7974,13 @@ class Mass extends Initializer {
   }
 }
 
+/**
+ * Sets particle's starting scale.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Scale extends Initializer {
   /**
@@ -7559,6 +8008,13 @@ class Scale extends Initializer {
   }
 }
 
+/**
+ * Sets particle's starting velocity.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Velocity extends Initializer {
   /**
@@ -7589,6 +8045,13 @@ class Velocity extends Initializer {
   }
 }
 
+/**
+ * Sets particle's position.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Position extends Initializer {
 
@@ -7620,6 +8083,13 @@ class Position extends Initializer {
   }
 }
 
+/**
+ * Sets particle's default rotation.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class Rotation extends Initializer {
   /**
@@ -7647,6 +8117,13 @@ class Rotation extends Initializer {
   }
 }
 
+/**
+ * Sets particle's texture.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 class RandomTexture extends Initializer {
   /**
@@ -8008,10 +8485,8 @@ class Emitter extends DisplayObject {
     let alength = this.mActions.length;
     let plength = this.mParticles.length;
 
-    let t = Black.instance.uptime;
-
     for (let i = 0; i < alength; i++)
-      this.mActions[i].preUpdate(dt, t);
+      this.mActions[i].preUpdate(dt);
 
     let particle;
 
@@ -8020,7 +8495,7 @@ class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt, t);
+        this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -8031,7 +8506,7 @@ class Emitter extends DisplayObject {
     }
 
     for (let j = 0; j < alength; j++)
-      this.mActions[j].postUpdate(dt, t);
+      this.mActions[j].postUpdate(dt);
   }
 
   __create(amount) {
@@ -8846,6 +9321,12 @@ class InputComponent extends Component {
   }
 }
 
+/**
+ * Basic FPS component. Shows frame rate.
+ *
+ * @cat components
+ * @extends Component
+ */
 
 class FPSComponent extends Component  {
   constructor() {
@@ -8873,6 +9354,12 @@ class FPSComponent extends Component  {
   }
 }
 
+/**
+ * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ *
+ * @cat components
+ * @extends Component
+ */
 
 class MRComponent extends Component {
   /**
@@ -8967,13 +9454,14 @@ class MRComponent extends Component {
   }
 }
 
+/**
+ * A static class with many static easing functions.
+ *
+ * @cat animation
+ * @static
+ */
 
 class Ease {
-  /**
-   * Singleton.
-   */
-  constructor() {}
-
   /**
    * linear
    * @param {number} k
@@ -9390,6 +9878,12 @@ class Ease {
   }
 }
 
+/**
+ * Interpolation functions.
+ *
+ * @cat animation
+ * @static
+ */
 
 class Interpolation {
   /**
@@ -9514,7 +10008,9 @@ Interpolation.__factorial = (function() {
 })();
 
 /**
- * @memberof module:animation
+ * A tweening component.
+ *
+ * @cat animation
  * @unrestricted
  * @extends Component
  */
@@ -10017,8 +10513,13 @@ class Tween extends Component {
   }
 }
 
+/**
+ * Holds details about sprite animation.
+ *
+ * @cat animation
+ */
 
-class Animation {
+class AnimationInfo {
   /**
    * Creates an instance of Animation class
    *
@@ -10107,7 +10608,8 @@ class Animation {
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
    *
-   * @return {Texture}
+   * @internal
+   * @return {Texture} Returns the current frame Texture.
    */
   play() {
     if (this.mCompleted === true) {
@@ -10253,6 +10755,12 @@ class Animation {
   }
 }
 
+/**
+ * A Component which allows to play sprite animations.
+ *
+ * @cat animation
+ * @extends Component
+ */
 
 class AnimationController extends Component {
   /**
@@ -10263,13 +10771,13 @@ class AnimationController extends Component {
 
     /**
      * @private
-     * @type {Object<string, Animation>}
+     * @type {Object<string, AnimationInfo>}
      */
     this.mAnimations = {};
 
     /**
      * @private
-     * @type {Animation|null}
+     * @type {AnimationInfo|null}
      */
     this.mCurrentAnim = null;
   }
@@ -10315,7 +10823,7 @@ class AnimationController extends Component {
    * @param {number}          [fps=14]    Frames Per Second
    * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
    *
-   * @return {Animation} The newly created Animation Object.
+   * @return {AnimationInfo} The newly created Animation Object.
    */
   add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
@@ -10393,7 +10901,7 @@ class AnimationController extends Component {
   }
 
   /**
-   * Returns currently active animation.
+   * Returns current active animation.
    *
    * @returns {Animation|null}
    */
@@ -10401,15 +10909,6 @@ class AnimationController extends Component {
     return this.mCurrentAnim;
   }
 }
-
-//.########::'##::::::::::'###:::::'######::'##:::'##:
-// ##.... ##: ##:::::::::'## ##:::'##... ##: ##::'##::
-// ##:::: ##: ##::::::::'##:. ##:: ##:::..:: ##:'##:::
-// ########:: ##:::::::'##:::. ##: ##::::::: #####::::
-// ##.... ##: ##::::::: #########: ##::::::: ##. ##:::
-// ##:::: ##: ##::::::: ##.... ##: ##::: ##: ##:. ##::
-// ########:: ########: ##:::: ##:. ######:: ##::. ##:
-//........:::........::..:::::..:::......:::..::::..::
 
 
 class Black extends MessageDispatcher {

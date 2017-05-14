@@ -1,3 +1,10 @@
+/**
+ * Sets particle's texture.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class RandomTexture extends Initializer {
   /**

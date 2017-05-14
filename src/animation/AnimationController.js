@@ -1,3 +1,9 @@
+/**
+ * A Component which allows to play sprite animations.
+ *
+ * @cat animation
+ * @extends Component
+ */
 /* @echo EXPORT */
 class AnimationController extends Component {
   /**
@@ -8,13 +14,13 @@ class AnimationController extends Component {
 
     /**
      * @private
-     * @type {Object<string, Animation>}
+     * @type {Object<string, AnimationInfo>}
      */
     this.mAnimations = {};
 
     /**
      * @private
-     * @type {Animation|null}
+     * @type {AnimationInfo|null}
      */
     this.mCurrentAnim = null;
   }
@@ -60,7 +66,7 @@ class AnimationController extends Component {
    * @param {number}          [fps=14]    Frames Per Second
    * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
    *
-   * @return {Animation} The newly created Animation Object.
+   * @return {AnimationInfo} The newly created Animation Object.
    */
   add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
@@ -138,7 +144,7 @@ class AnimationController extends Component {
   }
 
   /**
-   * Returns currently active animation.
+   * Returns current active animation.
    *
    * @returns {Animation|null}
    */

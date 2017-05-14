@@ -1,3 +1,10 @@
+/**
+ * Sets particle's starting scale.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Scale extends Initializer {
   /**

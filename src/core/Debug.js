@@ -1,3 +1,8 @@
+/**
+ * Utility class for logging and debugging.
+ *
+ * @cat core
+ */
 /* @echo EXPORT */
 class Debug {
   constructor() {

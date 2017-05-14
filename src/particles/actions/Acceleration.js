@@ -1,8 +1,9 @@
 /**
  * Adds acceleration to particles along given direction.
+ * 
+ * @category particles.actions
  * @extends Action
  * @class
- * @memberof particles.actions
  */
 /* @echo EXPORT */
 class Acceleration extends Action {
@@ -41,8 +42,8 @@ class Acceleration extends Action {
 
   /**
    * Returns VectorScatter object that defines acceleration direction.
-   * @member {Vector}
-   * @return {Scatter}
+   * @member {VectorScatter}
+   * @return {VectorScatter}
    */
   get scatter() {
     return this.mScatter;

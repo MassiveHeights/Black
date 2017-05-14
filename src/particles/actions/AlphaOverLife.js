@@ -1,15 +1,29 @@
 /**
+ * Sets particle's alpha value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 /* @echo EXPORT */
 class AlphaOverLife extends Action {
+  /**
+   * Creates new AlphaOverLife instance.
+   *
+   * @param {FloatScatter} floatScatter A starting and ending values of alpha property.
+   */
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -19,6 +33,15 @@ class AlphaOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.alpha = this.scatter.getValueAt(particle.energy);
+    particle.alpha = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines alpha value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }

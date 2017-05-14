@@ -1,3 +1,10 @@
+/**
+ * Sets particle's position.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Position extends Initializer {
 

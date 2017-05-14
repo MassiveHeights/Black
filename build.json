@@ -77,7 +77,7 @@
     "src/animation/Interpolation.js",
     "src/animation/Tween.js",
 
-    "src/animation/Animation.js",
+    "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
 
     "src/Black.js"

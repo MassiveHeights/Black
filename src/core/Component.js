@@ -1,4 +1,7 @@
 /**
+ * A base class for custom components.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */

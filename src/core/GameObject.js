@@ -1,5 +1,7 @@
 /**
  * GameObject - Base class for all black game objects.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */

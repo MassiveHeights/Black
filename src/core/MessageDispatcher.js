@@ -1,5 +1,7 @@
 /**
- * MessageDispatcher - Description
+ * The MessageDispatcher class is the base class for all classes that posts messages.
+ *
+ * @cat core
  * @unrestricted
  */
 /* @echo EXPORT */

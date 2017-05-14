@@ -1,0 +1,110 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "jaguarjs-jsdoc",
+        "scope": null,
+        "escapedName": "jaguarjs-jsdoc",
+        "name": "jaguarjs-jsdoc",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "d:\\MassiveHeights.Blacksmith\\Black"
+    ]
+  ],
+  "_from": "jaguarjs-jsdoc@latest",
+  "_id": "jaguarjs-jsdoc@1.0.2",
+  "_inCache": true,
+  "_location": "/jaguarjs-jsdoc",
+  "_nodeVersion": "4.7.0",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/jaguarjs-jsdoc-1.0.2.tgz_1482244441902_0.5992906296160072"
+  },
+  "_npmUser": {
+    "name": "bigtimebuddy",
+    "email": "matt@mattkarl.com"
+  },
+  "_npmVersion": "2.15.11",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "jaguarjs-jsdoc",
+    "scope": null,
+    "escapedName": "jaguarjs-jsdoc",
+    "name": "jaguarjs-jsdoc",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "http://registry.npmjs.org/jaguarjs-jsdoc/-/jaguarjs-jsdoc-1.0.2.tgz",
+  "_shasum": "bfd6035f69a05a24c226f3f5a9f1c20feeab29b9",
+  "_shrinkwrap": null,
+  "_spec": "jaguarjs-jsdoc",
+  "_where": "d:\\MassiveHeights.Blacksmith\\Black",
+  "author": {
+    "name": "davidshimjs"
+  },
+  "bugs": {
+    "url": "https://github.com/pixijs/jaguarjs-jsdoc/issues"
+  },
+  "contributors": [
+    {
+      "name": "Matt Karl",
+      "email": "matt@mattkarl.com"
+    }
+  ],
+  "dependencies": {},
+  "description": "Jaguar.js template for JSDoc 3",
+  "devDependencies": {
+    "jshint": "^2.9.2",
+    "less": "^2.7.1",
+    "less-plugin-clean-css": "^1.5.1",
+    "rimraf": "^2.5.2",
+    "uglify-js": "^2.6.2"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "bfd6035f69a05a24c226f3f5a9f1c20feeab29b9",
+    "tarball": "https://registry.npmjs.org/jaguarjs-jsdoc/-/jaguarjs-jsdoc-1.0.2.tgz"
+  },
+  "gitHead": "82b2a4c32441c8e7bcfb5cef6ff68ba48365dd4b",
+  "homepage": "https://github.com/pixijs/jaguarjs-jsdoc#readme",
+  "keywords": [
+    "jsdoc",
+    "jsdoc3",
+    "jaguar.js",
+    "template"
+  ],
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "bigtimebuddy",
+      "email": "matt@mattkarl.com"
+    },
+    {
+      "name": "joechamm",
+      "email": "joechamm@gmail.com"
+    }
+  ],
+  "name": "jaguarjs-jsdoc",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pixijs/jaguarjs-jsdoc.git"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run lint && npm run build:js && npm run build:css",
+    "build:css": "lessc src/styles/jaguar.less static/styles/jaguar.css --clean-css",
+    "build:js": "uglifyjs src/scripts/*.js -m -o static/scripts/jaguar.js",
+    "clean": "rimraf static/**/jaguar.*",
+    "lint": "jshint publish.js src/scripts/*.js || exit 0",
+    "test": "npm run build"
+  },
+  "version": "1.0.2"
+}

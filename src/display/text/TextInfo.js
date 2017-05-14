@@ -1,3 +1,8 @@
+/**
+ * Holds TextField's style details.
+ *
+ * @cat display.text
+ */
 /* @echo EXPORT */
 class TextInfo {
   /**

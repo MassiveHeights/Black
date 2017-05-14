@@ -1,15 +1,24 @@
 /**
+ * Sets particle's rotation value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 /* @echo EXPORT */
 class RotationOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -19,6 +28,15 @@ class RotationOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.r = this.scatter.getValueAt(particle.energy);
+    particle.r = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines rotation value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }

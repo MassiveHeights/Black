@@ -1,3 +1,9 @@
+/**
+ * Provides time related methods.
+ *
+ * @cat core
+ * @static
+ */
 /* @echo EXPORT */
 class Time {
   constructor() {
