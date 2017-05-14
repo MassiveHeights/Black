@@ -73,7 +73,7 @@ class AnimationController extends Component {
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
     Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animatation with same name alredy exists');
 
-    let anim = new Animation(this, name, textures, fps, loop);
+    let anim = new AnimationInfo(this, name, textures, fps, loop);
     this.mAnimations[name] = anim;
 
     return anim;
