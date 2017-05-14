@@ -2927,7 +2927,7 @@ class MessageDispatcher {
   }
 
   /**
-   * on - Listens to message by given name
+   * Listens to message by given name
    *
    * @param {string} name           Name of a message to listen
    * @param {Function} callback       The callback function
@@ -2985,7 +2985,7 @@ class MessageDispatcher {
   }
 
   /**
-   * removeOn - Description
+   * Removes listener
    *
    * @param {string} name            Description
    * @param {Function=} [callback=null] Description
@@ -3018,7 +3018,7 @@ class MessageDispatcher {
   }
 
   /**
-   * post - Sends message with given pattern and params
+   * Sends message with given pattern and params
    *
    * @param {string}  name   The name of a message
    * @param {...*} params A list of params to send
