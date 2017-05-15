@@ -200,7 +200,7 @@ class GameObject extends MessageDispatcher {
       return this.setChildIndex(child, index);
 
     // this operation should be atomic. since __setParent can throw exception.
-    this.mChildren.splice(index, 1, child);
+    this.mChildren.splice(index, 0, child);
 
     child.removeFromParent();
     child.__setParent(this);
@@ -244,13 +244,14 @@ class GameObject extends MessageDispatcher {
     let ix = this.mChildren.indexOf(child);
 
     if (ix < 0)
-      throw new Error('Child is not a child of this object.');
+      throw new Error('Given child element was not found in children list.');
 
     if (ix === index)
       return child;
 
-    this.mChildren.splice(ix, 1);
-    this.mChildren.splice(index, 0, child);
+    // NOTE: systems needs to know when trees changes
+    child.removeFromParent();
+    this.addChildAt(child, index);
     this.setTransformDirty();
 
     return child;
@@ -980,7 +981,7 @@ class GameObject extends MessageDispatcher {
 
     //TODO: critical fix me now!
     let ix = this.parent.mChildren.indexOf(this);
-    console.log(ix);
+    //debugger;
     return ix;
   }
 
