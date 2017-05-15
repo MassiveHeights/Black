@@ -250,7 +250,7 @@ class GameObject extends MessageDispatcher {
       return child;
 
     this.mChildren.splice(ix, 1);
-    this.mChildren.splice(index, 1, child);
+    this.mChildren.splice(index, 0, child);
     this.setTransformDirty();
 
     return child;
@@ -582,7 +582,7 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) {}
 
   /**
-   * @ignore   *
+   * @ignore
    * @param {VideoNullDriver} video   *
    * @param {number} time
    * @param {number} parentAlpha
@@ -977,8 +977,11 @@ class GameObject extends MessageDispatcher {
    * @return {number}
    */
   get index() {
+
     //TODO: critical fix me now!
-    return ~~(Math.random() * 1000); //this.mIndex;
+    let ix = this.parent.mChildren.indexOf(this);
+    console.log(ix);
+    return ix;
   }
 
   /**
@@ -1242,11 +1245,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns a point where intersection were made.
+   * Returns a point where intersection were made in local space.
    *
    * @param {GameObject} gameObject GameObject to test intersection with.
-   * @param {Vector} point          The point to test.
-   * @param {Vector=} outVector     If passed point of intersection will be
+   * @param {Vector}     point      The point to test.
+   * @param {Vector=}    outVector  If passed point of intersection will be
    * stored in it.
    *
    * @return {boolean} True if intersects.
