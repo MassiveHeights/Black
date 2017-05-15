@@ -978,11 +978,9 @@ class GameObject extends MessageDispatcher {
    * @return {number}
    */
   get index() {
-
-    //TODO: critical fix me now!
-    let ix = this.parent.mChildren.indexOf(this);
-    //debugger;
-    return ix;
+    // TODO: this is only required by Input component and its pretty heavy.
+    // Try to workaround it.
+    return this.parent.mChildren.indexOf(this);
   }
 
   /**

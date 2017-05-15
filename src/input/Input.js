@@ -115,9 +115,6 @@ class Input extends System {
    */
   __sortListeners() {
     // TODO: make it faster
-    // - try insert sort
-
-    console.log('------');
     this.mInputListeners.sort((a, b) => {
       let depthA = a.gameObject.depth;
       let depthB = b.gameObject.depth;
