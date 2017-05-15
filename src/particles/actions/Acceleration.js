@@ -1,7 +1,7 @@
 /**
  * Adds acceleration to particles along given direction.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */

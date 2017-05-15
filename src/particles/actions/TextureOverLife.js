@@ -1,7 +1,7 @@
 /**
  * Sets particle's texture according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */

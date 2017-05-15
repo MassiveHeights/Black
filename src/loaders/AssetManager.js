@@ -6,50 +6,113 @@ TODO:
   4. load progress
 */
 
+/**
+ * Reponsible for preloading assets and manages its in memory state.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 /* @echo EXPORT */
 class AssetManager extends MessageDispatcher {
+  /**
+   * Creates new AssetManager instance. AssetManager exposes static property
+   * called 'default' and many internal classes uses default instance.
+   */
   constructor() {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDefaultPath = '';
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTotalLoaded = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsAllLoaded = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLoadingProgress = 0;
 
-    /** @type {Array<Asset>} */
+    /**
+     * @private
+     * @type {Array<Asset>}
+     */
     this.mQueue = [];
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mTextures = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mAtlases = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mJsons = {};
   }
 
+  /**
+   * Adds single image to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the image.
+   *
+   * @returns {void}
+   */
   enqueueImage(name, url) {
     this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
   }
 
+  /**
+   * Adds atlas to the loading queue.
+   *
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Atlas URL.
+   * @param {string} dataUrl  URL to the .json file which describes the atlas.
+   *
+   * @returns {void}
+   */
   enqueueAtlas(name, imageUrl, dataUrl) {
     this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
   }
 
+  /**
+   * Adds single json file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   *
+   * @returns {void}
+   */
   enqueueJson(name, url) {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
   /**
-   * loadQueue
+   * Starts preloading all enqueued assets.
+   * @fires complete
    *
    * @return {void}
    */
@@ -63,7 +126,8 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * onAssetLoaded
+   * @protected
+   * @ignore
    *
    * @param {Message} msg
    *
@@ -97,11 +161,11 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * getTexture
+   * Returns Texture object by given name.
    *
-   * @param {string} name
+   * @param {string} name The name of the Asset.
    *
-   * @return {Texture|null}
+   * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -121,16 +185,19 @@ class AssetManager extends MessageDispatcher {
 
 
   /**
-   * @param {string} name
+   * Returns AtlasTexture by given name.
    *
-   * @return {AtlasTexture}
+   * @param {string} name The name of the Asset.
+   *
+   * @return {AtlasTexture} Returns atlas or null.
    */
   getAtlas(name) {
     return this.mAtlases[name];
   }
 
   /**
-   * defaultPath
+   * Gets/Sets default path for preloading. Usefull when url's getting too long.
+   * The asset path will be concatenated with defaultPath.
    *
    * @return {string}
    */
@@ -139,8 +206,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * defaultPath
-   *
+   * @ignore
    * @param {string} value
    *
    * @return {void}
@@ -150,7 +216,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * isAllLoaded
+   * Returns True if all assets were loaded.
    *
    * @return {boolean}
    */
@@ -159,5 +225,9 @@ class AssetManager extends MessageDispatcher {
   }
 }
 
-/** @type {AssetManager} */
+/**
+ * Default instance. Sprite and other classes uses this instance to find textures by name.
+ * @static
+ * @type {AssetManager}
+ */
 AssetManager.default = new AssetManager();

@@ -1,27 +1,29 @@
 /**
  * Sets particle's starting scale.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 /* @echo EXPORT */
 class Scale extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Scale instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting scale.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting scale.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

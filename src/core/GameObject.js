@@ -795,7 +795,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * pivotX - Description
-   * @export
+   *
    * @return {number} Description
    */
   get pivotX() {
@@ -805,7 +805,7 @@ class GameObject extends MessageDispatcher {
   /**
    * pivotX - Description
    *
-   * @export
+   * @private
    * @param {number} value Description
    *
    * @return {void} Description
@@ -1380,7 +1380,9 @@ class GameObject extends MessageDispatcher {
   }
 }
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 GameObject.ID = 0;

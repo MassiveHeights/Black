@@ -1,27 +1,32 @@
 /**
  * Sets particle's texture.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 /* @echo EXPORT */
 class RandomTexture extends Initializer {
   /**
-   * constructor - Description
+   * Creates new RandomTexture instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The float scatter defines the index of the texture. All values will be
+     * rounded.
+     *
+     * @see {Particle.textureIndex}
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

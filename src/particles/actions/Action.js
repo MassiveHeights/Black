@@ -1,7 +1,7 @@
 /**
  * A base class for particle system actions. Every frame each action executed over each particle.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @abstract
  * @class
  */

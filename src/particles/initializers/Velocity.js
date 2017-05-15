@@ -1,27 +1,29 @@
 /**
  * Sets particle's starting velocity.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 /* @echo EXPORT */
 class Velocity extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Velocity instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min-max range for starting velocity.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for starting velocity.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

@@ -4495,7 +4495,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * pivotX - Description
-   * @export
+   *
    * @return {number} Description
    */
   get pivotX() {
@@ -4505,7 +4505,7 @@ class GameObject extends MessageDispatcher {
   /**
    * pivotX - Description
    *
-   * @export
+   * @private
    * @param {number} value Description
    *
    * @return {void} Description
@@ -5080,7 +5080,9 @@ class GameObject extends MessageDispatcher {
   }
 }
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 GameObject.ID = 0;
@@ -5448,46 +5450,73 @@ class AtlasTexture extends Texture {
   //dispose() {}
 }
 
-// TODO: handle errors
-// TODO: v2: parallel loading?
-//
-//
+/**
+ * Holds information about external assets.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 
 class Asset extends MessageDispatcher {
   /**
-   * @param  {string} name description
-   * @param  {string} url  description
+   * Creates new Assets instance.
+   * @param  {string} name Name of asset.
+   * @param  {string} url  URL of the asset to load it from.
    */
   constructor(name, url) {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mUrl = url;
 
-    /** @type {*|null} */
+    /**
+     * @private
+     * @type {*|null}
+     */
     this.mData = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = false;
 
-    /** @type {string|undefined} */
+    /**
+     * @private
+     * @type {string|undefined}
+     */
     this.mMimeType = undefined;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mResponseType = '';
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mExtension = this.getExtension(url);
 
-    /** @type {XMLHttpRequest|null} */
+    /**
+     * @private
+     * @type {XMLHttpRequest|null}
+     */
     this.mRequest = null;
   }
 
   /**
-   * load
+   * Loads asset from an external source.
    *
    * @return {void}
    */
@@ -5514,9 +5543,11 @@ class Asset extends MessageDispatcher {
     this.mRequest.send(null);
   }
 
-
   /**
-   * onLoaded
+   * Called when asset is fully loaded.
+   *
+   * @protected
+   * @fires complete
    *
    * @return {void}
    */
@@ -5526,7 +5557,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * name
+   * Returns the name of this asset.
    *
    * @return {string}
    */
@@ -5535,7 +5566,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * data
+   * Returns loaded data object associated with this asset.
    *
    * @return {*}
    */
@@ -5544,7 +5575,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * isLoaded
+   * Returns true if asset is preloaded.
    *
    * @return {boolean}
    */
@@ -5556,54 +5587,62 @@ class Asset extends MessageDispatcher {
   dispose() {}
 
   /**
-   * getExtension
+   * Helper function. Returns the file extension.
    *
-   * @param {string} url
+   * @param {string} url Url to get extension from.
    *
-   * @return {string}
+   * @return {string} Empty string if no extension were found or extension itself.
    */
   getExtension(url) {
-    if (url.indexOf(".") === -1)
+    if (url.indexOf('.') === -1)
       return '';
 
-    return url.substring(url.indexOf(".")).toLowerCase();
+    return url.substring(url.indexOf('.')).toLowerCase();
   }
 }
 
+/**
+ * Single Texture file asset class responsible for loading images file and
+ * converting them into Textures.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 
 class TextureAsset extends Asset {
   /**
-   * constructor - Description
+   * Creates TextureAsset instance.
    *
-   * @param {string} name Description
-   * @param {string} url  Description
-   *
-   * @return {void} Description
+   * @param {string} name Asset name.
+   * @param {string} url  URL to load image from.
    */
   constructor(name, url) {
     super(name, url);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mImageElement = new Image();
   }
 
   /**
-   * onLoaded - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   onLoaded() {
-    //console.log('TextureAsset: \'%s\' loaded', this.mName);
-
     this.mData = new Texture(this.mImageElement);
 
     super.onLoaded();
   }
 
   /**
-   * load - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   load() {
     this.mImageElement.src = this.mUrl;
@@ -5611,34 +5650,33 @@ class TextureAsset extends Asset {
       this.onLoaded();
     }
   }
-
-  /**
-   * type - Description
-   *
-   * @return {string} Description
-   */
-  get type() {
-    return "TextureAsset";
-  }
 }
 
+/**
+ * Single JSON file asset class responsible for loading json file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 
 class JSONAsset extends Asset {
   /**
-   * constructor
+   * Creates new JSONAsset instance.
    *
-   * @param {string} name
-   * @param {string} url
+   * @param {string} name The name of asset.
+   * @param {string} url  URL to the json file.
    *
    * @return {void}
    */
   constructor(name, url) {
     super(name, url);
-    this.mimeType = "application/json";
+
+    this.mimeType = 'application/json';
   }
 
   /**
-   * onLoaded
+   * @override
+   * @inheritdoc
    *
    * @return {void}
    */
@@ -5648,16 +5686,21 @@ class JSONAsset extends Asset {
   }
 }
 
+/**
+ * Texture Atlas asset responsible for loading Image file and coresponding Json
+ * file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 
 class AtlasTextureAsset extends Asset {
   /**
-   * constructor
+   * Creates new AtlasTextureAsset instance.
    *
-   * @param {string} name
-   * @param {string} imageUrl
-   * @param {string} dataUrl
-   *
-   * @return {void}
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Image URL.
+   * @param {string} dataUrl  Json URL.
    */
   constructor(name, imageUrl, dataUrl) {
     super(name, imageUrl);
@@ -5670,6 +5713,11 @@ class AtlasTextureAsset extends Asset {
     this.dataAsset.on('complete', this.onJsonLoaded, this);
   }
 
+
+  /**
+   * @ignore
+   * @returns {void}
+   */
   onJsonLoaded() {
     this.mImageElement.src = this.mUrl;
     this.mImageElement.onload = () => {
@@ -5678,8 +5726,8 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * onLoaded
-   *
+   * @override
+   * @inheritdoc
    * @return {void}
    */
   onLoaded() {
@@ -5689,7 +5737,7 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * load
+   * @inheritdoc
    * @override
    *
    * @return {void}
@@ -5707,50 +5755,113 @@ TODO:
   4. load progress
 */
 
+/**
+ * Reponsible for preloading assets and manages its in memory state.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 
 class AssetManager extends MessageDispatcher {
+  /**
+   * Creates new AssetManager instance. AssetManager exposes static property
+   * called 'default' and many internal classes uses default instance.
+   */
   constructor() {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDefaultPath = '';
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTotalLoaded = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsAllLoaded = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLoadingProgress = 0;
 
-    /** @type {Array<Asset>} */
+    /**
+     * @private
+     * @type {Array<Asset>}
+     */
     this.mQueue = [];
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mTextures = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mAtlases = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mJsons = {};
   }
 
+  /**
+   * Adds single image to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the image.
+   *
+   * @returns {void}
+   */
   enqueueImage(name, url) {
     this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
   }
 
+  /**
+   * Adds atlas to the loading queue.
+   *
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Atlas URL.
+   * @param {string} dataUrl  URL to the .json file which describes the atlas.
+   *
+   * @returns {void}
+   */
   enqueueAtlas(name, imageUrl, dataUrl) {
     this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
   }
 
+  /**
+   * Adds single json file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   *
+   * @returns {void}
+   */
   enqueueJson(name, url) {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
   /**
-   * loadQueue
+   * Starts preloading all enqueued assets.
+   * @fires complete
    *
    * @return {void}
    */
@@ -5764,7 +5875,8 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * onAssetLoaded
+   * @protected
+   * @ignore
    *
    * @param {Message} msg
    *
@@ -5798,11 +5910,11 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * getTexture
+   * Returns Texture object by given name.
    *
-   * @param {string} name
+   * @param {string} name The name of the Asset.
    *
-   * @return {Texture|null}
+   * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -5822,16 +5934,19 @@ class AssetManager extends MessageDispatcher {
 
 
   /**
-   * @param {string} name
+   * Returns AtlasTexture by given name.
    *
-   * @return {AtlasTexture}
+   * @param {string} name The name of the Asset.
+   *
+   * @return {AtlasTexture} Returns atlas or null.
    */
   getAtlas(name) {
     return this.mAtlases[name];
   }
 
   /**
-   * defaultPath
+   * Gets/Sets default path for preloading. Usefull when url's getting too long.
+   * The asset path will be concatenated with defaultPath.
    *
    * @return {string}
    */
@@ -5840,8 +5955,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * defaultPath
-   *
+   * @ignore
    * @param {string} value
    *
    * @return {void}
@@ -5851,7 +5965,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * isAllLoaded
+   * Returns True if all assets were loaded.
    *
    * @return {boolean}
    */
@@ -5860,7 +5974,11 @@ class AssetManager extends MessageDispatcher {
   }
 }
 
-/** @type {AssetManager} */
+/**
+ * Default instance. Sprite and other classes uses this instance to find textures by name.
+ * @static
+ * @type {AssetManager}
+ */
 AssetManager.default = new AssetManager();
 
 /**
@@ -7612,8 +7730,8 @@ class VectorCurveScatter extends Scatter {
 
 /**
  * A base class for particle system actions. Every frame each action executed over each particle.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @abstract
  * @class
  */
@@ -7662,8 +7780,8 @@ class Action {
 
 /**
  * Adds acceleration to particles along given direction.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -7714,8 +7832,8 @@ class Acceleration extends Action {
 
 /**
  * Sets particle's alpha value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -7762,8 +7880,8 @@ class AlphaOverLife extends Action {
 
 /**
  * Sets particle's scale value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -7805,8 +7923,8 @@ class ScaleOverLife extends Action {
 
 /**
  * Sets particle's rotation value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -7848,8 +7966,8 @@ class RotationOverLife extends Action {
 
 /**
  * Sets particle's texture according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -7892,11 +8010,16 @@ class TextureOverLife extends Action {
 /**
  * Base class for particle's initializators. Each initializer updates particle data once at start, eg when particle added to scene.
  *
- * @category particles.initializers
- * @class
+ * @cat particles.initializers
  */
 
 class Initializer {
+  /**
+   * Creates new Initializer instance.
+   */
+  constructor() {
+  }
+
   /**
    * @param {Particle} particle
    *
@@ -7906,29 +8029,30 @@ class Initializer {
 }
 
 /**
- * Sets particle's life.
+ * Sets starting particle's life.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 
 class Life extends Initializer {
   /**
-   * constructor - Description
+   * Creates new LIfe instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min/max range.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7940,30 +8064,31 @@ class Life extends Initializer {
 }
 
 /**
- * Sets particle's mass.
+ * Sets starting particle's mass.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 
 class Mass extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Mass instance.
    *
-   * @param {number} mass Description
-   *
-   * @return {void} Description
+   * @param {number} mass The mass.
    */
   constructor(mass) {
     super();
 
-    /** @type {number} */
+    /**
+     * The mass value.
+     * @type {number}
+     */
     this.mass = mass;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7977,27 +8102,29 @@ class Mass extends Initializer {
 /**
  * Sets particle's starting scale.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 
 class Scale extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Scale instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting scale.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting scale.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -8011,27 +8138,29 @@ class Scale extends Initializer {
 /**
  * Sets particle's starting velocity.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 
 class Velocity extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Velocity instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min-max range for starting velocity.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for starting velocity.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -8046,30 +8175,31 @@ class Velocity extends Initializer {
 }
 
 /**
- * Sets particle's position.
+ * Sets starting particle's position.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 
 class Position extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Position instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min/max range.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for position distribution.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -8086,27 +8216,28 @@ class Position extends Initializer {
 /**
  * Sets particle's default rotation.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 
 class Rotation extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Rotation instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting rotation.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting rotation
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -8120,27 +8251,32 @@ class Rotation extends Initializer {
 /**
  * Sets particle's texture.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
 
 class RandomTexture extends Initializer {
   /**
-   * constructor - Description
+   * Creates new RandomTexture instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The float scatter defines the index of the texture. All values will be
+     * rounded.
+     *
+     * @see {Particle.textureIndex}
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -8160,60 +8296,113 @@ var EmitterState = {
   FINISHED: 2
 };
 
+/**
+ * The particle!
+ *
+ * @cat particles
+ * @class
+ */
 
 class Particle {
   constructor() {
     this.reset();
   }
 
+  /**
+   * Resets particle to default state.
+   *
+   * @returns {void}
+   */
   reset() {
-    /** @type {number} */
+    /**
+     * The index of a texture.
+     * @type {number}
+     */
     this.textureIndex = 0;
 
-    /** @type {number} */
+    /**
+     * The x/y scale of this particle.
+     * @type {number}
+     */
     this.scale = 1;
 
-    /** @type {number} */
+    /**
+     * Alpha value.
+     * @type {number}
+     */
     this.alpha = 1;
 
-    /** @type {number} */
+    /**
+     * The life of this particle.
+     * @type {number}
+     */
     this.life = 1;
 
-    /** @type {number} */
+    /**
+     * The age of this particle.
+     * @type {number}
+     */
     this.age = 0;
 
-    /** @type {number} */
+    /**
+     * Relation of life to age.
+     * @type {number}
+     */
     this.energy = this.age / this.life;
 
-    /** @type {number} */
+    /**
+     * The mass.
+     * @type {number}
+     */
     this.mass = 0;
 
-    /** @type {number} */
+    /**
+     * X-component.
+     * @type {number}
+     */
     this.x = 0;
 
-    /** @type {number} */
+    /**
+     * Y-component.
+     * @type {number}
+     */
     this.y = 0;
 
-    /** @type {number} */
+    /**
+     * Rotation of this particle.
+     * @type {number}
+     */
     this.r = 0
 
-    /** @type {number} */
+    /**
+     * Velocity by x.
+     * @type {number}
+     */
     this.vx = 0;
 
-    /** @type {number} */
+    /**
+     * Velocity by y.
+     * @type {number}
+     */
     this.vy = 0;
 
-    /** @type {number} */
+    /**
+     * Particle x-acceleration.
+     * @type {number}
+     */
     this.ax = 0;
 
-    /** @type {number} */
+    /**
+     * Particle y-acceleration.
+     * @type {number}
+     */
     this.ay = 0;
   }
 
   /**
-   * update
+   * Internal update method.
    *
-   * @param {number} dt
+   * @param {number} dt Time since last update.
    *
    * @return {void}
    */
@@ -8244,76 +8433,150 @@ class Particle {
   }
 }
 
+/**
+ * Particle emitter.
+ *
+ * @cat particles
+ * @extends DisplayObject
+ * @class
+ */
 
 class Emitter extends DisplayObject {
+  /**
+   * Creates new Emitter instance.
+   */
   constructor() {
     super();
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mTextures = null;
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mParticles = [];
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mRecycled = [];
 
-    /** @type {Array<Initializer>} */
+    /**
+     * @private
+     * @type {Array<Initializer>}
+     */
     this.mInitializers = [];
 
-    /** @type {Array<Action>} */
+    /**
+     * @private
+     * @type {Array<Action>}
+     */
     this.mActions = [];
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mSpace = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLocal = true;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMaxParticles = 10000;
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDuration = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitInterval = new FloatScatter(0.1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextUpdateAt = 0;
 
-    /** @type {EmitterState} */
+    /**
+     * @private
+     * @type {EmitterState}
+     */
     this.mState = EmitterState.PENDING;
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpLocal = new Matrix();
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpWorld = new Matrix();
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
-
-    /** @type {Matrix} */
-    this.__tmpLocal = new Matrix();
-
-    /** @type {Matrix} */
-    this.__tmpWorld = new Matrix();
   }
 
   // reset() {
@@ -8716,111 +8979,414 @@ class Emitter extends DisplayObject {
   }
 }
 
+// TODO: fix jsdoc to display this enum
+
 /**
+ * @readonly
  * @enum {number}
+ * @cat input
  */
 
 var Key = {
+  /**
+   * @type {number}
+   */
   A: 65,
+  /**
+   * @type {number}
+   */
   B: 66,
+  /**
+   * @type {number}
+   */
   C: 67,
+  /**
+   * @type {number}
+   */
   D: 68,
+  /**
+   * @type {number}
+   */
   E: 69,
+  /**
+   * @type {number}
+   */
   F: 70,
+  /**
+   * @type {number}
+   */
   G: 71,
+  /**
+   * @type {number}
+   */
   H: 72,
+  /**
+   * @type {number}
+   */
   I: 73,
+  /**
+   * @type {number}
+   */
   J: 74,
+  /**
+   * @type {number}
+   */
   K: 75,
+  /**
+   * @type {number}
+   */
   L: 76,
+  /**
+   * @type {number}
+   */
   M: 77,
+  /**
+   * @type {number}
+   */
   N: 78,
+  /**
+   * @type {number}
+   */
   O: 79,
+  /**
+   * @type {number}
+   */
   P: 80,
+  /**
+   * @type {number}
+   */
   Q: 81,
+  /**
+   * @type {number}
+   */
   R: 82,
+  /**
+   * @type {number}
+   */
   S: 83,
+  /**
+   * @type {number}
+   */
   T: 84,
+  /**
+   * @type {number}
+   */
   U: 85,
+  /**
+   * @type {number}
+   */
   V: 86,
+  /**
+   * @type {number}
+   */
   W: 87,
+  /**
+   * @type {number}
+   */
   X: 88,
+  /**
+   * @type {number}
+   */
   Y: 89,
+  /**
+   * @type {number}
+   */
   Z: 90,
+  /**
+   * @type {number}
+   */
   DIGIT_0: 48,
+  /**
+   * @type {number}
+   */
   DIGIT_1: 49,
+  /**
+   * @type {number}
+   */
   DIGIT_2: 50,
+  /**
+   * @type {number}
+   */
   DIGIT_3: 51,
+  /**
+   * @type {number}
+   */
   DIGIT_4: 52,
+  /**
+   * @type {number}
+   */
   DIGIT_5: 53,
+  /**
+   * @type {number}
+   */
   DIGIT_6: 54,
+  /**
+   * @type {number}
+   */
   DIGIT_7: 55,
+  /**
+   * @type {number}
+   */
   DIGIT_8: 56,
+  /**
+   * @type {number}
+   */
   DIGIT_9: 57,
+  /**
+   * @type {number}
+   */
   NUMPAD_0: 96,
+  /**
+   * @type {number}
+   */
   NUMPAD_1: 97,
+  /**
+   * @type {number}
+   */
   NUMPAD_2: 98,
+  /**
+   * @type {number}
+   */
   NUMPAD_3: 99,
+  /**
+   * @type {number}
+   */
   NUMPAD_4: 100,
+  /**
+   * @type {number}
+   */
   NUMPAD_5: 101,
+  /**
+   * @type {number}
+   */
   NUMPAD_6: 102,
+  /**
+   * @type {number}
+   */
   NUMPAD_7: 103,
+  /**
+   * @type {number}
+   */
   NUMPAD_8: 104,
+  /**
+   * @type {number}
+   */
   NUMPAD_9: 105,
+  /**
+   * @type {number}
+   */
   NUMPAD_MULTIPLY: 106,
+  /**
+   * @type {number}
+   */
   NUMPAD_ADD: 107,
+  /**
+   * @type {number}
+   */
   NUMPAD_SUBTRACT: 109,
+  /**
+   * @type {number}
+   */
   NUMPAD_DECIMAL: 110,
+  /**
+   * @type {number}
+   */
   NUMPAD_DIVIDE: 111,
+  /**
+   * @type {number}
+   */
   LEFT_ARROW: 37,
+  /**
+   * @type {number}
+   */
   UP_ARROW: 38,
+  /**
+   * @type {number}
+   */
   RIGHT_ARROW: 39,
+  /**
+   * @type {number}
+   */
   DOWN_ARROW: 40,
+  /**
+   * @type {number}
+   */
   BACKSPACE: 8,
+  /**
+   * @type {number}
+   */
   TAB: 9,
+  /**
+   * @type {number}
+   */
   ENTER: 13,
+  /**
+   * @type {number}
+   */
   SHIFT: 16,
+  /**
+   * @type {number}
+   */
   CTRL: 17,
+  /**
+   * @type {number}
+   */
   ALT: 18,
+  /**
+   * @type {number}
+   */
   F1: 112,
+  /**
+   * @type {number}
+   */
   F2: 113,
+  /**
+   * @type {number}
+   */
   F3: 114,
+  /**
+   * @type {number}
+   */
   F4: 115,
+  /**
+   * @type {number}
+   */
   F5: 116,
+  /**
+   * @type {number}
+   */
   F6: 117,
+  /**
+   * @type {number}
+   */
   F7: 118,
+  /**
+   * @type {number}
+   */
   F8: 119,
+  /**
+   * @type {number}
+   */
   F9: 120,
+  /**
+   * @type {number}
+   */
   F10: 121,
+  /**
+   * @type {number}
+   */
   F11: 122,
+  /**
+   * @type {number}
+   */
   F12: 123,
+  /**
+   * @type {number}
+   */
   PAUSE_BREAK: 19,
+  /**
+   * @type {number}
+   */
   CAPS_LOCK: 20,
+  /**
+   * @type {number}
+   */
   ESCAPE: 27,
+  /**
+   * @type {number}
+   */
   PAGE_UP: 33,
+  /**
+   * @type {number}
+   */
   PAGE_DOWN: 34,
+  /**
+   * @type {number}
+   */
   END: 35,
+  /**
+   * @type {number}
+   */
   HOME: 36,
+  /**
+   * @type {number}
+   */
   INSERT: 45,
+  /**
+   * @type {number}
+   */
   DELETE: 46,
+  /**
+   * @type {number}
+   */
   LEFT_WINDOW: 91,
+  /**
+   * @type {number}
+   */
   RIGHT_WINDOW: 92,
+  /**
+   * @type {number}
+   */
   CONTEXT_MENU: 93,
+  /**
+   * @type {number}
+   */
   NUM_LOCK: 144,
+  /**
+   * @type {number}
+   */
   SCROLL_LOCK: 145,
+  /**
+   * @type {number}
+   */
   SEMI_COLON: 186,
+  /**
+   * @type {number}
+   */
   EQUAL_SIGN: 187,
+  /**
+   * @type {number}
+   */
   COMMA: 188,
+  /**
+   * @type {number}
+   */
   DASH: 189,
+  /**
+   * @type {number}
+   */
   PERIOD: 190,
+  /**
+   * @type {number}
+   */
   FORWARD_SLASH: 191,
+  /**
+   * @type {number}
+   */
   BACKQUOTE: 192,
+  /**
+   * @type {number}
+   */
   BRAKET_LEFT: 219,
+  /**
+   * @type {number}
+   */
   BACK_SLASH: 220,
+  /**
+   * @type {number}
+   */
   BRAKET_RIGHT: 221,
+  /**
+   * @type {number}
+   */
   SINGLE_QUOTE: 222,
 };
 
+/**
+ * Holds information about keyboard event.
+ *
+ * @cat input
+ */
 
 class KeyInfo {
 
@@ -8841,53 +9407,95 @@ class KeyInfo {
   }
 }
 
-/*
-Has to be static class.
-
-+ before update store all events locally
-- check root object! add collider automatically? or do it on demand?
-*/
-
+/**
+ * A input system class is reponsible for mouse, touch and keyboard input events.
+ *
+ * @cat input
+ * @extends System
+ */
 
 class Input extends System {
+  /**
+   * Private constructor.
+   */
   constructor() {
     super();
 
-    /** @type {Input} */
+    /**
+     * @private
+     * @type {Input}
+     */
     this.constructor.instance = this;
 
-    /** @type {Vector} */
+    /**
+     * @private
+     * @type {Vector}
+     */
     this.mPointerPosition = new Vector();
 
-    /** @type {Element} */
+    /**
+     * @private
+     * @type {Element}
+     */
     this.mDom = Black.instance.containerElement;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mEventList = null;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mKeyEventList = null;
 
     this.__initListeners();
 
-    /** @type {Array<{e: Event, x: number, y:number}>} */
+    /**
+     * @private
+     * @type {Array<{e: Event, x: number, y:number}>}
+     */
     this.mPointerQueue = [];
 
-    /** @type {Array<Event>} */
+    /**
+     * @private
+     * @type {Array<Event>}
+     */
     this.mKeyQueue = [];
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPressedKeys = [];
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPointerDown = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedUpEvent = false;
 
-    /** @type {Array<InputComponent>} */
+    /**
+     * @private
+     * @type {Array<InputComponent>}
+     */
     this.mInputListeners = [];
   }
 
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
     //debugger;
@@ -8908,6 +9516,12 @@ class Input extends System {
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
   }
 
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
   __sortListeners() {
     // TODO: make it faster
     // - try insert sort
@@ -8916,8 +9530,8 @@ class Input extends System {
     });
   }
 
-
   /**
+   * @private
    * @param {Event} e
    *
    * @return {boolean}
@@ -8927,6 +9541,12 @@ class Input extends System {
     return true;
   }
 
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __onPointerEventDoc(e) {
     let over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
@@ -8938,9 +9558,10 @@ class Input extends System {
 
 
   /**
-   * @param {Event} e Description
+   * @private
+   * @param {Event} e
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onPointerEvent(e) {
     e.preventDefault();
@@ -8950,6 +9571,13 @@ class Input extends System {
     return true;
   }
 
+
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
@@ -8969,12 +9597,11 @@ class Input extends System {
 
 
   /**
-   * __getPointerPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {Event} evt
    *
-   * @param {Element} canvas Description
-   * @param {Event} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -8984,12 +9611,11 @@ class Input extends System {
   }
 
   /**
-   * __getTouchPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {TouchEvent} evt
    *
-   * @param {Element} canvas Description
-   * @param {TouchEvent} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -9006,11 +9632,10 @@ class Input extends System {
 
 
   /**
-   * __addListener - Description
+   * @private
+   * @param {Array<InputComponent>} array
    *
-   * @param {Array<InputComponent>} array Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __addListener(array) {
     // check for duplicates
@@ -9026,11 +9651,11 @@ class Input extends System {
 
 
   /**
-   * onChildrenAdded - Description
+   * @inheritdoc
+   * @override
+   * @param {GameObject} child
    *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onChildrenAdded(child) {
     let cs = GameObject.findComponents(child, InputComponent);
@@ -9042,11 +9667,11 @@ class Input extends System {
 
 
   /**
-   * onChildrenRemoved - Description
+   * @inheritdoc
+   * @override
+   * @param {GameObject} child
    *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onChildrenRemoved(child) {
     let cs = GameObject.findComponents(child, InputComponent);
@@ -9066,12 +9691,13 @@ class Input extends System {
 
 
   /**
-   * onComponentAdded - Description
+   * @inheritdoc
+   * @override
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} child
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void}
    */
   onComponentAdded(child, component) {
     if (component.constructor !== InputComponent)
@@ -9080,14 +9706,14 @@ class Input extends System {
     this.__addListener([component]);
   }
 
-
   /**
-   * onComponentRemoved - Description
+   * @inheritdoc
+   * @override
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} child
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void}
    */
   onComponentRemoved(child, component) {
     if (component.constructor !== InputComponent)
@@ -9100,13 +9726,12 @@ class Input extends System {
     }
   }
 
-
   /**
-   * onUpdate - Description
+   * @inheritdoc
+   * @override
+   * @param {number} dt
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {
     let pointerPos = new Vector();
@@ -9180,13 +9805,13 @@ class Input extends System {
   }
 
   /**
-   * on - Description
+   * Listens for global input event by given message name.
    *
-   * @param {string} name           Description
-   * @param {Function} callback       Description
-   * @param {Object=} [context=null] Description
+   * @param {string} name            The name of the message to listen for.
+   * @param {Function} callback      The callback function that will be called when message received.
+   * @param {Object=} [context=null] Optional context.
    *
-   * @return {void} Description
+   * @return {void}
    */
   static on(name, callback, context = null) {
     Input.instance.on(name, callback, context);
@@ -9194,9 +9819,9 @@ class Input extends System {
 
 
   /**
-   * isPointerDown - Description
+   * Indicates if mouse or touch in down at this moment.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isPointerDown() {
     return Input.instance.mIsPointerDown;
@@ -9204,9 +9829,8 @@ class Input extends System {
 
 
   /**
-   * pointerX - Description
-   *
-   * @return {number} Description
+   * Returns mouse or touch pointer x-component.
+   * @return {number}
    */
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
@@ -9214,7 +9838,7 @@ class Input extends System {
 
 
   /**
-   * pointerY - Description
+   * Returns mouse or touch pointer x-component.
    *
    * @return {number} Description
    */
@@ -9224,85 +9848,115 @@ class Input extends System {
 
 
   /**
-   * pointerPosition - Description
+   * Returns mouse or touch pointer position.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
   }
 
+
+  /**
+   * Returns list of pressed keys.
+   *
+   * @returns {Array<number>}
+   */
   static get pressedKeys() {
     return Input.instance.mPressedKeys;
   }
 }
 
-/** @type {Input}
+/**
+ * @type {Input}
  * @nocollapse
  */
 Input.instance = null;
 
-
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_MOVE = 0;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_DOWN = 1;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_UP = 2;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_CANCEL = 3;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_IN = 4;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_OUT = 5;
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventList = ['keydown', 'keyup'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
+/**
+ * This component will allow you to subscribe for some input messages.
+ *
+ * @cat input
+ * @extends Component
+ */
 
 class InputComponent extends Component {
   /**
@@ -10341,12 +10995,12 @@ class Tween extends Component {
     super.removeFromParent();
   }
 
-  /**
-   * @return {void}
-   */
-  dispose() {
-    this.remove();
-  }
+  // /**
+  //  * @return {void}
+  //  */
+  // dispose() {
+  //   this.remove();
+  // }
 
   /**
    * Sets the number of times the tween wiil be repeated after first execution.
@@ -10500,7 +11154,7 @@ class Tween extends Component {
         this.post('complete', this.gameObject);
 
         if (this.mRemoveOnComplete) {
-          this.dispose();
+          this.removeFromParent();
         } else {
           for (let f in this.mValues) {
             this.mValuesStart[f] = this.mValues[f];

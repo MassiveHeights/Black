@@ -1,73 +1,147 @@
+/**
+ * Particle emitter.
+ *
+ * @cat particles
+ * @extends DisplayObject
+ * @class
+ */
 /* @echo EXPORT */
 class Emitter extends DisplayObject {
+  /**
+   * Creates new Emitter instance.
+   */
   constructor() {
     super();
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mTextures = null;
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mParticles = [];
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mRecycled = [];
 
-    /** @type {Array<Initializer>} */
+    /**
+     * @private
+     * @type {Array<Initializer>}
+     */
     this.mInitializers = [];
 
-    /** @type {Array<Action>} */
+    /**
+     * @private
+     * @type {Array<Action>}
+     */
     this.mActions = [];
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mSpace = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLocal = true;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMaxParticles = 10000;
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDuration = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitInterval = new FloatScatter(0.1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextUpdateAt = 0;
 
-    /** @type {EmitterState} */
+    /**
+     * @private
+     * @type {EmitterState}
+     */
     this.mState = EmitterState.PENDING;
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpLocal = new Matrix();
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpWorld = new Matrix();
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
-
-    /** @type {Matrix} */
-    this.__tmpLocal = new Matrix();
-
-    /** @type {Matrix} */
-    this.__tmpWorld = new Matrix();
   }
 
   // reset() {

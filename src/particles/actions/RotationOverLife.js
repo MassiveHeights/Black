@@ -1,7 +1,7 @@
 /**
  * Sets particle's rotation value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */

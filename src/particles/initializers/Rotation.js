@@ -1,27 +1,28 @@
 /**
  * Sets particle's default rotation.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 /* @echo EXPORT */
 class Rotation extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Rotation instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting rotation.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting rotation
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

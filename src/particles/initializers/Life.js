@@ -1,27 +1,28 @@
 /**
- * Sets particle's life.
+ * Sets starting particle's life.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 /* @echo EXPORT */
 class Life extends Initializer {
   /**
-   * constructor - Description
+   * Creates new LIfe instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min/max range.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
