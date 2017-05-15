@@ -13,7 +13,7 @@
   "particles": "Particles",
   "particles.actions": "Actions",
   "particles.initializers": "Initializers",
-  "particles.scatter": "Scatters",
+  "scatters": "Scatters",
   "physics": "Physics",
   "sound": "Sound",
   "system": "System",

@@ -1,5 +1,5 @@
 /**
- * GameObject - Base class for all black game objects.
+ * Building block in Black Engine.
  *
  * @cat core
  * @unrestricted
@@ -155,7 +155,7 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * add - Sugar method for adding child GameObjects or Components.
+   * Sugar method for adding child GameObjects or Components in a simple manner.
    *
    * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
    * @return {Array<GameObject|Component>} The passed GameObject or Component.
@@ -233,7 +233,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * setChildIndex - Sets the index (layer) of the specified GameObject to the specified index (layer).
+   * Sets the index (layer) of the specified GameObject to the specified index (layer).
    *
    * @param {GameObject} child The GameObject instance to change index for.
    * @param {number} index Desired index.
@@ -257,7 +257,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeFromParent - Removes this GameObject instance from its parent.
+   * Removes this GameObject instance from its parent.
    *
    * @param {boolean} [dispose=false]
    *
@@ -274,7 +274,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeChild - Removes specified GameObjects instance.
+   * Removes specified child GameObject instance from children.
    *
    * @param {GameObject} child GameObject instance to remove.
    * @param {boolean} [dispose=false]
@@ -292,11 +292,11 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * get child by name
+   * Finds children by name.
    *
-   * @param {string} name
+   * @param {string} name Name of the child object to find.
    *
-   * @return {GameObject|null}
+   * @return {GameObject|null} GameObject instance of null if not found.
    */
   getChildByName(name) {
     for (var i = 0; i < this.mChildren.length; i++) {
@@ -308,7 +308,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   *Removes GameObjects instance from specified index.
+   * Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
    * @param {boolean} [dispose=false]
@@ -372,9 +372,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Remove specified component
+   * Remove specified component.
    *
-   * @param {Component} instance
+   * @param {Component} instance The component instance.
    *
    * @return {Component|null}
    */
@@ -397,11 +397,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * get component by type
+   * Get component by type.
    *
-   * @param {*} typeName
+   * @param {*} typeName The component type.
    *
-   * @return {Component|null}
+   * @return {Component|null} The Component instance or null if not found.
    */
   getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
@@ -413,16 +413,14 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-
   /**
-   * Returns number of component's
+   * Returns number of component's of this GameObject.
    *
    * @return {number}
    */
   get numComponenets() {
     return this.mComponents.length;
   }
-
 
   /**
    * Retrives Component at given index.
@@ -468,7 +466,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   *  returns cloned Matrix object which represents object orientation in world space.
+   * Returns cloned Matrix object which represents object orientation in world space.
    *
    * @return {Matrix}
    */
@@ -486,7 +484,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * returns cloned and inversed Matrix object which represents object orientation in world space
+   * Returns cloned and inversed Matrix object which represents object orientation in world space
    *
    * @return {Matrix}
    */
@@ -496,8 +494,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @ignore
    * @param {number} dt
-   * @private
    *
    * @return {void}
    */
@@ -515,8 +513,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @ignore
    * @param {number} dt time since the last frame
-   * @private
    *
    * @return {void}
    */
@@ -534,9 +532,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   *
+   * @ignore
    * @param {number} dt time since the last frame
-   * @private
    *
    * @return {void}
    */
@@ -556,6 +553,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Called at every fixed frame update.
+   *
    * @protected
    * @param {number} dt time since the last frame
    *
@@ -565,6 +563,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Called at every engine update.
+   *
    * @protected
    * @param {number} dt time since the last frame
    *
@@ -574,17 +573,17 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Called after all updates have been executed.
+   *
    * @protected
    * @param {number} dt Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   onPostUpdate(dt) {}
 
   /**
-   * @param {VideoNullDriver} video
-   * @protected
-   * @ignore
+   * @ignore   *
+   * @param {VideoNullDriver} video   *
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
@@ -606,12 +605,12 @@ class GameObject extends MessageDispatcher {
    * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   onRender(video, time) {}
 
   /**
-   * onGetLocalBounds - Override this method if you need to specify GameObject size. Should be always be a local coordinates.
+   * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
    *
    * @protected
    * @param {Rectangle=} outRect Description
@@ -624,7 +623,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getBounds - Returns world bounds of this object and all children if specified (true by default).
+   * Returns world bounds of this object and all children if specified (true by default).
+   *
    * object.getBounds() - relative to world.
    * object.getBounds(object) - local bounds.
    * object.getBounds(object.parent) - relative to parent.
@@ -662,18 +662,18 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * setTransform -
+   * Sets the object transform in one line.
    *
-   * @param {number} [x=0]      x-cord
-   * @param {number} [y=0]      y-cord
-   * @param {number} [r=0]      rotation
-   * @param {number} [scaleX=1] scale-x
-   * @param {number} [scaleY=1] scale-y
-   * @param {number} [anchorX=0] anchor-x
-   * @param {number} [anchorY=0] anchor-y
-   * @param {number} [includeChildren=true] include children when adjusting pivot?
+   * @param {number} [x=0]       Cord X.
+   * @param {number} [y=0]       Cord Y.
+   * @param {number} [r=0]       Rotation.
+   * @param {number} [scaleX=1]  scale X.
+   * @param {number} [scaleY=1]  scale Y.
+   * @param {number} [anchorX=0] Anchor X.
+   * @param {number} [anchorY=0] Anchor Y.
+   * @param {number} [includeChildren=true] Include children when adjusting pivot?
    *
-   * @return {GameObject}
+   * @return {GameObject} This.
    */
   setTransform(x = 0, y = 0, r = 0, scaleX = 1, scaleY = 1, anchorX = 0, anchorY = 0, includeChildren = true) {
     this.mX = x;
@@ -713,53 +713,48 @@ class GameObject extends MessageDispatcher {
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInversed.transformVector(globalPoint, outVector);
   }
-
-  /*:--- PROPERTIES ---:*/
-
   /**
-   * numChildren - Description
+   * Gets/Sets count of children elements.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get numChildren() {
     return this.mChildren.length;
   }
 
   /**
-   * name - Description
+   * Returns name of this GameoObject instance.
    *
-   * @return {string|null} Description
+   * @return {string|null}
    */
   get name() {
     return this.mName;
   }
 
   /**
-   * name - Description
-   *
+   * @ignore
    * @param {string|null} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set name(value) {
     this.mName = value;
   }
 
   /**
-   * x - Gets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * Gets/Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get x() {
     return this.mX;
   }
 
   /**
-   * x - Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set x(value) {
     if (this.mX == value)
@@ -770,20 +765,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * y - Gets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * Gets/Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get y() {
     return this.mY;
   }
 
   /**
-   * y - Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set y(value) {
     if (this.mY == value)
@@ -794,21 +788,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * pivotX - Description
+   * Gets/Sets the x coordinate of the object's origin in its local space.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get pivotX() {
     return this.mPivotX;
   }
 
   /**
-   * pivotX - Description
+   * @ignore
+   * @param {number} value
    *
-   * @private
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set pivotX(value) {
     if (this.mPivotX == value)
@@ -819,20 +811,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * pivotY - Description
+   * Gets/Sets the y coordinate of the object's origin in its local space.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get pivotY() {
     return this.mPivotY;
   }
 
   /**
-   * pivotY - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set pivotY(value) {
     if (this.mPivotY == value)
@@ -843,13 +834,14 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * alignPivot
+   * Sets pivot point to given position.
    *
-   * @param {number}  [ax=0.5]
-   * @param {number}  [ay=0.5]
-   * @param {boolean} [includeChildren=true]
+   * @param {number}  [ax=0.5]               Align along x-axis.
+   * @param {number}  [ay=0.5]               Align along y-axis.
+   * @param {boolean} [includeChildren=true] Include children elements when
+   * calculating bounds?
    *
-   * @return {GameObject}
+   * @return {GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
@@ -862,20 +854,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleX - Description
+   * Gets/Sets the scale factor of this object along x-axis.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get scaleX() {
     return this.mScaleX;
   }
 
   /**
-   * scaleX - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set scaleX(value) {
     if (this.mScaleX == value)
@@ -886,7 +877,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleY - Description
+   * Gets/Sets the scale factor of this object along y-axis.
    *
    * @return {number} Description
    */
@@ -895,11 +886,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleY - Description
-   *
+   * @ignore
    * @param {number} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set scaleY(value) {
     if (this.mScaleY == value)
@@ -910,20 +900,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * rotation - returns current rotation
+   * Gets/Sets rotation in radians.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get rotation() {
     return this.mRotation;
   }
 
   /**
-   * rotation - Description
-   *
+   * @ignore
    * @param {number} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set rotation(value) {
     if (this.mRotation == value)
@@ -934,18 +923,22 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * parent - Description
+   * Returns this GameObject parent GameObject.
+   * @readonly
    *
-   * @return {GameObject} Description
+   * @return {GameObject}
    */
   get parent() {
     return this.mParent;
   }
 
   /**
-   * root - Description
+   * Returns topmost parent element of this GameObject or null if this
+   * GameObject is not a child.
    *
-   * @return {GameObject|null} Description
+   * @readonly
+   *
+   * @return {GameObject|null}
    */
   get root() {
     let current = this;
@@ -966,9 +959,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * depth - Description
+   * Returns how deep this GameObject in the display tree.
    *
-   * @return {number} Description
+   * @readonly
+   *
+   * @return {number}
    */
   get depth() {
     if (this.mParent)
@@ -978,29 +973,29 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * index - Description
-   *
-   * @return {number} Description
+   * @ignore
+   * @return {number}
    */
   get index() {
-    return this.mIndex;
+    //TODO: critical fix me now!
+    return ~~(Math.random() * 1000); //this.mIndex;
   }
 
   /**
-   * width - Description
+   * Gets/sets the width of this object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get width() {
     return this.getBounds(this.mParent).width;
   }
 
   /**
-   * width - Description
+   * @ignore
    *
-   * @param {number} value Description
+   * @param {number} value
    *
-   * @return {void} Description
+   * @return {void}
    */
   set width(value) {
     this.scaleX = 1;
@@ -1011,20 +1006,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * height - Description
+   * Gets/sets the height of this object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get height() {
     return this.getBounds(this.mParent).height;
   }
 
   /**
-   * height - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set height(value) {
     this.scaleY = 1;
@@ -1036,7 +1030,10 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * localWidth - returns height in local space without children.
+   * Returns width of this GameObject in local space without including children
+   * elements.
+   *
+   * @readonly
    *
    * @return {number}
    */
@@ -1046,7 +1043,10 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * localHeight - returns height in local space without children.
+   * Returns height of this GameObject in local space without including children
+   * elements.
+   *
+   * @readonly
    *
    * @return {number}
    */
@@ -1056,9 +1056,12 @@ class GameObject extends MessageDispatcher {
 
   // TODO: precache
   /**
-   * path - Description
+   * Returns string representing a url like path to this object in the display
+   * tree.
    *
-   * @return {string} Description
+   * @readonly
+   *
+   * @return {string}
    */
   get path() {
     if (this.mParent !== null)
@@ -1068,20 +1071,20 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * tag - Description
+   * Gets/Sets tag of this GameObject.
    *
-   * @return {string|null} Description
+   * @return {string|null}
    */
   get tag() {
     return this.mTag;
   }
 
   /**
-   * tag - Description
+   * @ignore
    *
-   * @param {string|null} value Description
+   * @param {string|null} value
    *
-   * @return {void} Description
+   * @return {void}
    */
   set tag(value) {
     if (this.mTag === value)
@@ -1095,12 +1098,11 @@ class GameObject extends MessageDispatcher {
       Black.instance.onTagUpdated(this, old, value);
   }
 
-
   /**
-   * co - Starts coroutine.
+   * Starts coroutine.
    *
-   * @param {Function} gen
-   * @param {*=} [ctx=null]
+   * @param {Function} gen  Generator function.
+   * @param {*=} [ctx=null] Context for Generator function.
    *
    * @return {Generator}
    */
@@ -1121,8 +1123,9 @@ class GameObject extends MessageDispatcher {
     return iter;
   }
 
-
   /**
+   * Waits for given amount of seconds before processing.
+   *
    * @return {function(*):*}
    */
   wait(seconds = 1) {
@@ -1131,11 +1134,11 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * waitMessage - Waits for a speceific message
+   * Waits for a speceific message.
    *
-   * @param {string} message The name of the message to wait for
+   * @param {string} message The name of the message to wait for.
    *
-   * @return {function(*):*} Description
+   * @return {function(*):*}
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
@@ -1143,9 +1146,9 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * setDirty
+   * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {DirtyFlag} flag
+   * @param {DirtyFlag} flag                 The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Description
    *
    * @return {void}
@@ -1160,13 +1163,20 @@ class GameObject extends MessageDispatcher {
     }
   }
 
+
+  /**
+   * Marks this GameObject as Local dirty and all children elements as World
+   * dirty.
+   *
+   * @returns {void}
+   */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
     this.setDirty(DirtyFlag.WORLD, true);
   }
 
   /**
-   * dispose
+   * @ignore
    *
    * @return {void}
    */
@@ -1174,13 +1184,13 @@ class GameObject extends MessageDispatcher {
 
   // TODO: rename method
   /**
-   * getBoundsWithPoints - Description
+   * @ignore
    *
-   * @param {Array<number>} points              Description
-   * @param {Matrix} worldTransformation Description
-   * @param {Rectangle=} outRect             Description
+   * @param {Array<number>} points
+   * @param {Matrix} worldTransformation
+   * @param {Rectangle=} outRect
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   static getBoundsWithPoints(points, worldTransformation, outRect) {
     outRect = outRect || new Rectangle();
@@ -1214,12 +1224,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersects - Description
+   * Returns whenever a given GameObject intersects with a point.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point          A point to test.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
@@ -1232,13 +1242,14 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersectsAt - Description
+   * Returns a point where intersection were made.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
-   * @param {Vector=} outVector  Description
+   * @param {GameObject} gameObject GameObject to test intersection with.
+   * @param {Vector} point          The point to test.
+   * @param {Vector=} outVector     If passed point of intersection will be
+   * stored in it.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   static intersectsAt(gameObject, point, outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1260,12 +1271,13 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersectsWith - Description
+   * Checks if GameObject or any of its children elements intersects the given
+   * point.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point          Point to test.
    *
-   * @return {GameObject|null} returns object or null
+   * @return {GameObject|null} Intersecting object or null.
    */
   static intersectsWith(gameObject, point) {
     let obj = null;
@@ -1291,11 +1303,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * findWithTag - Description
+   * Returns all GameObject with given tag.
    *
-   * @param {string} tag Description
+   * @param {string} tag Tag to find.
    *
-   * @return {Array<GameObject>|null} Description
+   * @return {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.instance.mTagCache.hasOwnProperty(tag) === false)
@@ -1305,12 +1317,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * findComponents - Returns a list of Components
+   * Returns a list of Components.
    *
-   * @param {GameObject} gameObject
-   * @param {function (new:Component)} type
+   * @param {GameObject} gameObject         GameObject to start search from.
+   * @param {function (new:Component)} type Type of Component.
    *
-   * @return {Array<Component>}
+   * @return {Array<Component>} Array of Component or empty array.
    */
   static findComponents(gameObject, type) {
     Debug.assert(gameObject !== null, 'gameObject cannot be null.');
@@ -1337,12 +1349,13 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * forEach - Runs action accross all object mathing the name.
+   * Runs action accross all GameObjects.
    *
-   * @param {GameObject} node   Description
-   * @param {function(node:GameObject)} action Description
+   * @param {GameObject} node                  GameObject to start iteration from.
+   * @param {function(node:GameObject)} action The function to be executed on
+   * every GameObject.
    *
-   * @return {void} Description
+   * @return {void}
    */
   static forEach(node, action) {
     if (node == null)
@@ -1356,12 +1369,13 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * find - Finds object by its name.
+   * Finds object by its name. If node is not passed the root will be taken as
+   * starting point.
    *
-   * @param {string} name Description
-   * @param {GameObject} node Description
+   * @param {string} name      Name to search.
+   * @param {GameObject=} node Starting GameObject.
    *
-   * @return {GameObject} Description
+   * @return {GameObject} GameObject or null.
    */
   static find(name, node) {
     if (node == null)
