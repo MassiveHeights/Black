@@ -116,8 +116,19 @@ class Input extends System {
   __sortListeners() {
     // TODO: make it faster
     // - try insert sort
-    this.mInputListeners.sort((x, y) => {
-      return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
+
+    console.log('------');
+    this.mInputListeners.sort((a, b) => {
+      let depthA = a.gameObject.depth;
+      let depthB = b.gameObject.depth;
+
+      let indexA = a.gameObject.index;
+      let indexB = b.gameObject.index;
+
+      if (depthA === depthB)
+        return (indexA < indexB) ? -1 : (indexA > indexB) ? 1 : 0;
+      else
+        return depthA < depthB ? 1 : 1;
     });
   }
 
