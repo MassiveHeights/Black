@@ -1,13 +1,19 @@
+/**
+ * A 2x3 matrix allows you to transform objects in space.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Matrix {
   /**
-   * @param  {number} a = 1  description
-   * @param  {number} b = 0  description
-   * @param  {number} c = 0  description
-   * @param  {number} d = 1  description
-   * @param  {number} tx = 0 description
-   * @param  {number} ty = 0 description
-   * @return {number}        description
+   * Creates new Matrix instance.
+   *
+   * @param  {number} a = 1  A-component.
+   * @param  {number} b = 0  B-component.
+   * @param  {number} c = 0  C-component.
+   * @param  {number} d = 1  D-component.
+   * @param  {number} tx = 0 TX-component.
+   * @param  {number} ty = 0 TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     /** @type {Float32Array} */
@@ -17,14 +23,15 @@ class Matrix {
   }
 
   /**
-
-   * @param  {number} a  description
-   * @param  {number} b  description
-   * @param  {number} c  description
-   * @param  {number} d  description
-   * @param  {number} tx description
-   * @param  {number} ty description
-   * @return {Matrix}    description
+   * Sets components of this matrix to the given values.
+   *
+   * @param  {number} a  A-component.
+   * @param  {number} b  B-component.
+   * @param  {number} c  C-component.
+   * @param  {number} d  D-component.
+   * @param  {number} tx TX-component.
+   * @param  {number} ty TY-component.
+   * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     let m = this._matrix;
@@ -40,12 +47,12 @@ class Matrix {
   }
 
   /**
-   * translate - Description
+   * Translates the matrix by x and y axes.
    *
-   * @param {number} dx Description
-   * @param {number} dy Description
+   * @param {number} dx Amount along x-axis.
+   * @param {number} dy Amount along y-axis.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   translate(dx, dy) {
     let a = this._matrix;
@@ -64,12 +71,12 @@ class Matrix {
   }
 
   /**
-   * setTranslation - Description
+   * Sets tx and ty components to given values.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The tx component to update.
+   * @param {number} y The ty component to update.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   setTranslation(x, y) {
     this._matrix[4] = x;
@@ -79,8 +86,10 @@ class Matrix {
   }
 
   /**
-   * @param  {number} theta     description
-   * @param  {number} scale = 1 description
+   * Sets absolute rotation of this matrix to specified angle.
+   *
+   * @param  {number} theta     Theta value.
+   * @param  {number} scale = 1 Scale value.
    */
   setRotation(theta, scale = 1) {
     let m = this._matrix;
@@ -93,10 +102,10 @@ class Matrix {
   }
 
   /**
-   * rotate - angle
+   * Applies rotation to this matrix.
    *
-   * @param  {number} angle description
-   * @return {Matrix}       description
+   * @param  {number} angle Angle in radians.
+   * @return {Matrix} This.
    */
   rotate(angle) {
     let a = this._matrix;
@@ -117,12 +126,12 @@ class Matrix {
   }
 
   /**
-   * scale - Description
+   * Scales current matrix.
    *
-   * @param {number} sx Description
-   * @param {number} sy Description
+   * @param {number} sx Abscissa of the scaling vector.
+   * @param {number} sy Ordinate of the scaling vector.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   scale(sx, sy) {
     let a = this._matrix;
@@ -142,18 +151,19 @@ class Matrix {
   }
 
   /**
-   * identity - Description
+   * Resets current matrix to identity state.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   identity() {
     return this.set(1, 0, 0, 1, 0, 0);
   }
 
   /**
-   * Same as concat in flash
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Concatenates a given matrix with the current one.
+   *
+   * @param  {Matrix} b The matrix to be concatenated.
+   * @return {Matrix}   This.
    */
   prepend(b) {
     let a = this._matrix;
@@ -188,8 +198,10 @@ class Matrix {
   }
 
   /**
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Appends values to this matrix.
+   *
+   * @param  {Matrix} b The matrix to be appended.
+   * @return {Matrix} This.
    */
   append(b) {
     let a = this._matrix;
@@ -218,10 +230,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given and x- and y- components of a point from a local space to
+   * world space.
+   *
+   * @param  {number} x          The x- component of a point.
+   * @param  {number} y          The y- component of a point.
+   * @param  {Vector=} outVector If given stores resulting values in it.
+   * @return {Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
     outVector = outVector || new Vector();
@@ -234,10 +249,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given point from a local space to world space without applying
+   * scalling.
+   *
+   * @param  {number} x          The x- component.
+   * @param  {number} y          The y- component.
+   * @param  {Vector=} outVector If given stores results in it.
+   * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
     let m = this._matrix;
@@ -250,11 +268,11 @@ class Matrix {
   }
 
   /**
-   * transformVector - transforms vector by current matrix object.
+   * Transforms vector by current matrix object.
    *
-   * @param  {Vector} vector    description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * @param  {Vector} vector     Vector to apply transformation on.
+   * @param  {Vector=} outVector Out Vector to store results in.
+   * @return {Vector} New transformed vector.
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
@@ -267,11 +285,11 @@ class Matrix {
   }
 
   /**
-   * transformRect - transforms rectangle by current matrix object.
+   * Transforms rectangle by current matrix object.
    *
-   * @param  {Rectangle} rect    description
-   * @param  {Rectangle|null} outRect description
-   * @return {Rectangle}         description
+   * @param  {Rectangle} rect         Rectangle to apply transformation on.
+   * @param  {Rectangle|null} outRect When given stores results in it.
+   * @return {Rectangle} Tranformed Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -311,9 +329,9 @@ class Matrix {
   }
 
   /**
-   * invert - inverts current matrix.
+   * Inverts current matrix.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} This.
    */
   invert() {
     let a = this._matrix;
@@ -344,7 +362,12 @@ class Matrix {
     return this;
   }
 
-  // NOTE: remove or finish
+  /**
+   * TODO: remove or finish
+   * @ignore
+   *
+   * @returns {Array<number>} Description
+   */
   __decompose() {
     let m = this._matrix;
     let a = m[0];
@@ -387,9 +410,9 @@ class Matrix {
   }
 
   /**
-   * clone - clones the current matrix and returns new cloned object.
+   * Clones the current matrix and returns new cloned object.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} New cloned object.
    */
   clone() {
     let m = new Matrix();
@@ -399,10 +422,10 @@ class Matrix {
   }
 
   /**
-   * copyTo - copies
+   * Copies values to given matrix.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The destination matrix.
+   * @return {Matrix} This.
    */
   copyTo(matrix) {
     let a = this._matrix;
@@ -419,21 +442,21 @@ class Matrix {
   }
 
   /**
-   * copyFrom - description
+   * Copies values from given matrix into this.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The matrix to copy values from.
+   * @return {Matrix} This.
    */
   copyFrom(matrix) {
     return matrix.copyTo(this);
   }
 
   /**
-   * equals - description
+   * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param  {Matrix} matrix                   description
-   * @param  {number} epsilon = Number.EPSILON description
-   * @return {boolean}                          description
+   * @param  {Matrix} matrix                   Matrix object to compare with.
+   * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+   * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
     let a = this._matrix;
@@ -446,9 +469,9 @@ class Matrix {
   }
 
   /**
-   * get - description
+   * Returns array of values representing this matrix object.
    *
-   * @return {Float32Array}  description
+   * @return {Float32Array}
    */
   get value() {
     return this._matrix;

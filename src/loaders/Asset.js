@@ -1,43 +1,70 @@
-// TODO: handle errors
-// TODO: v2: parallel loading?
-//
-//
+/**
+ * Holds information about external assets.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 /* @echo EXPORT */
 class Asset extends MessageDispatcher {
   /**
-   * @param  {string} name description
-   * @param  {string} url  description
+   * Creates new Assets instance.
+   * @param  {string} name Name of asset.
+   * @param  {string} url  URL of the asset to load it from.
    */
   constructor(name, url) {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mUrl = url;
 
-    /** @type {*|null} */
+    /**
+     * @private
+     * @type {*|null}
+     */
     this.mData = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = false;
 
-    /** @type {string|undefined} */
+    /**
+     * @private
+     * @type {string|undefined}
+     */
     this.mMimeType = undefined;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mResponseType = '';
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mExtension = this.getExtension(url);
 
-    /** @type {XMLHttpRequest|null} */
+    /**
+     * @private
+     * @type {XMLHttpRequest|null}
+     */
     this.mRequest = null;
   }
 
   /**
-   * load
+   * Loads asset from an external source.
    *
    * @return {void}
    */
@@ -64,9 +91,11 @@ class Asset extends MessageDispatcher {
     this.mRequest.send(null);
   }
 
-
   /**
-   * onLoaded
+   * Called when asset is fully loaded.
+   *
+   * @protected
+   * @fires complete
    *
    * @return {void}
    */
@@ -76,7 +105,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * name
+   * Returns the name of this asset.
    *
    * @return {string}
    */
@@ -85,7 +114,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * data
+   * Returns loaded data object associated with this asset.
    *
    * @return {*}
    */
@@ -94,7 +123,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * isLoaded
+   * Returns true if asset is preloaded.
    *
    * @return {boolean}
    */
@@ -106,16 +135,16 @@ class Asset extends MessageDispatcher {
   dispose() {}
 
   /**
-   * getExtension
+   * Helper function. Returns the file extension.
    *
-   * @param {string} url
+   * @param {string} url Url to get extension from.
    *
-   * @return {string}
+   * @return {string} Empty string if no extension were found or extension itself.
    */
   getExtension(url) {
-    if (url.indexOf(".") === -1)
+    if (url.indexOf('.') === -1)
       return '';
 
-    return url.substring(url.indexOf(".")).toLowerCase();
+    return url.substring(url.indexOf('.')).toLowerCase();
   }
 }

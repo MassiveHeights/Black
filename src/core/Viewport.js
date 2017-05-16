@@ -1,3 +1,10 @@
+/**
+ * Manages viewport, handles DOM container resize events and updates internal data.
+ *
+ * @cat core
+ * @fires resize
+ * @extends MessageDispatcher
+ */
 /* @echo EXPORT */
 class Viewport extends MessageDispatcher {
   /**

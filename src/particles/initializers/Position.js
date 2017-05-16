@@ -1,21 +1,29 @@
+/**
+ * Sets starting particle's position.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Position extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Position instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min/max range.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for position distribution.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

@@ -1,27 +1,41 @@
+/**
+ * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+ *
+ * @cat display
+ * @extends GameObject
+ */
 /* @echo EXPORT */
 class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAlpha = 1;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.blendMode = BlendMode.AUTO;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mVisible = true;
   }
 
   /**
-   * __render - Description
+   * @ignore
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mVisible === false)
@@ -37,20 +51,18 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * alpha - Description
+   * Gets/Sets the opacity of the object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get alpha() {
     return this.mAlpha;
   }
 
   /**
-   * alpha - Description
-   *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {number} value
+   * @return {void}
    */
   set alpha(value) {
     this.mAlpha = Math.clamp(value, 0, 1);
@@ -58,9 +70,9 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
+   * Gets/Sets visibility of the object.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get visible() {
     return this.mVisible;
@@ -68,11 +80,9 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
-   *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
    */
   set visible(value) {
     this.mVisible = value;

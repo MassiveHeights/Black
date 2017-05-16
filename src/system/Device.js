@@ -1,17 +1,35 @@
+/**
+ * Contains system functions.
+ * @static
+ * @cat system
+ */
 /* @echo EXPORT */
 class Device {
+  /**
+   * Static class.
+   */
   constructor() {
-    /** @type {Device} */
+    /**
+     * @private
+     * @type {Device}
+     */
     this.constructor.mInstance = this;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPixelRatio = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
   }
 
   /**
+   * Returns current OS name.
    * @return {string}
    */
   static get os() {
@@ -30,9 +48,9 @@ class Device {
   }
 
   /**
-   * isTouch - Description
+   * Returns True if touch screen is present.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isTouch() {
     let hasEvent = 'ontouchstart' in window;
@@ -46,25 +64,25 @@ class Device {
   }
 
   /**
-   * isMobile - Description
+   * Returns True if engine is running on mobile device.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isMobile() {
     return /Mobi/.test(navigator.userAgent);
   }
 
   /**
-   * pixelRatio - Description
+   * Returns screen pixel ratio.
    *
-   * @return {number} Description
+   * @return {number}
    */
   static get pixelRatio() {
     return Device.mInstance.mPixelRatio;
   }
 
   /**
-   * getDevicePixelRatio - Description
+   * @private
    *
    * @suppress {missingProperties}
    *
@@ -81,7 +99,9 @@ class Device {
 
 }
 
-/** @type {Device}
+/**
+ * @private
+ * @type {Device}
  * @nocollapse
  */
 Device.mInstance = null;

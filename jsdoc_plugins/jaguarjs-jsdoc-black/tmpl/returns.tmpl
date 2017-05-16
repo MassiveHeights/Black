@@ -1,0 +1,83 @@
+<?js
+var returns = obj;
+var parentReturn = null;
+var hasName = false;
+var hasType = false;
+
+returns.forEach(function (ret, i) {
+    if (ret && (ret.description || ret.name)) {
+        ret.description = ret.description.toString().replace(/<\/?p>/g, '');
+
+        var isNamed = ret.name ? true : false;
+        var name = ret.name || ret.description;
+        var startSpacePos = name.indexOf(' ');
+
+        if (parentReturn !== null && name.indexOf(parentReturn.name + '.') === 0) {
+            ret.name = isNamed ? name.substr(parentReturn.name.length + 1) : name.substr(parentReturn.name.length + 1, startSpacePos - (parentReturn.name.length + 1));
+
+            if (!isNamed) {
+                ret.description = ret.description.substr(startSpacePos + 1);
+            }
+
+            ret.isSubReturns = true;
+            parentReturn.subReturns = parentReturn.subReturns || [];
+            parentReturn.subReturns.push(ret);
+            returns[i] = null;
+        } else if (returns.length > 1 || ret.isSubReturns) {
+            if (!isNamed) {
+                ret.name = ret.description.substr(0, startSpacePos !== -1 ? startSpacePos : ret.description.length);
+                ret.description = startSpacePos !== -1 ? ret.description.substr(startSpacePos + 1) : '';
+            }
+
+            parentReturn = ret;
+        }
+    }
+
+    if (ret.name) {
+        hasName = true;
+    }
+
+    if (ret.type) {
+        hasType = true;
+    }
+});
+?>
+
+<h5>Returns:
+
+<span class="sub-return-h5">
+<?js if (hasType) { ?>
+
+  <?js
+      var self = this;
+      returns.forEach(function(ret) {
+          if (!ret) {
+              return false;
+          }
+  ?>
+
+  <?js
+      if (ret.type && ret.type.names) {
+          ret.type.names.forEach(function(name, i) { ?>
+              <?js= self.linkto(name, self.htmlsafe(name)) ?>
+
+
+              <?js if (name != 'void') { ?>
+               — <?js= ret.description ?>
+              <?js } ?>
+
+          <?js });
+      }
+  ?>
+
+  <?js }); ?>
+
+<?js } else { ?>
+<?js if (returns[0].description) { ?>
+<?js= returns[0].description ?>
+<?js } ?>
+<?js } ?>
+
+</span>
+
+</h5>

@@ -1,24 +1,38 @@
+/**
+ * Mathematical representation of a vector.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Vector {
   /**
-   * @param  {number=} x = 0 description
-   * @param  {number=} y = 0 description
+   * Creates new Vector instance.
+   *
+   * @param  {number=} x = 0 X-component.
+   * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
-    /** @type {number} */
+    /**
+     * X coordinate of a point in the space.
+     *
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * Y coordinate of a point in the space.
+     * @type {number}
+     */
     this.y = y;
   }
 
   /**
-   * set - Description
+   * Updates values of this vector with a given.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] y-component
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   set(x = 0, y = 0) {
     this.x = x;
@@ -28,11 +42,11 @@ class Vector {
   }
 
   /**
-   * add - Description
+   * Adds two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be added to this.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   add(vector) {
     this.x += vector.x;
@@ -42,11 +56,11 @@ class Vector {
   }
 
   /**
-   * subtract - Description
+   * Subtract two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be subtracted.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   subtract(vector) {
     this.x -= vector.x;
@@ -56,11 +70,11 @@ class Vector {
   }
 
   /**
-   * distance - Description
+   * Returns distance between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to check distance with.
    *
-   * @return {number} Description
+   * @return {number} The distance between two vectors.
    */
   distance(vector) {
     let x = this.x - vector.x;
@@ -70,11 +84,11 @@ class Vector {
   }
 
   /**
-   * multiply - Description
+   * Multiplies two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector A second vector to multiply with.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiply(vector) {
     this.x *= vector.x;
@@ -84,11 +98,11 @@ class Vector {
   }
 
   /**
-   * multiplyScalar - Description
+   * Multiplies this vector by scalar value.
    *
-   * @param {number} scalar Description
+   * @param {number} scalar The values to mul by.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiplyScalar(scalar) {
     this.x *= scalar;
@@ -98,20 +112,20 @@ class Vector {
   }
 
   /**
-   * dot - Description
+   * Find dot product between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to find angle with.
    *
-   * @return {number} Description
+   * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
     return this.x * vector.x + this.y * vector.y;
   }
 
   /**
-   * length - Description
+   * Returns the length of this vector.
    *
-   * @return {number} Description
+   * @return {number} The length of the vector.
    */
   length() {
     let x = this.x;
@@ -121,9 +135,9 @@ class Vector {
   }
 
   /**
-   * lengthSqr - Description
+   * Returns the squared length of this vector.
    *
-   * @return {number} Description
+   * @return {number} Squared length.
    */
   lengthSqr() {
     let x = this.x;
@@ -132,6 +146,11 @@ class Vector {
     return x * x + y * y;
   }
 
+  /**
+   * Creates unit vector out of this one.
+   *
+   * @returns {Vector} This.
+   */
   normalize() {
     let sum = this.lengthSqr();
 
@@ -148,12 +167,12 @@ class Vector {
   }
 
   /**
-   * clamp - Description
+   * Clamps values of this vector to given range.
    *
-   * @param {number} min Description
-   * @param {number} max Description
+   * @param {number} min Min value.
+   * @param {number} max Max value.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   clamp(min, max) {
     this.x = Math.clamp(this.x, min, max);
@@ -163,12 +182,12 @@ class Vector {
   }
 
   /**
-   * lerp - Description
+   * Linearly interpolates between two vectors.
    *
-   * @param {Vector} vector Description
-   * @param {number} t      Description
+   * @param {Vector} vector The second vector to interpolate values between.
+   * @param {number} t      Interpolant.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   lerp(vector, t) {
     this.x = Math.lerp(this.x, vector.x, t);
@@ -178,11 +197,11 @@ class Vector {
   }
 
   /**
-   * copyTo - Description
+   * Copies this vector values into given vector.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} Given vector.
    */
   copyTo(vector) {
     vector.x = this.x;
@@ -192,11 +211,11 @@ class Vector {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given vector into this.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to copy values from.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   copyFrom(vector) {
     this.x = vector.x;
@@ -206,37 +225,37 @@ class Vector {
   }
 
   /**
-   * clone - Description
+   * Clones this vector object.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector instance.
    */
   clone() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * equals - Description
+   * Compares two vectors for equality.
    *
-   * @param {Vector} vector Description
-   * @param {number=} epsilon Description
+   * @param {Vector} vector Second vector to compare with.
+   * @param {number=} epsilon Threshold.
    *
-   * @return {boolean}
+   * @return {boolean} True if equal.
    */
   equals(vector, epsilon = Number.EPSILON) {
     return vector !== null && (Math.abs(vector.x - this.x) < epsilon) && (Math.abs(vector.y - this.y) < epsilon);
   }
 
   /**
-   * isEmpty - Description
+   * Checks if this vector is empty.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if both components equal to zero,
    */
   isEmpty() {
     return this.x === 0 && this.y === 0;
   }
 
   /**
-   * setRotationFrom - Rotates this vector around specified point.
+   * Rotates this vector around specified point.
    *
    * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
@@ -251,7 +270,7 @@ class Vector {
   }
 
   /**
-   * setRotation - Rotates this vector around zero vector
+   *  Rotates this vector around zero vector.
    *
    * @param {number} rotation Angle in radians
    *
@@ -265,7 +284,7 @@ class Vector {
   }
 
   /**
-   * theta - Calculates angle in radians within this and specified vectors.
+   * Calculates angle in radians within this and specified vectors.
    *
    * @return {number} Angle in radians.
    */
@@ -274,7 +293,7 @@ class Vector {
   }
 
   /**
-   * perp - Rotates this vector to normal.
+   * Rotates this vector to normal.
    *
    * @return {Vector} This vector.
    */
@@ -283,18 +302,18 @@ class Vector {
   }
 
   /**
-   * fromAngle - Description
+   * Creates new Vector from given angle in radians.
    *
-   * @param {number=} [angle=0] Description
+   * @param {number=} [angle=0] Angle.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector object.
    */
   static fromAngle(angle = 0) {
     return new Vector(Math.cos(angle), Math.sin(angle));
   }
 
   /**
-   * randomRange
+   * @ignore
    *
    * @param {Vector} vectorMin
    * @param {Vector} vectorMax
@@ -325,7 +344,9 @@ class Vector {
   // @endif
 }
 
-/** @type {Vector}
+/**
+ * @ignore
+ * @type {Vector}
  * @nocollapse
  */
 Vector.__cache = new Vector();

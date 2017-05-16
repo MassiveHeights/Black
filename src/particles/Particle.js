@@ -1,57 +1,110 @@
+/**
+ * The particle!
+ *
+ * @cat particles
+ * @class
+ */
 /* @echo EXPORT */
 class Particle {
   constructor() {
     this.reset();
   }
 
+  /**
+   * Resets particle to default state.
+   *
+   * @returns {void}
+   */
   reset() {
-    /** @type {number} */
+    /**
+     * The index of a texture.
+     * @type {number}
+     */
     this.textureIndex = 0;
 
-    /** @type {number} */
+    /**
+     * The x/y scale of this particle.
+     * @type {number}
+     */
     this.scale = 1;
 
-    /** @type {number} */
+    /**
+     * Alpha value.
+     * @type {number}
+     */
     this.alpha = 1;
 
-    /** @type {number} */
+    /**
+     * The life of this particle.
+     * @type {number}
+     */
     this.life = 1;
 
-    /** @type {number} */
+    /**
+     * The age of this particle.
+     * @type {number}
+     */
     this.age = 0;
 
-    /** @type {number} */
+    /**
+     * Relation of life to age.
+     * @type {number}
+     */
     this.energy = this.age / this.life;
 
-    /** @type {number} */
+    /**
+     * The mass.
+     * @type {number}
+     */
     this.mass = 0;
 
-    /** @type {number} */
+    /**
+     * X-component.
+     * @type {number}
+     */
     this.x = 0;
 
-    /** @type {number} */
+    /**
+     * Y-component.
+     * @type {number}
+     */
     this.y = 0;
 
-    /** @type {number} */
+    /**
+     * Rotation of this particle.
+     * @type {number}
+     */
     this.r = 0
 
-    /** @type {number} */
+    /**
+     * Velocity by x.
+     * @type {number}
+     */
     this.vx = 0;
 
-    /** @type {number} */
+    /**
+     * Velocity by y.
+     * @type {number}
+     */
     this.vy = 0;
 
-    /** @type {number} */
+    /**
+     * Particle x-acceleration.
+     * @type {number}
+     */
     this.ax = 0;
 
-    /** @type {number} */
+    /**
+     * Particle y-acceleration.
+     * @type {number}
+     */
     this.ay = 0;
   }
 
   /**
-   * update
+   * Internal update method.
    *
-   * @param {number} dt
+   * @param {number} dt Time since last update.
    *
    * @return {void}
    */

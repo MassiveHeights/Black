@@ -1,3 +1,9 @@
+/**
+ * This class is used to create display text.
+ *
+ * @cat display.text
+ * @extends DisplayObject
+ */
 /* @echo EXPORT */
 class TextField extends DisplayObject {
   /**
@@ -108,14 +114,12 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Description
-   *
    * @protected
    * @override
    * @ignore
-   * @param {Rectangle=} outRect Description
+   * @param {Rectangle=} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -123,13 +127,11 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * __validate - Description
-   *
    * @private
    * @ignore
-   * @param {Rectangle}
+   * @param {Rectangle} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   __validate(outRect) {
     let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
@@ -380,6 +382,7 @@ class TextField extends DisplayObject {
 
   /**
    * Determines whether the size of the field will adjust to the size of the text. Note: if this set as true, you need to specify fieldHeight and fieldWidth manually
+   *
    * @return {boolean}
    */
   get autoSize() {

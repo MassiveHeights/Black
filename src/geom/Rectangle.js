@@ -1,34 +1,53 @@
+/**
+ * Mathematical representation of a rectangle.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Rectangle {
   /**
-   * @param  {number=} y = 0 description
-   * @param  {number=} x = 0 description
-   * @param  {number=} w = 0 description
-   * @param  {number=} h = 0 description
+   * Creates new instance of Rectangle.
+   *
+   * @param  {number=} y = 0 X-component.
+   * @param  {number=} x = 0 Y-component.
+   * @param  {number=} w = 0 The width.
+   * @param  {number=} h = 0 The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
-    /** @type {number} */
+    /**
+     * The x coordinate of the rectangle.
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * The y coordinate of the rectangle.
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * The width of the rectangle.
+     * @type {number}
+     */
     this.width = w;
 
-    /** @type {number} */
+    /**
+     * The height of the rectangle.
+     * @type {number}
+     */
     this.height = h;
   }
 
   /**
-   * set - Description
+   * Update rectangle values with a given.
    *
-   * @param {number} x Description
-   * @param {number} y Description
-   * @param {number} w Description
-   * @param {number} h Description
+   * @param {number} x X-component.
+   * @param {number} y Y-component.
+   * @param {number} w The width.
+   * @param {number} h The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   set(x, y, w, h) {
     this.x = x;
@@ -40,11 +59,11 @@ class Rectangle {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given rectangle into this one.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The Rectangle to copy values from.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   copyFrom(rect) {
     this.x = rect.x;
@@ -56,11 +75,11 @@ class Rectangle {
   }
 
   /**
-   * copyTo - Description
+   * Copies values from this rectangle into description.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The destination rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
     rect.x = this.x;
@@ -71,63 +90,62 @@ class Rectangle {
     return rect;
   }
 
-
   /**
-   * left - Description
+   * Get/Sets the leftmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get left() {
     return this.x;
   }
 
   /**
-   * left - Description
+   * @ignore
    *
-   * @param {number} left Left x position.
+   * @param {number} keft
    */
   set left(left) {
     this.x = left;
   }
 
   /**
-   * right - Description
+   * Get/Sets the rightmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get right() {
     return this.x + this.width;
   }
 
   /**
-   * right - Description
+   * @ignore
    *
-   * @param {number} right Right x position.
+   * @param {number} right
    */
   set right(right) {
     this.x = right - this.width;
   }
 
   /**
-   * top - Description
+   * Get/Sets the topmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get top() {
     return this.y;
   }
 
   /**
-   * top - Description
+   * @ignore
    *
-   * @param {number} top Top y position.
+   * @param {number} top
    */
   set top(top) {
     this.y = top;
   }
 
   /**
-   * bottom - Description
+   * Get/Sets the bottommost point of this rectangle.
    *
    * @return {number} Description
    */
@@ -136,27 +154,27 @@ class Rectangle {
   }
 
   /**
-   * bottom - Description
+   * @ignore
    *
-   * @param {number} bottom Bottom y position.
+   * @param {number} bottom
    */
   set bottom(bottom) {
     this.y = bottom - this.height;
   }
 
   /**
-   * topLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topLeft() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * topLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Top left position.
+   * @param {Vector} vector
    */
   set topLeft(vector) {
     this.left = vector.x;
@@ -164,7 +182,7 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * Get/Sets the top right point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -173,9 +191,9 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Top right position.
+   * @param {Vector} vector
    */
   set topRight(vector) {
     this.right = vector.x;
@@ -183,7 +201,7 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -192,9 +210,9 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Right bottom position.
+   * @param {Vector} vector
    */
   set bottomRight(vector) {
     this.right = vector.x;
@@ -202,7 +220,7 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -211,9 +229,9 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Left bottom position.
+   * @param {Vector} vector
    */
   set bottomLeft(vector) {
     this.left = vector.x;
@@ -221,11 +239,12 @@ class Rectangle {
   }
 
   /**
-   * size - Description
+   * Creates a new Rectangle instance with width and height equal to current
+   * instance.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector Resulting rect to save values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -233,9 +252,9 @@ class Rectangle {
   }
 
   /**
-   * zero - Description
+   * Sets all components of this Rectangle to zero.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   zero() {
     return this.set(0, 0, 0, 0);
@@ -243,12 +262,12 @@ class Rectangle {
 
 
   /**
-   * equals - Description
+   * Compares this Rectangle with a given one.
    *
-   * @param {Rectangle} rect Description
-   * @param {number=} epsilon Description
+   * @param {Rectangle} rect                  Rect to compare values with.
+   * @param {number} epsilon = Number.EPSILON
    *
-   * @return {boolean}
+   * @return {boolean} True if rects are equal.
    */
   equals(rect, epsilon = Number.EPSILON) {
     return rect !== null && (Math.abs(this.x - rect.x) < epsilon) && (Math.abs(this.y - rect.y) < epsilon) &&
@@ -257,12 +276,12 @@ class Rectangle {
 
 
   /**
-   * containsXY - Description
+   * Checks if a given point is inside this rectangle.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The x-component of a point.
+   * @param {number} y The y-component of a point.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if point is inside.
    */
   containsXY(x, y) {
     return x >= this.x && x <= this.right && y >= this.y && y <= this.bottom;
@@ -270,22 +289,22 @@ class Rectangle {
 
 
   /**
-   * contains - Description
+   * Checks if a given rectangle is inside this rect.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect Rectangle to check with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
     return rect.x >= this.x && rect.y >= this.y && rect.right <= this.right && rect.bottom <= this.bottom;
   }
 
   /**
-   * intersects - Description
+   * Checks if this rect intersects with a given rectangle.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The rect to check intersection with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   intersects(rect) {
     return rect.right > this.x && rect.bottom > this.y &&
@@ -294,11 +313,11 @@ class Rectangle {
 
 
   /**
-   * union - Description
+   * Adds two rects ]
    *
-   * @param {Rectangle} toUnion Description
+   * @param {Rectangle} toUnion A rectangle object to add to this rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
     if (this.width === 0 || this.height === 0)
@@ -316,9 +335,9 @@ class Rectangle {
 
 
   /**
-   * volume - Description
+   * Returns volume of this Rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get volume() {
     return this.width * this.height;
@@ -326,14 +345,14 @@ class Rectangle {
 
 
   /**
-   * expand - Description
+   * Expands this rectangle object by given values.
    *
-   * @param {number} x      Description
-   * @param {number} y      Description
-   * @param {number} width  Description
-   * @param {number} height Description
+   * @param {number} x      X-component.
+   * @param {number} y      Y-component
+   * @param {number} width  The width.
+   * @param {number} height The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
     if (this.volume === 0)
@@ -361,14 +380,13 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * inflate - Description
+   * Increases the size of this rectangle by given x- and y- values.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] Y-component.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
     this.x -= x;
@@ -379,11 +397,10 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * clone - Description
+   * Clones this Rectangle object into new one.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object.
    */
   clone() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -400,11 +417,11 @@ class Rectangle {
 
 
   /**
-   * center - Description
+   * Returns the center point of this rectangle.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector The out-Vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -412,7 +429,7 @@ class Rectangle {
   }
 
   /**
-   * scale - Scales this rectangle.
+   *  Scales this rectangle.
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
@@ -427,7 +444,7 @@ class Rectangle {
   }
 
   /**
-   * isEmpty - Checks rectangle has area.
+   * Checks if rectangle has area.
    *
    * @return {boolean} True if has.
    */
@@ -444,7 +461,6 @@ class Rectangle {
     ];
   }
 
-
   // @ifdef DEBUG
   /**
    * toString - Description
@@ -459,7 +475,9 @@ class Rectangle {
   // @endif
 }
 
-/** @type {Rectangle}
-  * @nocollapse
-  */
+/**
+ * @ignore
+ * @type {Rectangle}
+ * @nocollapse
+ */
 Rectangle.__cache = new Rectangle();

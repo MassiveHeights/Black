@@ -1,3 +1,9 @@
+/**
+ * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ *
+ * @cat components
+ * @extends Component
+ */
 /* @echo EXPORT */
 class MRComponent extends Component {
   /**

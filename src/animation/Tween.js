@@ -1,4 +1,7 @@
 /**
+ * A tweening component.
+ *
+ * @cat animation
  * @unrestricted
  * @extends Component
  */
@@ -329,12 +332,12 @@ class Tween extends Component {
     super.removeFromParent();
   }
 
-  /**
-   * @return {void}
-   */
-  dispose() {
-    this.remove();
-  }
+  // /**
+  //  * @return {void}
+  //  */
+  // dispose() {
+  //   this.remove();
+  // }
 
   /**
    * Sets the number of times the tween wiil be repeated after first execution.
@@ -488,7 +491,7 @@ class Tween extends Component {
         this.post('complete', this.gameObject);
 
         if (this.mRemoveOnComplete) {
-          this.dispose();
+          this.removeFromParent();
         } else {
           for (let f in this.mValues) {
             this.mValuesStart[f] = this.mValues[f];

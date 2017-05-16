@@ -1,3 +1,9 @@
+/**
+ * Basic FPS component. Shows frame rate.
+ *
+ * @cat components
+ * @extends Component
+ */
 /* @echo EXPORT */
 class FPSComponent extends Component  {
   constructor() {

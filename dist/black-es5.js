@@ -157,10 +157,18 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Mathematical representation of a vector.
+ *
+ * @cat geom
+ */
+
 var Vector = function () {
   /**
-   * @param  {number=} x = 0 description
-   * @param  {number=} y = 0 description
+   * Creates new Vector instance.
+   *
+   * @param  {number=} x = 0 X-component.
+   * @param  {number=} y = 0 y-component.
    */
   function Vector() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -168,20 +176,27 @@ var Vector = function () {
 
     _classCallCheck(this, Vector);
 
-    /** @type {number} */
+    /**
+     * X coordinate of a point in the space.
+     *
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * Y coordinate of a point in the space.
+     * @type {number}
+     */
     this.y = y;
   }
 
   /**
-   * set - Description
+   * Updates values of this vector with a given.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] y-component
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
 
 
@@ -198,11 +213,11 @@ var Vector = function () {
     }
 
     /**
-     * add - Description
+     * Adds two vectors.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector The vector object to be added to this.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -215,11 +230,11 @@ var Vector = function () {
     }
 
     /**
-     * subtract - Description
+     * Subtract two vectors.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector The vector object to be subtracted.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -232,11 +247,11 @@ var Vector = function () {
     }
 
     /**
-     * distance - Description
+     * Returns distance between two vectors.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector Second vector to check distance with.
      *
-     * @return {number} Description
+     * @return {number} The distance between two vectors.
      */
 
   }, {
@@ -249,11 +264,11 @@ var Vector = function () {
     }
 
     /**
-     * multiply - Description
+     * Multiplies two vectors.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector A second vector to multiply with.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -266,11 +281,11 @@ var Vector = function () {
     }
 
     /**
-     * multiplyScalar - Description
+     * Multiplies this vector by scalar value.
      *
-     * @param {number} scalar Description
+     * @param {number} scalar The values to mul by.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -283,11 +298,11 @@ var Vector = function () {
     }
 
     /**
-     * dot - Description
+     * Find dot product between two vectors.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector Second vector to find angle with.
      *
-     * @return {number} Description
+     * @return {number} A scalar value representing dot product.
      */
 
   }, {
@@ -297,9 +312,9 @@ var Vector = function () {
     }
 
     /**
-     * length - Description
+     * Returns the length of this vector.
      *
-     * @return {number} Description
+     * @return {number} The length of the vector.
      */
 
   }, {
@@ -312,9 +327,9 @@ var Vector = function () {
     }
 
     /**
-     * lengthSqr - Description
+     * Returns the squared length of this vector.
      *
-     * @return {number} Description
+     * @return {number} Squared length.
      */
 
   }, {
@@ -325,6 +340,13 @@ var Vector = function () {
 
       return x * x + y * y;
     }
+
+    /**
+     * Creates unit vector out of this one.
+     *
+     * @returns {Vector} This.
+     */
+
   }, {
     key: "normalize",
     value: function normalize() {
@@ -343,12 +365,12 @@ var Vector = function () {
     }
 
     /**
-     * clamp - Description
+     * Clamps values of this vector to given range.
      *
-     * @param {number} min Description
-     * @param {number} max Description
+     * @param {number} min Min value.
+     * @param {number} max Max value.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -361,12 +383,12 @@ var Vector = function () {
     }
 
     /**
-     * lerp - Description
+     * Linearly interpolates between two vectors.
      *
-     * @param {Vector} vector Description
-     * @param {number} t      Description
+     * @param {Vector} vector The second vector to interpolate values between.
+     * @param {number} t      Interpolant.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -379,11 +401,11 @@ var Vector = function () {
     }
 
     /**
-     * copyTo - Description
+     * Copies this vector values into given vector.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector The vector to store values in.
      *
-     * @return {Vector} Description
+     * @return {Vector} Given vector.
      */
 
   }, {
@@ -396,11 +418,11 @@ var Vector = function () {
     }
 
     /**
-     * copyFrom - Description
+     * Copies values from given vector into this.
      *
-     * @param {Vector} vector Description
+     * @param {Vector} vector The vector to copy values from.
      *
-     * @return {Vector} Description
+     * @return {Vector} This.
      */
 
   }, {
@@ -413,9 +435,9 @@ var Vector = function () {
     }
 
     /**
-     * clone - Description
+     * Clones this vector object.
      *
-     * @return {Vector} Description
+     * @return {Vector} New Vector instance.
      */
 
   }, {
@@ -425,12 +447,12 @@ var Vector = function () {
     }
 
     /**
-     * equals - Description
+     * Compares two vectors for equality.
      *
-     * @param {Vector} vector Description
-     * @param {number=} epsilon Description
+     * @param {Vector} vector Second vector to compare with.
+     * @param {number=} epsilon Threshold.
      *
-     * @return {boolean}
+     * @return {boolean} True if equal.
      */
 
   }, {
@@ -442,9 +464,9 @@ var Vector = function () {
     }
 
     /**
-     * isEmpty - Description
+     * Checks if this vector is empty.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if both components equal to zero,
      */
 
   }, {
@@ -454,7 +476,7 @@ var Vector = function () {
     }
 
     /**
-     * setRotationFrom - Rotates this vector around specified point.
+     * Rotates this vector around specified point.
      *
      * @param {Vector} vector Center vector.
      * @param {number} rotation Angle in radians.
@@ -469,7 +491,7 @@ var Vector = function () {
     }
 
     /**
-     * setRotation - Rotates this vector around zero vector
+     *  Rotates this vector around zero vector.
      *
      * @param {number} rotation Angle in radians
      *
@@ -486,7 +508,7 @@ var Vector = function () {
     }
 
     /**
-     * theta - Calculates angle in radians within this and specified vectors.
+     * Calculates angle in radians within this and specified vectors.
      *
      * @return {number} Angle in radians.
      */
@@ -498,7 +520,7 @@ var Vector = function () {
     }
 
     /**
-     * perp - Rotates this vector to normal.
+     * Rotates this vector to normal.
      *
      * @return {Vector} This vector.
      */
@@ -510,11 +532,11 @@ var Vector = function () {
     }
 
     /**
-     * fromAngle - Description
+     * Creates new Vector from given angle in radians.
      *
-     * @param {number=} [angle=0] Description
+     * @param {number=} [angle=0] Angle.
      *
-     * @return {Vector} Description
+     * @return {Vector} New Vector object.
      */
 
   }], [{
@@ -526,7 +548,7 @@ var Vector = function () {
     }
 
     /**
-     * randomRange
+     * @ignore
      *
      * @param {Vector} vectorMin
      * @param {Vector} vectorMax
@@ -552,7 +574,9 @@ var Vector = function () {
   return Vector;
 }();
 
-/** @type {Vector}
+/**
+ * @ignore
+ * @type {Vector}
  * @nocollapse
  */
 
@@ -564,15 +588,22 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * A 2x3 matrix allows you to transform objects in space.
+ *
+ * @cat geom
+ */
+
 var Matrix = function () {
   /**
-   * @param  {number} a = 1  description
-   * @param  {number} b = 0  description
-   * @param  {number} c = 0  description
-   * @param  {number} d = 1  description
-   * @param  {number} tx = 0 description
-   * @param  {number} ty = 0 description
-   * @return {number}        description
+   * Creates new Matrix instance.
+   *
+   * @param  {number} a = 1  A-component.
+   * @param  {number} b = 0  B-component.
+   * @param  {number} c = 0  C-component.
+   * @param  {number} d = 1  D-component.
+   * @param  {number} tx = 0 TX-component.
+   * @param  {number} ty = 0 TY-component.
    */
   function Matrix() {
     var a = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
@@ -591,13 +622,15 @@ var Matrix = function () {
   }
 
   /**
-     * @param  {number} a  description
-   * @param  {number} b  description
-   * @param  {number} c  description
-   * @param  {number} d  description
-   * @param  {number} tx description
-   * @param  {number} ty description
-   * @return {Matrix}    description
+   * Sets components of this matrix to the given values.
+   *
+   * @param  {number} a  A-component.
+   * @param  {number} b  B-component.
+   * @param  {number} c  C-component.
+   * @param  {number} d  D-component.
+   * @param  {number} tx TX-component.
+   * @param  {number} ty TY-component.
+   * @return {Matrix} This.
    */
 
 
@@ -624,12 +657,12 @@ var Matrix = function () {
     }
 
     /**
-     * translate - Description
+     * Translates the matrix by x and y axes.
      *
-     * @param {number} dx Description
-     * @param {number} dy Description
+     * @param {number} dx Amount along x-axis.
+     * @param {number} dy Amount along y-axis.
      *
-     * @return {Matrix} Description
+     * @return {Matrix} This.
      */
 
   }, {
@@ -651,12 +684,12 @@ var Matrix = function () {
     }
 
     /**
-     * setTranslation - Description
+     * Sets tx and ty components to given values.
      *
-     * @param {number} x Description
-     * @param {number} y Description
+     * @param {number} x The tx component to update.
+     * @param {number} y The ty component to update.
      *
-     * @return {Matrix} Description
+     * @return {Matrix} This.
      */
 
   }, {
@@ -669,8 +702,10 @@ var Matrix = function () {
     }
 
     /**
-     * @param  {number} theta     description
-     * @param  {number} scale = 1 description
+     * Sets absolute rotation of this matrix to specified angle.
+     *
+     * @param  {number} theta     Theta value.
+     * @param  {number} scale = 1 Scale value.
      */
 
   }, {
@@ -688,10 +723,10 @@ var Matrix = function () {
     }
 
     /**
-     * rotate - angle
+     * Applies rotation to this matrix.
      *
-     * @param  {number} angle description
-     * @return {Matrix}       description
+     * @param  {number} angle Angle in radians.
+     * @return {Matrix} This.
      */
 
   }, {
@@ -715,12 +750,12 @@ var Matrix = function () {
     }
 
     /**
-     * scale - Description
+     * Scales current matrix.
      *
-     * @param {number} sx Description
-     * @param {number} sy Description
+     * @param {number} sx Abscissa of the scaling vector.
+     * @param {number} sy Ordinate of the scaling vector.
      *
-     * @return {Matrix} Description
+     * @return {Matrix} This.
      */
 
   }, {
@@ -743,9 +778,9 @@ var Matrix = function () {
     }
 
     /**
-     * identity - Description
+     * Resets current matrix to identity state.
      *
-     * @return {Matrix} Description
+     * @return {Matrix} This.
      */
 
   }, {
@@ -755,9 +790,10 @@ var Matrix = function () {
     }
 
     /**
-     * Same as concat in flash
-     * @param  {Matrix} b description
-     * @return {Matrix}   description
+     * Concatenates a given matrix with the current one.
+     *
+     * @param  {Matrix} b The matrix to be concatenated.
+     * @return {Matrix}   This.
      */
 
   }, {
@@ -795,8 +831,10 @@ var Matrix = function () {
     }
 
     /**
-     * @param  {Matrix} b description
-     * @return {Matrix}   description
+     * Appends values to this matrix.
+     *
+     * @param  {Matrix} b The matrix to be appended.
+     * @return {Matrix} This.
      */
 
   }, {
@@ -828,10 +866,13 @@ var Matrix = function () {
     }
 
     /**
-     * @param  {number} x         description
-     * @param  {number} y         description
-     * @param  {Vector=} outVector description
-     * @return {Vector}           description
+     * Transforms given and x- and y- components of a point from a local space to
+     * world space.
+     *
+     * @param  {number} x          The x- component of a point.
+     * @param  {number} y          The y- component of a point.
+     * @param  {Vector=} outVector If given stores resulting values in it.
+     * @return {Vector} Transformed Vector object.
      */
 
   }, {
@@ -847,10 +888,13 @@ var Matrix = function () {
     }
 
     /**
-     * @param  {number} x         description
-     * @param  {number} y         description
-     * @param  {Vector=} outVector description
-     * @return {Vector}           description
+     * Transforms given point from a local space to world space without applying
+     * scalling.
+     *
+     * @param  {number} x          The x- component.
+     * @param  {number} y          The y- component.
+     * @param  {Vector=} outVector If given stores results in it.
+     * @return {Vector} Just transformed Vector object.
      */
 
   }, {
@@ -866,11 +910,11 @@ var Matrix = function () {
     }
 
     /**
-     * transformVector - transforms vector by current matrix object.
+     * Transforms vector by current matrix object.
      *
-     * @param  {Vector} vector    description
-     * @param  {Vector=} outVector description
-     * @return {Vector}           description
+     * @param  {Vector} vector     Vector to apply transformation on.
+     * @param  {Vector=} outVector Out Vector to store results in.
+     * @return {Vector} New transformed vector.
      */
 
   }, {
@@ -886,11 +930,11 @@ var Matrix = function () {
     }
 
     /**
-     * transformRect - transforms rectangle by current matrix object.
+     * Transforms rectangle by current matrix object.
      *
-     * @param  {Rectangle} rect    description
-     * @param  {Rectangle|null} outRect description
-     * @return {Rectangle}         description
+     * @param  {Rectangle} rect         Rectangle to apply transformation on.
+     * @param  {Rectangle|null} outRect When given stores results in it.
+     * @return {Rectangle} Tranformed Rectangle object.
      */
 
   }, {
@@ -929,9 +973,9 @@ var Matrix = function () {
     }
 
     /**
-     * invert - inverts current matrix.
+     * Inverts current matrix.
      *
-     * @return {Matrix}  description
+     * @return {Matrix} This.
      */
 
   }, {
@@ -965,7 +1009,12 @@ var Matrix = function () {
       return this;
     }
 
-    // NOTE: remove or finish
+    /**
+     * TODO: remove or finish
+     * @ignore
+     *
+     * @returns {Array<number>} Description
+     */
 
   }, {
     key: "__decompose",
@@ -1010,9 +1059,9 @@ var Matrix = function () {
     }
 
     /**
-     * clone - clones the current matrix and returns new cloned object.
+     * Clones the current matrix and returns new cloned object.
      *
-     * @return {Matrix}  description
+     * @return {Matrix} New cloned object.
      */
 
   }, {
@@ -1025,10 +1074,10 @@ var Matrix = function () {
     }
 
     /**
-     * copyTo - copies
+     * Copies values to given matrix.
      *
-     * @param  {Matrix} matrix description
-     * @return {Matrix}        description
+     * @param  {Matrix} matrix The destination matrix.
+     * @return {Matrix} This.
      */
 
   }, {
@@ -1048,10 +1097,10 @@ var Matrix = function () {
     }
 
     /**
-     * copyFrom - description
+     * Copies values from given matrix into this.
      *
-     * @param  {Matrix} matrix description
-     * @return {Matrix}        description
+     * @param  {Matrix} matrix The matrix to copy values from.
+     * @return {Matrix} This.
      */
 
   }, {
@@ -1061,11 +1110,11 @@ var Matrix = function () {
     }
 
     /**
-     * equals - description
+     * Compares this matrix values with given matrix and checks if they are the same.
      *
-     * @param  {Matrix} matrix                   description
-     * @param  {number} epsilon = Number.EPSILON description
-     * @return {boolean}                          description
+     * @param  {Matrix} matrix                   Matrix object to compare with.
+     * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+     * @return {boolean} True if equal.
      */
 
   }, {
@@ -1081,9 +1130,9 @@ var Matrix = function () {
     }
 
     /**
-     * get - description
+     * Returns array of values representing this matrix object.
      *
-     * @return {Float32Array}  description
+     * @return {Float32Array}
      */
 
   }, {
@@ -1109,12 +1158,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Mathematical representation of a rectangle.
+ *
+ * @cat geom
+ */
+
 var Rectangle = function () {
   /**
-   * @param  {number=} y = 0 description
-   * @param  {number=} x = 0 description
-   * @param  {number=} w = 0 description
-   * @param  {number=} h = 0 description
+   * Creates new instance of Rectangle.
+   *
+   * @param  {number=} y = 0 X-component.
+   * @param  {number=} x = 0 Y-component.
+   * @param  {number=} w = 0 The width.
+   * @param  {number=} h = 0 The height.
    */
   function Rectangle() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -1124,28 +1181,40 @@ var Rectangle = function () {
 
     _classCallCheck(this, Rectangle);
 
-    /** @type {number} */
+    /**
+     * The x coordinate of the rectangle.
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * The y coordinate of the rectangle.
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * The width of the rectangle.
+     * @type {number}
+     */
     this.width = w;
 
-    /** @type {number} */
+    /**
+     * The height of the rectangle.
+     * @type {number}
+     */
     this.height = h;
   }
 
   /**
-   * set - Description
+   * Update rectangle values with a given.
    *
-   * @param {number} x Description
-   * @param {number} y Description
-   * @param {number} w Description
-   * @param {number} h Description
+   * @param {number} x X-component.
+   * @param {number} y Y-component.
+   * @param {number} w The width.
+   * @param {number} h The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
 
 
@@ -1161,11 +1230,11 @@ var Rectangle = function () {
     }
 
     /**
-     * copyFrom - Description
+     * Copies values from given rectangle into this one.
      *
-     * @param {Rectangle} rect Description
+     * @param {Rectangle} rect The Rectangle to copy values from.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} This.
      */
 
   }, {
@@ -1180,11 +1249,11 @@ var Rectangle = function () {
     }
 
     /**
-     * copyTo - Description
+     * Copies values from this rectangle into description.
      *
-     * @param {Rectangle} rect Description
+     * @param {Rectangle} rect The destination rect.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} Given rect object.
      */
 
   }, {
@@ -1199,9 +1268,9 @@ var Rectangle = function () {
     }
 
     /**
-     * left - Description
+     * Get/Sets the leftmost point of this rectangle.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -1209,11 +1278,12 @@ var Rectangle = function () {
 
 
     /**
-     * size - Description
+     * Creates a new Rectangle instance with width and height equal to current
+     * instance.
      *
-     * @param {Vector=} outVector Description
+     * @param {Vector=} outVector Resulting rect to save values in.
      *
-     * @return {Vector} Description
+     * @return {Vector} New Rectangle instance or `outVector` if passed.
      */
     value: function size() {
       var outVector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
@@ -1223,9 +1293,9 @@ var Rectangle = function () {
     }
 
     /**
-     * zero - Description
+     * Sets all components of this Rectangle to zero.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} This.
      */
 
   }, {
@@ -1235,12 +1305,12 @@ var Rectangle = function () {
     }
 
     /**
-     * equals - Description
+     * Compares this Rectangle with a given one.
      *
-     * @param {Rectangle} rect Description
-     * @param {number=} epsilon Description
+     * @param {Rectangle} rect                  Rect to compare values with.
+     * @param {number} epsilon = Number.EPSILON
      *
-     * @return {boolean}
+     * @return {boolean} True if rects are equal.
      */
 
   }, {
@@ -1252,12 +1322,12 @@ var Rectangle = function () {
     }
 
     /**
-     * containsXY - Description
+     * Checks if a given point is inside this rectangle.
      *
-     * @param {number} x Description
-     * @param {number} y Description
+     * @param {number} x The x-component of a point.
+     * @param {number} y The y-component of a point.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if point is inside.
      */
 
   }, {
@@ -1267,11 +1337,11 @@ var Rectangle = function () {
     }
 
     /**
-     * contains - Description
+     * Checks if a given rectangle is inside this rect.
      *
-     * @param {Rectangle} rect Description
+     * @param {Rectangle} rect Rectangle to check with.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if given rectangle is inside this one.
      */
 
   }, {
@@ -1281,11 +1351,11 @@ var Rectangle = function () {
     }
 
     /**
-     * intersects - Description
+     * Checks if this rect intersects with a given rectangle.
      *
-     * @param {Rectangle} rect Description
+     * @param {Rectangle} rect The rect to check intersection with.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if intersects.
      */
 
   }, {
@@ -1295,11 +1365,11 @@ var Rectangle = function () {
     }
 
     /**
-     * union - Description
+     * Adds two rects ]
      *
-     * @param {Rectangle} toUnion Description
+     * @param {Rectangle} toUnion A rectangle object to add to this rect.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} New rectangle object that is the union.
      */
 
   }, {
@@ -1316,9 +1386,9 @@ var Rectangle = function () {
     }
 
     /**
-     * volume - Description
+     * Returns volume of this Rectangle.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -1326,14 +1396,14 @@ var Rectangle = function () {
 
 
     /**
-     * expand - Description
+     * Expands this rectangle object by given values.
      *
-     * @param {number} x      Description
-     * @param {number} y      Description
-     * @param {number} width  Description
-     * @param {number} height Description
+     * @param {number} x      X-component.
+     * @param {number} y      Y-component
+     * @param {number} width  The width.
+     * @param {number} height The height.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} This.
      */
     value: function expand(x, y, width, height) {
       if (this.volume === 0) return this.set(x, y, width, height);
@@ -1359,12 +1429,12 @@ var Rectangle = function () {
     }
 
     /**
-     * inflate - Description
+     * Increases the size of this rectangle by given x- and y- values.
      *
-     * @param {number=} [x=0] Description
-     * @param {number=} [y=0] Description
+     * @param {number=} [x=0] X-component.
+     * @param {number=} [y=0] Y-component.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} This.
      */
 
   }, {
@@ -1382,9 +1452,9 @@ var Rectangle = function () {
     }
 
     /**
-     * clone - Description
+     * Clones this Rectangle object into new one.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle} New rectangle object.
      */
 
   }, {
@@ -1404,11 +1474,11 @@ var Rectangle = function () {
 
 
     /**
-     * center - Description
+     * Returns the center point of this rectangle.
      *
-     * @param {Vector=} outVector Description
+     * @param {Vector=} outVector The out-Vector to store values in.
      *
-     * @return {Vector} Description
+     * @return {Vector} New rectangle object.
      */
     value: function center() {
       var outVector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
@@ -1418,7 +1488,7 @@ var Rectangle = function () {
     }
 
     /**
-     * scale - Scales this rectangle.
+     *  Scales this rectangle.
      *
      * @param {number} x Width multiplier.
      * @param {number} y Height multiplier.
@@ -1436,7 +1506,7 @@ var Rectangle = function () {
     }
 
     /**
-     * isEmpty - Checks rectangle has area.
+     * Checks if rectangle has area.
      *
      * @return {boolean} True if has.
      */
@@ -1453,9 +1523,9 @@ var Rectangle = function () {
     }
 
     /**
-     * left - Description
+     * @ignore
      *
-     * @param {number} left Left x position.
+     * @param {number} keft
      */
     ,
     set: function set(left) {
@@ -1463,9 +1533,9 @@ var Rectangle = function () {
     }
 
     /**
-     * right - Description
+     * Get/Sets the rightmost point of this rectangle.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -1475,9 +1545,9 @@ var Rectangle = function () {
     }
 
     /**
-     * right - Description
+     * @ignore
      *
-     * @param {number} right Right x position.
+     * @param {number} right
      */
     ,
     set: function set(right) {
@@ -1485,9 +1555,9 @@ var Rectangle = function () {
     }
 
     /**
-     * top - Description
+     * Get/Sets the topmost point of this rectangle.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -1497,9 +1567,9 @@ var Rectangle = function () {
     }
 
     /**
-     * top - Description
+     * @ignore
      *
-     * @param {number} top Top y position.
+     * @param {number} top
      */
     ,
     set: function set(top) {
@@ -1507,7 +1577,7 @@ var Rectangle = function () {
     }
 
     /**
-     * bottom - Description
+     * Get/Sets the bottommost point of this rectangle.
      *
      * @return {number} Description
      */
@@ -1519,9 +1589,9 @@ var Rectangle = function () {
     }
 
     /**
-     * bottom - Description
+     * @ignore
      *
-     * @param {number} bottom Bottom y position.
+     * @param {number} bottom
      */
     ,
     set: function set(bottom) {
@@ -1529,9 +1599,9 @@ var Rectangle = function () {
     }
 
     /**
-     * topLeft - Description
+     * Get/Sets the top left point for this rectangle.
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -1541,9 +1611,9 @@ var Rectangle = function () {
     }
 
     /**
-     * topLeft - Description
+     * @ignore
      *
-     * @param {Vector} vector Top left position.
+     * @param {Vector} vector
      */
     ,
     set: function set(vector) {
@@ -1552,7 +1622,7 @@ var Rectangle = function () {
     }
 
     /**
-     * topRight - Description
+     * Get/Sets the top right point for this rectangle.
      *
      * @return {Vector} Description
      */
@@ -1564,9 +1634,9 @@ var Rectangle = function () {
     }
 
     /**
-     * topRight - Description
+     * @ignore
      *
-     * @param {Vector} vector Top right position.
+     * @param {Vector} vector
      */
     ,
     set: function set(vector) {
@@ -1575,7 +1645,7 @@ var Rectangle = function () {
     }
 
     /**
-     * bottomRight - Description
+     * Get/Sets the top left point for this rectangle.
      *
      * @return {Vector} Description
      */
@@ -1587,9 +1657,9 @@ var Rectangle = function () {
     }
 
     /**
-     * bottomRight - Description
+     * @ignore
      *
-     * @param {Vector} vector Right bottom position.
+     * @param {Vector} vector
      */
     ,
     set: function set(vector) {
@@ -1598,7 +1668,7 @@ var Rectangle = function () {
     }
 
     /**
-     * bottomLeft - Description
+     * Get/Sets the top left point for this rectangle.
      *
      * @return {Vector} Description
      */
@@ -1610,9 +1680,9 @@ var Rectangle = function () {
     }
 
     /**
-     * bottomLeft - Description
+     * @ignore
      *
-     * @param {Vector} vector Left bottom position.
+     * @param {Vector} vector
      */
     ,
     set: function set(vector) {
@@ -1640,9 +1710,11 @@ var Rectangle = function () {
   return Rectangle;
 }();
 
-/** @type {Rectangle}
-  * @nocollapse
-  */
+/**
+ * @ignore
+ * @type {Rectangle}
+ * @nocollapse
+ */
 
 
 Rectangle.__cache = new Rectangle();
@@ -1652,8 +1724,16 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Mathematical representation of a circle.
+ *
+ * @cat geom
+ */
+
 var Circle = function () {
   /**
+   * Creates new Circle instance.
+   * 
    * @param  {number=} x = 0 Position x.
    * @param  {number=} y = 0 Position y.
    * @param  {number=} r = 1 Radius.
@@ -1665,18 +1745,27 @@ var Circle = function () {
 
     _classCallCheck(this, Circle);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.r = r;
   }
 
   /**
-   * set - Sets new circle properties
+   * Sets new circle properties
    *
    * @param {number} x Position x.
    * @param {number} y Position y.
@@ -1697,7 +1786,7 @@ var Circle = function () {
     }
 
     /**
-     * clone - Clones this circle.
+     * Clones this circle.
      *
      * @return {Circle} Created circle.
      */
@@ -1709,7 +1798,7 @@ var Circle = function () {
     }
 
     /**
-     * copyTo - Copy this properties to another circle.
+     * Copy this properties to another circle.
      *
      * @param {Circle} circle Object to copy to.
      *
@@ -1723,7 +1812,7 @@ var Circle = function () {
     }
 
     /**
-     * copyFrom - Copy another circle properties to this.
+     * Copy another circle properties to this.
      *
      * @param {Circle} circle Object to copy from.
      *
@@ -1737,7 +1826,7 @@ var Circle = function () {
     }
 
     /**
-     * equals - Shows whether circles are identical.
+     * Shows whether circles are identical.
      *
      * @param {Circle} circle Object to comparison.
      * @param {number=} epsilon Compare precision.
@@ -1754,7 +1843,7 @@ var Circle = function () {
     }
 
     /**
-     * containsXY - Shows whether point is in circle.
+     * Shows whether point is in circle.
      *
      * @param {number} x Point position x.
      * @param {number} y Point position y.
@@ -1769,7 +1858,7 @@ var Circle = function () {
     }
 
     /**
-     * contains - Shows whether point is in circle.
+     * Shows whether point is in circle.
      *
      * @param {Vector} vector Point to check.
      *
@@ -1783,7 +1872,7 @@ var Circle = function () {
     }
 
     /**
-     * left - Finds left X position.
+     * Finds left X position.
      *
      * @return {number} Left X position.
      */
@@ -1793,16 +1882,16 @@ var Circle = function () {
 
 
     /**
-     * zero - Description
+     * Resets all values to zero.
      *
-     * @return {Circle} Description
+     * @return {Circle} Returns this.
      */
     value: function zero() {
       return this.set(0, 0, 0);
     }
 
     /**
-     * intersects - Shows whether this circle intersects another.
+     * Shows whether this circle intersects another.
      *
      * @param {Circle} circle Circle to check.
      *
@@ -1817,7 +1906,7 @@ var Circle = function () {
     }
 
     /**
-     * collide - Shows whether this circle collide with another.
+     * Shows whether this circle collide with another.
      *
      * @param {Circle} circle Circle to check.
      *
@@ -1851,7 +1940,7 @@ var Circle = function () {
     }
 
     /**
-     * volume - Area of this circle.
+     * Returns area of this circle.
      *
      * @return {number} area.
      */
@@ -1861,7 +1950,7 @@ var Circle = function () {
 
 
     /**
-     * center - Represents center as vector.
+     * Represents center as vector.
      *
      * @param {Vector=} outVector Object for result.
      *
@@ -1880,7 +1969,7 @@ var Circle = function () {
     }
 
     /**
-     * right - Finds right X position.
+     * Finds right X position.
      *
      * @return {number} Right X position.
      */
@@ -1892,7 +1981,7 @@ var Circle = function () {
     }
 
     /**
-     * top - Finds top Y position.
+     * Finds top Y position.
      *
      * @return {number} Top Y position.
      */
@@ -1904,7 +1993,7 @@ var Circle = function () {
     }
 
     /**
-     * bottom - Finds bottom Y position.
+     * Finds bottom Y position.
      *
      * @return {number} Bottom Y position.
      */
@@ -1916,9 +2005,9 @@ var Circle = function () {
     }
 
     /**
-     * topPoint - Description
+     * Returns top point of this circle.
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -1928,9 +2017,9 @@ var Circle = function () {
     }
 
     /**
-     * bottomPoint - Description
+     * Returns bottom point of this circle.
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -1945,7 +2034,7 @@ var Circle = function () {
     }
 
     /**
-     * perimeter - Perimeter of this circle.
+     * Returns perimeter of this circle.
      *
      * @return {number} perimeter.
      */
@@ -1972,8 +2061,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
+
 var Line = function () {
   /**
+   * Creates new Line instance.
    * @param  {Vector} start Start point.
    * @param  {Vector} end End point.
    */
@@ -2336,9 +2432,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Polygon = function () {
+/**
+ * @cat geom
+ */
 
+var Polygon = function () {
   /**
+   * Creates new Polygon instance.
+   *
    * @param  {Array<Vector>} vertices = [] Array of vertex points;
    */
   function Polygon() {
@@ -2346,17 +2447,29 @@ var Polygon = function () {
 
     _classCallCheck(this, Polygon);
 
-    /** @type {Array<Vector>} */
-    this.vertices = vertices;
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
+    this.mVertices = vertices;
 
-    /** @type {Array<Line>} */
-    this.lines = [];
+    /**
+     * @private
+     * @type {Array<Line>}
+     */
+    this.mLines = [];
 
-    /** @type {Rectangle} */
-    this.bounds = new Rectangle();
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mBounds = new Rectangle();
 
-    /** @type {Vector} */
-    this.center = new Vector();
+    /**
+     * @private
+     * @type {Vector}
+     */
+    this.mCenter = new Vector();
 
     this.refresh();
   }
@@ -2373,7 +2486,7 @@ var Polygon = function () {
   _createClass(Polygon, [{
     key: 'set',
     value: function set(vertices) {
-      this.vertices = vertices;
+      this.mVertices = vertices;
       this.refresh();
       return this;
     }
@@ -2389,11 +2502,11 @@ var Polygon = function () {
   }, {
     key: 'copyTo',
     value: function copyTo(polygon) {
-      var len = this.vertices.length;
+      var len = this.mVertices.length;
       var vertices = [];
 
       for (var i = 0; i < len; i++) {
-        vertices.push(this.vertices[i].clone());
+        vertices.push(this.mVertices[i].clone());
       }
 
       return polygon.set(vertices);
@@ -2430,7 +2543,7 @@ var Polygon = function () {
   }, {
     key: 'clone',
     value: function clone() {
-      var thisVertices = this.vertices;
+      var thisVertices = this.mVertices;
       var len = thisVertices.length;
       var vertices = [];
 
@@ -2467,8 +2580,8 @@ var Polygon = function () {
   }, {
     key: 'contains',
     value: function contains(vector) {
-      var center = this.center;
-      var lines = this.lines;
+      var center = this.mCenter;
+      var lines = this.mLines;
       var len = lines.length;
 
       if (center.equals(vector)) {
@@ -2504,11 +2617,11 @@ var Polygon = function () {
      * @return {boolean} True if polygon collides with another polygon.
      */
     value: function collide(polygon) {
-      if (!this.bounds.intersects(polygon.bounds)) {
+      if (!this.mBounds.intersects(polygon.bounds)) {
         return false;
       }
 
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var thisLen = thisLines.length;
       var polygonLines = polygon.lines;
       var polygonLen = polygonLines.length;
@@ -2535,8 +2648,8 @@ var Polygon = function () {
   }, {
     key: 'collideCircle',
     value: function collideCircle(circle) {
-      var bounds = this.bounds;
-      var lines = this.lines;
+      var bounds = this.mBounds;
+      var lines = this.mLines;
 
       if (bounds.left > circle.right || bounds.right < circle.left || bounds.top > circle.bottom || bounds.bottom < circle.top) {
         return false;
@@ -2563,11 +2676,11 @@ var Polygon = function () {
   }, {
     key: 'collideRectangle',
     value: function collideRectangle(rectangle) {
-      if (!this.bounds.intersects(rectangle)) {
+      if (!this.mBounds.intersects(rectangle)) {
         return false;
       }
 
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var thisLen = thisLines.length;
       var rectangleLines = rectangle.lines;
       var rectangleLen = rectangleLines.length;
@@ -2594,7 +2707,7 @@ var Polygon = function () {
   }, {
     key: 'overlap',
     value: function overlap(polygon) {
-      if (this.bounds.width < polygon.bounds.width || this.bounds.height < polygon.bounds.height) {
+      if (this.mBounds.width < polygon.bounds.width || this.mBounds.height < polygon.bounds.height) {
         return false;
       }
 
@@ -2602,7 +2715,7 @@ var Polygon = function () {
         return false;
       }
 
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var thisLen = thisLines.length;
       var polygonLines = polygon.lines;
       var polygonLen = polygonLines.length;
@@ -2633,7 +2746,7 @@ var Polygon = function () {
         return false;
       }
 
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var len = thisLines.length;
 
       for (var i = 0; i < len; i++) {
@@ -2660,7 +2773,7 @@ var Polygon = function () {
         return false;
       }
 
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var thisLen = thisLines.length;
       var rectangleLines = rectangle.lines;
       var rectangleLen = rectangleLines.length;
@@ -2685,10 +2798,10 @@ var Polygon = function () {
   }, {
     key: 'refresh',
     value: function refresh() {
-      var center = this.center;
-      var bounds = this.bounds;
-      var vertices = this.vertices;
-      var lines = this.lines = [];
+      var center = this.mCenter;
+      var bounds = this.mBounds;
+      var vertices = this.mVertices;
+      var lines = this.mLines = [];
       center.set(0, 0);
 
       // bounds
@@ -2728,8 +2841,8 @@ var Polygon = function () {
   }, {
     key: 'refreshCenter',
     value: function refreshCenter() {
-      var center = this.center;
-      var vertices = this.vertices;
+      var center = this.mCenter;
+      var vertices = this.mVertices;
       var len = vertices.length;
       center.set(0, 0);
 
@@ -2751,8 +2864,8 @@ var Polygon = function () {
   }, {
     key: 'refreshBounds',
     value: function refreshBounds() {
-      var bounds = this.bounds;
-      var vertices = this.vertices;
+      var bounds = this.mBounds;
+      var vertices = this.mVertices;
       var maxX = -Number.MAX_VALUE;
       var maxY = -Number.MAX_VALUE;
       var minX = Number.MAX_VALUE;
@@ -2784,8 +2897,8 @@ var Polygon = function () {
   }, {
     key: 'refreshLines',
     value: function refreshLines() {
-      var vertices = this.vertices;
-      var lines = this.lines = [];
+      var vertices = this.mVertices;
+      var lines = this.mLines = [];
 
       for (var i = 0; i < vertices.length; i += 2) {
         lines.push(new Line(vertices[i], vertices[i + 1] || vertices[0]));
@@ -2814,8 +2927,8 @@ var Polygon = function () {
      * @return {Polygon} This polygon.
      */
     value: function setRotation(rotation) {
-      var center = this.center;
-      var vertices = this.vertices;
+      var center = this.mCenter;
+      var vertices = this.mVertices;
       var cos = Math.cos(rotation).toFixed(15);
       var sin = Math.sin(rotation).toFixed(15);
 
@@ -2838,8 +2951,8 @@ var Polygon = function () {
   }, {
     key: 'setTranslation',
     value: function setTranslation(point) {
-      var center = this.center;
-      var vertices = this.vertices;
+      var center = this.mCenter;
+      var vertices = this.mVertices;
       var len = vertices.length;
       point.subtract(center);
 
@@ -2852,17 +2965,17 @@ var Polygon = function () {
   }, {
     key: 'width',
     get: function get() {
-      return this.bounds.width;
+      return this.mBounds.width;
     }
   }, {
     key: 'height',
     get: function get() {
-      return this.bounds.height;
+      return this.mBounds.height;
     }
   }, {
     key: 'perimeter',
     get: function get() {
-      var thisLines = this.lines;
+      var thisLines = this.mLines;
       var len = thisLines.length;
       var perimeter = 0;
 
@@ -2903,23 +3016,48 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
+
 var Curve = function () {
+
+  /**
+   * Creates new Curve instance.
+   */
   function Curve() {
     _classCallCheck(this, Curve);
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPoints = [];
 
-    /** @type {Array<Vector>} */
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
     this.mLookup = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStep = 1 / 60;
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mEachT = [];
   }
 
@@ -2959,7 +3097,7 @@ var Curve = function () {
 
     /**
      * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
-     *
+     * @private
      * @param  {Array<number>} points Array of points coordinates.
      *
      * @return {Array<number>} Points coordinates array.
@@ -2976,6 +3114,8 @@ var Curve = function () {
 
     /**
      * __refreshCache - Refresh cache (lookup) for fast interpolations.
+     *
+     * @private
      *
      * @return {Curve} This curve.
      */
@@ -3002,7 +3142,7 @@ var Curve = function () {
 
     /**
      * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
-     *
+     * @private
      * @return {Curve} This curve.
      */
 
@@ -3182,6 +3322,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Utility class for logging and debugging.
+ *
+ * @cat core
+ */
+
 var Debug = function () {
   function Debug() {
     _classCallCheck(this, Debug);
@@ -3201,25 +3347,48 @@ var Debug = function () {
       if (Debug.throwOnFail) throw new Error(message);
     }
   }, {
-    key: 'info',
-    value: function info() {
+    key: 'log',
+    value: function log() {
       var _console;
 
-      (_console = console).info.apply(_console, arguments);
+      for (var _len = arguments.length, message = Array(_len), _key = 0; _key < _len; _key++) {
+        message[_key] = arguments[_key];
+      }
+
+      (_console = console).info.apply(_console, ['  %c%s', 'color: black;', 'LOG:'].concat(message));
+    }
+  }, {
+    key: 'info',
+    value: function info() {
+      var _console2;
+
+      for (var _len2 = arguments.length, message = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        message[_key2] = arguments[_key2];
+      }
+
+      (_console2 = console).info.apply(_console2, [' %c%s', 'color: #003bd2;', 'INFO:'].concat(message));
     }
   }, {
     key: 'warn',
     value: function warn() {
-      var _console2;
+      var _console3;
 
-      (_console2 = console).warn.apply(_console2, arguments);
+      for (var _len3 = arguments.length, message = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        message[_key3] = arguments[_key3];
+      }
+
+      (_console3 = console).info.apply(_console3, [' %c%s', 'color: #f67400;', 'WARN:'].concat(message));
     }
   }, {
     key: 'error',
     value: function error() {
-      var _console3;
+      var _console4;
 
-      (_console3 = console).error.apply(_console3, arguments);
+      for (var _len4 = arguments.length, message = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        message[_key4] = arguments[_key4];
+      }
+
+      (_console4 = console).info.apply(_console4, ['%c%s', 'color: #d50000;', 'ERROR:'].concat(message));
     }
   }]);
 
@@ -3235,7 +3404,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * MessageDispatcher - Description
+ * The MessageDispatcher class is the base class for all classes that posts messages.
+ *
+ * @cat core
  * @unrestricted
  */
 
@@ -3245,12 +3416,15 @@ var MessageDispatcher = function () {
 
     // object of arrays
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mListeners = null;
   }
 
   /**
-   * on - Listens to message by given name
+   * Listens to message by given name
    *
    * @param {string} name           Name of a message to listen
    * @param {Function} callback       The callback function
@@ -3307,7 +3481,7 @@ var MessageDispatcher = function () {
     }
 
     /**
-     * removeOn - Description
+     * Removes listener
      *
      * @param {string} name            Description
      * @param {Function=} [callback=null] Description
@@ -3342,7 +3516,7 @@ var MessageDispatcher = function () {
     }
 
     /**
-     * post - Sends message with given pattern and params
+     * Sends message with given pattern and params
      *
      * @param {string}  name   The name of a message
      * @param {...*} params A list of params to send
@@ -3390,6 +3564,7 @@ var MessageDispatcher = function () {
     /**
      * __sendBubbles - Description
      *
+     * @private
      * @param {*}  sender  Description
      * @param {string}  message Description
      * @param {boolean}  toTop   Description
@@ -3435,6 +3610,7 @@ var MessageDispatcher = function () {
     /**
      * __sendGlobal - Description
      *
+     * @private
      * @param {*}  sender  Description
      * @param {Message}  message Description
      * @param {GameObject=}  origin  Description
@@ -3463,6 +3639,7 @@ var MessageDispatcher = function () {
     }
 
     /**
+     * @private
      * @param {*}  sender
      * @param {Message}  message
      * @param {...*} params
@@ -3501,6 +3678,7 @@ var MessageDispatcher = function () {
     }
 
     /**
+     * @private
      * @param {*}  sender
      * @param {Message}  message
      * @param {...*} params
@@ -3534,6 +3712,7 @@ var MessageDispatcher = function () {
     }
 
     /**
+     * @private
      * @param {string} path
      * @param {string} pattern
      *
@@ -3554,6 +3733,7 @@ var MessageDispatcher = function () {
     /**
      * __parseMessage - Description
      *
+     * @private
      * @param {*} sender Description
      * @param {string} info   Description
      *
@@ -3803,6 +3983,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Provides time related methods.
+ *
+ * @cat core
+ * @static
+ */
+
 var Time = function () {
   function Time() {
     _classCallCheck(this, Time);
@@ -3852,6 +4039,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Base class for custom systems. System is used to listen scene changes.
+ *
+ * @cat core
+ * @extends MessageDispatcher
+ */
 
 var System = function (_MessageDispatcher) {
   _inherits(System, _MessageDispatcher);
@@ -3964,6 +4158,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Manages viewport, handles DOM container resize events and updates internal data.
+ *
+ * @cat core
+ * @fires resize
+ * @extends MessageDispatcher
+ */
+
 var Viewport = function (_MessageDispatcher) {
   _inherits(Viewport, _MessageDispatcher);
 
@@ -4045,7 +4247,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Component - Description
+ * A base class for custom components.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -4054,31 +4258,39 @@ var Component = function (_MessageDispatcher) {
   _inherits(Component, _MessageDispatcher);
 
   /**
-   * constructor - description
-   *
-   * @return {void}          description
+   * Creates new Component instance.
    */
   function Component() {
     _classCallCheck(this, Component);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     var _this = _possibleConstructorReturn(this, (Component.__proto__ || Object.getPrototypeOf(Component)).call(this));
 
     _this.mId = ++GameObject.ID;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     _this.gameObject = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mAdded = false;
     return _this;
   }
 
   /**
-   * onAdded - description
+   * Called when attached to GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
 
 
@@ -4087,10 +4299,11 @@ var Component = function (_MessageDispatcher) {
     value: function onAdded(gameObject) {}
 
     /**
-     * onRemoved - description
+     * Called when detached from GameObject.
      *
-     * @param  {GameObject} gameObject description
-     * @return {void}            description
+     * @protected
+     * @param  {GameObject} gameObject The owner of this component.
+     * @return {void}
      */
 
   }, {
@@ -4098,10 +4311,10 @@ var Component = function (_MessageDispatcher) {
     value: function onRemoved(gameObject) {}
 
     /**
-     * onFixedUpdate - description
-     *
-     * @param  {number} dt description
-     * @return {void}    description
+     * Called at every fixed frame update.
+     * @protected
+     * @param  {number} dt Amount of seconds since the last update.
+     * @return {void}
      */
 
   }, {
@@ -4109,10 +4322,10 @@ var Component = function (_MessageDispatcher) {
     value: function onFixedUpdate(dt) {}
 
     /**
-     * onUpdate - description
-     *
-     * @param  {number} dt description
-     * @return {void}    description
+     * Called at every engine update.
+     * @protected
+     * @param  {number} dt Amount of seconds since the last update.
+     * @return {void}
      */
 
   }, {
@@ -4120,10 +4333,10 @@ var Component = function (_MessageDispatcher) {
     value: function onUpdate(dt) {}
 
     /**
-     * onUpdate - description
-     *
-     * @param  {number} dt description
-     * @return {void}    description
+     * Called after all updates have been executed.
+     * @protected
+     * @param  {number} dt Amount of seconds since the last update.
+     * @return {void}
      */
 
   }, {
@@ -4137,6 +4350,11 @@ var Component = function (_MessageDispatcher) {
     value: function dispose() {}
 
     // TODO: finish
+
+    /**
+     * Detaches this Component from its parent GameObject.
+     * @returns {void}
+     */
 
   }, {
     key: "removeFromParent",
@@ -4168,6 +4386,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * GameObject - Base class for all black game objects.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -4175,74 +4395,134 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var GameObject = function (_MessageDispatcher) {
   _inherits(GameObject, _MessageDispatcher);
 
+  /**
+   * Creates new instance of GameObject.
+   */
   function GameObject() {
     _classCallCheck(this, GameObject);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     var _this = _possibleConstructorReturn(this, (GameObject.__proto__ || Object.getPrototypeOf(GameObject)).call(this));
 
     _this.mId = ++GameObject.ID;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     _this.mName = null;
 
-    /** @type {Array<Component>} */
+    /**
+     * @private
+     * @type {Array<Component>}
+     */
     _this.mComponents = [];
 
-    /** @type {Array<GameObject>} */
+    /**
+     * @private
+     * @type {Array<GameObject>}
+     */
     _this.mChildren = [];
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mScaleX = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mScaleY = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mPivotX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mPivotY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mRotation = 0;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     _this.mBounds = null;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     _this.mLocalTransform = new Matrix();
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     _this.mWorldTransform = new Matrix();
 
-    /** @type {DirtyFlag} */
+    /**
+     * @private
+     * @type {DirtyFlag}
+     */
     _this.mDirty = DirtyFlag.DIRTY;
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     _this.mParent = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     _this.mTag = null;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mIndex = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mAdded = false;
     return _this;
   }
 
   /**
-   * id - Unique object id.
+   * Returns unique object id.
    *
-   * @returns {number} Unique object id.
+   * @returns {number}
    */
 
 
@@ -4251,15 +4531,17 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
-     * onAdded - This method called each time object added to stage.
+     * This method called each time object added to stage.
      *
+     * @protected
      * @return {void}
      */
     value: function onAdded() {}
 
     /**
-     * onRemoved - Called when object is removed from stage.
+     * Called when object is removed from stage.
      *
+     * @protected
      * @return {void}
      */
 
@@ -4271,7 +4553,6 @@ var GameObject = function (_MessageDispatcher) {
      * add - Sugar method for adding child GameObjects or Components.
      *
      * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
-     *
      * @return {Array<GameObject|Component>} The passed GameObject or Component.
      */
 
@@ -4336,9 +4617,10 @@ var GameObject = function (_MessageDispatcher) {
 
     /**
      * @protected
-     * @param {GameObject} value Description
+     * @ignore
+     * @param {GameObject} value
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -4385,7 +4667,7 @@ var GameObject = function (_MessageDispatcher) {
      *
      * @param {boolean} [dispose=false]
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4420,7 +4702,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * getChildByName
+     * get child by name
      *
      * @param {string} name
      *
@@ -4438,7 +4720,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * removeChildAt - Removes GameObjects instance from specified index.
+     *Removes GameObjects instance from specified index.
      *
      * @param {number} index Description
      * @param {boolean} [dispose=false]
@@ -4468,7 +4750,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * getChildAt - Returns GameObject at specified index.
+     * Returns GameObject at specified index.
      *
      * @param {number} index The index of child GameObject.
      *
@@ -4482,7 +4764,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * addComponent - Adds Component instance to the end of the list,
+     * Adds Component instance to the end of the list,
      *
      * @param  {Component} component Component instance or instances.
      * @return {Component} The Component instance you pass in the instances parameter.
@@ -4506,11 +4788,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * removeComponent - Description
+     * Remove specified component
      *
-     * @param {Component} instance Description
+     * @param {Component} instance
      *
-     * @return {Component|null} Description
+     * @return {Component|null}
      */
 
   }, {
@@ -4531,7 +4813,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * getComponent
+     * get component by type
      *
      * @param {*} typeName
      *
@@ -4550,7 +4832,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * numComponenets - Returns number of component's
+     * Returns number of component's
      *
      * @return {number}
      */
@@ -4560,7 +4842,7 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
-     * getComponentAt - Retrives Component at given index.
+     * Retrives Component at given index.
      *
      * @param {number} index
      *
@@ -4573,9 +4855,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * localTransformation - Description
+     * Retun local transformation Matrix
      *
-     * @return {Matrix} Description
+     * @return {Matrix}
      */
 
   }, {
@@ -4583,11 +4865,10 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
-     * __fixedUpdate - Description
+     * @param {number} dt
+     * @private
      *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     value: function __fixedUpdate(dt) {
       this.onFixedUpdate(dt);
@@ -4604,11 +4885,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * __update - Description
+     * @param {number} dt time since the last frame
+     * @private
      *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4628,11 +4908,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * __update - Description
      *
-     * @param {number} dt Description
+     * @param {number} dt time since the last frame
+     * @private
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4652,11 +4932,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * onFixedUpdate - Description
+     * Called at every fixed frame update.
+     * @protected
+     * @param {number} dt time since the last frame
      *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4664,11 +4944,11 @@ var GameObject = function (_MessageDispatcher) {
     value: function onFixedUpdate(dt) {}
 
     /**
-     * onUpdate - Description
+     * Called at every engine update.
+     * @protected
+     * @param {number} dt time since the last frame
      *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4676,8 +4956,8 @@ var GameObject = function (_MessageDispatcher) {
     value: function onUpdate(dt) {}
 
     /**
-     * onUpdate - Description
-     *
+     * Called after all updates have been executed.
+     * @protected
      * @param {number} dt Description
      *
      * @return {void} Description
@@ -4688,14 +4968,14 @@ var GameObject = function (_MessageDispatcher) {
     value: function onPostUpdate(dt) {}
 
     /**
-     * __render - Description
+     * @param {VideoNullDriver} video
+     * @protected
+     * @ignore
+     * @param {number} time
+     * @param {number} parentAlpha
+     * @param {string} parentBlendMode
      *
-     * @param {VideoNullDriver} video           Description
-     * @param {number} time            Description
-     * @param {number} parentAlpha     Description
-     * @param {string} parentBlendMode Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4711,8 +4991,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * onRender - Description
-     *
+     * @protected
      * @param {VideoNullDriver} video Description
      * @param {number} time  Description
      *
@@ -4826,12 +5105,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * localToGlobal - Description
+     * Calculate global position of the object.
      *
-     * @param {Vector} localPoint       Description
-     * @param {Vector|null} [outVector=null] Description
+     * @param {Vector} localPoint
+     * @param {Vector|null} [outVector=null]
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -4843,12 +5122,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * globalToLocal - Description
+     * Calculate local position of the object
      *
-     * @param {Vector} globalPoint       Description
-     * @param {Vector|null} [outVector=null] Description
+     * @param {Vector} globalPoint
+     * @param {Vector|null} [outVector=null]
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -4930,7 +5209,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * @return {function(gen:*):*}
+     * @return {function(*):*}
      */
 
   }, {
@@ -4950,7 +5229,7 @@ var GameObject = function (_MessageDispatcher) {
      *
      * @param {string} message The name of the message to wait for
      *
-     * @return {function(gen:*):*} Description
+     * @return {function(*):*} Description
      */
 
   }, {
@@ -5050,7 +5329,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * worldTransformation - returns cloned Matrix object which represents object orientation in world space.
+     *  returns cloned Matrix object which represents object orientation in world space.
      *
      * @return {Matrix}
      */
@@ -5068,9 +5347,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * worldTransformationInversed - Description
+     * returns cloned and inversed Matrix object which represents object orientation in world space
      *
-     * @return {Matrix} Description
+     * @return {Matrix}
      */
 
   }, {
@@ -6700,6 +6979,7 @@ AssetManager.default = new AssetManager();
 
 /**
  * A blend mode enum.
+ * @cat drivers
  * @enum {string}
  */
 
@@ -6729,40 +7009,80 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Base class for custom video drivers. VideoDriver is used to render things
+ * onto the screen.
+ *
+ * @cat drivers
+ */
+
 var VideoNullDriver = function () {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement
+   * @param  {number} width
+   * @param  {number} height
    */
   function VideoNullDriver(containerElement, width, height) {
     _classCallCheck(this, VideoNullDriver);
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mGlobalBlendMode = 'auto';
 
-    /** @type {HTMLElement} */
-    this.mContainerElement = /** @type {HTMLElement} */containerElement;
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mContainerElement = /**
+                             * @private
+                             * @type {HTMLElement} */containerElement;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientHeight = height;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mTransform = new Matrix();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mGlobalAlpha = 1;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mMeasureElement = /** @type {HTMLElement} */document.createElement('span');
     this.mMeasureElement.style.position = 'absolute';
     this.mContainerElement.appendChild(this.mMeasureElement);
 
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
+
+  /**
+   * @protected
+   * @ignore
+   * @param {type} msg
+   * @param {type} rect
+   *
+   * @returns {type}
+   */
+
 
   _createClass(VideoNullDriver, [{
     key: '__onResize',
@@ -6775,27 +7095,44 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * start - Description
+     * Initialization function.
      *
-     * @return {void} Description
+     * @protected
+     *
+     * @return {void}
      */
 
   }, {
     key: 'start',
     value: function start() {}
+
+    /**
+     * Called before rendering anything. Usually used to clear back-buffer.
+     *
+     * @protected
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'beginFrame',
     value: function beginFrame() {}
+
+    /**
+     * Called after rendering is finished.
+     * @protected
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'endFrame',
     value: function endFrame() {}
 
     /**
-     * getTextureFromCanvas - Description
-     *
-     * @param {HTMLElement} canvas Description
-     *
-     * @return {Texture|null} Description
+     * @ignore
+     * @param {HTMLElement} canvas
+     * @return {Texture|null}
      */
 
   }, {
@@ -6805,11 +7142,12 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * setTransform - Description
+     * Sets world transformation for future use.
      *
-     * @param {Matrix} m Description
+     * @protected
+     * @param {Matrix} m An transformation matrix to store.
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -6819,9 +7157,12 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * globalAlpha - Description
+     * Gets/Sets the global alpha. Used to calculate alpha relative to parent
+     * object.
      *
-     * @return {number} Description
+     * @protected
+     *
+     * @return {number}
      */
 
   }, {
@@ -6829,20 +7170,25 @@ var VideoNullDriver = function () {
 
 
     /**
-     * drawImage - description
+     * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+     * matrix must be set prior to calling this method.
      *
-     * @param  {Texture} texture description
+     * @protected
+     *
+     * @param  {Texture} texture
      */
     value: function drawImage(texture) {}
 
     /**
-     * drawText
+     * Draws text onto back-buffer.
      *
-     * @param {string} text
-     * @param {TextInfo} style
-     * @param {Rectangle} bounds
-     * @param {number} textWidth
-     * @param {number} textHeight
+     * @protected
+     *
+     * @param {string} text Text string to draw.
+     * @param {TextInfo} style The style information.
+     * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
+     * @param {number} textWidth The width of the text.
+     * @param {number} textHeight The height of the text.
      *
      * @return {void}
      */
@@ -6850,24 +7196,53 @@ var VideoNullDriver = function () {
   }, {
     key: 'drawText',
     value: function drawText(text, style, bounds, textWidth, textHeight) {}
+
+    /**
+     * Clears back-buffer.
+     *
+     * @protected
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'clear',
     value: function clear() {}
 
     /**
-     * save - Description
+     * Used to save context if extists.
      *
+     * @ignore
+     * @protected
      * @param {GameObject|null} gameObject Used for internal binding.
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
     key: 'save',
     value: function save(gameObject) {}
+
+    /**
+     * Used to restore context if extists.
+     *
+     * @protected
+     * @ignore
+     * @returns {type}
+     */
+
   }, {
     key: 'restore',
     value: function restore() {}
+
+    /**
+     * Convers number color to hex string.
+     *
+     * @param {number} color The color to convert.
+     *
+     * @returns {string} The resuling hex string.
+     */
+
   }, {
     key: 'hexColorToString',
     value: function hexColorToString(color) {
@@ -6876,12 +7251,12 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * measureText - Description
+     * Measures text with a given style.
      *
-     * @param {string} text  Description
-     * @param {TextInfo} style Description
+     * @param {string} text    Text to measure.
+     * @param {TextInfo} style Text style to apply onto text.
      *
-     * @return {Vector} Description
+     * @return {Vector} A Vector with width and height of the text bounds.
      */
 
   }, {
@@ -6907,11 +7282,10 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * globalAlpha - Description
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -6919,9 +7293,10 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * mGlobalBlendMode - Description
+     * Gets/Sets global blending mode. Used to calculate blend mode relative to
+     * parent object.
      *
-     * @return {string} Description
+     * @return {string}
      */
 
   }, {
@@ -6931,11 +7306,10 @@ var VideoNullDriver = function () {
     }
 
     /**
-     * globalBlendMode - Description
+     * @ignore
+     * @param {string} value
      *
-     * @param {string} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -6957,18 +7331,28 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
+
 var CanvasDriver = function (_VideoNullDriver) {
   _inherits(CanvasDriver, _VideoNullDriver);
 
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   function CanvasDriver(containerElement, width, height) {
     _classCallCheck(this, CanvasDriver);
 
-    /** @type {CanvasRenderingContext2D|null} */
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D|null}
+     */
     var _this = _possibleConstructorReturn(this, (CanvasDriver.__proto__ || Object.getPrototypeOf(CanvasDriver)).call(this, containerElement, width, height));
 
     _this.mCtx = null;
@@ -6981,8 +7365,7 @@ var CanvasDriver = function (_VideoNullDriver) {
   }
 
   /**
-   * __createCanvas
-   *
+   * @private
    * @return {void}
    */
 
@@ -6998,6 +7381,15 @@ var CanvasDriver = function (_VideoNullDriver) {
       this.mCtx.canvas.width = this.mClientWidth;
       this.mCtx.canvas.height = this.mClientHeight;
     }
+
+    /**
+     * @private
+     * @param {Message} msg
+     * @param {Rectangle} rect
+     *
+     * @returns {void}
+     */
+
   }, {
     key: '__onResize',
     value: function __onResize(msg, rect) {
@@ -7008,8 +7400,7 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * setTransform
-     *
+     * @ignore
      * @param {Matrix} m
      *
      * @return {void}
@@ -7025,8 +7416,6 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * globalAlpha
-     *
      * @param {number} value
      *
      * @return {void}
@@ -7038,6 +7427,9 @@ var CanvasDriver = function (_VideoNullDriver) {
 
     /**
      * drawImage
+     *
+     * @inheritdoc
+     * @override
      *
      * @param {Texture} texture
      *
@@ -7055,7 +7447,9 @@ var CanvasDriver = function (_VideoNullDriver) {
     /**
      * drawText
      *
+     * @inheritdoc
      * @override
+     *
      * @param {string} text
      * @param {TextInfo} style
      * @param {Rectangle} bounds
@@ -7091,6 +7485,8 @@ var CanvasDriver = function (_VideoNullDriver) {
 
     /**
      * clear
+     * @inheritdoc
+     * @override
      *
      * @return {void}
      */
@@ -7102,7 +7498,8 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * beginFrame
+     * @inheritdoc
+     * @override
      *
      * @return {void}
      */
@@ -7117,7 +7514,8 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * endFrame
+     * @inheritdoc
+     * @override
      *
      * @return {void}
      */
@@ -7131,11 +7529,10 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * getTextureFromCanvas - Description
+     * @ignore
+     * @param {HTMLElement} canvas
      *
-     * @param {HTMLElement} canvas Description
-     *
-     * @return {Texture|null} Description
+     * @return {Texture|null}
      */
 
   }, {
@@ -7178,7 +7575,8 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * globalBlendMode
+     * @inheritdoc
+     * @override
      *
      * @param {string} blendMode
      *
@@ -7207,13 +7605,20 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * An video driver that draw everything into DOM elements itself.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
+
 var DOMDriver = function (_VideoNullDriver) {
   _inherits(DOMDriver, _VideoNullDriver);
 
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   function DOMDriver(containerElement, width, height) {
     _classCallCheck(this, DOMDriver);
@@ -7239,8 +7644,7 @@ var DOMDriver = function (_VideoNullDriver) {
   }
 
   /**
-   * save - Description
-   *
+   * @inheritdoc
    * @override
    * @param {GameObject|null} gameObject Used for internal binding.
    *
@@ -7255,7 +7659,7 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * __initCSS - description
+     * @private
      *
      * @return {void}  description
      */
@@ -7289,7 +7693,8 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * beginFrame - description
+     * @inheritdoc
+     * @override
      *
      * @return {void}  description
      */
@@ -7301,7 +7706,8 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * endFrame - description
+     * @inheritdoc
+     * @override
      *
      * @return {void}  description
      */
@@ -7323,11 +7729,10 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * getTextureFromCanvas - Description
+     * @ignore
+     * @param {HTMLElement} canvas
      *
-     * @param {HTMLElement} canvas Description
-     *
-     * @return {Texture|null} Description
+     * @return {Texture|null}
      */
 
   }, {
@@ -7337,10 +7742,11 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * drawImage - description
+     * @override
+     * @inheritdoc
      *
-     * @param  {Texture} texture description
-     * @return {void}         description
+     * @param  {Texture} texture
+     * @return {void}
      */
 
   }, {
@@ -7362,16 +7768,16 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * drawText - description
-     *
+     * @inheritdoc
      * @override
+     *
      * @param {string} text
      * @param {TextInfo} style
      * @param {Rectangle} bounds
      * @param {number} textWidth
      * @param {number} textHeight
      *
-     * @return {void}                      description
+     * @return {void}
      */
 
   }, {
@@ -7385,11 +7791,10 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * __popElement - Description
+     * @private
+     * @param {string} className
      *
-     * @param {string} className Description
-     *
-     * @return {Element} Description
+     * @return {Element}
      */
 
   }, {
@@ -7408,11 +7813,10 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * __updateElementCommon - Description
+     * @private
+     * @param {Element} el
      *
-     * @param {Element} el Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -7449,8 +7853,7 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * __updateImageElement - description
-     *
+     * @private
      * @param  {Element} el      description
      * @param  {Texture} texture description
      * @return {void}         description
@@ -7481,14 +7884,13 @@ var DOMDriver = function (_VideoNullDriver) {
     }
 
     /**
-     * __updateTextElement - Description
+     * @private
+     * @param {HTMLElement} el
+     * @param {string} text
+     * @param {TextInfo} style
+     * @param {Rectangle} bounds
      *
-     * @param {HTMLElement} el     Description
-     * @param {string} text   Description
-     * @param {TextInfo} style  Description
-     * @param {Rectangle} bounds Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -7539,34 +7941,49 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+ *
+ * @cat display
+ * @extends GameObject
+ */
+
 var DisplayObject = function (_GameObject) {
   _inherits(DisplayObject, _GameObject);
 
   function DisplayObject() {
     _classCallCheck(this, DisplayObject);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     var _this = _possibleConstructorReturn(this, (DisplayObject.__proto__ || Object.getPrototypeOf(DisplayObject)).call(this));
 
     _this.mAlpha = 1;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.blendMode = BlendMode.AUTO;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mVisible = true;
     return _this;
   }
 
   /**
-   * __render - Description
+   * @ignore
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
 
 
@@ -7585,9 +8002,9 @@ var DisplayObject = function (_GameObject) {
     }
 
     /**
-     * alpha - Description
+     * Gets/Sets the opacity of the object.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -7597,11 +8014,9 @@ var DisplayObject = function (_GameObject) {
     }
 
     /**
-     * alpha - Description
-     *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @ignore
+     * @param {number} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -7609,9 +8024,9 @@ var DisplayObject = function (_GameObject) {
     }
 
     /**
-     * visible - Description
+     * Gets/Sets visibility of the object.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -7621,11 +8036,9 @@ var DisplayObject = function (_GameObject) {
     }
 
     /**
-     * visible - Description
-     *
-     * @param {boolean} value Description
-     *
-     * @return {void} Description
+     * @ignore
+     * @param {boolean} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -7639,16 +8052,22 @@ var DisplayObject = function (_GameObject) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Holds TextField's style details.
+ *
+ * @cat display.text
+ */
+
 var TextInfo =
 /**
- * @param  {string=} name = 'sans-serif' description
- * @param  {number=} color = '0x000000' description
- * @param  {number=} size = '14' description
- * @param  {TextInfo.FontStyle=} style = 'normal' description
- * @param  {TextInfo.FontWeight=} weight = '400' description
- * @param  {TextInfo.FontAlign=} align = 'left' description
- * @param  {number=} strokeThickness = '0' description
- * @param  {number=} strokeColor = '0xffffff' description
+ * @param  {string=} name Font name
+ * @param  {number=} color = Text color as hexadecimal number eg 0xff0000 (total red)
+ * @param  {number=} size = Text size
+ * @param  {TextInfo.FontStyle=} style = Text style eg italic
+ * @param  {TextInfo.FontWeight=} weight = font thick. The value is set from 100 to 900 in increments of 100.
+ * @param  {TextInfo.FontAlign=} align = horizontal alignment left | center | right
+ * @param  {number=} strokeThickness = thickness of the stroke. 0 means that no stroke
+ * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
  */
 function TextInfo() {
     var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
@@ -7725,6 +8144,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Sprite is used to render Texture onto screen.
+ *
+ * @cat display
+ * @extends DisplayObject
+ */
 
 var Sprite = function (_DisplayObject) {
   _inherits(Sprite, _DisplayObject);
@@ -7859,14 +8285,21 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * This class is used to create display text.
+ *
+ * @cat display.text
+ * @extends DisplayObject
+ */
+
 var TextField = function (_DisplayObject) {
   _inherits(TextField, _DisplayObject);
 
   /**
-   * @param  {string=} text = ''            description
-   * @param  {number=} size = 14        description
-   * @param  {string=} name = "sans-serif" description
-   * @param {TextInfo=} style
+   * @param  {string=} text Text to be displayed inside this text field
+   * @param  {number=} size text size
+   * @param  {string=} name font name
+   * @param {TextInfo=} style TextInfo object
    */
   function TextField() {
     var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
@@ -7876,39 +8309,72 @@ var TextField = function (_DisplayObject) {
 
     _classCallCheck(this, TextField);
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     var _this = _possibleConstructorReturn(this, (TextField.__proto__ || Object.getPrototypeOf(TextField)).call(this));
 
     _this.mText = text;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mNeedInvalidate = true;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     _this.mCacheBounds = new Rectangle();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mFieldWidth = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mFieldHeight = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mTextWidth = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mTextHeight = 0;
 
-    /** @type {TextInfo} */
+    /**
+     * @private
+     * @type {TextInfo}
+     */
     _this.mStyle = style || new TextInfo();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.mStyle.name = name || style.name;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mStyle.size = size || style.size;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mAutoSize = true;
 
     _this.__validate(_this.mCacheBounds);
@@ -7916,14 +8382,15 @@ var TextField = function (_DisplayObject) {
   }
 
   /**
-   * __render - Description
+   * @ignore
    * @override
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
+   * @protected
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @return {void} Description
+   * @return {void}
    */
 
 
@@ -7947,12 +8414,12 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * onGetLocalBounds - Description
+     * @protected
+     * @override
+     * @ignore
+     * @param {Rectangle=} outRect
      *
-     * @protected @override
-     * @param {Rectangle=} outRect Description
-     *
-     * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+     * @return {Rectangle}
      */
 
   }, {
@@ -7965,12 +8432,11 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * __validate - Description
-     *
      * @private
-     * @param {Rectangle} outRect Description
+     * @ignore
+     * @param {Rectangle} outRect
      *
-     * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+     * @return {Rectangle}
      */
 
   }, {
@@ -7994,10 +8460,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * size - Description
+     * Get/Set text size.
      *
-     * @public
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -8007,12 +8472,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * size - Description
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8021,10 +8484,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * font - Description
+     * Get/Set text font.
      *
-     * @public
-     * @return {string} Description
+     * @return {string}
      */
 
   }, {
@@ -8032,15 +8494,13 @@ var TextField = function (_DisplayObject) {
     get: function get() {
       return this.mStyle.name;
     }
-    /**
-     * font - Description
-     *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
-     */
 
+    /**
+     * @param {string} value
+     * @ignore
+     *
+     * @return {void}
+     */
     ,
     set: function set(value) {
       this.mStyle.name = value;
@@ -8048,10 +8508,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * color - Description
+     * Specifies text color as hexadecimal number eg 0xff0000 (total red)
      *
-     * @public
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -8061,12 +8520,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * color - Description
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8074,10 +8531,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * style - Description
+     * Get/Set text style.
      *
-     * @public
-     * @return {TextInfo.FontStyle} Description
+     * @return {TextInfo.FontStyle}
      */
 
   }, {
@@ -8087,12 +8543,11 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * style - Description
      *
-     * @param {TextInfo.FontStyle} value Description
-     * @public
+     * @param {TextInfo.FontStyle} value
+     * @ignore
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8101,10 +8556,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * weight - Description
+     * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
      *
-     * @public
-     * @return {TextInfo.FontWeight} Description
+     * @return {TextInfo.FontWeight}
      */
 
   }, {
@@ -8114,12 +8568,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * weight - Description
+     * @param {TextInfo.FontWeight} value
+     * @ignore
      *
-     * @param {TextInfo.FontWeight} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8128,10 +8580,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * align - Description
+     * Specifies the horizontal alignment left | center | right
      *
-     * @public
-     * @return {TextInfo.FontAlign} Description
+     * @return {TextInfo.FontAlign}
      */
 
   }, {
@@ -8141,12 +8592,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * align - Description
+     * @param {TextInfo.FontAlign} value
+     * @ignore
      *
-     * @param {TextInfo.FontAlign} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8154,10 +8603,8 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * strokeColor - Description
-     *
-     * @public
-     * @return {number} Description
+     * Specifies stroke color as hexadecimal number eg 0xff0000 (total red)
+     * @return {number}
      */
 
   }, {
@@ -8167,12 +8614,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * strokeColor - Description
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8180,10 +8625,8 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * strokeThickness - Description
-     *
-     * @public
-     * @return {number} Description
+     * Specifies the thickness of the stroke. 0 means that no stroke
+     * @return {number}
      */
 
   }, {
@@ -8192,14 +8635,11 @@ var TextField = function (_DisplayObject) {
       return this.mStyle.strokeThickness;
     }
 
-    //noinspection JSAnnotator
     /**
-     * strokeThickness - Description
-     * @public
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8210,10 +8650,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * fieldWidth - Description
+     * Specifies the width of the text field. If autoSize set as false
      *
-     * @public
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -8223,12 +8662,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * fieldWidth - Description
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8238,11 +8675,9 @@ var TextField = function (_DisplayObject) {
       this.mNeedInvalidate = true;
     }
 
-    /**
-     * fieldHeight - Description
+    /** Specifies the height of the text field, if autoSize set as false
      *
-     * @public
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -8252,12 +8687,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * fieldHeight - Description
+     * @param {number} value
+     * @ignore
      *
-     * @param {number} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8267,10 +8700,8 @@ var TextField = function (_DisplayObject) {
       this.mNeedInvalidate = true;
     }
 
-    /**
-     * @public text - Description
-     *
-     * @return {string} Description
+    /**Text to be displayed inside this text field.
+       * @return {string}
      */
 
   }, {
@@ -8280,12 +8711,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * text - Description
+     * @param {string} value
+     * @ignore
      *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8296,9 +8725,9 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * autoSize - Description
+     * Determines whether the size of the field will adjust to the size of the text. Note: if this set as true, you need to specify fieldHeight and fieldWidth manually
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -8308,11 +8737,10 @@ var TextField = function (_DisplayObject) {
     }
 
     /**
-     * autoSize - Description
+     * @param {boolean} value
+     * @ignore
      *
-     * @param {boolean} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -8685,50 +9113,63 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * A base class for particle system actions. Every frame each action executed over each particle.
+ * 
+ * @category particles.actions
+ * @abstract
+ * @class
+ */
+
 var Action = function () {
+  /**
+   * Creates new Action instance.
+   */
   function Action() {
     _classCallCheck(this, Action);
   }
 
+  /**
+   * Called for every particle before any update method called.
+   *
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
+   *
+   * @return {void} Description
+   */
+
+
   _createClass(Action, [{
     key: "preUpdate",
-
-
-    /**
-     * preUpdate - Description
-     *
-     * @param {number} dt Description
-     * @param {number} t  Description
-     *
-     * @return {void} Description
-     */
-    value: function preUpdate(dt, t) {}
+    value: function preUpdate(dt) {}
 
     /**
-     * @param {Emitter} emmiter
-     * @param {Particle} particle
-     * @param {number} dt
-     * @param {number} t
+     * Called for every particle.
+     *
+     * @protected
+     * @param {Emitter} emmiter   The owner of the particle.
+     * @param {Particle} particle The particle to execute update on.
+     * @param {number} dt         Amount of seconds since the last update.
      *
      * @return {void}
      */
 
   }, {
     key: "update",
-    value: function update(emmiter, particle, dt, t) {}
+    value: function update(emmiter, particle, dt) {}
 
     /**
-     * postUpdate
+     * Called after all updates have been executed.
      *
-     * @param {number} dt
-     * @param {number} t
+     * @protected
+     * @param {number} dt Amount of seconds since the last update.
      *
      * @return {void}
      */
 
   }, {
     key: "postUpdate",
-    value: function postUpdate(dt, t) {}
+    value: function postUpdate(dt) {}
   }]);
 
   return Action;
@@ -8744,22 +9185,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
+ * Adds acceleration to particles along given direction.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 var Acceleration = function (_Action) {
   _inherits(Acceleration, _Action);
 
+  /**
+   * Creates new Acceleration instance.
+   *
+   * @param {VectorScatter} vectorScatter An VectorScatter which defines acceleration direction.
+   */
   function Acceleration(vectorScatter) {
     _classCallCheck(this, Acceleration);
 
+    /**
+     * @private
+     * @type {VectorScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Acceleration.__proto__ || Object.getPrototypeOf(Acceleration)).call(this));
 
-    _this.scatter = vectorScatter;
+    _this.mScatter = vectorScatter;
     return _this;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -8773,10 +9228,22 @@ var Acceleration = function (_Action) {
   _createClass(Acceleration, [{
     key: "update",
     value: function update(emmiter, particle, dt, t) {
-      var v = this.scatter.getValue();
+      var v = this.mScatter.getValue();
 
       particle.ax += v.x;
       particle.ay += v.y;
+    }
+
+    /**
+     * Returns VectorScatter object that defines acceleration direction.
+     * @member {VectorScatter}
+     * @return {VectorScatter}
+     */
+
+  }, {
+    key: "scatter",
+    get: function get() {
+      return this.mScatter;
     }
   }]);
 
@@ -8793,22 +9260,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
+ * Sets particle's alpha value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 var AlphaOverLife = function (_Action) {
   _inherits(AlphaOverLife, _Action);
 
+  /**
+   * Creates new AlphaOverLife instance.
+   *
+   * @param {FloatScatter} floatScatter A starting and ending values of alpha property.
+   */
   function AlphaOverLife(floatScatter) {
     _classCallCheck(this, AlphaOverLife);
 
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (AlphaOverLife.__proto__ || Object.getPrototypeOf(AlphaOverLife)).call(this));
 
-    _this.scatter = floatScatter;
+    _this.mScatter = floatScatter;
     return _this;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -8822,7 +9303,19 @@ var AlphaOverLife = function (_Action) {
   _createClass(AlphaOverLife, [{
     key: "update",
     value: function update(emmiter, particle, dt, t) {
-      particle.alpha = this.scatter.getValueAt(particle.energy);
+      particle.alpha = this.mScatter.getValueAt(particle.energy);
+    }
+
+    /**
+     * Returns FloatScatter object that defines alpha value over particle life.
+     * @member {FloatScatter}
+     * @return {FloatScatter}
+     */
+
+  }, {
+    key: "scatter",
+    get: function get() {
+      return this.mScatter;
     }
   }]);
 
@@ -8839,7 +9332,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
+ * Sets particle's scale value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 var ScaleOverLife = function (_Action) {
@@ -8848,13 +9345,18 @@ var ScaleOverLife = function (_Action) {
   function ScaleOverLife(floatScatter) {
     _classCallCheck(this, ScaleOverLife);
 
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (ScaleOverLife.__proto__ || Object.getPrototypeOf(ScaleOverLife)).call(this));
 
-    _this.scatter = floatScatter;
+    _this.mScatter = floatScatter;
     return _this;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -8868,7 +9370,19 @@ var ScaleOverLife = function (_Action) {
   _createClass(ScaleOverLife, [{
     key: "update",
     value: function update(emmiter, particle, dt, t) {
-      particle.scale = this.scatter.getValueAt(particle.energy);
+      particle.scale = this.mScatter.getValueAt(particle.energy);
+    }
+
+    /**
+     * Returns FloatScatter object that defines scale value over particle life.
+     * @member {FloatScatter}
+     * @return {FloatScatter}
+     */
+
+  }, {
+    key: "scatter",
+    get: function get() {
+      return this.mScatter;
     }
   }]);
 
@@ -8885,7 +9399,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
+ * Sets particle's rotation value according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 var RotationOverLife = function (_Action) {
@@ -8894,13 +9412,18 @@ var RotationOverLife = function (_Action) {
   function RotationOverLife(floatScatter) {
     _classCallCheck(this, RotationOverLife);
 
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (RotationOverLife.__proto__ || Object.getPrototypeOf(RotationOverLife)).call(this));
 
-    _this.scatter = floatScatter;
+    _this.mScatter = floatScatter;
     return _this;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -8914,7 +9437,19 @@ var RotationOverLife = function (_Action) {
   _createClass(RotationOverLife, [{
     key: "update",
     value: function update(emmiter, particle, dt, t) {
-      particle.r = this.scatter.getValueAt(particle.energy);
+      particle.r = this.mScatter.getValueAt(particle.energy);
+    }
+
+    /**
+     * Returns FloatScatter object that defines rotation value over particle life.
+     * @member {FloatScatter}
+     * @return {FloatScatter}
+     */
+
+  }, {
+    key: "scatter",
+    get: function get() {
+      return this.mScatter;
     }
   }]);
 
@@ -8931,7 +9466,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
+ * Sets particle's texture according to its energy value.
+ * 
+ * @category particles.actions
  * @extends Action
+ * @class
  */
 
 var TextureOverLife = function (_Action) {
@@ -8940,13 +9479,18 @@ var TextureOverLife = function (_Action) {
   function TextureOverLife(floatScatter) {
     _classCallCheck(this, TextureOverLife);
 
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (TextureOverLife.__proto__ || Object.getPrototypeOf(TextureOverLife)).call(this));
 
-    _this.scatter = floatScatter;
+    _this.mScatter = floatScatter;
     return _this;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -8960,7 +9504,19 @@ var TextureOverLife = function (_Action) {
   _createClass(TextureOverLife, [{
     key: "update",
     value: function update(emmiter, particle, dt, t) {
-      particle.textureIndex = ~~this.scatter.getValueAt(particle.energy);
+      particle.textureIndex = ~~this.mScatter.getValueAt(particle.energy);
+    }
+
+    /**
+     * Returns FloatScatter object that defines texture value over particle life.
+     * @member {FloatScatter}
+     * @return {FloatScatter}
+     */
+
+  }, {
+    key: "scatter",
+    get: function get() {
+      return this.mScatter;
     }
   }]);
 
@@ -8971,6 +9527,13 @@ var TextureOverLife = function (_Action) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Base class for particle's initializators. Each initializer updates particle data once at start, eg when particle added to scene.
+ *
+ * @category particles.initializers
+ * @class
+ */
 
 var Initializer = function () {
   function Initializer() {
@@ -8999,6 +9562,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Sets particle's life.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 var Life = function (_Initializer) {
   _inherits(Life, _Initializer);
@@ -9047,6 +9618,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Sets particle's mass.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
+
 var Mass = function (_Initializer) {
   _inherits(Mass, _Initializer);
 
@@ -9094,6 +9673,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Sets particle's starting scale.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
+
 var Scale = function (_Initializer) {
   _inherits(Scale, _Initializer);
 
@@ -9140,6 +9727,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Sets particle's starting velocity.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 var Velocity = function (_Initializer) {
   _inherits(Velocity, _Initializer);
@@ -9191,6 +9786,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Sets particle's position.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
+
 var Position = function (_Initializer) {
   _inherits(Position, _Initializer);
 
@@ -9241,6 +9844,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Sets particle's default rotation.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
+
 var Rotation = function (_Initializer) {
   _inherits(Rotation, _Initializer);
 
@@ -9287,6 +9898,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Sets particle's texture.
+ *
+ * @category particles.initializers
+ * @extends Initializer
+ * @class
+ */
 
 var RandomTexture = function (_Initializer) {
   _inherits(RandomTexture, _Initializer);
@@ -9700,10 +10319,8 @@ var Emitter = function (_DisplayObject) {
       var alength = this.mActions.length;
       var plength = this.mParticles.length;
 
-      var t = Black.instance.uptime;
-
       for (var _i = 0; _i < alength; _i++) {
-        this.mActions[_i].preUpdate(dt, t);
+        this.mActions[_i].preUpdate(dt);
       }var particle = void 0;
 
       var i = this.mParticles.length;
@@ -9711,7 +10328,7 @@ var Emitter = function (_DisplayObject) {
         particle = this.mParticles[i];
 
         for (var k = 0; k < alength; k++) {
-          this.mActions[k].update(this, particle, dt, t);
+          this.mActions[k].update(this, particle, dt);
         }particle.update(dt);
 
         if (particle.life === 0) {
@@ -9721,7 +10338,7 @@ var Emitter = function (_DisplayObject) {
       }
 
       for (var j = 0; j < alength; j++) {
-        this.mActions[j].postUpdate(dt, t);
+        this.mActions[j].postUpdate(dt);
       }
     }
   }, {
@@ -10647,13 +11264,23 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Basic FPS component. Shows frame rate.
+ *
+ * @cat components
+ * @extends Component
+ */
+
 var FPSComponent = function (_Component) {
   _inherits(FPSComponent, _Component);
 
   function FPSComponent() {
     _classCallCheck(this, FPSComponent);
 
-    /** @type {TextField} */
+    /**
+     * @private
+     * @type {TextField}
+     */
     var _this = _possibleConstructorReturn(this, (FPSComponent.__proto__ || Object.getPrototypeOf(FPSComponent)).call(this));
 
     _this.txtFPS = null;
@@ -10690,109 +11317,126 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ *
+ * @cat components
+ * @extends Component
+ */
+
 var MRComponent = function (_Component) {
-  _inherits(MRComponent, _Component);
-
-  /**
-   * constructor - Description
-   *
-   * @param {number} [width=960]  Description
-   * @param {number} [height=640] Description
-   */
-  function MRComponent() {
-    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
-
-    _classCallCheck(this, MRComponent);
-
-    /** @type {number} */
-    var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
-
-    _this.mWidth = width;
-
-    /** @type {number} */
-    _this.mHeight = height;
-
-    /** @type {number} */
-    _this.mScale = 0;
-
-    /** @type {number} */
-    _this.mInvScale = 0;
-
-    /** @type {number} */
-    _this.mAspect = 0;
-
-    Black.instance.viewport.on('resize', _this.__onResize, _this);
-    return _this;
-  }
-
-  _createClass(MRComponent, [{
-    key: '__onResize',
-    value: function __onResize(msg, rect) {
-      this.setSize(this.mWidth, this.mHeight);
-    }
+    _inherits(MRComponent, _Component);
 
     /**
-     * setSize - description
+     * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+     * Simplified version of scale manager.
      *
-     * @param  {number} width = 960  description
-     * @param  {number} height = 640 description
-     * @return {void}              description
+     * @param {number} [width=960]  The width.
+     * @param {number} [height=640] The height.
      */
+    function MRComponent() {
+        var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+        var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
 
-  }, {
-    key: 'setSize',
-    value: function setSize() {
-      var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-      var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
+        _classCallCheck(this, MRComponent);
 
-      this.mWidth = width;
-      this.mHeight = height;
+        /**
+         * @private
+         * @type {number}
+         */
+        var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
 
-      this.updateLayout();
+        _this.mWidth = width;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mHeight = height;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mScale = 0;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mInvScale = 0;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mAspect = 0;
+
+        Black.instance.viewport.on('resize', _this.__onResize, _this);
+        return _this;
     }
 
-    /**
-     * updateLayout - description
-     *
-     * @return {void}  description
-     */
+    _createClass(MRComponent, [{
+        key: '__onResize',
+        value: function __onResize(msg, rect) {
+            this.setSize(this.mWidth, this.mHeight);
+        }
 
-  }, {
-    key: 'updateLayout',
-    value: function updateLayout() {
-      if (!this.gameObject) return;
+        /**
+         * Sets size of the latout.
+         *
+         * @param  {number} width = 960  The width.
+         * @param  {number} height = 640 The height.
+         * @return {void}
+         */
 
-      /** @type {Rectangle} */
-      var size = Black.instance.viewport.size;
+    }, {
+        key: 'setSize',
+        value: function setSize() {
+            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
 
-      /** @type {number} */
-      var scaleX = size.width / this.mWidth;
+            this.mWidth = width;
+            this.mHeight = height;
 
-      /** @type {number} */
-      var scaleY = size.height / this.mHeight;
+            this.updateLayout();
+        }
 
-      this.mScale = Math.min(scaleX, scaleY);
-      this.mInvScale = 1 / this.mScale;
+        /**
+         * Updates layout to match specified settings.
+         *
+         * @return {void}
+         */
 
-      this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-      this.gameObject.x = size.width / 2 - this.mWidth / 2 * this.mScale;
-      this.gameObject.y = size.height / 2 - this.mHeight / 2 * this.mScale;
-    }
-  }, {
-    key: 'onAdded',
-    value: function onAdded() {
-      this.updateLayout();
-    }
-  }, {
-    key: 'onRemoved',
-    value: function onRemoved() {}
-  }, {
-    key: 'onUpdate',
-    value: function onUpdate() {}
-  }]);
+    }, {
+        key: 'updateLayout',
+        value: function updateLayout() {
+            if (!this.gameObject) return;
 
-  return MRComponent;
+            /** @type {Rectangle} */
+            var size = Black.instance.viewport.size;
+
+            /** @type {number} */
+            var scaleX = size.width / this.mWidth;
+
+            /** @type {number} */
+            var scaleY = size.height / this.mHeight;
+
+            this.mScale = Math.min(scaleX, scaleY);
+            this.mInvScale = 1 / this.mScale;
+
+            this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
+            this.gameObject.x = size.width / 2 - this.mWidth / 2 * this.mScale;
+            this.gameObject.y = size.height / 2 - this.mHeight / 2 * this.mScale;
+        }
+    }, {
+        key: 'onAdded',
+        value: function onAdded() {
+            this.updateLayout();
+        }
+    }]);
+
+    return MRComponent;
 }(Component);
 "use strict";
 
@@ -10800,32 +11444,36 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * A static class with many static easing functions.
+ *
+ * @cat animation
+ * @static
+ */
+
 var Ease = function () {
   function Ease() {
     _classCallCheck(this, Ease);
   }
 
-  /**
-   * linear - Description
-   *
-   * @param {number} k Description
-   *
-   * @return {number} Description
-   */
-
-
   _createClass(Ease, null, [{
     key: "linear",
+
+    /**
+     * linear
+     * @param {number} k
+     * @return {number}
+     */
     value: function linear(k) {
       return k;
     }
 
     /**
-     * quadraticIn - Description
+     * quadraticIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10835,11 +11483,11 @@ var Ease = function () {
     }
 
     /**
-     * quadraticOut - Description
+     * quadraticOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10849,11 +11497,11 @@ var Ease = function () {
     }
 
     /**
-     * quadraticInOut - Description
+     * quadraticInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10865,11 +11513,11 @@ var Ease = function () {
     }
 
     /**
-     * cubicIn - Description
+     * cubicIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10879,11 +11527,11 @@ var Ease = function () {
     }
 
     /**
-     * cubicOut - Description
+     * cubicOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10893,11 +11541,11 @@ var Ease = function () {
     }
 
     /**
-     * cubicInOut - Description
+     * cubicInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10909,11 +11557,11 @@ var Ease = function () {
     }
 
     /**
-     * quarticIn - Description
+     * quarticIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10923,11 +11571,11 @@ var Ease = function () {
     }
 
     /**
-     * quarticOut - Description
+     * quarticOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10937,11 +11585,11 @@ var Ease = function () {
     }
 
     /**
-     * quarticInOut - Description
+     * quarticInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10953,11 +11601,11 @@ var Ease = function () {
     }
 
     /**
-     * quinticIn - Description
+     * quinticIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10967,11 +11615,11 @@ var Ease = function () {
     }
 
     /**
-     * quinticOut - Description
+     * quinticOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10981,11 +11629,11 @@ var Ease = function () {
     }
 
     /**
-     * quinticInOut - Description
+     * quinticInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -10997,11 +11645,11 @@ var Ease = function () {
     }
 
     /**
-     * sinusoidalIn - Description
+     * sinusoidalIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11011,11 +11659,11 @@ var Ease = function () {
     }
 
     /**
-     * sinusoidalOut - Description
+     * sinusoidalOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11025,11 +11673,11 @@ var Ease = function () {
     }
 
     /**
-     * sinusoidalInOut - Description
+     * sinusoidalInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11039,11 +11687,11 @@ var Ease = function () {
     }
 
     /**
-     * exponentialIn - Description
+     * exponentialIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11053,11 +11701,11 @@ var Ease = function () {
     }
 
     /**
-     * exponentialOut - Description
+     * exponentialOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11067,11 +11715,11 @@ var Ease = function () {
     }
 
     /**
-     * exponentialInOut - Description
+     * exponentialInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11087,11 +11735,11 @@ var Ease = function () {
     }
 
     /**
-     * circularIn - Description
+     * circularIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11101,11 +11749,11 @@ var Ease = function () {
     }
 
     /**
-     * circularOut - Description
+     * circularOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11115,11 +11763,11 @@ var Ease = function () {
     }
 
     /**
-     * circularInOut - Description
+     * circularInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11131,11 +11779,11 @@ var Ease = function () {
     }
 
     /**
-     * elasticIn - Description
+     * elasticIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11149,11 +11797,11 @@ var Ease = function () {
     }
 
     /**
-     * elasticOut - Description
+     * elasticOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11167,11 +11815,11 @@ var Ease = function () {
     }
 
     /**
-     * elasticInOut - Description
+     * elasticInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11189,11 +11837,11 @@ var Ease = function () {
     }
 
     /**
-     * backIn - Description
+     * backIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11204,11 +11852,11 @@ var Ease = function () {
     }
 
     /**
-     * backOut - Description
+     * backOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11219,11 +11867,11 @@ var Ease = function () {
     }
 
     /**
-     * backInOut - Description
+     * backInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11237,11 +11885,11 @@ var Ease = function () {
     }
 
     /**
-     * bounceIn - Description
+     * bounceIn
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11251,11 +11899,11 @@ var Ease = function () {
     }
 
     /**
-     * bounceOut - Description
+     * bounceOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11267,11 +11915,11 @@ var Ease = function () {
     }
 
     /**
-     * bounceInOut - Description
+     * bounceInOut
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11283,11 +11931,11 @@ var Ease = function () {
     }
 
     /**
-     * smoothstep - Description
+     * smoothstep
      *
-     * @param {number} k Description
+     * @param {number} k
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11305,19 +11953,27 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Interpolation functions.
+ *
+ * @cat animation
+ * @static
+ */
+
 var Interpolation = function () {
+  /**
+   * Singleton.
+   */
   function Interpolation() {
     _classCallCheck(this, Interpolation);
   }
 
   /**
-   * linear - Description
+   * linear
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
 
 
@@ -11344,13 +12000,11 @@ var Interpolation = function () {
     }
 
     /**
-     * bezier - Description
+     * bezier
      *
-     * @param {Array} v - The input array of values to interpolate between.
-     *
-     * @param {number} k - The percentage of interpolation, between 0 and 1.
-     *
-     * @return {number} The interpolated value
+     * @param {Array}  v The input array of values to interpolate between.
+     * @param {number} k The percentage of interpolation, between 0 and 1.
+     * @return {number}  The interpolated value
      */
 
   }, {
@@ -11373,13 +12027,11 @@ var Interpolation = function () {
     }
 
     /**
-     * catmullRom - Description
+     * catmullRom
      *
-     * @param {Array} v - The input array of values to interpolate between.
-     *
-     * @param {number} k - The percentage of interpolation, between 0 and 1.
-     *
-     * @return {number} The interpolated value
+     * @param {Array}  v The input array of values to interpolate between.
+     * @param {number} k The percentage of interpolation, between 0 and 1.
+     * @return {number}  The interpolated value
      */
 
   }, {
@@ -11421,8 +12073,7 @@ var Interpolation = function () {
 }();
 
 /**
- * __factorial
- *
+ * @private
  * @param {number} n
  *
  * @return {number}
@@ -11451,6 +12102,8 @@ Interpolation.__factorial = function () {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -11458,7 +12111,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Tween
+ * A tweening component.
+ *
+ * @cat animation
  * @unrestricted
  * @extends Component
  */
@@ -11467,10 +12122,10 @@ var Tween = function (_Component) {
   _inherits(Tween, _Component);
 
   /**
-   * constructor - Description
-   * @param {Object}   values            Description
-   * @param {number} [duration=0.25]   Description
-   * @param {Object|null}   [properties=null] Description
+   * Creates new instance of Tween Component.
+   * @param {Object}        values            The values to tween.
+   * @param {number}        [duration=0.25]   Duraction in seconds.
+   * @param {Object|null}   [properties=null] Tween properties Object.
    */
   function Tween(values) {
     var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.250;
@@ -11478,62 +12133,117 @@ var Tween = function (_Component) {
 
     _classCallCheck(this, Tween);
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     var _this = _possibleConstructorReturn(this, (Tween.__proto__ || Object.getPrototypeOf(Tween)).call(this));
 
     _this.mValues = values;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mDuration = duration;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     _this.mProperties = properties;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsPlaying = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mStartTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mPausedTime = 0;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     _this.mValuesStart = {};
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mElapsed = 0;
 
-    /** @type {function (v:?Array, e:number):number} */
+    /**
+     * @private
+     * @type {function (Array, number):number}
+     */
     _this.mInterpolation = Interpolation.linear;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mDelay = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mRepeatTimes = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mInitiated = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mReverse = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mRemoveOnComplete = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mPlayOnAdded = true;
 
-    /** @type {function(e:number):number} */
+    /**
+     * @private
+     * @type {function(number):number}
+     */
     _this.mEase = Ease.smootherStep;
 
+    // TODO: fix ESDOC issue
     if (_this.mProperties !== null) {
       for (var f in _this.mProperties) {
         _this[f] = /** @dict */_this.mProperties[f];
@@ -11543,9 +12253,9 @@ var Tween = function (_Component) {
   }
 
   /**
-   * ease - Description
+   * Returns active ease function.
    *
-   * @return {function(e:number):number} Description
+   * @return {function(number):number}
    */
 
 
@@ -11554,11 +12264,10 @@ var Tween = function (_Component) {
 
 
     /**
-     * __start - Description
+     * @private
+     * @param {number} t
      *
-     * @param {number} t Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     value: function __start(t) {
       this.mIsPlaying = true;
@@ -11566,9 +12275,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * play - Description
+     * Starts tweening.
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11584,9 +12293,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * stop - Description
+     * Stops current tween.
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11600,12 +12309,12 @@ var Tween = function (_Component) {
     }
 
     /**
-     * to - Description
+     * Sets the values for tweening.
      *
-     * @param {Object} values - Description
-     * @param {number} duration - Description
+     * @param {Object} values   Values to tween.
+     * @param {number} duration Duration in seconds.
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11624,9 +12333,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * pause - Description
+     * Pauses current tween.
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11641,8 +12350,7 @@ var Tween = function (_Component) {
     }
 
     /**
-     * __resume - Description
-     *
+     * @private
      * @return {void} Description
      */
 
@@ -11656,21 +12364,20 @@ var Tween = function (_Component) {
     }
 
     /**
+     * @protected
      * @return {void}
      */
 
   }, {
-    key: 'remove',
-    value: function remove() {
+    key: 'removeFromParent',
+    value: function removeFromParent() {
       if (this.mIsPlaying) this.stop();
 
-      this.gameObject.removeComponent(this);
+      _get(Tween.prototype.__proto__ || Object.getPrototypeOf(Tween.prototype), 'removeFromParent', this).call(this);
     }
 
     /**
-     * dispose - Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -11680,9 +12387,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * repeat - Description
+     * Sets the number of times the tween wiil be repeated after first execution.
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11694,9 +12401,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * loop - Description
+     * Sets if tween should be looped over.
      *
-     * @return {Tween} Description
+     * @return {Tween} Return this.
      */
 
   }, {
@@ -11705,14 +12412,13 @@ var Tween = function (_Component) {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       this.mRepeatTimes = value ? Infinity : 0;
-
       return this;
     }
 
     /**
-    * reverse - Description
+    * Enables/disables reversing of tween values.
     *
-    * @return {Tween} Description
+    * @return {Tween} Returns this.
     */
 
   }, {
@@ -11721,14 +12427,13 @@ var Tween = function (_Component) {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       this.mReverse = value;
-
       return this;
     }
 
     /**
-     * chain - Description
+     * Add specified tween object into the queue. The specified tween will be executed after completation of this tween,
      *
-     * @return {Tween} Description
+     * @return {Tween} Returns this.
      */
 
   }, {
@@ -11748,11 +12453,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * onAdded - description
-     *
      * @override
-     * @param  {GameObject} gameObject description
-     * @return {void}            description
+     * @protected
+     * @param  {GameObject} gameObject
+     * @return {void}
      */
 
   }, {
@@ -11764,16 +12468,46 @@ var Tween = function (_Component) {
     }
 
     /**
-     * __update - Description
+     * @private
+     * @param {number} t
      *
-     * @param {number} t Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
     key: '__update',
-    value: function __update(t) {
+    value: function __update(t) {}
+
+    /**
+     * Updates tween values.
+     *
+     * @param {Object} values The Object to get values from.
+     * @return {void}
+     */
+
+  }, {
+    key: 'set',
+    value: function set(values) {
+      this.mValues = values;
+
+      for (var f in this.mValues) {
+        this.mValuesStart[f] = parseFloat(this.gameObject[f]);
+      }
+    }
+
+    /**
+     * @protected
+     * @override
+     * @param {number} dt
+     *
+     * @returns {void}
+     */
+
+  }, {
+    key: 'onPostUpdate',
+    value: function onPostUpdate(dt) {
+      var t = Time.time;
+
       if (t < this.mStartTime || !this.mIsPlaying || this.mIsPaused) return;
 
       // copy values only when starting tween...
@@ -11842,30 +12576,6 @@ var Tween = function (_Component) {
         }
       }
     }
-
-    /**
-     * set - Description
-     *
-     * @param {Object} values Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: 'set',
-    value: function set(values) {
-      this.mValues = values;
-
-      for (var f in this.mValues) {
-        this.mValuesStart[f] = parseFloat(this.gameObject[f]);
-      }
-    }
-  }, {
-    key: 'onPostUpdate',
-    value: function onPostUpdate(dt) {
-      var t = Black.instance.uptime;
-      this.__update(t);
-    }
   }, {
     key: 'ease',
     get: function get() {
@@ -11873,11 +12583,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * ease - Description
+     * Sets easing function to use.
      *
-     * @param {function(e:number):number} value Description
-     *
-     * @return {void} Description
+     * @param {function(number):number} value The easing function.
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -11885,9 +12594,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * interpolation - Description
+     * Returns the interpolation algorithm.
      *
-     * @return {function(p:Array, v:number):number} Description
+     * @return {function(Array, number):number}
      */
 
   }, {
@@ -11897,11 +12606,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * interpolation - Description
+     * Sets the interpolation algorithm. Possible values Interpolation.linear, Interpolation.bezier, Interpolation.catmullRom or your custom function.
      *
-     * @param {function(p:Array, v:number):number} value Description
-     *
-     * @return {void} Description
+     * @param {function(Array, number):number} value The interpolation function.
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -11909,9 +12617,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * elapsed - Description
+     * Time elapsed since tween start in seconds.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11921,9 +12629,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * delay - Description
+     * Returns amount of seconds to wait before tweening.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -11933,11 +12641,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * delay - Description
+     * Set amount of seconds to wait before tweening.
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @param {number} value Seconds to wait.
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -11945,9 +12652,9 @@ var Tween = function (_Component) {
     }
 
     /**
-     * removeOnComplete - Description
+     * Returns if Tween Component should be automatically detached from owner GameObject after completation.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -11957,11 +12664,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * removeOnComplete - Description
+     * Sets if Tween Component should be automatically detached from owner GameObject after completation.
      *
-     * @param {boolean} value Description
-     *
-     * @return {void} Description
+     * @param {boolean} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -11969,9 +12675,8 @@ var Tween = function (_Component) {
     }
 
     /**
-     * playOnAdded - Description
-     *
-     * @return {boolean} Description
+     * Returns whether the tween should start playing automatically when added to the root.
+     * @return {boolean}
      */
 
   }, {
@@ -11981,11 +12686,10 @@ var Tween = function (_Component) {
     }
 
     /**
-     * playOnAdded - Description
+     * Sets whether the tween should start playing automatically when added to the root.
      *
-     * @param {boolean} value Description
-     *
-     * @return {void} Description
+     * @param {boolean} value
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -12001,7 +12705,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Animation = function () {
+/**
+ * Holds details about sprite animation.
+ *
+ * @cat animation
+ */
+
+var AnimationInfo = function () {
   /**
    * Creates an instance of Animation class
    *
@@ -12011,11 +12721,11 @@ var Animation = function () {
    * @param {number}                 [fps=14]    Frame rate
    * @param {boolean}                [loop=true] Is animations should be looped
    */
-  function Animation(controller, name, frames) {
+  function AnimationInfo(controller, name, frames) {
     var fps = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
     var loop = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
 
-    _classCallCheck(this, Animation);
+    _classCallCheck(this, AnimationInfo);
 
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
 
@@ -12094,11 +12804,13 @@ var Animation = function () {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
-   * @return {Texture}
+   *
+   * @internal
+   * @return {Texture} Returns the current frame Texture.
    */
 
 
-  _createClass(Animation, [{
+  _createClass(AnimationInfo, [{
     key: 'play',
     value: function play() {
       if (this.mCompleted === true) {
@@ -12118,6 +12830,7 @@ var Animation = function () {
 
     /**
      * Stops animation and resets the value of current frame.
+     *
      * @return {void}
      */
 
@@ -12130,6 +12843,7 @@ var Animation = function () {
 
     /**
      * Pauses animation.
+     *
      * @return {void}
      */
 
@@ -12172,9 +12886,9 @@ var Animation = function () {
     }
 
     /**
-     * Gets/Sets annimation speed in Frames per Second
+     * Get/Set animation speed in frames per second.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -12184,7 +12898,7 @@ var Animation = function () {
     }
 
     /**
-     * Gets/Sets annimation speed in Frames per Second
+     * @ignore
      * @param {number} value
      * @return {void}
      */
@@ -12201,7 +12915,7 @@ var Animation = function () {
     }
 
     /**
-     * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+     * Get/Set if animation should be looped.
      * @return {boolean}
      */
 
@@ -12212,7 +12926,7 @@ var Animation = function () {
     }
 
     /**
-     * Gets/Sets loop flag. If true, animation will be looping (starting over after finishing)
+     * @ignore
      * @param {boolean} value
      * @return {void}
      */
@@ -12223,6 +12937,7 @@ var Animation = function () {
 
     /**
      * Gets array of Texture.
+     *
      * @return {Array<Texture>}
      */
 
@@ -12234,6 +12949,7 @@ var Animation = function () {
 
     /**
      * Returns true if Animation is playing (neither stopped nor paused).
+     *
      * @return {boolean}
      */
 
@@ -12245,6 +12961,7 @@ var Animation = function () {
 
     /**
      * Returns true if animation is completed.
+     *
      * @return {boolean}
      */
 
@@ -12256,6 +12973,7 @@ var Animation = function () {
 
     /**
      * Returns name of this animation.
+     *
      * @return {string}
      */
 
@@ -12266,7 +12984,7 @@ var Animation = function () {
     }
   }]);
 
-  return Animation;
+  return AnimationInfo;
 }();
 'use strict';
 
@@ -12277,6 +12995,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * A Component which allows to play sprite animations.
+ *
+ * @cat animation
+ * @extends Component
+ */
 
 var AnimationController = function (_Component) {
   _inherits(AnimationController, _Component);
@@ -12289,7 +13014,7 @@ var AnimationController = function (_Component) {
 
     /**
      * @private
-     * @type {Object<string, Animation>}
+     * @type {Object<string, AnimationInfo>}
      */
     var _this = _possibleConstructorReturn(this, (AnimationController.__proto__ || Object.getPrototypeOf(AnimationController)).call(this));
 
@@ -12297,7 +13022,7 @@ var AnimationController = function (_Component) {
 
     /**
      * @private
-     * @type {Animation|null}
+     * @type {AnimationInfo|null}
      */
     _this.mCurrentAnim = null;
     return _this;
@@ -12307,14 +13032,13 @@ var AnimationController = function (_Component) {
    * Returns the Animation object that exists with the specified name.
    *
    * @param {string} name The name of the child to return.
-   *
    * @returns {Animation} Returns the Animation object that exists with the specified name.
    */
 
 
   _createClass(AnimationController, [{
-    key: 'getAnimation',
-    value: function getAnimation(name) {
+    key: 'getByName',
+    value: function getByName(name) {
       Debug.assert(name !== null, 'Animation must be set first.');
       Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
@@ -12322,37 +13046,60 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * Updates the Animation object with new values.
+     * Removes Animation object that exists with the specified name. If animation is playing right now it will be stopped.
      *
-     * @param {string}          name        The name of animation to update
-     * @param {Array<Texture>}  textures    Description
-     * @param {number}          [fps=14]    Description
-     * @param {boolean}         [loop=true] Description
-     *
-     * @return {Animation} Description
+     * @param {string} name The name of the animation to remove.
+     * @returns {void}
      */
 
   }, {
-    key: 'updateAnimation',
-    value: function updateAnimation(name, textures) {
+    key: 'remove',
+    value: function remove(name) {
+      Debug.assert(name !== null, 'Animation name shall not be null.');
+      Debug.assert(this.mAnimations.hasOwnProperty(name) === true, 'Unable to find animation.');
+
+      var anim = this.mAnimations[name];
+
+      if (this.mCurrentAnim !== null && this.mCurrentAnim === anim) {
+        this.stop();
+        delete this.mAnimations[name];
+      }
+
+      this.mCurrentAnim = null;
+    }
+
+    /**
+     * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
+     *
+     * @param {string}          name        The name of animation to update
+     * @param {Array<Texture>}  textures    Array of Textures
+     * @param {number}          [fps=14]    Frames Per Second
+     * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
+     *
+     * @return {AnimationInfo} The newly created Animation Object.
+     */
+
+  }, {
+    key: 'add',
+    value: function add(name, textures) {
       var fps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
       var loop = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
       Debug.assert(textures.length > 0, 'Animation cannot be empty.');
       Debug.assert(fps > 0, 'FPS must be greater than 0.');
+      Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animatation with same name alredy exists');
 
-      var anim = new Animation(this, name, textures, fps, loop);
+      var anim = new AnimationInfo(this, name, textures, fps, loop);
       this.mAnimations[name] = anim;
 
       return anim;
     }
 
     /**
-     * play - Description
+     * Plays animation that exists with the specified name.
      *
-     * @param {string} name Description
-     *
-     * @return {void} Description
+     * @param {string} name The name of animation to play.
+     * @return {void}
      */
 
   }, {
@@ -12371,9 +13118,9 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * stop - Description
+     * Stops active animation. If no animations are playing at the moment nothing will happen.
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -12385,9 +13132,8 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * pause - Description
-     *
-     * @return {void} Description
+     * Pauses active animation.
+     * @return {void}
      */
 
   }, {
@@ -12399,12 +13145,11 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * onPostUpdate - Description
-     *
+     * @ignore
      * @override
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @protected
+     * @param  {number} dt
+     * @return {void}
      */
 
   }, {
@@ -12421,9 +13166,9 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * currentAnimation
+     * Returns current active animation.
      *
-     * @return {Animation|null}
+     * @returns {Animation|null}
      */
 
   }, {
@@ -12445,24 +13190,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//.########::'##::::::::::'###:::::'######::'##:::'##:
-// ##.... ##: ##:::::::::'## ##:::'##... ##: ##::'##::
-// ##:::: ##: ##::::::::'##:. ##:: ##:::..:: ##:'##:::
-// ########:: ##:::::::'##:::. ##: ##::::::: #####::::
-// ##.... ##: ##::::::: #########: ##::::::: ##. ##:::
-// ##:::: ##: ##::::::: ##.... ##: ##::: ##: ##:. ##::
-// ########:: ########: ##:::: ##:. ######:: ##::. ##:
-//........:::........::..:::::..:::......:::..::::..::
-
-
 var Black = function (_MessageDispatcher) {
   _inherits(Black, _MessageDispatcher);
 
   /**
-   * constructor
-   * @param {string}   containerElementId
-   * @param {function(new: GameObject)}   rootClass
-   * @param {function(new: VideoNullDriver)} [videoDriverClass]
+   * Creates a new Black instance.
+   * @param {string}                          containerElementId The id of an DOM element.
+   * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
    */
   function Black(containerElementId, rootClass, videoDriverClass) {
     _classCallCheck(this, Black);
@@ -12473,7 +13208,7 @@ var Black = function (_MessageDispatcher) {
     window['Black'] = {};
     window['Black']['instance'] = _this;
 
-    console.log('%c ~Black ', 'background: #000; color: #fff;');
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
     /**
      * @private
@@ -12572,12 +13307,6 @@ var Black = function (_MessageDispatcher) {
      * @type {Array<System>}
      */
     _this.mSystems = [];
-
-    /**
-     * @private
-     * @type {Rectangle}
-     */
-    _this.mBounds = new Rectangle();
 
     /**
      * @private
@@ -12684,7 +13413,7 @@ var Black = function (_MessageDispatcher) {
   }
 
   /**
-   * pause - Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
+   * Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
    *
    * @return {void}
    */
@@ -12697,7 +13426,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * resume - Resumes update execution.
+     * Resumes update execution.
      *
      * @return {void}
      */
@@ -12707,16 +13436,34 @@ var Black = function (_MessageDispatcher) {
     value: function resume() {
       this.mUnpausing = true;
     }
+
+    /**
+     * @private
+     * @returns {void}
+     */
+
   }, {
     key: '__bootViewport',
     value: function __bootViewport() {
       this.mViewport = new Viewport(this.mContainerElement);
     }
+
+    /**
+     * @private
+     * @returns {void}
+     */
+
   }, {
     key: '__bootSystems',
     value: function __bootSystems() {
       this.addSystem(new Input());
     }
+
+    /**
+     * @private
+     * @returns {void}
+     */
+
   }, {
     key: '__bootStage',
     value: function __bootStage() {
@@ -12737,6 +13484,12 @@ var Black = function (_MessageDispatcher) {
 
       if (document.hidden && this.mPauseOnHide === true) this.mPaused = true;
     }
+
+    /**
+     * @private
+     * @returns {void}
+     */
+
   }, {
     key: '__onVisbilityChange',
     value: function __onVisbilityChange(event) {
@@ -12748,9 +13501,9 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * addSystem - Adds a given system to the system list.
+     * Adds a given system to the execution list.
      *
-     * @param  {System} system
+     * @param  {System} system The System object you want to add.
      * @return {System}
      */
 
@@ -12762,10 +13515,9 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * removeSystem - Removes the given system to the system list.
+     * Removes the given system from execution list.
      *
-     * @param {System} system
-     *
+     * @param {System} system The System instance to remove.
      * @return {System|null}
      */
 
@@ -12779,6 +13531,12 @@ var Black = function (_MessageDispatcher) {
       this.mSystems.splice(ix, 1);
       return system;
     }
+
+    /**
+     * @private
+     * @returns {void}
+     */
+
   }, {
     key: '__bootVideo',
     value: function __bootVideo() {
@@ -12786,7 +13544,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * start - Main method to make magic happen.
+     * Boots up the engine!
      *
      * @return {void}
      */
@@ -12833,13 +13591,13 @@ var Black = function (_MessageDispatcher) {
       });
 
       // TODO: show only when needed, eg required by any system
-      if (this.mEnableFixedTimeStep === false) Debug.warn('Fixed time-step is disabled, some systems may not work.');
+      if (this.mEnableFixedTimeStep === false) Debug.info('Fixed time-step is disabled, some systems may not work.');
     }
 
     /**
-     * stop - Stops execution, destroys resources and scene. Cannot be started again.
+     * Stops any executions, destroys resources and scene.
      *
-     * @return {type} Description
+     * @return {void}
      */
 
   }, {
@@ -12851,9 +13609,10 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @param {number} timestamp Description
+     * @private
+     * @param {number} timestamp
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -12934,6 +13693,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+     * @private
      * @param {number} dt
      * @return {void}
      */
@@ -12947,6 +13707,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+     * @private
      * @param {number} dt
      * @return {void}
      */
@@ -12960,6 +13721,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+     * @private
      * @param {number} dt
      * @return {void}
      */
@@ -12973,7 +13735,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * @return {Rectangle}
+     * Returns the root GameObject.
+     * @return {GameObject}
      */
 
   }, {
@@ -12981,7 +13744,6 @@ var Black = function (_MessageDispatcher) {
 
 
     /**
-     * onTagUpdated
      * @protected
      * @param {GameObject} child
      * @param {string|null} oldTag
@@ -13104,19 +13866,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
+     * Returns if engine should be automatically paused when window is hidden.
      * @return {boolean}
-     */
-
-  }, {
-    key: 'bounds',
-    get: function get() {
-      return this.mBounds;
-    }
-
-    /**
-     * root - Returns the root GameObject.
-     * @return {GameObject}
      */
 
   }, {
@@ -13126,8 +13877,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * video - Returns current video driver.
-     * @return {VideoNullDriver} Description
+     * Returns current video driver instance.
+     * @return {VideoNullDriver}
      */
 
   }, {
@@ -13137,7 +13888,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * simulationTimestep - If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+     * If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
      * @return {number}
      */
 
@@ -13148,7 +13899,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * simulationTimestep - Sets the number of milliseconds for fixed-time-step to run over.
+     * Sets the number of milliseconds for fixed-time-step to run over.
      *
      * @param {type} timestep
      * @return {void}
@@ -13159,7 +13910,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * FPS - Returns current frame rate
+     * Returns current frame rate
      * @return {number}
      */
 
@@ -13170,7 +13921,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * maxAllowedFPS - Gets max amount updates engine can do in a second.
+     * Returns max number of updates engine must do in a second.
      * @return {number}
      */
 
@@ -13181,8 +13932,8 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * maxAllowedFPS - Sets the number of update engine will do per second.
-     * @param {number} fps
+     * maxAllowedFPS - Sets the number of update engine must do per second.
+     * @param {number} fps The max allowed FPS. If less then zero engine will be stopped.
      * @return {void}
      */
     ,
@@ -13191,7 +13942,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * viewport - Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+     * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
      * @return {Viewport}
      */
 
@@ -13202,7 +13953,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * containerElement - Retruns the HTML container element the engine runs in.
+     * Retruns the DOM element the engine runs in.
      * @return {Element}
      */
 
@@ -13213,7 +13964,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * uptime - Amounts of seconds since engine start.
+     * Returns amount of seconds since engine start.
      * @return {number}
      */
 
@@ -13229,7 +13980,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnHide - Gets/Sets if engine should be automatically paused when window is hidden.
+     * Sets if engine should be automatically paused when window is hidden.
      * @param {boolean} value
      * @return {void}
      */
@@ -13239,7 +13990,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
+     * Returns if engine should be automatically paused when container element is blured.
      * @return {boolean}
      */
 
@@ -13250,7 +14001,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * pauseOnBlur - Gets/Sets if engine should be automatically paused when container element is blured.
+     * Sets if engine should be automatically paused when container element is blured.
      * @param {boolean} value
      * @return {void}
      */
@@ -13260,7 +14011,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+     * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
      * @return {boolean}
      */
 
@@ -13271,10 +14022,9 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
-     * enableFixedTimeStep - Gets/sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+     * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
      *
      * @param {boolean} value
-     *
      * @return {void}
      */
     ,

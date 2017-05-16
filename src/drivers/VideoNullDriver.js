@@ -1,30 +1,60 @@
+/**
+ * Base class for custom video drivers. VideoDriver is used to render things
+ * onto the screen.
+ *
+ * @cat drivers
+ */
 /* @echo EXPORT */
 class VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement
+   * @param  {number} width
+   * @param  {number} height
    */
   constructor(containerElement, width, height) {
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mGlobalBlendMode = 'auto';
 
-    /** @type {HTMLElement} */
-    this.mContainerElement = /** @type {HTMLElement} */ (containerElement);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mContainerElement = /**
+     * @private
+     * @type {HTMLElement} */ (containerElement
+   );
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientHeight = height;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mTransform = new Matrix();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mGlobalAlpha = 1;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mMeasureElement = /** @type {HTMLElement} */ (document.createElement('span'));
     this.mMeasureElement.style.position = 'absolute';
     this.mContainerElement.appendChild(this.mMeasureElement);
@@ -32,6 +62,15 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+
+  /**
+   * @protected
+   * @ignore
+   * @param {type} msg
+   * @param {type} rect
+   *
+   * @returns {type}
+   */
   __onResize(msg, rect) {
     let w = this.mContainerElement.clientWidth;
     let h = this.mContainerElement.clientHeight;
@@ -41,124 +80,172 @@ class VideoNullDriver {
   }
 
   /**
-   * start - Description
+   * Initialization function.
    *
-   * @return {void} Description
+   * @protected
+   *
+   * @return {void}
    */
   start() {}
 
-  beginFrame() {}
 
-  endFrame() {}
+  /**
+   * Called before rendering anything. Usually used to clear back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
+  beginFrame() {}
 
 
   /**
-   * getTextureFromCanvas - Description
+   * Called after rendering is finished.
+   * @protected
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @returns {void}
+   */
+  endFrame() {}
+
+  /**
+   * @ignore
+   * @param {HTMLElement} canvas
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas){
     return null;
   }
 
   /**
-   * setTransform - Description
+   * Sets world transformation for future use.
    *
-   * @param {Matrix} m Description
+   * @protected
+   * @param {Matrix} m An transformation matrix to store.
    *
-   * @return {void} Description
+   * @return {void}
    */
   setTransform(m) {
     this.mTransform = m;
   }
 
   /**
-   * globalAlpha - Description
+   * Gets/Sets the global alpha. Used to calculate alpha relative to parent
+   * object.
    *
-   * @return {number} Description
+   * @protected
+   *
+   * @return {number}
    */
   get globalAlpha() {
     return this.mGlobalAlpha;
   }
 
   /**
-   * globalAlpha - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalAlpha(value) {
     this.mGlobalAlpha = value;
   }
 
   /**
-   * mGlobalBlendMode - Description
+   * Gets/Sets global blending mode. Used to calculate blend mode relative to
+   * parent object.
    *
-   * @return {string} Description
+   * @return {string}
    */
   get globalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
   /**
-   * globalBlendMode - Description
+   * @ignore
+   * @param {string} value
    *
-   * @param {string} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalBlendMode(value) {
     this.mGlobalBlendMode = value;
   }
 
   /**
-   * drawImage - description
+   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * matrix must be set prior to calling this method.
    *
-   * @param  {Texture} texture description
+   * @protected
+   *
+   * @param  {Texture} texture
    */
   drawImage(texture) {}
 
   /**
-   * drawText
+   * Draws text onto back-buffer.
    *
-   * @param {string} text
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
+   * @protected
+   *
+   * @param {string} text Text string to draw.
+   * @param {TextInfo} style The style information.
+   * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
+   * @param {number} textWidth The width of the text.
+   * @param {number} textHeight The height of the text.
    *
    * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {}
 
+
+  /**
+   * Clears back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
   clear() {}
 
   /**
-   * save - Description
+   * Used to save context if extists.
    *
+   * @ignore
+   * @protected
    * @param {GameObject|null} gameObject Used for internal binding.
    *
-   * @return {void} Description
+   * @return {void}
    */
   save(gameObject) {}
 
+
+  /**
+   * Used to restore context if extists.
+   *
+   * @protected
+   * @ignore
+   * @returns {type}
+   */
   restore() {}
 
+
+  /**
+   * Convers number color to hex string.
+   *
+   * @param {number} color The color to convert.
+   *
+   * @returns {string} The resuling hex string.
+   */
   hexColorToString(color) {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
   }
 
   /**
-   * measureText - Description
+   * Measures text with a given style.
    *
-   * @param {string} text  Description
-   * @param {TextInfo} style Description
+   * @param {string} text    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
    *
-   * @return {Vector} Description
+   * @return {Vector} A Vector with width and height of the text bounds.
    */
   measureText(text, style) {
     let el = this.mMeasureElement;

@@ -1,20 +1,28 @@
+/**
+ * Single JSON file asset class responsible for loading json file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 /* @echo EXPORT */
 class JSONAsset extends Asset {
   /**
-   * constructor
+   * Creates new JSONAsset instance.
    *
-   * @param {string} name
-   * @param {string} url
+   * @param {string} name The name of asset.
+   * @param {string} url  URL to the json file.
    *
    * @return {void}
    */
   constructor(name, url) {
     super(name, url);
-    this.mimeType = "application/json";
+
+    this.mimeType = 'application/json';
   }
 
   /**
-   * onLoaded
+   * @override
+   * @inheritdoc
    *
    * @return {void}
    */

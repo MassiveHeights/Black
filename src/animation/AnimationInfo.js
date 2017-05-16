@@ -1,8 +1,10 @@
 /**
- * @fires complete
+ * Holds details about sprite animation.
+ *
+ * @cat animation
  */
 /* @echo EXPORT */
-class Animation {
+class AnimationInfo {
   /**
    * Creates an instance of Animation class
    *

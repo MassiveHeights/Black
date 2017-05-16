@@ -1,3 +1,9 @@
+/**
+ * Interpolation functions.
+ *
+ * @cat animation
+ * @static
+ */
 /* @echo EXPORT */
 class Interpolation {
   /**

@@ -1,50 +1,92 @@
-/*
-Has to be static class.
-
-+ before update store all events locally
-- check root object! add collider automatically? or do it on demand?
-*/
-
+/**
+ * A input system class is reponsible for mouse, touch and keyboard input events.
+ *
+ * @cat input
+ * @extends System
+ */
 /* @echo EXPORT */
 class Input extends System {
+  /**
+   * Private constructor.
+   */
   constructor() {
     super();
 
-    /** @type {Input} */
+    /**
+     * @private
+     * @type {Input}
+     */
     this.constructor.instance = this;
 
-    /** @type {Vector} */
+    /**
+     * @private
+     * @type {Vector}
+     */
     this.mPointerPosition = new Vector();
 
-    /** @type {Element} */
+    /**
+     * @private
+     * @type {Element}
+     */
     this.mDom = Black.instance.containerElement;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mEventList = null;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mKeyEventList = null;
 
     this.__initListeners();
 
-    /** @type {Array<{e: Event, x: number, y:number}>} */
+    /**
+     * @private
+     * @type {Array<{e: Event, x: number, y:number}>}
+     */
     this.mPointerQueue = [];
 
-    /** @type {Array<Event>} */
+    /**
+     * @private
+     * @type {Array<Event>}
+     */
     this.mKeyQueue = [];
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPressedKeys = [];
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPointerDown = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedUpEvent = false;
 
-    /** @type {Array<InputComponent>} */
+    /**
+     * @private
+     * @type {Array<InputComponent>}
+     */
     this.mInputListeners = [];
   }
 
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
     //debugger;
@@ -65,16 +107,30 @@ class Input extends System {
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
   }
 
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
   __sortListeners() {
     // TODO: make it faster
-    // - try insert sort
-    this.mInputListeners.sort((x, y) => {
-      return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
+    this.mInputListeners.sort((a, b) => {
+      let depthA = a.gameObject.depth;
+      let depthB = b.gameObject.depth;
+
+      let indexA = a.gameObject.index;
+      let indexB = b.gameObject.index;
+
+      if (depthA === depthB)
+        return (indexA < indexB) ? -1 : (indexA > indexB) ? 1 : 0;
+      else
+        return depthA < depthB ? 1 : 1;
     });
   }
 
-
   /**
+   * @private
    * @param {Event} e
    *
    * @return {boolean}
@@ -84,6 +140,12 @@ class Input extends System {
     return true;
   }
 
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __onPointerEventDoc(e) {
     let over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
@@ -95,9 +157,10 @@ class Input extends System {
 
 
   /**
-   * @param {Event} e Description
+   * @private
+   * @param {Event} e
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onPointerEvent(e) {
     e.preventDefault();
@@ -107,6 +170,13 @@ class Input extends System {
     return true;
   }
 
+
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
@@ -126,12 +196,11 @@ class Input extends System {
 
 
   /**
-   * __getPointerPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {Event} evt
    *
-   * @param {Element} canvas Description
-   * @param {Event} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -141,12 +210,11 @@ class Input extends System {
   }
 
   /**
-   * __getTouchPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {TouchEvent} evt
    *
-   * @param {Element} canvas Description
-   * @param {TouchEvent} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -163,11 +231,10 @@ class Input extends System {
 
 
   /**
-   * __addListener - Description
+   * @private
+   * @param {Array<InputComponent>} array
    *
-   * @param {Array<InputComponent>} array Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __addListener(array) {
     // check for duplicates
@@ -183,11 +250,11 @@ class Input extends System {
 
 
   /**
-   * onChildrenAdded - Description
+   * @inheritdoc
+   * @override
+   * @param {GameObject} child
    *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onChildrenAdded(child) {
     let cs = GameObject.findComponents(child, InputComponent);
@@ -199,11 +266,11 @@ class Input extends System {
 
 
   /**
-   * onChildrenRemoved - Description
+   * @inheritdoc
+   * @override
+   * @param {GameObject} child
    *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onChildrenRemoved(child) {
     let cs = GameObject.findComponents(child, InputComponent);
@@ -223,12 +290,13 @@ class Input extends System {
 
 
   /**
-   * onComponentAdded - Description
+   * @inheritdoc
+   * @override
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} child
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void}
    */
   onComponentAdded(child, component) {
     if (component.constructor !== InputComponent)
@@ -237,14 +305,14 @@ class Input extends System {
     this.__addListener([component]);
   }
 
-
   /**
-   * onComponentRemoved - Description
+   * @inheritdoc
+   * @override
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} child
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void}
    */
   onComponentRemoved(child, component) {
     if (component.constructor !== InputComponent)
@@ -257,13 +325,12 @@ class Input extends System {
     }
   }
 
-
   /**
-   * onUpdate - Description
+   * @inheritdoc
+   * @override
+   * @param {number} dt
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {
     let pointerPos = new Vector();
@@ -337,13 +404,13 @@ class Input extends System {
   }
 
   /**
-   * on - Description
+   * Listens for global input event by given message name.
    *
-   * @param {string} name           Description
-   * @param {Function} callback       Description
-   * @param {Object=} [context=null] Description
+   * @param {string} name            The name of the message to listen for.
+   * @param {Function} callback      The callback function that will be called when message received.
+   * @param {Object=} [context=null] Optional context.
    *
-   * @return {void} Description
+   * @return {void}
    */
   static on(name, callback, context = null) {
     Input.instance.on(name, callback, context);
@@ -351,9 +418,9 @@ class Input extends System {
 
 
   /**
-   * isPointerDown - Description
+   * Indicates if mouse or touch in down at this moment.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isPointerDown() {
     return Input.instance.mIsPointerDown;
@@ -361,9 +428,8 @@ class Input extends System {
 
 
   /**
-   * pointerX - Description
-   *
-   * @return {number} Description
+   * Returns mouse or touch pointer x-component.
+   * @return {number}
    */
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
@@ -371,7 +437,7 @@ class Input extends System {
 
 
   /**
-   * pointerY - Description
+   * Returns mouse or touch pointer x-component.
    *
    * @return {number} Description
    */
@@ -381,81 +447,105 @@ class Input extends System {
 
 
   /**
-   * pointerPosition - Description
+   * Returns mouse or touch pointer position.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
   }
 
+
+  /**
+   * Returns list of pressed keys.
+   *
+   * @returns {Array<number>}
+   */
   static get pressedKeys() {
     return Input.instance.mPressedKeys;
   }
 }
 
-/** @type {Input}
+/**
+ * @type {Input}
  * @nocollapse
  */
 Input.instance = null;
 
-
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_MOVE = 0;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_DOWN = 1;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_UP = 2;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_CANCEL = 3;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_IN = 4;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
 Input.POINTER_OUT = 5;
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventList = ['keydown', 'keyup'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
