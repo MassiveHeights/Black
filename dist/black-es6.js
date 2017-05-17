@@ -2948,8 +2948,6 @@ class MessageDispatcher {
       let pureName = name.substring(0, filterIx);
       let pathMask = name.substring(filterIx + 1);
 
-      //console.log(pureName, pathMask);
-
       if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         MessageDispatcher.mGlobalHandlers[pureName] = [];
 
@@ -2983,6 +2981,23 @@ class MessageDispatcher {
       callback: callback,
       context: context
     });
+  }
+
+  /**
+   * Returns true if this object is subscribed for any messages with a given name.
+   *
+   * @param {string} name Message name to check.
+   *
+   * @returns {boolean} True if found.
+   */
+  hasOn(name) {
+    if (this.mListeners === null)
+      return false;
+
+    if (this.mListeners.hasOwnProperty(name) === false)
+      return false;
+
+    return true;
   }
 
   /**
@@ -3035,8 +3050,8 @@ class MessageDispatcher {
     let message = this.__parseMessage(this, name);
 
     // TODO: o'really 62?
-    let isGameObject = this instanceof GameObject;
-    if (message.mDirection !== 'none' && isGameObject === false)
+    let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
+    if (message.mDirection !== 'none' && isGameObjectOrComponent === false)
       throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
 
     if (message.mDirection === 'none') {
@@ -3277,41 +3292,77 @@ class MessageDispatcher {
   }
 }
 
+/**
+ * @private
+ * @dict
+ */
 MessageDispatcher.mGlobalHandlers = {};
 
+/**
+ * Message holds all information about dispatched event.
+ *
+ * @cat core
+ */
 
 class Message {
   constructor() {
-    /** @type {*} */
+    /**
+     * @private
+     * @type {*}
+     */
     this.mSender = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mPathMask = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mComponentMask = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDirection = 'none';
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSibblings = false;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mOrigin = null;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mTarget = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCanceled = false;
   }
 
   /**
-   * sender - Who send the message
+   * Who send the message.
    *
    * @return {*} Description
    */
@@ -3320,7 +3371,7 @@ class Message {
   }
 
   /**
-   * name - The name of the message
+   * The name of the message.
    *
    * @return {string}
    */
@@ -3329,7 +3380,7 @@ class Message {
   }
 
   /**
-   * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
+   * Direction in what message was sent. Can be 'none', 'up' and 'down'.
    *
    * @return {string}
    */
@@ -3338,7 +3389,7 @@ class Message {
   }
 
   /**
-   * sibblings - Indicates if sibblings should be included into dispatching process.
+   * Indicates if sibblings should be included into dispatching process.
    *
    * @return {boolean} Description
    */
@@ -3347,7 +3398,7 @@ class Message {
   }
 
   /**
-   * pathMask - The GameObject.name mask string if was used.
+   * The GameObject.name mask string if was used.
    *
    * @return {string|null} Description
    */
@@ -3356,7 +3407,7 @@ class Message {
   }
 
   /**
-   * componentMask - Component mask string if was used.
+   * Component mask string if was used.
    *
    * @return {string|null}
    */
@@ -3365,7 +3416,7 @@ class Message {
   }
 
   /**
-   * origin - The original sender of a message.
+   * The original sender of a message.
    *
    * @return {*|null}
    */
@@ -3374,7 +3425,7 @@ class Message {
   }
 
   /**
-   * target - The destination object for this message.
+   * The listener object.
    *
    * @return {*|null}
    */
@@ -3383,7 +3434,7 @@ class Message {
   }
 
   /**
-   * cancel - Stops propagation of the message.
+   * Stops propagation of the message.
    *
    * @return {void}
    */
@@ -3392,7 +3443,7 @@ class Message {
   }
 
   /**
-   * canceled - True/False if
+   * True if message was canceled by the user.
    *
    * @return {boolean}
    */
@@ -3901,7 +3952,7 @@ class GameObject extends MessageDispatcher {
       return this.setChildIndex(child, index);
 
     // this operation should be atomic. since __setParent can throw exception.
-    this.mChildren.splice(index, 1, child);
+    this.mChildren.splice(index, 0, child);
 
     child.removeFromParent();
     child.__setParent(this);
@@ -3945,13 +3996,14 @@ class GameObject extends MessageDispatcher {
     let ix = this.mChildren.indexOf(child);
 
     if (ix < 0)
-      throw new Error('Child is not a child of this object.');
+      throw new Error('Given child element was not found in children list.');
 
     if (ix === index)
       return child;
 
-    this.mChildren.splice(ix, 1);
-    this.mChildren.splice(index, 1, child);
+    // NOTE: systems needs to know when trees changes
+    child.removeFromParent();
+    this.addChildAt(child, index);
     this.setTransformDirty();
 
     return child;
@@ -4283,7 +4335,7 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) {}
 
   /**
-   * @ignore   *
+   * @ignore
    * @param {VideoNullDriver} video   *
    * @param {number} time
    * @param {number} parentAlpha
@@ -4673,13 +4725,19 @@ class GameObject extends MessageDispatcher {
       return 0;
   }
 
+  get displayDepth() {
+    // Many thanks to Roman Kopansky
+    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+    return flatten(this.root.mChildren).indexOf(this);
+  }
   /**
    * @ignore
    * @return {number}
    */
   get index() {
-    //TODO: critical fix me now!
-    return ~~(Math.random() * 1000); //this.mIndex;
+    // TODO: this is only required by Input component and its pretty heavy.
+    // Try to workaround it.
+    return this.parent.mChildren.indexOf(this);
   }
 
   /**
@@ -4943,11 +5001,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns a point where intersection were made.
+   * Returns a point where intersection were made in local space.
    *
    * @param {GameObject} gameObject GameObject to test intersection with.
-   * @param {Vector} point          The point to test.
-   * @param {Vector=} outVector     If passed point of intersection will be
+   * @param {Vector}     point      The point to test.
+   * @param {Vector=}    outVector  If passed point of intersection will be
    * stored in it.
    *
    * @return {boolean} True if intersects.
@@ -5721,6 +5779,142 @@ class JSONAsset extends Asset {
   }
 }
 
+
+class FontAsset extends Asset {
+  /**
+   * @param {string} name font name
+   * @param {string} url font url
+   *
+   * @return {void}
+   */
+  constructor(name, url) {
+    super(name, url);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mTestingFontName = 'Courier New';
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mTestingString = '~ GHBDTN,.#$Mlck';
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mLoadingTimeout = 2500;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mCheckDelay = 50;
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mTestingElement = this.__getTestingElement();
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mCSSLoader = this.__getCSSLoader();
+    this.mTestingElement.style.fontFamily = this.mTestingFontName;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
+    this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
+  }
+
+  /**
+   * @private
+   * @return {string}
+   */
+  __getCSSLoader() {
+    if (FontAsset.CSS_LOADER)
+      return FontAsset.CSS_LOADER;
+
+    let cssLoader = document.createElement('style');
+    cssLoader.type = 'text/css';
+    document.getElementsByTagName('head')[0].appendChild(cssLoader);
+    FontAsset.CSS_LOADER = cssLoader;
+    return cssLoader;
+  }
+
+  /**
+   * @private
+   * @return {string}
+   */
+  __getTestingElement() {
+    if (FontAsset.TESTING_ELEMENT)
+      return FontAsset.TESTING_ELEMENT;
+
+    let testingElement = document.createElement('span');
+    testingElement.style.position = 'absolute';
+    testingElement.style.top = '-9999px';
+    testingElement.style.left = '-9999px';
+    testingElement.style.visibility = 'hidden';
+    testingElement.style.fontSize = '250px';
+    testingElement.innerHTML = this.mTestingString;
+    document.body.appendChild(testingElement);
+
+    FontAsset.TESTING_ELEMENT = testingElement;
+    return testingElement;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  load() {
+    this.mCSSLoader.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+    this.checkLoadingStatus();
+  }
+
+  /**
+   * @return {void}
+   */
+  checkLoadingStatus() {
+    if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
+      if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
+        this.onLoadingFail();
+        return;
+      }
+
+      setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+      return;
+    }
+    this.onLoaded();
+  }
+
+  /**
+   * @return {void}
+   */
+  onLoadingFail() {
+    console.warn(`loading ${this.name} font failed.`);
+    this.onLoaded(); //TODO what to do here?
+  }
+
+  /**
+   * @return {string}
+   */
+  get type() {
+    return "FontAsset";
+  }
+}
+
+FontAsset.TESTING_ELEMENT = null;
+FontAsset.CSS_LOADER = null;
+
 /**
  * Texture Atlas asset responsible for loading Image file and coresponding Json
  * file.
@@ -5894,6 +6088,10 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
+  enqueueFont(name, url) {
+    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url));
+  }
+
   /**
    * Starts preloading all enqueued assets.
    * @fires complete
@@ -5931,12 +6129,15 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
-    else
+    else if (item.constructor === FontAsset) {} else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
+      if (FontAsset.TESTING_ELEMENT)
+        FontAsset.TESTING_ELEMENT.remove();
+        
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
@@ -9500,6 +9701,13 @@ class KeyInfo {
 
 /**
  * A input system class is reponsible for mouse, touch and keyboard input events.
+ * Pointer events works for a single target only.
+ * Global Input messages has higher priority.
+ *
+ * When GameObject gets a `pointerDown` message it gets target locked. Other
+ * objects will not receive `pointerMove` or `pointerUp` messages. Target locked
+ * object will receive `pointerUp` message even if pointer is outside of its
+ * bounds.
  *
  * @cat input
  * @extends System
@@ -9575,12 +9783,19 @@ class Input extends System {
     this.mNeedUpEvent = false;
 
     /**
+     * NOTE: we need guarantee that keys are not going to chage theirs order
+     * when iterating.
      * @private
-     * @type {Array<InputComponent>}
+     * @type {Map}
      */
-    this.mInputListeners = [];
-  }
+    this.mInputListeners = new Map();
 
+    this.mTarget = null;
+    this.mTargetComponent = null;
+    this.mLockedTarget = null;
+
+    this.mLastInTargetComponent = null;
+  }
 
   /**
    * @private
@@ -9601,24 +9816,10 @@ class Input extends System {
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
+    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
-  }
-
-
-  /**
-   * @private
-   *
-   * @returns {void}
-   */
-  __sortListeners() {
-    // TODO: make it faster
-    // - try insert sort
-    this.mInputListeners.sort((x, y) => {
-      return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
-    });
   }
 
   /**
@@ -9628,6 +9829,9 @@ class Input extends System {
    * @return {boolean}
    */
   __onKeyEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     this.mKeyQueue.push(e);
     return true;
   }
@@ -9639,6 +9843,10 @@ class Input extends System {
    * @returns {void}
    */
   __onPointerEventDoc(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
+    // dirty check
     let over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
     if (over === false && this.mNeedUpEvent === true) {
@@ -9647,7 +9855,6 @@ class Input extends System {
     }
   }
 
-
   /**
    * @private
    * @param {Event} e
@@ -9655,13 +9862,15 @@ class Input extends System {
    * @return {boolean}
    */
   __onPointerEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     e.preventDefault();
 
     this.__pushEvent(e);
 
     return true;
   }
-
 
   /**
    * @private
@@ -9676,16 +9885,12 @@ class Input extends System {
     else
       p = this.__getPointerPos(this.mDom, e);
 
-    this.mPointerPosition.x = p.x;
-    this.mPointerPosition.y = p.y;
-
     this.mPointerQueue.push({
       e: e,
       x: p.x,
       y: p.y
     });
   }
-
 
   /**
    * @private
@@ -9721,102 +9926,6 @@ class Input extends System {
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
-
-  /**
-   * @private
-   * @param {Array<InputComponent>} array
-   *
-   * @return {void}
-   */
-  __addListener(array) {
-    // check for duplicates
-    for (let i = 0; i < array.length; i++) {
-      let item = /** @type {InputComponent} */ (array[i]);
-
-      if (this.mInputListeners.indexOf(item) === -1)
-        this.mInputListeners.push(item);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   * @param {GameObject} child
-   *
-   * @return {void}
-   */
-  onChildrenAdded(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    this.__addListener(cs);
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   * @param {GameObject} child
-   *
-   * @return {void}
-   */
-  onChildrenRemoved(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    for (var i = cs.length - 1; i >= 0; i--) {
-      let component = cs[i];
-      let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-
-      if (index !== -1)
-        this.mInputListeners.splice(index, 1);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   *
-   * @param {GameObject} child
-   * @param {Component} component
-   *
-   * @return {void}
-   */
-  onComponentAdded(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    this.__addListener([component]);
-  }
-
-  /**
-   * @inheritdoc
-   * @override
-   *
-   * @param {GameObject} child
-   * @param {Component} component
-   *
-   * @return {void}
-   */
-  onComponentRemoved(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-    if (index !== -1) {
-      this.mInputListeners.splice(index, 1);
-      this.__sortListeners();
-    }
-  }
-
   /**
    * @inheritdoc
    * @override
@@ -9825,54 +9934,134 @@ class Input extends System {
    * @return {void}
    */
   onUpdate(dt) {
-    let pointerPos = new Vector();
+    // omg, who gave you keyboard?
+    this.__updateKeyboard();
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
-
-      let ix = this.mEventList.indexOf(nativeEvent.e.type);
-      let fnName = Input.mInputEventsLookup[ix];
-
-      if (fnName === 'pointerDown')
-        this.mNeedUpEvent = true;
-
-      pointerPos.set(nativeEvent.x, nativeEvent.y);
-
-      /** @type {InputComponent|null} */
-      let currentComponent = null;
-      for (let k = 0; k < this.mInputListeners.length; k++) {
-        currentComponent = this.mInputListeners[k];
-
-        // if (currentComponent.gameObject === null)
-        //   console.log(currentComponent);
-
-        if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
-          // check for out events
-          if (currentComponent.mPointerInside === true) {
-            currentComponent.mPointerInside = false;
-            currentComponent.gameObject.post('~pointerOut');
-          }
-
-          continue;
-        }
-
-        // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-        if (ix === Input.POINTER_DOWN)
-          this.mIsPointerDown = true;
-        else if (ix === Input.POINTER_UP)
-          this.mIsPointerDown = false;
-
-        if (currentComponent.mPointerInside === false) {
-          currentComponent.mPointerInside = true;
-          currentComponent.gameObject.post('~pointerIn');
-        }
-
-        currentComponent.gameObject.post('~' + fnName);
-      }
-
-      this.post(fnName);
+    // we had no actual events but still we need to know if something were moved
+    if (this.mPointerQueue.length === 0) {
+      this.__findTarget(Input.pointerPosition);
+      this.__processInOut(Input.pointerPosition);
     }
 
+    for (var i = 0; i < this.mPointerQueue.length; i++) {
+      let nativeEvent =  this.mPointerQueue[i];
+
+      // update to the lattest position
+      this.mPointerPosition.x = nativeEvent.x;
+      this.mPointerPosition.y = nativeEvent.y;
+
+      let pointerPos = new Vector(nativeEvent.x, nativeEvent.y);
+      let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
+
+      this.__findTarget(pointerPos);
+      this.__processInOut(Input.pointerPosition);
+      this.__processNativeEvent(nativeEvent, pointerPos, eventType);
+    }
+
+    // Erase the pointer queue
+    this.mPointerQueue.splice(0, this.mPointerQueue.length);
+    this.mKeyQueue.splice(0, this.mKeyQueue.length);
+  }
+
+  __findTarget(pos) {
+    let obj = GameObject.intersectsWith(Black.instance.root, pos);
+
+    if (obj === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    let c = obj.getComponent(InputComponent);
+    if (c === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    if (c.touchable === false) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    this.mTarget = obj;
+    this.mTargetComponent = c;
+  }
+
+  __processNativeEvent(nativeEvent, pos, type) {
+    this.post(type);
+
+    if (this.mTarget === null && this.mLockedTarget === null)
+      return;
+
+    let info = new PointerInfo(this.mTarget, pos.x, pos.y);
+
+    if (type === Input.POINTER_DOWN) {
+      this.mLockedTarget = this.mTarget;
+      this.mNeedUpEvent = true;
+    }
+    else if (type === Input.POINTER_UP && this.mLockedTarget !== null) {
+      this.mLockedTarget.post('~pointerUp', info);
+      this.mLockedTarget = null;
+      return;
+    }
+
+    let sameTarget = this.mTarget === this.mLockedTarget;
+
+    if (this.mLockedTarget === null) {
+      if (this.mTarget !== null)
+        this.mTarget.post('~' + type, info);
+    } else {
+      if (sameTarget === true)
+        this.mLockedTarget.post('~' + type, info);
+    }
+  }
+
+  __postInMessage() {
+    if (this.mLockedTarget !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject && this.mTargetComponent.gameObject !== null)
+        return;
+    }
+
+    this.mTargetComponent.mPointerInDispatched = true;
+    this.mTargetComponent.gameObject.post('~pointerIn');
+    this.mLastInTargetComponent = this.mTargetComponent;
+  }
+
+  __postOutMessage() {
+    if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject)
+        return;
+    }
+
+    this.mLastInTargetComponent.mPointerInDispatched = false;
+    this.mLastInTargetComponent.gameObject.post('~pointerOut');
+    this.mLastInTargetComponent = null;
+  }
+
+  __processInOut(pos) {
+
+    if (this.mTargetComponent === null) {
+      if (this.mLastInTargetComponent !== null)
+        this.__postOutMessage();
+    } else {
+      if (this.mLastInTargetComponent !== null && this.mLastInTargetComponent !== this.mTargetComponent) {
+        this.__postOutMessage();
+        return;
+      }
+
+      if (this.mTargetComponent.mPointerInDispatched === false)
+        this.__postInMessage();
+    }
+  }
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
+  __updateKeyboard() {
     for (let i = 0; i < this.mKeyQueue.length; i++) {
       let nativeEvent = this.mKeyQueue[i];
 
@@ -9890,9 +10079,6 @@ class Input extends System {
 
       this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
-
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
@@ -9908,7 +10094,6 @@ class Input extends System {
     Input.instance.on(name, callback, context);
   }
 
-
   /**
    * Indicates if mouse or touch in down at this moment.
    *
@@ -9918,7 +10103,6 @@ class Input extends System {
     return Input.instance.mIsPointerDown;
   }
 
-
   /**
    * Returns mouse or touch pointer x-component.
    * @return {number}
@@ -9926,7 +10110,6 @@ class Input extends System {
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
   }
-
 
   /**
    * Returns mouse or touch pointer x-component.
@@ -9937,7 +10120,6 @@ class Input extends System {
     return Input.instance.mPointerPosition.y;
   }
 
-
   /**
    * Returns mouse or touch pointer position.
    *
@@ -9946,7 +10128,6 @@ class Input extends System {
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
   }
-
 
   /**
    * Returns list of pressed keys.
@@ -9958,6 +10139,12 @@ class Input extends System {
   }
 }
 
+Input.POINTER_DOWN = 'pointerDown';
+Input.POINTER_MOVE = 'pointerMove';
+Input.POINTER_UP   = 'pointerUp';
+Input.POINTER_IN   = 'pointerIn';
+Input.POINTER_OUT  = 'pointerOut';
+
 /**
  * @type {Input}
  * @nocollapse
@@ -9968,37 +10155,31 @@ Input.instance = null;
  * @type {number}
  * @const
  */
-Input.POINTER_MOVE = 0;
+Input.IX_POINTER_MOVE = 0;
 
 /**
  * @type {number}
  * @const
  */
-Input.POINTER_DOWN = 1;
+Input.IX_POINTER_DOWN = 1;
 
 /**
  * @type {number}
  * @const
  */
-Input.POINTER_UP = 2;
+Input.IX_POINTER_UP = 2;
 
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_CANCEL = 3;
-
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_IN = 4;
-
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_OUT = 5;
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_IN = 3;
+//
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_OUT = 4;
 
 /**
  * @private
@@ -10042,6 +10223,60 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mou
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
+
+/**
+ * Stores additional information about pointer events.
+ *
+ * @cat input
+ */
+
+class PointerInfo {
+  /**
+   * Creates new PointerInfo instance. For internal use only.
+   *
+   * @param {type} activeObject
+   * @param {type} x
+   * @param {type} y
+   */
+  constructor(activeObject, x, y) {
+    /**
+     * @private
+     * @type {GameObject}
+     */
+    this.mActiveObject = activeObject;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mX = x;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mY = y;
+  }
+
+  /**
+   * Returns the object under cursor right now.
+   * @readonly
+   *
+   * @returns {GameObject}
+   */
+  get activeObject() {
+    return this.mActiveObject;
+  }
+
+  get x() {
+    return this.mX;
+  }
+
+  get y() {
+    return this.mY;
+  }
+}
+
 /**
  * This component will allow you to subscribe for some input messages.
  *
@@ -10060,9 +10295,8 @@ class InputComponent extends Component {
     this.touchable = true;
 
     /* INTERNAL */
-
     /** @type {boolean} */
-    this.mPointerInside = false;
+    this.mPointerInDispatched = false;
   }
 }
 
@@ -12402,6 +12636,16 @@ class Black extends MessageDispatcher {
    */
   get enableFixedTimeStep() {
     return this.mEnableFixedTimeStep;
+  }
+
+
+  /**
+   * Returns True if engine is paused.
+   *
+   * @returns {boolean}
+   */
+  get isPaused() {
+    return this.mPaused;
   }
 
   /**

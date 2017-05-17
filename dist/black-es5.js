@@ -3023,7 +3023,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Curve = function () {
-
   /**
    * Creates new Curve instance.
    */
@@ -3062,7 +3061,7 @@ var Curve = function () {
   }
 
   /**
-   * set - Sets new points coordinates.
+   * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
    *
@@ -3086,7 +3085,8 @@ var Curve = function () {
     }
 
     /**
-     * baked - Returns true or false depending on baked is enabled or not.
+     * Enables or disables interpolation from cache (lookup).
+     * Returns true or false depending on baked is enabled or not.
      *
      * @return {boolean}
      */
@@ -3096,7 +3096,7 @@ var Curve = function () {
 
 
     /**
-     * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
+     * Wides points array. Sets first point for next bezier same as last of previous.
      * @private
      * @param  {Array<number>} points Array of points coordinates.
      *
@@ -3113,7 +3113,7 @@ var Curve = function () {
     }
 
     /**
-     * __refreshCache - Refresh cache (lookup) for fast interpolations.
+     * Refresh cache (lookup) for fast interpolations.
      *
      * @private
      *
@@ -3141,7 +3141,7 @@ var Curve = function () {
     }
 
     /**
-     * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
+     * Refresh local interpolation kof for each bezier in curve.
      * @private
      * @return {Curve} This curve.
      */
@@ -3167,7 +3167,7 @@ var Curve = function () {
     }
 
     /**
-     * lerp - Interpolates single bezier on t position.
+     * Interpolates single bezier on t position.
      *
      * @param  {number} t Interpolation position (0...1).
      * @param  {number} startX
@@ -3188,7 +3188,7 @@ var Curve = function () {
 
 
     /**
-     * interpolate - Interpolates across whole curve.
+     * Interpolates across whole curve.
      *
      * @param  {number} t Interpolation position (0...1).
      * @param  {Vector=} outVector
@@ -3223,7 +3223,7 @@ var Curve = function () {
     }
 
     /**
-     * length - Returns single bezier length.
+     * Returns single bezier length.
      *
      * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY
      *
@@ -3235,7 +3235,7 @@ var Curve = function () {
 
 
     /**
-     * getFullLength - Returns this curve length.
+     * Returns this curve length.
      *
      * @return {number} Length.
      */
@@ -3255,8 +3255,7 @@ var Curve = function () {
     }
 
     /**
-     * baked - Enables or disables interpolation from cache (lookup).
-     *
+     * @ignore
      * @param  {boolean} label
      */
     ,
@@ -3310,7 +3309,9 @@ var Curve = function () {
   return Curve;
 }();
 
-/** @type {Curve}
+/**
+ * @private
+ * @type {Curve}
  * @nocollapse
  */
 
@@ -3450,8 +3451,6 @@ var MessageDispatcher = function () {
         var pureName = name.substring(0, filterIx);
         var pathMask = name.substring(filterIx + 1);
 
-        //console.log(pureName, pathMask);
-
         if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false) MessageDispatcher.mGlobalHandlers[pureName] = [];
 
         var _dispatchers = MessageDispatcher.mGlobalHandlers[pureName];
@@ -3478,6 +3477,24 @@ var MessageDispatcher = function () {
         callback: callback,
         context: context
       });
+    }
+
+    /**
+     * Returns true if this object is subscribed for any messages with a given name.
+     *
+     * @param {string} name Message name to check.
+     *
+     * @returns {boolean} True if found.
+     */
+
+  }, {
+    key: 'hasOn',
+    value: function hasOn(name) {
+      if (this.mListeners === null) return false;
+
+      if (this.mListeners.hasOwnProperty(name) === false) return false;
+
+      return true;
     }
 
     /**
@@ -3535,8 +3552,8 @@ var MessageDispatcher = function () {
       var message = this.__parseMessage(this, name);
 
       // TODO: o'really 62?
-      var isGameObject = this instanceof GameObject;
-      if (message.mDirection !== 'none' && isGameObject === false) throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
+      var isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
+      if (message.mDirection !== 'none' && isGameObjectOrComponent === false) throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
 
       for (var _len = arguments.length, params = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         params[_key - 1] = arguments[_key];
@@ -3809,42 +3826,81 @@ var MessageDispatcher = function () {
   return MessageDispatcher;
 }();
 
+/**
+ * @private
+ * @dict
+ */
+
+
 MessageDispatcher.mGlobalHandlers = {};
+
+/**
+ * Message holds all information about dispatched event.
+ *
+ * @cat core
+ */
 
 var Message = function () {
   function Message() {
     _classCallCheck(this, Message);
 
-    /** @type {*} */
+    /**
+     * @private
+     * @type {*}
+     */
     this.mSender = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mPathMask = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mComponentMask = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDirection = 'none';
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSibblings = false;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mOrigin = null;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mTarget = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCanceled = false;
   }
 
   /**
-   * sender - Who send the message
+   * Who send the message.
    *
    * @return {*} Description
    */
@@ -3855,7 +3911,7 @@ var Message = function () {
 
 
     /**
-     * cancel - Stops propagation of the message.
+     * Stops propagation of the message.
      *
      * @return {void}
      */
@@ -3864,7 +3920,7 @@ var Message = function () {
     }
 
     /**
-     * canceled - True/False if
+     * True if message was canceled by the user.
      *
      * @return {boolean}
      */
@@ -3876,7 +3932,7 @@ var Message = function () {
     }
 
     /**
-     * name - The name of the message
+     * The name of the message.
      *
      * @return {string}
      */
@@ -3888,7 +3944,7 @@ var Message = function () {
     }
 
     /**
-     * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
+     * Direction in what message was sent. Can be 'none', 'up' and 'down'.
      *
      * @return {string}
      */
@@ -3900,7 +3956,7 @@ var Message = function () {
     }
 
     /**
-     * sibblings - Indicates if sibblings should be included into dispatching process.
+     * Indicates if sibblings should be included into dispatching process.
      *
      * @return {boolean} Description
      */
@@ -3912,7 +3968,7 @@ var Message = function () {
     }
 
     /**
-     * pathMask - The GameObject.name mask string if was used.
+     * The GameObject.name mask string if was used.
      *
      * @return {string|null} Description
      */
@@ -3924,7 +3980,7 @@ var Message = function () {
     }
 
     /**
-     * componentMask - Component mask string if was used.
+     * Component mask string if was used.
      *
      * @return {string|null}
      */
@@ -3936,7 +3992,7 @@ var Message = function () {
     }
 
     /**
-     * origin - The original sender of a message.
+     * The original sender of a message.
      *
      * @return {*|null}
      */
@@ -3948,7 +4004,7 @@ var Message = function () {
     }
 
     /**
-     * target - The destination object for this message.
+     * The listener object.
      *
      * @return {*|null}
      */
@@ -4385,7 +4441,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * GameObject - Base class for all black game objects.
+ * Building block in Black Engine.
  *
  * @cat core
  * @unrestricted
@@ -4550,7 +4606,7 @@ var GameObject = function (_MessageDispatcher) {
     value: function onRemoved() {}
 
     /**
-     * add - Sugar method for adding child GameObjects or Components.
+     * Sugar method for adding child GameObjects or Components in a simple manner.
      *
      * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
      * @return {Array<GameObject|Component>} The passed GameObject or Component.
@@ -4605,7 +4661,7 @@ var GameObject = function (_MessageDispatcher) {
       if (child.mParent === this) return this.setChildIndex(child, index);
 
       // this operation should be atomic. since __setParent can throw exception.
-      this.mChildren.splice(index, 1, child);
+      this.mChildren.splice(index, 0, child);
 
       child.removeFromParent();
       child.__setParent(this);
@@ -4638,7 +4694,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * setChildIndex - Sets the index (layer) of the specified GameObject to the specified index (layer).
+     * Sets the index (layer) of the specified GameObject to the specified index (layer).
      *
      * @param {GameObject} child The GameObject instance to change index for.
      * @param {number} index Desired index.
@@ -4651,19 +4707,20 @@ var GameObject = function (_MessageDispatcher) {
     value: function setChildIndex(child, index) {
       var ix = this.mChildren.indexOf(child);
 
-      if (ix < 0) throw new Error('Child is not a child of this object.');
+      if (ix < 0) throw new Error('Given child element was not found in children list.');
 
       if (ix === index) return child;
 
-      this.mChildren.splice(ix, 1);
-      this.mChildren.splice(index, 1, child);
+      // NOTE: systems needs to know when trees changes
+      child.removeFromParent();
+      this.addChildAt(child, index);
       this.setTransformDirty();
 
       return child;
     }
 
     /**
-     * removeFromParent - Removes this GameObject instance from its parent.
+     * Removes this GameObject instance from its parent.
      *
      * @param {boolean} [dispose=false]
      *
@@ -4683,7 +4740,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * removeChild - Removes specified GameObjects instance.
+     * Removes specified child GameObject instance from children.
      *
      * @param {GameObject} child GameObject instance to remove.
      * @param {boolean} [dispose=false]
@@ -4702,11 +4759,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * get child by name
+     * Finds children by name.
      *
-     * @param {string} name
+     * @param {string} name Name of the child object to find.
      *
-     * @return {GameObject|null}
+     * @return {GameObject|null} GameObject instance of null if not found.
      */
 
   }, {
@@ -4720,7 +4777,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     *Removes GameObjects instance from specified index.
+     * Removes GameObjects instance from specified index.
      *
      * @param {number} index Description
      * @param {boolean} [dispose=false]
@@ -4788,9 +4845,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * Remove specified component
+     * Remove specified component.
      *
-     * @param {Component} instance
+     * @param {Component} instance The component instance.
      *
      * @return {Component|null}
      */
@@ -4813,11 +4870,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * get component by type
+     * Get component by type.
      *
-     * @param {*} typeName
+     * @param {*} typeName The component type.
      *
-     * @return {Component|null}
+     * @return {Component|null} The Component instance or null if not found.
      */
 
   }, {
@@ -4832,7 +4889,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * Returns number of component's
+     * Returns number of component's of this GameObject.
      *
      * @return {number}
      */
@@ -4865,8 +4922,8 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
+     * @ignore
      * @param {number} dt
-     * @private
      *
      * @return {void}
      */
@@ -4885,8 +4942,8 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
+     * @ignore
      * @param {number} dt time since the last frame
-     * @private
      *
      * @return {void}
      */
@@ -4908,9 +4965,8 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     *
+     * @ignore
      * @param {number} dt time since the last frame
-     * @private
      *
      * @return {void}
      */
@@ -4933,6 +4989,7 @@ var GameObject = function (_MessageDispatcher) {
 
     /**
      * Called at every fixed frame update.
+     *
      * @protected
      * @param {number} dt time since the last frame
      *
@@ -4945,6 +5002,7 @@ var GameObject = function (_MessageDispatcher) {
 
     /**
      * Called at every engine update.
+     *
      * @protected
      * @param {number} dt time since the last frame
      *
@@ -4957,10 +5015,11 @@ var GameObject = function (_MessageDispatcher) {
 
     /**
      * Called after all updates have been executed.
+     *
      * @protected
      * @param {number} dt Description
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -4968,9 +5027,8 @@ var GameObject = function (_MessageDispatcher) {
     value: function onPostUpdate(dt) {}
 
     /**
-     * @param {VideoNullDriver} video
-     * @protected
      * @ignore
+     * @param {VideoNullDriver} video   *
      * @param {number} time
      * @param {number} parentAlpha
      * @param {string} parentBlendMode
@@ -4995,7 +5053,7 @@ var GameObject = function (_MessageDispatcher) {
      * @param {VideoNullDriver} video Description
      * @param {number} time  Description
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -5003,7 +5061,7 @@ var GameObject = function (_MessageDispatcher) {
     value: function onRender(video, time) {}
 
     /**
-     * onGetLocalBounds - Override this method if you need to specify GameObject size. Should be always be a local coordinates.
+     * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
      *
      * @protected
      * @param {Rectangle=} outRect Description
@@ -5021,7 +5079,8 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * getBounds - Returns world bounds of this object and all children if specified (true by default).
+     * Returns world bounds of this object and all children if specified (true by default).
+     *
      * object.getBounds() - relative to world.
      * object.getBounds(object) - local bounds.
      * object.getBounds(object.parent) - relative to parent.
@@ -5064,18 +5123,18 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * setTransform -
+     * Sets the object transform in one line.
      *
-     * @param {number} [x=0]      x-cord
-     * @param {number} [y=0]      y-cord
-     * @param {number} [r=0]      rotation
-     * @param {number} [scaleX=1] scale-x
-     * @param {number} [scaleY=1] scale-y
-     * @param {number} [anchorX=0] anchor-x
-     * @param {number} [anchorY=0] anchor-y
-     * @param {number} [includeChildren=true] include children when adjusting pivot?
+     * @param {number} [x=0]       Cord X.
+     * @param {number} [y=0]       Cord Y.
+     * @param {number} [r=0]       Rotation.
+     * @param {number} [scaleX=1]  scale X.
+     * @param {number} [scaleY=1]  scale Y.
+     * @param {number} [anchorX=0] Anchor X.
+     * @param {number} [anchorY=0] Anchor Y.
+     * @param {number} [includeChildren=true] Include children when adjusting pivot?
      *
-     * @return {GameObject}
+     * @return {GameObject} This.
      */
 
   }, {
@@ -5137,13 +5196,10 @@ var GameObject = function (_MessageDispatcher) {
 
       return this.worldTransformationInversed.transformVector(globalPoint, outVector);
     }
-
-    /*:--- PROPERTIES ---:*/
-
     /**
-     * numChildren - Description
+     * Gets/Sets count of children elements.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5151,13 +5207,14 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
-     * alignPivot
+     * Sets pivot point to given position.
      *
-     * @param {number}  [ax=0.5]
-     * @param {number}  [ay=0.5]
-     * @param {boolean} [includeChildren=true]
+     * @param {number}  [ax=0.5]               Align along x-axis.
+     * @param {number}  [ay=0.5]               Align along y-axis.
+     * @param {boolean} [includeChildren=true] Include children elements when
+     * calculating bounds?
      *
-     * @return {GameObject}
+     * @return {GameObject} This.
      */
     value: function alignPivot() {
       var ax = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0.5;
@@ -5174,9 +5231,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * scaleX - Description
+     * Gets/Sets the scale factor of this object along x-axis.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5184,10 +5241,10 @@ var GameObject = function (_MessageDispatcher) {
 
 
     /**
-     * co - Starts coroutine.
+     * Starts coroutine.
      *
-     * @param {Function} gen
-     * @param {*=} [ctx=null]
+     * @param {Function} gen  Generator function.
+     * @param {*=} [ctx=null] Context for Generator function.
      *
      * @return {Generator}
      */
@@ -5209,6 +5266,8 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
+     * Waits for given amount of seconds before processing.
+     *
      * @return {function(*):*}
      */
 
@@ -5225,11 +5284,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * waitMessage - Waits for a speceific message
+     * Waits for a speceific message.
      *
-     * @param {string} message The name of the message to wait for
+     * @param {string} message The name of the message to wait for.
      *
-     * @return {function(*):*} Description
+     * @return {function(*):*}
      */
 
   }, {
@@ -5243,9 +5302,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * setDirty
+     * Marks this GameObject and/or its children elements as dirty.
      *
-     * @param {DirtyFlag} flag
+     * @param {DirtyFlag} flag                 The flag or flag bit mask.
      * @param {boolean} [includeChildren=true] Description
      *
      * @return {void}
@@ -5264,6 +5323,14 @@ var GameObject = function (_MessageDispatcher) {
         this.mDirty |= flag;
       }
     }
+
+    /**
+     * Marks this GameObject as Local dirty and all children elements as World
+     * dirty.
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'setTransformDirty',
     value: function setTransformDirty() {
@@ -5272,7 +5339,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * dispose
+     * @ignore
      *
      * @return {void}
      */
@@ -5283,13 +5350,13 @@ var GameObject = function (_MessageDispatcher) {
 
     // TODO: rename method
     /**
-     * getBoundsWithPoints - Description
+     * @ignore
      *
-     * @param {Array<number>} points              Description
-     * @param {Matrix} worldTransformation Description
-     * @param {Rectangle=} outRect             Description
+     * @param {Array<number>} points
+     * @param {Matrix} worldTransformation
+     * @param {Rectangle=} outRect
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle}
      */
 
   }, {
@@ -5329,7 +5396,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     *  returns cloned Matrix object which represents object orientation in world space.
+     * Returns cloned Matrix object which represents object orientation in world space.
      *
      * @return {Matrix}
      */
@@ -5347,7 +5414,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * returns cloned and inversed Matrix object which represents object orientation in world space
+     * Returns cloned and inversed Matrix object which represents object orientation in world space
      *
      * @return {Matrix}
      */
@@ -5365,9 +5432,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * name - Description
+     * Returns name of this GameoObject instance.
      *
-     * @return {string|null} Description
+     * @return {string|null}
      */
 
   }, {
@@ -5377,11 +5444,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * name - Description
-     *
+     * @ignore
      * @param {string|null} value Description
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5389,9 +5455,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * x - Gets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+     * Gets/Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5401,11 +5467,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * x - Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5416,9 +5481,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * y - Gets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+     * Gets/Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5428,11 +5493,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * y - Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5443,9 +5507,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * pivotX - Description
-     * @export
-     * @return {number} Description
+     * Gets/Sets the x coordinate of the object's origin in its local space.
+     *
+     * @return {number}
      */
 
   }, {
@@ -5455,12 +5519,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * pivotX - Description
+     * @ignore
+     * @param {number} value
      *
-     * @export
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5471,9 +5533,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * pivotY - Description
+     * Gets/Sets the y coordinate of the object's origin in its local space.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5483,11 +5545,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * pivotY - Description
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5503,11 +5564,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * scaleX - Description
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5518,7 +5578,7 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * scaleY - Description
+     * Gets/Sets the scale factor of this object along y-axis.
      *
      * @return {number} Description
      */
@@ -5530,11 +5590,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * scaleY - Description
-     *
+     * @ignore
      * @param {number} value Description
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5545,9 +5604,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * rotation - returns current rotation
+     * Gets/Sets rotation in radians.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5557,11 +5616,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * rotation - Description
-     *
+     * @ignore
      * @param {number} value Description
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5572,9 +5630,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * parent - Description
+     * Returns this GameObject parent GameObject.
+     * @readonly
      *
-     * @return {GameObject} Description
+     * @return {GameObject}
      */
 
   }, {
@@ -5584,9 +5643,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * root - Description
+     * Returns topmost parent element of this GameObject or null if this
+     * GameObject is not a child.
      *
-     * @return {GameObject|null} Description
+     * @readonly
+     *
+     * @return {GameObject|null}
      */
 
   }, {
@@ -5604,9 +5666,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * depth - Description
+     * Returns how deep this GameObject in the display tree.
      *
-     * @return {number} Description
+     * @readonly
+     *
+     * @return {number}
      */
 
   }, {
@@ -5614,23 +5678,34 @@ var GameObject = function (_MessageDispatcher) {
     get: function get() {
       if (this.mParent) return this.mParent.depth + 1;else return 0;
     }
-
+  }, {
+    key: 'displayDepth',
+    get: function get() {
+      // Many thanks to Roman Kopansky
+      var flatten = function flatten(arr) {
+        return arr.reduce(function (acc, val) {
+          return acc.concat(val.mChildren.length ? flatten(val.mChildren) : val);
+        }, []);
+      };
+      return flatten(this.root.mChildren).indexOf(this);
+    }
     /**
-     * index - Description
-     *
-     * @return {number} Description
+     * @ignore
+     * @return {number}
      */
 
   }, {
     key: 'index',
     get: function get() {
-      return this.mIndex;
+      // TODO: this is only required by Input component and its pretty heavy.
+      // Try to workaround it.
+      return this.parent.mChildren.indexOf(this);
     }
 
     /**
-     * width - Description
+     * Gets/sets the width of this object.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5640,11 +5715,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * width - Description
+     * @ignore
      *
-     * @param {number} value Description
+     * @param {number} value
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5655,9 +5730,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * height - Description
+     * Gets/sets the height of this object.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -5667,11 +5742,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * height - Description
+     * @ignore
+     * @param {number} value
      *
-     * @param {number} value Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5682,7 +5756,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * localWidth - returns height in local space without children.
+     * Returns width of this GameObject in local space without including children
+     * elements.
+     *
+     * @readonly
      *
      * @return {number}
      */
@@ -5694,7 +5771,10 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * localHeight - returns height in local space without children.
+     * Returns height of this GameObject in local space without including children
+     * elements.
+     *
+     * @readonly
      *
      * @return {number}
      */
@@ -5707,9 +5787,12 @@ var GameObject = function (_MessageDispatcher) {
 
     // TODO: precache
     /**
-     * path - Description
+     * Returns string representing a url like path to this object in the display
+     * tree.
      *
-     * @return {string} Description
+     * @readonly
+     *
+     * @return {string}
      */
 
   }, {
@@ -5721,9 +5804,9 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * tag - Description
+     * Gets/Sets tag of this GameObject.
      *
-     * @return {string|null} Description
+     * @return {string|null}
      */
 
   }, {
@@ -5733,11 +5816,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * tag - Description
+     * @ignore
      *
-     * @param {string|null} value Description
+     * @param {string|null} value
      *
-     * @return {void} Description
+     * @return {void}
      */
     ,
     set: function set(value) {
@@ -5779,12 +5862,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * intersects - Description
+     * Returns whenever a given GameObject intersects with a point.
      *
-     * @param {GameObject} gameObject Description
-     * @param {Vector} point      Description
+     * @param {GameObject} gameObject GameObject to test.
+     * @param {Vector} point          A point to test.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if intersects.
      */
 
   }, {
@@ -5800,13 +5883,14 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * intersectsAt - Description
+     * Returns a point where intersection were made in local space.
      *
-     * @param {GameObject} gameObject Description
-     * @param {Vector} point      Description
-     * @param {Vector=} outVector  Description
+     * @param {GameObject} gameObject GameObject to test intersection with.
+     * @param {Vector}     point      The point to test.
+     * @param {Vector=}    outVector  If passed point of intersection will be
+     * stored in it.
      *
-     * @return {boolean} Description
+     * @return {boolean} True if intersects.
      */
 
   }, {
@@ -5832,12 +5916,13 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * intersectsWith - Description
+     * Checks if GameObject or any of its children elements intersects the given
+     * point.
      *
-     * @param {GameObject} gameObject Description
-     * @param {Vector} point      Description
+     * @param {GameObject} gameObject GameObject to test.
+     * @param {Vector} point          Point to test.
      *
-     * @return {GameObject|null} returns object or null
+     * @return {GameObject|null} Intersecting object or null.
      */
 
   }, {
@@ -5865,11 +5950,11 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * findWithTag - Description
+     * Returns all GameObject with given tag.
      *
-     * @param {string} tag Description
+     * @param {string} tag Tag to find.
      *
-     * @return {Array<GameObject>|null} Description
+     * @return {Array<GameObject>|null} Array of GameObject or null if not found.
      */
 
   }, {
@@ -5881,12 +5966,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * findComponents - Returns a list of Components
+     * Returns a list of Components.
      *
-     * @param {GameObject} gameObject
-     * @param {function (new:Component)} type
+     * @param {GameObject} gameObject         GameObject to start search from.
+     * @param {function (new:Component)} type Type of Component.
      *
-     * @return {Array<Component>}
+     * @return {Array<Component>} Array of Component or empty array.
      */
 
   }, {
@@ -5916,12 +6001,13 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * forEach - Runs action accross all object mathing the name.
+     * Runs action accross all GameObjects.
      *
-     * @param {GameObject} node   Description
-     * @param {function(node:GameObject)} action Description
+     * @param {GameObject} node                  GameObject to start iteration from.
+     * @param {function(node:GameObject)} action The function to be executed on
+     * every GameObject.
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -5937,12 +6023,13 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
-     * find - Finds object by its name.
+     * Finds object by its name. If node is not passed the root will be taken as
+     * starting point.
      *
-     * @param {string} name Description
-     * @param {GameObject} node Description
+     * @param {string} name      Name to search.
+     * @param {GameObject=} node Starting GameObject.
      *
-     * @return {GameObject} Description
+     * @return {GameObject} GameObject or null.
      */
 
   }, {
@@ -5964,7 +6051,9 @@ var GameObject = function (_MessageDispatcher) {
   return GameObject;
 }(MessageDispatcher);
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 
@@ -5994,9 +6083,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // source size - the original size of a texture to
 //
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Scatter
+ */
 
 var Texture = function () {
   /**
+   * Creates new Texture instance.
    * @param  {Image} nativeTexture description
    * @param  {Rectangle=} region = undefined description
    * @param  {Rectangle=} untrimmedRect = undefined description
@@ -6004,16 +6100,28 @@ var Texture = function () {
   function Texture(nativeTexture, region, untrimmedRect) {
     _classCallCheck(this, Texture);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mTexture = nativeTexture;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mRegion;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsSubtexture = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++Texture.__ID;
 
     if (region === undefined) {
@@ -6023,22 +6131,31 @@ var Texture = function () {
       this.mIsSubtexture = true;
     }
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mTrimmed = untrimmedRect !== undefined;
 
     if (this.mTrimmed === false) untrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mUntrimmedRect = /** @type {Rectangle} */untrimmedRect;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = true;
   }
 
   /**
-   * id - Description
+   * Returns the unique id of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
 
 
@@ -6047,20 +6164,20 @@ var Texture = function () {
 
 
     /**
-     * dispose - Description
+     * Dispose and releases all resources related to this texture.
      *
-     * @return {void} Description
+     * @return {void}
      */
     value: function dispose() {
       this.mTexture = null;
     }
 
     /**
-     * fromBase64String - Description
+     * @ignore
      *
-     * @param {string} string Description
+     * @param {string} string
      *
-     * @return {Texture} Description
+     * @return {Texture}
      */
 
   }, {
@@ -6070,9 +6187,9 @@ var Texture = function () {
     }
 
     /**
-     * isTrimmed - Description
+     * Returns True if this texture has been trimmed.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -6082,7 +6199,7 @@ var Texture = function () {
     }
 
     /**
-     * isSubTexture - Description
+     * Returns True if this texture is a part of other Texture object
      *
      * @return {boolean} Description
      */
@@ -6104,9 +6221,10 @@ var Texture = function () {
     //
 
     /**
-     * untrimmedRect - Description
+     * Returns a Rect object representing the untrimmed size and position of this
+     * texture withing other texture if so.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle}
      */
 
   }, {
@@ -6116,9 +6234,9 @@ var Texture = function () {
     }
 
     /**
-     * width - Description
+     * The width of this texture.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -6130,9 +6248,9 @@ var Texture = function () {
     }
 
     /**
-     * height - Description
+     * The width of this texture.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -6144,9 +6262,9 @@ var Texture = function () {
     }
 
     /**
-     * region - Description
+     * If isSubTexture, returns the physical region inside parent texture.
      *
-     * @return {Rectangle} Description
+     * @return {Rectangle}
      */
 
   }, {
@@ -6156,9 +6274,9 @@ var Texture = function () {
     }
 
     /**
-     * native - Description
+     * Returns native object. Usually DOM Image element.
      *
-     * @return {Image} Description
+     * @return {Image}
      */
 
   }, {
@@ -6168,39 +6286,15 @@ var Texture = function () {
     }
 
     /**
-     * isLoaded - Description
+     * True if fully loaded and ready.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
     key: 'isLoaded',
     get: function get() {
       return this.mIsLoaded;
-    }
-
-    /**
-     * type - Description
-     *
-     * @return {string} Description
-     */
-
-  }, {
-    key: 'type',
-    get: function get() {
-      return 'Texture';
-    }
-
-    /**
-     * baseType - Description
-     *
-     * @return {string} Description
-     */
-
-  }, {
-    key: 'baseType',
-    get: function get() {
-      return 'Texture';
     }
   }], [{
     key: 'fromBase64String',
@@ -6211,13 +6305,13 @@ var Texture = function () {
     }
 
     /**
-     * fromCanvasAsImage - Description
+     * @ignore
      *
-     * @param {HTMLElement}   canvas           Description
-     * @param {string} [type=image/png] Description
-     * @param {number} [quality=1]      Description
+     * @param {HTMLElement}   canvas
+     * @param {string} [type=image/png]
+     * @param {number} [quality=1]
      *
-     * @return {Texture} Description
+     * @return {Texture}
      */
 
   }, {
@@ -6233,11 +6327,11 @@ var Texture = function () {
     }
 
     /**
-     * fromCanvas - Description
+     * @ignore
      *
-     * @param {HTMLElement} canvas Description
+     * @param {HTMLElement} canvas
      *
-     * @return {Texture} Description
+     * @return {Texture}
      */
 
   }, {
@@ -6250,14 +6344,18 @@ var Texture = function () {
   return Texture;
 }();
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 
 
 Texture.__ID = 0;
 
-/** @type {Image|null}
+/**
+ * @private
+ * @type {Image|null}
  * @nocollapse
  */
 Texture.MISSING_IMAGE_CACHE = null;
@@ -6271,16 +6369,21 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Texture
+ */
+
 var AtlasTexture = function (_Texture) {
   _inherits(AtlasTexture, _Texture);
 
   /**
-   * constructor - Creates an Texture Atlas
+   * Creates new AtlasTexture instance.
    *
-   * @param {Texture} texture A base texture object.
-   * @param {{meta: *, frames: *}} jsonObject
-   *
-   * @return {void}
+   * @param {Texture}              texture A base texture object.
+   * @param {{meta: *, frames: *}} Black json object.
    */
   function AtlasTexture(texture, jsonObject) {
     _classCallCheck(this, AtlasTexture);
@@ -6298,7 +6401,7 @@ var AtlasTexture = function (_Texture) {
   }
 
   /**
-   * __parseJson
+   * @private
    *
    * @param  {{meta: *, frames: *}} o
    * @return {void}
@@ -6331,11 +6434,11 @@ var AtlasTexture = function (_Texture) {
     // removeRegion() {}
 
     /**
-     * getTexture - Returns the textures by a given name.
+     * Returns the texture by a given name.
      *
-     * @param {string} name
+     * @param {string} name The name of the texture to find.
      *
-     * @return {Texture} The Texture or null;
+     * @return {Texture} The Texture or null if not found.
      */
 
   }, {
@@ -6350,10 +6453,11 @@ var AtlasTexture = function (_Texture) {
     }
 
     /**
-     * getTextures - Returns list of Textures.
+     * Returns array of Texture by given name or wildcard mask.
      *
      * @param {string|null} [nameMask=null] The mask to filter by.
-     * @param {Array<Texture>|null} outTextures
+     * @param {Array<Texture>|null}         outTextures If passed will be
+     * overwritten by result object.
      *
      * @return {Array<Texture>} The list of found textures.
      */
@@ -6386,6 +6490,7 @@ var AtlasTexture = function (_Texture) {
     }
 
     /**
+     * @private
      * @param {*} a
      * @param {*} b
      *
@@ -6423,51 +6528,78 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// TODO: handle errors
-// TODO: v2: parallel loading?
-//
-//
+/**
+ * Holds information about external assets.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 
 var Asset = function (_MessageDispatcher) {
   _inherits(Asset, _MessageDispatcher);
 
   /**
-   * @param  {string} name description
-   * @param  {string} url  description
+   * Creates new Assets instance.
+   * @param  {string} name Name of asset.
+   * @param  {string} url  URL of the asset to load it from.
    */
   function Asset(name, url) {
     _classCallCheck(this, Asset);
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     var _this = _possibleConstructorReturn(this, (Asset.__proto__ || Object.getPrototypeOf(Asset)).call(this));
 
     _this.mName = name;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.mUrl = url;
 
-    /** @type {*|null} */
+    /**
+     * @private
+     * @type {*|null}
+     */
     _this.mData = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsLoaded = false;
 
-    /** @type {string|undefined} */
+    /**
+     * @private
+     * @type {string|undefined}
+     */
     _this.mMimeType = undefined;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.mResponseType = '';
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     _this.mExtension = _this.getExtension(url);
 
-    /** @type {XMLHttpRequest|null} */
+    /**
+     * @private
+     * @type {XMLHttpRequest|null}
+     */
     _this.mRequest = null;
     return _this;
   }
 
   /**
-   * load
+   * Loads asset from an external source.
    *
    * @return {void}
    */
@@ -6497,7 +6629,10 @@ var Asset = function (_MessageDispatcher) {
     }
 
     /**
-     * onLoaded
+     * Called when asset is fully loaded.
+     *
+     * @protected
+     * @fires complete
      *
      * @return {void}
      */
@@ -6510,7 +6645,7 @@ var Asset = function (_MessageDispatcher) {
     }
 
     /**
-     * name
+     * Returns the name of this asset.
      *
      * @return {string}
      */
@@ -6523,19 +6658,19 @@ var Asset = function (_MessageDispatcher) {
     value: function dispose() {}
 
     /**
-     * getExtension
+     * Helper function. Returns the file extension.
      *
-     * @param {string} url
+     * @param {string} url Url to get extension from.
      *
-     * @return {string}
+     * @return {string} Empty string if no extension were found or extension itself.
      */
 
   }, {
     key: 'getExtension',
     value: function getExtension(url) {
-      if (url.indexOf(".") === -1) return '';
+      if (url.indexOf('.') === -1) return '';
 
-      return url.substring(url.indexOf(".")).toLowerCase();
+      return url.substring(url.indexOf('.')).toLowerCase();
     }
   }, {
     key: 'name',
@@ -6544,7 +6679,7 @@ var Asset = function (_MessageDispatcher) {
     }
 
     /**
-     * data
+     * Returns loaded data object associated with this asset.
      *
      * @return {*}
      */
@@ -6556,7 +6691,7 @@ var Asset = function (_MessageDispatcher) {
     }
 
     /**
-     * isLoaded
+     * Returns true if asset is preloaded.
      *
      * @return {boolean}
      */
@@ -6582,21 +6717,30 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Single Texture file asset class responsible for loading images file and
+ * converting them into Textures.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
+
 var TextureAsset = function (_Asset) {
   _inherits(TextureAsset, _Asset);
 
   /**
-   * constructor - Description
+   * Creates TextureAsset instance.
    *
-   * @param {string} name Description
-   * @param {string} url  Description
-   *
-   * @return {void} Description
+   * @param {string} name Asset name.
+   * @param {string} url  URL to load image from.
    */
   function TextureAsset(name, url) {
     _classCallCheck(this, TextureAsset);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     var _this = _possibleConstructorReturn(this, (TextureAsset.__proto__ || Object.getPrototypeOf(TextureAsset)).call(this, name, url));
 
     _this.mImageElement = new Image();
@@ -6604,26 +6748,26 @@ var TextureAsset = function (_Asset) {
   }
 
   /**
-   * onLoaded - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
 
 
   _createClass(TextureAsset, [{
     key: "onLoaded",
     value: function onLoaded() {
-      //console.log('TextureAsset: \'%s\' loaded', this.mName);
-
       this.mData = new Texture(this.mImageElement);
 
       _get(TextureAsset.prototype.__proto__ || Object.getPrototypeOf(TextureAsset.prototype), "onLoaded", this).call(this);
     }
 
     /**
-     * load - Description
+     * @override
+     * @inheritdoc
      *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
@@ -6636,70 +6780,9 @@ var TextureAsset = function (_Asset) {
         _this2.onLoaded();
       };
     }
-
-    /**
-     * type - Description
-     *
-     * @return {string} Description
-     */
-
-  }, {
-    key: "type",
-    get: function get() {
-      return "TextureAsset";
-    }
   }]);
 
   return TextureAsset;
-}(Asset);
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var JSONAsset = function (_Asset) {
-  _inherits(JSONAsset, _Asset);
-
-  /**
-   * constructor
-   *
-   * @param {string} name
-   * @param {string} url
-   *
-   * @return {void}
-   */
-  function JSONAsset(name, url) {
-    _classCallCheck(this, JSONAsset);
-
-    var _this = _possibleConstructorReturn(this, (JSONAsset.__proto__ || Object.getPrototypeOf(JSONAsset)).call(this, name, url));
-
-    _this.mimeType = "application/json";
-    return _this;
-  }
-
-  /**
-   * onLoaded
-   *
-   * @return {void}
-   */
-
-
-  _createClass(JSONAsset, [{
-    key: "onLoaded",
-    value: function onLoaded() {
-      this.mData = JSON.parse( /** @type {string} */this.mRequest.responseText);
-      _get(JSONAsset.prototype.__proto__ || Object.getPrototypeOf(JSONAsset.prototype), "onLoaded", this).call(this);
-    }
-  }]);
-
-  return JSONAsset;
 }(Asset);
 'use strict';
 
@@ -6713,17 +6796,249 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Single JSON file asset class responsible for loading json file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
+
+var JSONAsset = function (_Asset) {
+  _inherits(JSONAsset, _Asset);
+
+  /**
+   * Creates new JSONAsset instance.
+   *
+   * @param {string} name The name of asset.
+   * @param {string} url  URL to the json file.
+   *
+   * @return {void}
+   */
+  function JSONAsset(name, url) {
+    _classCallCheck(this, JSONAsset);
+
+    var _this = _possibleConstructorReturn(this, (JSONAsset.__proto__ || Object.getPrototypeOf(JSONAsset)).call(this, name, url));
+
+    _this.mimeType = 'application/json';
+    return _this;
+  }
+
+  /**
+   * @override
+   * @inheritdoc
+   *
+   * @return {void}
+   */
+
+
+  _createClass(JSONAsset, [{
+    key: 'onLoaded',
+    value: function onLoaded() {
+      this.mData = JSON.parse( /** @type {string} */this.mRequest.responseText);
+      _get(JSONAsset.prototype.__proto__ || Object.getPrototypeOf(JSONAsset.prototype), 'onLoaded', this).call(this);
+    }
+  }]);
+
+  return JSONAsset;
+}(Asset);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FontAsset = function (_Asset) {
+  _inherits(FontAsset, _Asset);
+
+  /**
+   * @param {string} name font name
+   * @param {string} url font url
+   *
+   * @return {void}
+   */
+  function FontAsset(name, url) {
+    _classCallCheck(this, FontAsset);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    var _this = _possibleConstructorReturn(this, (FontAsset.__proto__ || Object.getPrototypeOf(FontAsset)).call(this, name, url));
+
+    _this.mTestingFontName = 'Courier New';
+
+    /**
+     * @private
+     * @type {string}
+     */
+    _this.mTestingString = '~ GHBDTN,.#$Mlck';
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mLoadingTimeout = 2500;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mCheckDelay = 50;
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    _this.mTestingElement = _this.__getTestingElement();
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    _this.mCSSLoader = _this.__getCSSLoader();
+    _this.mTestingElement.style.fontFamily = _this.mTestingFontName;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mDefaultFontWidth = _this.mTestingElement.offsetWidth;
+    _this.mTestingElement.style.fontFamily = name + ',' + _this.mTestingFontName;
+    return _this;
+  }
+
+  /**
+   * @private
+   * @return {string}
+   */
+
+
+  _createClass(FontAsset, [{
+    key: '__getCSSLoader',
+    value: function __getCSSLoader() {
+      if (FontAsset.CSS_LOADER) return FontAsset.CSS_LOADER;
+
+      var cssLoader = document.createElement('style');
+      cssLoader.type = 'text/css';
+      document.getElementsByTagName('head')[0].appendChild(cssLoader);
+      FontAsset.CSS_LOADER = cssLoader;
+      return cssLoader;
+    }
+
+    /**
+     * @private
+     * @return {string}
+     */
+
+  }, {
+    key: '__getTestingElement',
+    value: function __getTestingElement() {
+      if (FontAsset.TESTING_ELEMENT) return FontAsset.TESTING_ELEMENT;
+
+      var testingElement = document.createElement('span');
+      testingElement.style.position = 'absolute';
+      testingElement.style.top = '-9999px';
+      testingElement.style.left = '-9999px';
+      testingElement.style.visibility = 'hidden';
+      testingElement.style.fontSize = '250px';
+      testingElement.innerHTML = this.mTestingString;
+      document.body.appendChild(testingElement);
+
+      FontAsset.TESTING_ELEMENT = testingElement;
+      return testingElement;
+    }
+
+    /**
+     * @override
+     * @return {string}
+     */
+
+  }, {
+    key: 'load',
+    value: function load() {
+      this.mCSSLoader.innerHTML += '\n @font-face {font-family: ' + this.mName + '; src: url(' + this.mUrl + ');}';
+      this.checkLoadingStatus();
+    }
+
+    /**
+     * @return {void}
+     */
+
+  }, {
+    key: 'checkLoadingStatus',
+    value: function checkLoadingStatus() {
+      if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
+        if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
+          this.onLoadingFail();
+          return;
+        }
+
+        setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+        return;
+      }
+      this.onLoaded();
+    }
+
+    /**
+     * @return {void}
+     */
+
+  }, {
+    key: 'onLoadingFail',
+    value: function onLoadingFail() {
+      console.warn('loading ' + this.name + ' font failed.');
+      this.onLoaded(); //TODO what to do here?
+    }
+
+    /**
+     * @return {string}
+     */
+
+  }, {
+    key: 'type',
+    get: function get() {
+      return "FontAsset";
+    }
+  }]);
+
+  return FontAsset;
+}(Asset);
+
+FontAsset.TESTING_ELEMENT = null;
+FontAsset.CSS_LOADER = null;
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Texture Atlas asset responsible for loading Image file and coresponding Json
+ * file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
+
 var AtlasTextureAsset = function (_Asset) {
   _inherits(AtlasTextureAsset, _Asset);
 
   /**
-   * constructor
+   * Creates new AtlasTextureAsset instance.
    *
-   * @param {string} name
-   * @param {string} imageUrl
-   * @param {string} dataUrl
-   *
-   * @return {void}
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Image URL.
+   * @param {string} dataUrl  Json URL.
    */
   function AtlasTextureAsset(name, imageUrl, dataUrl) {
     _classCallCheck(this, AtlasTextureAsset);
@@ -6739,6 +7054,12 @@ var AtlasTextureAsset = function (_Asset) {
     return _this;
   }
 
+  /**
+   * @ignore
+   * @returns {void}
+   */
+
+
   _createClass(AtlasTextureAsset, [{
     key: 'onJsonLoaded',
     value: function onJsonLoaded() {
@@ -6751,8 +7072,8 @@ var AtlasTextureAsset = function (_Asset) {
     }
 
     /**
-     * onLoaded
-     *
+     * @override
+     * @inheritdoc
      * @return {void}
      */
 
@@ -6765,7 +7086,7 @@ var AtlasTextureAsset = function (_Asset) {
     }
 
     /**
-     * load
+     * @inheritdoc
      * @override
      *
      * @return {void}
@@ -6798,58 +7119,133 @@ TODO:
   4. load progress
 */
 
+/**
+ * Reponsible for preloading assets and manages its in memory state.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
+
 var AssetManager = function (_MessageDispatcher) {
   _inherits(AssetManager, _MessageDispatcher);
 
+  /**
+   * Creates new AssetManager instance. AssetManager exposes static property
+   * called 'default' and many internal classes uses default instance.
+   */
   function AssetManager() {
     _classCallCheck(this, AssetManager);
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     var _this = _possibleConstructorReturn(this, (AssetManager.__proto__ || Object.getPrototypeOf(AssetManager)).call(this));
 
     _this.mDefaultPath = '';
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mTotalLoaded = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsAllLoaded = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mLoadingProgress = 0;
 
-    /** @type {Array<Asset>} */
+    /**
+     * @private
+     * @type {Array<Asset>}
+     */
     _this.mQueue = [];
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     _this.mTextures = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     _this.mAtlases = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     _this.mJsons = {};
     return _this;
   }
+
+  /**
+   * Adds single image to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the image.
+   *
+   * @returns {void}
+   */
+
 
   _createClass(AssetManager, [{
     key: 'enqueueImage',
     value: function enqueueImage(name, url) {
       this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
     }
+
+    /**
+     * Adds atlas to the loading queue.
+     *
+     * @param {string} name     Name of the asset.
+     * @param {string} imageUrl Atlas URL.
+     * @param {string} dataUrl  URL to the .json file which describes the atlas.
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'enqueueAtlas',
     value: function enqueueAtlas(name, imageUrl, dataUrl) {
       this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
     }
+
+    /**
+     * Adds single json file to the loading queue.
+     *
+     * @param {string} name Name of the asset.
+     * @param {string} url  The URL of the json.
+     *
+     * @returns {void}
+     */
+
   }, {
     key: 'enqueueJson',
     value: function enqueueJson(name, url) {
       this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
     }
+  }, {
+    key: 'enqueueFont',
+    value: function enqueueFont(name, url) {
+      this.mQueue.push(new FontAsset(name, this.mDefaultPath + url));
+    }
 
     /**
-     * loadQueue
+     * Starts preloading all enqueued assets.
+     * @fires complete
      *
      * @return {void}
      */
@@ -6866,7 +7262,8 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * onAssetLoaded
+     * @protected
+     * @ignore
      *
      * @param {Message} msg
      *
@@ -6883,11 +7280,13 @@ var AssetManager = function (_MessageDispatcher) {
 
       // TODO: rework this
       // TODO: check for dups
-      if (item.constructor === TextureAsset) this.mTextures[item.name] = item.data;else if (item.constructor === AtlasTextureAsset) this.mAtlases[item.name] = item.data;else if (item.constructor === JSONAsset) this.mJsons[item.name] = item.data;else console.error('Unable to handle asset type.', item);
+      if (item.constructor === TextureAsset) this.mTextures[item.name] = item.data;else if (item.constructor === AtlasTextureAsset) this.mAtlases[item.name] = item.data;else if (item.constructor === JSONAsset) this.mJsons[item.name] = item.data;else if (item.constructor === FontAsset) {} else console.error('Unable to handle asset type.', item);
 
       this.post(Message.PROGRESS, this.mLoadingProgress);
 
       if (this.mTotalLoaded === this.mQueue.length) {
+        if (FontAsset.TESTING_ELEMENT) FontAsset.TESTING_ELEMENT.remove();
+
         this.mQueue.splice(0, this.mQueue.length);
 
         this.mIsAllLoaded = true;
@@ -6896,11 +7295,11 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * getTexture
+     * Returns Texture object by given name.
      *
-     * @param {string} name
+     * @param {string} name The name of the Asset.
      *
-     * @return {Texture|null}
+     * @return {Texture|null} Returns a Texture if found or null.
      */
 
   }, {
@@ -6920,9 +7319,11 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * @param {string} name
+     * Returns AtlasTexture by given name.
      *
-     * @return {AtlasTexture}
+     * @param {string} name The name of the Asset.
+     *
+     * @return {AtlasTexture} Returns atlas or null.
      */
 
   }, {
@@ -6932,7 +7333,8 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * defaultPath
+     * Gets/Sets default path for preloading. Usefull when url's getting too long.
+     * The asset path will be concatenated with defaultPath.
      *
      * @return {string}
      */
@@ -6944,8 +7346,7 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * defaultPath
-     *
+     * @ignore
      * @param {string} value
      *
      * @return {void}
@@ -6956,7 +7357,7 @@ var AssetManager = function (_MessageDispatcher) {
     }
 
     /**
-     * isAllLoaded
+     * Returns True if all assets were loaded.
      *
      * @return {boolean}
      */
@@ -6971,7 +7372,11 @@ var AssetManager = function (_MessageDispatcher) {
   return AssetManager;
 }(MessageDispatcher);
 
-/** @type {AssetManager} */
+/**
+ * Default instance. Sprite and other classes uses this instance to find textures by name.
+ * @static
+ * @type {AssetManager}
+ */
 
 
 AssetManager.default = new AssetManager();
@@ -8759,21 +9164,40 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Contains system functions.
+ * @static
+ * @cat system
+ */
+
 var Device = function () {
+  /**
+   * Static class.
+   */
   function Device() {
     _classCallCheck(this, Device);
 
-    /** @type {Device} */
+    /**
+     * @private
+     * @type {Device}
+     */
     this.constructor.mInstance = this;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPixelRatio = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
   }
 
   /**
+   * Returns current OS name.
    * @return {string}
    */
 
@@ -8783,7 +9207,7 @@ var Device = function () {
 
 
     /**
-     * getDevicePixelRatio - Description
+     * @private
      *
      * @suppress {missingProperties}
      *
@@ -8809,9 +9233,9 @@ var Device = function () {
     }
 
     /**
-     * isTouch - Description
+     * Returns True if touch screen is present.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -8826,9 +9250,9 @@ var Device = function () {
     }
 
     /**
-     * isMobile - Description
+     * Returns True if engine is running on mobile device.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -8839,9 +9263,9 @@ var Device = function () {
     }
 
     /**
-     * pixelRatio - Description
+     * Returns screen pixel ratio.
      *
-     * @return {number} Description
+     * @return {number}
      */
 
   }, {
@@ -8854,7 +9278,9 @@ var Device = function () {
   return Device;
 }();
 
-/** @type {Device}
+/**
+ * @private
+ * @type {Device}
  * @nocollapse
  */
 
@@ -8866,15 +9292,23 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Base class for distribution objects.
+ *
+ * @cat scatters
+ */
+
 var Scatter = function () {
+  /**
+   * Creates new Scatter instance.
+   */
   function Scatter() {
     _classCallCheck(this, Scatter);
   }
 
   /**
-   * getValue
-   *
-   * @return {*}
+   * Returns random value.
+   * @return {*} Any object.
    */
 
 
@@ -8883,11 +9317,11 @@ var Scatter = function () {
     value: function getValue() {}
 
     /**
-     * getValueAt
+     * Returns value at given position.
      *
-     * @param {number} t
+     * @param {number} t Position to get value at.
      *
-     * @return {*}
+     * @return {*} Any object.
      */
 
   }, {
@@ -8907,9 +9341,23 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * A number scatter for defining a range in 1D space.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
+
 var FloatScatter = function (_Scatter) {
   _inherits(FloatScatter, _Scatter);
 
+  /**
+   * Creates new FloatScatter instance.
+   *
+   * @param {number}      min             The min value along x-axis.
+   * @param {number}      [max=undefined] The max value along x-axis.
+   * @param {function(k)} [ease=null]     Easing function.
+   */
   function FloatScatter(min) {
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
     var ease = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -8927,9 +9375,11 @@ var FloatScatter = function (_Scatter) {
   }
 
   /**
-   * getValue
+   * Returns random number withing defined range.
    *
-   * @return {number}
+   * @override
+   *
+   * @return {number} Random number.
    */
 
 
@@ -8940,11 +9390,12 @@ var FloatScatter = function (_Scatter) {
     }
 
     /**
-     * getValueAt
+     * Returns value at given position within defined range.
      *
-     * @param {number} t
+     * @override
+     * @param {number} t The position.
      *
-     * @return {number}
+     * @return {number} Number at given position.
      */
 
   }, {
@@ -8968,9 +9419,24 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
+
 var VectorScatter = function (_Scatter) {
   _inherits(VectorScatter, _Scatter);
 
+  /**
+   * Creates new VectorScatter instance.
+   *
+   * @param {type} minX The min value along x-axis.
+   * @param {type} minY The min value along y-axis.
+   * @param {type} maxX The max value along x-axis.
+   * @param {type} maxY The max value along y-axis.
+   */
   function VectorScatter(minX, minY, maxX, maxY) {
     _classCallCheck(this, VectorScatter);
 
@@ -8985,9 +9451,11 @@ var VectorScatter = function (_Scatter) {
   }
 
   /**
-   * getValue
+   * Returns a random Vector object at given position within a range specified
+   * in the constructor.
+   * @override
    *
-   * @return {Vector}
+   * @return {Vector} Vector object with random values withing defined range.
    */
 
 
@@ -9001,11 +9469,13 @@ var VectorScatter = function (_Scatter) {
     }
 
     /**
-     * getValueAt
+     * Returns a Vector object at given position.
+     * @override
      *
-     * @param {number} t
+     * @param {number} t The position.
      *
-     * @return {Vector}
+     * @return {Vector} Vector object representing values in a range at
+     * given position.
      */
 
   }, {
@@ -9030,10 +9500,18 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * A number scatter for defining a range in 2D space on a curve.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
+
 var FloatCurveScatter = function (_Scatter) {
   _inherits(FloatCurveScatter, _Scatter);
 
   /**
+   * Creates new FloatCurveScatter instance.
    * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
    */
   function FloatCurveScatter() {
@@ -9041,15 +9519,31 @@ var FloatCurveScatter = function (_Scatter) {
 
     _classCallCheck(this, FloatCurveScatter);
 
+    /**
+     * @private
+     * @type {Curve}
+     */
     var _this = _possibleConstructorReturn(this, (FloatCurveScatter.__proto__ || Object.getPrototypeOf(FloatCurveScatter)).call(this));
 
     _this.mCurve = new Curve();
     _this.mCurve.baked = true;
     (_this$mCurve = _this.mCurve).set.apply(_this$mCurve, arguments);
 
+    /**
+     * @private
+     * @type {Vector}
+     */
     _this.mCache = new Vector();
     return _this;
   }
+
+  /**
+   * Returns a value on a curve at random position.
+   * @override
+   *
+   * @return {number} A random number value on a defined curve.
+   */
+
 
   _createClass(FloatCurveScatter, [{
     key: "getValue",
@@ -9058,6 +9552,16 @@ var FloatCurveScatter = function (_Scatter) {
       this.mCurve.interpolate(t, this.mCache);
       return this.mCache.y;
     }
+
+    /**
+     * Returns a number at given position on a curve.
+     * @override
+     *
+     * @param {number} t The position.
+     *
+     * @return {number} A value on a curve at given position.
+     */
+
   }, {
     key: "getValueAt",
     value: function getValueAt(t) {
@@ -9068,45 +9572,6 @@ var FloatCurveScatter = function (_Scatter) {
 
   return FloatCurveScatter;
 }(Scatter);
-
-var VectorCurveScatter = function (_Scatter2) {
-  _inherits(VectorCurveScatter, _Scatter2);
-
-  /**
-   * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-   */
-  function VectorCurveScatter() {
-    var _this2$mCurve;
-
-    _classCallCheck(this, VectorCurveScatter);
-
-    var _this2 = _possibleConstructorReturn(this, (VectorCurveScatter.__proto__ || Object.getPrototypeOf(VectorCurveScatter)).call(this));
-
-    _this2.mCurve = new Curve();
-    _this2.mCurve.baked = true;
-    (_this2$mCurve = _this2.mCurve).set.apply(_this2$mCurve, arguments);
-
-    _this2.mCache = new Vector();
-    return _this2;
-  }
-
-  _createClass(VectorCurveScatter, [{
-    key: "getValue",
-    value: function getValue() {
-      var t = Math.random();
-      this.mCurve.interpolate(t, this.mCache);
-      return this.mCache;
-    }
-  }, {
-    key: "getValueAt",
-    value: function getValueAt(t) {
-      this.mCurve.interpolate(t, this.mCache);
-      return this.mCache;
-    }
-  }]);
-
-  return VectorCurveScatter;
-}(Scatter);
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -9115,8 +9580,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 /**
  * A base class for particle system actions. Every frame each action executed over each particle.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @abstract
  * @class
  */
@@ -9186,8 +9651,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Adds acceleration to particles along given direction.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -9261,8 +9726,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Sets particle's alpha value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -9333,8 +9798,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Sets particle's scale value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -9400,8 +9865,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Sets particle's rotation value according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -9467,8 +9932,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Sets particle's texture according to its energy value.
- * 
- * @category particles.actions
+ *
+ * @cat particles.actions
  * @extends Action
  * @class
  */
@@ -9531,23 +9996,26 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Base class for particle's initializators. Each initializer updates particle data once at start, eg when particle added to scene.
  *
- * @category particles.initializers
- * @class
+ * @cat particles.initializers
  */
 
 var Initializer = function () {
+  /**
+   * Creates new Initializer instance.
+   */
   function Initializer() {
     _classCallCheck(this, Initializer);
   }
 
+  /**
+   * @param {Particle} particle
+   *
+   * @return {void}
+   */
+
+
   _createClass(Initializer, [{
     key: "initialize",
-
-    /**
-     * @param {Particle} particle
-     *
-     * @return {void}
-     */
     value: function initialize(particle) {}
   }]);
 
@@ -9564,27 +10032,27 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Sets particle's life.
+ * Sets starting particle's life.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 
 var Life = function (_Initializer) {
   _inherits(Life, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new LIfe instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min/max range.
    */
   function Life(floatScatter) {
     _classCallCheck(this, Life);
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range.
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Life.__proto__ || Object.getPrototypeOf(Life)).call(this));
 
     _this.scatter = floatScatter;
@@ -9592,6 +10060,7 @@ var Life = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9619,9 +10088,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Sets particle's mass.
+ * Sets starting particle's mass.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
@@ -9630,16 +10099,17 @@ var Mass = function (_Initializer) {
   _inherits(Mass, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new Mass instance.
    *
-   * @param {number} mass Description
-   *
-   * @return {void} Description
+   * @param {number} mass The mass.
    */
   function Mass(mass) {
     _classCallCheck(this, Mass);
 
-    /** @type {number} */
+    /**
+     * The mass value.
+     * @type {number}
+     */
     var _this = _possibleConstructorReturn(this, (Mass.__proto__ || Object.getPrototypeOf(Mass)).call(this));
 
     _this.mass = mass;
@@ -9647,6 +10117,7 @@ var Mass = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9676,7 +10147,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Sets particle's starting scale.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
@@ -9685,16 +10156,17 @@ var Scale = function (_Initializer) {
   _inherits(Scale, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new Scale instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting scale.
    */
   function Scale(floatScatter) {
     _classCallCheck(this, Scale);
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting scale.
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Scale.__proto__ || Object.getPrototypeOf(Scale)).call(this));
 
     _this.scatter = floatScatter;
@@ -9702,6 +10174,7 @@ var Scale = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9731,7 +10204,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Sets particle's starting velocity.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
@@ -9740,16 +10213,17 @@ var Velocity = function (_Initializer) {
   _inherits(Velocity, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new Velocity instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min-max range for starting velocity.
    */
   function Velocity(vectorScatter) {
     _classCallCheck(this, Velocity);
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for starting velocity.
+     * @type {VectorScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Velocity.__proto__ || Object.getPrototypeOf(Velocity)).call(this));
 
     _this.scatter = vectorScatter;
@@ -9757,6 +10231,7 @@ var Velocity = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9787,9 +10262,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Sets particle's position.
+ * Sets starting particle's position.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
@@ -9798,16 +10273,17 @@ var Position = function (_Initializer) {
   _inherits(Position, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new Position instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min/max range.
    */
   function Position(vectorScatter) {
     _classCallCheck(this, Position);
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for position distribution.
+     * @type {VectorScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Position.__proto__ || Object.getPrototypeOf(Position)).call(this));
 
     _this.scatter = vectorScatter;
@@ -9815,6 +10291,7 @@ var Position = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9847,25 +10324,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Sets particle's default rotation.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
- * @class
  */
 
 var Rotation = function (_Initializer) {
   _inherits(Rotation, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new Rotation instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting rotation.
    */
   function Rotation(floatScatter) {
     _classCallCheck(this, Rotation);
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting rotation
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (Rotation.__proto__ || Object.getPrototypeOf(Rotation)).call(this));
 
     _this.scatter = floatScatter;
@@ -9873,6 +10350,7 @@ var Rotation = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9902,7 +10380,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Sets particle's texture.
  *
- * @category particles.initializers
+ * @cat particles.initializers
  * @extends Initializer
  * @class
  */
@@ -9911,16 +10389,20 @@ var RandomTexture = function (_Initializer) {
   _inherits(RandomTexture, _Initializer);
 
   /**
-   * constructor - Description
+   * Creates new RandomTexture instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter
    */
   function RandomTexture(floatScatter) {
     _classCallCheck(this, RandomTexture);
 
-    /** @type {FloatScatter} */
+    /**
+     * The float scatter defines the index of the texture. All values will be
+     * rounded.
+     *
+     * @see {Particle.textureIndex}
+     * @type {FloatScatter}
+     */
     var _this = _possibleConstructorReturn(this, (RandomTexture.__proto__ || Object.getPrototypeOf(RandomTexture)).call(this));
 
     _this.scatter = floatScatter;
@@ -9928,6 +10410,7 @@ var RandomTexture = function (_Initializer) {
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -9960,6 +10443,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * The particle!
+ *
+ * @cat particles
+ * @class
+ */
+
 var Particle = function () {
     function Particle() {
         _classCallCheck(this, Particle);
@@ -9967,56 +10457,105 @@ var Particle = function () {
         this.reset();
     }
 
+    /**
+     * Resets particle to default state.
+     *
+     * @returns {void}
+     */
+
+
     _createClass(Particle, [{
         key: "reset",
         value: function reset() {
-            /** @type {number} */
+            /**
+             * The index of a texture.
+             * @type {number}
+             */
             this.textureIndex = 0;
 
-            /** @type {number} */
+            /**
+             * The x/y scale of this particle.
+             * @type {number}
+             */
             this.scale = 1;
 
-            /** @type {number} */
+            /**
+             * Alpha value.
+             * @type {number}
+             */
             this.alpha = 1;
 
-            /** @type {number} */
+            /**
+             * The life of this particle.
+             * @type {number}
+             */
             this.life = 1;
 
-            /** @type {number} */
+            /**
+             * The age of this particle.
+             * @type {number}
+             */
             this.age = 0;
 
-            /** @type {number} */
+            /**
+             * Relation of life to age.
+             * @type {number}
+             */
             this.energy = this.age / this.life;
 
-            /** @type {number} */
+            /**
+             * The mass.
+             * @type {number}
+             */
             this.mass = 0;
 
-            /** @type {number} */
+            /**
+             * X-component.
+             * @type {number}
+             */
             this.x = 0;
 
-            /** @type {number} */
+            /**
+             * Y-component.
+             * @type {number}
+             */
             this.y = 0;
 
-            /** @type {number} */
+            /**
+             * Rotation of this particle.
+             * @type {number}
+             */
             this.r = 0;
 
-            /** @type {number} */
+            /**
+             * Velocity by x.
+             * @type {number}
+             */
             this.vx = 0;
 
-            /** @type {number} */
+            /**
+             * Velocity by y.
+             * @type {number}
+             */
             this.vy = 0;
 
-            /** @type {number} */
+            /**
+             * Particle x-acceleration.
+             * @type {number}
+             */
             this.ax = 0;
 
-            /** @type {number} */
+            /**
+             * Particle y-acceleration.
+             * @type {number}
+             */
             this.ay = 0;
         }
 
         /**
-         * update
+         * Internal update method.
          *
-         * @param {number} dt
+         * @param {number} dt Time since last update.
          *
          * @return {void}
          */
@@ -10064,79 +10603,153 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Particle emitter.
+ *
+ * @cat particles
+ * @extends DisplayObject
+ * @class
+ */
+
 var Emitter = function (_DisplayObject) {
   _inherits(Emitter, _DisplayObject);
 
+  /**
+   * Creates new Emitter instance.
+   */
   function Emitter() {
     _classCallCheck(this, Emitter);
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     var _this = _possibleConstructorReturn(this, (Emitter.__proto__ || Object.getPrototypeOf(Emitter)).call(this));
 
     _this.mTextures = null;
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     _this.mParticles = [];
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     _this.mRecycled = [];
 
-    /** @type {Array<Initializer>} */
+    /**
+     * @private
+     * @type {Array<Initializer>}
+     */
     _this.mInitializers = [];
 
-    /** @type {Array<Action>} */
+    /**
+     * @private
+     * @type {Array<Action>}
+     */
     _this.mActions = [];
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     _this.mSpace = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsLocal = true;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mMaxParticles = 10000;
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     _this.mEmitCount = new FloatScatter(10);
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     _this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mEmitNumRepeatsLeft = _this.mEmitNumRepeats.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     _this.mEmitDuration = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mEmitDurationLeft = _this.mEmitDuration.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     _this.mEmitInterval = new FloatScatter(0.1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mEmitIntervalLeft = _this.mEmitInterval.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     _this.mEmitDelay = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mEmitDelayLeft = _this.mEmitDelay.getValue();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     _this.mNextUpdateAt = 0;
 
-    /** @type {EmitterState} */
+    /**
+     * @private
+     * @type {EmitterState}
+     */
     _this.mState = EmitterState.PENDING;
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    _this.__tmpLocal = new Matrix();
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    _this.__tmpWorld = new Matrix();
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
-
-    /** @type {Matrix} */
-    _this.__tmpLocal = new Matrix();
-
-    /** @type {Matrix} */
-    _this.__tmpWorld = new Matrix();
     return _this;
   }
 
@@ -10590,113 +11203,417 @@ var Emitter = function (_DisplayObject) {
 }(DisplayObject);
 "use strict";
 
+// TODO: fix jsdoc to display this enum
+
 /**
+ * @readonly
  * @enum {number}
+ * @cat input
  */
 
 var Key = {
+  /**
+   * @type {number}
+   */
   A: 65,
+  /**
+   * @type {number}
+   */
   B: 66,
+  /**
+   * @type {number}
+   */
   C: 67,
+  /**
+   * @type {number}
+   */
   D: 68,
+  /**
+   * @type {number}
+   */
   E: 69,
+  /**
+   * @type {number}
+   */
   F: 70,
+  /**
+   * @type {number}
+   */
   G: 71,
+  /**
+   * @type {number}
+   */
   H: 72,
+  /**
+   * @type {number}
+   */
   I: 73,
+  /**
+   * @type {number}
+   */
   J: 74,
+  /**
+   * @type {number}
+   */
   K: 75,
+  /**
+   * @type {number}
+   */
   L: 76,
+  /**
+   * @type {number}
+   */
   M: 77,
+  /**
+   * @type {number}
+   */
   N: 78,
+  /**
+   * @type {number}
+   */
   O: 79,
+  /**
+   * @type {number}
+   */
   P: 80,
+  /**
+   * @type {number}
+   */
   Q: 81,
+  /**
+   * @type {number}
+   */
   R: 82,
+  /**
+   * @type {number}
+   */
   S: 83,
+  /**
+   * @type {number}
+   */
   T: 84,
+  /**
+   * @type {number}
+   */
   U: 85,
+  /**
+   * @type {number}
+   */
   V: 86,
+  /**
+   * @type {number}
+   */
   W: 87,
+  /**
+   * @type {number}
+   */
   X: 88,
+  /**
+   * @type {number}
+   */
   Y: 89,
+  /**
+   * @type {number}
+   */
   Z: 90,
+  /**
+   * @type {number}
+   */
   DIGIT_0: 48,
+  /**
+   * @type {number}
+   */
   DIGIT_1: 49,
+  /**
+   * @type {number}
+   */
   DIGIT_2: 50,
+  /**
+   * @type {number}
+   */
   DIGIT_3: 51,
+  /**
+   * @type {number}
+   */
   DIGIT_4: 52,
+  /**
+   * @type {number}
+   */
   DIGIT_5: 53,
+  /**
+   * @type {number}
+   */
   DIGIT_6: 54,
+  /**
+   * @type {number}
+   */
   DIGIT_7: 55,
+  /**
+   * @type {number}
+   */
   DIGIT_8: 56,
+  /**
+   * @type {number}
+   */
   DIGIT_9: 57,
+  /**
+   * @type {number}
+   */
   NUMPAD_0: 96,
+  /**
+   * @type {number}
+   */
   NUMPAD_1: 97,
+  /**
+   * @type {number}
+   */
   NUMPAD_2: 98,
+  /**
+   * @type {number}
+   */
   NUMPAD_3: 99,
+  /**
+   * @type {number}
+   */
   NUMPAD_4: 100,
+  /**
+   * @type {number}
+   */
   NUMPAD_5: 101,
+  /**
+   * @type {number}
+   */
   NUMPAD_6: 102,
+  /**
+   * @type {number}
+   */
   NUMPAD_7: 103,
+  /**
+   * @type {number}
+   */
   NUMPAD_8: 104,
+  /**
+   * @type {number}
+   */
   NUMPAD_9: 105,
+  /**
+   * @type {number}
+   */
   NUMPAD_MULTIPLY: 106,
+  /**
+   * @type {number}
+   */
   NUMPAD_ADD: 107,
+  /**
+   * @type {number}
+   */
   NUMPAD_SUBTRACT: 109,
+  /**
+   * @type {number}
+   */
   NUMPAD_DECIMAL: 110,
+  /**
+   * @type {number}
+   */
   NUMPAD_DIVIDE: 111,
+  /**
+   * @type {number}
+   */
   LEFT_ARROW: 37,
+  /**
+   * @type {number}
+   */
   UP_ARROW: 38,
+  /**
+   * @type {number}
+   */
   RIGHT_ARROW: 39,
+  /**
+   * @type {number}
+   */
   DOWN_ARROW: 40,
+  /**
+   * @type {number}
+   */
   BACKSPACE: 8,
+  /**
+   * @type {number}
+   */
   TAB: 9,
+  /**
+   * @type {number}
+   */
   ENTER: 13,
+  /**
+   * @type {number}
+   */
   SHIFT: 16,
+  /**
+   * @type {number}
+   */
   CTRL: 17,
+  /**
+   * @type {number}
+   */
   ALT: 18,
+  /**
+   * @type {number}
+   */
   F1: 112,
+  /**
+   * @type {number}
+   */
   F2: 113,
+  /**
+   * @type {number}
+   */
   F3: 114,
+  /**
+   * @type {number}
+   */
   F4: 115,
+  /**
+   * @type {number}
+   */
   F5: 116,
+  /**
+   * @type {number}
+   */
   F6: 117,
+  /**
+   * @type {number}
+   */
   F7: 118,
+  /**
+   * @type {number}
+   */
   F8: 119,
+  /**
+   * @type {number}
+   */
   F9: 120,
+  /**
+   * @type {number}
+   */
   F10: 121,
+  /**
+   * @type {number}
+   */
   F11: 122,
+  /**
+   * @type {number}
+   */
   F12: 123,
+  /**
+   * @type {number}
+   */
   PAUSE_BREAK: 19,
+  /**
+   * @type {number}
+   */
   CAPS_LOCK: 20,
+  /**
+   * @type {number}
+   */
   ESCAPE: 27,
+  /**
+   * @type {number}
+   */
   PAGE_UP: 33,
+  /**
+   * @type {number}
+   */
   PAGE_DOWN: 34,
+  /**
+   * @type {number}
+   */
   END: 35,
+  /**
+   * @type {number}
+   */
   HOME: 36,
+  /**
+   * @type {number}
+   */
   INSERT: 45,
+  /**
+   * @type {number}
+   */
   DELETE: 46,
+  /**
+   * @type {number}
+   */
   LEFT_WINDOW: 91,
+  /**
+   * @type {number}
+   */
   RIGHT_WINDOW: 92,
+  /**
+   * @type {number}
+   */
   CONTEXT_MENU: 93,
+  /**
+   * @type {number}
+   */
   NUM_LOCK: 144,
+  /**
+   * @type {number}
+   */
   SCROLL_LOCK: 145,
+  /**
+   * @type {number}
+   */
   SEMI_COLON: 186,
+  /**
+   * @type {number}
+   */
   EQUAL_SIGN: 187,
+  /**
+   * @type {number}
+   */
   COMMA: 188,
+  /**
+   * @type {number}
+   */
   DASH: 189,
+  /**
+   * @type {number}
+   */
   PERIOD: 190,
+  /**
+   * @type {number}
+   */
   FORWARD_SLASH: 191,
+  /**
+   * @type {number}
+   */
   BACKQUOTE: 192,
+  /**
+   * @type {number}
+   */
   BRAKET_LEFT: 219,
+  /**
+   * @type {number}
+   */
   BACK_SLASH: 220,
+  /**
+   * @type {number}
+   */
   BRAKET_RIGHT: 221,
+  /**
+   * @type {number}
+   */
   SINGLE_QUOTE: 222
 };
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Holds information about keyboard event.
+ *
+ * @cat input
+ */
 
 var KeyInfo =
 
@@ -10727,56 +11644,115 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/*
-Has to be static class.
-
-+ before update store all events locally
-- check root object! add collider automatically? or do it on demand?
-*/
+/**
+ * A input system class is reponsible for mouse, touch and keyboard input events.
+ * Pointer events works for a single target only.
+ * Global Input messages has higher priority.
+ *
+ * When GameObject gets a `pointerDown` message it gets target locked. Other
+ * objects will not receive `pointerMove` or `pointerUp` messages. Target locked
+ * object will receive `pointerUp` message even if pointer is outside of its
+ * bounds.
+ *
+ * @cat input
+ * @extends System
+ */
 
 var Input = function (_System) {
   _inherits(Input, _System);
 
+  /**
+   * Private constructor.
+   */
   function Input() {
     _classCallCheck(this, Input);
 
-    /** @type {Input} */
+    /**
+     * @private
+     * @type {Input}
+     */
     var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this));
 
     _this.constructor.instance = _this;
 
-    /** @type {Vector} */
+    /**
+     * @private
+     * @type {Vector}
+     */
     _this.mPointerPosition = new Vector();
 
-    /** @type {Element} */
+    /**
+     * @private
+     * @type {Element}
+     */
     _this.mDom = Black.instance.containerElement;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     _this.mEventList = null;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     _this.mKeyEventList = null;
 
     _this.__initListeners();
 
-    /** @type {Array<{e: Event, x: number, y:number}>} */
+    /**
+     * @private
+     * @type {Array<{e: Event, x: number, y:number}>}
+     */
     _this.mPointerQueue = [];
 
-    /** @type {Array<Event>} */
+    /**
+     * @private
+     * @type {Array<Event>}
+     */
     _this.mKeyQueue = [];
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     _this.mPressedKeys = [];
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mIsPointerDown = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     _this.mNeedUpEvent = false;
 
-    /** @type {Array<InputComponent>} */
-    _this.mInputListeners = [];
+    /**
+     * NOTE: we need guarantee that keys are not going to chage theirs order
+     * when iterating.
+     * @private
+     * @type {Map}
+     */
+    _this.mInputListeners = new Map();
+
+    _this.mTarget = null;
+    _this.mTargetComponent = null;
+    _this.mLockedTarget = null;
+
+    _this.mLastInTargetComponent = null;
     return _this;
   }
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
+
 
   _createClass(Input, [{
     key: '__initListeners',
@@ -10792,7 +11768,7 @@ var Input = function (_System) {
         this.mDom.addEventListener(this.mEventList[i], function (e) {
           return _this2.__onPointerEvent(e);
         }, false);
-      }document.addEventListener(this.mEventList[Input.POINTER_UP], function (e) {
+      }document.addEventListener(this.mEventList[Input.IX_POINTER_UP], function (e) {
         return _this2.__onPointerEventDoc(e);
       }, false);
 
@@ -10802,17 +11778,9 @@ var Input = function (_System) {
         }, false);
       }
     }
-  }, {
-    key: '__sortListeners',
-    value: function __sortListeners() {
-      // TODO: make it faster
-      // - try insert sort
-      this.mInputListeners.sort(function (x, y) {
-        return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
-      });
-    }
 
     /**
+     * @private
      * @param {Event} e
      *
      * @return {boolean}
@@ -10821,12 +11789,25 @@ var Input = function (_System) {
   }, {
     key: '__onKeyEvent',
     value: function __onKeyEvent(e) {
+      if (Black.instance.isPaused === true) return;
+
       this.mKeyQueue.push(e);
       return true;
     }
+
+    /**
+     * @private
+     * @param {Event} e
+     *
+     * @returns {void}
+     */
+
   }, {
     key: '__onPointerEventDoc',
     value: function __onPointerEventDoc(e) {
+      if (Black.instance.isPaused === true) return;
+
+      // dirty check
       var over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
       if (over === false && this.mNeedUpEvent === true) {
@@ -10836,28 +11817,36 @@ var Input = function (_System) {
     }
 
     /**
-     * @param {Event} e Description
+     * @private
+     * @param {Event} e
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
     key: '__onPointerEvent',
     value: function __onPointerEvent(e) {
+      if (Black.instance.isPaused === true) return;
+
       e.preventDefault();
 
       this.__pushEvent(e);
 
       return true;
     }
+
+    /**
+     * @private
+     * @param {Event} e
+     *
+     * @returns {void}
+     */
+
   }, {
     key: '__pushEvent',
     value: function __pushEvent(e) {
       var /** @type {Vector|null} */p = null;
       if (e.type.indexOf('touch') === 0) p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */e);else p = this.__getPointerPos(this.mDom, e);
-
-      this.mPointerPosition.x = p.x;
-      this.mPointerPosition.y = p.y;
 
       this.mPointerQueue.push({
         e: e,
@@ -10867,12 +11856,11 @@ var Input = function (_System) {
     }
 
     /**
-     * __getPointerPos - Description
+     * @private
+     * @param {Element} canvas
+     * @param {Event} evt
      *
-     * @param {Element} canvas Description
-     * @param {Event} evt    Description
-     *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -10885,12 +11873,11 @@ var Input = function (_System) {
     }
 
     /**
-     * __getTouchPos - Description
+     * @private
+     * @param {Element} canvas
+     * @param {TouchEvent} evt
      *
-     * @param {Element} canvas Description
-     * @param {TouchEvent} evt    Description
-     *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -10909,187 +11896,168 @@ var Input = function (_System) {
     }
 
     /**
-     * __addListener - Description
+     * @inheritdoc
+     * @override
+     * @param {number} dt
      *
-     * @param {Array<InputComponent>} array Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: '__addListener',
-    value: function __addListener(array) {
-      // check for duplicates
-      for (var i = 0; i < array.length; i++) {
-        var item = /** @type {InputComponent} */array[i];
-
-        if (this.mInputListeners.indexOf(item) === -1) this.mInputListeners.push(item);
-      }
-
-      this.__sortListeners();
-    }
-
-    /**
-     * onChildrenAdded - Description
-     *
-     * @param {GameObject} child Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: 'onChildrenAdded',
-    value: function onChildrenAdded(child) {
-      var cs = GameObject.findComponents(child, InputComponent);
-      if (!cs || cs.length === 0) return;
-
-      this.__addListener(cs);
-    }
-
-    /**
-     * onChildrenRemoved - Description
-     *
-     * @param {GameObject} child Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: 'onChildrenRemoved',
-    value: function onChildrenRemoved(child) {
-      var cs = GameObject.findComponents(child, InputComponent);
-      if (!cs || cs.length === 0) return;
-
-      for (var i = cs.length - 1; i >= 0; i--) {
-        var component = cs[i];
-        var index = this.mInputListeners.indexOf( /** @type {InputComponent} */component);
-
-        if (index !== -1) this.mInputListeners.splice(index, 1);
-      }
-
-      this.__sortListeners();
-    }
-
-    /**
-     * onComponentAdded - Description
-     *
-     * @param {GameObject} child     Description
-     * @param {Component} component Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: 'onComponentAdded',
-    value: function onComponentAdded(child, component) {
-      if (component.constructor !== InputComponent) return;
-
-      this.__addListener([component]);
-    }
-
-    /**
-     * onComponentRemoved - Description
-     *
-     * @param {GameObject} child     Description
-     * @param {Component} component Description
-     *
-     * @return {void} Description
-     */
-
-  }, {
-    key: 'onComponentRemoved',
-    value: function onComponentRemoved(child, component) {
-      if (component.constructor !== InputComponent) return;
-
-      var index = this.mInputListeners.indexOf( /** @type {InputComponent} */component);
-      if (index !== -1) {
-        this.mInputListeners.splice(index, 1);
-        this.__sortListeners();
-      }
-    }
-
-    /**
-     * onUpdate - Description
-     *
-     * @param {number} dt Description
-     *
-     * @return {void} Description
+     * @return {void}
      */
 
   }, {
     key: 'onUpdate',
     value: function onUpdate(dt) {
-      var pointerPos = new Vector();
+      // omg, who gave you keyboard?
+      this.__updateKeyboard();
+
+      // we had no actual events but still we need to know if something were moved
+      if (this.mPointerQueue.length === 0) {
+        this.__findTarget(Input.pointerPosition);
+        this.__processInOut(Input.pointerPosition);
+      }
 
       for (var i = 0; i < this.mPointerQueue.length; i++) {
         var nativeEvent = this.mPointerQueue[i];
 
-        var ix = this.mEventList.indexOf(nativeEvent.e.type);
-        var fnName = Input.mInputEventsLookup[ix];
+        // update to the lattest position
+        this.mPointerPosition.x = nativeEvent.x;
+        this.mPointerPosition.y = nativeEvent.y;
 
-        if (fnName === 'pointerDown') this.mNeedUpEvent = true;
+        var pointerPos = new Vector(nativeEvent.x, nativeEvent.y);
+        var eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
-        pointerPos.set(nativeEvent.x, nativeEvent.y);
-
-        /** @type {InputComponent|null} */
-        var currentComponent = null;
-        for (var k = 0; k < this.mInputListeners.length; k++) {
-          currentComponent = this.mInputListeners[k];
-
-          // if (currentComponent.gameObject === null)
-          //   console.log(currentComponent);
-
-          if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
-            // check for out events
-            if (currentComponent.mPointerInside === true) {
-              currentComponent.mPointerInside = false;
-              currentComponent.gameObject.post('~pointerOut');
-            }
-
-            continue;
-          }
-
-          // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-          if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
-
-          if (currentComponent.mPointerInside === false) {
-            currentComponent.mPointerInside = true;
-            currentComponent.gameObject.post('~pointerIn');
-          }
-
-          currentComponent.gameObject.post('~' + fnName);
-        }
-
-        this.post(fnName);
+        this.__findTarget(pointerPos);
+        this.__processInOut(Input.pointerPosition);
+        this.__processNativeEvent(nativeEvent, pointerPos, eventType);
       }
 
-      for (var _i2 = 0; _i2 < this.mKeyQueue.length; _i2++) {
-        var _nativeEvent = this.mKeyQueue[_i2];
-
-        var _ix = this.mKeyEventList.indexOf(_nativeEvent.type);
-        var pIx = this.mPressedKeys.indexOf(_nativeEvent.keyCode);
-        var _fnName = Input.mKeyEventsLookup[_ix];
-
-        if (_fnName === 'keyUp' && pIx !== -1) this.mPressedKeys.splice(pIx, 1);else if (_fnName === 'keyDown' && pIx === -1) {
-          this.mPressedKeys.push(_nativeEvent.keyCode);
-          _fnName = 'keyPress';
-        }
-
-        this.post(_fnName, new KeyInfo(_nativeEvent), _nativeEvent);
-      }
-
+      // Erase the pointer queue
       this.mPointerQueue.splice(0, this.mPointerQueue.length);
       this.mKeyQueue.splice(0, this.mKeyQueue.length);
     }
+  }, {
+    key: '__findTarget',
+    value: function __findTarget(pos) {
+      var obj = GameObject.intersectsWith(Black.instance.root, pos);
+
+      if (obj === null) {
+        this.mTarget = null;
+        this.mTargetComponent = null;
+        return;
+      }
+
+      var c = obj.getComponent(InputComponent);
+      if (c === null) {
+        this.mTarget = null;
+        this.mTargetComponent = null;
+        return;
+      }
+
+      if (c.touchable === false) {
+        this.mTarget = null;
+        this.mTargetComponent = null;
+        return;
+      }
+
+      this.mTarget = obj;
+      this.mTargetComponent = c;
+    }
+  }, {
+    key: '__processNativeEvent',
+    value: function __processNativeEvent(nativeEvent, pos, type) {
+      this.post(type);
+
+      if (this.mTarget === null && this.mLockedTarget === null) return;
+
+      var info = new PointerInfo(this.mTarget, pos.x, pos.y);
+
+      if (type === Input.POINTER_DOWN) {
+        this.mLockedTarget = this.mTarget;
+        this.mNeedUpEvent = true;
+      } else if (type === Input.POINTER_UP && this.mLockedTarget !== null) {
+        this.mLockedTarget.post('~pointerUp', info);
+        this.mLockedTarget = null;
+        return;
+      }
+
+      var sameTarget = this.mTarget === this.mLockedTarget;
+
+      if (this.mLockedTarget === null) {
+        if (this.mTarget !== null) this.mTarget.post('~' + type, info);
+      } else {
+        if (sameTarget === true) this.mLockedTarget.post('~' + type, info);
+      }
+    }
+  }, {
+    key: '__postInMessage',
+    value: function __postInMessage() {
+      if (this.mLockedTarget !== null) {
+        if (this.mLockedTarget !== this.mTargetComponent.gameObject && this.mTargetComponent.gameObject !== null) return;
+      }
+
+      this.mTargetComponent.mPointerInDispatched = true;
+      this.mTargetComponent.gameObject.post('~pointerIn');
+      this.mLastInTargetComponent = this.mTargetComponent;
+    }
+  }, {
+    key: '__postOutMessage',
+    value: function __postOutMessage() {
+      if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
+        if (this.mLockedTarget !== this.mTargetComponent.gameObject) return;
+      }
+
+      this.mLastInTargetComponent.mPointerInDispatched = false;
+      this.mLastInTargetComponent.gameObject.post('~pointerOut');
+      this.mLastInTargetComponent = null;
+    }
+  }, {
+    key: '__processInOut',
+    value: function __processInOut(pos) {
+
+      if (this.mTargetComponent === null) {
+        if (this.mLastInTargetComponent !== null) this.__postOutMessage();
+      } else {
+        if (this.mLastInTargetComponent !== null && this.mLastInTargetComponent !== this.mTargetComponent) {
+          this.__postOutMessage();
+          return;
+        }
+
+        if (this.mTargetComponent.mPointerInDispatched === false) this.__postInMessage();
+      }
+    }
 
     /**
-     * on - Description
+     * @private
      *
-     * @param {string} name           Description
-     * @param {Function} callback       Description
-     * @param {Object=} [context=null] Description
+     * @returns {void}
+     */
+
+  }, {
+    key: '__updateKeyboard',
+    value: function __updateKeyboard() {
+      for (var i = 0; i < this.mKeyQueue.length; i++) {
+        var nativeEvent = this.mKeyQueue[i];
+
+        var ix = this.mKeyEventList.indexOf(nativeEvent.type);
+        var pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);
+        var fnName = Input.mKeyEventsLookup[ix];
+
+        if (fnName === 'keyUp' && pIx !== -1) this.mPressedKeys.splice(pIx, 1);else if (fnName === 'keyDown' && pIx === -1) {
+          this.mPressedKeys.push(nativeEvent.keyCode);
+          fnName = 'keyPress';
+        }
+
+        this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
+      }
+    }
+
+    /**
+     * Listens for global input event by given message name.
      *
-     * @return {void} Description
+     * @param {string} name            The name of the message to listen for.
+     * @param {Function} callback      The callback function that will be called when message received.
+     * @param {Object=} [context=null] Optional context.
+     *
+     * @return {void}
      */
 
   }], [{
@@ -11101,9 +12069,9 @@ var Input = function (_System) {
     }
 
     /**
-     * isPointerDown - Description
+     * Indicates if mouse or touch in down at this moment.
      *
-     * @return {boolean} Description
+     * @return {boolean}
      */
 
   }, {
@@ -11113,9 +12081,8 @@ var Input = function (_System) {
     }
 
     /**
-     * pointerX - Description
-     *
-     * @return {number} Description
+     * Returns mouse or touch pointer x-component.
+     * @return {number}
      */
 
   }, {
@@ -11125,7 +12092,7 @@ var Input = function (_System) {
     }
 
     /**
-     * pointerY - Description
+     * Returns mouse or touch pointer x-component.
      *
      * @return {number} Description
      */
@@ -11137,9 +12104,9 @@ var Input = function (_System) {
     }
 
     /**
-     * pointerPosition - Description
+     * Returns mouse or touch pointer position.
      *
-     * @return {Vector} Description
+     * @return {Vector}
      */
 
   }, {
@@ -11147,6 +12114,13 @@ var Input = function (_System) {
     get: function get() {
       return Input.instance.mPointerPosition;
     }
+
+    /**
+     * Returns list of pressed keys.
+     *
+     * @returns {Array<number>}
+     */
+
   }, {
     key: 'pressedKeys',
     get: function get() {
@@ -11157,72 +12131,153 @@ var Input = function (_System) {
   return Input;
 }(System);
 
-/** @type {Input}
+Input.POINTER_DOWN = 'pointerDown';
+Input.POINTER_MOVE = 'pointerMove';
+Input.POINTER_UP = 'pointerUp';
+Input.POINTER_IN = 'pointerIn';
+Input.POINTER_OUT = 'pointerOut';
+
+/**
+ * @type {Input}
  * @nocollapse
  */
-
-
 Input.instance = null;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_MOVE = 0;
+Input.IX_POINTER_MOVE = 0;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_DOWN = 1;
+Input.IX_POINTER_DOWN = 1;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_UP = 2;
+Input.IX_POINTER_UP = 2;
 
-/** @type {number}
- *  @const
- */
-Input.POINTER_CANCEL = 3;
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_IN = 3;
+//
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_OUT = 4;
 
-/** @type {number}
- *  @const
- */
-Input.POINTER_IN = 4;
-
-/** @type {number}
- *  @const
- */
-Input.POINTER_OUT = 5;
-
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventList = ['keydown', 'keyup'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+
+/**
+ * Stores additional information about pointer events.
+ *
+ * @cat input
+ */
+
+var PointerInfo = function () {
+  /**
+   * Creates new PointerInfo instance. For internal use only.
+   *
+   * @param {type} activeObject
+   * @param {type} x
+   * @param {type} y
+   */
+  function PointerInfo(activeObject, x, y) {
+    _classCallCheck(this, PointerInfo);
+
+    /**
+     * @private
+     * @type {GameObject}
+     */
+    this.mActiveObject = activeObject;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mX = x;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mY = y;
+  }
+
+  /**
+   * Returns the object under cursor right now.
+   * @readonly
+   *
+   * @returns {GameObject}
+   */
+
+
+  _createClass(PointerInfo, [{
+    key: 'activeObject',
+    get: function get() {
+      return this.mActiveObject;
+    }
+  }, {
+    key: 'x',
+    get: function get() {
+      return this.mX;
+    }
+  }, {
+    key: 'y',
+    get: function get() {
+      return this.mY;
+    }
+  }]);
+
+  return PointerInfo;
+}();
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11231,28 +12286,34 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * This component will allow you to subscribe for some input messages.
+ *
+ * @cat input
+ * @extends Component
+ */
+
 var InputComponent = function (_Component) {
-    _inherits(InputComponent, _Component);
+  _inherits(InputComponent, _Component);
 
-    /**
-     * @return {void}
-     */
-    function InputComponent() {
-        _classCallCheck(this, InputComponent);
+  /**
+   * @return {void}
+   */
+  function InputComponent() {
+    _classCallCheck(this, InputComponent);
 
-        /** @type {boolean} */
-        var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
+    /** @type {boolean} */
+    var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
 
-        _this.touchable = true;
+    _this.touchable = true;
 
-        /* INTERNAL */
+    /* INTERNAL */
+    /** @type {boolean} */
+    _this.mPointerInDispatched = false;
+    return _this;
+  }
 
-        /** @type {boolean} */
-        _this.mPointerInside = false;
-        return _this;
-    }
-
-    return InputComponent;
+  return InputComponent;
 }(Component);
 'use strict';
 
@@ -12376,15 +13437,12 @@ var Tween = function (_Component) {
       _get(Tween.prototype.__proto__ || Object.getPrototypeOf(Tween.prototype), 'removeFromParent', this).call(this);
     }
 
-    /**
-     * @return {void}
-     */
-
-  }, {
-    key: 'dispose',
-    value: function dispose() {
-      this.remove();
-    }
+    // /**
+    //  * @return {void}
+    //  */
+    // dispose() {
+    //   this.remove();
+    // }
 
     /**
      * Sets the number of times the tween wiil be repeated after first execution.
@@ -12565,7 +13623,7 @@ var Tween = function (_Component) {
           this.post('complete', this.gameObject);
 
           if (this.mRemoveOnComplete) {
-            this.dispose();
+            this.removeFromParent();
           } else {
             for (var _f3 in this.mValues) {
               this.mValuesStart[_f3] = this.mValues[_f3];
@@ -13189,6 +14247,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * THE BLACK ENGINE ITSELF.
+ *
+ * @extends MessageDispatcher
+ */
 
 var Black = function (_MessageDispatcher) {
   _inherits(Black, _MessageDispatcher);
@@ -14022,14 +15086,26 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+     * Returns True if engine is paused.
+     *
+     * @returns {boolean}
+     */
+    ,
+
+
+    /**
      * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
      *
      * @param {boolean} value
      * @return {void}
      */
-    ,
     set: function set(value) {
       this.mEnableFixedTimeStep = value;
+    }
+  }, {
+    key: 'isPaused',
+    get: function get() {
+      return this.mPaused;
     }
   }, {
     key: 'magic',
