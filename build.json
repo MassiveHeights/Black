@@ -29,6 +29,7 @@
     "src/loaders/Asset.js",
     "src/loaders/TextureAsset.js",
     "src/loaders/JSONAsset.js",
+    "src/loaders/FontAsset.js",
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/AssetManager.js",
 

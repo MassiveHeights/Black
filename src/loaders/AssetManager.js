@@ -110,6 +110,10 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
+  enqueueFont(name, url) {
+    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url));
+  }
+
   /**
    * Starts preloading all enqueued assets.
    * @fires complete
@@ -147,12 +151,15 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
-    else
+    else if (item.constructor === FontAsset) {} else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
+      if (FontAsset.TESTING_ELEMENT)
+        FontAsset.TESTING_ELEMENT.remove();
+        
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
