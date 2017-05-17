@@ -747,6 +747,16 @@ class Black extends MessageDispatcher {
     return this.mEnableFixedTimeStep;
   }
 
+
+  /**
+   * Returns True if engine is paused.
+   *
+   * @returns {boolean}
+   */
+  get isPaused() {
+    return this.mPaused;
+  }
+
   /**
    * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    *
