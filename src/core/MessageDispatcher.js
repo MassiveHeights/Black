@@ -37,8 +37,6 @@ class MessageDispatcher {
       let pureName = name.substring(0, filterIx);
       let pathMask = name.substring(filterIx + 1);
 
-      //console.log(pureName, pathMask);
-
       if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         MessageDispatcher.mGlobalHandlers[pureName] = [];
 
@@ -72,6 +70,23 @@ class MessageDispatcher {
       callback: callback,
       context: context
     });
+  }
+
+  /**
+   * Returns true if this object is subscribed for any messages with a given name.
+   *
+   * @param {string} name Message name to check.
+   *
+   * @returns {boolean} True if found.
+   */
+  hasOn(name) {
+    if (this.mListeners === null)
+      return false;
+
+    if (this.mListeners.hasOwnProperty(name) === false)
+      return false;
+
+    return true;
   }
 
   /**
@@ -124,8 +139,8 @@ class MessageDispatcher {
     let message = this.__parseMessage(this, name);
 
     // TODO: o'really 62?
-    let isGameObject = this instanceof GameObject;
-    if (message.mDirection !== 'none' && isGameObject === false)
+    let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
+    if (message.mDirection !== 'none' && isGameObjectOrComponent === false)
       throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
 
     if (message.mDirection === 'none') {
@@ -366,41 +381,77 @@ class MessageDispatcher {
   }
 }
 
+/**
+ * @private
+ * @dict
+ */
 MessageDispatcher.mGlobalHandlers = {};
 
+/**
+ * Message holds all information about dispatched event.
+ *
+ * @cat core
+ */
 /* @echo EXPORT */
 class Message {
   constructor() {
-    /** @type {*} */
+    /**
+     * @private
+     * @type {*}
+     */
     this.mSender = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mPathMask = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mComponentMask = null;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDirection = 'none';
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSibblings = false;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mOrigin = null;
 
-    /** @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mTarget = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCanceled = false;
   }
 
   /**
-   * sender - Who send the message
+   * Who send the message.
    *
    * @return {*} Description
    */
@@ -409,7 +460,7 @@ class Message {
   }
 
   /**
-   * name - The name of the message
+   * The name of the message.
    *
    * @return {string}
    */
@@ -418,7 +469,7 @@ class Message {
   }
 
   /**
-   * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
+   * Direction in what message was sent. Can be 'none', 'up' and 'down'.
    *
    * @return {string}
    */
@@ -427,7 +478,7 @@ class Message {
   }
 
   /**
-   * sibblings - Indicates if sibblings should be included into dispatching process.
+   * Indicates if sibblings should be included into dispatching process.
    *
    * @return {boolean} Description
    */
@@ -436,7 +487,7 @@ class Message {
   }
 
   /**
-   * pathMask - The GameObject.name mask string if was used.
+   * The GameObject.name mask string if was used.
    *
    * @return {string|null} Description
    */
@@ -445,7 +496,7 @@ class Message {
   }
 
   /**
-   * componentMask - Component mask string if was used.
+   * Component mask string if was used.
    *
    * @return {string|null}
    */
@@ -454,7 +505,7 @@ class Message {
   }
 
   /**
-   * origin - The original sender of a message.
+   * The original sender of a message.
    *
    * @return {*|null}
    */
@@ -463,7 +514,7 @@ class Message {
   }
 
   /**
-   * target - The destination object for this message.
+   * The listener object.
    *
    * @return {*|null}
    */
@@ -472,7 +523,7 @@ class Message {
   }
 
   /**
-   * cancel - Stops propagation of the message.
+   * Stops propagation of the message.
    *
    * @return {void}
    */
@@ -481,7 +532,7 @@ class Message {
   }
 
   /**
-   * canceled - True/False if
+   * True if message was canceled by the user.
    *
    * @return {boolean}
    */
