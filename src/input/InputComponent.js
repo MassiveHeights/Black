@@ -16,8 +16,7 @@ class InputComponent extends Component {
     this.touchable = true;
 
     /* INTERNAL */
-
     /** @type {boolean} */
-    this.mPointerInside = false;
+    this.mPointerInDispatched = false;
   }
 }

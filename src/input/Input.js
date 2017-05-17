@@ -1,5 +1,12 @@
 /**
  * A input system class is reponsible for mouse, touch and keyboard input events.
+ * Pointer events works for a single target only.
+ * Global Input messages has higher priority.
+ *
+ * When GameObject gets a `pointerDown` message it gets target locked. Other
+ * objects will not receive `pointerMove` or `pointerUp` messages. Target locked
+ * object will receive `pointerUp` message even if pointer is outside of its
+ * bounds.
  *
  * @cat input
  * @extends System
@@ -75,12 +82,19 @@ class Input extends System {
     this.mNeedUpEvent = false;
 
     /**
+     * NOTE: we need guarantee that keys are not going to chage theirs order
+     * when iterating.
      * @private
-     * @type {Array<InputComponent>}
+     * @type {Map}
      */
-    this.mInputListeners = [];
-  }
+    this.mInputListeners = new Map();
 
+    this.mTarget = null;
+    this.mTargetComponent = null;
+    this.mLockedTarget = null;
+
+    this.mLastInTargetComponent = null;
+  }
 
   /**
    * @private
@@ -101,32 +115,10 @@ class Input extends System {
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
+    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
-  }
-
-
-  /**
-   * @private
-   *
-   * @returns {void}
-   */
-  __sortListeners() {
-    // TODO: make it faster
-    this.mInputListeners.sort((a, b) => {
-      let depthA = a.gameObject.depth;
-      let depthB = b.gameObject.depth;
-
-      let indexA = a.gameObject.index;
-      let indexB = b.gameObject.index;
-
-      if (depthA === depthB)
-        return (indexA < indexB) ? -1 : (indexA > indexB) ? 1 : 0;
-      else
-        return depthA < depthB ? 1 : 1;
-    });
   }
 
   /**
@@ -136,6 +128,9 @@ class Input extends System {
    * @return {boolean}
    */
   __onKeyEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     this.mKeyQueue.push(e);
     return true;
   }
@@ -147,6 +142,10 @@ class Input extends System {
    * @returns {void}
    */
   __onPointerEventDoc(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
+    // dirty check
     let over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
     if (over === false && this.mNeedUpEvent === true) {
@@ -155,7 +154,6 @@ class Input extends System {
     }
   }
 
-
   /**
    * @private
    * @param {Event} e
@@ -163,13 +161,15 @@ class Input extends System {
    * @return {boolean}
    */
   __onPointerEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     e.preventDefault();
 
     this.__pushEvent(e);
 
     return true;
   }
-
 
   /**
    * @private
@@ -184,16 +184,12 @@ class Input extends System {
     else
       p = this.__getPointerPos(this.mDom, e);
 
-    this.mPointerPosition.x = p.x;
-    this.mPointerPosition.y = p.y;
-
     this.mPointerQueue.push({
       e: e,
       x: p.x,
       y: p.y
     });
   }
-
 
   /**
    * @private
@@ -229,102 +225,6 @@ class Input extends System {
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
-
-  /**
-   * @private
-   * @param {Array<InputComponent>} array
-   *
-   * @return {void}
-   */
-  __addListener(array) {
-    // check for duplicates
-    for (let i = 0; i < array.length; i++) {
-      let item = /** @type {InputComponent} */ (array[i]);
-
-      if (this.mInputListeners.indexOf(item) === -1)
-        this.mInputListeners.push(item);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   * @param {GameObject} child
-   *
-   * @return {void}
-   */
-  onChildrenAdded(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    this.__addListener(cs);
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   * @param {GameObject} child
-   *
-   * @return {void}
-   */
-  onChildrenRemoved(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    for (var i = cs.length - 1; i >= 0; i--) {
-      let component = cs[i];
-      let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-
-      if (index !== -1)
-        this.mInputListeners.splice(index, 1);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * @inheritdoc
-   * @override
-   *
-   * @param {GameObject} child
-   * @param {Component} component
-   *
-   * @return {void}
-   */
-  onComponentAdded(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    this.__addListener([component]);
-  }
-
-  /**
-   * @inheritdoc
-   * @override
-   *
-   * @param {GameObject} child
-   * @param {Component} component
-   *
-   * @return {void}
-   */
-  onComponentRemoved(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-    if (index !== -1) {
-      this.mInputListeners.splice(index, 1);
-      this.__sortListeners();
-    }
-  }
-
   /**
    * @inheritdoc
    * @override
@@ -333,54 +233,134 @@ class Input extends System {
    * @return {void}
    */
   onUpdate(dt) {
-    let pointerPos = new Vector();
+    // omg, who gave you keyboard?
+    this.__updateKeyboard();
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
-
-      let ix = this.mEventList.indexOf(nativeEvent.e.type);
-      let fnName = Input.mInputEventsLookup[ix];
-
-      if (fnName === 'pointerDown')
-        this.mNeedUpEvent = true;
-
-      pointerPos.set(nativeEvent.x, nativeEvent.y);
-
-      /** @type {InputComponent|null} */
-      let currentComponent = null;
-      for (let k = 0; k < this.mInputListeners.length; k++) {
-        currentComponent = this.mInputListeners[k];
-
-        // if (currentComponent.gameObject === null)
-        //   console.log(currentComponent);
-
-        if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
-          // check for out events
-          if (currentComponent.mPointerInside === true) {
-            currentComponent.mPointerInside = false;
-            currentComponent.gameObject.post('~pointerOut');
-          }
-
-          continue;
-        }
-
-        // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-        if (ix === Input.POINTER_DOWN)
-          this.mIsPointerDown = true;
-        else if (ix === Input.POINTER_UP)
-          this.mIsPointerDown = false;
-
-        if (currentComponent.mPointerInside === false) {
-          currentComponent.mPointerInside = true;
-          currentComponent.gameObject.post('~pointerIn');
-        }
-
-        currentComponent.gameObject.post('~' + fnName);
-      }
-
-      this.post(fnName);
+    // we had no actual events but still we need to know if something were moved
+    if (this.mPointerQueue.length === 0) {
+      this.__findTarget(Input.pointerPosition);
+      this.__processInOut(Input.pointerPosition);
     }
 
+    for (var i = 0; i < this.mPointerQueue.length; i++) {
+      let nativeEvent =  this.mPointerQueue[i];
+
+      // update to the lattest position
+      this.mPointerPosition.x = nativeEvent.x;
+      this.mPointerPosition.y = nativeEvent.y;
+
+      let pointerPos = new Vector(nativeEvent.x, nativeEvent.y);
+      let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
+
+      this.__findTarget(pointerPos);
+      this.__processInOut(Input.pointerPosition);
+      this.__processNativeEvent(nativeEvent, pointerPos, eventType);
+    }
+
+    // Erase the pointer queue
+    this.mPointerQueue.splice(0, this.mPointerQueue.length);
+    this.mKeyQueue.splice(0, this.mKeyQueue.length);
+  }
+
+  __findTarget(pos) {
+    let obj = GameObject.intersectsWith(Black.instance.root, pos);
+
+    if (obj === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    let c = obj.getComponent(InputComponent);
+    if (c === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    if (c.touchable === false) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    this.mTarget = obj;
+    this.mTargetComponent = c;
+  }
+
+  __processNativeEvent(nativeEvent, pos, type) {
+    this.post(type);
+
+    if (this.mTarget === null && this.mLockedTarget === null)
+      return;
+
+    let info = new PointerInfo(this.mTarget, pos.x, pos.y);
+
+    if (type === Input.POINTER_DOWN) {
+      this.mLockedTarget = this.mTarget;
+      this.mNeedUpEvent = true;
+    }
+    else if (type === Input.POINTER_UP && this.mLockedTarget !== null) {
+      this.mLockedTarget.post('~pointerUp', info);
+      this.mLockedTarget = null;
+      return;
+    }
+
+    let sameTarget = this.mTarget === this.mLockedTarget;
+
+    if (this.mLockedTarget === null) {
+      if (this.mTarget !== null)
+        this.mTarget.post('~' + type, info);
+    } else {
+      if (sameTarget === true)
+        this.mLockedTarget.post('~' + type, info);
+    }
+  }
+
+  __postInMessage() {
+    if (this.mLockedTarget !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject && this.mTargetComponent.gameObject !== null)
+        return;
+    }
+
+    this.mTargetComponent.mPointerInDispatched = true;
+    this.mTargetComponent.gameObject.post('~pointerIn');
+    this.mLastInTargetComponent = this.mTargetComponent;
+  }
+
+  __postOutMessage() {
+    if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject)
+        return;
+    }
+
+    this.mLastInTargetComponent.mPointerInDispatched = false;
+    this.mLastInTargetComponent.gameObject.post('~pointerOut');
+    this.mLastInTargetComponent = null;
+  }
+
+  __processInOut(pos) {
+
+    if (this.mTargetComponent === null) {
+      if (this.mLastInTargetComponent !== null)
+        this.__postOutMessage();
+    } else {
+      if (this.mLastInTargetComponent !== null && this.mLastInTargetComponent !== this.mTargetComponent) {
+        this.__postOutMessage();
+        return;
+      }
+
+      if (this.mTargetComponent.mPointerInDispatched === false)
+        this.__postInMessage();
+    }
+  }
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
+  __updateKeyboard() {
     for (let i = 0; i < this.mKeyQueue.length; i++) {
       let nativeEvent = this.mKeyQueue[i];
 
@@ -398,9 +378,6 @@ class Input extends System {
 
       this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
-
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
@@ -416,7 +393,6 @@ class Input extends System {
     Input.instance.on(name, callback, context);
   }
 
-
   /**
    * Indicates if mouse or touch in down at this moment.
    *
@@ -426,7 +402,6 @@ class Input extends System {
     return Input.instance.mIsPointerDown;
   }
 
-
   /**
    * Returns mouse or touch pointer x-component.
    * @return {number}
@@ -434,7 +409,6 @@ class Input extends System {
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
   }
-
 
   /**
    * Returns mouse or touch pointer x-component.
@@ -445,7 +419,6 @@ class Input extends System {
     return Input.instance.mPointerPosition.y;
   }
 
-
   /**
    * Returns mouse or touch pointer position.
    *
@@ -454,7 +427,6 @@ class Input extends System {
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
   }
-
 
   /**
    * Returns list of pressed keys.
@@ -466,6 +438,12 @@ class Input extends System {
   }
 }
 
+Input.POINTER_DOWN = 'pointerDown';
+Input.POINTER_MOVE = 'pointerMove';
+Input.POINTER_UP   = 'pointerUp';
+Input.POINTER_IN   = 'pointerIn';
+Input.POINTER_OUT  = 'pointerOut';
+
 /**
  * @type {Input}
  * @nocollapse
@@ -476,37 +454,31 @@ Input.instance = null;
  * @type {number}
  * @const
  */
-Input.POINTER_MOVE = 0;
+Input.IX_POINTER_MOVE = 0;
 
 /**
  * @type {number}
  * @const
  */
-Input.POINTER_DOWN = 1;
+Input.IX_POINTER_DOWN = 1;
 
 /**
  * @type {number}
  * @const
  */
-Input.POINTER_UP = 2;
+Input.IX_POINTER_UP = 2;
 
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_CANCEL = 3;
-
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_IN = 4;
-
-/**
- * @type {number}
- * @const
- */
-Input.POINTER_OUT = 5;
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_IN = 3;
+//
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_OUT = 4;
 
 /**
  * @private
@@ -549,3 +521,57 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mou
  * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+
+
+/**
+ * Stores additional information about pointer events.
+ *
+ * @cat input
+ */
+/* @echo EXPORT */
+class PointerInfo {
+  /**
+   * Creates new PointerInfo instance. For internal use only.
+   *
+   * @param {type} activeObject
+   * @param {type} x
+   * @param {type} y
+   */
+  constructor(activeObject, x, y) {
+    /**
+     * @private
+     * @type {GameObject}
+     */
+    this.mActiveObject = activeObject;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mX = x;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mY = y;
+  }
+
+  /**
+   * Returns the object under cursor right now.
+   * @readonly
+   *
+   * @returns {GameObject}
+   */
+  get activeObject() {
+    return this.mActiveObject;
+  }
+
+  get x() {
+    return this.mX;
+  }
+
+  get y() {
+    return this.mY;
+  }
+}
