@@ -973,6 +973,11 @@ class GameObject extends MessageDispatcher {
       return 0;
   }
 
+  get displayDepth() {
+    // Many thanks to Roman Kopansky
+    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+    return flatten(this.root.mChildren).indexOf(this);
+  }
   /**
    * @ignore
    * @return {number}
