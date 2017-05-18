@@ -309,11 +309,23 @@ class Input extends System {
     let sameTarget = this.mTarget === this.mLockedTarget;
 
     if (this.mLockedTarget === null) {
-      if (this.mTarget !== null)
+      if (this.mTarget !== null) {
+        // regular non locked post
+        //console.log('regular');
         this.mTarget.post('~' + type, info);
+      }
     } else {
-      if (sameTarget === true)
+      if (sameTarget === true) {
+        // just bubble the event
         this.mLockedTarget.post('~' + type, info);
+      }
+      else {
+        // send skipping this gameObject
+        if (this.mLockedTarget.mParent !== null && this.mTarget !== null) {
+          console.log('parent');
+          this.mLockedTarget.mParent.post('~' + type, info);
+        }
+      }
     }
   }
 
