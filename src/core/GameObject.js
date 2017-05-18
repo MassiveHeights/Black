@@ -80,14 +80,16 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onAdded() { }
+  onAdded() {
+  }
 
   /**
    * onRemoved - Called when object is removed from stage.
    *
    * @return {void}
    */
-  onRemoved() {}
+  onRemoved() {
+  }
 
 
   /**
@@ -384,8 +386,8 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        let tx = this.mX - this.mPivotX * this.mScaleX;
-        let ty = this.mY - this.mPivotY * this.mScaleY;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
@@ -394,8 +396,8 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
-        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
@@ -499,7 +501,8 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void} Description
    */
-  onFixedUpdate(dt) {}
+  onFixedUpdate(dt) {
+  }
 
   /**
    * onUpdate - Description
@@ -508,7 +511,8 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void} Description
    */
-  onUpdate(dt) {}
+  onUpdate(dt) {
+  }
 
   /**
    * onUpdate - Description
@@ -517,7 +521,8 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void} Description
    */
-  onPostUpdate(dt) {}
+  onPostUpdate(dt) {
+  }
 
   /**
    * __render - Description
@@ -547,7 +552,8 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void} Description
    */
-  onRender(video, time) {}
+  onRender(video, time) {
+  }
 
   /**
    * onGetLocalBounds - Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -916,13 +922,29 @@ class GameObject extends MessageDispatcher {
       return 0;
   }
 
+  get displayDepth() {
+    return this.root.allChildrenLength(this);
+  }
+  
+  allChildrenLength(to = null) {
+    const children = this.mChildren;
+    let res = 0;
+    
+    for (let i = 0, l = children.length; i < l; i++) {
+      if (to === children[i]) break;
+      res += 1 + children[i].allChildrenLength(to);
+    }
+    
+    return res;
+  }
+
   /**
    * index - Description
    *
    * @return {number} Description
    */
   get index() {
-    return this.mIndex;
+    return this.mParent.mChildren.indexOf(this);
   }
 
   /**
@@ -1262,7 +1284,7 @@ class GameObject extends MessageDispatcher {
     let list = [];
 
     /** @type {function(GameObject, function(new:Component)):void} */
-    let f = function(gameObject, type) {
+    let f = function (gameObject, type) {
       for (let i = 0; i < gameObject.mComponents.length; i++) {
         let c = gameObject.mComponents[i];
         if (c instanceof type)

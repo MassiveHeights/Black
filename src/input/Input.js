@@ -1,9 +1,9 @@
 /*
-Has to be static class.
+ Has to be static class.
 
-+ before update store all events locally
-- check root object! add collider automatically? or do it on demand?
-*/
+ + before update store all events locally
+ - check root object! add collider automatically? or do it on demand?
+ */
 
 /* @echo EXPORT */
 class Input extends System {
@@ -66,11 +66,11 @@ class Input extends System {
   }
 
   __sortListeners() {
-    // TODO: make it faster
-    // - try insert sort
-    this.mInputListeners.sort((x, y) => {
-      return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
-    });
+    // console.log('-----------')
+    for (let i = 0; i < this.mInputListeners.length; i++) {
+      let go = this.mInputListeners[i].gameObject;
+      // console.log(go.name, go.displayDepth);
+    }
   }
 
 
@@ -212,7 +212,7 @@ class Input extends System {
 
     for (var i = cs.length - 1; i >= 0; i--) {
       let component = cs[i];
-      let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
+      let index = this.mInputListeners.indexOf(/** @type {InputComponent} */ (component));
 
       if (index !== -1)
         this.mInputListeners.splice(index, 1);
@@ -250,7 +250,7 @@ class Input extends System {
     if (component.constructor !== InputComponent)
       return;
 
-    let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
+    let index = this.mInputListeners.indexOf(/** @type {InputComponent} */ (component));
     if (index !== -1) {
       this.mInputListeners.splice(index, 1);
       this.__sortListeners();

@@ -18,6 +18,9 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
+    
+
+    this.tint = {r: 1, g: 1, b: 1};
   }
 
   /**
@@ -63,7 +66,7 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    return outRect.set(-this.mPivotX, -this.mPivotY, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
   }
 
   /**
