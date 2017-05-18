@@ -622,6 +622,7 @@ var Matrix = function () {
   }
 
   /**
+<<<<<<< HEAD
    * Sets components of this matrix to the given values.
    *
    * @param  {number} a  A-component.
@@ -631,6 +632,15 @@ var Matrix = function () {
    * @param  {number} tx TX-component.
    * @param  {number} ty TY-component.
    * @return {Matrix} This.
+=======
+    * @param  {number} a  description
+   * @param  {number} b  description
+   * @param  {number} c  description
+   * @param  {number} d  description
+   * @param  {number} tx description
+   * @param  {number} ty description
+   * @return {Matrix}    description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    */
 
 
@@ -3348,6 +3358,7 @@ var Debug = function () {
       if (Debug.throwOnFail) throw new Error(message);
     }
   }, {
+<<<<<<< HEAD
     key: 'log',
     value: function log() {
       var _console;
@@ -3368,10 +3379,18 @@ var Debug = function () {
       }
 
       (_console2 = console).info.apply(_console2, [' %c%s', 'color: #003bd2;', 'INFO:'].concat(message));
+=======
+    key: 'info',
+    value: function info() {
+      var _console;
+
+      (_console = console).info.apply(_console, arguments);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
   }, {
     key: 'warn',
     value: function warn() {
+<<<<<<< HEAD
       var _console3;
 
       for (var _len3 = arguments.length, message = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
@@ -3390,6 +3409,11 @@ var Debug = function () {
       }
 
       (_console4 = console).info.apply(_console4, ['%c%s', 'color: #d50000;', 'ERROR:'].concat(message));
+=======
+      var _console2;
+
+      (_console2 = console).warn.apply(_console2, arguments);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
   }]);
 
@@ -5033,7 +5057,16 @@ var GameObject = function (_MessageDispatcher) {
      * @param {number} parentAlpha
      * @param {string} parentBlendMode
      *
+<<<<<<< HEAD
      * @return {void}
+=======
+     * @param {VideoNullDriver} video           Description
+     * @param {number} time            Description
+     * @param {number} parentAlpha     Description
+     * @param {string} parentBlendMode Description
+     *
+     * @return {void} Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      */
 
   }, {
@@ -5049,7 +5082,12 @@ var GameObject = function (_MessageDispatcher) {
     }
 
     /**
+<<<<<<< HEAD
      * @protected
+=======
+     * onRender - Description
+     *
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      * @param {VideoNullDriver} video Description
      * @param {number} time  Description
      *
@@ -7414,6 +7452,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+<<<<<<< HEAD
 /**
  * Base class for custom video drivers. VideoDriver is used to render things
  * onto the screen.
@@ -7421,6 +7460,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @cat drivers
  */
 
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 var VideoNullDriver = function () {
   /**
    * @param  {HTMLElement} containerElement
@@ -7479,6 +7520,7 @@ var VideoNullDriver = function () {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+<<<<<<< HEAD
   /**
    * @protected
    * @ignore
@@ -7489,6 +7531,8 @@ var VideoNullDriver = function () {
    */
 
 
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   _createClass(VideoNullDriver, [{
     key: '__onResize',
     value: function __onResize(msg, rect) {
@@ -7736,6 +7780,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+<<<<<<< HEAD
 /**
  * An video driver that draw everything into DOM Canvas element.
  *
@@ -7743,6 +7788,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * @extends VideoNullDriver
  */
 
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 var CanvasDriver = function (_VideoNullDriver) {
   _inherits(CanvasDriver, _VideoNullDriver);
 
@@ -8010,6 +8057,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+<<<<<<< HEAD
 /**
  * An video driver that draw everything into DOM elements itself.
  *
@@ -8017,6 +8065,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * @extends VideoNullDriver
  */
 
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 var DOMDriver = function (_VideoNullDriver) {
   _inherits(DOMDriver, _VideoNullDriver);
 
@@ -8382,11 +8432,20 @@ var DisplayObject = function (_GameObject) {
   }
 
   /**
+<<<<<<< HEAD
    * @ignore
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
+=======
+   * __render - Description
+   *
+   * @param {VideoNullDriver} video           Description
+   * @param {number} time            Description
+   * @param {number} parentAlpha     Description
+   * @param {string} parentBlendMode Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {void}
    */
@@ -8475,40 +8534,40 @@ var TextInfo =
  * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
  */
 function TextInfo() {
-    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
-    var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
-    var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
-    var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
-    var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
-    var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
-    var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
-    var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
+  var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
+  var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
+  var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
+  var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
+  var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
+  var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+  var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
 
-    _classCallCheck(this, TextInfo);
+  _classCallCheck(this, TextInfo);
 
-    /** @type {string} */
-    this.name = name;
+  /** @type {string} */
+  this.name = name;
 
-    /** @type {number} */
-    this.size = size;
+  /** @type {number} */
+  this.size = size;
 
-    /** @type {number} */
-    this.color = color;
+  /** @type {number} */
+  this.color = color;
 
-    /** @type {TextInfo.FontStyle} */
-    this.style = style;
+  /** @type {TextInfo.FontStyle} */
+  this.style = style;
 
-    /** @type {TextInfo.FontWeight} */
-    this.weight = weight;
+  /** @type {TextInfo.FontWeight} */
+  this.weight = weight;
 
-    /** @type {TextInfo.FontAlign} */
-    this.align = align;
+  /** @type {TextInfo.FontAlign} */
+  this.align = align;
 
-    /** @type {number} */
-    this.strokeThickness = strokeThickness;
+  /** @type {number} */
+  this.strokeThickness = strokeThickness;
 
-    /** @type {number} */
-    this.strokeColor = strokeColor;
+  /** @type {number} */
+  this.strokeColor = strokeColor;
 };
 
 /**
@@ -8517,26 +8576,26 @@ function TextInfo() {
 
 
 TextInfo.FontStyle = {
-    NORMAL: 'normal',
-    ITALIC: 'italic'
+  NORMAL: 'normal',
+  ITALIC: 'italic'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontWeight = {
-    NORMAL: '400',
-    BOLD: '700',
-    SUPERBOLD: '800'
+  NORMAL: '400',
+  BOLD: '700',
+  SUPERBOLD: '800'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontAlign = {
-    LEFT: 'left',
-    RIGHT: 'right',
-    CENTER: 'center'
+  LEFT: 'left',
+  RIGHT: 'right',
+  CENTER: 'center'
 };
 "use strict";
 
@@ -8787,6 +8846,7 @@ var TextField = function (_DisplayObject) {
   }
 
   /**
+<<<<<<< HEAD
    * @ignore
    * @override
    * @protected
@@ -8794,6 +8854,14 @@ var TextField = function (_DisplayObject) {
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
+=======
+   * __render - Description
+   * @private @override
+   * @param {VideoNullDriver} video           Description
+   * @param {number} time            Description
+   * @param {number} parentAlpha     Description
+   * @param {string} parentBlendMode Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {void}
    */
@@ -10451,12 +10519,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Particle = function () {
-    function Particle() {
-        _classCallCheck(this, Particle);
+  function Particle() {
+    _classCallCheck(this, Particle);
 
-        this.reset();
-    }
+    this.reset();
+  }
 
+<<<<<<< HEAD
     /**
      * Resets particle to default state.
      *
@@ -10567,29 +10636,92 @@ var Particle = function () {
                 this.life = 0;
                 return;
             }
+=======
+  _createClass(Particle, [{
+    key: "reset",
+    value: function reset() {
+      /** @type {number} */
+      this.textureIndex = 0;
 
-            this.x += this.vx * dt;
-            this.y += this.vy * dt;
+      /** @type {number} */
+      this.scale = 1;
 
-            if (this.mass > 0) {
-                this.ax *= 1 / this.mass;
-                this.ay *= 1 / this.mass;
-            }
+      /** @type {number} */
+      this.alpha = 1;
 
-            this.vx += this.ax * dt;
-            this.vy += this.ay * dt;
+      /** @type {number} */
+      this.life = 1;
 
-            this.ax = 0;
-            this.ay = 0;
+      /** @type {number} */
+      this.age = 0;
 
-            this.life -= dt;
-            this.age += dt;
+      /** @type {number} */
+      this.energy = this.age / this.life;
 
-            this.energy = this.age / (this.age + this.life);
-        }
-    }]);
+      /** @type {number} */
+      this.mass = 0;
 
-    return Particle;
+      /** @type {number} */
+      this.x = 0;
+
+      /** @type {number} */
+      this.y = 0;
+
+      /** @type {number} */
+      this.r = 0;
+
+      /** @type {number} */
+      this.vx = 0;
+
+      /** @type {number} */
+      this.vy = 0;
+
+      /** @type {number} */
+      this.ax = 0;
+
+      /** @type {number} */
+      this.ay = 0;
+    }
+
+    /**
+     * update
+     *
+     * @param {number} dt
+     *
+     * @return {void}
+     */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
+
+  }, {
+    key: "update",
+    value: function update(dt) {
+      if (this.life <= 0) {
+        this.life = 0;
+        return;
+      }
+
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+
+      if (this.mass > 0) {
+        this.ax *= 1 / this.mass;
+        this.ay *= 1 / this.mass;
+      }
+
+      this.vx += this.ax * dt;
+      this.vy += this.ay * dt;
+
+      this.ax = 0;
+      this.ay = 0;
+
+      this.life -= dt;
+      this.age += dt;
+
+      this.energy = this.age / (this.age + this.life);
+    }
+  }]);
+
+  return Particle;
 }();
 'use strict';
 
@@ -10676,10 +10808,14 @@ var Emitter = function (_DisplayObject) {
      */
     _this.mEmitCount = new FloatScatter(10);
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {FloatScatter}
      */
+=======
+    /** @type {FloatScatter} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     _this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /**
@@ -11725,6 +11861,7 @@ var Input = function (_System) {
      */
     _this.mIsPointerDown = false;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
@@ -11744,6 +11881,12 @@ var Input = function (_System) {
     _this.mLockedTarget = null;
 
     _this.mLastInTargetComponent = null;
+=======
+    _this.mNeedUpEvent = false;
+
+    /** @type {Array<InputComponent>} */
+    _this.mInputListeners = [];
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     return _this;
   }
 
@@ -11768,7 +11911,11 @@ var Input = function (_System) {
         this.mDom.addEventListener(this.mEventList[i], function (e) {
           return _this2.__onPointerEvent(e);
         }, false);
+<<<<<<< HEAD
       }document.addEventListener(this.mEventList[Input.IX_POINTER_UP], function (e) {
+=======
+      }document.addEventListener(this.mEventList[Input.POINTER_UP], function (e) {
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
         return _this2.__onPointerEventDoc(e);
       }, false);
 
@@ -11780,7 +11927,10 @@ var Input = function (_System) {
     }
 
     /**
+<<<<<<< HEAD
      * @private
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      * @param {Event} e
      *
      * @return {boolean}
@@ -11794,8 +11944,19 @@ var Input = function (_System) {
       this.mKeyQueue.push(e);
       return true;
     }
+  }, {
+    key: '__onPointerEventDoc',
+    value: function __onPointerEventDoc(e) {
+      var over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+      if (over === false && this.mNeedUpEvent === true) {
+        this.mNeedUpEvent = false;
+        this.__pushEvent(e);
+      }
+    }
 
     /**
+<<<<<<< HEAD
      * @private
      * @param {Event} e
      *
@@ -11819,6 +11980,9 @@ var Input = function (_System) {
     /**
      * @private
      * @param {Event} e
+=======
+     * @param {Event} e Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      *
      * @return {boolean}
      */
@@ -11834,6 +11998,7 @@ var Input = function (_System) {
 
       return true;
     }
+<<<<<<< HEAD
 
     /**
      * @private
@@ -11842,6 +12007,8 @@ var Input = function (_System) {
      * @returns {void}
      */
 
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }, {
     key: '__pushEvent',
     value: function __pushEvent(e) {
@@ -11979,6 +12146,7 @@ var Input = function (_System) {
         return;
       }
 
+<<<<<<< HEAD
       var sameTarget = this.mTarget === this.mLockedTarget;
 
       if (this.mLockedTarget === null) {
@@ -11986,6 +12154,9 @@ var Input = function (_System) {
       } else {
         if (sameTarget === true) this.mLockedTarget.post('~' + type, info);
       }
+=======
+      this.__addListener([component]);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
   }, {
     key: '__postInMessage',
@@ -12037,6 +12208,7 @@ var Input = function (_System) {
       for (var i = 0; i < this.mKeyQueue.length; i++) {
         var nativeEvent = this.mKeyQueue[i];
 
+<<<<<<< HEAD
         var ix = this.mKeyEventList.indexOf(nativeEvent.type);
         var pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);
         var fnName = Input.mKeyEventsLookup[ix];
@@ -12047,6 +12219,48 @@ var Input = function (_System) {
         }
 
         this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
+=======
+      for (var i = 0; i < this.mPointerQueue.length; i++) {
+        var nativeEvent = this.mPointerQueue[i];
+
+        var ix = this.mEventList.indexOf(nativeEvent.e.type);
+        var fnName = Input.mInputEventsLookup[ix];
+
+        if (fnName === 'pointerDown') this.mNeedUpEvent = true;
+
+        pointerPos.set(nativeEvent.x, nativeEvent.y);
+
+        /** @type {InputComponent|null} */
+        var currentComponent = null;
+        for (var k = 0; k < this.mInputListeners.length; k++) {
+          currentComponent = this.mInputListeners[k];
+
+          // if (currentComponent.gameObject === null)
+          //   console.log(currentComponent);
+
+          if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
+            // check for out events
+            if (currentComponent.mPointerInside === true) {
+              currentComponent.mPointerInside = false;
+              currentComponent.gameObject.post('~pointerOut');
+            }
+
+            continue;
+          }
+
+          // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
+          if (ix === Input.POINTER_DOWN) this.mIsPointerDown = true;else if (ix === Input.POINTER_UP) this.mIsPointerDown = false;
+
+          if (currentComponent.mPointerInside === false) {
+            currentComponent.mPointerInside = true;
+            currentComponent.gameObject.post('~pointerIn');
+          }
+
+          currentComponent.gameObject.post('~' + fnName);
+        }
+
+        this.post(fnName);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
       }
     }
 
@@ -12206,6 +12420,7 @@ Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointeren
  * @type {Array<string>}
  * @const
  */
+<<<<<<< HEAD
 Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
 /**
@@ -12214,12 +12429,16 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mou
  * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+=======
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
 /**
  * Stores additional information about pointer events.
  *
  * @cat input
  */
+<<<<<<< HEAD
 
 var PointerInfo = function () {
   /**
@@ -12278,6 +12497,19 @@ var PointerInfo = function () {
 
   return PointerInfo;
 }();
+=======
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -12286,6 +12518,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+<<<<<<< HEAD
 /**
  * This component will allow you to subscribe for some input messages.
  *
@@ -12310,6 +12543,26 @@ var InputComponent = function (_Component) {
     /* INTERNAL */
     /** @type {boolean} */
     _this.mPointerInDispatched = false;
+=======
+var InputComponent = function (_Component) {
+  _inherits(InputComponent, _Component);
+
+  /**
+   * @return {void}
+   */
+  function InputComponent() {
+    _classCallCheck(this, InputComponent);
+
+    /** @type {boolean} */
+    var _this = _possibleConstructorReturn(this, (InputComponent.__proto__ || Object.getPrototypeOf(InputComponent)).call(this));
+
+    _this.touchable = true;
+
+    /* INTERNAL */
+
+    /** @type {boolean} */
+    _this.mPointerInside = false;
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     return _this;
   }
 
@@ -13604,9 +13857,7 @@ var Tween = function (_Component) {
       this.post('update', this.gameObject);
 
       if (this.mElapsed === 1) {
-        if (this.mRepeatTimes > 0) {
-          this.mRepeatTimes -= 1;
-
+        if (this.mRepeatTimes-- > 0) {
           if (this.mReverse) {
             for (var _f2 in this.mValues) {
               var _ref = [this.mValuesStart[_f2], this.mValues[_f2]];
@@ -14258,10 +14509,17 @@ var Black = function (_MessageDispatcher) {
   _inherits(Black, _MessageDispatcher);
 
   /**
+<<<<<<< HEAD
    * Creates a new Black instance.
    * @param {string}                          containerElementId The id of an DOM element.
    * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
    * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+=======
+   * constructor
+   * @param {string}   containerElementId
+   * @param {function(new: GameObject)}   rootClass
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    */
   function Black(containerElementId, rootClass, videoDriverClass) {
     _classCallCheck(this, Black);
@@ -14288,10 +14546,14 @@ var Black = function (_MessageDispatcher) {
 
     if (!_this.mContainerElement) throw new Error('Container element was not found');
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {function(new: VideoNullDriver)}
      */
+=======
+    /** @type {function(new: VideoNullDriver)} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     _this.mVideoDriverClass = videoDriverClass;
 
     /**
@@ -14414,10 +14676,14 @@ var Black = function (_MessageDispatcher) {
      */
     _this.mViewport = null;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {VideoNullDriver}
      */
+=======
+    /** @type {VideoNullDriver} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     _this.mVideo = null;
 
     /**
@@ -14438,10 +14704,14 @@ var Black = function (_MessageDispatcher) {
      */
     _this.mPauseOnHide = true;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
      */
+=======
+    /** @type {boolean} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     _this.mPauseOnBlur = true;
 
     /**
@@ -14462,6 +14732,7 @@ var Black = function (_MessageDispatcher) {
      */
     _this.mRoot = null;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
@@ -14473,6 +14744,10 @@ var Black = function (_MessageDispatcher) {
      * @type {boolean}
      */
     _this.mWasStopped = false;
+=======
+    /** @type {boolean} */
+    _this.mEnableFixedTimeStep = false;
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     return _this;
   }
 
@@ -14655,7 +14930,11 @@ var Black = function (_MessageDispatcher) {
       });
 
       // TODO: show only when needed, eg required by any system
+<<<<<<< HEAD
       if (this.mEnableFixedTimeStep === false) Debug.info('Fixed time-step is disabled, some systems may not work.');
+=======
+      if (this.mEnableFixedTimeStep === false) Debug.warn('Fixed time-step is disabled, some systems may not work.');
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
 
     /**
@@ -14941,8 +15220,14 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+<<<<<<< HEAD
      * Returns current video driver instance.
      * @return {VideoNullDriver}
+=======
+     * video - Description
+     *
+     * @return {VideoNullDriver} Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      */
 
   }, {
@@ -15075,6 +15360,7 @@ var Black = function (_MessageDispatcher) {
     }
 
     /**
+<<<<<<< HEAD
      * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
      * @return {boolean}
      */
@@ -15089,6 +15375,11 @@ var Black = function (_MessageDispatcher) {
      * Returns True if engine is paused.
      *
      * @returns {boolean}
+=======
+     * When disabled the physics system and other systems may not work.
+     *
+     * @return {boolean}
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
      */
     ,
 
@@ -15108,9 +15399,27 @@ var Black = function (_MessageDispatcher) {
       return this.mPaused;
     }
   }, {
+<<<<<<< HEAD
     key: 'magic',
     get: function get() {
       return Math.random();
+=======
+    key: 'enableFixedTimeStep',
+    get: function get() {
+      return this.mEnableFixedTimeStep;
+    }
+
+    /**
+     * enableFixedTimeStep
+     *
+     * @param {boolean} value
+     *
+     * @return {void}
+     */
+    ,
+    set: function set(value) {
+      this.mEnableFixedTimeStep = value;
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
   }]);
 

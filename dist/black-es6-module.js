@@ -2814,6 +2814,7 @@ class Debug {
       throw new Error(message);
   }
 
+<<<<<<< HEAD
   static log(...message) {
     console.info('  %c%s', 'color: black;', 'LOG:', ...message);
   }
@@ -2828,6 +2829,14 @@ class Debug {
 
   static error(...message) {
     console.info('%c%s', 'color: #d50000;', 'ERROR:', ...message);
+=======
+  static info(...message) {
+    console.info(...message);
+  }
+
+  static warn(...message) {
+    console.warn(...message);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }
 }
 
@@ -4260,11 +4269,20 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) {}
 
   /**
+<<<<<<< HEAD
    * @ignore
    * @param {VideoNullDriver} video   *
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
+=======
+   * __render - Description
+   *
+   * @param {VideoNullDriver} video           Description
+   * @param {number} time            Description
+   * @param {number} parentAlpha     Description
+   * @param {string} parentBlendMode Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {void}
    */
@@ -4279,7 +4297,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+<<<<<<< HEAD
    * @protected
+=======
+   * onRender - Description
+   *
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
@@ -6990,11 +7013,20 @@ class DisplayObject extends GameObject {
   }
 
   /**
+<<<<<<< HEAD
    * @ignore
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
+=======
+   * __render - Description
+   *
+   * @param {VideoNullDriver} video           Description
+   * @param {number} time            Description
+   * @param {number} parentAlpha     Description
+   * @param {string} parentBlendMode Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {void}
    */
@@ -7325,6 +7357,7 @@ class TextField extends DisplayObject {
   }
 
   /**
+<<<<<<< HEAD
    * @ignore
    * @override
    * @protected
@@ -7332,6 +7365,14 @@ class TextField extends DisplayObject {
    * @param {number} time
    * @param {number} parentAlpha
    * @param {string} parentBlendMode
+=======
+   * __render - Description
+   * @private @override
+   * @param {VideoNullDriver} video           Description
+   * @param {number} time            Description
+   * @param {number} parentAlpha     Description
+   * @param {string} parentBlendMode Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {void}
    */
@@ -7801,7 +7842,11 @@ class FloatScatter extends Scatter {
     // NOTE: dont make us @private @member
     this.min = min;
     this.max = max == null ? min : max;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     this.ease = ease;
   }
 
@@ -8719,10 +8764,14 @@ class Emitter extends DisplayObject {
      */
     this.mEmitCount = new FloatScatter(10);
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {FloatScatter}
      */
+=======
+    /** @type {FloatScatter} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
     /**
@@ -9701,6 +9750,7 @@ class Input extends System {
      */
     this.mIsPointerDown = false;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
@@ -9720,6 +9770,12 @@ class Input extends System {
     this.mLockedTarget = null;
 
     this.mLastInTargetComponent = null;
+=======
+    this.mNeedUpEvent = false;
+
+    /** @type {Array<InputComponent>} */
+    this.mInputListeners = [];
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }
 
   /**
@@ -9741,14 +9797,21 @@ class Input extends System {
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
+<<<<<<< HEAD
     document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
+=======
+    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
   }
 
   /**
+<<<<<<< HEAD
    * @private
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    * @param {Event} e
    *
    * @return {boolean}
@@ -9761,6 +9824,7 @@ class Input extends System {
     return true;
   }
 
+<<<<<<< HEAD
   /**
    * @private
    * @param {Event} e
@@ -9783,6 +9847,20 @@ class Input extends System {
   /**
    * @private
    * @param {Event} e
+=======
+  __onPointerEventDoc(e) {
+    let over = e.target == this.mDom || e.target.parentElement == this.mDom;
+
+    if (over === false && this.mNeedUpEvent === true) {
+      this.mNeedUpEvent = false;
+      this.__pushEvent(e);
+    }
+  }
+
+
+  /**
+   * @param {Event} e Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    *
    * @return {boolean}
    */
@@ -9797,12 +9875,15 @@ class Input extends System {
     return true;
   }
 
+<<<<<<< HEAD
   /**
    * @private
    * @param {Event} e
    *
    * @returns {void}
    */
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
@@ -9920,7 +10001,13 @@ class Input extends System {
     if (this.mTarget === null && this.mLockedTarget === null)
       return;
 
+<<<<<<< HEAD
     let info = new PointerInfo(this.mTarget, pos.x, pos.y);
+=======
+    this.__addListener([component]);
+  }
+
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
     if (type === Input.POINTER_DOWN) {
       this.mLockedTarget = this.mTarget;
@@ -9931,6 +10018,32 @@ class Input extends System {
       this.mLockedTarget = null;
       return;
     }
+<<<<<<< HEAD
+=======
+  }
+
+
+  /**
+   * onUpdate - Description
+   *
+   * @param {number} dt Description
+   *
+   * @return {void} Description
+   */
+  onUpdate(dt) {
+    let pointerPos = new Vector();
+
+    for (let i = 0; i < this.mPointerQueue.length; i++) {
+      let nativeEvent = this.mPointerQueue[i];
+
+      let ix = this.mEventList.indexOf(nativeEvent.e.type);
+      let fnName = Input.mInputEventsLookup[ix];
+
+      if (fnName === 'pointerDown')
+        this.mNeedUpEvent = true;
+
+      pointerPos.set(nativeEvent.x, nativeEvent.y);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
     let sameTarget = this.mTarget === this.mLockedTarget;
 
@@ -9954,6 +10067,7 @@ class Input extends System {
     this.mLastInTargetComponent = this.mTargetComponent;
   }
 
+<<<<<<< HEAD
   __postOutMessage() {
     if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
       if (this.mLockedTarget !== this.mTargetComponent.gameObject)
@@ -9964,6 +10078,13 @@ class Input extends System {
     this.mLastInTargetComponent.gameObject.post('~pointerOut');
     this.mLastInTargetComponent = null;
   }
+=======
+        // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
+        if (ix === Input.POINTER_DOWN)
+          this.mIsPointerDown = true;
+        else if (ix === Input.POINTER_UP)
+          this.mIsPointerDown = false;
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
   __processInOut(pos) {
 
@@ -9976,8 +10097,12 @@ class Input extends System {
         return;
       }
 
+<<<<<<< HEAD
       if (this.mTargetComponent.mPointerInDispatched === false)
         this.__postInMessage();
+=======
+      this.post(fnName);
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     }
   }
 
@@ -10170,6 +10295,7 @@ class PointerInfo {
      */
     this.mActiveObject = activeObject;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {number}
@@ -10201,6 +10327,22 @@ class PointerInfo {
     return this.mY;
   }
 }
+=======
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
+
+/** @type {Array<string>}
+ *  @const
+ */
+Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 
 /**
  * This component will allow you to subscribe for some input messages.
@@ -10208,6 +10350,11 @@ class PointerInfo {
  * @cat input
  * @extends Component
  */
+<<<<<<< HEAD
+=======
+Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
 export
 class InputComponent extends Component {
   /**
@@ -11387,9 +11534,7 @@ class Tween extends Component {
     this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
-      if (this.mRepeatTimes > 0) {
-        this.mRepeatTimes -= 1;
-
+      if (this.mRepeatTimes-- > 0) {
         if (this.mReverse) {
           for (let f in this.mValues) {
             [this.mValues[f], this.mValuesStart[f]] = [this.mValuesStart[f], this.mValues[f]];
@@ -11823,10 +11968,17 @@ export
 class Black extends MessageDispatcher {
 
   /**
+<<<<<<< HEAD
    * Creates a new Black instance.
    * @param {string}                          containerElementId The id of an DOM element.
    * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
    * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+=======
+   * constructor
+   * @param {string}   containerElementId
+   * @param {function(new: GameObject)}   rootClass
+   * @param {function(new: VideoNullDriver)} [videoDriverClass]
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    */
   constructor(containerElementId, rootClass, videoDriverClass) {
     super();
@@ -11852,10 +12004,14 @@ class Black extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {function(new: VideoNullDriver)}
      */
+=======
+    /** @type {function(new: VideoNullDriver)} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     this.mVideoDriverClass = videoDriverClass;
 
     /**
@@ -11978,10 +12134,14 @@ class Black extends MessageDispatcher {
      */
     this.mViewport = null;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {VideoNullDriver}
      */
+=======
+    /** @type {VideoNullDriver} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     this.mVideo = null;
 
     /**
@@ -12002,10 +12162,14 @@ class Black extends MessageDispatcher {
      */
     this.mPauseOnHide = true;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
      */
+=======
+    /** @type {boolean} */
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
     this.mPauseOnBlur = true;
 
     /**
@@ -12026,6 +12190,7 @@ class Black extends MessageDispatcher {
      */
     this.mRoot = null;
 
+<<<<<<< HEAD
     /**
      * @private
      * @type {boolean}
@@ -12037,6 +12202,10 @@ class Black extends MessageDispatcher {
      * @type {boolean}
      */
     this.mWasStopped = false;
+=======
+    /** @type {boolean} */
+    this.mEnableFixedTimeStep = false;
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }
 
   /**
@@ -12186,7 +12355,11 @@ class Black extends MessageDispatcher {
 
     // TODO: show only when needed, eg required by any system
     if (this.mEnableFixedTimeStep === false)
+<<<<<<< HEAD
       Debug.info('Fixed time-step is disabled, some systems may not work.');
+=======
+      Debug.warn('Fixed time-step is disabled, some systems may not work.');
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }
 
   /**
@@ -12318,16 +12491,37 @@ class Black extends MessageDispatcher {
   }
 
   /**
+<<<<<<< HEAD
    * Returns the root GameObject.
    * @return {GameObject}
+=======
+   * bounds - Description
+   *
+   * @return {Rectangle} Description
+   */
+  get bounds() {
+    return this.mBounds;
+  }
+
+  /**
+   * root - Description
+   *
+   * @return {GameObject} Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    */
   get root() {
     return this.mRoot;
   }
 
   /**
+<<<<<<< HEAD
    * Returns current video driver instance.
    * @return {VideoNullDriver}
+=======
+   * video - Description
+   *
+   * @return {VideoNullDriver} Description
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    */
   get video() {
     return this.mVideo;
@@ -12555,6 +12749,7 @@ class Black extends MessageDispatcher {
   }
 
 
+<<<<<<< HEAD
   /**
    * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    * @return {boolean}
@@ -12577,14 +12772,33 @@ class Black extends MessageDispatcher {
    * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    *
    * @param {boolean} value
+=======
+  /**
+   * When disabled the physics system and other systems may not work.
+   *
+   * @return {boolean}
+   */
+  get enableFixedTimeStep() {
+    return this.mEnableFixedTimeStep;
+  }
+
+  /**
+   * enableFixedTimeStep
+   *
+   * @param {boolean} value
+   *
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
    * @return {void}
    */
   set enableFixedTimeStep(value) {
     this.mEnableFixedTimeStep = value;
+<<<<<<< HEAD
   }
 
   get magic() {
     return Math.random();
+=======
+>>>>>>> d955611246b23c78661e16c85a147b43213b33bd
   }
 }
 
