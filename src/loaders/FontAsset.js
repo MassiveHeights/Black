@@ -1,3 +1,9 @@
+/**
+ * Font file asset class responsible for loading local font files.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 /* @echo EXPORT */
 class FontAsset extends Asset {
   /**
@@ -6,7 +12,7 @@ class FontAsset extends Asset {
    *
    * @return {void}
    */
-  constructor(name, url) {
+  constructor(name, url, local) {
     super(name, url);
 
     /**
@@ -14,6 +20,12 @@ class FontAsset extends Asset {
      * @type {string}
      */
     this.mTestingFontName = 'Courier New';
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mLocal = local;
 
     /**
      * @private
@@ -43,7 +55,7 @@ class FontAsset extends Asset {
      * @private
      * @type {HTMLElement}
      */
-    this.mCSSLoader = this.__getCSSLoader();
+    this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
 
     /**
@@ -58,15 +70,13 @@ class FontAsset extends Asset {
    * @private
    * @return {string}
    */
-  __getCSSLoader() {
-    if (FontAsset.CSS_LOADER)
-      return FontAsset.CSS_LOADER;
-
-    let cssLoader = document.createElement('style');
-    cssLoader.type = 'text/css';
-    document.getElementsByTagName('head')[0].appendChild(cssLoader);
-    FontAsset.CSS_LOADER = cssLoader;
-    return cssLoader;
+  __getLoaderElement(local) {
+    let loaderElement = document.createElement(local ? 'style' : 'link');
+    loaderElement.type = 'text/css';
+    loaderElement.media = 'all';
+    loaderElement.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(loaderElement);
+    return loaderElement;
   }
 
   /**
@@ -74,9 +84,6 @@ class FontAsset extends Asset {
    * @return {string}
    */
   __getTestingElement() {
-    if (FontAsset.TESTING_ELEMENT)
-      return FontAsset.TESTING_ELEMENT;
-
     let testingElement = document.createElement('span');
     testingElement.style.position = 'absolute';
     testingElement.style.top = '-9999px';
@@ -86,7 +93,6 @@ class FontAsset extends Asset {
     testingElement.innerHTML = this.mTestingString;
     document.body.appendChild(testingElement);
 
-    FontAsset.TESTING_ELEMENT = testingElement;
     return testingElement;
   }
 
@@ -95,7 +101,11 @@ class FontAsset extends Asset {
    * @return {string}
    */
   load() {
-    this.mCSSLoader.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+    if (this.mLocal)
+      this.mLoaderElement.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+    else
+      this.mLoaderElement.href = this.mUrl;
+
     this.checkLoadingStatus();
   }
 
@@ -115,6 +125,11 @@ class FontAsset extends Asset {
     this.onLoaded();
   }
 
+  onLoaded() {
+    super.onLoaded();
+    this.mTestingElement.remove();
+  }
+
   /**
    * @return {void}
    */
@@ -130,6 +145,3 @@ class FontAsset extends Asset {
     return "FontAsset";
   }
 }
-
-FontAsset.TESTING_ELEMENT = null;
-FontAsset.CSS_LOADER = null;
