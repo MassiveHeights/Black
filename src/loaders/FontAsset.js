@@ -127,7 +127,7 @@ class FontAsset extends Asset {
 
   onLoaded() {
     super.onLoaded();
-    this.mTestingElement.remove();
+    this.mTestingElement.parentNode.removeChild(this.mTestingElement);
   }
 
   /**
