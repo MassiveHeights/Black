@@ -1,3 +1,8 @@
+/**
+ * Holds information about keyboard event.
+ *
+ * @cat input
+ */
 /* @echo EXPORT */
 class KeyInfo {
 

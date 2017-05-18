@@ -153,27 +153,41 @@ Math.RAD2DEG = 57.295779513082320876798154814105;
 //   console.log('%s %c%s', title + ' ' + '.'.repeat(88 - title.length), r ? colors[0] : colors[1], r ? statuses[0] : statuses[1]);
 // }
 
+/**
+ * Mathematical representation of a vector.
+ *
+ * @cat geom
+ */
 export
 class Vector {
   /**
-   * @param  {number=} x = 0 description
-   * @param  {number=} y = 0 description
+   * Creates new Vector instance.
+   *
+   * @param  {number=} x = 0 X-component.
+   * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
-    /** @type {number} */
+    /**
+     * X coordinate of a point in the space.
+     *
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * Y coordinate of a point in the space.
+     * @type {number}
+     */
     this.y = y;
   }
 
   /**
-   * set - Description
+   * Updates values of this vector with a given.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] y-component
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   set(x = 0, y = 0) {
     this.x = x;
@@ -183,11 +197,11 @@ class Vector {
   }
 
   /**
-   * add - Description
+   * Adds two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be added to this.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   add(vector) {
     this.x += vector.x;
@@ -197,11 +211,11 @@ class Vector {
   }
 
   /**
-   * subtract - Description
+   * Subtract two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector object to be subtracted.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   subtract(vector) {
     this.x -= vector.x;
@@ -211,11 +225,11 @@ class Vector {
   }
 
   /**
-   * distance - Description
+   * Returns distance between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to check distance with.
    *
-   * @return {number} Description
+   * @return {number} The distance between two vectors.
    */
   distance(vector) {
     let x = this.x - vector.x;
@@ -225,11 +239,11 @@ class Vector {
   }
 
   /**
-   * multiply - Description
+   * Multiplies two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector A second vector to multiply with.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiply(vector) {
     this.x *= vector.x;
@@ -239,11 +253,11 @@ class Vector {
   }
 
   /**
-   * multiplyScalar - Description
+   * Multiplies this vector by scalar value.
    *
-   * @param {number} scalar Description
+   * @param {number} scalar The values to mul by.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   multiplyScalar(scalar) {
     this.x *= scalar;
@@ -253,20 +267,20 @@ class Vector {
   }
 
   /**
-   * dot - Description
+   * Find dot product between two vectors.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector Second vector to find angle with.
    *
-   * @return {number} Description
+   * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
     return this.x * vector.x + this.y * vector.y;
   }
 
   /**
-   * length - Description
+   * Returns the length of this vector.
    *
-   * @return {number} Description
+   * @return {number} The length of the vector.
    */
   length() {
     let x = this.x;
@@ -276,9 +290,9 @@ class Vector {
   }
 
   /**
-   * lengthSqr - Description
+   * Returns the squared length of this vector.
    *
-   * @return {number} Description
+   * @return {number} Squared length.
    */
   lengthSqr() {
     let x = this.x;
@@ -287,6 +301,11 @@ class Vector {
     return x * x + y * y;
   }
 
+  /**
+   * Creates unit vector out of this one.
+   *
+   * @returns {Vector} This.
+   */
   normalize() {
     let sum = this.lengthSqr();
 
@@ -303,12 +322,12 @@ class Vector {
   }
 
   /**
-   * clamp - Description
+   * Clamps values of this vector to given range.
    *
-   * @param {number} min Description
-   * @param {number} max Description
+   * @param {number} min Min value.
+   * @param {number} max Max value.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   clamp(min, max) {
     this.x = Math.clamp(this.x, min, max);
@@ -318,12 +337,12 @@ class Vector {
   }
 
   /**
-   * lerp - Description
+   * Linearly interpolates between two vectors.
    *
-   * @param {Vector} vector Description
-   * @param {number} t      Description
+   * @param {Vector} vector The second vector to interpolate values between.
+   * @param {number} t      Interpolant.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   lerp(vector, t) {
     this.x = Math.lerp(this.x, vector.x, t);
@@ -333,11 +352,11 @@ class Vector {
   }
 
   /**
-   * copyTo - Description
+   * Copies this vector values into given vector.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} Given vector.
    */
   copyTo(vector) {
     vector.x = this.x;
@@ -347,11 +366,11 @@ class Vector {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given vector into this.
    *
-   * @param {Vector} vector Description
+   * @param {Vector} vector The vector to copy values from.
    *
-   * @return {Vector} Description
+   * @return {Vector} This.
    */
   copyFrom(vector) {
     this.x = vector.x;
@@ -361,37 +380,37 @@ class Vector {
   }
 
   /**
-   * clone - Description
+   * Clones this vector object.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector instance.
    */
   clone() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * equals - Description
+   * Compares two vectors for equality.
    *
-   * @param {Vector} vector Description
-   * @param {number=} epsilon Description
+   * @param {Vector} vector Second vector to compare with.
+   * @param {number=} epsilon Threshold.
    *
-   * @return {boolean}
+   * @return {boolean} True if equal.
    */
   equals(vector, epsilon = Number.EPSILON) {
     return vector !== null && (Math.abs(vector.x - this.x) < epsilon) && (Math.abs(vector.y - this.y) < epsilon);
   }
 
   /**
-   * isEmpty - Description
+   * Checks if this vector is empty.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if both components equal to zero,
    */
   isEmpty() {
     return this.x === 0 && this.y === 0;
   }
 
   /**
-   * setRotationFrom - Rotates this vector around specified point.
+   * Rotates this vector around specified point.
    *
    * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
@@ -406,7 +425,7 @@ class Vector {
   }
 
   /**
-   * setRotation - Rotates this vector around zero vector
+   *  Rotates this vector around zero vector.
    *
    * @param {number} rotation Angle in radians
    *
@@ -420,7 +439,7 @@ class Vector {
   }
 
   /**
-   * theta - Calculates angle in radians within this and specified vectors.
+   * Calculates angle in radians within this and specified vectors.
    *
    * @return {number} Angle in radians.
    */
@@ -429,7 +448,7 @@ class Vector {
   }
 
   /**
-   * perp - Rotates this vector to normal.
+   * Rotates this vector to normal.
    *
    * @return {Vector} This vector.
    */
@@ -438,18 +457,18 @@ class Vector {
   }
 
   /**
-   * fromAngle - Description
+   * Creates new Vector from given angle in radians.
    *
-   * @param {number=} [angle=0] Description
+   * @param {number=} [angle=0] Angle.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Vector object.
    */
   static fromAngle(angle = 0) {
     return new Vector(Math.cos(angle), Math.sin(angle));
   }
 
   /**
-   * randomRange
+   * @ignore
    *
    * @param {Vector} vectorMin
    * @param {Vector} vectorMax
@@ -468,21 +487,29 @@ class Vector {
 
 }
 
-/** @type {Vector}
+/**
+ * @ignore
+ * @type {Vector}
  * @nocollapse
  */
 Vector.__cache = new Vector();
 
+/**
+ * A 2x3 matrix allows you to transform objects in space.
+ *
+ * @cat geom
+ */
 export
 class Matrix {
   /**
-   * @param  {number} a = 1  description
-   * @param  {number} b = 0  description
-   * @param  {number} c = 0  description
-   * @param  {number} d = 1  description
-   * @param  {number} tx = 0 description
-   * @param  {number} ty = 0 description
-   * @return {number}        description
+   * Creates new Matrix instance.
+   *
+   * @param  {number} a = 1  A-component.
+   * @param  {number} b = 0  B-component.
+   * @param  {number} c = 0  C-component.
+   * @param  {number} d = 1  D-component.
+   * @param  {number} tx = 0 TX-component.
+   * @param  {number} ty = 0 TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     /** @type {Float32Array} */
@@ -492,14 +519,15 @@ class Matrix {
   }
 
   /**
-
-   * @param  {number} a  description
-   * @param  {number} b  description
-   * @param  {number} c  description
-   * @param  {number} d  description
-   * @param  {number} tx description
-   * @param  {number} ty description
-   * @return {Matrix}    description
+   * Sets components of this matrix to the given values.
+   *
+   * @param  {number} a  A-component.
+   * @param  {number} b  B-component.
+   * @param  {number} c  C-component.
+   * @param  {number} d  D-component.
+   * @param  {number} tx TX-component.
+   * @param  {number} ty TY-component.
+   * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     let m = this._matrix;
@@ -515,12 +543,12 @@ class Matrix {
   }
 
   /**
-   * translate - Description
+   * Translates the matrix by x and y axes.
    *
-   * @param {number} dx Description
-   * @param {number} dy Description
+   * @param {number} dx Amount along x-axis.
+   * @param {number} dy Amount along y-axis.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   translate(dx, dy) {
     let a = this._matrix;
@@ -539,12 +567,12 @@ class Matrix {
   }
 
   /**
-   * setTranslation - Description
+   * Sets tx and ty components to given values.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The tx component to update.
+   * @param {number} y The ty component to update.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   setTranslation(x, y) {
     this._matrix[4] = x;
@@ -554,8 +582,10 @@ class Matrix {
   }
 
   /**
-   * @param  {number} theta     description
-   * @param  {number} scale = 1 description
+   * Sets absolute rotation of this matrix to specified angle.
+   *
+   * @param  {number} theta     Theta value.
+   * @param  {number} scale = 1 Scale value.
    */
   setRotation(theta, scale = 1) {
     let m = this._matrix;
@@ -568,10 +598,10 @@ class Matrix {
   }
 
   /**
-   * rotate - angle
+   * Applies rotation to this matrix.
    *
-   * @param  {number} angle description
-   * @return {Matrix}       description
+   * @param  {number} angle Angle in radians.
+   * @return {Matrix} This.
    */
   rotate(angle) {
     let a = this._matrix;
@@ -592,12 +622,12 @@ class Matrix {
   }
 
   /**
-   * scale - Description
+   * Scales current matrix.
    *
-   * @param {number} sx Description
-   * @param {number} sy Description
+   * @param {number} sx Abscissa of the scaling vector.
+   * @param {number} sy Ordinate of the scaling vector.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   scale(sx, sy) {
     let a = this._matrix;
@@ -617,18 +647,19 @@ class Matrix {
   }
 
   /**
-   * identity - Description
+   * Resets current matrix to identity state.
    *
-   * @return {Matrix} Description
+   * @return {Matrix} This.
    */
   identity() {
     return this.set(1, 0, 0, 1, 0, 0);
   }
 
   /**
-   * Same as concat in flash
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Concatenates a given matrix with the current one.
+   *
+   * @param  {Matrix} b The matrix to be concatenated.
+   * @return {Matrix}   This.
    */
   prepend(b) {
     let a = this._matrix;
@@ -663,8 +694,10 @@ class Matrix {
   }
 
   /**
-   * @param  {Matrix} b description
-   * @return {Matrix}   description
+   * Appends values to this matrix.
+   *
+   * @param  {Matrix} b The matrix to be appended.
+   * @return {Matrix} This.
    */
   append(b) {
     let a = this._matrix;
@@ -693,10 +726,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given and x- and y- components of a point from a local space to
+   * world space.
+   *
+   * @param  {number} x          The x- component of a point.
+   * @param  {number} y          The y- component of a point.
+   * @param  {Vector=} outVector If given stores resulting values in it.
+   * @return {Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
     outVector = outVector || new Vector();
@@ -709,10 +745,13 @@ class Matrix {
   }
 
   /**
-   * @param  {number} x         description
-   * @param  {number} y         description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * Transforms given point from a local space to world space without applying
+   * scalling.
+   *
+   * @param  {number} x          The x- component.
+   * @param  {number} y          The y- component.
+   * @param  {Vector=} outVector If given stores results in it.
+   * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
     let m = this._matrix;
@@ -725,11 +764,11 @@ class Matrix {
   }
 
   /**
-   * transformVector - transforms vector by current matrix object.
+   * Transforms vector by current matrix object.
    *
-   * @param  {Vector} vector    description
-   * @param  {Vector=} outVector description
-   * @return {Vector}           description
+   * @param  {Vector} vector     Vector to apply transformation on.
+   * @param  {Vector=} outVector Out Vector to store results in.
+   * @return {Vector} New transformed vector.
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
@@ -742,11 +781,11 @@ class Matrix {
   }
 
   /**
-   * transformRect - transforms rectangle by current matrix object.
+   * Transforms rectangle by current matrix object.
    *
-   * @param  {Rectangle} rect    description
-   * @param  {Rectangle|null} outRect description
-   * @return {Rectangle}         description
+   * @param  {Rectangle} rect         Rectangle to apply transformation on.
+   * @param  {Rectangle|null} outRect When given stores results in it.
+   * @return {Rectangle} Tranformed Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -786,9 +825,9 @@ class Matrix {
   }
 
   /**
-   * invert - inverts current matrix.
+   * Inverts current matrix.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} This.
    */
   invert() {
     let a = this._matrix;
@@ -819,7 +858,12 @@ class Matrix {
     return this;
   }
 
-  // NOTE: remove or finish
+  /**
+   * TODO: remove or finish
+   * @ignore
+   *
+   * @returns {Array<number>} Description
+   */
   __decompose() {
     let m = this._matrix;
     let a = m[0];
@@ -862,9 +906,9 @@ class Matrix {
   }
 
   /**
-   * clone - clones the current matrix and returns new cloned object.
+   * Clones the current matrix and returns new cloned object.
    *
-   * @return {Matrix}  description
+   * @return {Matrix} New cloned object.
    */
   clone() {
     let m = new Matrix();
@@ -874,10 +918,10 @@ class Matrix {
   }
 
   /**
-   * copyTo - copies
+   * Copies values to given matrix.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The destination matrix.
+   * @return {Matrix} This.
    */
   copyTo(matrix) {
     let a = this._matrix;
@@ -894,21 +938,21 @@ class Matrix {
   }
 
   /**
-   * copyFrom - description
+   * Copies values from given matrix into this.
    *
-   * @param  {Matrix} matrix description
-   * @return {Matrix}        description
+   * @param  {Matrix} matrix The matrix to copy values from.
+   * @return {Matrix} This.
    */
   copyFrom(matrix) {
     return matrix.copyTo(this);
   }
 
   /**
-   * equals - description
+   * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param  {Matrix} matrix                   description
-   * @param  {number} epsilon = Number.EPSILON description
-   * @return {boolean}                          description
+   * @param  {Matrix} matrix                   Matrix object to compare with.
+   * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+   * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
     let a = this._matrix;
@@ -921,9 +965,9 @@ class Matrix {
   }
 
   /**
-   * get - description
+   * Returns array of values representing this matrix object.
    *
-   * @return {Float32Array}  description
+   * @return {Float32Array}
    */
   get value() {
     return this._matrix;
@@ -937,37 +981,56 @@ class Matrix {
  */
 Matrix.__cache = new Matrix();
 
+/**
+ * Mathematical representation of a rectangle.
+ *
+ * @cat geom
+ */
 export
 class Rectangle {
   /**
-   * @param  {number=} y = 0 description
-   * @param  {number=} x = 0 description
-   * @param  {number=} w = 0 description
-   * @param  {number=} h = 0 description
+   * Creates new instance of Rectangle.
+   *
+   * @param  {number=} y = 0 X-component.
+   * @param  {number=} x = 0 Y-component.
+   * @param  {number=} w = 0 The width.
+   * @param  {number=} h = 0 The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
-    /** @type {number} */
+    /**
+     * The x coordinate of the rectangle.
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * The y coordinate of the rectangle.
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * The width of the rectangle.
+     * @type {number}
+     */
     this.width = w;
 
-    /** @type {number} */
+    /**
+     * The height of the rectangle.
+     * @type {number}
+     */
     this.height = h;
   }
 
   /**
-   * set - Description
+   * Update rectangle values with a given.
    *
-   * @param {number} x Description
-   * @param {number} y Description
-   * @param {number} w Description
-   * @param {number} h Description
+   * @param {number} x X-component.
+   * @param {number} y Y-component.
+   * @param {number} w The width.
+   * @param {number} h The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   set(x, y, w, h) {
     this.x = x;
@@ -979,11 +1042,11 @@ class Rectangle {
   }
 
   /**
-   * copyFrom - Description
+   * Copies values from given rectangle into this one.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The Rectangle to copy values from.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   copyFrom(rect) {
     this.x = rect.x;
@@ -995,11 +1058,11 @@ class Rectangle {
   }
 
   /**
-   * copyTo - Description
+   * Copies values from this rectangle into description.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The destination rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
     rect.x = this.x;
@@ -1010,63 +1073,62 @@ class Rectangle {
     return rect;
   }
 
-
   /**
-   * left - Description
+   * Get/Sets the leftmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get left() {
     return this.x;
   }
 
   /**
-   * left - Description
+   * @ignore
    *
-   * @param {number} left Left x position.
+   * @param {number} keft
    */
   set left(left) {
     this.x = left;
   }
 
   /**
-   * right - Description
+   * Get/Sets the rightmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get right() {
     return this.x + this.width;
   }
 
   /**
-   * right - Description
+   * @ignore
    *
-   * @param {number} right Right x position.
+   * @param {number} right
    */
   set right(right) {
     this.x = right - this.width;
   }
 
   /**
-   * top - Description
+   * Get/Sets the topmost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get top() {
     return this.y;
   }
 
   /**
-   * top - Description
+   * @ignore
    *
-   * @param {number} top Top y position.
+   * @param {number} top
    */
   set top(top) {
     this.y = top;
   }
 
   /**
-   * bottom - Description
+   * Get/Sets the bottommost point of this rectangle.
    *
    * @return {number} Description
    */
@@ -1075,27 +1137,27 @@ class Rectangle {
   }
 
   /**
-   * bottom - Description
+   * @ignore
    *
-   * @param {number} bottom Bottom y position.
+   * @param {number} bottom
    */
   set bottom(bottom) {
     this.y = bottom - this.height;
   }
 
   /**
-   * topLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topLeft() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * topLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Top left position.
+   * @param {Vector} vector
    */
   set topLeft(vector) {
     this.left = vector.x;
@@ -1103,7 +1165,7 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * Get/Sets the top right point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1112,9 +1174,9 @@ class Rectangle {
   }
 
   /**
-   * topRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Top right position.
+   * @param {Vector} vector
    */
   set topRight(vector) {
     this.right = vector.x;
@@ -1122,7 +1184,7 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1131,9 +1193,9 @@ class Rectangle {
   }
 
   /**
-   * bottomRight - Description
+   * @ignore
    *
-   * @param {Vector} vector Right bottom position.
+   * @param {Vector} vector
    */
   set bottomRight(vector) {
     this.right = vector.x;
@@ -1141,7 +1203,7 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * Get/Sets the top left point for this rectangle.
    *
    * @return {Vector} Description
    */
@@ -1150,9 +1212,9 @@ class Rectangle {
   }
 
   /**
-   * bottomLeft - Description
+   * @ignore
    *
-   * @param {Vector} vector Left bottom position.
+   * @param {Vector} vector
    */
   set bottomLeft(vector) {
     this.left = vector.x;
@@ -1160,11 +1222,12 @@ class Rectangle {
   }
 
   /**
-   * size - Description
+   * Creates a new Rectangle instance with width and height equal to current
+   * instance.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector Resulting rect to save values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1172,9 +1235,9 @@ class Rectangle {
   }
 
   /**
-   * zero - Description
+   * Sets all components of this Rectangle to zero.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   zero() {
     return this.set(0, 0, 0, 0);
@@ -1182,12 +1245,12 @@ class Rectangle {
 
 
   /**
-   * equals - Description
+   * Compares this Rectangle with a given one.
    *
-   * @param {Rectangle} rect Description
-   * @param {number=} epsilon Description
+   * @param {Rectangle} rect                  Rect to compare values with.
+   * @param {number} epsilon = Number.EPSILON
    *
-   * @return {boolean}
+   * @return {boolean} True if rects are equal.
    */
   equals(rect, epsilon = Number.EPSILON) {
     return rect !== null && (Math.abs(this.x - rect.x) < epsilon) && (Math.abs(this.y - rect.y) < epsilon) &&
@@ -1196,12 +1259,12 @@ class Rectangle {
 
 
   /**
-   * containsXY - Description
+   * Checks if a given point is inside this rectangle.
    *
-   * @param {number} x Description
-   * @param {number} y Description
+   * @param {number} x The x-component of a point.
+   * @param {number} y The y-component of a point.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if point is inside.
    */
   containsXY(x, y) {
     return x >= this.x && x <= this.right && y >= this.y && y <= this.bottom;
@@ -1209,22 +1272,22 @@ class Rectangle {
 
 
   /**
-   * contains - Description
+   * Checks if a given rectangle is inside this rect.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect Rectangle to check with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
     return rect.x >= this.x && rect.y >= this.y && rect.right <= this.right && rect.bottom <= this.bottom;
   }
 
   /**
-   * intersects - Description
+   * Checks if this rect intersects with a given rectangle.
    *
-   * @param {Rectangle} rect Description
+   * @param {Rectangle} rect The rect to check intersection with.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   intersects(rect) {
     return rect.right > this.x && rect.bottom > this.y &&
@@ -1233,11 +1296,11 @@ class Rectangle {
 
 
   /**
-   * union - Description
+   * Adds two rects ]
    *
-   * @param {Rectangle} toUnion Description
+   * @param {Rectangle} toUnion A rectangle object to add to this rect.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
     if (this.width === 0 || this.height === 0)
@@ -1255,9 +1318,9 @@ class Rectangle {
 
 
   /**
-   * volume - Description
+   * Returns volume of this Rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get volume() {
     return this.width * this.height;
@@ -1265,14 +1328,14 @@ class Rectangle {
 
 
   /**
-   * expand - Description
+   * Expands this rectangle object by given values.
    *
-   * @param {number} x      Description
-   * @param {number} y      Description
-   * @param {number} width  Description
-   * @param {number} height Description
+   * @param {number} x      X-component.
+   * @param {number} y      Y-component
+   * @param {number} width  The width.
+   * @param {number} height The height.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
     if (this.volume === 0)
@@ -1300,14 +1363,13 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * inflate - Description
+   * Increases the size of this rectangle by given x- and y- values.
    *
-   * @param {number=} [x=0] Description
-   * @param {number=} [y=0] Description
+   * @param {number=} [x=0] X-component.
+   * @param {number=} [y=0] Y-component.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
     this.x -= x;
@@ -1318,11 +1380,10 @@ class Rectangle {
     return this;
   }
 
-
   /**
-   * clone - Description
+   * Clones this Rectangle object into new one.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle} New rectangle object.
    */
   clone() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -1339,11 +1400,11 @@ class Rectangle {
 
 
   /**
-   * center - Description
+   * Returns the center point of this rectangle.
    *
-   * @param {Vector=} outVector Description
+   * @param {Vector=} outVector The out-Vector to store values in.
    *
-   * @return {Vector} Description
+   * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1351,7 +1412,7 @@ class Rectangle {
   }
 
   /**
-   * scale - Scales this rectangle.
+   *  Scales this rectangle.
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
@@ -1366,7 +1427,7 @@ class Rectangle {
   }
 
   /**
-   * isEmpty - Checks rectangle has area.
+   * Checks if rectangle has area.
    *
    * @return {boolean} True if has.
    */
@@ -1383,34 +1444,51 @@ class Rectangle {
     ];
   }
 
-
 }
 
-/** @type {Rectangle}
-  * @nocollapse
-  */
+/**
+ * @ignore
+ * @type {Rectangle}
+ * @nocollapse
+ */
 Rectangle.__cache = new Rectangle();
 
+/**
+ * Mathematical representation of a circle.
+ *
+ * @cat geom
+ */
 export
 class Circle {
   /**
+   * Creates new Circle instance.
+   * 
    * @param  {number=} x = 0 Position x.
    * @param  {number=} y = 0 Position y.
    * @param  {number=} r = 1 Radius.
    */
   constructor(x = 0, y = 0, r = 1) {
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.r = r;
   }
 
   /**
-   * set - Sets new circle properties
+   * Sets new circle properties
    *
    * @param {number} x Position x.
    * @param {number} y Position y.
@@ -1427,7 +1505,7 @@ class Circle {
   }
 
   /**
-   * clone - Clones this circle.
+   * Clones this circle.
    *
    * @return {Circle} Created circle.
    */
@@ -1436,7 +1514,7 @@ class Circle {
   }
 
   /**
-   * copyTo - Copy this properties to another circle.
+   * Copy this properties to another circle.
    *
    * @param {Circle} circle Object to copy to.
    *
@@ -1447,7 +1525,7 @@ class Circle {
   }
 
   /**
-   * copyFrom - Copy another circle properties to this.
+   * Copy another circle properties to this.
    *
    * @param {Circle} circle Object to copy from.
    *
@@ -1458,7 +1536,7 @@ class Circle {
   }
 
   /**
-   * equals - Shows whether circles are identical.
+   * Shows whether circles are identical.
    *
    * @param {Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
@@ -1471,7 +1549,7 @@ class Circle {
   }
 
   /**
-   * containsXY - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
@@ -1483,7 +1561,7 @@ class Circle {
   }
 
   /**
-   * contains - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {Vector} vector Point to check.
    *
@@ -1494,7 +1572,7 @@ class Circle {
   }
 
   /**
-   * left - Finds left X position.
+   * Finds left X position.
    *
    * @return {number} Left X position.
    */
@@ -1503,7 +1581,7 @@ class Circle {
   }
 
   /**
-   * right - Finds right X position.
+   * Finds right X position.
    *
    * @return {number} Right X position.
    */
@@ -1512,7 +1590,7 @@ class Circle {
   }
 
   /**
-   * top - Finds top Y position.
+   * Finds top Y position.
    *
    * @return {number} Top Y position.
    */
@@ -1521,7 +1599,7 @@ class Circle {
   }
 
   /**
-   * bottom - Finds bottom Y position.
+   * Finds bottom Y position.
    *
    * @return {number} Bottom Y position.
    */
@@ -1530,34 +1608,34 @@ class Circle {
   }
 
   /**
-   * topPoint - Description
+   * Returns top point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topPoint() {
     return new Vector(this.x, this.top);
   }
 
   /**
-   * bottomPoint - Description
+   * Returns bottom point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
   }
 
   /**
-   * zero - Description
+   * Resets all values to zero.
    *
-   * @return {Circle} Description
+   * @return {Circle} Returns this.
    */
   zero() {
     return this.set(0, 0, 0);
   }
 
   /**
-   * intersects - Shows whether this circle intersects another.
+   * Shows whether this circle intersects another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -1569,7 +1647,7 @@ class Circle {
   }
 
   /**
-   * collide - Shows whether this circle collide with another.
+   * Shows whether this circle collide with another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -1597,7 +1675,7 @@ class Circle {
   }
 
   /**
-   * volume - Area of this circle.
+   * Returns area of this circle.
    *
    * @return {number} area.
    */
@@ -1606,7 +1684,7 @@ class Circle {
   }
 
   /**
-   * perimeter - Perimeter of this circle.
+   * Returns perimeter of this circle.
    *
    * @return {number} perimeter.
    */
@@ -1615,7 +1693,7 @@ class Circle {
   }
 
   /**
-   * center - Represents center as vector.
+   * Represents center as vector.
    *
    * @param {Vector=} outVector Object for result.
    *
@@ -1633,9 +1711,15 @@ class Circle {
  */
 Circle.__cache = new Circle();
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 export
 class Line {
   /**
+   * Creates new Line instance.
    * @param  {Vector} start Start point.
    * @param  {Vector} end End point.
    */
@@ -1919,7 +2003,7 @@ class Line {
     let y1 = this.start.y;
     let x2 = this.end.x;
     let y2 = this.end.y;
-    
+
     return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y > Math.min(y1, y2) && y < Math.max(y1, y2);
   }
 
@@ -1930,25 +2014,41 @@ class Line {
  */
 Line.__cache = new Line(new Vector(), new Vector());
 
+/**
+ * @cat geom
+ */
 export
 class Polygon {
-
   /**
+   * Creates new Polygon instance.
+   *
    * @param  {Array<Vector>} vertices = [] Array of vertex points;
    */
   constructor(vertices = []) {
 
-    /** @type {Array<Vector>} */
-    this.vertices = vertices;
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
+    this.mVertices = vertices;
 
-    /** @type {Array<Line>} */
-    this.lines = [];
+    /**
+     * @private
+     * @type {Array<Line>}
+     */
+    this.mLines = [];
 
-    /** @type {Rectangle} */
-    this.bounds = new Rectangle();
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mBounds = new Rectangle();
 
-    /** @type {Vector} */
-    this.center = new Vector();
+    /**
+     * @private
+     * @type {Vector}
+     */
+    this.mCenter = new Vector();
 
     this.refresh();
   }
@@ -1961,7 +2061,7 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   set(vertices) {
-    this.vertices = vertices;
+    this.mVertices = vertices;
     this.refresh();
     return this;
   }
@@ -1974,11 +2074,11 @@ class Polygon {
    * @return {Polygon} Passed polygon.
    */
   copyTo(polygon) {
-    let len = this.vertices.length;
+    let len = this.mVertices.length;
     let vertices = [];
 
     for (let i = 0; i < len; i++) {
-      vertices.push(this.vertices[i].clone());
+      vertices.push(this.mVertices[i].clone());
     }
 
     return polygon.set(vertices);
@@ -2009,7 +2109,7 @@ class Polygon {
    * @return {Polygon} Created polygon.
    */
   clone() {
-    let thisVertices = this.vertices;
+    let thisVertices = this.mVertices;
     let len = thisVertices.length;
     let vertices = [];
 
@@ -2021,11 +2121,11 @@ class Polygon {
   }
 
   get width() {
-    return this.bounds.width;
+    return this.mBounds.width;
   }
 
   get height() {
-    return this.bounds.height;
+    return this.mBounds.height;
   }
 
   /**
@@ -2048,8 +2148,8 @@ class Polygon {
    * @return {boolean} True if polygon contains point.
    */
   contains(vector) {
-    let center = this.center;
-    let lines = this.lines;
+    let center = this.mCenter;
+    let lines = this.mLines;
     let len = lines.length;
 
     if (center.equals(vector)) {
@@ -2073,7 +2173,7 @@ class Polygon {
    * @return {number} perimeter.
    */
   get perimeter() {
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let len = thisLines.length;
     let perimeter = 0;
 
@@ -2092,11 +2192,11 @@ class Polygon {
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
-    if (!this.bounds.intersects(polygon.bounds)) {
+    if (!this.mBounds.intersects(polygon.bounds)) {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let polygonLines = polygon.lines;
     let polygonLen = polygonLines.length;
@@ -2120,8 +2220,8 @@ class Polygon {
    * @return {boolean} True if polygon collides with circle.
    */
   collideCircle(circle) {
-    let bounds = this.bounds;
-    let lines = this.lines;
+    let bounds = this.mBounds;
+    let lines = this.mLines;
 
     if (bounds.left > circle.right || bounds.right < circle.left || bounds.top > circle.bottom || bounds.bottom < circle.top) {
       return false;
@@ -2145,11 +2245,11 @@ class Polygon {
    * @return {boolean} True if polygon collides with rectangle.
    */
   collideRectangle(rectangle) {
-    if (!this.bounds.intersects(rectangle)) {
+    if (!this.mBounds.intersects(rectangle)) {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let rectangleLines = rectangle.lines;
     let rectangleLen = rectangleLines.length;
@@ -2173,7 +2273,7 @@ class Polygon {
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
-    if (this.bounds.width < polygon.bounds.width || this.bounds.height < polygon.bounds.height) {
+    if (this.mBounds.width < polygon.bounds.width || this.mBounds.height < polygon.bounds.height) {
       return false;
     }
 
@@ -2181,7 +2281,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let polygonLines = polygon.lines;
     let polygonLen = polygonLines.length;
@@ -2209,7 +2309,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let len = thisLines.length;
 
     for (let i = 0; i < len; i++) {
@@ -2233,7 +2333,7 @@ class Polygon {
       return false;
     }
 
-    let thisLines = this.lines;
+    let thisLines = this.mLines;
     let thisLen = thisLines.length;
     let rectangleLines = rectangle.lines;
     let rectangleLen = rectangleLines.length;
@@ -2255,10 +2355,10 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refresh() {
-    let center = this.center;
-    let bounds = this.bounds;
-    let vertices = this.vertices;
-    let lines = this.lines = [];
+    let center = this.mCenter;
+    let bounds = this.mBounds;
+    let vertices = this.mVertices;
+    let lines = this.mLines = [];
     center.set(0, 0);
 
     // bounds
@@ -2296,8 +2396,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshCenter() {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let len = vertices.length;
     center.set(0, 0);
 
@@ -2316,8 +2416,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshBounds() {
-    let bounds = this.bounds;
-    let vertices = this.vertices;
+    let bounds = this.mBounds;
+    let vertices = this.mVertices;
     let maxX = -Number.MAX_VALUE;
     let maxY = -Number.MAX_VALUE;
     let minX = Number.MAX_VALUE;
@@ -2346,8 +2446,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   refreshLines() {
-    let vertices = this.vertices;
-    let lines = this.lines = [];
+    let vertices = this.mVertices;
+    let lines = this.mLines = [];
 
     for (let i = 0; i < vertices.length; i += 2) {
       lines.push(new Line(vertices[i], vertices[i + 1] || vertices[0]));
@@ -2382,8 +2482,8 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   setRotation(rotation) {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let cos = Math.cos(rotation).toFixed(15);
     let sin = Math.sin(rotation).toFixed(15);
 
@@ -2406,8 +2506,8 @@ class Polygon {
    * @return {Polygon} This vertices.
    */
   setTranslation(point) {
-    let center = this.center;
-    let vertices = this.vertices;
+    let center = this.mCenter;
+    let vertices = this.mVertices;
     let len = vertices.length;
     point.subtract(center);
 
@@ -2425,28 +2525,50 @@ class Polygon {
  */
 Polygon.__cache = new Polygon();
 
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 export
 class Curve {
+  /**
+   * Creates new Curve instance.
+   */
   constructor() {
-
-    /** @private @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mEachT = [];
   }
 
   /**
-   * set - Sets new points coordinates.
+   * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
    *
@@ -2464,7 +2586,8 @@ class Curve {
 
 
   /**
-   * baked - Returns true or false depending on baked is enabled or not.
+   * Enables or disables interpolation from cache (lookup).
+   * Returns true or false depending on baked is enabled or not.
    *
    * @return {boolean}
    */
@@ -2473,8 +2596,7 @@ class Curve {
   }
 
   /**
-   * baked - Enables or disables interpolation from cache (lookup).
-   *
+   * @ignore
    * @param  {boolean} label
    */
   set baked(label) {
@@ -2486,8 +2608,8 @@ class Curve {
   }
 
   /**
-   * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
-   *
+   * Wides points array. Sets first point for next bezier same as last of previous.
+   * @private
    * @param  {Array<number>} points Array of points coordinates.
    *
    * @return {Array<number>} Points coordinates array.
@@ -2503,7 +2625,9 @@ class Curve {
   }
 
   /**
-   * __refreshCache - Refresh cache (lookup) for fast interpolations.
+   * Refresh cache (lookup) for fast interpolations.
+   *
+   * @private
    *
    * @return {Curve} This curve.
    */
@@ -2526,8 +2650,8 @@ class Curve {
 
 
   /**
-   * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
-   *
+   * Refresh local interpolation kof for each bezier in curve.
+   * @private
    * @return {Curve} This curve.
    */
   __refreshEachT() {
@@ -2550,7 +2674,7 @@ class Curve {
   }
 
   /**
-   * lerp - Interpolates single bezier on t position.
+   * Interpolates single bezier on t position.
    *
    * @param  {number} t Interpolation position (0...1).
    * @param  {number} startX
@@ -2593,7 +2717,7 @@ class Curve {
   }
 
   /**
-   * interpolate - Interpolates across whole curve.
+   * Interpolates across whole curve.
    *
    * @param  {number} t Interpolation position (0...1).
    * @param  {Vector=} outVector
@@ -2627,7 +2751,7 @@ class Curve {
   }
 
   /**
-   * length - Returns single bezier length.
+   * Returns single bezier length.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY
    *
@@ -2643,7 +2767,7 @@ class Curve {
   }
 
   /**
-   * getFullLength - Returns this curve length.
+   * Returns this curve length.
    *
    * @return {number} Length.
    */
@@ -2659,11 +2783,18 @@ class Curve {
   }
 }
 
-/** @type {Curve}
+/**
+ * @private
+ * @type {Curve}
  * @nocollapse
  */
 Curve.__cache = new Curve();
 
+/**
+ * Utility class for logging and debugging.
+ *
+ * @cat core
+ */
 export
 class Debug {
   constructor() {
@@ -2683,12 +2814,20 @@ class Debug {
       throw new Error(message);
   }
 
+  static log(...message) {
+    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+  }
+
   static info(...message) {
-    console.info(...message);
+    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
   }
 
   static warn(...message) {
-    console.warn(...message);
+    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+  }
+
+  static error(...message) {
+    console.info('%c%s', 'color: #d50000;', 'ERROR:', ...message);
   }
 }
 
@@ -2696,7 +2835,9 @@ Debug.throwOnFail = false;
 Debug.logOnFail = true;
 
 /**
- * MessageDispatcher - Description
+ * The MessageDispatcher class is the base class for all classes that posts messages.
+ *
+ * @cat core
  * @unrestricted
  */
 export
@@ -2704,12 +2845,15 @@ class MessageDispatcher {
   constructor() {
     // object of arrays
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mListeners = null;
   }
 
   /**
-   * on - Listens to message by given name
+   * Listens to message by given name
    *
    * @param {string} name           Name of a message to listen
    * @param {Function} callback       The callback function
@@ -2728,8 +2872,6 @@ class MessageDispatcher {
 
       let pureName = name.substring(0, filterIx);
       let pathMask = name.substring(filterIx + 1);
-
-      //console.log(pureName, pathMask);
 
       if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         MessageDispatcher.mGlobalHandlers[pureName] = [];
@@ -2767,7 +2909,24 @@ class MessageDispatcher {
   }
 
   /**
-   * removeOn - Description
+   * Returns true if this object is subscribed for any messages with a given name.
+   *
+   * @param {string} name Message name to check.
+   *
+   * @returns {boolean} True if found.
+   */
+  hasOn(name) {
+    if (this.mListeners === null)
+      return false;
+
+    if (this.mListeners.hasOwnProperty(name) === false)
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Removes listener
    *
    * @param {string} name            Description
    * @param {Function=} [callback=null] Description
@@ -2800,7 +2959,7 @@ class MessageDispatcher {
   }
 
   /**
-   * post - Sends message with given pattern and params
+   * Sends message with given pattern and params
    *
    * @param {string}  name   The name of a message
    * @param {...*} params A list of params to send
@@ -2816,8 +2975,8 @@ class MessageDispatcher {
     let message = this.__parseMessage(this, name);
 
     // TODO: o'really 62?
-    let isGameObject = this instanceof GameObject;
-    if (message.mDirection !== 'none' && isGameObject === false)
+    let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
+    if (message.mDirection !== 'none' && isGameObjectOrComponent === false)
       throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
 
     if (message.mDirection === 'none') {
@@ -2842,6 +3001,7 @@ class MessageDispatcher {
   /**
    * __sendBubbles - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {string}  message Description
    * @param {boolean}  toTop   Description
@@ -2878,6 +3038,7 @@ class MessageDispatcher {
   /**
    * __sendGlobal - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {Message}  message Description
    * @param {GameObject=}  origin  Description
@@ -2898,6 +3059,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -2930,6 +3092,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -2956,6 +3119,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {string} path
    * @param {string} pattern
    *
@@ -2978,6 +3142,7 @@ class MessageDispatcher {
   /**
    * __parseMessage - Description
    *
+   * @private
    * @param {*} sender Description
    * @param {string} info   Description
    *
@@ -3052,41 +3217,77 @@ class MessageDispatcher {
   }
 }
 
+/**
+ * @private
+ * @dict
+ */
 MessageDispatcher.mGlobalHandlers = {};
 
+/**
+ * Message holds all information about dispatched event.
+ *
+ * @cat core
+ */
 export
 class Message {
   constructor() {
-    /** @private @type {*} */
+    /**
+     * @private
+     * @type {*}
+     */
     this.mSender = null;
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName;
 
-    /** @private @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mPathMask = null;
 
-    /** @private @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mComponentMask = null;
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDirection = 'none';
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSibblings = false;
 
-    /** @private @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mOrigin = null;
 
-    /** @private @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mTarget = null;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCanceled = false;
   }
 
   /**
-   * sender - Who send the message
+   * Who send the message.
    *
    * @return {*} Description
    */
@@ -3095,7 +3296,7 @@ class Message {
   }
 
   /**
-   * name - The name of the message
+   * The name of the message.
    *
    * @return {string}
    */
@@ -3104,7 +3305,7 @@ class Message {
   }
 
   /**
-   * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
+   * Direction in what message was sent. Can be 'none', 'up' and 'down'.
    *
    * @return {string}
    */
@@ -3113,7 +3314,7 @@ class Message {
   }
 
   /**
-   * sibblings - Indicates if sibblings should be included into dispatching process.
+   * Indicates if sibblings should be included into dispatching process.
    *
    * @return {boolean} Description
    */
@@ -3122,7 +3323,7 @@ class Message {
   }
 
   /**
-   * pathMask - The GameObject.name mask string if was used.
+   * The GameObject.name mask string if was used.
    *
    * @return {string|null} Description
    */
@@ -3131,7 +3332,7 @@ class Message {
   }
 
   /**
-   * componentMask - Component mask string if was used.
+   * Component mask string if was used.
    *
    * @return {string|null}
    */
@@ -3140,7 +3341,7 @@ class Message {
   }
 
   /**
-   * origin - The original sender of a message.
+   * The original sender of a message.
    *
    * @return {*|null}
    */
@@ -3149,7 +3350,7 @@ class Message {
   }
 
   /**
-   * target - The destination object for this message.
+   * The listener object.
    *
    * @return {*|null}
    */
@@ -3158,7 +3359,7 @@ class Message {
   }
 
   /**
-   * cancel - Stops propagation of the message.
+   * Stops propagation of the message.
    *
    * @return {void}
    */
@@ -3167,7 +3368,7 @@ class Message {
   }
 
   /**
-   * canceled - True/False if
+   * True if message was canceled by the user.
    *
    * @return {boolean}
    */
@@ -3183,6 +3384,12 @@ class Message {
   }
 }
 
+/**
+ * Provides time related methods.
+ *
+ * @cat core
+ * @static
+ */
 export
 class Time {
   constructor() {
@@ -3216,6 +3423,12 @@ Time.mDeltaTime = 0;
 /** @type {number} */
 Time.mScale = 1;
 
+/**
+ * Base class for custom systems. System is used to listen scene changes.
+ *
+ * @cat core
+ * @extends MessageDispatcher
+ */
 export
 class System extends MessageDispatcher {
   constructor(){
@@ -3238,6 +3451,7 @@ class System extends MessageDispatcher {
    * onUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -3248,6 +3462,7 @@ class System extends MessageDispatcher {
    * onPostUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -3301,14 +3516,19 @@ class System extends MessageDispatcher {
   {}
 }
 
+/**
+ * Manages viewport, handles DOM container resize events and updates internal data.
+ *
+ * @cat core
+ * @fires resize
+ * @extends MessageDispatcher
+ */
 export
 class Viewport extends MessageDispatcher {
   /**
-   * constructor - Description
-   *
-   * @param {HTMLElement} containerElement Description
-   *
-   * @return {void} Description
+   * constructor
+   * @param {HTMLElement} containerElement
+   * @return {void}
    */
   constructor(containerElement) {
     super();
@@ -3338,18 +3558,16 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * size - Description
-   *
-   * @return {Rectangle} Description
+   * size - Returns the size of a viewport.
+   * @return {Rectangle}
    */
   get size(){
     return this.mSize;
   }
 
   /**
-   * nativeDOM - Description
-   *
-   * @return {Element} Description
+   * nativeDOM - Retruns the HTML container element the engine runs in.
+   * @return {Element}
    */
   get nativeDOM(){
     return this.mContainerElement;
@@ -3359,67 +3577,78 @@ class Viewport extends MessageDispatcher {
 }
 
 /**
- * Component - Description
+ * A base class for custom components.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
 export
 class Component extends MessageDispatcher {
   /**
-   * constructor - description
-   *
-   * @return {void}          description
+   * Creates new Component instance.
    */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.gameObject = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
   /**
-   * onAdded - description
+   * Called when attached to GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onAdded(gameObject) {}
 
   /**
-   * onRemoved - description
+   * Called when detached from GameObject.
    *
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject The owner of this component.
+   * @return {void}
    */
   onRemoved(gameObject) {}
 
   /**
-   * onFixedUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every fixed frame update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called at every engine update.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - description
-   *
-   * @param  {number} dt description
-   * @return {void}    description
+   * Called after all updates have been executed.
+   * @protected
+   * @param  {number} dt Amount of seconds since the last update.
+   * @return {void}
    */
   onPostUpdate(dt) {}
 
@@ -3427,6 +3656,11 @@ class Component extends MessageDispatcher {
   dispose() {}
 
   // TODO: finish
+
+  /**
+   * Detaches this Component from its parent GameObject.
+   * @returns {void}
+   */
   removeFromParent() {
     if (this.gameObject === null)
       return;
@@ -3442,102 +3676,165 @@ class Component extends MessageDispatcher {
 Component.ID = 0;
 
 /**
- * GameObject - Base class for all black game objects.
+ * Building block in Black Engine.
+ *
+ * @cat core
  * @unrestricted
  * @extends MessageDispatcher
  */
 export
 class GameObject extends MessageDispatcher {
+  /**
+   * Creates new instance of GameObject.
+   */
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++GameObject.ID;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mName = null;
 
-    /** @type {Array<Component>} */
+    /**
+     * @private
+     * @type {Array<Component>}
+     */
     this.mComponents = [];
 
-    /** @type {Array<GameObject>} */
+    /**
+     * @private
+     * @type {Array<GameObject>}
+     */
     this.mChildren = [];
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleX = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScaleY = 1;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotX = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPivotY = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRotation = 0;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mBounds = null;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mLocalTransform = new Matrix();
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mWorldTransform = new Matrix();
 
-    /** @type {DirtyFlag} */
+    /**
+     * @private
+     * @type {DirtyFlag}
+     */
     this.mDirty = DirtyFlag.DIRTY;
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mParent = null;
 
-    /** @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mTag = null;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mIndex = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAdded = false;
   }
 
   /**
-   * id - Unique object id.
+   * Returns unique object id.
    *
-   * @returns {number} Unique object id.
+   * @returns {number}
    */
   get id() {
     return this.mId;
   }
 
   /**
-   * onAdded - This method called each time object added to stage.
+   * This method called each time object added to stage.
    *
+   * @protected
    * @return {void}
    */
-  onAdded() { }
+  onAdded() {}
 
   /**
-   * onRemoved - Called when object is removed from stage.
+   * Called when object is removed from stage.
    *
+   * @protected
    * @return {void}
    */
   onRemoved() {}
 
 
   /**
-   * add - Sugar method for adding child GameObjects or Components.
+   * Sugar method for adding child GameObjects or Components in a simple manner.
    *
    * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
-   *
    * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
   add(...gameObjectsAndOrComponents) {
@@ -3545,9 +3842,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild(/* @type {!GameObject} */ (gooc));
+        this.addChild( /* @type {!GameObject} */ (gooc));
       else
-        this.addComponent(/* @type {!Component} */ (gooc));
+        this.addComponent( /* @type {!Component} */ (gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -3580,7 +3877,7 @@ class GameObject extends MessageDispatcher {
       return this.setChildIndex(child, index);
 
     // this operation should be atomic. since __setParent can throw exception.
-    this.mChildren.splice(index, 1, child);
+    this.mChildren.splice(index, 0, child);
 
     child.removeFromParent();
     child.__setParent(this);
@@ -3593,9 +3890,10 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @protected
-   * @param {GameObject} value Description
+   * @ignore
+   * @param {GameObject} value
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __setParent(value) {
     let p = value;
@@ -3612,7 +3910,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * setChildIndex - Sets the index (layer) of the specified GameObject to the specified index (layer).
+   * Sets the index (layer) of the specified GameObject to the specified index (layer).
    *
    * @param {GameObject} child The GameObject instance to change index for.
    * @param {number} index Desired index.
@@ -3623,24 +3921,25 @@ class GameObject extends MessageDispatcher {
     let ix = this.mChildren.indexOf(child);
 
     if (ix < 0)
-      throw new Error('Child is not a child of this object.');
+      throw new Error('Given child element was not found in children list.');
 
     if (ix === index)
       return child;
 
-    this.mChildren.splice(ix, 1);
-    this.mChildren.splice(index, 1, child);
+    // NOTE: systems needs to know when trees changes
+    child.removeFromParent();
+    this.addChildAt(child, index);
     this.setTransformDirty();
 
     return child;
   }
 
   /**
-   * removeFromParent - Removes this GameObject instance from its parent.
+   * Removes this GameObject instance from its parent.
    *
    * @param {boolean} [dispose=false]
    *
-   * @return {void} Description
+   * @return {void}
    */
   removeFromParent(dispose = false) {
     if (this.mParent)
@@ -3653,7 +3952,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeChild - Removes specified GameObjects instance.
+   * Removes specified child GameObject instance from children.
    *
    * @param {GameObject} child GameObject instance to remove.
    * @param {boolean} [dispose=false]
@@ -3671,11 +3970,11 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * getChildByName
+   * Finds children by name.
    *
-   * @param {string} name
+   * @param {string} name Name of the child object to find.
    *
-   * @return {GameObject|null}
+   * @return {GameObject|null} GameObject instance of null if not found.
    */
   getChildByName(name) {
     for (var i = 0; i < this.mChildren.length; i++) {
@@ -3687,7 +3986,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeChildAt - Removes GameObjects instance from specified index.
+   * Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
    * @param {boolean} [dispose=false]
@@ -3717,7 +4016,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getChildAt - Returns GameObject at specified index.
+   * Returns GameObject at specified index.
    *
    * @param {number} index The index of child GameObject.
    *
@@ -3728,9 +4027,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * addComponent - Adds Component instance to the end of the list,
+   * Adds Component instance to the end of the list,
    *
-   * @param  {Component} instances Component instance or instances.
+   * @param  {Component} component Component instance or instances.
    * @return {Component} The Component instance you pass in the instances parameter.
    */
   addComponent(component) {
@@ -3751,11 +4050,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * removeComponent - Description
+   * Remove specified component.
    *
-   * @param {Component} instance Description
+   * @param {Component} instance The component instance.
    *
-   * @return {Component|null} Description
+   * @return {Component|null}
    */
   removeComponent(instance) {
     if (!instance)
@@ -3776,11 +4075,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getComponent
+   * Get component by type.
    *
-   * @param {*} typeName
+   * @param {*} typeName The component type.
    *
-   * @return {Component|null}
+   * @return {Component|null} The Component instance or null if not found.
    */
   getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
@@ -3792,9 +4091,8 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-
   /**
-   * numComponenets - Returns number of component's
+   * Returns number of component's of this GameObject.
    *
    * @return {number}
    */
@@ -3802,9 +4100,8 @@ class GameObject extends MessageDispatcher {
     return this.mComponents.length;
   }
 
-
   /**
-   * getComponentAt - Retrives Component at given index.
+   * Retrives Component at given index.
    *
    * @param {number} index
    *
@@ -3818,9 +4115,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localTransformation - Description
+   * Retun local transformation Matrix
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get localTransformation() {
     if (this.mDirty & DirtyFlag.LOCAL) {
@@ -3847,7 +4144,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformation - returns cloned Matrix object which represents object orientation in world space.
+   * Returns cloned Matrix object which represents object orientation in world space.
    *
    * @return {Matrix}
    */
@@ -3865,9 +4162,9 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * worldTransformationInversed - Description
+   * Returns cloned and inversed Matrix object which represents object orientation in world space
    *
-   * @return {Matrix} Description
+   * @return {Matrix}
    */
   get worldTransformationInversed() {
     // TODO: optimize, cache
@@ -3875,11 +4172,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __fixedUpdate - Description
+   * @ignore
+   * @param {number} dt
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
@@ -3895,11 +4191,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @ignore
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(dt) {
     this.onUpdate(dt);
@@ -3915,11 +4210,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @ignore
+   * @param {number} dt time since the last frame
    *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __postUpdate(dt) {
     this.onPostUpdate(dt);
@@ -3936,41 +4230,43 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onFixedUpdate - Description
+   * Called at every fixed frame update.
    *
-   * @param {number} dt Description
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @return {void} Description
+   * @return {void}
    */
   onFixedUpdate(dt) {}
 
   /**
-   * onUpdate - Description
+   * Called at every engine update.
    *
-   * @param {number} dt Description
+   * @protected
+   * @param {number} dt time since the last frame
    *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {}
 
   /**
-   * onUpdate - Description
+   * Called after all updates have been executed.
    *
+   * @protected
    * @param {number} dt Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   onPostUpdate(dt) {}
 
   /**
-   * __render - Description
+   * @ignore
+   * @param {VideoNullDriver} video   *
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     this.onRender(video, time);
@@ -3983,17 +4279,16 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * onRender - Description
-   *
+   * @protected
    * @param {VideoNullDriver} video Description
    * @param {number} time  Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   onRender(video, time) {}
 
   /**
-   * onGetLocalBounds - Override this method if you need to specify GameObject size. Should be always be a local coordinates.
+   * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
    *
    * @protected
    * @param {Rectangle=} outRect Description
@@ -4006,7 +4301,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * getBounds - Returns world bounds of this object and all children if specified (true by default).
+   * Returns world bounds of this object and all children if specified (true by default).
+   *
    * object.getBounds() - relative to world.
    * object.getBounds(object) - local bounds.
    * object.getBounds(object.parent) - relative to parent.
@@ -4044,18 +4340,18 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * setTransform -
+   * Sets the object transform in one line.
    *
-   * @param {number} [x=0]      x-cord
-   * @param {number} [y=0]      y-cord
-   * @param {number} [r=0]      rotation
-   * @param {number} [scaleX=1] scale-x
-   * @param {number} [scaleY=1] scale-y
-   * @param {number} [anchorX=0] anchor-x
-   * @param {number} [anchorY=0] anchor-y
-   * @param {number} [includeChildren=true] include children when adjusting pivot?
+   * @param {number} [x=0]       Cord X.
+   * @param {number} [y=0]       Cord Y.
+   * @param {number} [r=0]       Rotation.
+   * @param {number} [scaleX=1]  scale X.
+   * @param {number} [scaleY=1]  scale Y.
+   * @param {number} [anchorX=0] Anchor X.
+   * @param {number} [anchorY=0] Anchor Y.
+   * @param {number} [includeChildren=true] Include children when adjusting pivot?
    *
-   * @return {GameObject}
+   * @return {GameObject} This.
    */
   setTransform(x = 0, y = 0, r = 0, scaleX = 1, scaleY = 1, anchorX = 0, anchorY = 0, includeChildren = true) {
     this.mX = x;
@@ -4073,75 +4369,70 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * localToGlobal - Description
+   * Calculate global position of the object.
    *
-   * @param {Vector} localPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} localPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   localToGlobal(localPoint, outVector = null) {
     return this.worldTransformation.transformVector(localPoint, outVector);
   }
 
   /**
-   * globalToLocal - Description
+   * Calculate local position of the object
    *
-   * @param {Vector} localPoint       Description
-   * @param {Vector|null} [outVector=null] Description
+   * @param {Vector} globalPoint
+   * @param {Vector|null} [outVector=null]
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInversed.transformVector(globalPoint, outVector);
   }
-
-  /*:--- PROPERTIES ---:*/
-
   /**
-   * numChildren - Description
+   * Gets/Sets count of children elements.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get numChildren() {
     return this.mChildren.length;
   }
 
   /**
-   * name - Description
+   * Returns name of this GameoObject instance.
    *
-   * @return {string|null} Description
+   * @return {string|null}
    */
   get name() {
     return this.mName;
   }
 
   /**
-   * name - Description
-   *
+   * @ignore
    * @param {string|null} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set name(value) {
     this.mName = value;
   }
 
   /**
-   * x - Gets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * Gets/Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get x() {
     return this.mX;
   }
 
   /**
-   * x - Sets the x coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set x(value) {
     if (this.mX == value)
@@ -4152,20 +4443,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * y - Gets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * Gets/Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get y() {
     return this.mY;
   }
 
   /**
-   * y - Sets the y coordinate of the GameoObject instance relative to the local coordinates of the parent GameoObject.
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set y(value) {
     if (this.mY == value)
@@ -4176,21 +4466,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * pivotX - Description
-   * @export
-   * @return {number} Description
+   * Gets/Sets the x coordinate of the object's origin in its local space.
+   *
+   * @return {number}
    */
   get pivotX() {
     return this.mPivotX;
   }
 
   /**
-   * pivotX - Description
+   * @ignore
+   * @param {number} value
    *
-   * @export
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set pivotX(value) {
     if (this.mPivotX == value)
@@ -4201,20 +4489,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * pivotY - Description
+   * Gets/Sets the y coordinate of the object's origin in its local space.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get pivotY() {
     return this.mPivotY;
   }
 
   /**
-   * pivotY - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set pivotY(value) {
     if (this.mPivotY == value)
@@ -4225,13 +4512,14 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * alignPivot
+   * Sets pivot point to given position.
    *
-   * @param {number}  [px=0.5]
-   * @param {number}  [py=0.5]
-   * @param {boolean} [includeChildren=true]
+   * @param {number}  [ax=0.5]               Align along x-axis.
+   * @param {number}  [ay=0.5]               Align along y-axis.
+   * @param {boolean} [includeChildren=true] Include children elements when
+   * calculating bounds?
    *
-   * @return {GameObject}
+   * @return {GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
@@ -4244,20 +4532,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleX - Description
+   * Gets/Sets the scale factor of this object along x-axis.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get scaleX() {
     return this.mScaleX;
   }
 
   /**
-   * scaleX - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set scaleX(value) {
     if (this.mScaleX == value)
@@ -4268,7 +4555,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleY - Description
+   * Gets/Sets the scale factor of this object along y-axis.
    *
    * @return {number} Description
    */
@@ -4277,11 +4564,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * scaleY - Description
-   *
+   * @ignore
    * @param {number} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set scaleY(value) {
     if (this.mScaleY == value)
@@ -4292,20 +4578,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * rotation - returns current rotation
+   * Gets/Sets rotation in radians.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get rotation() {
     return this.mRotation;
   }
 
   /**
-   * rotation - Description
-   *
+   * @ignore
    * @param {number} value Description
    *
-   * @return {void} Description
+   * @return {void}
    */
   set rotation(value) {
     if (this.mRotation == value)
@@ -4316,18 +4601,22 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * parent - Description
+   * Returns this GameObject parent GameObject.
+   * @readonly
    *
-   * @return {GameObject} Description
+   * @return {GameObject}
    */
   get parent() {
     return this.mParent;
   }
 
   /**
-   * root - Description
+   * Returns topmost parent element of this GameObject or null if this
+   * GameObject is not a child.
    *
-   * @return {GameObject|null} Description
+   * @readonly
+   *
+   * @return {GameObject|null}
    */
   get root() {
     let current = this;
@@ -4348,9 +4637,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * depth - Description
+   * Returns how deep this GameObject in the display tree.
    *
-   * @return {number} Description
+   * @readonly
+   *
+   * @return {number}
    */
   get depth() {
     if (this.mParent)
@@ -4359,30 +4650,36 @@ class GameObject extends MessageDispatcher {
       return 0;
   }
 
+  get displayDepth() {
+    // Many thanks to Roman Kopansky
+    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+    return flatten(this.root.mChildren).indexOf(this);
+  }
   /**
-   * index - Description
-   *
-   * @return {number} Description
+   * @ignore
+   * @return {number}
    */
   get index() {
-    return this.mIndex;
+    // TODO: this is only required by Input component and its pretty heavy.
+    // Try to workaround it.
+    return this.parent.mChildren.indexOf(this);
   }
 
   /**
-   * width - Description
+   * Gets/sets the width of this object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get width() {
     return this.getBounds(this.mParent).width;
   }
 
   /**
-   * width - Description
+   * @ignore
    *
-   * @param {number} value Description
+   * @param {number} value
    *
-   * @return {void} Description
+   * @return {void}
    */
   set width(value) {
     this.scaleX = 1;
@@ -4393,20 +4690,19 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * height - Description
+   * Gets/sets the height of this object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get height() {
     return this.getBounds(this.mParent).height;
   }
 
   /**
-   * height - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set height(value) {
     this.scaleY = 1;
@@ -4418,7 +4714,10 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * localWidth - returns height in local space without children.
+   * Returns width of this GameObject in local space without including children
+   * elements.
+   *
+   * @readonly
    *
    * @return {number}
    */
@@ -4428,7 +4727,10 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * localHeight - returns height in local space without children.
+   * Returns height of this GameObject in local space without including children
+   * elements.
+   *
+   * @readonly
    *
    * @return {number}
    */
@@ -4438,9 +4740,12 @@ class GameObject extends MessageDispatcher {
 
   // TODO: precache
   /**
-   * path - Description
+   * Returns string representing a url like path to this object in the display
+   * tree.
    *
-   * @return {string} Description
+   * @readonly
+   *
+   * @return {string}
    */
   get path() {
     if (this.mParent !== null)
@@ -4450,20 +4755,20 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * tag - Description
+   * Gets/Sets tag of this GameObject.
    *
-   * @return {string|null} Description
+   * @return {string|null}
    */
   get tag() {
     return this.mTag;
   }
 
   /**
-   * tag - Description
+   * @ignore
    *
-   * @param {string|null} value Description
+   * @param {string|null} value
    *
-   * @return {void} Description
+   * @return {void}
    */
   set tag(value) {
     if (this.mTag === value)
@@ -4477,12 +4782,11 @@ class GameObject extends MessageDispatcher {
       Black.instance.onTagUpdated(this, old, value);
   }
 
-
   /**
-   * co - Starts coroutine.
+   * Starts coroutine.
    *
-   * @param {Function} gen
-   * @param {*=} [ctx=null]
+   * @param {Function} gen  Generator function.
+   * @param {*=} [ctx=null] Context for Generator function.
    *
    * @return {Generator}
    */
@@ -4503,9 +4807,8 @@ class GameObject extends MessageDispatcher {
     return iter;
   }
 
-
   /**
-   * @param {number} [seconds=1]
+   * Waits for given amount of seconds before processing.
    *
    * @return {function(*):*}
    */
@@ -4515,11 +4818,11 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * waitMessage - Waits for a speceific message
+   * Waits for a speceific message.
    *
-   * @param {string} message The name of the message to wait for
+   * @param {string} message The name of the message to wait for.
    *
-   * @return {function(?):?} Description
+   * @return {function(*):*}
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
@@ -4527,16 +4830,16 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * setDirty
+   * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {DirtyFlag} flag
+   * @param {DirtyFlag} flag                 The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Description
    *
    * @return {void}
    */
   setDirty(flag, includeChildren = true) {
     if (includeChildren) {
-      GameObject.forEach(this, x=> {
+      GameObject.forEach(this, x => {
         x.mDirty |= flag;
       });
     } else {
@@ -4544,28 +4847,34 @@ class GameObject extends MessageDispatcher {
     }
   }
 
+
+  /**
+   * Marks this GameObject as Local dirty and all children elements as World
+   * dirty.
+   *
+   * @returns {void}
+   */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
     this.setDirty(DirtyFlag.WORLD, true);
   }
 
   /**
-   * dispose
+   * @ignore
    *
    * @return {void}
    */
-  dispose() {
-  }
+  dispose() {}
 
   // TODO: rename method
   /**
-   * getBoundsWithPoints - Description
+   * @ignore
    *
-   * @param {Array<number>} points              Description
-   * @param {Matrix} worldTransformation Description
-   * @param {Rectangle=} outRect             Description
+   * @param {Array<number>} points
+   * @param {Matrix} worldTransformation
+   * @param {Rectangle=} outRect
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   static getBoundsWithPoints(points, worldTransformation, outRect) {
     outRect = outRect || new Rectangle();
@@ -4599,12 +4908,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersects - Description
+   * Returns whenever a given GameObject intersects with a point.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point          A point to test.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
@@ -4617,13 +4926,14 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersectsAt - Description
+   * Returns a point where intersection were made in local space.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
-   * @param {Vector=} outVector  Description
+   * @param {GameObject} gameObject GameObject to test intersection with.
+   * @param {Vector}     point      The point to test.
+   * @param {Vector=}    outVector  If passed point of intersection will be
+   * stored in it.
    *
-   * @return {boolean} Description
+   * @return {boolean} True if intersects.
    */
   static intersectsAt(gameObject, point, outVector = undefined) {
     outVector = outVector || new Vector();
@@ -4645,12 +4955,13 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * intersectsWith - Description
+   * Checks if GameObject or any of its children elements intersects the given
+   * point.
    *
-   * @param {GameObject} gameObject Description
-   * @param {Vector} point      Description
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point          Point to test.
    *
-   * @return {GameObject|null} returns object or null
+   * @return {GameObject|null} Intersecting object or null.
    */
   static intersectsWith(gameObject, point) {
     let obj = null;
@@ -4676,11 +4987,11 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * findWithTag - Description
+   * Returns all GameObject with given tag.
    *
-   * @param {string} tag Description
+   * @param {string} tag Tag to find.
    *
-   * @return {Array<GameObject>|null} Description
+   * @return {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.instance.mTagCache.hasOwnProperty(tag) === false)
@@ -4690,12 +5001,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * findComponents - Returns a list of Components
+   * Returns a list of Components.
    *
-   * @param {GameObject} gameObject
-   * @param {function (new:Component)} type
+   * @param {GameObject} gameObject         GameObject to start search from.
+   * @param {function (new:Component)} type Type of Component.
    *
-   * @return {Array<Component>}
+   * @return {Array<Component>} Array of Component or empty array.
    */
   static findComponents(gameObject, type) {
     Debug.assert(gameObject !== null, 'gameObject cannot be null.');
@@ -4722,12 +5033,13 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * forEach - Runs action accross all object mathing the name.
+   * Runs action accross all GameObjects.
    *
-   * @param {GameObject} node   Description
-   * @param {function(GameObject)} action Description
+   * @param {GameObject} node                  GameObject to start iteration from.
+   * @param {function(node:GameObject)} action The function to be executed on
+   * every GameObject.
    *
-   * @return {void} Description
+   * @return {void}
    */
   static forEach(node, action) {
     if (node == null)
@@ -4741,12 +5053,13 @@ class GameObject extends MessageDispatcher {
 
 
   /**
-   * find - Finds object by its name.
+   * Finds object by its name. If node is not passed the root will be taken as
+   * starting point.
    *
-   * @param {string} name Description
-   * @param {GameObject} node Description
+   * @param {string} name      Name to search.
+   * @param {GameObject=} node Starting GameObject.
    *
-   * @return {GameObject} Description
+   * @return {GameObject} GameObject or null.
    */
   static find(name, node) {
     if (node == null)
@@ -4765,7 +5078,9 @@ class GameObject extends MessageDispatcher {
   }
 }
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 GameObject.ID = 0;
@@ -4788,24 +5103,43 @@ var DirtyFlag = {
 // source size - the original size of a texture to
 //
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Scatter
+ */
 export
 class Texture {
   /**
+   * Creates new Texture instance.
    * @param  {Image} nativeTexture description
    * @param  {Rectangle=} region = undefined description
    * @param  {Rectangle=} untrimmedRect = undefined description
    */
   constructor(nativeTexture, region, untrimmedRect) {
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mTexture = nativeTexture;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mRegion;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsSubtexture = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++Texture.__ID;
 
     if (region === undefined) {
@@ -4815,39 +5149,48 @@ class Texture {
       this.mIsSubtexture = true;
     }
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mTrimmed = untrimmedRect !== undefined;
 
     if (this.mTrimmed === false)
       untrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = true;
   }
 
   /**
-   * id - Description
+   * Returns the unique id of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get id() {
     return this.mId;
   }
 
   /**
-   * isTrimmed - Description
+   * Returns True if this texture has been trimmed.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get isTrimmed() {
     return this.mTrimmed;
   }
 
   /**
-   * isSubTexture - Description
+   * Returns True if this texture is a part of other Texture object
    *
    * @return {boolean} Description
    */
@@ -4866,18 +5209,19 @@ class Texture {
   //
 
   /**
-   * untrimmedRect - Description
+   * Returns a Rect object representing the untrimmed size and position of this
+   * texture withing other texture if so.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   get untrimmedRect() {
     return this.mUntrimmedRect;
   }
 
   /**
-   * width - Description
+   * The width of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get width() {
     if (this.mRegion)
@@ -4887,9 +5231,9 @@ class Texture {
   }
 
   /**
-   * height - Description
+   * The width of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get height() {
     if (this.mRegion)
@@ -4899,65 +5243,47 @@ class Texture {
   }
 
   /**
-   * region - Description
+   * If isSubTexture, returns the physical region inside parent texture.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   get region() {
     return this.mRegion;
   }
 
   /**
-   * native - Description
+   * Returns native object. Usually DOM Image element.
    *
-   * @return {Image} Description
+   * @return {Image}
    */
   get native() {
     return this.mTexture;
   }
 
   /**
-   * isLoaded - Description
+   * True if fully loaded and ready.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get isLoaded() {
     return this.mIsLoaded;
   }
 
   /**
-   * type - Description
+   * Dispose and releases all resources related to this texture.
    *
-   * @return {string} Description
-   */
-  get type() {
-    return 'Texture';
-  }
-
-  /**
-   * baseType - Description
-   *
-   * @return {string} Description
-   */
-  get baseType() {
-    return 'Texture';
-  }
-
-  /**
-   * dispose - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   dispose() {
     this.mTexture = null;
   }
 
   /**
-   * fromBase64String - Description
+   * @ignore
    *
-   * @param {string} string Description
+   * @param {string} string
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromBase64String(string) {
     let imgElement = new Image();
@@ -4967,13 +5293,13 @@ class Texture {
 
 
   /**
-   * fromCanvasAsImage - Description
+   * @ignore
    *
-   * @param {HTMLElement}   canvas           Description
-   * @param {string} [type=image/png] Description
-   * @param {number} [quality=1]      Description
+   * @param {HTMLElement}   canvas
+   * @param {string} [type=image/png]
+   * @param {number} [quality=1]
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
     let imgElement = new Image();
@@ -4982,38 +5308,45 @@ class Texture {
     return new Texture(imgElement);
   }
 
-
   /**
-   * fromCanvas - Description
+   * @ignore
    *
-   * @param {HTMLElement} canvas Description
+   * @param {HTMLElement} canvas
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromCanvas(canvas) {
     return Black.instance.video.getTextureFromCanvas(canvas);
   }
 }
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 Texture.__ID = 0;
 
-/** @type {Image|null}
+/**
+ * @private
+ * @type {Image|null}
  * @nocollapse
  */
 Texture.MISSING_IMAGE_CACHE = null;
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Texture
+ */
 export
 class AtlasTexture extends Texture {
   /**
-   * constructor - Creates an Texture Atlas
+   * Creates new AtlasTexture instance.
    *
-   * @param {Texture} texture A base texture object.
-   * @param {{meta: *, frames: *}} jsonObject
-   *
-   * @return {void}
+   * @param {Texture}              texture A base texture object.
+   * @param {{meta: *, frames: *}} Black json object.
    */
   constructor(texture, jsonObject) {
     super(texture.native);
@@ -5028,7 +5361,7 @@ class AtlasTexture extends Texture {
   }
 
   /**
-   * __parseJson
+   * @private
    *
    * @param  {{meta: *, frames: *}} o
    * @return {void}
@@ -5057,11 +5390,11 @@ class AtlasTexture extends Texture {
   // removeRegion() {}
 
   /**
-   * getTexture - Returns the textures by a given name.
+   * Returns the texture by a given name.
    *
-   * @param {string} name
+   * @param {string} name The name of the texture to find.
    *
-   * @return {Texture} The Texture or null;
+   * @return {Texture} The Texture or null if not found.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -5073,10 +5406,11 @@ class AtlasTexture extends Texture {
   }
 
   /**
-   * getTextures - Returns list of Textures.
+   * Returns array of Texture by given name or wildcard mask.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
-   * @param {Array<Texture>|null} outTextures
+   * @param {Array<Texture>|null}         outTextures If passed will be
+   * overwritten by result object.
    *
    * @return {Array<Texture>} The list of found textures.
    */
@@ -5106,6 +5440,7 @@ class AtlasTexture extends Texture {
   }
 
   /**
+   * @private
    * @param {*} a
    * @param {*} b
    *
@@ -5133,46 +5468,73 @@ class AtlasTexture extends Texture {
   //dispose() {}
 }
 
-// TODO: handle errors
-// TODO: v2: parallel loading?
-//
-//
+/**
+ * Holds information about external assets.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 export
 class Asset extends MessageDispatcher {
   /**
-   * @param  {string} name description
-   * @param  {string} url  description
+   * Creates new Assets instance.
+   * @param  {string} name Name of asset.
+   * @param  {string} url  URL of the asset to load it from.
    */
   constructor(name, url) {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mUrl = url;
 
-    /** @type {*|null} */
+    /**
+     * @private
+     * @type {*|null}
+     */
     this.mData = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = false;
 
-    /** @type {string|undefined} */
+    /**
+     * @private
+     * @type {string|undefined}
+     */
     this.mMimeType = undefined;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mResponseType = '';
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mExtension = this.getExtension(url);
 
-    /** @type {XMLHttpRequest|null} */
+    /**
+     * @private
+     * @type {XMLHttpRequest|null}
+     */
     this.mRequest = null;
   }
 
   /**
-   * load
+   * Loads asset from an external source.
    *
    * @return {void}
    */
@@ -5199,9 +5561,11 @@ class Asset extends MessageDispatcher {
     this.mRequest.send(null);
   }
 
-
   /**
-   * onLoaded
+   * Called when asset is fully loaded.
+   *
+   * @protected
+   * @fires complete
    *
    * @return {void}
    */
@@ -5211,7 +5575,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * name
+   * Returns the name of this asset.
    *
    * @return {string}
    */
@@ -5220,7 +5584,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * data
+   * Returns loaded data object associated with this asset.
    *
    * @return {*}
    */
@@ -5229,7 +5593,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * isLoaded
+   * Returns true if asset is preloaded.
    *
    * @return {boolean}
    */
@@ -5241,54 +5605,62 @@ class Asset extends MessageDispatcher {
   dispose() {}
 
   /**
-   * getExtension
+   * Helper function. Returns the file extension.
    *
-   * @param {string} url
+   * @param {string} url Url to get extension from.
    *
-   * @return {string}
+   * @return {string} Empty string if no extension were found or extension itself.
    */
   getExtension(url) {
-    if (url.indexOf(".") === -1)
+    if (url.indexOf('.') === -1)
       return '';
 
-    return url.substring(url.indexOf(".")).toLowerCase();
+    return url.substring(url.indexOf('.')).toLowerCase();
   }
 }
 
+/**
+ * Single Texture file asset class responsible for loading images file and
+ * converting them into Textures.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 export
 class TextureAsset extends Asset {
   /**
-   * constructor - Description
+   * Creates TextureAsset instance.
    *
-   * @param {string} name Description
-   * @param {string} url  Description
-   *
-   * @return {void} Description
+   * @param {string} name Asset name.
+   * @param {string} url  URL to load image from.
    */
   constructor(name, url) {
     super(name, url);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mImageElement = new Image();
   }
 
   /**
-   * onLoaded - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   onLoaded() {
-    //console.log('TextureAsset: \'%s\' loaded', this.mName);
-
     this.mData = new Texture(this.mImageElement);
 
     super.onLoaded();
   }
 
   /**
-   * load - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   load() {
     this.mImageElement.src = this.mUrl;
@@ -5296,34 +5668,33 @@ class TextureAsset extends Asset {
       this.onLoaded();
     }
   }
-
-  /**
-   * type - Description
-   *
-   * @return {string} Description
-   */
-  get type() {
-    return "TextureAsset";
-  }
 }
 
+/**
+ * Single JSON file asset class responsible for loading json file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 export
 class JSONAsset extends Asset {
   /**
-   * constructor
+   * Creates new JSONAsset instance.
    *
-   * @param {string} name
-   * @param {string} url
+   * @param {string} name The name of asset.
+   * @param {string} url  URL to the json file.
    *
    * @return {void}
    */
   constructor(name, url) {
     super(name, url);
-    this.mimeType = "application/json";
+
+    this.mimeType = 'application/json';
   }
 
   /**
-   * onLoaded
+   * @override
+   * @inheritdoc
    *
    * @return {void}
    */
@@ -5334,15 +5705,156 @@ class JSONAsset extends Asset {
 }
 
 export
-class AtlasTextureAsset extends Asset {
+class FontAsset extends Asset {
   /**
-   * constructor
-   *
-   * @param {string} name
-   * @param {string} imageUrl
-   * @param {string} dataUrl
+   * @param {string} name font name
+   * @param {string} url font url
    *
    * @return {void}
+   */
+  constructor(name, url) {
+    super(name, url);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mTestingFontName = 'Courier New';
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mTestingString = '~ GHBDTN,.#$Mlck';
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mLoadingTimeout = 2500;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mCheckDelay = 50;
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mTestingElement = this.__getTestingElement();
+
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mCSSLoader = this.__getCSSLoader();
+    this.mTestingElement.style.fontFamily = this.mTestingFontName;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
+    this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
+  }
+
+  /**
+   * @private
+   * @return {string}
+   */
+  __getCSSLoader() {
+    if (FontAsset.CSS_LOADER)
+      return FontAsset.CSS_LOADER;
+
+    let cssLoader = document.createElement('style');
+    cssLoader.type = 'text/css';
+    document.getElementsByTagName('head')[0].appendChild(cssLoader);
+    FontAsset.CSS_LOADER = cssLoader;
+    return cssLoader;
+  }
+
+  /**
+   * @private
+   * @return {string}
+   */
+  __getTestingElement() {
+    if (FontAsset.TESTING_ELEMENT)
+      return FontAsset.TESTING_ELEMENT;
+
+    let testingElement = document.createElement('span');
+    testingElement.style.position = 'absolute';
+    testingElement.style.top = '-9999px';
+    testingElement.style.left = '-9999px';
+    testingElement.style.visibility = 'hidden';
+    testingElement.style.fontSize = '250px';
+    testingElement.innerHTML = this.mTestingString;
+    document.body.appendChild(testingElement);
+
+    FontAsset.TESTING_ELEMENT = testingElement;
+    return testingElement;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  load() {
+    this.mCSSLoader.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+    this.checkLoadingStatus();
+  }
+
+  /**
+   * @return {void}
+   */
+  checkLoadingStatus() {
+    if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
+      if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
+        this.onLoadingFail();
+        return;
+      }
+
+      setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+      return;
+    }
+    this.onLoaded();
+  }
+
+  /**
+   * @return {void}
+   */
+  onLoadingFail() {
+    console.warn(`loading ${this.name} font failed.`);
+    this.onLoaded(); //TODO what to do here?
+  }
+
+  /**
+   * @return {string}
+   */
+  get type() {
+    return "FontAsset";
+  }
+}
+
+FontAsset.TESTING_ELEMENT = null;
+FontAsset.CSS_LOADER = null;
+
+/**
+ * Texture Atlas asset responsible for loading Image file and coresponding Json
+ * file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
+export
+class AtlasTextureAsset extends Asset {
+  /**
+   * Creates new AtlasTextureAsset instance.
+   *
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Image URL.
+   * @param {string} dataUrl  Json URL.
    */
   constructor(name, imageUrl, dataUrl) {
     super(name, imageUrl);
@@ -5355,6 +5867,11 @@ class AtlasTextureAsset extends Asset {
     this.dataAsset.on('complete', this.onJsonLoaded, this);
   }
 
+
+  /**
+   * @ignore
+   * @returns {void}
+   */
   onJsonLoaded() {
     this.mImageElement.src = this.mUrl;
     this.mImageElement.onload = () => {
@@ -5363,8 +5880,8 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * onLoaded
-   *
+   * @override
+   * @inheritdoc
    * @return {void}
    */
   onLoaded() {
@@ -5374,7 +5891,7 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * load
+   * @inheritdoc
    * @override
    *
    * @return {void}
@@ -5392,50 +5909,117 @@ TODO:
   4. load progress
 */
 
+/**
+ * Reponsible for preloading assets and manages its in memory state.
+ *
+ * @cat loaders
+ * @extends MessageDispatcher
+ */
 export
 class AssetManager extends MessageDispatcher {
+  /**
+   * Creates new AssetManager instance. AssetManager exposes static property
+   * called 'default' and many internal classes uses default instance.
+   */
   constructor() {
     super();
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDefaultPath = '';
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTotalLoaded = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsAllLoaded = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLoadingProgress = 0;
 
-    /** @type {Array<Asset>} */
+    /**
+     * @private
+     * @type {Array<Asset>}
+     */
     this.mQueue = [];
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mTextures = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mAtlases = {};
 
-    /** @dict */
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mJsons = {};
   }
 
+  /**
+   * Adds single image to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the image.
+   *
+   * @returns {void}
+   */
   enqueueImage(name, url) {
     this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
   }
 
+  /**
+   * Adds atlas to the loading queue.
+   *
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Atlas URL.
+   * @param {string} dataUrl  URL to the .json file which describes the atlas.
+   *
+   * @returns {void}
+   */
   enqueueAtlas(name, imageUrl, dataUrl) {
     this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
   }
 
+  /**
+   * Adds single json file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   *
+   * @returns {void}
+   */
   enqueueJson(name, url) {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
+  enqueueFont(name, url) {
+    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url));
+  }
+
   /**
-   * loadQueue
+   * Starts preloading all enqueued assets.
+   * @fires complete
    *
    * @return {void}
    */
@@ -5449,7 +6033,8 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * onAssetLoaded
+   * @protected
+   * @ignore
    *
    * @param {Message} msg
    *
@@ -5469,12 +6054,15 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
-    else
+    else if (item.constructor === FontAsset) {} else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
+      if (FontAsset.TESTING_ELEMENT)
+        FontAsset.TESTING_ELEMENT.remove();
+        
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
@@ -5483,11 +6071,11 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * getTexture
+   * Returns Texture object by given name.
    *
-   * @param {string} name
+   * @param {string} name The name of the Asset.
    *
-   * @return {Texture|null}
+   * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -5507,16 +6095,19 @@ class AssetManager extends MessageDispatcher {
 
 
   /**
-   * @param {string} name
+   * Returns AtlasTexture by given name.
    *
-   * @return {AtlasTexture}
+   * @param {string} name The name of the Asset.
+   *
+   * @return {AtlasTexture} Returns atlas or null.
    */
   getAtlas(name) {
     return this.mAtlases[name];
   }
 
   /**
-   * defaultPath
+   * Gets/Sets default path for preloading. Usefull when url's getting too long.
+   * The asset path will be concatenated with defaultPath.
    *
    * @return {string}
    */
@@ -5525,8 +6116,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * defaultPath
-   *
+   * @ignore
    * @param {string} value
    *
    * @return {void}
@@ -5536,7 +6126,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * isAllLoaded
+   * Returns True if all assets were loaded.
    *
    * @return {boolean}
    */
@@ -5545,11 +6135,16 @@ class AssetManager extends MessageDispatcher {
   }
 }
 
-/** @type {AssetManager} */
+/**
+ * Default instance. Sprite and other classes uses this instance to find textures by name.
+ * @static
+ * @type {AssetManager}
+ */
 AssetManager.default = new AssetManager();
 
 /**
  * A blend mode enum.
+ * @cat drivers
  * @enum {string}
  */
 export
@@ -5574,33 +6169,63 @@ var BlendMode = {
   LUMINOSITY: 'luminosity'
 };
 
+/**
+ * Base class for custom video drivers. VideoDriver is used to render things
+ * onto the screen.
+ *
+ * @cat drivers
+ */
 export
 class VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement
+   * @param  {number} width
+   * @param  {number} height
    */
   constructor(containerElement, width, height) {
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mGlobalBlendMode = 'auto';
 
-    /** @type {HTMLElement} */
-    this.mContainerElement = /** @type {HTMLElement} */ (containerElement);
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
+    this.mContainerElement = /**
+     * @private
+     * @type {HTMLElement} */ (containerElement
+   );
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mClientHeight = height;
 
-    /** @type {Matrix} */
+    /**
+     * @private
+     * @type {Matrix}
+     */
     this.mTransform = new Matrix();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mGlobalAlpha = 1;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mMeasureElement = /** @type {HTMLElement} */ (document.createElement('span'));
     this.mMeasureElement.style.position = 'absolute';
     this.mContainerElement.appendChild(this.mMeasureElement);
@@ -5608,6 +6233,15 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+
+  /**
+   * @protected
+   * @ignore
+   * @param {type} msg
+   * @param {type} rect
+   *
+   * @returns {type}
+   */
   __onResize(msg, rect) {
     let w = this.mContainerElement.clientWidth;
     let h = this.mContainerElement.clientHeight;
@@ -5617,124 +6251,172 @@ class VideoNullDriver {
   }
 
   /**
-   * start - Description
+   * Initialization function.
    *
-   * @return {void} Description
+   * @protected
+   *
+   * @return {void}
    */
   start() {}
 
-  beginFrame() {}
 
-  endFrame() {}
+  /**
+   * Called before rendering anything. Usually used to clear back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
+  beginFrame() {}
 
 
   /**
-   * getTextureFromCanvas - Description
+   * Called after rendering is finished.
+   * @protected
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @returns {void}
+   */
+  endFrame() {}
+
+  /**
+   * @ignore
+   * @param {HTMLElement} canvas
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas){
     return null;
   }
 
   /**
-   * setTransform - Description
+   * Sets world transformation for future use.
    *
-   * @param {Matrix} m Description
+   * @protected
+   * @param {Matrix} m An transformation matrix to store.
    *
-   * @return {void} Description
+   * @return {void}
    */
   setTransform(m) {
     this.mTransform = m;
   }
 
   /**
-   * globalAlpha - Description
+   * Gets/Sets the global alpha. Used to calculate alpha relative to parent
+   * object.
    *
-   * @return {number} Description
+   * @protected
+   *
+   * @return {number}
    */
   get globalAlpha() {
     return this.mGlobalAlpha;
   }
 
   /**
-   * globalAlpha - Description
+   * @ignore
+   * @param {number} value
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalAlpha(value) {
     this.mGlobalAlpha = value;
   }
 
   /**
-   * mGlobalBlendMode - Description
+   * Gets/Sets global blending mode. Used to calculate blend mode relative to
+   * parent object.
    *
-   * @return {string} Description
+   * @return {string}
    */
   get globalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
   /**
-   * globalBlendMode - Description
+   * @ignore
+   * @param {string} value
    *
-   * @param {string} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set globalBlendMode(value) {
     this.mGlobalBlendMode = value;
   }
 
   /**
-   * drawImage - description
+   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * matrix must be set prior to calling this method.
    *
-   * @param  {Texture} texture description
+   * @protected
+   *
+   * @param  {Texture} texture
    */
   drawImage(texture) {}
 
   /**
-   * drawText
+   * Draws text onto back-buffer.
    *
-   * @param {string} text
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
+   * @protected
+   *
+   * @param {string} text Text string to draw.
+   * @param {TextInfo} style The style information.
+   * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
+   * @param {number} textWidth The width of the text.
+   * @param {number} textHeight The height of the text.
    *
    * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {}
 
+
+  /**
+   * Clears back-buffer.
+   *
+   * @protected
+   *
+   * @returns {void}
+   */
   clear() {}
 
   /**
-   * save - Description
+   * Used to save context if extists.
    *
+   * @ignore
+   * @protected
    * @param {GameObject|null} gameObject Used for internal binding.
    *
-   * @return {void} Description
+   * @return {void}
    */
   save(gameObject) {}
 
+
+  /**
+   * Used to restore context if extists.
+   *
+   * @protected
+   * @ignore
+   * @returns {type}
+   */
   restore() {}
 
+
+  /**
+   * Convers number color to hex string.
+   *
+   * @param {number} color The color to convert.
+   *
+   * @returns {string} The resuling hex string.
+   */
   hexColorToString(color) {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
   }
 
   /**
-   * measureText - Description
+   * Measures text with a given style.
    *
-   * @param {string} text  Description
-   * @param {TextInfo} style Description
+   * @param {string} text    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
    *
-   * @return {Vector} Description
+   * @return {Vector} A Vector with width and height of the text bounds.
    */
   measureText(text, style) {
     let el = this.mMeasureElement;
@@ -5752,17 +6434,26 @@ class VideoNullDriver {
   }
 }
 
+/**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 export
 class CanvasDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @type {CanvasRenderingContext2D|null} */
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D|null}
+     */
     this.mCtx = null;
 
     this.mGlobalAlpha = 1;
@@ -5772,8 +6463,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * __createCanvas
-   *
+   * @private
    * @return {void}
    */
   __createCanvas() {
@@ -5786,6 +6476,14 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.canvas.height = this.mClientHeight;
   }
 
+
+  /**
+   * @private
+   * @param {Message} msg
+   * @param {Rectangle} rect
+   *
+   * @returns {void}
+   */
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
@@ -5794,8 +6492,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * setTransform
-   *
+   * @ignore
    * @param {Matrix} m
    *
    * @return {void}
@@ -5807,10 +6504,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   }
 
-
   /**
-   * globalAlpha
-   *
    * @param {number} value
    *
    * @return {void}
@@ -5820,9 +6514,9 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.globalAlpha = value;
   }
 
-
   /**
-   * globalBlendMode
+   * @inheritdoc
+   * @override
    *
    * @param {string} blendMode
    *
@@ -5838,6 +6532,9 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * drawImage
+   *
+   * @inheritdoc
+   * @override
    *
    * @param {Texture} texture
    *
@@ -5855,7 +6552,9 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * drawText
    *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
@@ -5892,6 +6591,8 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * clear
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -5900,7 +6601,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -5912,7 +6614,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -5923,11 +6626,10 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
@@ -5955,12 +6657,18 @@ class CanvasDriver extends VideoNullDriver {
   }
 }
 
+/**
+ * An video driver that draw everything into DOM elements itself.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 export
 class DOMDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
@@ -5983,8 +6691,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * save - Description
-   *
+   * @inheritdoc
    * @override
    * @param {GameObject|null} gameObject Used for internal binding.
    *
@@ -5995,7 +6702,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __initCSS - description
+   * @private
    *
    * @return {void}  description
    */
@@ -6026,7 +6733,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -6035,7 +6743,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -6055,21 +6764,21 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return Texture.fromCanvasAsImage(canvas);
   }
 
   /**
-   * drawImage - description
+   * @override
+   * @inheritdoc
    *
-   * @param  {Texture} texture description
-   * @return {void}         description
+   * @param  {Texture} texture
+   * @return {void}
    */
   drawImage(texture) {
     /** @type {Matrix|null} */
@@ -6088,16 +6797,16 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * drawText - description
-   *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
    * @param {number} textWidth
    * @param {number} textHeight
    *
-   * @return {void}                      description
+   * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {
     let el = this.__popElement('text');
@@ -6108,11 +6817,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __popElement - Description
+   * @private
+   * @param {string} className
    *
-   * @param {string} className Description
-   *
-   * @return {Element} Description
+   * @return {Element}
    */
   __popElement(className) {
     this.mCounter++;
@@ -6129,11 +6837,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateElementCommon - Description
+   * @private
+   * @param {Element} el
    *
-   * @param {Element} el Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateElementCommon(el) {
     let v = this.mTransform.value;
@@ -6168,8 +6875,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateImageElement - description
-   *
+   * @private
    * @param  {Element} el      description
    * @param  {Texture} texture description
    * @return {void}         description
@@ -6202,14 +6908,13 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateTextElement - Description
+   * @private
+   * @param {HTMLElement} el
+   * @param {string} text
+   * @param {TextInfo} style
+   * @param {Rectangle} bounds
    *
-   * @param {HTMLElement} el     Description
-   * @param {string} text   Description
-   * @param {TextInfo} style  Description
-   * @param {Rectangle} bounds Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateTextElement(el, text, style, bounds) {
     el.innerHTML = text;
@@ -6254,30 +6959,44 @@ class DOMDriver extends VideoNullDriver {
   }
 }
 
+/**
+ * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+ *
+ * @cat display
+ * @extends GameObject
+ */
 export
 class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAlpha = 1;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.blendMode = BlendMode.AUTO;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mVisible = true;
   }
 
   /**
-   * __render - Description
+   * @ignore
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mVisible === false)
@@ -6293,20 +7012,18 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * alpha - Description
+   * Gets/Sets the opacity of the object.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get alpha() {
     return this.mAlpha;
   }
 
   /**
-   * alpha - Description
-   *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {number} value
+   * @return {void}
    */
   set alpha(value) {
     this.mAlpha = Math.clamp(value, 0, 1);
@@ -6314,9 +7031,9 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
+   * Gets/Sets visibility of the object.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get visible() {
     return this.mVisible;
@@ -6324,28 +7041,31 @@ class DisplayObject extends GameObject {
 
 
   /**
-   * visible - Description
-   *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
    */
   set visible(value) {
     this.mVisible = value;
   }
 }
 
+/**
+ * Holds TextField's style details.
+ *
+ * @cat display.text
+ */
 export
 class TextInfo {
   /**
-   * @param  {string=} name = 'sans-serif' description
-   * @param  {number=} color = '0x000000' description
-   * @param  {number=} size = '14' description
-   * @param  {TextInfo.FontStyle=} style = 'normal' description
-   * @param  {TextInfo.FontWeight=} weight = '400' description
-   * @param  {TextInfo.FontAlign=} align = 'left' description
-   * @param  {number=} strokeThickness = '0' description
-   * @param  {number=} strokeColor = '0xffffff' description
+   * @param  {string=} name Font name
+   * @param  {number=} color = Text color as hexadecimal number eg 0xff0000 (total red)
+   * @param  {number=} size = Text size
+   * @param  {TextInfo.FontStyle=} style = Text style eg italic
+   * @param  {TextInfo.FontWeight=} weight = font thick. The value is set from 100 to 900 in increments of 100.
+   * @param  {TextInfo.FontAlign=} align = horizontal alignment left | center | right
+   * @param  {number=} strokeThickness = thickness of the stroke. 0 means that no stroke
+   * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
   constructor(name = 'sans-serif', color = 0x000000, size = 14, style = TextInfo.FontStyle.NORMAL, weight = TextInfo.FontWeight.NORMAL, align = TextInfo.FontAlign.LEFT, strokeThickness = 0, strokeColor = 0xffffff) {
 
@@ -6401,6 +7121,12 @@ TextInfo.FontAlign = {
   CENTER: 'center'
 };
 
+/**
+ * Sprite is used to render Texture onto screen.
+ *
+ * @cat display
+ * @extends DisplayObject
+ */
 export
 class Sprite extends DisplayObject {
 
@@ -6512,62 +7238,102 @@ class Sprite extends DisplayObject {
   }
 }
 
+/**
+ * This class is used to create display text.
+ *
+ * @cat display.text
+ * @extends DisplayObject
+ */
 export
 class TextField extends DisplayObject {
   /**
-   * @param  {string=} text = ''            description
-   * @param  {number=} size = 14        description
-   * @param  {string=} name = "sans-serif" description
-   * @param {TextInfo=} style
+   * @param  {string=} text Text to be displayed inside this text field
+   * @param  {number=} size text size
+   * @param  {string=} name font name
+   * @param {TextInfo=} style TextInfo object
    */
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mText = text;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedInvalidate = true;
 
-    /** @private @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldHeight = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
+    /**
+     * @private
+     * @type {TextInfo}
+     */
     this.mStyle = style || new TextInfo();
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mStyle.name = name || style.name;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStyle.size = size || style.size;
 
-    /** @public @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAutoSize = true;
 
     this.__validate(this.mCacheBounds);
   }
 
   /**
-   * __render - Description
-   * @private @override
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
+   * @ignore
+   * @override
+   * @protected
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mAlpha <= 0 || this.mVisible === false)
@@ -6588,26 +7354,24 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Description
+   * @protected
+   * @override
+   * @ignore
+   * @param {Rectangle=} outRect
    *
-   * @protected @override
-   * @param {Rectangle=} outRect Description
-   *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
     return this.__validate(outRect);
   }
 
-
   /**
-   * __validate - Description
-   *
    * @private
-   * @param {Rectangle} outRect Description
+   * @ignore
+   * @param {Rectangle} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   __validate(outRect) {
     let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
@@ -6630,22 +7394,19 @@ class TextField extends DisplayObject {
 
 
   /**
-   * size - Description
+   * Get/Set text size.
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get size() {
     return this.mStyle.size;
   }
 
   /**
-   * size - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set size(value) {
     this.mStyle.size = value;
@@ -6653,67 +7414,59 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * font - Description
+   * Get/Set text font.
    *
-   * @public
-   * @return {string} Description
+   * @return {string}
    */
   get font() {
-      return this.mStyle.name;
-    }
-    /**
-     * font - Description
-     *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
-     */
+    return this.mStyle.name;
+  }
 
+  /**
+   * @param {string} value
+   * @ignore
+   *
+   * @return {void}
+   */
   set font(value) {
     this.mStyle.name = value;
     this.mNeedInvalidate = true;
   }
 
   /**
-   * color - Description
+   * Specifies text color as hexadecimal number eg 0xff0000 (total red)
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get color() {
     return this.mStyle.color;
   }
 
   /**
-   * color - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set color(value) {
     this.mStyle.color = value;
   }
 
   /**
-   * style - Description
+   * Get/Set text style.
    *
-   * @public
-   * @return {TextInfo.FontStyle} Description
+   * @return {TextInfo.FontStyle}
    */
   get style() {
     return this.mStyle.style;
   }
 
   /**
-   * style - Description
    *
-   * @param {TextInfo.FontStyle} value Description
-   * @public
+   * @param {TextInfo.FontStyle} value
+   * @ignore
    *
-   * @return {void} Description
+   * @return {void}
    */
   set style(value) {
     this.mStyle.style = value;
@@ -6721,22 +7474,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * weight - Description
+   * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @public
-   * @return {TextInfo.FontWeight} Description
+   * @return {TextInfo.FontWeight}
    */
   get weight() {
     return this.mStyle.weight;
   }
 
   /**
-   * weight - Description
+   * @param {TextInfo.FontWeight} value
+   * @ignore
    *
-   * @param {TextInfo.FontWeight} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set weight(value) {
     this.mStyle.weight = value;
@@ -6744,67 +7494,55 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * align - Description
+   * Specifies the horizontal alignment left | center | right
    *
-   * @public
-   * @return {TextInfo.FontAlign} Description
+   * @return {TextInfo.FontAlign}
    */
   get align() {
     return this.mStyle.align;
   }
 
   /**
-   * align - Description
+   * @param {TextInfo.FontAlign} value
+   * @ignore
    *
-   * @param {TextInfo.FontAlign} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set align(value) {
     this.mStyle.align = value;
   }
 
   /**
-   * strokeColor - Description
-   *
-   * @public
-   * @return {number} Description
+   * Specifies stroke color as hexadecimal number eg 0xff0000 (total red)
+   * @return {number}
    */
   get strokeColor() {
     return this.mStyle.strokeColor;
   }
 
   /**
-   * strokeColor - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeColor(value) {
     this.mStyle.strokeColor = value;
   }
 
   /**
-   * strokeThickness - Description
-   *
-   * @public
-   * @return {number} Description
+   * Specifies the thickness of the stroke. 0 means that no stroke
+   * @return {number}
    */
   get strokeThickness() {
     return this.mStyle.strokeThickness;
   }
 
-  //noinspection JSAnnotator
   /**
-   * strokeThickness - Description
-   * @public
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeThickness(value) {
     if (value === this.mStyle.strokeThickness)
@@ -6815,22 +7553,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * fieldWidth - Description
+   * Specifies the width of the text field. If autoSize set as false
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get fieldWidth() {
     return this.mFieldWidth;
   }
 
   /**
-   * fieldWidth - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldWidth(value) {
     if (this.mAutoSize || value === this.mFieldWidth)
@@ -6840,11 +7575,9 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * fieldHeight - Description
+  /** Specifies the height of the text field, if autoSize set as false
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get fieldHeight() {
     return this.mFieldHeight;
@@ -6852,12 +7585,10 @@ class TextField extends DisplayObject {
 
 
   /**
-   * fieldHeight - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldHeight(value) {
     if (this.mAutoSize || value === this.mFieldHeight)
@@ -6867,22 +7598,19 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * @public text - Description
-   *
-   * @return {string} Description
+  /**Text to be displayed inside this text field.
+
+   * @return {string}
    */
   get text() {
     return this.mText;
   }
 
   /**
-   * text - Description
+   * @param {string} value
+   * @ignore
    *
-   * @param {string} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set text(value) {
     if (this.mText === value)
@@ -6893,20 +7621,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * autoSize - Description
+   * Determines whether the size of the field will adjust to the size of the text. Note: if this set as true, you need to specify fieldHeight and fieldWidth manually
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get autoSize() {
     return this.mAutoSize;
   }
 
   /**
-   * autoSize - Description
+   * @param {boolean} value
+   * @ignore
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set autoSize(value) {
     if (this.mAutoSize === value)
@@ -6917,20 +7644,38 @@ class TextField extends DisplayObject {
   }
 }
 
+/**
+ * Contains system functions.
+ * @static
+ * @cat system
+ */
 export
 class Device {
+  /**
+   * Static class.
+   */
   constructor() {
-    /** @type {Device} */
+    /**
+     * @private
+     * @type {Device}
+     */
     this.constructor.mInstance = this;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPixelRatio = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
   }
 
   /**
+   * Returns current OS name.
    * @return {string}
    */
   static get os() {
@@ -6949,9 +7694,9 @@ class Device {
   }
 
   /**
-   * isTouch - Description
+   * Returns True if touch screen is present.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isTouch() {
     let hasEvent = 'ontouchstart' in window;
@@ -6965,25 +7710,25 @@ class Device {
   }
 
   /**
-   * isMobile - Description
+   * Returns True if engine is running on mobile device.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isMobile() {
     return /Mobi/.test(navigator.userAgent);
   }
 
   /**
-   * pixelRatio - Description
+   * Returns screen pixel ratio.
    *
-   * @return {number} Description
+   * @return {number}
    */
   static get pixelRatio() {
     return Device.mInstance.mPixelRatio;
   }
 
   /**
-   * getDevicePixelRatio - Description
+   * @private
    *
    * @suppress {missingProperties}
    *
@@ -7000,62 +7745,84 @@ class Device {
 
 }
 
-/** @type {Device}
+/**
+ * @private
+ * @type {Device}
  * @nocollapse
  */
 Device.mInstance = null;
 
+/**
+ * Base class for distribution objects.
+ *
+ * @cat scatters
+ */
 export
 class Scatter {
+  /**
+   * Creates new Scatter instance.
+   */
   constructor() {}
 
   /**
-   * getValue
-   *
-   * @return {*}
+   * Returns random value.
+   * @return {*} Any object.
    */
   getValue() {}
 
-
   /**
-   * getValueAt
+   * Returns value at given position.
    *
-   * @param {number} t
+   * @param {number} t Position to get value at.
    *
-   * @return {*}
+   * @return {*} Any object.
    */
   getValueAt(t) {}
 }
 
+/**
+ * A number scatter for defining a range in 1D space.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
 export
 class FloatScatter extends Scatter {
+  /**
+   * Creates new FloatScatter instance.
+   *
+   * @param {number}      min             The min value along x-axis.
+   * @param {number}      [max=undefined] The max value along x-axis.
+   * @param {function(k)} [ease=null]     Easing function.
+   */
   constructor(min, max = undefined, ease = null) {
     super();
 
     // NOTE: dont make us @private @member
     this.min = min;
     this.max = max == null ? min : max;
-    
+
     this.ease = ease;
   }
 
-
   /**
-   * getValue
+   * Returns random number withing defined range.
    *
-   * @return {number}
+   * @override
+   *
+   * @return {number} Random number.
    */
   getValue() {
     return Math.random() * (this.max - this.min) + this.min;
   }
 
-
   /**
-   * getValueAt
+   * Returns value at given position within defined range.
    *
-   * @param {number} t
+   * @override
+   * @param {number} t The position.
    *
-   * @return {number}
+   * @return {number} Number at given position.
    */
   getValueAt(t) {
     if (this.ease !== null)
@@ -7065,8 +7832,22 @@ class FloatScatter extends Scatter {
   }
 }
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
 export
 class VectorScatter extends Scatter {
+  /**
+   * Creates new VectorScatter instance.
+   *
+   * @param {type} minX The min value along x-axis.
+   * @param {type} minY The min value along y-axis.
+   * @param {type} maxX The max value along x-axis.
+   * @param {type} maxY The max value along y-axis.
+   */
   constructor(minX, minY, maxX, maxY) {
     super();
 
@@ -7077,11 +7858,12 @@ class VectorScatter extends Scatter {
     this.maxY = maxY;
   }
 
-
   /**
-   * getValue
+   * Returns a random Vector object at given position within a range specified
+   * in the constructor.
+   * @override
    *
-   * @return {Vector}
+   * @return {Vector} Vector object with random values withing defined range.
    */
   getValue() {
     let outVector = new Vector();
@@ -7090,13 +7872,14 @@ class VectorScatter extends Scatter {
     return outVector;
   }
 
-
   /**
-   * getValueAt
+   * Returns a Vector object at given position.
+   * @override
    *
-   * @param {number} t
+   * @param {number} t The position.
    *
-   * @return {Vector}
+   * @return {Vector} Vector object representing values in a range at
+   * given position.
    */
   getValueAt(t) {
     let outVector = new Vector();
@@ -7106,110 +7889,138 @@ class VectorScatter extends Scatter {
   }
 }
 
+/**
+ * A number scatter for defining a range in 2D space on a curve.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
 export
 class FloatCurveScatter extends Scatter {
   /**
+   * Creates new FloatCurveScatter instance.
    * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
    */
   constructor(...points) {
     super();
 
+    /**
+     * @private
+     * @type {Curve}
+     */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
+    /**
+     * @private
+     * @type {Vector}
+     */
     this.mCache = new Vector();
   }
 
+  /**
+   * Returns a value on a curve at random position.
+   * @override
+   *
+   * @return {number} A random number value on a defined curve.
+   */
   getValue() {
     let t = Math.random();
     this.mCurve.interpolate(t, this.mCache);
     return this.mCache.y;
   }
 
+  /**
+   * Returns a number at given position on a curve.
+   * @override
+   *
+   * @param {number} t The position.
+   *
+   * @return {number} A value on a curve at given position.
+   */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
     return this.mCache.y;
   }
-}
-
-export
-class VectorCurveScatter extends Scatter {
-  /**
-   * @param {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-   */
-  constructor(...points) {
-    super();
-
-    this.mCurve = new Curve();
-    this.mCurve.baked = true;
-    this.mCurve.set(...points);
-
-    this.mCache = new Vector();
-  }
-
-
-  getValue() {
-    let t = Math.random();
-    this.mCurve.interpolate(t, this.mCache);
-    return this.mCache;
-  }
-
-
-  getValueAt(t) {
-    this.mCurve.interpolate(t, this.mCache);
-    return this.mCache;
-  }
-}
-
-export
-class Action {
-
-  /**
-   * preUpdate - Description
-   *
-   * @param {number} dt Description
-   * @param {number} t  Description
-   *
-   * @return {void} Description
-   */
-  preUpdate(dt, t) {}
-
-
-  /**
-   * @param {Emitter} emmiter
-   * @param {Particle} particle
-   * @param {number} dt
-   * @param {number} t
-   *
-   * @return {void}
-   */
-  update(emmiter, particle, dt, t) {}
-
-
-  /**
-   * postUpdate
-   *
-   * @param {number} dt
-   * @param {number} t
-   *
-   * @return {void}
-   */
-  postUpdate(dt, t) {}
 }
 
 /**
- * @extends Action
+ * A base class for particle system actions. Every frame each action executed over each particle.
+ *
+ * @cat particles.actions
+ * @abstract
+ * @class
  */
 export
-class Acceleration extends Action {
-  constructor(vectorScatter) {
-    super();
-
-    this.scatter = vectorScatter;
+class Action {
+  /**
+   * Creates new Action instance.
+   */
+  constructor(){
   }
 
   /**
+   * Called for every particle before any update method called.
+   *
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
+   *
+   * @return {void} Description
+   */
+  preUpdate(dt) {}
+
+
+  /**
+   * Called for every particle.
+   *
+   * @protected
+   * @param {Emitter} emmiter   The owner of the particle.
+   * @param {Particle} particle The particle to execute update on.
+   * @param {number} dt         Amount of seconds since the last update.
+   *
+   * @return {void}
+   */
+  update(emmiter, particle, dt) {}
+
+
+  /**
+   * Called after all updates have been executed.
+   *
+   * @protected
+   * @param {number} dt Amount of seconds since the last update.
+   *
+   * @return {void}
+   */
+  postUpdate(dt) {}
+}
+
+/**
+ * Adds acceleration to particles along given direction.
+ *
+ * @cat particles.actions
+ * @extends Action
+ * @class
+ */
+export
+class Acceleration extends Action {
+  /**
+   * Creates new Acceleration instance.
+   *
+   * @param {VectorScatter} vectorScatter An VectorScatter which defines acceleration direction.
+   */
+  constructor(vectorScatter) {
+    super();
+
+    /**
+     * @private
+     * @type {VectorScatter}
+     */
+    this.mScatter = vectorScatter;
+  }
+
+  /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7219,25 +8030,49 @@ class Acceleration extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    let v = this.scatter.getValue();
+    let v = this.mScatter.getValue();
 
     particle.ax += v.x;
     particle.ay += v.y;
   }
+
+
+  /**
+   * Returns VectorScatter object that defines acceleration direction.
+   * @member {VectorScatter}
+   * @return {VectorScatter}
+   */
+  get scatter() {
+    return this.mScatter;
+  }
 }
 
 /**
+ * Sets particle's alpha value according to its energy value.
+ *
+ * @cat particles.actions
  * @extends Action
+ * @class
  */
 export
 class AlphaOverLife extends Action {
+  /**
+   * Creates new AlphaOverLife instance.
+   *
+   * @param {FloatScatter} floatScatter A starting and ending values of alpha property.
+   */
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7247,22 +8082,40 @@ class AlphaOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.alpha = this.scatter.getValueAt(particle.energy);
+    particle.alpha = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines alpha value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's scale value according to its energy value.
+ *
+ * @cat particles.actions
  * @extends Action
+ * @class
  */
 export
 class ScaleOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7272,22 +8125,40 @@ class ScaleOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.scale = this.scatter.getValueAt(particle.energy);
+    particle.scale = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines scale value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's rotation value according to its energy value.
+ *
+ * @cat particles.actions
  * @extends Action
+ * @class
  */
 export
 class RotationOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7297,22 +8168,40 @@ class RotationOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.r = this.scatter.getValueAt(particle.energy);
+    particle.r = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines rotation value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
 /**
+ * Sets particle's texture according to its energy value.
+ *
+ * @cat particles.actions
  * @extends Action
+ * @class
  */
 export
 class TextureOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -7322,37 +8211,65 @@ class TextureOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.textureIndex = ~~this.scatter.getValueAt(particle.energy);
+    particle.textureIndex = ~~this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines texture value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }
 
+/**
+ * Base class for particle's initializators. Each initializer updates particle data once at start, eg when particle added to scene.
+ *
+ * @cat particles.initializers
+ */
 export
 class Initializer {
+  /**
+   * Creates new Initializer instance.
+   */
+  constructor() {
+  }
+
   /**
    * @param {Particle} particle
    *
    * @return {void}
-   */  
+   */
   initialize(particle) {}
 }
 
+/**
+ * Sets starting particle's life.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ */
 export
 class Life extends Initializer {
   /**
-   * constructor - Description
+   * Creates new LIfe instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min/max range.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7363,24 +8280,32 @@ class Life extends Initializer {
   }
 }
 
+/**
+ * Sets starting particle's mass.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 export
 class Mass extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Mass instance.
    *
-   * @param {number} mass Description
-   *
-   * @return {void} Description
+   * @param {number} mass The mass.
    */
   constructor(mass) {
     super();
 
-    /** @type {number} */
+    /**
+     * The mass value.
+     * @type {number}
+     */
     this.mass = mass;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7391,23 +8316,32 @@ class Mass extends Initializer {
   }
 }
 
+/**
+ * Sets particle's starting scale.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 export
 class Scale extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Scale instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting scale.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting scale.
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7418,23 +8352,32 @@ class Scale extends Initializer {
   }
 }
 
+/**
+ * Sets particle's starting velocity.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 export
 class Velocity extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Velocity instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min-max range for starting velocity.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for starting velocity.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7448,24 +8391,32 @@ class Velocity extends Initializer {
   }
 }
 
+/**
+ * Sets starting particle's position.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 export
 class Position extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Position instance.
    *
-   * @param {VectorScatter} vectorScatter Description
-   *
-   * @return {void} Description
+   * @param {VectorScatter} vectorScatter The min/max range.
    */
   constructor(vectorScatter) {
     super();
 
-    /** @type {VectorScatter} */
+    /**
+     * The min-max range for position distribution.
+     * @type {VectorScatter}
+     */
     this.scatter = vectorScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7479,23 +8430,31 @@ class Position extends Initializer {
   }
 }
 
+/**
+ * Sets particle's default rotation.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ */
 export
 class Rotation extends Initializer {
   /**
-   * constructor - Description
+   * Creates new Rotation instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter The min-max range for starting rotation.
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The min-max range for starting rotation
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7506,23 +8465,35 @@ class Rotation extends Initializer {
   }
 }
 
+/**
+ * Sets particle's texture.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 export
 class RandomTexture extends Initializer {
   /**
-   * constructor - Description
+   * Creates new RandomTexture instance.
    *
-   * @param {FloatScatter} floatScatter Description
-   *
-   * @return {void} Description
+   * @param {FloatScatter} floatScatter
    */
   constructor(floatScatter) {
     super();
 
-    /** @type {FloatScatter} */
+    /**
+     * The float scatter defines the index of the texture. All values will be
+     * rounded.
+     *
+     * @see {Particle.textureIndex}
+     * @type {FloatScatter}
+     */
     this.scatter = floatScatter;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *
@@ -7542,60 +8513,113 @@ var EmitterState = {
   FINISHED: 2
 };
 
+/**
+ * The particle!
+ *
+ * @cat particles
+ * @class
+ */
 export
 class Particle {
   constructor() {
     this.reset();
   }
 
+  /**
+   * Resets particle to default state.
+   *
+   * @returns {void}
+   */
   reset() {
-    /** @type {number} */
+    /**
+     * The index of a texture.
+     * @type {number}
+     */
     this.textureIndex = 0;
 
-    /** @type {number} */
+    /**
+     * The x/y scale of this particle.
+     * @type {number}
+     */
     this.scale = 1;
 
-    /** @type {number} */
+    /**
+     * Alpha value.
+     * @type {number}
+     */
     this.alpha = 1;
 
-    /** @type {number} */
+    /**
+     * The life of this particle.
+     * @type {number}
+     */
     this.life = 1;
 
-    /** @type {number} */
+    /**
+     * The age of this particle.
+     * @type {number}
+     */
     this.age = 0;
 
-    /** @type {number} */
+    /**
+     * Relation of life to age.
+     * @type {number}
+     */
     this.energy = this.age / this.life;
 
-    /** @type {number} */
+    /**
+     * The mass.
+     * @type {number}
+     */
     this.mass = 0;
 
-    /** @type {number} */
+    /**
+     * X-component.
+     * @type {number}
+     */
     this.x = 0;
 
-    /** @type {number} */
+    /**
+     * Y-component.
+     * @type {number}
+     */
     this.y = 0;
 
-    /** @type {number} */
+    /**
+     * Rotation of this particle.
+     * @type {number}
+     */
     this.r = 0
 
-    /** @type {number} */
+    /**
+     * Velocity by x.
+     * @type {number}
+     */
     this.vx = 0;
 
-    /** @type {number} */
+    /**
+     * Velocity by y.
+     * @type {number}
+     */
     this.vy = 0;
 
-    /** @type {number} */
+    /**
+     * Particle x-acceleration.
+     * @type {number}
+     */
     this.ax = 0;
 
-    /** @type {number} */
+    /**
+     * Particle y-acceleration.
+     * @type {number}
+     */
     this.ay = 0;
   }
 
   /**
-   * update
+   * Internal update method.
    *
-   * @param {number} dt
+   * @param {number} dt Time since last update.
    *
    * @return {void}
    */
@@ -7626,76 +8650,150 @@ class Particle {
   }
 }
 
+/**
+ * Particle emitter.
+ *
+ * @cat particles
+ * @extends DisplayObject
+ * @class
+ */
 export
 class Emitter extends DisplayObject {
+  /**
+   * Creates new Emitter instance.
+   */
   constructor() {
     super();
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mTextures = null;
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mParticles = [];
 
-    /** @type {Array<Particle>} */
+    /**
+     * @private
+     * @type {Array<Particle>}
+     */
     this.mRecycled = [];
 
-    /** @type {Array<Initializer>} */
+    /**
+     * @private
+     * @type {Array<Initializer>}
+     */
     this.mInitializers = [];
 
-    /** @type {Array<Action>} */
+    /**
+     * @private
+     * @type {Array<Action>}
+     */
     this.mActions = [];
 
-    /** @type {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mSpace = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLocal = true;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMaxParticles = 10000;
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDuration = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitInterval = new FloatScatter(0.1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @type {FloatScatter} */
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextUpdateAt = 0;
 
-    /** @type {EmitterState} */
+    /**
+     * @private
+     * @type {EmitterState}
+     */
     this.mState = EmitterState.PENDING;
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpLocal = new Matrix();
+
+    /**
+     * @private
+     * @type {Matrix}
+     */
+    this.__tmpWorld = new Matrix();
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
-
-    /** @type {Matrix} */
-    this.__tmpLocal = new Matrix();
-
-    /** @type {Matrix} */
-    this.__tmpWorld = new Matrix();
   }
 
   // reset() {
@@ -7867,10 +8965,8 @@ class Emitter extends DisplayObject {
     let alength = this.mActions.length;
     let plength = this.mParticles.length;
 
-    let t = Black.instance.uptime;
-
     for (let i = 0; i < alength; i++)
-      this.mActions[i].preUpdate(dt, t);
+      this.mActions[i].preUpdate(dt);
 
     let particle;
 
@@ -7879,7 +8975,7 @@ class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt, t);
+        this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -7890,7 +8986,7 @@ class Emitter extends DisplayObject {
     }
 
     for (let j = 0; j < alength; j++)
-      this.mActions[j].postUpdate(dt, t);
+      this.mActions[j].postUpdate(dt);
   }
 
   __create(amount) {
@@ -8100,111 +9196,414 @@ class Emitter extends DisplayObject {
   }
 }
 
+// TODO: fix jsdoc to display this enum
+
 /**
+ * @readonly
  * @enum {number}
+ * @cat input
  */
 export
 var Key = {
+  /**
+   * @type {number}
+   */
   A: 65,
+  /**
+   * @type {number}
+   */
   B: 66,
+  /**
+   * @type {number}
+   */
   C: 67,
+  /**
+   * @type {number}
+   */
   D: 68,
+  /**
+   * @type {number}
+   */
   E: 69,
+  /**
+   * @type {number}
+   */
   F: 70,
+  /**
+   * @type {number}
+   */
   G: 71,
+  /**
+   * @type {number}
+   */
   H: 72,
+  /**
+   * @type {number}
+   */
   I: 73,
+  /**
+   * @type {number}
+   */
   J: 74,
+  /**
+   * @type {number}
+   */
   K: 75,
+  /**
+   * @type {number}
+   */
   L: 76,
+  /**
+   * @type {number}
+   */
   M: 77,
+  /**
+   * @type {number}
+   */
   N: 78,
+  /**
+   * @type {number}
+   */
   O: 79,
+  /**
+   * @type {number}
+   */
   P: 80,
+  /**
+   * @type {number}
+   */
   Q: 81,
+  /**
+   * @type {number}
+   */
   R: 82,
+  /**
+   * @type {number}
+   */
   S: 83,
+  /**
+   * @type {number}
+   */
   T: 84,
+  /**
+   * @type {number}
+   */
   U: 85,
+  /**
+   * @type {number}
+   */
   V: 86,
+  /**
+   * @type {number}
+   */
   W: 87,
+  /**
+   * @type {number}
+   */
   X: 88,
+  /**
+   * @type {number}
+   */
   Y: 89,
+  /**
+   * @type {number}
+   */
   Z: 90,
+  /**
+   * @type {number}
+   */
   DIGIT_0: 48,
+  /**
+   * @type {number}
+   */
   DIGIT_1: 49,
+  /**
+   * @type {number}
+   */
   DIGIT_2: 50,
+  /**
+   * @type {number}
+   */
   DIGIT_3: 51,
+  /**
+   * @type {number}
+   */
   DIGIT_4: 52,
+  /**
+   * @type {number}
+   */
   DIGIT_5: 53,
+  /**
+   * @type {number}
+   */
   DIGIT_6: 54,
+  /**
+   * @type {number}
+   */
   DIGIT_7: 55,
+  /**
+   * @type {number}
+   */
   DIGIT_8: 56,
+  /**
+   * @type {number}
+   */
   DIGIT_9: 57,
+  /**
+   * @type {number}
+   */
   NUMPAD_0: 96,
+  /**
+   * @type {number}
+   */
   NUMPAD_1: 97,
+  /**
+   * @type {number}
+   */
   NUMPAD_2: 98,
+  /**
+   * @type {number}
+   */
   NUMPAD_3: 99,
+  /**
+   * @type {number}
+   */
   NUMPAD_4: 100,
+  /**
+   * @type {number}
+   */
   NUMPAD_5: 101,
+  /**
+   * @type {number}
+   */
   NUMPAD_6: 102,
+  /**
+   * @type {number}
+   */
   NUMPAD_7: 103,
+  /**
+   * @type {number}
+   */
   NUMPAD_8: 104,
+  /**
+   * @type {number}
+   */
   NUMPAD_9: 105,
+  /**
+   * @type {number}
+   */
   NUMPAD_MULTIPLY: 106,
+  /**
+   * @type {number}
+   */
   NUMPAD_ADD: 107,
+  /**
+   * @type {number}
+   */
   NUMPAD_SUBTRACT: 109,
+  /**
+   * @type {number}
+   */
   NUMPAD_DECIMAL: 110,
+  /**
+   * @type {number}
+   */
   NUMPAD_DIVIDE: 111,
+  /**
+   * @type {number}
+   */
   LEFT_ARROW: 37,
+  /**
+   * @type {number}
+   */
   UP_ARROW: 38,
+  /**
+   * @type {number}
+   */
   RIGHT_ARROW: 39,
+  /**
+   * @type {number}
+   */
   DOWN_ARROW: 40,
+  /**
+   * @type {number}
+   */
   BACKSPACE: 8,
+  /**
+   * @type {number}
+   */
   TAB: 9,
+  /**
+   * @type {number}
+   */
   ENTER: 13,
+  /**
+   * @type {number}
+   */
   SHIFT: 16,
+  /**
+   * @type {number}
+   */
   CTRL: 17,
+  /**
+   * @type {number}
+   */
   ALT: 18,
+  /**
+   * @type {number}
+   */
   F1: 112,
+  /**
+   * @type {number}
+   */
   F2: 113,
+  /**
+   * @type {number}
+   */
   F3: 114,
+  /**
+   * @type {number}
+   */
   F4: 115,
+  /**
+   * @type {number}
+   */
   F5: 116,
+  /**
+   * @type {number}
+   */
   F6: 117,
+  /**
+   * @type {number}
+   */
   F7: 118,
+  /**
+   * @type {number}
+   */
   F8: 119,
+  /**
+   * @type {number}
+   */
   F9: 120,
+  /**
+   * @type {number}
+   */
   F10: 121,
+  /**
+   * @type {number}
+   */
   F11: 122,
+  /**
+   * @type {number}
+   */
   F12: 123,
+  /**
+   * @type {number}
+   */
   PAUSE_BREAK: 19,
+  /**
+   * @type {number}
+   */
   CAPS_LOCK: 20,
+  /**
+   * @type {number}
+   */
   ESCAPE: 27,
+  /**
+   * @type {number}
+   */
   PAGE_UP: 33,
+  /**
+   * @type {number}
+   */
   PAGE_DOWN: 34,
+  /**
+   * @type {number}
+   */
   END: 35,
+  /**
+   * @type {number}
+   */
   HOME: 36,
+  /**
+   * @type {number}
+   */
   INSERT: 45,
+  /**
+   * @type {number}
+   */
   DELETE: 46,
+  /**
+   * @type {number}
+   */
   LEFT_WINDOW: 91,
+  /**
+   * @type {number}
+   */
   RIGHT_WINDOW: 92,
+  /**
+   * @type {number}
+   */
   CONTEXT_MENU: 93,
+  /**
+   * @type {number}
+   */
   NUM_LOCK: 144,
+  /**
+   * @type {number}
+   */
   SCROLL_LOCK: 145,
+  /**
+   * @type {number}
+   */
   SEMI_COLON: 186,
+  /**
+   * @type {number}
+   */
   EQUAL_SIGN: 187,
+  /**
+   * @type {number}
+   */
   COMMA: 188,
+  /**
+   * @type {number}
+   */
   DASH: 189,
+  /**
+   * @type {number}
+   */
   PERIOD: 190,
+  /**
+   * @type {number}
+   */
   FORWARD_SLASH: 191,
+  /**
+   * @type {number}
+   */
   BACKQUOTE: 192,
+  /**
+   * @type {number}
+   */
   BRAKET_LEFT: 219,
+  /**
+   * @type {number}
+   */
   BACK_SLASH: 220,
+  /**
+   * @type {number}
+   */
   BRAKET_RIGHT: 221,
+  /**
+   * @type {number}
+   */
   SINGLE_QUOTE: 222,
 };
 
+/**
+ * Holds information about keyboard event.
+ *
+ * @cat input
+ */
 export
 class KeyInfo {
 
@@ -8225,53 +9624,109 @@ class KeyInfo {
   }
 }
 
-/*
-Has to be static class.
-
-+ before update store all events locally
-- check root object! add collider automatically? or do it on demand?
-*/
-
+/**
+ * A input system class is reponsible for mouse, touch and keyboard input events.
+ * Pointer events works for a single target only.
+ * Global Input messages has higher priority.
+ *
+ * When GameObject gets a `pointerDown` message it gets target locked. Other
+ * objects will not receive `pointerMove` or `pointerUp` messages. Target locked
+ * object will receive `pointerUp` message even if pointer is outside of its
+ * bounds.
+ *
+ * @cat input
+ * @extends System
+ */
 export
 class Input extends System {
+  /**
+   * Private constructor.
+   */
   constructor() {
     super();
 
-    /** @type {Input} */
+    /**
+     * @private
+     * @type {Input}
+     */
     this.constructor.instance = this;
 
-    /** @type {Vector} */
+    /**
+     * @private
+     * @type {Vector}
+     */
     this.mPointerPosition = new Vector();
 
-    /** @type {Element} */
+    /**
+     * @private
+     * @type {Element}
+     */
     this.mDom = Black.instance.containerElement;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mEventList = null;
 
-    /** @type {Array<string>} */
+    /**
+     * @private
+     * @type {Array<string>}
+     */
     this.mKeyEventList = null;
 
     this.__initListeners();
 
-    /** @type {Array<{e: Event, x: number, y:number}>} */
+    /**
+     * @private
+     * @type {Array<{e: Event, x: number, y:number}>}
+     */
     this.mPointerQueue = [];
 
-    /** @type {Array<Event>} */
+    /**
+     * @private
+     * @type {Array<Event>}
+     */
     this.mKeyQueue = [];
 
-    /** @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPressedKeys = [];
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPointerDown = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedUpEvent = false;
 
-    /** @type {Array<InputComponent>} */
-    this.mInputListeners = [];
+    /**
+     * NOTE: we need guarantee that keys are not going to chage theirs order
+     * when iterating.
+     * @private
+     * @type {Map}
+     */
+    this.mInputListeners = new Map();
+
+    this.mTarget = null;
+    this.mTargetComponent = null;
+    this.mLockedTarget = null;
+
+    this.mLastInTargetComponent = null;
   }
 
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
     //debugger;
@@ -8286,32 +9741,37 @@ class Input extends System {
     for (let i = 0; i < 6; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    document.addEventListener(this.mEventList[Input.POINTER_UP], e => this.__onPointerEventDoc(e), false);
+    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
       document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
   }
 
-  __sortListeners() {
-    // TODO: make it faster
-    // - try insert sort
-    this.mInputListeners.sort((x, y) => {
-      return y.gameObject.depth - x.gameObject.depth || y.gameObject.index - x.gameObject.index;
-    });
-  }
-
-
   /**
+   * @private
    * @param {Event} e
    *
    * @return {boolean}
    */
   __onKeyEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     this.mKeyQueue.push(e);
     return true;
   }
 
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __onPointerEventDoc(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
+    // dirty check
     let over = e.target == this.mDom || e.target.parentElement == this.mDom;
 
     if (over === false && this.mNeedUpEvent === true) {
@@ -8320,13 +9780,16 @@ class Input extends System {
     }
   }
 
-
   /**
-   * @param {Event} e Description
+   * @private
+   * @param {Event} e
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   __onPointerEvent(e) {
+    if (Black.instance.isPaused === true)
+      return;
+
     e.preventDefault();
 
     this.__pushEvent(e);
@@ -8334,15 +9797,18 @@ class Input extends System {
     return true;
   }
 
+  /**
+   * @private
+   * @param {Event} e
+   *
+   * @returns {void}
+   */
   __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
       p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */ (e));
     else
       p = this.__getPointerPos(this.mDom, e);
-
-    this.mPointerPosition.x = p.x;
-    this.mPointerPosition.y = p.y;
 
     this.mPointerQueue.push({
       e: e,
@@ -8351,14 +9817,12 @@ class Input extends System {
     });
   }
 
-
   /**
-   * __getPointerPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {Event} evt
    *
-   * @param {Element} canvas Description
-   * @param {Event} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -8368,12 +9832,11 @@ class Input extends System {
   }
 
   /**
-   * __getTouchPos - Description
+   * @private
+   * @param {Element} canvas
+   * @param {TouchEvent} evt
    *
-   * @param {Element} canvas Description
-   * @param {TouchEvent} evt    Description
-   *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -8388,159 +9851,142 @@ class Input extends System {
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
-
   /**
-   * __addListener - Description
+   * @inheritdoc
+   * @override
+   * @param {number} dt
    *
-   * @param {Array<InputComponent>} array Description
-   *
-   * @return {void} Description
-   */
-  __addListener(array) {
-    // check for duplicates
-    for (let i = 0; i < array.length; i++) {
-      let item = /** @type {InputComponent} */ (array[i]);
-
-      if (this.mInputListeners.indexOf(item) === -1)
-        this.mInputListeners.push(item);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * onChildrenAdded - Description
-   *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
-   */
-  onChildrenAdded(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    this.__addListener(cs);
-  }
-
-
-  /**
-   * onChildrenRemoved - Description
-   *
-   * @param {GameObject} child Description
-   *
-   * @return {void} Description
-   */
-  onChildrenRemoved(child) {
-    let cs = GameObject.findComponents(child, InputComponent);
-    if (!cs || cs.length === 0)
-      return;
-
-    for (var i = cs.length - 1; i >= 0; i--) {
-      let component = cs[i];
-      let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-
-      if (index !== -1)
-        this.mInputListeners.splice(index, 1);
-    }
-
-    this.__sortListeners();
-  }
-
-
-  /**
-   * onComponentAdded - Description
-   *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
-   *
-   * @return {void} Description
-   */
-  onComponentAdded(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    this.__addListener([component]);
-  }
-
-
-  /**
-   * onComponentRemoved - Description
-   *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
-   *
-   * @return {void} Description
-   */
-  onComponentRemoved(child, component) {
-    if (component.constructor !== InputComponent)
-      return;
-
-    let index = this.mInputListeners.indexOf( /** @type {InputComponent} */ (component));
-    if (index !== -1) {
-      this.mInputListeners.splice(index, 1);
-      this.__sortListeners();
-    }
-  }
-
-
-  /**
-   * onUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onUpdate(dt) {
-    let pointerPos = new Vector();
+    // omg, who gave you keyboard?
+    this.__updateKeyboard();
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
-
-      let ix = this.mEventList.indexOf(nativeEvent.e.type);
-      let fnName = Input.mInputEventsLookup[ix];
-
-      if (fnName === 'pointerDown')
-        this.mNeedUpEvent = true;
-
-      pointerPos.set(nativeEvent.x, nativeEvent.y);
-
-      /** @type {InputComponent|null} */
-      let currentComponent = null;
-      for (let k = 0; k < this.mInputListeners.length; k++) {
-        currentComponent = this.mInputListeners[k];
-
-        // if (currentComponent.gameObject === null)
-        //   console.log(currentComponent);
-
-        if (GameObject.intersects(currentComponent.gameObject, pointerPos) === false) {
-          // check for out events
-          if (currentComponent.mPointerInside === true) {
-            currentComponent.mPointerInside = false;
-            currentComponent.gameObject.post('~pointerOut');
-          }
-
-          continue;
-        }
-
-        // TODO: fix weird extra pointerMove bug on chrome, happens right after down and before up
-        if (ix === Input.POINTER_DOWN)
-          this.mIsPointerDown = true;
-        else if (ix === Input.POINTER_UP)
-          this.mIsPointerDown = false;
-
-        if (currentComponent.mPointerInside === false) {
-          currentComponent.mPointerInside = true;
-          currentComponent.gameObject.post('~pointerIn');
-        }
-
-        currentComponent.gameObject.post('~' + fnName);
-      }
-
-      this.post(fnName);
+    // we had no actual events but still we need to know if something were moved
+    if (this.mPointerQueue.length === 0) {
+      this.__findTarget(Input.pointerPosition);
+      this.__processInOut(Input.pointerPosition);
     }
 
+    for (var i = 0; i < this.mPointerQueue.length; i++) {
+      let nativeEvent =  this.mPointerQueue[i];
+
+      // update to the lattest position
+      this.mPointerPosition.x = nativeEvent.x;
+      this.mPointerPosition.y = nativeEvent.y;
+
+      let pointerPos = new Vector(nativeEvent.x, nativeEvent.y);
+      let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
+
+      this.__findTarget(pointerPos);
+      this.__processInOut(Input.pointerPosition);
+      this.__processNativeEvent(nativeEvent, pointerPos, eventType);
+    }
+
+    // Erase the pointer queue
+    this.mPointerQueue.splice(0, this.mPointerQueue.length);
+    this.mKeyQueue.splice(0, this.mKeyQueue.length);
+  }
+
+  __findTarget(pos) {
+    let obj = GameObject.intersectsWith(Black.instance.root, pos);
+
+    if (obj === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    let c = obj.getComponent(InputComponent);
+    if (c === null) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    if (c.touchable === false) {
+      this.mTarget = null;
+      this.mTargetComponent = null;
+      return;
+    }
+
+    this.mTarget = obj;
+    this.mTargetComponent = c;
+  }
+
+  __processNativeEvent(nativeEvent, pos, type) {
+    this.post(type);
+
+    if (this.mTarget === null && this.mLockedTarget === null)
+      return;
+
+    let info = new PointerInfo(this.mTarget, pos.x, pos.y);
+
+    if (type === Input.POINTER_DOWN) {
+      this.mLockedTarget = this.mTarget;
+      this.mNeedUpEvent = true;
+    }
+    else if (type === Input.POINTER_UP && this.mLockedTarget !== null) {
+      this.mLockedTarget.post('~pointerUp', info);
+      this.mLockedTarget = null;
+      return;
+    }
+
+    let sameTarget = this.mTarget === this.mLockedTarget;
+
+    if (this.mLockedTarget === null) {
+      if (this.mTarget !== null)
+        this.mTarget.post('~' + type, info);
+    } else {
+      if (sameTarget === true)
+        this.mLockedTarget.post('~' + type, info);
+    }
+  }
+
+  __postInMessage() {
+    if (this.mLockedTarget !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject && this.mTargetComponent.gameObject !== null)
+        return;
+    }
+
+    this.mTargetComponent.mPointerInDispatched = true;
+    this.mTargetComponent.gameObject.post('~pointerIn');
+    this.mLastInTargetComponent = this.mTargetComponent;
+  }
+
+  __postOutMessage() {
+    if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
+      if (this.mLockedTarget !== this.mTargetComponent.gameObject)
+        return;
+    }
+
+    this.mLastInTargetComponent.mPointerInDispatched = false;
+    this.mLastInTargetComponent.gameObject.post('~pointerOut');
+    this.mLastInTargetComponent = null;
+  }
+
+  __processInOut(pos) {
+
+    if (this.mTargetComponent === null) {
+      if (this.mLastInTargetComponent !== null)
+        this.__postOutMessage();
+    } else {
+      if (this.mLastInTargetComponent !== null && this.mLastInTargetComponent !== this.mTargetComponent) {
+        this.__postOutMessage();
+        return;
+      }
+
+      if (this.mTargetComponent.mPointerInDispatched === false)
+        this.__postInMessage();
+    }
+  }
+
+  /**
+   * @private
+   *
+   * @returns {void}
+   */
+  __updateKeyboard() {
     for (let i = 0; i < this.mKeyQueue.length; i++) {
       let nativeEvent = this.mKeyQueue[i];
 
@@ -8558,47 +10004,40 @@ class Input extends System {
 
       this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
-
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
-   * on - Description
+   * Listens for global input event by given message name.
    *
-   * @param {string} name           Description
-   * @param {Function} callback       Description
-   * @param {Object=} [context=null] Description
+   * @param {string} name            The name of the message to listen for.
+   * @param {Function} callback      The callback function that will be called when message received.
+   * @param {Object=} [context=null] Optional context.
    *
-   * @return {void} Description
+   * @return {void}
    */
   static on(name, callback, context = null) {
     Input.instance.on(name, callback, context);
   }
 
-
   /**
-   * isPointerDown - Description
+   * Indicates if mouse or touch in down at this moment.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   static get isPointerDown() {
     return Input.instance.mIsPointerDown;
   }
 
-
   /**
-   * pointerX - Description
-   *
-   * @return {number} Description
+   * Returns mouse or touch pointer x-component.
+   * @return {number}
    */
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
   }
 
-
   /**
-   * pointerY - Description
+   * Returns mouse or touch pointer x-component.
    *
    * @return {number} Description
    */
@@ -8606,87 +10045,169 @@ class Input extends System {
     return Input.instance.mPointerPosition.y;
   }
 
-
   /**
-   * pointerPosition - Description
+   * Returns mouse or touch pointer position.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
   }
 
+  /**
+   * Returns list of pressed keys.
+   *
+   * @returns {Array<number>}
+   */
   static get pressedKeys() {
     return Input.instance.mPressedKeys;
   }
 }
 
-/** @type {Input}
+Input.POINTER_DOWN = 'pointerDown';
+Input.POINTER_MOVE = 'pointerMove';
+Input.POINTER_UP   = 'pointerUp';
+Input.POINTER_IN   = 'pointerIn';
+Input.POINTER_OUT  = 'pointerOut';
+
+/**
+ * @type {Input}
  * @nocollapse
  */
 Input.instance = null;
 
-
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_MOVE = 0;
+Input.IX_POINTER_MOVE = 0;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_DOWN = 1;
+Input.IX_POINTER_DOWN = 1;
 
-/** @type {number}
- *  @const
+/**
+ * @type {number}
+ * @const
  */
-Input.POINTER_UP = 2;
+Input.IX_POINTER_UP = 2;
 
-/** @type {number}
- *  @const
- */
-Input.POINTER_CANCEL = 3;
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_IN = 3;
+//
+// /**
+//  * @type {number}
+//  * @const
+//  */
+// Input.IX_POINTER_OUT = 4;
 
-/** @type {number}
- *  @const
- */
-Input.POINTER_IN = 4;
-
-/** @type {number}
- *  @const
- */
-Input.POINTER_OUT = 5;
-
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventList = ['keydown', 'keyup'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
-/** @type {Array<string>}
- *  @const
+/**
+ * @private
+ * @type {Array<string>}
+ * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
+
+/**
+ * Stores additional information about pointer events.
+ *
+ * @cat input
+ */
+export
+class PointerInfo {
+  /**
+   * Creates new PointerInfo instance. For internal use only.
+   *
+   * @param {type} activeObject
+   * @param {type} x
+   * @param {type} y
+   */
+  constructor(activeObject, x, y) {
+    /**
+     * @private
+     * @type {GameObject}
+     */
+    this.mActiveObject = activeObject;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mX = x;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mY = y;
+  }
+
+  /**
+   * Returns the object under cursor right now.
+   * @readonly
+   *
+   * @returns {GameObject}
+   */
+  get activeObject() {
+    return this.mActiveObject;
+  }
+
+  get x() {
+    return this.mX;
+  }
+
+  get y() {
+    return this.mY;
+  }
+}
+
+/**
+ * This component will allow you to subscribe for some input messages.
+ *
+ * @cat input
+ * @extends Component
+ */
 export
 class InputComponent extends Component {
   /**
@@ -8699,18 +10220,26 @@ class InputComponent extends Component {
     this.touchable = true;
 
     /* INTERNAL */
-
     /** @type {boolean} */
-    this.mPointerInside = false;
+    this.mPointerInDispatched = false;
   }
 }
 
+/**
+ * Basic FPS component. Shows frame rate.
+ *
+ * @cat components
+ * @extends Component
+ */
 export
 class FPSComponent extends Component  {
   constructor() {
     super();
 
-    /** @type {TextField} */
+    /**
+     * @private
+     * @type {TextField}
+     */
     this.txtFPS = null;
   }
 
@@ -8729,31 +10258,52 @@ class FPSComponent extends Component  {
   }
 }
 
+/**
+ * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ *
+ * @cat components
+ * @extends Component
+ */
 export
 class MRComponent extends Component {
-
   /**
-   * constructor - Description
+   * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+   * Simplified version of scale manager.
    *
-   * @param {number} [width=960]  Description
-   * @param {number} [height=640] Description
+   * @param {number} [width=960]  The width.
+   * @param {number} [height=640] The height.
    */
   constructor(width = 960, height = 640) {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mHeight = height;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mInvScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAspect = 0;
 
     Black.instance.viewport.on('resize', this.__onResize, this);
@@ -8764,11 +10314,11 @@ class MRComponent extends Component {
   }
 
   /**
-   * setSize - description
+   * Sets size of the latout.
    *
-   * @param  {number} width = 960  description
-   * @param  {number} height = 640 description
-   * @return {void}              description
+   * @param  {number} width = 960  The width.
+   * @param  {number} height = 640 The height.
+   * @return {void}
    */
   setSize(width = 960, height = 640){
     this.mWidth = width;
@@ -8778,9 +10328,9 @@ class MRComponent extends Component {
   }
 
   /**
-   * updateLayout - description
+   * Updates layout to match specified settings.
    *
-   * @return {void}  description
+   * @return {void}
    */
   updateLayout() {
     if (!this.gameObject)
@@ -8803,60 +10353,56 @@ class MRComponent extends Component {
     this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
   }
 
-  onAdded(){
+  onAdded() {
     this.updateLayout();
-  }
-
-  onRemoved(){
-  }
-
-  onUpdate(){
   }
 }
 
+/**
+ * A static class with many static easing functions.
+ *
+ * @cat animation
+ * @static
+ */
 export
 class Ease {
-  constructor() {}
-
   /**
-   * linear - Description
-   *
-   * @param {number} k Description
-   *
-   * @return {number} Description
+   * linear
+   * @param {number} k
+   * @return {number}
    */
   static linear(k) {
     return k;
   }
 
   /**
-   * quadraticIn - Description
+   * quadraticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticIn(k) {
     return k * k;
   }
 
   /**
-   * quadraticOut - Description
+   * quadraticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticOut(k) {
     return k * (2 - k);
   }
 
   /**
-   * quadraticInOut - Description
+   * quadraticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quadraticInOut(k) {
     if ((k *= 2) < 1)
@@ -8866,33 +10412,33 @@ class Ease {
   }
 
   /**
-   * cubicIn - Description
+   * cubicIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicIn(k) {
     return k * k * k;
   }
 
   /**
-   * cubicOut - Description
+   * cubicOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicOut(k) {
     return --k * k * k + 1;
   }
 
   /**
-   * cubicInOut - Description
+   * cubicInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static cubicInOut(k) {
     if ((k *= 2) < 1)
@@ -8902,33 +10448,33 @@ class Ease {
   }
 
   /**
-   * quarticIn - Description
+   * quarticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticIn(k) {
     return k * k * k * k;
   }
 
   /**
-   * quarticOut - Description
+   * quarticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticOut(k) {
     return 1 - (--k * k * k * k);
   }
 
   /**
-   * quarticInOut - Description
+   * quarticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quarticInOut(k) {
     if ((k *= 2) < 1)
@@ -8938,33 +10484,33 @@ class Ease {
   }
 
   /**
-   * quinticIn - Description
+   * quinticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticIn(k) {
     return k * k * k * k * k;
   }
 
   /**
-   * quinticOut - Description
+   * quinticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticOut(k) {
     return --k * k * k * k * k + 1;
   }
 
   /**
-   * quinticInOut - Description
+   * quinticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static quinticInOut(k) {
     if ((k *= 2) < 1)
@@ -8974,66 +10520,66 @@ class Ease {
   }
 
   /**
-   * sinusoidalIn - Description
+   * sinusoidalIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalIn(k) {
     return 1 - Math.cos(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalOut - Description
+   * sinusoidalOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalOut(k) {
     return Math.sin(k * Math.PI / 2);
   }
 
   /**
-   * sinusoidalInOut - Description
+   * sinusoidalInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static sinusoidalInOut(k) {
     return 0.5 * (1 - Math.cos(Math.PI * k));
   }
 
   /**
-   * exponentialIn - Description
+   * exponentialIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialIn(k) {
     return k === 0 ? 0 : Math.pow(1024, k - 1);
   }
 
   /**
-   * exponentialOut - Description
+   * exponentialOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialOut(k) {
     return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
   }
 
   /**
-   * exponentialInOut - Description
+   * exponentialInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static exponentialInOut(k) {
     if (k === 0)
@@ -9049,33 +10595,33 @@ class Ease {
   }
 
   /**
-   * circularIn - Description
+   * circularIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularIn(k) {
     return 1 - Math.sqrt(1 - k * k);
   }
 
   /**
-   * circularOut - Description
+   * circularOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularOut(k) {
     return Math.sqrt(1 - (--k * k));
   }
 
   /**
-   * circularInOut - Description
+   * circularInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static circularInOut(k) {
     if ((k *= 2) < 1)
@@ -9085,11 +10631,11 @@ class Ease {
   }
 
   /**
-   * elasticIn - Description
+   * elasticIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticIn(k) {
     if (k === 0)
@@ -9102,11 +10648,11 @@ class Ease {
   }
 
   /**
-   * elasticOut - Description
+   * elasticOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticOut(k) {
     if (k === 0)
@@ -9119,11 +10665,11 @@ class Ease {
   }
 
   /**
-   * elasticInOut - Description
+   * elasticInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static elasticInOut(k) {
     if (k === 0)
@@ -9142,11 +10688,11 @@ class Ease {
   }
 
   /**
-   * backIn - Description
+   * backIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backIn(k) {
     const s = 1.70158;
@@ -9154,11 +10700,11 @@ class Ease {
   }
 
   /**
-   * backOut - Description
+   * backOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backOut(k) {
     const s = 1.70158;
@@ -9166,11 +10712,11 @@ class Ease {
   }
 
   /**
-   * backInOut - Description
+   * backInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static backInOut(k) {
     const s = 1.70158 * 1.525;
@@ -9182,22 +10728,22 @@ class Ease {
   }
 
   /**
-   * bounceIn - Description
+   * bounceIn
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceIn(k) {
     return 1 - Ease.bounceOut(1 - k);
   }
 
   /**
-   * bounceOut - Description
+   * bounceOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceOut(k) {
     if (k < (1 / 2.75))
@@ -9211,11 +10757,11 @@ class Ease {
   }
 
   /**
-   * bounceInOut - Description
+   * bounceInOut
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static bounceInOut(k) {
     if (k < 0.5)
@@ -9225,29 +10771,36 @@ class Ease {
   }
 
   /**
-   * smoothstep - Description
+   * smoothstep
    *
-   * @param {number} k Description
+   * @param {number} k
    *
-   * @return {number} Description
+   * @return {number}
    */
   static smootherStep(k) {
     return k * k * k * (k * (6.0 * k - 15.0) + 10.0);
   }
 }
 
+/**
+ * Interpolation functions.
+ *
+ * @cat animation
+ * @static
+ */
 export
 class Interpolation {
+  /**
+   * Singleton.
+   */
   constructor() {}
 
   /**
-   * linear - Description
+   * linear
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static linear(v, k) {
     let m = v.length - 1;
@@ -9270,13 +10823,11 @@ class Interpolation {
   }
 
   /**
-   * bezier - Description
+   * bezier
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static bezier(v, k) {
     let b = 0;
@@ -9296,13 +10847,11 @@ class Interpolation {
   }
 
   /**
-   * catmullRom - Description
+   * catmullRom
    *
-   * @param {Array} v - The input array of values to interpolate between.
-   *
-   * @param {number} k - The percentage of interpolation, between 0 and 1.
-   *
-   * @return {number} The interpolated value
+   * @param {Array}  v The input array of values to interpolate between.
+   * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @return {number}  The interpolated value
    */
   static catmullRom(v, k) {
     let m = v.length - 1;
@@ -9338,8 +10887,7 @@ class Interpolation {
 }
 
 /**
- * __factorial
- *
+ * @private
  * @param {number} n
  *
  * @return {number}
@@ -9364,75 +10912,132 @@ Interpolation.__factorial = (function() {
 })();
 
 /**
- * Tween
+ * A tweening component.
+ *
+ * @cat animation
  * @unrestricted
  * @extends Component
  */
 export
 class Tween extends Component {
   /**
-   * constructor - Description
-   * @param {Object}   values            Description
-   * @param {number} [duration=0.25]   Description
-   * @param {Object|null}   [properties=null] Description
+   * Creates new instance of Tween Component.
+   * @param {Object}        values            The values to tween.
+   * @param {number}        [duration=0.25]   Duraction in seconds.
+   * @param {Object|null}   [properties=null] Tween properties Object.
    */
   constructor(values, duration = 0.250, properties = null) {
     super();
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValues = values;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDuration = duration;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mProperties = properties;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPlaying = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStartTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mPausedTime = 0;
 
-    /** @dict */
+    /**
+     * @private
+     * @dict
+     */
     this.mValuesStart = {};
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {function ((Array|null), number):number} */
+    /**
+     * @private
+     * @type {function (Array, number):number}
+     */
     this.mInterpolation = Interpolation.linear;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mDelay = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRepeatTimes = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mInitiated = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mReverse = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mRemoveOnComplete = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPlayOnAdded = true;
 
-   /** @type {function(number):number} */
+   /**
+    * @private
+    * @type {function(number):number}
+    */
     this.mEase = Ease.smootherStep;
 
+    // TODO: fix ESDOC issue
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
         this[f] = /** @dict */ (this.mProperties[f]);
@@ -9441,121 +11046,113 @@ class Tween extends Component {
   }
 
   /**
-   * ease - Description
+   * Returns active ease function.
    *
-   * @return {function(number):number} Description
+   * @return {function(number):number}
    */
   get ease() {
     return this.mEase;
   }
 
   /**
-   * ease - Description
+   * Sets easing function to use.
    *
-   * @param {function(number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(number):number} value The easing function.
+   * @return {void}
    */
   set ease(value) {
     this.mEase = value;
   }
 
   /**
-   * interpolation - Description
+   * Returns the interpolation algorithm.
    *
-   * @return {function(Array, number):number} Description
+   * @return {function(Array, number):number}
    */
   get interpolation() {
     return this.mInterpolation;
   }
 
   /**
-   * interpolation - Description
+   * Sets the interpolation algorithm. Possible values Interpolation.linear, Interpolation.bezier, Interpolation.catmullRom or your custom function.
    *
-   * @param {function(Array, number):number} value Description
-   *
-   * @return {void} Description
+   * @param {function(Array, number):number} value The interpolation function.
+   * @return {void}
    */
   set interpolation(value) {
     this.mInterpolation = value;
   }
 
   /**
-   * elapsed - Description
+   * Time elapsed since tween start in seconds.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get elapsed() {
     return this.mElapsed;
   }
 
   /**
-   * delay - Description
+   * Returns amount of seconds to wait before tweening.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get delay() {
     return this.mDelay;
   }
 
   /**
-   * delay - Description
+   * Set amount of seconds to wait before tweening.
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @param {number} value Seconds to wait.
+   * @return {void}
    */
   set delay(value) {
     this.mDelay = value;
   }
 
   /**
-   * removeOnComplete - Description
+   * Returns if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get removeOnComplete() {
     return this.mRemoveOnComplete;
   }
 
   /**
-   * removeOnComplete - Description
+   * Sets if Tween Component should be automatically detached from owner GameObject after completation.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set removeOnComplete(value) {
     this.mRemoveOnComplete = value;
   }
 
   /**
-   * playOnAdded - Description
-   *
-   * @return {boolean} Description
+   * Returns whether the tween should start playing automatically when added to the root.
+   * @return {boolean}
    */
   get playOnAdded() {
     return this.mPlayOnAdded;
   }
 
   /**
-   * playOnAdded - Description
+   * Sets whether the tween should start playing automatically when added to the root.
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @param {boolean} value
+   * @return {void}
    */
   set playOnAdded(value) {
     this.mPlayOnAdded = value;
   }
 
-
   /**
-   * __start - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __start(t) {
     this.mIsPlaying = true;
@@ -9563,9 +11160,9 @@ class Tween extends Component {
   }
 
   /**
-   * play - Description
+   * Starts tweening.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   play() {
     if (!this.mIsPaused) {
@@ -9578,9 +11175,9 @@ class Tween extends Component {
   }
 
   /**
-   * stop - Description
+   * Stops current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   stop() {
     if (!this.mIsPlaying)
@@ -9592,11 +11189,12 @@ class Tween extends Component {
   }
 
   /**
-   * to - Description
+   * Sets the values for tweening.
    *
-   * @param {Object} values - Description
+   * @param {Object} values   Values to tween.
+   * @param {number} duration Duration in seconds.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   to(values = {}, duration = 0.250) {
     this.mValues = values;
@@ -9609,9 +11207,9 @@ class Tween extends Component {
   }
 
   /**
-   * pause - Description
+   * Pauses current tween.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   pause() {
     if (!this.mIsPlaying)
@@ -9624,8 +11222,7 @@ class Tween extends Component {
   }
 
   /**
-   * __resume - Description
-   *
+   * @private
    * @return {void} Description
    */
   __resume() {
@@ -9638,28 +11235,27 @@ class Tween extends Component {
 
 
   /**
+   * @protected
    * @return {void}
    */
-  remove() {
+  removeFromParent() {
     if (this.mIsPlaying)
       this.stop();
 
-    this.gameObject.removeComponent(this);
+    super.removeFromParent();
   }
 
-  /**
-   * dispose - Description
-   *
-   * @return {void} Description
-   */
-  dispose() {
-    this.remove();
-  }
+  // /**
+  //  * @return {void}
+  //  */
+  // dispose() {
+  //   this.remove();
+  // }
 
   /**
-   * repeat - Description
+   * Sets the number of times the tween wiil be repeated after first execution.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   repeat(times) {
     this.mRepeatTimes = times;
@@ -9668,31 +11264,29 @@ class Tween extends Component {
   }
 
   /**
-   * loop - Description
+   * Sets if tween should be looped over.
    *
-   * @return {Tween} Description
+   * @return {Tween} Return this.
    */
   loop(value = true) {
     this.mRepeatTimes = value ? Infinity : 0;
-
     return this;
   }
 
    /**
-   * reverse - Description
+   * Enables/disables reversing of tween values.
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   reverse(value = true) {
     this.mReverse = value;
-
     return this;
   }
 
   /**
-   * chain - Description
+   * Add specified tween object into the queue. The specified tween will be executed after completation of this tween,
    *
-   * @return {Tween} Description
+   * @return {Tween} Returns this.
    */
   chain(tween) {
     if (!tween) {
@@ -9709,11 +11303,10 @@ class Tween extends Component {
   }
 
   /**
-   * onAdded - description
-   *
    * @override
-   * @param  {GameObject} gameObject description
-   * @return {void}            description
+   * @protected
+   * @param  {GameObject} gameObject
+   * @return {void}
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
@@ -9722,13 +11315,38 @@ class Tween extends Component {
   }
 
   /**
-   * __update - Description
+   * @private
+   * @param {number} t
    *
-   * @param {number} t Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(t) {
+
+  }
+
+  /**
+   * Updates tween values.
+   *
+   * @param {Object} values The Object to get values from.
+   * @return {void}
+   */
+  set(values) {
+    this.mValues = values;
+
+    for (let f in this.mValues)
+      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
+  }
+
+  /**
+   * @protected
+   * @override
+   * @param {number} dt
+   *
+   * @returns {void}
+   */
+  onPostUpdate(dt){
+    let t = Time.time;
+
     if (t < this.mStartTime || !this.mIsPlaying || this.mIsPaused)
       return;
 
@@ -9784,7 +11402,7 @@ class Tween extends Component {
         this.post('complete', this.gameObject);
 
         if (this.mRemoveOnComplete) {
-          this.dispose();
+          this.removeFromParent();
         } else {
           for (let f in this.mValues) {
             this.mValuesStart[f] = this.mValues[f];
@@ -9795,84 +11413,105 @@ class Tween extends Component {
       }
     }
   }
-
-
-  /**
-   * set - Description
-   *
-   * @param {Object} values Description
-   *
-   * @return {void} Description
-   */
-  set(values) {
-    this.mValues = values;
-
-    for (let f in this.mValues)
-      this.mValuesStart[f] = parseFloat(this.gameObject[f]);
-  }
-
-  onPostUpdate(dt){
-    let t = Black.instance.uptime;
-    this.__update(t);
-  }
 }
 
+/**
+ * Holds details about sprite animation.
+ *
+ * @cat animation
+ */
 export
-class Animation {
+class AnimationInfo {
   /**
-   * constructor - Description
+   * Creates an instance of Animation class
    *
-   * @param {AnimationController}    controller  Description
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    frames      Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {AnimationController}    controller  Animation controller
+   * @param {string}                 name        The name of animation
+   * @param {Array<Texture>}         frames      Array of Textures for this animation
+   * @param {number}                 [fps=14]    Frame rate
+   * @param {boolean}                [loop=true] Is animations should be looped
    */
   constructor(controller, name, frames, fps = 14, loop = true) {
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
-    assert(fps > 0, '');
 
+    /**
+     * @private
+     * @type {AnimationController}
+     */
     this.mController = controller;
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName = name;
 
-    /** @type {Array<Texture>} */
+    /**
+     * @private
+     * @type {Array<Texture>}
+     */
     this.mFrames = frames;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentFrame = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNextFrameAt = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = fps;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameDuration = 1 / this.mFPS;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mLoop = loop;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mElapsed = 0;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mStopped = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCompleted = false;
   }
 
-
   /**
-   * play - Description
+   * Plays animation. If Animation is completed, current frame is reset to 0.
    *
-   * @return {Texture} Description
+   * @internal
+   * @return {Texture} Returns the current frame Texture.
    */
   play() {
     if (this.mCompleted === true) {
@@ -9890,36 +11529,32 @@ class Animation {
     return this.mFrames[this.mCurrentFrame];
   }
 
-
   /**
-   * stop - Description
+   * Stops animation and resets the value of current frame.
    *
-   * @return {void} Description
+   * @return {void}
    */
   stop() {
     this.mStopped = true;
     this.mCurrentFrame = 0;
   }
 
-
   /**
-   * pause - Description
+   * Pauses animation.
    *
-   * @return {void} Description
+   * @return {void}
    */
   pause() {
     this.mPaused = true;
     this.mElapsed = this.mNextFrameAt - Black.instance.uptime;
   }
 
-
   /**
-   * __update - Description
+   * @private
+   * @param {number} dt
+   * @param {number} t
    *
-   * @param {number} dt Description
-   * @param {number} t  Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   __update(dt, t) {
     if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
@@ -9930,8 +11565,7 @@ class Animation {
     if (this.mCurrentFrame >= this.mFrames.length) {
       if (this.mLoop === true) {
         this.mCurrentFrame = 0;
-      }
-      else {
+      } else {
         this.mCurrentFrame = this.mFrames.length - 1;
         this.mController.post('complete', this);
         this.mCompleted = true;
@@ -9945,20 +11579,18 @@ class Animation {
   }
 
   /**
-   * fps - Description
+   * Get/Set animation speed in frames per second.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get fps() {
     return this.mFPS;
   }
 
   /**
-   * fps - Description
-   *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {number} value
+   * @return {void}
    */
   set fps(value) {
     Debug.assert(value > 0, 'FPS must be greater than 0.');
@@ -9972,113 +11604,145 @@ class Animation {
   }
 
   /**
-   * loop - Description
-   *
-   * @return {boolean} Description
+   * Get/Set if animation should be looped.
+   * @return {boolean}
    */
   get loop() {
     return this.mLoop;
   }
 
   /**
-   * loop - Description
-   *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
    */
   set loop(value) {
     this.mLoop = value;
   }
 
-
   /**
-   * frames - Description
+   * Gets array of Texture.
    *
-   * @return {Array<Texture>} Description
+   * @return {Array<Texture>}
    */
   get frames() {
     return this.mFrames;
   }
 
-
   /**
-   * playing - Description
+   * Returns true if Animation is playing (neither stopped nor paused).
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
-  get isPlaying(){
+  get isPlaying() {
     return this.mPaused === false && this.mStopped === false;
   }
 
   /**
-   * playing - Description
+   * Returns true if animation is completed.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
-  get isComplete(){
+  get isComplete() {
     return this.mCompleted;
   }
 
+  /**
+   * Returns name of this animation.
+   *
+   * @return {string}
+   */
   get name() {
     return this.mName;
   }
 }
 
+/**
+ * A Component which allows to play sprite animations.
+ *
+ * @cat animation
+ * @extends Component
+ */
 export
 class AnimationController extends Component {
+  /**
+   * Creates an instance of AnimationController
+   */
   constructor() {
     super();
 
-    /** @type {Object<string, Animation>} */
+    /**
+     * @private
+     * @type {Object<string, AnimationInfo>}
+     */
     this.mAnimations = {};
 
-    /** @type {Animation|null} */
+    /**
+     * @private
+     * @type {AnimationInfo|null}
+     */
     this.mCurrentAnim = null;
   }
 
-
   /**
-   * get - Description
+   * Returns the Animation object that exists with the specified name.
    *
-   * @param {string} name Description
-   *
-   * @return {Animation} Description
+   * @param {string} name The name of the child to return.
+   * @returns {Animation} Returns the Animation object that exists with the specified name.
    */
-  get(name){
+  getByName(name){
+    Debug.assert(name !== null, 'Animation must be set first.');
     Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
     return this.mAnimations[name];
   }
 
+  /**
+   * Removes Animation object that exists with the specified name. If animation is playing right now it will be stopped.
+   *
+   * @param {string} name The name of the animation to remove.
+   * @returns {void}
+   */
+  remove(name) {
+    Debug.assert(name !== null, 'Animation name shall not be null.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name) === true, 'Unable to find animation.');
+
+    let anim = this.mAnimations[name];
+
+    if (this.mCurrentAnim !== null && this.mCurrentAnim === anim) {
+      this.stop();
+      delete this.mAnimations[name];
+    }
+
+    this.mCurrentAnim = null;
+  }
 
   /**
-   * set - Description
+   * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
    *
-   * @param {string}    name        Description
-   * @param {Array<Texture>}    textures    Description
-   * @param {number}  [fps=14]    Description
-   * @param {boolean} [loop=true] Description
+   * @param {string}          name        The name of animation to update
+   * @param {Array<Texture>}  textures    Array of Textures
+   * @param {number}          [fps=14]    Frames Per Second
+   * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
    *
-   * @return {Animation} Description
+   * @return {AnimationInfo} The newly created Animation Object.
    */
-  set(name, textures, fps = 14, loop = true) {
+  add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
+    Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animatation with same name alredy exists');
 
-    let anim = new Animation(this, name, textures, fps, loop);
+    let anim = new AnimationInfo(this, name, textures, fps, loop);
     this.mAnimations[name] = anim;
 
     return anim;
   }
 
-
   /**
-   * play - Description
+   * Plays animation that exists with the specified name.
    *
-   * @param {string} name Description
-   *
-   * @return {void} Description
+   * @param {string} name The name of animation to play.
+   * @return {void}
    */
   play(name) {
     Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
@@ -10095,11 +11759,10 @@ class AnimationController extends Component {
       sprite.texture = texture;
   }
 
-
   /**
-   * stop - Description
+   * Stops active animation. If no animations are playing at the moment nothing will happen.
    *
-   * @return {void} Description
+   * @return {void}
    */
   stop() {
     if (this.mCurrentAnim === null)
@@ -10108,11 +11771,9 @@ class AnimationController extends Component {
     this.mCurrentAnim.stop();
   }
 
-
   /**
-   * pause - Description
-   *
-   * @return {void} Description
+   * Pauses active animation.
+   * @return {void}
    */
   pause() {
     if (this.mCurrentAnim === null)
@@ -10121,14 +11782,12 @@ class AnimationController extends Component {
     this.mCurrentAnim.pause();
   }
 
-
   /**
-   * onPostUpdate - Description
-   *
+   * @ignore
    * @override
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @protected
+   * @param  {number} dt
+   * @return {void}
    */
   onPostUpdate(dt) {
     if (this.mCurrentAnim === null)
@@ -10143,34 +11802,29 @@ class AnimationController extends Component {
     sprite.texture = newTexture;
   }
 
-
   /**
-   * currentAnimation
+   * Returns current active animation.
    *
-   * @return {Animation|null}
+   * @returns {Animation|null}
    */
   get currentAnimation() {
     return this.mCurrentAnim;
   }
 }
 
-//.########::'##::::::::::'###:::::'######::'##:::'##:
-// ##.... ##: ##:::::::::'## ##:::'##... ##: ##::'##::
-// ##:::: ##: ##::::::::'##:. ##:: ##:::..:: ##:'##:::
-// ########:: ##:::::::'##:::. ##: ##::::::: #####::::
-// ##.... ##: ##::::::: #########: ##::::::: ##. ##:::
-// ##:::: ##: ##::::::: ##.... ##: ##::: ##: ##:. ##::
-// ########:: ########: ##:::: ##:. ######:: ##::. ##:
-//........:::........::..:::::..:::......:::..::::..::
-
+/**
+ * THE BLACK ENGINE ITSELF.
+ *
+ * @extends MessageDispatcher
+ */
 export
 class Black extends MessageDispatcher {
 
   /**
-   * constructor
-   * @param {string}   containerElementId
-   * @param {function(new: GameObject)}   rootClass
-   * @param {function(new: VideoNullDriver)} [videoDriverClass]
+   * Creates a new Black instance.
+   * @param {string}                          containerElementId The id of an DOM element.
+   * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
    */
   constructor(containerElementId, rootClass, videoDriverClass) {
     super();
@@ -10179,128 +11833,248 @@ class Black extends MessageDispatcher {
     window['Black'] = {};
     window['Black']['instance'] = this;
 
-    var css = "background: #000; color: #fff;";
-    console.log('%c ~Black ', css);
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /** @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mContainerElementId = containerElementId;
 
-    /** @type {HTMLElement} */
+    /**
+     * @private
+     * @type {HTMLElement}
+     */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @type {function(new: VideoNullDriver)} */
+    /**
+     * @private
+     * @type {function(new: VideoNullDriver)}
+     */
     this.mVideoDriverClass = videoDriverClass;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mSimulationTimestep = 1000 / 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mUptime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFrameAccum = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameTimeMs = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFPS = 60;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFpsUpdate = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFramesThisSecond = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mNumUpdateSteps = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mMinFrameDelay = 0;
 
-    /** @type {Array<System>} */
+    /**
+     * @private
+     * @type {Array<System>}
+     */
     this.mSystems = [];
 
-    /** @type {Rectangle} */
-    this.mBounds = new Rectangle();
-
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsRunning = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsStarted = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsPanic = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameUpdateTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mLastFrameRenderTime = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mRAFHandle = -1; // not sure
 
-    /** @type {Viewport} */
+    /**
+     * @private
+     * @type {Viewport}
+     */
     this.mViewport = null;
 
-    /** @type {VideoNullDriver} */
+    /**
+     * @private
+     * @type {VideoNullDriver}
+     */
     this.mVideo = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPaused = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mUnpausing = false;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPauseOnHide = true;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mPauseOnBlur = true;
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mTagCache = {};
 
-    /** @type {function(new: GameObject)|null} */
+    /**
+     * @private
+     * @type {function(new: GameObject)|null}
+     */
     this.mRootClass = rootClass;
 
-    /** @type {GameObject|null} */
+    /**
+     * @private
+     * @type {GameObject|null}
+     */
     this.mRoot = null;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mEnableFixedTimeStep = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mWasStopped = false;
   }
 
+  /**
+   * Pauses all engine update logic. Note: RAF is not going to be paused and will work in background.
+   *
+   * @return {void}
+   */
   pause() {
     this.mPaused = true;
   }
 
+  /**
+   * Resumes update execution.
+   *
+   * @return {void}
+   */
   resume() {
     this.mUnpausing = true;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootViewport() {
     this.mViewport = new Viewport(this.mContainerElement);
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootSystems() {
     this.addSystem(new Input());
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootStage() {
     window.onblur = event => this.__onVisbilityChange(event);
     window.onfocus = event => this.__onVisbilityChange(event);
@@ -10311,6 +12085,10 @@ class Black extends MessageDispatcher {
       this.mPaused = true;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __onVisbilityChange(event) {
     let type = event.type;
 
@@ -10325,9 +12103,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * addSystem - Adds a given system to the system list.
+   * Adds a given system to the execution list.
    *
-   * @param  {System} system
+   * @param  {System} system The System object you want to add.
    * @return {System}
    */
   addSystem(system) {
@@ -10336,10 +12114,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * removeSystem - Removes the given system to the system list.
+   * Removes the given system from execution list.
    *
-   * @param {System} system
-   *
+   * @param {System} system The System instance to remove.
    * @return {System|null}
    */
   removeSystem(system) {
@@ -10352,14 +12129,28 @@ class Black extends MessageDispatcher {
     return system;
   }
 
+  /**
+   * @private
+   * @returns {void}
+   */
   __bootVideo() {
     this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
   }
 
+  /**
+   * Boots up the engine!
+   *
+   * @return {void}
+   */
   start() {
+    if (this.mWasStopped === true) {
+      Debug.error('Black engine cannot be re-started.');
+      return;
+    }
+
     this.constructor.instance = this;
 
-    if (this.mIsStarted)
+    if (this.mIsStarted === true)
       return;
 
     this.__bootViewport();
@@ -10393,9 +12184,14 @@ class Black extends MessageDispatcher {
 
     // TODO: show only when needed, eg required by any system
     if (this.mEnableFixedTimeStep === false)
-      Debug.warn('Fixed time-step is disabled, some systems may not work.');
+      Debug.info('Fixed time-step is disabled, some systems may not work.');
   }
 
+  /**
+   * Stops any executions, destroys resources and scene.
+   *
+   * @return {void}
+   */
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
@@ -10403,11 +12199,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __update - Description
+   * @private
+   * @param {number} timestamp
    *
-   * @param {number} timestamp Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __update(timestamp) {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
@@ -10485,11 +12280,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalFixedUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalFixedUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10499,11 +12292,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10513,11 +12304,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * __internalUpdate - Description
-   *
-   * @param {number} dt Description
-   *
-   * @return {void} Description
+   * @private
+   * @param {number} dt
+   * @return {void}
    */
   __internalPostUpdate(dt) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10527,76 +12316,59 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * bounds - Description
-   *
-   * @return {Rectangle} Description
-   */
-  get bounds() {
-    return this.mBounds;
-  }
-
-  /**
-   * root - Description
-   *
-   * @return {GameObject} Description
+   * Returns the root GameObject.
+   * @return {GameObject}
    */
   get root() {
     return this.mRoot;
   }
 
   /**
-   * video - Description
-   *
-   * @return {VideoNullDriver} Description
+   * Returns current video driver instance.
+   * @return {VideoNullDriver}
    */
   get video() {
     return this.mVideo;
   }
 
   /**
-   * simulationTimestep - Description
-   *
-   * @return {number} Description
+   * If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+   * @return {number}
    */
   get simulationTimestep() {
     return this.mSimulationTimestep;
   }
 
   /**
-   * simulationTimestep - Description
+   * Sets the number of milliseconds for fixed-time-step to run over.
    *
-   * @param {number} timestep Description
-   *
-   * @return {void} Description
+   * @param {type} timestep
+   * @return {void}
    */
   set simulationTimestep(timestep) {
     this.mSimulationTimestep = timestep;
   }
 
   /**
-   * FPS - Description
-   *
-   * @return {number} Description
+   * Returns current frame rate
+   * @return {number}
    */
   get FPS() {
     return this.mFPS;
   }
 
   /**
-   * maxFPS - Description
-   *
-   * @return {number} Description
+   * Returns max number of updates engine must do in a second.
+   * @return {number}
    */
-  get maxFPS() {
+  get maxAllowedFPS() {
     return 1000 / this.mMinFrameDelay;
   }
 
   /**
-   * maxAllowedFPS - Description
-   *
-   * @param {number} fps Description
-   *
-   * @return {void} Description
+   * maxAllowedFPS - Sets the number of update engine must do per second.
+   * @param {number} fps The max allowed FPS. If less then zero engine will be stopped.
+   * @return {void}
    */
   set maxAllowedFPS(fps) {
     if (fps <= 0)
@@ -10606,40 +12378,36 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * viewport - Description
-   *
-   * @return {Viewport} Description
+   * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+   * @return {Viewport}
    */
   get viewport() {
     return this.mViewport;
   }
 
   /**
-   * containerElement - Description
-   *
-   * @return {Element} Description
+   * Retruns the DOM element the engine runs in.
+   * @return {Element}
    */
   get containerElement() {
     return this.mContainerElement;
   }
 
   /**
-   * uptime - Description
-   *
-   * @return {number} Description
+   * Returns amount of seconds since engine start.
+   * @return {number}
    */
   get uptime() {
     return this.mUptime;
   }
 
   /**
-   * onTagUpdated - Description
+   * @protected
+   * @param {GameObject} child
+   * @param {string|null} oldTag
+   * @param {string|null} newTag
    *
-   * @param {GameObject} child Description
-   * @param {string|null} oldTag   Description
-   * @param {string|null} newTag   Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   onTagUpdated(child, oldTag, newTag) {
     if (oldTag !== null) {
@@ -10659,8 +12427,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenAdded(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10688,8 +12457,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @return {void}
    */
   onChildrenRemoved(child) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10716,9 +12486,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @protected
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentAdded(child, component) {
     for (let i = 0; i < this.mSystems.length; i++)
@@ -10732,14 +12503,11 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child     description
-   * @param  {Component} component description
-   * @return {void}           description
+   * @param  {GameObject} child
+   * @param  {Component} component
+   * @return {void}
    */
   onComponentRemoved(child, component) {
-    //child.mBlack = null;
-    //console.log('onComponentRemoved', child, component);
-
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onComponentRemoved(child, component);
 
@@ -10751,8 +12519,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * Returns if engine should be automatically paused when window is hidden.
    * @return {boolean}
    */
   get pauseOnHide() {
@@ -10760,10 +12527,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnHide
-   *
+   * Sets if engine should be automatically paused when window is hidden.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnHide(value) {
@@ -10771,8 +12536,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * Returns if engine should be automatically paused when container element is blured.
    * @return {boolean}
    */
   get pauseOnBlur() {
@@ -10780,10 +12544,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * pauseOnBlur
-   *
+   * Sets if engine should be automatically paused when container element is blured.
    * @param {boolean} value
-   *
    * @return {void}
    */
   set pauseOnBlur(value) {
@@ -10792,23 +12554,35 @@ class Black extends MessageDispatcher {
 
 
   /**
-   * When disabled the physics system and other systems may not work.
-   *
+   * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    * @return {boolean}
    */
   get enableFixedTimeStep() {
     return this.mEnableFixedTimeStep;
   }
 
+
   /**
-   * enableFixedTimeStep
+   * Returns True if engine is paused.
+   *
+   * @returns {boolean}
+   */
+  get isPaused() {
+    return this.mPaused;
+  }
+
+  /**
+   * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
    *
    * @param {boolean} value
-   *
    * @return {void}
    */
   set enableFixedTimeStep(value) {
     this.mEnableFixedTimeStep = value;
+  }
+
+  get magic() {
+    return Math.random();
   }
 }
 

@@ -1,59 +1,99 @@
+/**
+ * This class is used to create display text.
+ *
+ * @cat display.text
+ * @extends DisplayObject
+ */
 /* @echo EXPORT */
 class TextField extends DisplayObject {
   /**
-   * @param  {string=} text = ''            description
-   * @param  {number=} size = 14        description
-   * @param  {string=} name = "sans-serif" description
-   * @param {TextInfo=} style
+   * @param  {string=} text Text to be displayed inside this text field
+   * @param  {number=} size text size
+   * @param  {string=} name font name
+   * @param {TextInfo=} style TextInfo object
    */
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mText = text;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mNeedInvalidate = true;
 
-    /** @private @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mFieldHeight = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
+    /**
+     * @private
+     * @type {TextInfo}
+     */
     this.mStyle = style || new TextInfo();
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mStyle.name = name || style.name;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStyle.size = size || style.size;
 
-    /** @public @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mAutoSize = true;
 
     this.__validate(this.mCacheBounds);
   }
 
   /**
-   * __render - Description
-   * @private @override
-   * @param {VideoNullDriver} video           Description
-   * @param {number} time            Description
-   * @param {number} parentAlpha     Description
-   * @param {string} parentBlendMode Description
+   * @ignore
+   * @override
+   * @protected
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   * @param {string} parentBlendMode
    *
-   * @return {void} Description
+   * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mAlpha <= 0 || this.mVisible === false)
@@ -74,26 +114,24 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Description
+   * @protected
+   * @override
+   * @ignore
+   * @param {Rectangle=} outRect
    *
-   * @protected @override
-   * @param {Rectangle=} outRect Description
-   *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
     return this.__validate(outRect);
   }
 
-
   /**
-   * __validate - Description
-   *
    * @private
-   * @param {Rectangle} outRect Description
+   * @ignore
+   * @param {Rectangle} outRect
    *
-   * @return {Rectangle} bounds in local space withoout taking care about transformation matrix
+   * @return {Rectangle}
    */
   __validate(outRect) {
     let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
@@ -116,22 +154,19 @@ class TextField extends DisplayObject {
 
 
   /**
-   * size - Description
+   * Get/Set text size.
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get size() {
     return this.mStyle.size;
   }
 
   /**
-   * size - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set size(value) {
     this.mStyle.size = value;
@@ -139,67 +174,59 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * font - Description
+   * Get/Set text font.
    *
-   * @public
-   * @return {string} Description
+   * @return {string}
    */
   get font() {
-      return this.mStyle.name;
-    }
-    /**
-     * font - Description
-     *
-     * @param {string} value Description
-     * @public
-     *
-     * @return {void} Description
-     */
+    return this.mStyle.name;
+  }
 
+  /**
+   * @param {string} value
+   * @ignore
+   *
+   * @return {void}
+   */
   set font(value) {
     this.mStyle.name = value;
     this.mNeedInvalidate = true;
   }
 
   /**
-   * color - Description
+   * Specifies text color as hexadecimal number eg 0xff0000 (total red)
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get color() {
     return this.mStyle.color;
   }
 
   /**
-   * color - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set color(value) {
     this.mStyle.color = value;
   }
 
   /**
-   * style - Description
+   * Get/Set text style.
    *
-   * @public
-   * @return {TextInfo.FontStyle} Description
+   * @return {TextInfo.FontStyle}
    */
   get style() {
     return this.mStyle.style;
   }
 
   /**
-   * style - Description
    *
-   * @param {TextInfo.FontStyle} value Description
-   * @public
+   * @param {TextInfo.FontStyle} value
+   * @ignore
    *
-   * @return {void} Description
+   * @return {void}
    */
   set style(value) {
     this.mStyle.style = value;
@@ -207,22 +234,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * weight - Description
+   * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @public
-   * @return {TextInfo.FontWeight} Description
+   * @return {TextInfo.FontWeight}
    */
   get weight() {
     return this.mStyle.weight;
   }
 
   /**
-   * weight - Description
+   * @param {TextInfo.FontWeight} value
+   * @ignore
    *
-   * @param {TextInfo.FontWeight} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set weight(value) {
     this.mStyle.weight = value;
@@ -230,67 +254,55 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * align - Description
+   * Specifies the horizontal alignment left | center | right
    *
-   * @public
-   * @return {TextInfo.FontAlign} Description
+   * @return {TextInfo.FontAlign}
    */
   get align() {
     return this.mStyle.align;
   }
 
   /**
-   * align - Description
+   * @param {TextInfo.FontAlign} value
+   * @ignore
    *
-   * @param {TextInfo.FontAlign} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set align(value) {
     this.mStyle.align = value;
   }
 
   /**
-   * strokeColor - Description
-   *
-   * @public
-   * @return {number} Description
+   * Specifies stroke color as hexadecimal number eg 0xff0000 (total red)
+   * @return {number}
    */
   get strokeColor() {
     return this.mStyle.strokeColor;
   }
 
   /**
-   * strokeColor - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeColor(value) {
     this.mStyle.strokeColor = value;
   }
 
   /**
-   * strokeThickness - Description
-   *
-   * @public
-   * @return {number} Description
+   * Specifies the thickness of the stroke. 0 means that no stroke
+   * @return {number}
    */
   get strokeThickness() {
     return this.mStyle.strokeThickness;
   }
 
-  //noinspection JSAnnotator
   /**
-   * strokeThickness - Description
-   * @public
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set strokeThickness(value) {
     if (value === this.mStyle.strokeThickness)
@@ -301,22 +313,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * fieldWidth - Description
+   * Specifies the width of the text field. If autoSize set as false
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get fieldWidth() {
     return this.mFieldWidth;
   }
 
   /**
-   * fieldWidth - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldWidth(value) {
     if (this.mAutoSize || value === this.mFieldWidth)
@@ -326,11 +335,9 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * fieldHeight - Description
+  /** Specifies the height of the text field, if autoSize set as false
    *
-   * @public
-   * @return {number} Description
+   * @return {number}
    */
   get fieldHeight() {
     return this.mFieldHeight;
@@ -338,12 +345,10 @@ class TextField extends DisplayObject {
 
 
   /**
-   * fieldHeight - Description
+   * @param {number} value
+   * @ignore
    *
-   * @param {number} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set fieldHeight(value) {
     if (this.mAutoSize || value === this.mFieldHeight)
@@ -353,22 +358,19 @@ class TextField extends DisplayObject {
     this.mNeedInvalidate = true;
   }
 
-  /**
-   * @public text - Description
-   *
-   * @return {string} Description
+  /**Text to be displayed inside this text field.
+
+   * @return {string}
    */
   get text() {
     return this.mText;
   }
 
   /**
-   * text - Description
+   * @param {string} value
+   * @ignore
    *
-   * @param {string} value Description
-   * @public
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set text(value) {
     if (this.mText === value)
@@ -379,20 +381,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * autoSize - Description
+   * Determines whether the size of the field will adjust to the size of the text. Note: if this set as true, you need to specify fieldHeight and fieldWidth manually
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get autoSize() {
     return this.mAutoSize;
   }
 
   /**
-   * autoSize - Description
+   * @param {boolean} value
+   * @ignore
    *
-   * @param {boolean} value Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   set autoSize(value) {
     if (this.mAutoSize === value)

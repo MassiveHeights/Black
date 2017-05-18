@@ -1,15 +1,24 @@
 /**
+ * Sets particle's scale value according to its energy value.
+ *
+ * @cat particles.actions
  * @extends Action
+ * @class
  */
 /* @echo EXPORT */
 class ScaleOverLife extends Action {
   constructor(floatScatter) {
     super();
 
-    this.scatter = floatScatter;
+    /**
+     * @private
+     * @type {FloatScatter}
+     */
+    this.mScatter = floatScatter;
   }
 
   /**
+   * @ignore
    * @override
    * @param {Emitter} emmiter
    * @param {Particle} particle
@@ -19,6 +28,15 @@ class ScaleOverLife extends Action {
    * @return {void}
    */
   update(emmiter, particle, dt, t) {
-    particle.scale = this.scatter.getValueAt(particle.energy);
+    particle.scale = this.mScatter.getValueAt(particle.energy);
+  }
+
+  /**
+   * Returns FloatScatter object that defines scale value over particle life.
+   * @member {FloatScatter}
+   * @return {FloatScatter}
+   */
+  get scatter() {
+    return this.mScatter;
   }
 }

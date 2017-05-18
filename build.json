@@ -29,6 +29,7 @@
     "src/loaders/Asset.js",
     "src/loaders/TextureAsset.js",
     "src/loaders/JSONAsset.js",
+    "src/loaders/FontAsset.js",
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/AssetManager.js",
 
@@ -50,10 +51,10 @@
     "src/display/text/TextField.js",
     "src/system/Device.js",
 
-    "src/particles/scatter/Scatter.js",
-    "src/particles/scatter/FloatScatter.js",
-    "src/particles/scatter/VectorScatter.js",
-    "src/particles/scatter/CurveScatter.js",
+    "src/scatters/Scatter.js",
+    "src/scatters/FloatScatter.js",
+    "src/scatters/VectorScatter.js",
+    "src/scatters/CurveScatter.js",
     "src/particles/actions/Action.js",
     "src/particles/actions/Acceleration.js",
     "src/particles/actions/AlphaOverLife.js",
@@ -84,7 +85,7 @@
     "src/animation/Interpolation.js",
     "src/animation/Tween.js",
 
-    "src/animation/Animation.js",
+    "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
 
     "src/Black.js"

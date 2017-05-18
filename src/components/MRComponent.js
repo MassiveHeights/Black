@@ -1,28 +1,49 @@
+/**
+ * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ *
+ * @cat components
+ * @extends Component
+ */
 /* @echo EXPORT */
 class MRComponent extends Component {
-
   /**
-   * constructor - Description
+   * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+   * Simplified version of scale manager.
    *
-   * @param {number} [width=960]  Description
-   * @param {number} [height=640] Description
+   * @param {number} [width=960]  The width.
+   * @param {number} [height=640] The height.
    */
   constructor(width = 960, height = 640) {
     super();
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mWidth = width;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mHeight = height;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mInvScale = 0;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mAspect = 0;
 
     Black.instance.viewport.on('resize', this.__onResize, this);
@@ -33,11 +54,11 @@ class MRComponent extends Component {
   }
 
   /**
-   * setSize - description
+   * Sets size of the latout.
    *
-   * @param  {number} width = 960  description
-   * @param  {number} height = 640 description
-   * @return {void}              description
+   * @param  {number} width = 960  The width.
+   * @param  {number} height = 640 The height.
+   * @return {void}
    */
   setSize(width = 960, height = 640){
     this.mWidth = width;
@@ -47,9 +68,9 @@ class MRComponent extends Component {
   }
 
   /**
-   * updateLayout - description
+   * Updates layout to match specified settings.
    *
-   * @return {void}  description
+   * @return {void}
    */
   updateLayout() {
     if (!this.gameObject)
@@ -72,13 +93,7 @@ class MRComponent extends Component {
     this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
   }
 
-  onAdded(){
+  onAdded() {
     this.updateLayout();
-  }
-
-  onRemoved(){
-  }
-
-  onUpdate(){
   }
 }

@@ -1,16 +1,23 @@
+/**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 /* @echo EXPORT */
 class CanvasDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    console.log(`Canvas Driver`);
-    
-    /** @type {CanvasRenderingContext2D|null} */
+    /**
+     * @private
+     * @type {CanvasRenderingContext2D|null}
+     */
     this.mCtx = null;
 
     this.mGlobalAlpha = 1;
@@ -21,8 +28,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * __createCanvas
-   *
+   * @private
    * @return {void}
    */
   __createCanvas() {
@@ -35,6 +41,14 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.canvas.height = this.mClientHeight;
   }
 
+
+  /**
+   * @private
+   * @param {Message} msg
+   * @param {Rectangle} rect
+   *
+   * @returns {void}
+   */
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
@@ -43,8 +57,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * setTransform
-   *
+   * @ignore
    * @param {Matrix} m
    *
    * @return {void}
@@ -56,10 +69,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   }
 
-
   /**
-   * globalAlpha
-   *
    * @param {number} value
    *
    * @return {void}
@@ -69,9 +79,9 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.globalAlpha = value;
   }
 
-
   /**
-   * globalBlendMode
+   * @inheritdoc
+   * @override
    *
    * @param {string} blendMode
    *
@@ -87,6 +97,9 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * drawImage
+   *
+   * @inheritdoc
+   * @override
    *
    * @param {Texture} texture
    *
@@ -104,7 +117,9 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * drawText
    *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
@@ -141,6 +156,8 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * clear
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -149,7 +166,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -161,7 +179,8 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame
+   * @inheritdoc
+   * @override
    *
    * @return {void}
    */
@@ -172,11 +191,10 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));

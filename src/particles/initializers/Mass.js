@@ -1,21 +1,29 @@
+/**
+ * Sets starting particle's mass.
+ *
+ * @cat particles.initializers
+ * @extends Initializer
+ * @class
+ */
 /* @echo EXPORT */
 class Mass extends Initializer {
-
   /**
-   * constructor - Description
+   * Creates new Mass instance.
    *
-   * @param {number} mass Description
-   *
-   * @return {void} Description
+   * @param {number} mass The mass.
    */
   constructor(mass) {
     super();
 
-    /** @type {number} */
+    /**
+     * The mass value.
+     * @type {number}
+     */
     this.mass = mass;
   }
 
   /**
+   * @inheritdoc
    * @override
    * @param {Particle} particle
    *

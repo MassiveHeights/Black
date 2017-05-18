@@ -1,9 +1,15 @@
+/**
+ * An video driver that draw everything into DOM elements itself.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 /* @echo EXPORT */
 class DOMDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement description
-   * @param  {number} width            description
-   * @param  {number} height           description
+   * @param  {HTMLElement} containerElement The DOM element to draw into.
+   * @param  {number} width                 The width of the viewport.
+   * @param  {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
@@ -26,8 +32,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * save - Description
-   *
+   * @inheritdoc
    * @override
    * @param {GameObject|null} gameObject Used for internal binding.
    *
@@ -38,7 +43,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __initCSS - description
+   * @private
    *
    * @return {void}  description
    */
@@ -69,7 +74,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * beginFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -78,7 +84,8 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * endFrame - description
+   * @inheritdoc
+   * @override
    *
    * @return {void}  description
    */
@@ -98,21 +105,21 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * getTextureFromCanvas - Description
+   * @ignore
+   * @param {HTMLElement} canvas
    *
-   * @param {HTMLElement} canvas Description
-   *
-   * @return {Texture|null} Description
+   * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
     return Texture.fromCanvasAsImage(canvas);
   }
 
   /**
-   * drawImage - description
+   * @override
+   * @inheritdoc
    *
-   * @param  {Texture} texture description
-   * @return {void}         description
+   * @param  {Texture} texture
+   * @return {void}
    */
   drawImage(texture) {
     /** @type {Matrix|null} */
@@ -133,16 +140,16 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * drawText - description
-   *
+   * @inheritdoc
    * @override
+   *
    * @param {string} text
    * @param {TextInfo} style
    * @param {Rectangle} bounds
    * @param {number} textWidth
    * @param {number} textHeight
    *
-   * @return {void}                      description
+   * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {
     let el = this.__popElement('text');
@@ -153,11 +160,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __popElement - Description
+   * @private
+   * @param {string} className
    *
-   * @param {string} className Description
-   *
-   * @return {Element} Description
+   * @return {Element}
    */
   __popElement(className) {
     this.mCounter++;
@@ -174,11 +180,10 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateElementCommon - Description
+   * @private
+   * @param {Element} el
    *
-   * @param {Element} el Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateElementCommon(el) {
     let v = this.mTransform.value;
@@ -213,8 +218,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateImageElement - description
-   *
+   * @private
    * @param  {Element} el      description
    * @param  {Texture} texture description
    * @return {void}         description
@@ -247,14 +251,13 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * __updateTextElement - Description
+   * @private
+   * @param {HTMLElement} el
+   * @param {string} text
+   * @param {TextInfo} style
+   * @param {Rectangle} bounds
    *
-   * @param {HTMLElement} el     Description
-   * @param {string} text   Description
-   * @param {TextInfo} style  Description
-   * @param {Rectangle} bounds Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   __updateTextElement(el, text, style, bounds) {
     el.innerHTML = text;

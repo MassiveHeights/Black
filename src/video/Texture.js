@@ -6,24 +6,43 @@
 // source size - the original size of a texture to
 //
 
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Scatter
+ */
 /* @echo EXPORT */
 class Texture {
   /**
+   * Creates new Texture instance.
    * @param  {Image} nativeTexture description
    * @param  {Rectangle=} region = undefined description
    * @param  {Rectangle=} untrimmedRect = undefined description
    */
   constructor(nativeTexture, region, untrimmedRect) {
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mTexture = nativeTexture;
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mRegion;
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsSubtexture = false;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mId = ++Texture.__ID;
 
     if (region === undefined) {
@@ -33,16 +52,25 @@ class Texture {
       this.mIsSubtexture = true;
     }
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mTrimmed = untrimmedRect !== undefined;
 
     if (this.mTrimmed === false)
       untrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
 
-    /** @type {Rectangle} */
+    /**
+     * @private
+     * @type {Rectangle}
+     */
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mIsLoaded = true;
 
     this.mRelativeRegion = new Rectangle(
@@ -58,25 +86,25 @@ class Texture {
   }
 
   /**
-   * id - Description
+   * Returns the unique id of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get id() {
     return this.mId;
   }
 
   /**
-   * isTrimmed - Description
+   * Returns True if this texture has been trimmed.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get isTrimmed() {
     return this.mTrimmed;
   }
 
   /**
-   * isSubTexture - Description
+   * Returns True if this texture is a part of other Texture object
    *
    * @return {boolean} Description
    */
@@ -95,18 +123,19 @@ class Texture {
   //
 
   /**
-   * untrimmedRect - Description
+   * Returns a Rect object representing the untrimmed size and position of this
+   * texture withing other texture if so.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   get untrimmedRect() {
     return this.mUntrimmedRect;
   }
 
   /**
-   * width - Description
+   * The width of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get width() {
     if (this.mRegion)
@@ -116,9 +145,9 @@ class Texture {
   }
 
   /**
-   * height - Description
+   * The width of this texture.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get height() {
     if (this.mRegion)
@@ -128,65 +157,47 @@ class Texture {
   }
 
   /**
-   * region - Description
+   * If isSubTexture, returns the physical region inside parent texture.
    *
-   * @return {Rectangle} Description
+   * @return {Rectangle}
    */
   get region() {
     return this.mRegion;
   }
 
   /**
-   * native - Description
+   * Returns native object. Usually DOM Image element.
    *
-   * @return {Image} Description
+   * @return {Image}
    */
   get native() {
     return this.mTexture;
   }
 
   /**
-   * isLoaded - Description
+   * True if fully loaded and ready.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get isLoaded() {
     return this.mIsLoaded;
   }
 
   /**
-   * type - Description
+   * Dispose and releases all resources related to this texture.
    *
-   * @return {string} Description
-   */
-  get type() {
-    return 'Texture';
-  }
-
-  /**
-   * baseType - Description
-   *
-   * @return {string} Description
-   */
-  get baseType() {
-    return 'Texture';
-  }
-
-  /**
-   * dispose - Description
-   *
-   * @return {void} Description
+   * @return {void}
    */
   dispose() {
     this.mTexture = null;
   }
 
   /**
-   * fromBase64String - Description
+   * @ignore
    *
-   * @param {string} string Description
+   * @param {string} string
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromBase64String(string) {
     let imgElement = new Image();
@@ -196,13 +207,13 @@ class Texture {
 
 
   /**
-   * fromCanvasAsImage - Description
+   * @ignore
    *
-   * @param {HTMLElement}   canvas           Description
-   * @param {string} [type=image/png] Description
-   * @param {number} [quality=1]      Description
+   * @param {HTMLElement}   canvas
+   * @param {string} [type=image/png]
+   * @param {number} [quality=1]
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
     let imgElement = new Image();
@@ -211,25 +222,28 @@ class Texture {
     return new Texture(imgElement);
   }
 
-
   /**
-   * fromCanvas - Description
+   * @ignore
    *
-   * @param {HTMLElement} canvas Description
+   * @param {HTMLElement} canvas
    *
-   * @return {Texture} Description
+   * @return {Texture}
    */
   static fromCanvas(canvas) {
     return Black.instance.video.getTextureFromCanvas(canvas);
   }
 }
 
-/** @type {number}
+/**
+ * @private
+ * @type {number}
  * @nocollapse
  */
 Texture.__ID = 0;
 
-/** @type {Image|null}
+/**
+ * @private
+ * @type {Image|null}
  * @nocollapse
  */
 Texture.MISSING_IMAGE_CACHE = null;

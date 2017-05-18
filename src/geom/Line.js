@@ -1,6 +1,12 @@
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Line {
   /**
+   * Creates new Line instance.
    * @param  {Vector} start Start point.
    * @param  {Vector} end End point.
    */
@@ -284,7 +290,7 @@ class Line {
     let y1 = this.start.y;
     let x2 = this.end.x;
     let y2 = this.end.y;
-    
+
     return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y > Math.min(y1, y2) && y < Math.max(y1, y2);
   }
 

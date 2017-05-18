@@ -1,12 +1,16 @@
+/**
+ * A number scatter for defining a range in 2D space.
+ *
+ * @cat video
+ * @extends Texture
+ */
 /* @echo EXPORT */
 class AtlasTexture extends Texture {
   /**
-   * constructor - Creates an Texture Atlas
+   * Creates new AtlasTexture instance.
    *
-   * @param {Texture} texture A base texture object.
-   * @param {{meta: *, frames: *}} jsonObject
-   *
-   * @return {void}
+   * @param {Texture}              texture A base texture object.
+   * @param {{meta: *, frames: *}} Black json object.
    */
   constructor(texture, jsonObject) {
     super(texture.native);
@@ -21,7 +25,7 @@ class AtlasTexture extends Texture {
   }
 
   /**
-   * __parseJson
+   * @private
    *
    * @param  {{meta: *, frames: *}} o
    * @return {void}
@@ -50,11 +54,11 @@ class AtlasTexture extends Texture {
   // removeRegion() {}
 
   /**
-   * getTexture - Returns the textures by a given name.
+   * Returns the texture by a given name.
    *
-   * @param {string} name
+   * @param {string} name The name of the texture to find.
    *
-   * @return {Texture} The Texture or null;
+   * @return {Texture} The Texture or null if not found.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -66,10 +70,11 @@ class AtlasTexture extends Texture {
   }
 
   /**
-   * getTextures - Returns list of Textures.
+   * Returns array of Texture by given name or wildcard mask.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
-   * @param {Array<Texture>|null} outTextures
+   * @param {Array<Texture>|null}         outTextures If passed will be
+   * overwritten by result object.
    *
    * @return {Array<Texture>} The list of found textures.
    */
@@ -99,6 +104,7 @@ class AtlasTexture extends Texture {
   }
 
   /**
+   * @private
    * @param {*} a
    * @param {*} b
    *

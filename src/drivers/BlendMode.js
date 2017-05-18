@@ -1,5 +1,6 @@
 /**
  * A blend mode enum.
+ * @cat drivers
  * @enum {string}
  */
 /* @echo EXPORT */

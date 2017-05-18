@@ -9,7 +9,6 @@ const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
 const rename = require('gulp-rename');
-const jsdoc = require('gulp-jsdoc3');
 const preprocess = require('gulp-preprocess');
 
 const info = JSON.parse(fs.readFileSync('./build.json'));
@@ -44,18 +43,12 @@ gulp.task('build-es6-module', function() {
 });
 
 gulp.task('copy-examples', ['build-es6'], function() {
-  return gulp.src('./dist/black-es6.js')
+  return gulp.src('./dist/black-es6.*')
     .pipe(gulp.dest('../Black-Examples/node_modules/black/dist/'));
 });
 
 gulp.task('examples', ['build-es6'], function() {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
-});
-
-gulp.task('docs', function(cb) {
-  var config = require('./.jsdoc.json');
-  gulp.src(['README.md', './src/**/*.js'], {read: false})
-  .pipe(jsdoc(config, cb));
 });
 
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);

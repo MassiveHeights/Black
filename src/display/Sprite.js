@@ -1,3 +1,9 @@
+/**
+ * Sprite is used to render Texture onto screen.
+ *
+ * @cat display
+ * @extends DisplayObject
+ */
 /* @echo EXPORT */
 class Sprite extends DisplayObject {
 

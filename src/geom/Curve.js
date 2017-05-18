@@ -1,25 +1,47 @@
+/**
+ * Mathematical representation of a bezier curve.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Curve {
+  /**
+   * Creates new Curve instance.
+   */
   constructor() {
-
-    /** @private @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /**
+     * @private
+     * @type {Array<Vector>}
+     */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /**
+     * @private
+     * @type {Array<number>}
+     */
     this.mEachT = [];
   }
 
   /**
-   * set - Sets new points coordinates.
+   * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
    *
@@ -37,7 +59,8 @@ class Curve {
 
 
   /**
-   * baked - Returns true or false depending on baked is enabled or not.
+   * Enables or disables interpolation from cache (lookup).
+   * Returns true or false depending on baked is enabled or not.
    *
    * @return {boolean}
    */
@@ -46,8 +69,7 @@ class Curve {
   }
 
   /**
-   * baked - Enables or disables interpolation from cache (lookup).
-   *
+   * @ignore
    * @param  {boolean} label
    */
   set baked(label) {
@@ -59,8 +81,8 @@ class Curve {
   }
 
   /**
-   * __initPoints - Wides points array. Sets first point for next bezier same as last of previous.
-   *
+   * Wides points array. Sets first point for next bezier same as last of previous.
+   * @private
    * @param  {Array<number>} points Array of points coordinates.
    *
    * @return {Array<number>} Points coordinates array.
@@ -76,7 +98,9 @@ class Curve {
   }
 
   /**
-   * __refreshCache - Refresh cache (lookup) for fast interpolations.
+   * Refresh cache (lookup) for fast interpolations.
+   *
+   * @private
    *
    * @return {Curve} This curve.
    */
@@ -99,8 +123,8 @@ class Curve {
 
 
   /**
-   * __refreshEachT - Refresh local interpolation kof for each bezier in curve.
-   *
+   * Refresh local interpolation kof for each bezier in curve.
+   * @private
    * @return {Curve} This curve.
    */
   __refreshEachT() {
@@ -123,7 +147,7 @@ class Curve {
   }
 
   /**
-   * lerp - Interpolates single bezier on t position.
+   * Interpolates single bezier on t position.
    *
    * @param  {number} t Interpolation position (0...1).
    * @param  {number} startX
@@ -166,7 +190,7 @@ class Curve {
   }
 
   /**
-   * interpolate - Interpolates across whole curve.
+   * Interpolates across whole curve.
    *
    * @param  {number} t Interpolation position (0...1).
    * @param  {Vector=} outVector
@@ -200,7 +224,7 @@ class Curve {
   }
 
   /**
-   * length - Returns single bezier length.
+   * Returns single bezier length.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY
    *
@@ -216,7 +240,7 @@ class Curve {
   }
 
   /**
-   * getFullLength - Returns this curve length.
+   * Returns this curve length.
    *
    * @return {number} Length.
    */
@@ -232,7 +256,9 @@ class Curve {
   }
 }
 
-/** @type {Curve}
+/**
+ * @private
+ * @type {Curve}
  * @nocollapse
  */
 Curve.__cache = new Curve();

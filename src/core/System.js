@@ -1,3 +1,9 @@
+/**
+ * Base class for custom systems. System is used to listen scene changes.
+ *
+ * @cat core
+ * @extends MessageDispatcher
+ */
 /* @echo EXPORT */
 class System extends MessageDispatcher {
   constructor(){
@@ -20,6 +26,7 @@ class System extends MessageDispatcher {
    * onUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */
@@ -30,6 +37,7 @@ class System extends MessageDispatcher {
    * onPostUpdate - Description
    *
    * @param {number} dt Description
+   * @param {number} t Description
    *
    * @return {void} Description
    */

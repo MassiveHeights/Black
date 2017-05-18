@@ -1,5 +1,7 @@
 /**
- * MessageDispatcher - Description
+ * The MessageDispatcher class is the base class for all classes that posts messages.
+ *
+ * @cat core
  * @unrestricted
  */
 /* @echo EXPORT */
@@ -7,12 +9,15 @@ class MessageDispatcher {
   constructor() {
     // object of arrays
 
-    /** @type {Object<string, Array>} */
+    /**
+     * @private
+     * @type {Object<string, Array>}
+     */
     this.mListeners = null;
   }
 
   /**
-   * on - Listens to message by given name
+   * Listens to message by given name
    *
    * @param {string} name           Name of a message to listen
    * @param {Function} callback       The callback function
@@ -31,8 +36,6 @@ class MessageDispatcher {
 
       let pureName = name.substring(0, filterIx);
       let pathMask = name.substring(filterIx + 1);
-
-      //console.log(pureName, pathMask);
 
       if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         MessageDispatcher.mGlobalHandlers[pureName] = [];
@@ -70,7 +73,24 @@ class MessageDispatcher {
   }
 
   /**
-   * removeOn - Description
+   * Returns true if this object is subscribed for any messages with a given name.
+   *
+   * @param {string} name Message name to check.
+   *
+   * @returns {boolean} True if found.
+   */
+  hasOn(name) {
+    if (this.mListeners === null)
+      return false;
+
+    if (this.mListeners.hasOwnProperty(name) === false)
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Removes listener
    *
    * @param {string} name            Description
    * @param {Function=} [callback=null] Description
@@ -103,7 +123,7 @@ class MessageDispatcher {
   }
 
   /**
-   * post - Sends message with given pattern and params
+   * Sends message with given pattern and params
    *
    * @param {string}  name   The name of a message
    * @param {...*} params A list of params to send
@@ -119,8 +139,8 @@ class MessageDispatcher {
     let message = this.__parseMessage(this, name);
 
     // TODO: o'really 62?
-    let isGameObject = this instanceof GameObject;
-    if (message.mDirection !== 'none' && isGameObject === false)
+    let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
+    if (message.mDirection !== 'none' && isGameObjectOrComponent === false)
       throw new Error('Dispatching not direct messages are not allowed on non Game Objects.');
 
     if (message.mDirection === 'none') {
@@ -145,6 +165,7 @@ class MessageDispatcher {
   /**
    * __sendBubbles - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {string}  message Description
    * @param {boolean}  toTop   Description
@@ -181,6 +202,7 @@ class MessageDispatcher {
   /**
    * __sendGlobal - Description
    *
+   * @private
    * @param {*}  sender  Description
    * @param {Message}  message Description
    * @param {GameObject=}  origin  Description
@@ -201,6 +223,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -233,6 +256,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {*}  sender
    * @param {Message}  message
    * @param {...*} params
@@ -259,6 +283,7 @@ class MessageDispatcher {
   }
 
   /**
+   * @private
    * @param {string} path
    * @param {string} pattern
    *
@@ -281,6 +306,7 @@ class MessageDispatcher {
   /**
    * __parseMessage - Description
    *
+   * @private
    * @param {*} sender Description
    * @param {string} info   Description
    *
@@ -355,41 +381,77 @@ class MessageDispatcher {
   }
 }
 
+/**
+ * @private
+ * @dict
+ */
 MessageDispatcher.mGlobalHandlers = {};
 
+/**
+ * Message holds all information about dispatched event.
+ *
+ * @cat core
+ */
 /* @echo EXPORT */
 class Message {
   constructor() {
-    /** @private @type {*} */
+    /**
+     * @private
+     * @type {*}
+     */
     this.mSender = null;
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mName;
 
-    /** @private @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mPathMask = null;
 
-    /** @private @type {string|null} */
+    /**
+     * @private
+     * @type {string|null}
+     */
     this.mComponentMask = null;
 
-    /** @private @type {string} */
+    /**
+     * @private
+     * @type {string}
+     */
     this.mDirection = 'none';
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSibblings = false;
 
-    /** @private @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mOrigin = null;
 
-    /** @private @type {Object} */
+    /**
+     * @private
+     * @type {Object}
+     */
     this.mTarget = null;
 
-    /** @private @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mCanceled = false;
   }
 
   /**
-   * sender - Who send the message
+   * Who send the message.
    *
    * @return {*} Description
    */
@@ -398,7 +460,7 @@ class Message {
   }
 
   /**
-   * name - The name of the message
+   * The name of the message.
    *
    * @return {string}
    */
@@ -407,7 +469,7 @@ class Message {
   }
 
   /**
-   * direction - direction in what message was sent. Can be 'none', 'up' and 'down'.
+   * Direction in what message was sent. Can be 'none', 'up' and 'down'.
    *
    * @return {string}
    */
@@ -416,7 +478,7 @@ class Message {
   }
 
   /**
-   * sibblings - Indicates if sibblings should be included into dispatching process.
+   * Indicates if sibblings should be included into dispatching process.
    *
    * @return {boolean} Description
    */
@@ -425,7 +487,7 @@ class Message {
   }
 
   /**
-   * pathMask - The GameObject.name mask string if was used.
+   * The GameObject.name mask string if was used.
    *
    * @return {string|null} Description
    */
@@ -434,7 +496,7 @@ class Message {
   }
 
   /**
-   * componentMask - Component mask string if was used.
+   * Component mask string if was used.
    *
    * @return {string|null}
    */
@@ -443,7 +505,7 @@ class Message {
   }
 
   /**
-   * origin - The original sender of a message.
+   * The original sender of a message.
    *
    * @return {*|null}
    */
@@ -452,7 +514,7 @@ class Message {
   }
 
   /**
-   * target - The destination object for this message.
+   * The listener object.
    *
    * @return {*|null}
    */
@@ -461,7 +523,7 @@ class Message {
   }
 
   /**
-   * cancel - Stops propagation of the message.
+   * Stops propagation of the message.
    *
    * @return {void}
    */
@@ -470,7 +532,7 @@ class Message {
   }
 
   /**
-   * canceled - True/False if
+   * True if message was canceled by the user.
    *
    * @return {boolean}
    */

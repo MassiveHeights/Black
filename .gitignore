@@ -43,6 +43,7 @@ node_modules/*
 node_modules/**/*.*
 npm*.log.*
 .tern-project
+yarn.lock
 
 # MISC #
 ########
@@ -51,4 +52,4 @@ npm*.log.*
 
 # BLACK #
 #########
-doc
+docs/*

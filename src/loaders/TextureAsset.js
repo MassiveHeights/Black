@@ -1,51 +1,50 @@
+/**
+ * Single Texture file asset class responsible for loading images file and
+ * converting them into Textures.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 /* @echo EXPORT */
 class TextureAsset extends Asset {
   /**
-   * constructor - Description
+   * Creates TextureAsset instance.
    *
-   * @param {string} name Description
-   * @param {string} url  Description
-   *
-   * @return {void} Description
+   * @param {string} name Asset name.
+   * @param {string} url  URL to load image from.
    */
   constructor(name, url) {
     super(name, url);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mImageElement = new Image();
   }
 
   /**
-   * onLoaded - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   onLoaded() {
-    //console.log('TextureAsset: \'%s\' loaded', this.mName);
-
     this.mData = new Texture(this.mImageElement);
 
     super.onLoaded();
   }
 
   /**
-   * load - Description
+   * @override
+   * @inheritdoc
    *
-   * @return {void} Description
+   * @return {void}
    */
   load() {
     this.mImageElement.src = this.mUrl;
     this.mImageElement.onload = () => {
       this.onLoaded();
     }
-  }
-
-  /**
-   * type - Description
-   *
-   * @return {string} Description
-   */
-  get type() {
-    return "TextureAsset";
   }
 }

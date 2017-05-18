@@ -1,13 +1,18 @@
+/**
+ * Texture Atlas asset responsible for loading Image file and coresponding Json
+ * file.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
 /* @echo EXPORT */
 class AtlasTextureAsset extends Asset {
   /**
-   * constructor
+   * Creates new AtlasTextureAsset instance.
    *
-   * @param {string} name
-   * @param {string} imageUrl
-   * @param {string} dataUrl
-   *
-   * @return {void}
+   * @param {string} name     Name of the asset.
+   * @param {string} imageUrl Image URL.
+   * @param {string} dataUrl  Json URL.
    */
   constructor(name, imageUrl, dataUrl) {
     super(name, imageUrl);
@@ -20,6 +25,11 @@ class AtlasTextureAsset extends Asset {
     this.dataAsset.on('complete', this.onJsonLoaded, this);
   }
 
+
+  /**
+   * @ignore
+   * @returns {void}
+   */
   onJsonLoaded() {
     this.mImageElement.src = this.mUrl;
     this.mImageElement.onload = () => {
@@ -28,8 +38,8 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * onLoaded
-   *
+   * @override
+   * @inheritdoc
    * @return {void}
    */
   onLoaded() {
@@ -39,7 +49,7 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * load
+   * @inheritdoc
    * @override
    *
    * @return {void}

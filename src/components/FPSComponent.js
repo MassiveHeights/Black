@@ -1,9 +1,18 @@
+/**
+ * Basic FPS component. Shows frame rate.
+ *
+ * @cat components
+ * @extends Component
+ */
 /* @echo EXPORT */
 class FPSComponent extends Component  {
   constructor() {
     super();
 
-    /** @type {TextField} */
+    /**
+     * @private
+     * @type {TextField}
+     */
     this.txtFPS = null;
   }
 

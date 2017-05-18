@@ -1,23 +1,39 @@
+/**
+ * Mathematical representation of a circle.
+ *
+ * @cat geom
+ */
 /* @echo EXPORT */
 class Circle {
   /**
+   * Creates new Circle instance.
+   * 
    * @param  {number=} x = 0 Position x.
    * @param  {number=} y = 0 Position y.
    * @param  {number=} r = 1 Radius.
    */
   constructor(x = 0, y = 0, r = 1) {
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.x = x;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.y = y;
 
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.r = r;
   }
 
   /**
-   * set - Sets new circle properties
+   * Sets new circle properties
    *
    * @param {number} x Position x.
    * @param {number} y Position y.
@@ -34,7 +50,7 @@ class Circle {
   }
 
   /**
-   * clone - Clones this circle.
+   * Clones this circle.
    *
    * @return {Circle} Created circle.
    */
@@ -43,7 +59,7 @@ class Circle {
   }
 
   /**
-   * copyTo - Copy this properties to another circle.
+   * Copy this properties to another circle.
    *
    * @param {Circle} circle Object to copy to.
    *
@@ -54,7 +70,7 @@ class Circle {
   }
 
   /**
-   * copyFrom - Copy another circle properties to this.
+   * Copy another circle properties to this.
    *
    * @param {Circle} circle Object to copy from.
    *
@@ -65,7 +81,7 @@ class Circle {
   }
 
   /**
-   * equals - Shows whether circles are identical.
+   * Shows whether circles are identical.
    *
    * @param {Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
@@ -78,7 +94,7 @@ class Circle {
   }
 
   /**
-   * containsXY - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
@@ -90,7 +106,7 @@ class Circle {
   }
 
   /**
-   * contains - Shows whether point is in circle.
+   * Shows whether point is in circle.
    *
    * @param {Vector} vector Point to check.
    *
@@ -101,7 +117,7 @@ class Circle {
   }
 
   /**
-   * left - Finds left X position.
+   * Finds left X position.
    *
    * @return {number} Left X position.
    */
@@ -110,7 +126,7 @@ class Circle {
   }
 
   /**
-   * right - Finds right X position.
+   * Finds right X position.
    *
    * @return {number} Right X position.
    */
@@ -119,7 +135,7 @@ class Circle {
   }
 
   /**
-   * top - Finds top Y position.
+   * Finds top Y position.
    *
    * @return {number} Top Y position.
    */
@@ -128,7 +144,7 @@ class Circle {
   }
 
   /**
-   * bottom - Finds bottom Y position.
+   * Finds bottom Y position.
    *
    * @return {number} Bottom Y position.
    */
@@ -137,34 +153,34 @@ class Circle {
   }
 
   /**
-   * topPoint - Description
+   * Returns top point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topPoint() {
     return new Vector(this.x, this.top);
   }
 
   /**
-   * bottomPoint - Description
+   * Returns bottom point of this circle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
   }
 
   /**
-   * zero - Description
+   * Resets all values to zero.
    *
-   * @return {Circle} Description
+   * @return {Circle} Returns this.
    */
   zero() {
     return this.set(0, 0, 0);
   }
 
   /**
-   * intersects - Shows whether this circle intersects another.
+   * Shows whether this circle intersects another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -176,7 +192,7 @@ class Circle {
   }
 
   /**
-   * collide - Shows whether this circle collide with another.
+   * Shows whether this circle collide with another.
    *
    * @param {Circle} circle Circle to check.
    *
@@ -204,7 +220,7 @@ class Circle {
   }
 
   /**
-   * volume - Area of this circle.
+   * Returns area of this circle.
    *
    * @return {number} area.
    */
@@ -213,7 +229,7 @@ class Circle {
   }
 
   /**
-   * perimeter - Perimeter of this circle.
+   * Returns perimeter of this circle.
    *
    * @return {number} perimeter.
    */
@@ -222,7 +238,7 @@ class Circle {
   }
 
   /**
-   * center - Represents center as vector.
+   * Represents center as vector.
    *
    * @param {Vector=} outVector Object for result.
    *
@@ -235,11 +251,11 @@ class Circle {
 
   // @ifdef DEBUG
   /**
-   * toString - String representation of this circle.
+   * String representation of this circle.
    *
    * @param {number=} [digits=2] Number of digits after float point.
    *
-   * @return {string} Description.
+   * @return {string} Returns string representation of this circle.
    */
   toString(digits = 2) {
     return `Circle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, r: ${this.r.toFixed(digits)} }`;
