@@ -110,8 +110,12 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
-  enqueueFont(name, url) {
-    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url));
+  enqueueLocalFont(name, url) {
+    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
+  }
+
+  enqueueGoogleFont(name, url) {
+    this.mQueue.push(new FontAsset(name, url, false));
   }
 
   /**
@@ -157,9 +161,6 @@ class AssetManager extends MessageDispatcher {
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
-      if (FontAsset.TESTING_ELEMENT)
-        FontAsset.TESTING_ELEMENT.remove();
-        
       this.mQueue.splice(0, this.mQueue.length);
 
       this.mIsAllLoaded = true;
