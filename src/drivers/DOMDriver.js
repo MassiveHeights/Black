@@ -124,9 +124,11 @@ class DOMDriver extends VideoNullDriver {
   drawImage(texture) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
+    let localBounds = Rectangle.__cache;
+    this.mCurrentObject.onGetLocalBounds(localBounds);
 
     if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
-      Matrix.__cache.set(1, 0, 0, 1, texture.untrimmedRect.x, texture.untrimmedRect.y);
+      Matrix.__cache.set(1, 0, 0, 1, localBounds.x, localBounds.y);
       this.mTransform.append(Matrix.__cache);
     }
 

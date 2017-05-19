@@ -72,6 +72,17 @@ class Texture {
      * @type {boolean}
      */
     this.mIsLoaded = true;
+
+    this.mRelativeRegion = new Rectangle(
+      this.mRegion.x / nativeTexture.naturalWidth,
+      this.mRegion.y / nativeTexture.naturalHeight,
+      this.mRegion.width / nativeTexture.naturalWidth,
+      this.mRegion.height / nativeTexture.naturalHeight
+    );
+  }
+
+  get relativeRegion() {
+    return this.mRelativeRegion;
   }
 
   /**
