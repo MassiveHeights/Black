@@ -22,6 +22,7 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mGlobalAlpha = 1;
     this.mGlobalBlendMode = BlendMode.NORMAL;
+    this.mCurrentObject = null;
 
     this.__createCanvas();
   }
@@ -107,10 +108,10 @@ class CanvasDriver extends VideoNullDriver {
   drawImage(texture) {
     let w = texture.width;
     let h = texture.height;
-    let ox = texture.untrimmedRect.x;
-    let oy = texture.untrimmedRect.y;
+    let localBounds = Rectangle.__cache;
+    this.mCurrentObject.onGetLocalBounds(localBounds);
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, localBounds.x, localBounds.y, w, h);
   }
 
   /**
@@ -209,6 +210,7 @@ class CanvasDriver extends VideoNullDriver {
    */
   save(gameObject) {
     this.mCtx.save();
+    this.mCurrentObject = gameObject;
   }
 
   /**

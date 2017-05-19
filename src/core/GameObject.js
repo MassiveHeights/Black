@@ -447,8 +447,8 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        let tx = this.mX - this.mPivotX * this.mScaleX;
-        let ty = this.mY - this.mPivotY * this.mScaleY;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
@@ -457,8 +457,8 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
-        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
@@ -1339,7 +1339,7 @@ class GameObject extends MessageDispatcher {
     let list = [];
 
     /** @type {function(GameObject, function(new:Component)):void} */
-    let f = function(gameObject, type) {
+    let f = function (gameObject, type) {
       for (let i = 0; i < gameObject.mComponents.length; i++) {
         let c = gameObject.mComponents[i];
         if (c instanceof type)
