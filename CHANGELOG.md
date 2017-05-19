@@ -1,9 +1,6 @@
 Black Engine: Changelog
 =======================
 
-v0.0.12a
---------
-
 v0.0.11a
 --------
 - Reworked `Input`
