@@ -4199,8 +4199,8 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        let tx = this.mX - this.mPivotX * this.mScaleX;
-        let ty = this.mY - this.mPivotY * this.mScaleY;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
@@ -4209,8 +4209,8 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
-        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        let tx = this.mX;
+        let ty = this.mY;
         return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
@@ -5091,7 +5091,7 @@ class GameObject extends MessageDispatcher {
     let list = [];
 
     /** @type {function(GameObject, function(new:Component)):void} */
-    let f = function(gameObject, type) {
+    let f = function (gameObject, type) {
       for (let i = 0; i < gameObject.mComponents.length; i++) {
         let c = gameObject.mComponents[i];
         if (c instanceof type)
@@ -5244,6 +5244,17 @@ class Texture {
      * @type {boolean}
      */
     this.mIsLoaded = true;
+
+    this.mRelativeRegion = new Rectangle(
+      this.mRegion.x / nativeTexture.naturalWidth,
+      this.mRegion.y / nativeTexture.naturalHeight,
+      this.mRegion.width / nativeTexture.naturalWidth,
+      this.mRegion.height / nativeTexture.naturalHeight
+    );
+  }
+
+  get relativeRegion() {
+    return this.mRelativeRegion;
   }
 
   /**
@@ -6224,24 +6235,24 @@ AssetManager.default = new AssetManager();
  */
 
 var BlendMode = {
-  AUTO: 'auto',
-  NORMAL: 'source-over',
-  ADD: 'lighter',
-  MULTIPLY: 'multiply',
-  SCREEN: 'screen',
-  OVERLAY: 'overlay',
-  DARKEN: 'darken',
-  LIGHTEN: 'lighten',
+  AUTO       : 'auto',
+  NORMAL     : 'source-over',
+  ADD        : 'lighter',
+  MULTIPLY   : 'multiply',
+  SCREEN     : 'screen',
+  OVERLAY    : 'overlay',
+  DARKEN     : 'darken',
+  LIGHTEN    : 'lighten',
   COLOR_DODGE: 'color-dodge',
-  COLOR_BURN: 'color-burn',
-  HARD_LIGHT: 'hard-light',
-  SOFT_LIGHT: 'soft-light',
-  DIFFERENCE: 'difference',
-  EXCLUSION: 'exclusion',
-  HUE: 'hue',
-  SATURATE: 'saturate',
-  COLOR: 'color',
-  LUMINOSITY: 'luminosity'
+  COLOR_BURN : 'color-burn',
+  HARD_LIGHT : 'hard-light',
+  SOFT_LIGHT : 'soft-light',
+  DIFFERENCE : 'difference',
+  EXCLUSION  : 'exclusion',
+  HUE        : 'hue',
+  SATURATE   : 'saturate',
+  COLOR      : 'color',
+  LUMINOSITY : 'luminosity'
 };
 
 /**
@@ -6533,6 +6544,7 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mGlobalAlpha = 1;
     this.mGlobalBlendMode = BlendMode.NORMAL;
+    this.mCurrentObject = null;
 
     this.__createCanvas();
   }
@@ -6618,10 +6630,10 @@ class CanvasDriver extends VideoNullDriver {
   drawImage(texture) {
     let w = texture.width;
     let h = texture.height;
-    let ox = texture.untrimmedRect.x;
-    let oy = texture.untrimmedRect.y;
+    let localBounds = Rectangle.__cache;
+    this.mCurrentObject.onGetLocalBounds(localBounds);
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, localBounds.x, localBounds.y, w, h);
   }
 
   /**
@@ -6720,6 +6732,7 @@ class CanvasDriver extends VideoNullDriver {
    */
   save(gameObject) {
     this.mCtx.save();
+    this.mCurrentObject = gameObject;
   }
 
   /**
@@ -6858,9 +6871,11 @@ class DOMDriver extends VideoNullDriver {
   drawImage(texture) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
+    let localBounds = Rectangle.__cache;
+    this.mCurrentObject.onGetLocalBounds(localBounds);
 
     if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
-      Matrix.__cache.set(1, 0, 0, 1, texture.untrimmedRect.x, texture.untrimmedRect.y);
+      Matrix.__cache.set(1, 0, 0, 1, localBounds.x, localBounds.y);
       this.mTransform.append(Matrix.__cache);
     }
 
@@ -7035,6 +7050,584 @@ class DOMDriver extends VideoNullDriver {
 }
 
 /**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
+
+class WebGLDriver extends VideoNullDriver {
+  /**
+   * @param  {HTMLElement} containerElement description
+   * @param  {number} width            description
+   * @param  {number} height           description
+   */
+  constructor(containerElement, width, height) {
+    super(containerElement, width, height);
+
+    console.log(`WebGL`);
+
+    /** @type {Number} */
+    this.MAX_BATCH_SIZE = 2000;
+
+    /**
+     * @public
+     * @type {WebGLRenderingContext|null}
+     */
+    this.gl = null;
+    
+    /**
+     * Contains current rendering object.
+     *
+     * @private
+     * @type {DisplayObject|null}
+     */
+    this.mCurrentObject = null;
+
+    /**
+     * Counts batch objects amount.
+     * 
+     * @private
+     * @type {Number|null}
+     */
+    this.mObjectsAmount = 0;
+
+    this.__createCanvas();
+
+    /** 
+     * Contains WebGL context state
+     * 
+     * @type {WebGLState} 
+     * */
+    this.state = new WebGLState(this);
+
+    /**
+     * Manager for WebGL textures
+     *
+     * @type {WebGLTextures}
+     * */
+    this.textures = new WebGLTextures(this);
+
+    /**
+     * Program that renders sprites
+     *
+     * @type {WebGLProgram}
+     * */
+    this.program = new WebGLProgram(this);
+  }
+
+  /**
+   * __createCanvas
+   *
+   * @return {void}
+   */
+  __createCanvas() {
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement(`canvas`));
+    cvs.id = `canvas`;
+    this.mContainerElement.appendChild(cvs);
+
+    const config = {
+      antialias         : true, // default true
+      alpha             : false,
+      premultipliedAlpha: false
+    };
+
+    this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
+    this.gl.canvas.width = this.mClientWidth;
+    this.gl.canvas.height = this.mClientHeight;
+    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
+    this.gl.clearColor(0, 0, 0, 1);
+  }
+
+  __onResize(msg, rect) {
+    super.__onResize(msg, rect);
+
+    this.gl.canvas.width = this.mClientWidth;
+    this.gl.canvas.height = this.mClientHeight;
+    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
+    this.program.resize();
+  }
+
+  save(gameObject) {
+    this.mCurrentObject = gameObject;
+  }
+
+  set globalBlendMode(blendMode) {
+    const same = this.state.checkBlendMode(blendMode);
+
+    if (!same) {
+      this.flush();
+      this.state.setBlendMode(blendMode);
+    }
+  }
+
+  drawImage(texture) {
+    const object = this.mCurrentObject;
+    const bounds = Rectangle.__cache;
+    const coords = texture.relativeRegion;
+    const m = object.worldTransformation.value;
+    const tint = object.tint;
+    object.onGetLocalBounds(bounds);
+    let texSlot = this.textures.bindTexture(object.texture);
+
+    if (texSlot === undefined) {
+      this.flush();
+      texSlot = this.textures.bindTexture(object.texture);
+    }
+    
+    if (this.mObjectsAmount === this.MAX_BATCH_SIZE) {
+      this.flush();
+    }
+
+    this.mObjectsAmount++;
+    this.program.push(bounds, m, object.alpha, coords, texSlot, tint);
+  }
+
+  flush() {
+    this.program.draw(this.mObjectsAmount);
+    this.mObjectsAmount = 0;
+    this.textures.endBatch();
+  }
+
+  beginFrame() {
+    super.beginFrame();
+    // this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+  }
+
+  endFrame() {
+    super.endFrame();
+    this.flush();
+  }
+}
+
+/**
+* Manages WebGl array buffer data for sprite program.
+* */
+
+class WebGLBuffer {
+  constructor(renderer) {
+
+    /** @type {WebGLDriver} */
+    this.renderer = renderer;
+    
+    /** @type {WebGLRenderingContext} */
+    this.gl = renderer.gl;
+
+    /** @type {WebGLBuffer} */
+    this.mGlBuffer = this.gl.createBuffer();
+
+    /** @type {Float32Array} */
+    this.mFloatView = new Float32Array(renderer.MAX_BATCH_SIZE * 6 - 2);
+
+    /** @type {Number} */
+    this.mBatchFloatsOffset = 0;
+
+    /** @type {String[]} */
+    this.ORDER = [
+      `left`, `top`,
+      `right`, `top`,
+      `left`, `bottom`,
+      `right`, `bottom`
+    ];
+
+    renderer.state.bindArrayBuffer(this.mGlBuffer);
+  }
+
+  prepare(objectsAmount) {
+    this.renderer.state.bindArrayBuffer(this.mGlBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.mFloatView.slice(0, objectsAmount * 60), this.gl.STATIC_DRAW);
+    this.mBatchFloatsOffset = 0;
+  }
+
+  push(bounds, m, alpha, texCoords, texSlot, tint) {
+    const floatView = this.mFloatView;
+    const ORDER = this.ORDER;
+    let floatOffset = this.mBatchFloatsOffset;
+    
+    for (let i = 0; i < 8; i += 2) {
+      floatView[floatOffset++] = bounds[ORDER[i]];
+      floatView[floatOffset++] = bounds[ORDER[i + 1]];
+      floatView[floatOffset++] = m[0];
+      floatView[floatOffset++] = m[1];
+      floatView[floatOffset++] = m[2];
+      floatView[floatOffset++] = m[3];
+      floatView[floatOffset++] = m[4];
+      floatView[floatOffset++] = m[5];
+      floatView[floatOffset++] = alpha;
+      floatView[floatOffset++] = texCoords[ORDER[i]];
+      floatView[floatOffset++] = texCoords[ORDER[i + 1]];
+      floatView[floatOffset++] = texSlot;
+      floatView[floatOffset++] = tint.r;  // todo tint to UNSIGNED_BYTE
+      floatView[floatOffset++] = tint.g;
+      floatView[floatOffset++] = tint.b;
+    }
+    
+    this.mBatchFloatsOffset = floatOffset;
+  }
+}
+
+/**
+ * Manages WebGl element buffer data for sprite program.
+ * */
+
+class WebGLElementBuffer {
+  constructor(renderer) {
+
+    /** @type {WebGLDriver} */
+    this.renderer = renderer;
+
+    /** @type {WebGLRenderingContext} */
+    this.gl = renderer.gl;
+
+    /** @type {Number[]} */
+    this.mTemplate = [0, 1, 2, 3, 3, 4];
+
+    /** @type {Uint16Array} */
+    this.mData = new Uint16Array(renderer.MAX_BATCH_SIZE * 6 - 2);
+
+    /** @type {WebGLBuffer} */
+    this.mGlBuffer = this.gl.createBuffer();
+
+    for (let i = 0, l = this.mData.length; i < l; i++) {
+      this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
+    }
+    
+    this.renderer.state.bindElementBuffer(this.mGlBuffer);
+    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
+  }
+
+  prepare(objectsAmount) {
+    this.renderer.state.bindElementBuffer(this.mGlBuffer);
+    // if (this.mData.length >= objectsAmount * 6 - 2) return;
+    //
+    // this.mData = new Uint16Array(objectsAmount * 6 - 2);
+    //
+    // for (let i = 0, l = this.mData.length; i < l; i++) {
+    //   this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
+    // }
+    //
+    // this.renderer.state.bindElementBuffer(this.mGlBuffer);
+    // this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
+  }
+}
+
+const vertexShaderSource = `
+  attribute vec2 aVertexPos;
+  attribute vec4 aModelMatrix;
+  attribute vec2 aModelPos;
+  attribute float aAlpha;
+  attribute vec2 aTexCoord;
+  attribute float aTexSlot;
+  attribute vec3 aTint;
+  
+  varying vec2 vTexCoord;
+  varying float vTexSlot;
+  varying vec4 vColor;
+
+  uniform vec2 uProjection;
+
+  void main() {
+    vec2 pos = mat2(aModelMatrix) * aVertexPos + aModelPos;
+    gl_Position = vec4(pos.x * uProjection.x - 1.0, -pos.y * uProjection.y + 1.0, 0.0, 1.0);
+    
+    vTexCoord = aTexCoord;
+    vTexSlot = aTexSlot + 0.5;
+    vColor = vec4(aTint * aAlpha, aAlpha);
+  }
+`;
+
+const fragmentShaderSource = `
+  precision lowp float;
+  
+  varying vec2 vTexCoord;
+  varying float vTexSlot;
+  varying vec4 vColor;
+  
+  uniform sampler2D uSamplers[MAX_TEXTURE_IMAGE_UNITS];
+  
+  void main() {
+    int texSlot = int(vTexSlot);
+    
+    for (int i = 0; i < MAX_TEXTURE_IMAGE_UNITS; i++) {
+      if (i == texSlot) {
+        gl_FragColor = texture2D(uSamplers[i], vTexCoord) * vColor;
+        return;
+      }
+    }
+  }
+`;
+
+/**
+ * A WebGLProgram manage data for render simple sprites batch. Contains WebGl program created from shaders source.
+ */
+
+
+class WebGLProgram {
+  constructor(renderer) {
+
+    /** @type {WebGLDriver} */
+    this.renderer = renderer;
+
+    /** @type {WebGLRenderingContext} */
+    this.gl = renderer.gl;
+
+    const vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);
+    const fragmentShader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
+
+    this.gl.shaderSource(vertexShader, vertexShaderSource);
+    this.gl.shaderSource(fragmentShader, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, renderer.textures.MAX_TEXTURE_IMAGE_UNITS));
+    this.gl.compileShader(vertexShader);
+    this.gl.compileShader(fragmentShader);
+
+    this.mGlProgram = this.gl.createProgram();
+    this.gl.attachShader(this.mGlProgram, vertexShader);
+    this.gl.attachShader(this.mGlProgram, fragmentShader);
+    this.gl.linkProgram(this.mGlProgram);
+    this.gl.deleteShader(vertexShader);
+    this.gl.deleteShader(fragmentShader);
+
+    /**
+     * Contains attributes location on GPU program.
+     *
+     * @type {Object} */
+    this.mAttributes = {
+      aVertexPos  : this.gl.getAttribLocation(this.mGlProgram, `aVertexPos`),
+      aModelMatrix: this.gl.getAttribLocation(this.mGlProgram, `aModelMatrix`),
+      aModelPos   : this.gl.getAttribLocation(this.mGlProgram, `aModelPos`),
+      aAlpha      : this.gl.getAttribLocation(this.mGlProgram, `aAlpha`),
+      aTexCoord   : this.gl.getAttribLocation(this.mGlProgram, `aTexCoord`),
+      aTexSlot    : this.gl.getAttribLocation(this.mGlProgram, `aTexSlot`),
+      aTint       : this.gl.getAttribLocation(this.mGlProgram, `aTint`)
+    };
+
+    /**
+     * Contains uniforms location on GPU program.
+     *
+     * @type {Object} */
+    this.mUniforms = {
+      uProjection: this.gl.getUniformLocation(this.mGlProgram, `uProjection`),
+      uSamplers  : this.gl.getUniformLocation(this.mGlProgram, `uSamplers`)
+    };
+
+    renderer.state.useProgram(this.mGlProgram);
+
+    this.gl.uniform1iv(this.mUniforms.uSamplers, new Int32Array(renderer.textures.MAX_TEXTURE_IMAGE_UNITS).map((v, i) => i));
+    this.resize();
+
+    /** @type {WebGLBuffer} */
+    this.mBuffer = new WebGLBuffer(renderer);
+    this.push = this.mBuffer.push.bind(this.mBuffer);
+
+    const stride = Float32Array.BYTES_PER_ELEMENT * 15;
+    const float = this.gl.FLOAT;
+    const floatSize = Float32Array.BYTES_PER_ELEMENT;
+    
+    this.enableAttribute(this.mAttributes.aVertexPos, 2, float, false, stride, 0);        // vec 2
+    this.enableAttribute(this.mAttributes.aModelMatrix, 4, float, false, stride, 2 * floatSize);  // vec 4
+    this.enableAttribute(this.mAttributes.aModelPos, 2, float, false, stride, 6 * floatSize);     // vec 2          
+    this.enableAttribute(this.mAttributes.aAlpha, 1, float, false, stride, 8 * floatSize);       // float
+    this.enableAttribute(this.mAttributes.aTexCoord, 2, float, false, stride, 9 * floatSize);     // vec 2
+    this.enableAttribute(this.mAttributes.aTexSlot, 1, float, false, stride, 11 * floatSize);     // float  // uint
+    this.enableAttribute(this.mAttributes.aTint, 3, float, false, stride, 12 * floatSize);        // vec 3  // uint * 3
+
+    /** @type {WebGLElementBuffer} */
+    this.mElementBuffer = new WebGLElementBuffer(renderer);
+  }
+
+  enableAttribute(index, size, type, normalize, stride, offset) {
+    this.gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
+    this.gl.enableVertexAttribArray(index);
+  }
+
+  resize() {
+    this.gl.uniform2f(this.mUniforms.uProjection, 2 / this.gl.drawingBufferWidth, 2 / this.gl.drawingBufferHeight);
+  }
+
+  draw(objectsAmount) {
+    if (!objectsAmount) return;
+
+    this.renderer.state.useProgram(this.mGlProgram);
+
+    this.mElementBuffer.prepare(objectsAmount);
+    this.mBuffer.prepare(objectsAmount);
+
+    this.gl.drawElements(this.gl.TRIANGLE_STRIP, objectsAmount * 6 - 2, this.gl.UNSIGNED_SHORT, 0);
+  }
+}
+
+
+class WebGLState {
+  constructor(renderer) {
+    this.renderer = renderer;
+    this.gl = renderer.gl;
+
+    /** @type {WebGLBuffer} */
+    this.mBoundArrayBuffer = null;
+
+    /** @type {WebGLBuffer} */
+    this.mBoundElementBuffer = null;
+
+    /** @type {WebGLTexture} */
+    this.mBoundTexture = null;
+
+    /** @type {WebGLTexture} */
+    this.mActiveTexture = null;
+
+    /** @type {WebGLProgram} */
+    this.mProgram = null;
+
+    /** @type {BlendMode} */
+    this.mBlendMode = null;
+
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+  }
+
+  bindArrayBuffer(buffer) {
+    if (buffer === this.mBoundArrayBuffer) return;
+
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    this.mBoundArrayBuffer = buffer;
+  }
+  
+  bindElementBuffer(buffer) {
+    if (buffer === this.mBoundElementBuffer) return;
+
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
+    this.mBoundElementBuffer = buffer;
+  }
+  
+  bindTexture(texture) {
+    if (texture === this.mBoundTexture) return;
+    
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    this.mBoundTexture = texture;
+  }
+
+  setActiveTexture(slot) {
+    if (slot === this.mActiveTexture) return;
+    
+    this.gl.activeTexture(slot);
+    this.mActiveTexture = slot;
+  }
+
+  useProgram(program) {
+    if (program === this.mProgram) return;
+
+    this.gl.useProgram(program);
+    this.mProgram = program;
+  }
+  
+  setBlendMode(blend) {
+    if (blend === this.mBlendMode) return;
+
+    this.mBlendMode = blend;
+    const blendEquation = WebGLBlendMode(blend, this.gl);
+    this.gl.blendFunc(blendEquation.src, blendEquation.dst);
+    
+    return true;
+  }
+  
+  checkBlendMode(blend) {
+    return blend === this.mBlendMode;
+  }
+}
+
+
+class WebGLTextures {
+  constructor(renderer) {
+
+    /** @type {WebGLDriver} */
+    this.renderer = renderer;
+
+    /** @type {WebGLRenderingContext} */
+    this.gl = renderer.gl;
+
+    this.MAX_TEXTURE_IMAGE_UNITS = this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS);
+    this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+    /** @type {WebGLTextures[]} */
+    this.mBoundTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
+    
+    /** @type {WebGLTextures[]} */
+    this.mBatchTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
+
+    /** @type {WebGLTextures[]} */
+    this.mGlTextures = [];
+    
+    const canvas = document.createElement(`canvas`);
+    const ctx = canvas.getContext(`2d`);
+    canvas.width = canvas.height = 8;
+    ctx.fillRect(0, 0, 8, 8);
+
+    for (let i = 0; i < this.MAX_TEXTURE_IMAGE_UNITS; i++) {
+      const glTexture = this.mGlTextures[i] = this.gl.createTexture();
+
+      this.gl.activeTexture(this.gl[`TEXTURE${i}`]);
+      this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
+      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    }
+  }
+
+  bindTexture(texture) {
+    let index = this.mBoundTextures.indexOf(texture);
+
+    if (index === -1) {
+
+      index = this.mBoundTextures.indexOf(null);
+      index = index === -1 ? this.mBatchTextures.indexOf(null) : index;
+
+      if (index === -1) return;
+
+      this.renderer.state.setActiveTexture(this.gl[`TEXTURE${index}`]);
+      this.renderer.state.bindTexture(this.mGlTextures[index]);
+      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.native);
+      // todo texture settings repeat nearest clamp from sprite
+    }
+
+    this.mBoundTextures[index] = texture;
+    this.mBatchTextures[index] = texture;
+
+    return index;
+  }
+  
+  endBatch() {
+    this.mBatchTextures.fill(null);
+  }
+}
+
+/**
+ * Maps black blend modes to WebGl blend functions.
+ */
+
+var WebGLBlendMode = (blendMode, gl) => {
+  var map = {
+    [BlendMode.NORMAL]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.ADD]        : {src: gl.ONE, dst: gl.DST_ALPHA},
+    [BlendMode.MULTIPLY]   : {src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SCREEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_COLOR},
+    [BlendMode.OVERLAY]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.DARKEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.LIGHTEN]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR_DODGE]: {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR_BURN] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.HARD_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SOFT_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.DIFFERENCE] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.EXCLUSION]  : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.HUE]        : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SATURATE]   : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR]      : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.LUMINOSITY] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA}
+  };
+
+  return (WebGLBlendMode = blendMode => map[blendMode])(blendMode);
+};
+/**
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
@@ -7055,7 +7648,7 @@ class DisplayObject extends GameObject {
      * @private
      * @type {string}
      */
-    this.blendMode = BlendMode.AUTO;
+    this.blendMode = BlendMode.NORMAL;
 
     /**
      * @private
@@ -7222,6 +7815,21 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
+
+    /**
+     * @protected
+     * @type {Object} = {r:1, g:1, b:1} 
+     * */
+    this.mTint = {r: 1, g: 1, b: 1}; // todo
+  }
+  
+  /**
+   * tint - Returns sprite tint object.
+   *
+   * @return {Object} The current texture set on this Sprite or null.
+   */
+  get tint() {
+    return this.mTint;
   }
 
   /**
@@ -7267,7 +7875,7 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    return outRect.set(-this.mPivotX, -this.mPivotY, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
   }
 
   /**

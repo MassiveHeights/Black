@@ -19,7 +19,7 @@ class DisplayObject extends GameObject {
      * @private
      * @type {string}
      */
-    this.blendMode = BlendMode.AUTO;
+    this.blendMode = BlendMode.NORMAL;
 
     /**
      * @private

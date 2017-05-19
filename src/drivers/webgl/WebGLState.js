@@ -4,16 +4,26 @@ class WebGLState {
     this.renderer = renderer;
     this.gl = renderer.gl;
 
+    /** @type {WebGLBuffer} */
     this.mBoundArrayBuffer = null;
+
+    /** @type {WebGLBuffer} */
     this.mBoundElementBuffer = null;
+
+    /** @type {WebGLTexture} */
     this.mBoundTexture = null;
+
+    /** @type {WebGLTexture} */
     this.mActiveTexture = null;
+
+    /** @type {WebGLProgram} */
     this.mProgram = null;
+
+    /** @type {BlendMode} */
     this.mBlendMode = null;
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-    // this.setBlendMode(BlendMode.NORMAL);
   }
 
   bindArrayBuffer(buffer) {
@@ -59,5 +69,9 @@ class WebGLState {
     this.gl.blendFunc(blendEquation.src, blendEquation.dst);
     
     return true;
+  }
+  
+  checkBlendMode(blend) {
+    return blend === this.mBlendMode;
   }
 }

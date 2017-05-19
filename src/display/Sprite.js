@@ -24,9 +24,21 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
-    
 
-    this.tint = {r: 1, g: 1, b: 1};
+    /**
+     * @protected
+     * @type {Object} = {r:1, g:1, b:1} 
+     * */
+    this.mTint = {r: 1, g: 1, b: 1}; // todo
+  }
+  
+  /**
+   * tint - Returns sprite tint object.
+   *
+   * @return {Object} The current texture set on this Sprite or null.
+   */
+  get tint() {
+    return this.mTint;
   }
 
   /**

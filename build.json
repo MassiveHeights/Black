@@ -44,6 +44,7 @@
     "src/drivers/webgl/WebGLProgram.js",
     "src/drivers/webgl/WebGLState.js",
     "src/drivers/webgl/WebGLTextures.js",
+    "src/drivers/webgl/WebGLBlendMode.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",

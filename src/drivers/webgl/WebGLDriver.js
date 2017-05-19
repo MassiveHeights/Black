@@ -1,3 +1,9 @@
+/**
+ * An video driver that draw everything into DOM Canvas element.
+ *
+ * @cat drivers
+ * @extends VideoNullDriver
+ */
 /* @echo EXPORT */
 class WebGLDriver extends VideoNullDriver {
   /**
@@ -10,14 +16,52 @@ class WebGLDriver extends VideoNullDriver {
 
     console.log(`WebGL`);
 
+    /** @type {Number} */
+    this.MAX_BATCH_SIZE = 65535;
+
+    /**
+     * @public
+     * @type {WebGLRenderingContext|null}
+     */
     this.gl = null;
+    
+    /**
+     * Contains current rendering object.
+     *
+     * @private
+     * @type {DisplayObject|null}
+     */
     this.mCurrentObject = null;
+
+    /**
+     * Counts batch objects amount.
+     * 
+     * @private
+     * @type {Number|null}
+     */
     this.mObjectsAmount = 0;
 
     this.__createCanvas();
 
+    /** 
+     * Contains WebGL context state
+     * 
+     * @type {WebGLState} 
+     * */
     this.state = new WebGLState(this);
+
+    /**
+     * Manager for WebGL textures
+     *
+     * @type {WebGLTextures}
+     * */
     this.textures = new WebGLTextures(this);
+
+    /**
+     * Program that renders sprites
+     *
+     * @type {WebGLProgram}
+     * */
     this.program = new WebGLProgram(this);
   }
 
@@ -32,8 +76,9 @@ class WebGLDriver extends VideoNullDriver {
     this.mContainerElement.appendChild(cvs);
 
     const config = {
-      antialias: true, // default true
-      alpha    : false
+      antialias         : true, // default true
+      alpha             : false,
+      premultipliedAlpha: false
     };
 
     this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
@@ -57,12 +102,11 @@ class WebGLDriver extends VideoNullDriver {
   }
 
   set globalBlendMode(blendMode) {
-    if (blendMode === BlendMode.AUTO) return;
+    const same = this.state.checkBlendMode(blendMode);
 
-    const changed = this.state.setBlendMode(blendMode);
-    
-    if (changed) {
+    if (!same) {
       this.flush();
+      this.state.setBlendMode(blendMode);
     }
   }
 
@@ -70,7 +114,7 @@ class WebGLDriver extends VideoNullDriver {
     const object = this.mCurrentObject;
     const bounds = Rectangle.__cache;
     const coords = texture.relativeRegion;
-    const m = object.worldTransformation.value;
+    const m = object.mWorldTransform.value; // without cloning
     const tint = object.tint;
     object.onGetLocalBounds(bounds);
     let texSlot = this.textures.bindTexture(object.texture);
@@ -78,6 +122,10 @@ class WebGLDriver extends VideoNullDriver {
     if (texSlot === undefined) {
       this.flush();
       texSlot = this.textures.bindTexture(object.texture);
+    }
+    
+    if (this.mObjectsAmount === this.MAX_BATCH_SIZE) {
+      this.flush();
     }
 
     this.mObjectsAmount++;
@@ -92,7 +140,7 @@ class WebGLDriver extends VideoNullDriver {
 
   beginFrame() {
     super.beginFrame();
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    // this.gl.clear(this.gl.COLOR_BUFFER_BIT);
   }
 
   endFrame() {

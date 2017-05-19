@@ -44,10 +44,19 @@ const fragmentShaderSource = `
   }
 `;
 
+/**
+ * A WebGLProgram manage data for render simple sprites batch. Contains WebGl program cra.
+ *
+ */
+
 /* @echo EXPORT */
 class WebGLProgram {
   constructor(renderer) {
+
+    /** @type {WebGLDriver} */
     this.renderer = renderer;
+
+    /** @type {WebGLRenderingContext} */
     this.gl = renderer.gl;
 
     const vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);
@@ -65,6 +74,10 @@ class WebGLProgram {
     this.gl.deleteShader(vertexShader);
     this.gl.deleteShader(fragmentShader);
 
+    /**
+     * Contains attributes location on GPU program.
+     *
+     * @type {Object} */
     this.mAttributes = {
       aVertexPos  : this.gl.getAttribLocation(this.mGlProgram, `aVertexPos`),
       aModelMatrix: this.gl.getAttribLocation(this.mGlProgram, `aModelMatrix`),
@@ -75,6 +88,10 @@ class WebGLProgram {
       aTint       : this.gl.getAttribLocation(this.mGlProgram, `aTint`)
     };
 
+    /**
+     * Contains uniforms location on GPU program.
+     *
+     * @type {Object} */
     this.mUniforms = {
       uProjection: this.gl.getUniformLocation(this.mGlProgram, `uProjection`),
       uSamplers  : this.gl.getUniformLocation(this.mGlProgram, `uSamplers`)
@@ -85,7 +102,7 @@ class WebGLProgram {
     this.gl.uniform1iv(this.mUniforms.uSamplers, new Int32Array(renderer.textures.MAX_TEXTURE_IMAGE_UNITS).map((v, i) => i));
     this.resize();
 
-
+    /** @type {WebGLBuffer} */
     this.mBuffer = new WebGLBuffer(renderer);
     this.push = this.mBuffer.push.bind(this.mBuffer);
 
@@ -101,6 +118,7 @@ class WebGLProgram {
     this.enableAttribute(this.mAttributes.aTexSlot, 1, float, false, stride, 11 * floatSize);     // float  // uint
     this.enableAttribute(this.mAttributes.aTint, 3, float, false, stride, 12 * floatSize);        // vec 3  // uint * 3
 
+    /** @type {WebGLElementBuffer} */
     this.mElementBuffer = new WebGLElementBuffer(renderer);
   }
 
