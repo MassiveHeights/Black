@@ -62,7 +62,7 @@ class Sprite extends DisplayObject {
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-      video.drawImage(this.mTexture);
+      video.drawImage(this.mTexture, this.onGetLocalBounds(Rectangle.__cache));
       video.restore();
     }
 

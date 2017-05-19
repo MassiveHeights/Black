@@ -110,18 +110,17 @@ class WebGLDriver extends VideoNullDriver {
     }
   }
 
-  drawImage(texture) {
+  drawImage(texture, bounds) {
     const object = this.mCurrentObject;
-    const bounds = Rectangle.__cache;
     const coords = texture.relativeRegion;
-    const m = object.mWorldTransform.value; // without cloning
-    const tint = object.tint;
-    object.onGetLocalBounds(bounds);
-    let texSlot = this.textures.bindTexture(object.texture);
+    const m = this.mTransform.value;
+    const tint = object.tint || {r: 1, g: 1, b: 1};
+
+    let texSlot = this.textures.bindTexture(texture);
 
     if (texSlot === undefined) {
       this.flush();
-      texSlot = this.textures.bindTexture(object.texture);
+      texSlot = this.textures.bindTexture(texture);
     }
     
     if (this.mObjectsAmount === this.MAX_BATCH_SIZE) {
@@ -129,7 +128,7 @@ class WebGLDriver extends VideoNullDriver {
     }
 
     this.mObjectsAmount++;
-    this.program.push(bounds, m, object.alpha, coords, texSlot, tint);
+    this.program.push(bounds, m, this.mGlobalAlpha, coords, texSlot, tint);
   }
 
   flush() {

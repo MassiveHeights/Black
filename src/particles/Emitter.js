@@ -254,6 +254,7 @@ class Emitter extends DisplayObject {
     localTransform.identity();
 
     let texture = null;
+    let pbounds = new Rectangle();
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
@@ -294,7 +295,9 @@ class Emitter extends DisplayObject {
 
         video.setTransform(worldTransform);
         video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
-        video.drawImage(texture);
+
+        pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
+        video.drawImage(texture, pbounds);
       }
     }
 
