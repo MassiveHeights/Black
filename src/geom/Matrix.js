@@ -64,8 +64,8 @@ class Matrix {
     let /** @type {number} */ a4 = a[4]; // tx
     let /** @type {number} */ a5 = a[5]; // ty
 
-    this._matrix[4] += dx;
-    this._matrix[5] += dy;
+    this._matrix[4] = a0 * dx + a2 * dy + a4;
+    this._matrix[5] = a1 * dx + a3 * dy + a5;
 
     return this;
   }

@@ -102,16 +102,15 @@ class CanvasDriver extends VideoNullDriver {
    * @override
    *
    * @param {Texture} texture
+   * @param {Rectangle} bounds
    *
    * @return {void}
    */
-  drawImage(texture) {
+  drawImage(texture, bounds) {
     let w = texture.width;
     let h = texture.height;
-    let localBounds = Rectangle.__cache;
-    this.mCurrentObject.onGetLocalBounds(localBounds);
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, localBounds.x, localBounds.y, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x, bounds.y, w, h);
   }
 
   /**
@@ -137,14 +136,14 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.fillStyle = this.hexColorToString(style.color);
 
     let x = 0;
+    let y = 0;
     if (style.align === 'center')
-      x = (bounds.width * 0.5) - textWidth * 0.5;
-
+      x += (bounds.width - textWidth) * 0.5;
     else if (style.align === 'right')
-      x = bounds.width - textWidth;
+      x += (bounds.width - textWidth);
 
     this.mCtx.textBaseline = 'top';
-    this.mCtx.fillText(text, x, 0);
+    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
 
     if (style.strokeThickness > 0) {
       this.mCtx.lineWidth = style.strokeThickness;

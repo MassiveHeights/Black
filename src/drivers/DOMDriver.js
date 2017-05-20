@@ -119,18 +119,14 @@ class DOMDriver extends VideoNullDriver {
    * @inheritdoc
    *
    * @param  {Texture} texture
+   * @param  {Rectangle} bounds
    * @return {void}
    */
-  drawImage(texture) {
+  drawImage(texture, bounds) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
-    let localBounds = Rectangle.__cache;
-    this.mCurrentObject.onGetLocalBounds(localBounds);
 
-    if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
-      Matrix.__cache.set(1, 0, 0, 1, localBounds.x, localBounds.y);
-      this.mTransform.append(Matrix.__cache);
-    }
+    this.mTransform.translate(bounds.x, bounds.y);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
@@ -153,6 +149,9 @@ class DOMDriver extends VideoNullDriver {
    */
   drawText(text, style, bounds, textWidth, textHeight) {
     let el = this.__popElement('text');
+
+    this.mTransform.translate(bounds.x, bounds.y);
+
     this.__updateElementCommon(el);
 
     // TODO: check this type. review the code.
