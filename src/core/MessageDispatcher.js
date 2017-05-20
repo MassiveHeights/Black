@@ -41,9 +41,9 @@ class MessageDispatcher {
         MessageDispatcher.mGlobalHandlers[pureName] = [];
 
       let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
-      for (let i = 0; i < dispatchers.length; i++)
-        if (dispatchers[i].callback === callback)
-          return;
+      // for (let i = 0; i < dispatchers.length; i++)
+      //   if (dispatchers[i].callback === callback)
+      //     return;
 
       dispatchers.push({
         callback: callback,
@@ -62,9 +62,10 @@ class MessageDispatcher {
 
     let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
 
-    for (let i = 0; i < dispatchers.length; i++)
-      if (dispatchers[i].callback === callback)
-        return;
+    // TODO: check for dups somehow
+    // for (let i = 0; i < dispatchers.length; i++)
+    //   if (dispatchers[i].callback === callback)
+    //     return;
 
     dispatchers.push({
       callback: callback,
