@@ -107,6 +107,7 @@ class TextField extends DisplayObject {
     video.setTransform(this.worldTransformation);
     video.globalAlpha = parentAlpha * this.mAlpha;
     video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+
     video.drawText(this.mText, this.mStyle, this.mCacheBounds, this.mTextWidth, this.mTextHeight);
     video.restore();
 
@@ -148,8 +149,7 @@ class TextField extends DisplayObject {
       this.mFieldHeight = this.mTextHeight;
     }
 
-    this.mNeedInvalidate = false;
-    return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
+    return outRect.set(strokeCorrection-this.mPivotX, strokeCorrection-this.mPivotY, this.mFieldWidth, this.mFieldHeight);
   }
 
 

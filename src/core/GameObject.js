@@ -447,9 +447,7 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        let tx = this.mX;
-        let ty = this.mY;
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
+        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
       } else {
         let cos = Math.cos(this.mRotation);
         let sin = Math.sin(this.mRotation);
@@ -457,9 +455,7 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        let tx = this.mX;
-        let ty = this.mY;
-        return this.mLocalTransform.set(a, b, c, d, tx, ty);
+        return this.mLocalTransform.set(a, b, c, d, this.mX, this.mY);
       }
     }
 

@@ -177,8 +177,9 @@ class VideoNullDriver {
    * @protected
    *
    * @param  {Texture} texture
+   * @param  {Texture} bounds
    */
-  drawImage(texture) {}
+  drawImage(texture, bounds) {}
 
   /**
    * Draws text onto back-buffer.
