@@ -263,7 +263,7 @@ class Input extends System {
   }
 
   __findTarget(pos) {
-    let obj = GameObject.intersectsWith(Black.instance.root, pos);
+    let obj = GameObject.hits(Black.instance.root, pos);
 
     if (obj === null) {
       this.mTarget = null;
@@ -289,6 +289,14 @@ class Input extends System {
   }
 
   __processNativeEvent(nativeEvent, pos, type) {
+    if (type === Input.POINTER_DOWN) {
+      this.mIsPointerDown = true;
+      this.mNeedUpEvent = true;
+    }
+    else if (type === Input.POINTER_UP) {
+      this.mIsPointerDown = false;
+    }
+
     this.post(type);
 
     if (this.mTarget === null && this.mLockedTarget === null)
@@ -298,7 +306,6 @@ class Input extends System {
 
     if (type === Input.POINTER_DOWN) {
       this.mLockedTarget = this.mTarget;
-      this.mNeedUpEvent = true;
     }
     else if (type === Input.POINTER_UP && this.mLockedTarget !== null) {
       this.mLockedTarget.post('~pointerUp', info);
