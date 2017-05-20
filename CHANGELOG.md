@@ -1,6 +1,14 @@
 Black Engine: Changelog
 =======================
 
+v0.0.12a
+--------
+- Fixed TextField align issues caused by new pivot logic
+- Fixed DOMDriver align issues caused by new pivot logic
+- Fixed `Matrix::translate` broken logic
+- Changed `VideoDriver::DrawImage` now accepts bounds
+- Minor jsdoc fixess
+
 v0.0.11a
 --------
 - Reworked `Input`
