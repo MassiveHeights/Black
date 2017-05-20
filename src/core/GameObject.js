@@ -1275,6 +1275,46 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Checks if GameObject or any of its children elements intersects the given
+   * point, the difference between `hits` and `intersectsWith` that `hits` also
+   * checks for presence of `InputComponent`.
+   *
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point          Point to test.
+   *
+   * @return {GameObject|null} Intersecting object or null.
+   */
+  static hits(gameObject, point) {
+    // TODO: add colliders
+
+    let obj = null;
+    for (let i = gameObject.numChildren - 1; i >= 0; --i) {
+      let child = gameObject.mChildren[i];
+
+      obj = GameObject.hits(child, point);
+      if (obj != null)
+        return obj;
+
+      let c = child.getComponent(InputComponent);
+      let touchable = c !== null && c.touchable;
+      if (touchable && GameObject.intersects(child, point)) {
+        obj = child;
+        break;
+      }
+    }
+
+    if (obj === null) {
+      let c = gameObject.getComponent(InputComponent);
+      let touchable = c !== null && c.touchable;
+
+      if (touchable && GameObject.intersects(gameObject, point))
+        return gameObject;
+    }
+
+    return null;
+  }
+
+  /**
+   * Checks if GameObject or any of its children elements intersects the given
    * point.
    *
    * @param {GameObject} gameObject GameObject to test.
@@ -1298,9 +1338,8 @@ class GameObject extends MessageDispatcher {
       }
     }
 
-    if (obj === null && GameObject.intersects(gameObject, point)) {
+    if (obj === null && GameObject.intersects(gameObject, point))
       return gameObject;
-    }
 
     return null;
   }
