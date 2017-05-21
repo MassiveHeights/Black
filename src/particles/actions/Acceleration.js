@@ -28,11 +28,10 @@ class Acceleration extends Action {
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
-   * @param {number} t
    *
    * @return {void}
    */
-  update(emmiter, particle, dt, t) {
+  update(emmiter, particle, dt) {
     let v = this.mScatter.getValue();
 
     particle.ax += v.x;

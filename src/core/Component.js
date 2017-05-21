@@ -13,20 +13,17 @@ class Component extends MessageDispatcher {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {number}
+    /** @private
+     * @type {number} 
      */
     this.mId = ++GameObject.ID;
 
-    /**
-     * @private
+    /** @private
      * @type {GameObject|null}
      */
-    this.gameObject = null;
+    this.mGameObject = null;
 
-    /**
-     * @private
+    /** @private
      * @type {boolean}
      */
     this.mAdded = false;
@@ -35,7 +32,7 @@ class Component extends MessageDispatcher {
   /**
    * Called when attached to GameObject.
    *
-   * @protected
+   * @public
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -44,7 +41,7 @@ class Component extends MessageDispatcher {
   /**
    * Called when detached from GameObject.
    *
-   * @protected
+   * @public
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -52,7 +49,7 @@ class Component extends MessageDispatcher {
 
   /**
    * Called at every fixed frame update.
-   * @protected
+   * @public
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -60,7 +57,7 @@ class Component extends MessageDispatcher {
 
   /**
    * Called at every engine update.
-   * @protected
+   * @public
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -68,7 +65,7 @@ class Component extends MessageDispatcher {
 
   /**
    * Called after all updates have been executed.
-   * @protected
+   * @public
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -84,10 +81,19 @@ class Component extends MessageDispatcher {
    * @returns {void}
    */
   removeFromParent() {
-    if (this.gameObject === null)
+    if (this.mGameObject === null)
       return;
 
-    this.gameObject.removeComponent(this);
+    this.mGameObject.removeComponent(this);
+  }
+
+  /**
+   * Returns owner of this component.
+   *
+   * @returns {GameObject}
+   */
+  get gameObject() {
+    return this.mGameObject;
   }
 }
 

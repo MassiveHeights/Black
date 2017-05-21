@@ -17,10 +17,16 @@ class AtlasTextureAsset extends Asset {
   constructor(name, imageUrl, dataUrl) {
     super(name, imageUrl);
 
-    /** @type {Image} */
+    /**
+     * @private
+     * @type {Image}
+     */
     this.mImageElement = new Image();
 
-    /** @type {JSONAsset} */
+    /**
+     * @private
+     * @type {JSONAsset}
+     */
     this.dataAsset = new JSONAsset(name, dataUrl);
     this.dataAsset.on('complete', this.onJsonLoaded, this);
   }
@@ -39,7 +45,7 @@ class AtlasTextureAsset extends Asset {
 
   /**
    * @override
-   * @inheritdoc
+   * @inheritDoc
    * @return {void}
    */
   onLoaded() {
@@ -49,7 +55,7 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}

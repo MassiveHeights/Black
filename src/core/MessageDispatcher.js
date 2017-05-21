@@ -41,9 +41,9 @@ class MessageDispatcher {
         MessageDispatcher.mGlobalHandlers[pureName] = [];
 
       let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
-      for (let i = 0; i < dispatchers.length; i++)
-        if (dispatchers[i].callback === callback)
-          return;
+      // for (let i = 0; i < dispatchers.length; i++)
+      //   if (dispatchers[i].callback === callback)
+      //     return;
 
       dispatchers.push({
         callback: callback,
@@ -62,9 +62,10 @@ class MessageDispatcher {
 
     let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
 
-    for (let i = 0; i < dispatchers.length; i++)
-      if (dispatchers[i].callback === callback)
-        return;
+    // TODO: check for dups somehow
+    // for (let i = 0; i < dispatchers.length; i++)
+    //   if (dispatchers[i].callback === callback)
+    //     return;
 
     dispatchers.push({
       callback: callback,
@@ -92,10 +93,10 @@ class MessageDispatcher {
   /**
    * Removes listener
    *
-   * @param {string} name            Description
-   * @param {Function=} [callback=null] Description
+   * @param {string} name
+   * @param {Function=} [callback=null]
    *
-   * @return {void} Description
+   * @return {void}
    */
   removeOn(name, callback = null) {
     if (name === null || name.length === 0)
@@ -163,15 +164,13 @@ class MessageDispatcher {
   }
 
   /**
-   * __sendBubbles - Description
-   *
    * @private
-   * @param {*}  sender  Description
-   * @param {string}  message Description
-   * @param {boolean}  toTop   Description
-   * @param {...*} params  Description
+   * @param {*}  sender
+   * @param {Message}  message
+   * @param {boolean}  toTop
+   * @param {...*} params
    *
-   * @return {void} Description
+   * @return {void}
    */
   __sendBubbles(sender, message, toTop, ...params) {
     message.mOrigin = toTop === true ? this : ( /** @type {GameObject} */ (this)).root;
@@ -196,19 +195,17 @@ class MessageDispatcher {
       }
     }
 
-    message.sender.__invokeGlobal(message.sender, message, ...params);
+    message.mSender.__invokeGlobal(message.sender, message, ...params);
   }
 
   /**
-   * __sendGlobal - Description
-   *
    * @private
-   * @param {*}  sender  Description
-   * @param {Message}  message Description
-   * @param {GameObject=}  origin  Description
-   * @param {...*} params  Description
+   * @param {*}  sender
+   * @param {Message}  message
+   * @param {GameObject=}  origin
+   * @param {...*} params
    *
-   * @return {void} Description
+   * @return {void}
    */
   __sendGlobal(sender, message, origin, ...params) {
     if (origin === null)
@@ -285,7 +282,7 @@ class MessageDispatcher {
   /**
    * @private
    * @param {string} path
-   * @param {string} pattern
+   * @param {string} pathMask
    *
    * @return {boolean}
    */
@@ -304,13 +301,11 @@ class MessageDispatcher {
 
   // TODO: parse exception path'ses like: ~tatata@@@omg####imnotidiout###@@~~
   /**
-   * __parseMessage - Description
-   *
    * @private
-   * @param {*} sender Description
-   * @param {string} info   Description
+   * @param {*} sender
+   * @param {string} info
    *
-   * @return {Message} Description
+   * @return {Message}
    */
   __parseMessage(sender, info) {
     // TODO: make message pool... this type of objects shall not be
@@ -453,7 +448,7 @@ class Message {
   /**
    * Who send the message.
    *
-   * @return {*} Description
+   * @return {*}
    */
   get sender() {
     return this.mSender;
@@ -480,7 +475,7 @@ class Message {
   /**
    * Indicates if sibblings should be included into dispatching process.
    *
-   * @return {boolean} Description
+   * @return {boolean}
    */
   get sibblings() {
     return this.mSibblings;
@@ -489,7 +484,7 @@ class Message {
   /**
    * The GameObject.name mask string if was used.
    *
-   * @return {string|null} Description
+   * @return {string|null}
    */
   get pathMask() {
     return this.mPathMask;

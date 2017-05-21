@@ -102,7 +102,7 @@ class Rectangle {
   /**
    * @ignore
    *
-   * @param {number} keft
+   * @param {number} left
    */
   set left(left) {
     this.x = left;

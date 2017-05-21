@@ -71,6 +71,8 @@ class AtlasTexture extends Texture {
 
   /**
    * Returns array of Texture by given name or wildcard mask.
+   * If `nameMask` is null then all textures will be returned.
+   * This method sorts all resulting textures using neurural sort algorith.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
    * @param {Array<Texture>|null}         outTextures If passed will be
@@ -95,7 +97,8 @@ class AtlasTexture extends Texture {
       if (re.test(key))
         names.push(key);
 
-    names.sort(this.__naturalComparer);
+    //names.sort(AtlasTexture.__naturalComparer);
+    AtlasTexture.naturalSort(names);
 
     for (let i = 0; i < names.length; i++)
       out.push(this.mSubTextures[names[i]]);
@@ -103,31 +106,56 @@ class AtlasTexture extends Texture {
     return out;
   }
 
-  /**
-   * @private
-   * @param {*} a
-   * @param {*} b
-   *
-   * @return {number}
-   */
-  __naturalComparer(a, b) {
-    const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
-    let aa = String(a).split(NUMBER_GROUPS);
-    let bb = String(b).split(NUMBER_GROUPS);
-    let min = Math.min(aa.length, bb.length);
+  // /**
+  //  * @private
+  //  * @param {*} a
+  //  * @param {*} b
+  //  *
+  //  * @return {number}
+  //  */
+  // static __naturalComparer(a, b) {
+  //   const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
+  //   let aa = String(a).split(NUMBER_GROUPS);
+  //   let bb = String(b).split(NUMBER_GROUPS);
+  //   let min = Math.min(aa.length, bb.length);
+  //
+  //   for (let i = 0; i < min; i++) {
+  //     let x = parseFloat(aa[i]) || aa[i].toLowerCase();
+  //     let y = parseFloat(bb[i]) || bb[i].toLowerCase();
+  //
+  //     if (x < y)
+  //       return -1;
+  //     else if (x > y)
+  //       return 1;
+  //   }
+  //
+  //   return 0;
+  // };
 
-    for (let i = 0; i < min; i++) {
-      let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-      let y = parseFloat(bb[i]) || bb[i].toLowerCase();
+  static naturalSort(dataset, field = null) {
+    dataset.sort(AtlasTexture.__naturalComparer(field));
+  }
 
-      if (x < y)
-        return -1;
-      else if (x > y)
-        return 1;
+  static __naturalComparer(field = null) {
+    return function(a, b) {
+      const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
+      let aa = String(field == null ? a : a[field]).split(NUMBER_GROUPS);
+      let bb = String(field == null ? b : b[field]).split(NUMBER_GROUPS);
+      let min = Math.min(aa.length, bb.length);
+
+      for (let i = 0; i < min; i++) {
+        let x = parseFloat(aa[i]) || aa[i].toLowerCase();
+        let y = parseFloat(bb[i]) || bb[i].toLowerCase();
+
+        if (x < y)
+          return -1;
+        else if (x > y)
+          return 1;
+      }
+
+      return 0;
     }
-
-    return 0;
-  };
+  }
 
   //dispose() {}
 }

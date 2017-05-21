@@ -26,7 +26,7 @@ class RandomTexture extends Initializer {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    * @param {Particle} particle
    *

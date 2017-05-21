@@ -22,7 +22,7 @@ class JSONAsset extends Asset {
 
   /**
    * @override
-   * @inheritdoc
+   * @inheritDoc
    *
    * @return {void}
    */

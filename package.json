@@ -8,7 +8,8 @@
     "start": "gulp",
     "examples": "gulp examples",
     "test": "gulp && gulp test",
-    "docs": "jsdoc -c .jsdoc -R README.md"
+    "docs": "jsdoc -c .jsdoc -R README.md",
+    "watch-es6-module": "gulp watch-es6-module"
   },
   "repository": {
     "type": "git",

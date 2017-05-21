@@ -93,7 +93,6 @@ class AnimationInfo {
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
    *
-   * @internal
    * @return {Texture} Returns the current frame Texture.
    */
   play() {

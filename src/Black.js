@@ -528,7 +528,7 @@ class Black extends MessageDispatcher {
   /**
    * Sets the number of milliseconds for fixed-time-step to run over.
    *
-   * @param {type} timestep
+   * @param {number} timestep
    * @return {void}
    */
   set simulationTimestep(timestep) {

@@ -68,7 +68,7 @@ class FontAsset extends Asset {
 
   /**
    * @private
-   * @return {string}
+   * @return {HTMLElement}
    */
   __getLoaderElement(local) {
     let loaderElement = document.createElement(local ? 'style' : 'link');
@@ -81,7 +81,7 @@ class FontAsset extends Asset {
 
   /**
    * @private
-   * @return {string}
+   * @return {HTMLElement}
    */
   __getTestingElement() {
     let testingElement = document.createElement('span');
@@ -98,7 +98,7 @@ class FontAsset extends Asset {
 
   /**
    * @override
-   * @return {string}
+   * @return {void}
    */
   load() {
     if (this.mLocal)
