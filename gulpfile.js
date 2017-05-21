@@ -52,3 +52,6 @@ gulp.task('examples', ['build-es6'], function() {
 });
 
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
+gulp.task('watch-es6-module', ['build-es6-module'], function() {
+  gulp.watch(['./src/**/*.js'], ['build-es6-module']);
+});
