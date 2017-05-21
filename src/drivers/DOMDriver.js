@@ -32,7 +32,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    * @param {GameObject|null} gameObject Used for internal binding.
    *
@@ -74,7 +74,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}  description
@@ -84,7 +84,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}  description
@@ -116,7 +116,7 @@ class DOMDriver extends VideoNullDriver {
 
   /**
    * @override
-   * @inheritdoc
+   * @inheritDoc
    *
    * @param  {Texture} texture
    * @param  {Rectangle} bounds
@@ -136,7 +136,7 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @param {string} text
