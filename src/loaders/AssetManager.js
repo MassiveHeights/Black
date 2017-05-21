@@ -193,6 +193,53 @@ class AssetManager extends MessageDispatcher {
 
 
   /**
+   * Returns array of Texture by given name mask.
+   * Searches across all loaded images and atlasses.
+   *
+   * @param {string} nameMask
+   *
+   * @returns {Array<Texture>|null}
+   */
+  getTextures(nameMask) {
+    //if (nameMask == null)
+
+    let out = [];
+    let names = [];
+
+    let re = new RegExp("^" + nameMask.split("*").join(".*") + "$");
+
+    // collect single textures
+    for (let key in this.mTextures)
+      if (re.test(key))
+        names.push({ name: key, atlas: null });
+
+    // collect textures from all atlases
+    for (let key in this.mAtlases) {
+      let atlas = this.mAtlases[key];
+
+      for (let key2 in atlas.mSubTextures)
+        if (re.test(key2))
+          names.push({ name: key2, atlas: atlas });
+    }
+
+    AtlasTexture.naturalSort(names, 'name');
+
+    for (let i = 0; i < names.length; i++) {
+      let ao = names[i];
+
+      if (ao.atlas == null)
+        out.push(this.mTextures[ao.name]);
+      else
+        out.push(ao.atlas.mSubTextures[ao.name]);
+    }
+
+    if (out.length > 0)
+      return out;
+
+    return null;
+  }
+
+  /**
    * Returns AtlasTexture by given name.
    *
    * @param {string} name The name of the Asset.
