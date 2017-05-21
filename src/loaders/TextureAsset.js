@@ -25,7 +25,7 @@ class TextureAsset extends Asset {
 
   /**
    * @override
-   * @inheritdoc
+   * @inheritDoc
    *
    * @return {void}
    */
@@ -37,7 +37,7 @@ class TextureAsset extends Asset {
 
   /**
    * @override
-   * @inheritdoc
+   * @inheritDoc
    *
    * @return {void}
    */

@@ -23,7 +23,7 @@ class Velocity extends Initializer {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    * @param {Particle} particle
    *

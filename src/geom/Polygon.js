@@ -76,7 +76,7 @@ class Polygon {
    * @return {Polygon} This polygon.
    */
   copyFrom(polygon) {
-    let polygonVertices = polygon.vertices;
+    let polygonVertices = polygon.mVertices;
     let len = polygonVertices.length;
     let vertices = [];
 
@@ -176,13 +176,13 @@ class Polygon {
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
-    if (!this.mBounds.intersects(polygon.bounds)) {
+    if (!this.mBounds.intersects(polygon.mBounds)) {
       return false;
     }
 
     let thisLines = this.mLines;
     let thisLen = thisLines.length;
-    let polygonLines = polygon.lines;
+    let polygonLines = polygon.mLines;
     let polygonLen = polygonLines.length;
 
     for (let i = 0; i < thisLen; i++) {
@@ -257,17 +257,17 @@ class Polygon {
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
-    if (this.mBounds.width < polygon.bounds.width || this.mBounds.height < polygon.bounds.height) {
+    if (this.mBounds.width < polygon.mBounds.width || this.mBounds.height < polygon.mBounds.height) {
       return false;
     }
 
-    if (!this.contains(polygon.center)) {
+    if (!this.contains(polygon.mCenter)) {
       return false;
     }
 
     let thisLines = this.mLines;
     let thisLen = thisLines.length;
-    let polygonLines = polygon.lines;
+    let polygonLines = polygon.mLines;
     let polygonLen = polygonLines.length;
 
     for (let i = 0; i < thisLen; i++) {

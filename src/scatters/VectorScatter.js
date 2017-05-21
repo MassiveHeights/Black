@@ -9,10 +9,10 @@ class VectorScatter extends Scatter {
   /**
    * Creates new VectorScatter instance.
    *
-   * @param {type} minX The min value along x-axis.
-   * @param {type} minY The min value along y-axis.
-   * @param {type} maxX The max value along x-axis.
-   * @param {type} maxY The max value along y-axis.
+   * @param {number} minX The min value along x-axis.
+   * @param {number} minY The min value along y-axis.
+   * @param {number} maxX The max value along x-axis.
+   * @param {number} maxY The max value along y-axis.
    */
   constructor(minX, minY, maxX, maxY) {
     super();

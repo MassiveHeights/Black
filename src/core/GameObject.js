@@ -140,7 +140,7 @@ class GameObject extends MessageDispatcher {
   /**
    * This method called each time object added to stage.
    *
-   * @protected
+   * @public
    * @return {void}
    */
   onAdded() {}
@@ -148,7 +148,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Called when object is removed from stage.
    *
-   * @protected
+   * @public
    * @return {void}
    */
   onRemoved() {}
@@ -157,7 +157,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Sugar method for adding child GameObjects or Components in a simple manner.
    *
-   * @param {...GameObject|...Component} gameObjectsAndOrComponents A GameObject or Component to add.
+   * @param {...(GameObject|Component)} gameObjectsAndOrComponents A GameObject or Component to add.
    * @return {Array<GameObject|Component>} The passed GameObject or Component.
    */
   add(...gameObjectsAndOrComponents) {
@@ -165,9 +165,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild( /* @type {!GameObject} */ (gooc));
+        this.addChild( /** @type {!GameObject} */ (gooc));
       else
-        this.addComponent( /* @type {!Component} */ (gooc));
+        this.addComponent( /** @type {!Component} */ (gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -362,7 +362,7 @@ class GameObject extends MessageDispatcher {
       throw new Error('Component cannot be added to two game objects at the same time.');
 
     this.mComponents.push(instance);
-    instance.gameObject = this;
+    instance.mGameObject = this;
 
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
@@ -388,7 +388,7 @@ class GameObject extends MessageDispatcher {
       this.mComponents.splice(index, 1);
 
     // detach game object after or before?
-    instance.gameObject = null;
+    instance.mGameObject = null;
     instance.onRemoved(this);
 
     if (this.root !== null)
@@ -400,7 +400,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Get component by type.
    *
-   * @param {*} typeName The component type.
+   * @param {Object} typeName The component type.
    *
    * @return {Component|null} The Component instance or null if not found.
    */
@@ -501,7 +501,7 @@ class GameObject extends MessageDispatcher {
 
     for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
-      c.gameObject = this;
+      c.mGameObject = this;
       c.onFixedUpdate(dt);
     }
 
@@ -520,7 +520,7 @@ class GameObject extends MessageDispatcher {
 
     for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
-      c.gameObject = this;
+      c.mGameObject = this;
       c.onUpdate(dt);
     }
 
@@ -539,7 +539,7 @@ class GameObject extends MessageDispatcher {
 
     for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
-      c.gameObject = this;
+      c.mGameObject = this;
       c.onPostUpdate(dt);
     }
 
@@ -551,7 +551,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Called at every fixed frame update.
    *
-   * @protected
+   * @public
    * @param {number} dt time since the last frame
    *
    * @return {void}
@@ -561,7 +561,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Called at every engine update.
    *
-   * @protected
+   * @public
    * @param {number} dt time since the last frame
    *
    * @return {void}
@@ -571,7 +571,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Called after all updates have been executed.
    *
-   * @protected
+   * @public
    * @param {number} dt Description
    *
    * @return {void}
@@ -668,7 +668,7 @@ class GameObject extends MessageDispatcher {
    * @param {number} [scaleY=1]  scale Y.
    * @param {number} [anchorX=0] Anchor X.
    * @param {number} [anchorY=0] Anchor Y.
-   * @param {number} [includeChildren=true] Include children when adjusting pivot?
+   * @param {boolean} [includeChildren=true] Include children when adjusting pivot?
    *
    * @return {GameObject} This.
    */
@@ -1064,7 +1064,7 @@ class GameObject extends MessageDispatcher {
    *
    * @readonly
    *
-   * @return {string}
+   * @return {string|null}
    */
   get path() {
     if (this.mParent !== null)
@@ -1394,7 +1394,7 @@ class GameObject extends MessageDispatcher {
    * Runs action accross all GameObjects.
    *
    * @param {GameObject} node                  GameObject to start iteration from.
-   * @param {function(node:GameObject)} action The function to be executed on
+   * @param {function(GameObject)} action The function to be executed on
    * every GameObject.
    *
    * @return {void}

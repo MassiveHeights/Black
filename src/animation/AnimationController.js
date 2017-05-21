@@ -29,7 +29,7 @@ class AnimationController extends Component {
    * Returns the Animation object that exists with the specified name.
    *
    * @param {string} name The name of the child to return.
-   * @returns {Animation} Returns the Animation object that exists with the specified name.
+   * @returns {AnimationInfo} Returns the Animation object that exists with the specified name.
    */
   getByName(name){
     Debug.assert(name !== null, 'Animation must be set first.');
@@ -146,7 +146,7 @@ class AnimationController extends Component {
   /**
    * Returns current active animation.
    *
-   * @returns {Animation|null}
+   * @returns {AnimationInfo|null}
    */
   get currentAnimation() {
     return this.mCurrentAnim;

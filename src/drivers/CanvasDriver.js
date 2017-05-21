@@ -80,7 +80,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @param {string} blendMode
@@ -98,7 +98,7 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * drawImage
    *
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @param {Texture} texture
@@ -116,7 +116,7 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * drawText
    *
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @param {string} text
@@ -155,7 +155,7 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * clear
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}
@@ -165,7 +165,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}
@@ -178,7 +178,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @inheritDoc
    * @override
    *
    * @return {void}
