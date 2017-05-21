@@ -27,11 +27,11 @@ class Sprite extends DisplayObject {
 
     /**
      * @protected
-     * @type {Object} = {r:1, g:1, b:1} 
-     * */
+     * @type {Object}
+     */
     this.mTint = {r: 1, g: 1, b: 1}; // todo
   }
-  
+
   /**
    * tint - Returns sprite tint object.
    *

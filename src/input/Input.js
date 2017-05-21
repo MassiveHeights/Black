@@ -557,13 +557,22 @@ class PointerInfo {
    * @param {number} y
    */
   constructor(activeObject, x, y) {
-    /** @private {GameObject} */
+    /**
+     * @private
+     * @type {GameObject}
+     */
     this.mActiveObject = activeObject;
 
-    /** @private {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mX = x;
 
-    /** @private {number} */
+    /**
+     * @private
+     * @type {number}
+     */
     this.mY = y;
   }
 
