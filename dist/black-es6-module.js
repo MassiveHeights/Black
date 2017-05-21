@@ -158,7 +158,7 @@ Math.RAD2DEG = 57.295779513082320876798154814105;
  *
  * @cat geom
  */
-
+export
 class Vector {
   /**
    * Creates new Vector instance.
@@ -485,16 +485,6 @@ class Vector {
     return outVector;
   }
 
-  /**
-   * toString - Description
-   *
-   * @param {number=} [digits=2] Description
-   *
-   * @return {string} Description
-   */
-  toString(digits = 2) {
-    return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
-  }
 }
 
 /**
@@ -509,7 +499,7 @@ Vector.__cache = new Vector();
  *
  * @cat geom
  */
-
+export
 class Matrix {
   /**
    * Creates new Matrix instance.
@@ -983,15 +973,6 @@ class Matrix {
     return this._matrix;
   }
 
-  /**
-   * @param  {number=} digits = 2
-   * @return {string}
-   */
-  toString(digits = 2) {
-    return `        | ${this.value[0].toFixed(digits)} | ${this.value[1].toFixed(digits)} | ${this.value[4].toFixed(digits)} |
-Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |
-        | ${(0).toFixed(digits)} | ${(0).toFixed(digits)} | ${(1).toFixed(digits)} |`;
-  }
 }
 
 /**
@@ -1005,7 +986,7 @@ Matrix.__cache = new Matrix();
  *
  * @cat geom
  */
-
+export
 class Rectangle {
   /**
    * Creates new instance of Rectangle.
@@ -1463,16 +1444,6 @@ class Rectangle {
     ];
   }
 
-  /**
-   * toString - Description
-   *
-   * @param {number=} [digits=2] Description
-   *
-   * @return {string} Description
-   */
-  toString(digits = 2) {
-    return `Rectangle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, width: ${this.width.toFixed(digits)}, height: ${this.height.toFixed(digits)} }`;
-  }
 }
 
 /**
@@ -1487,7 +1458,7 @@ Rectangle.__cache = new Rectangle();
  *
  * @cat geom
  */
-
+export
 class Circle {
   /**
    * Creates new Circle instance.
@@ -1733,16 +1704,6 @@ class Circle {
     return outVector.set(this.x, this.y);
   }
 
-  /**
-   * String representation of this circle.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Returns string representation of this circle.
-   */
-  toString(digits = 2) {
-    return `Circle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, r: ${this.r.toFixed(digits)} }`;
-  }
 }
 
 /** @type {Circle}
@@ -1755,7 +1716,7 @@ Circle.__cache = new Circle();
  *
  * @cat geom
  */
-
+export
 class Line {
   /**
    * Creates new Line instance.
@@ -2046,16 +2007,6 @@ class Line {
     return x > Math.min(x1, x2) && x < Math.max(x1, x2) && y > Math.min(y1, y2) && y < Math.max(y1, y2);
   }
 
-  /**
-   * toString - String representation of this line.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Description.
-   */
-  toString(digits = 2) {
-    return `Line { start: ${this.start.toString(digits)}, end: ${this.end.toString(digits)} }`;
-  }
 }
 
 /** @type {Line}
@@ -2066,7 +2017,7 @@ Line.__cache = new Line(new Vector(), new Vector());
 /**
  * @cat geom
  */
-
+export
 class Polygon {
   /**
    * Creates new Polygon instance.
@@ -2567,32 +2518,6 @@ class Polygon {
     return this.refresh();
   }
 
-  /**
-   * toString - String representation of this polygon.
-   *
-   * @param {number=} [digits=2] Number of digits after float point.
-   *
-   * @return {string} Description.
-   */
-  toString(digits = 2) {
-    let thisLines = this.mLines;
-    let thisVertices = this.mVertices;
-    let len = thisLines.length;
-    let vertices = '';
-    let lines = '';
-
-    for (let i = 0; i < len; i++) {
-      lines += thisLines[i].toString(digits);
-    }
-
-    len = thisVertices.length;
-    for (let i = 0; i < len; i++) {
-      vertices += thisVertices[i].toString(digits);
-    }
-
-    return `Polygon { vertices: ${vertices}, bounds: ${this.mBounds.toString(digits)}, center: ${this.mCenter.toString()}, lines: ${lines} }`;
-  }
-
 }
 
 /** @type {Polygon}
@@ -2605,7 +2530,7 @@ Polygon.__cache = new Polygon();
  *
  * @cat geom
  */
-
+export
 class Curve {
   /**
    * Creates new Curve instance.
@@ -2870,7 +2795,7 @@ Curve.__cache = new Curve();
  *
  * @cat core
  */
-
+export
 class Debug {
   constructor() {
     Debug.assert(false, 'Static class.');
@@ -2915,7 +2840,7 @@ Debug.logOnFail = true;
  * @cat core
  * @unrestricted
  */
-
+export
 class MessageDispatcher {
   constructor() {
     // object of arrays
@@ -3298,7 +3223,7 @@ MessageDispatcher.mGlobalHandlers = {};
  *
  * @cat core
  */
-
+export
 class Message {
   constructor() {
     /**
@@ -3460,7 +3385,7 @@ class Message {
  * @cat core
  * @static
  */
-
+export
 class Time {
   constructor() {
   }
@@ -3499,7 +3424,7 @@ Time.mScale = 1;
  * @cat core
  * @extends MessageDispatcher
  */
-
+export
 class System extends MessageDispatcher {
   constructor(){
     super();
@@ -3593,7 +3518,7 @@ class System extends MessageDispatcher {
  * @fires resize
  * @extends MessageDispatcher
  */
-
+export
 class Viewport extends MessageDispatcher {
   /**
    * constructor
@@ -3653,7 +3578,7 @@ class Viewport extends MessageDispatcher {
  * @unrestricted
  * @extends MessageDispatcher
  */
-
+export
 class Component extends MessageDispatcher {
   /**
    * Creates new Component instance.
@@ -3758,7 +3683,7 @@ Component.ID = 0;
  * @unrestricted
  * @extends MessageDispatcher
  */
-
+export
 class GameObject extends MessageDispatcher {
   /**
    * Creates new instance of GameObject.
@@ -5199,7 +5124,7 @@ GameObject.ID = 0;
 /**
  * @enum {number}
  */
-
+export
 var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
@@ -5220,7 +5145,7 @@ var DirtyFlag = {
  * @cat video
  * @extends Scatter
  */
-
+export
 class Texture {
   /**
    * Creates new Texture instance.
@@ -5462,7 +5387,7 @@ Texture.MISSING_IMAGE_CACHE = null;
  * @cat video
  * @extends Texture
  */
-
+export
 class AtlasTexture extends Texture {
   /**
    * Creates new AtlasTexture instance.
@@ -5624,7 +5549,7 @@ class AtlasTexture extends Texture {
  * @cat loaders
  * @extends MessageDispatcher
  */
-
+export
 class Asset extends MessageDispatcher {
   /**
    * Creates new Assets instance.
@@ -5776,7 +5701,7 @@ class Asset extends MessageDispatcher {
  * @cat loaders
  * @extends Asset
  */
-
+export
 class TextureAsset extends Asset {
   /**
    * Creates TextureAsset instance.
@@ -5826,7 +5751,7 @@ class TextureAsset extends Asset {
  * @cat loaders
  * @extends Asset
  */
-
+export
 class JSONAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
@@ -5860,7 +5785,7 @@ class JSONAsset extends Asset {
  * @cat loaders
  * @extends Asset
  */
-
+export
 class FontAsset extends Asset {
   /**
    * @param {string} name font name
@@ -6009,7 +5934,7 @@ class FontAsset extends Asset {
  * @cat loaders
  * @extends Asset
  */
-
+export
 class AtlasTextureAsset extends Asset {
   /**
    * Creates new AtlasTextureAsset instance.
@@ -6083,7 +6008,7 @@ TODO:
  * @cat loaders
  * @extends MessageDispatcher
  */
-
+export
 class AssetManager extends MessageDispatcher {
   /**
    * Creates new AssetManager instance. AssetManager exposes static property
@@ -6363,7 +6288,7 @@ AssetManager.default = new AssetManager();
  * @cat drivers
  * @enum {string}
  */
-
+export
 var BlendMode = {
   AUTO       : 'auto',
   NORMAL     : 'source-over',
@@ -6391,7 +6316,7 @@ var BlendMode = {
  *
  * @cat drivers
  */
-
+export
 class VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement
@@ -6657,7 +6582,7 @@ class VideoNullDriver {
  * @cat drivers
  * @extends VideoNullDriver
  */
-
+export
 class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement The DOM element to draw into.
@@ -6881,7 +6806,7 @@ class CanvasDriver extends VideoNullDriver {
  * @cat drivers
  * @extends VideoNullDriver
  */
-
+export
 class DOMDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement The DOM element to draw into.
@@ -7184,7 +7109,7 @@ class DOMDriver extends VideoNullDriver {
  * @cat drivers
  * @extends VideoNullDriver
  */
-
+export
 class WebGLDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement description
@@ -7331,7 +7256,7 @@ class WebGLDriver extends VideoNullDriver {
 /**
 * Manages WebGl array buffer data for sprite program.
 * */
-
+export
 class WebGLBuffer {
   constructor(renderer) {
 
@@ -7401,7 +7326,7 @@ class WebGLBuffer {
 /**
  * Manages WebGl element buffer data for sprite program.
  * */
-
+export
 class WebGLElementBuffer {
   constructor(renderer) {
 
@@ -7494,7 +7419,7 @@ const fragmentShaderSource = `
  *
  */
 
-
+export
 class WebGLProgram {
   constructor(renderer) {
 
@@ -7588,7 +7513,7 @@ class WebGLProgram {
   }
 }
 
-
+export
 class WebGLState {
   constructor(renderer) {
     this.renderer = renderer;
@@ -7666,7 +7591,7 @@ class WebGLState {
   }
 }
 
-
+export
 class WebGLTextures {
   constructor(renderer) {
 
@@ -7736,7 +7661,7 @@ class WebGLTextures {
 /**
  * Maps black blend modes to WebGl blend functions.
  */
-
+export
 var WebGLBlendMode = (blendMode, gl) => {
   var map = {
     [BlendMode.NORMAL]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
@@ -7766,7 +7691,7 @@ var WebGLBlendMode = (blendMode, gl) => {
  * @cat display
  * @extends GameObject
  */
-
+export
 class DisplayObject extends GameObject {
   constructor() {
     super();
@@ -7856,7 +7781,7 @@ class DisplayObject extends GameObject {
  *
  * @cat display.text
  */
-
+export
 class TextInfo {
   /**
    * @param  {string=} name Font name
@@ -7928,7 +7853,7 @@ TextInfo.FontAlign = {
  * @cat display
  * @extends DisplayObject
  */
-
+export
 class Sprite extends DisplayObject {
 
   /**
@@ -8060,7 +7985,7 @@ class Sprite extends DisplayObject {
  * @cat display.text
  * @extends DisplayObject
  */
-
+export
 class TextField extends DisplayObject {
   /**
    * @param  {string=} text Text to be displayed inside this text field
@@ -8465,7 +8390,7 @@ class TextField extends DisplayObject {
  * @static
  * @cat system
  */
-
+export
 class Device {
   /**
    * Static class.
@@ -8573,7 +8498,7 @@ Device.mInstance = null;
  *
  * @cat scatters
  */
-
+export
 class Scatter {
   /**
    * Creates new Scatter instance.
@@ -8602,7 +8527,7 @@ class Scatter {
  * @cat scatters
  * @extends Scatter
  */
-
+export
 class FloatScatter extends Scatter {
   /**
    * Creates new FloatScatter instance.
@@ -8659,7 +8584,7 @@ class FloatScatter extends Scatter {
  * @cat scatters
  * @extends Scatter
  */
-
+export
 class VectorScatter extends Scatter {
   /**
    * Creates new VectorScatter instance.
@@ -8716,7 +8641,7 @@ class VectorScatter extends Scatter {
  * @cat scatters
  * @extends Scatter
  */
-
+export
 class FloatCurveScatter extends Scatter {
   /**
    * Creates new FloatCurveScatter instance.
@@ -8773,7 +8698,7 @@ class FloatCurveScatter extends Scatter {
  * @abstract
  * @class
  */
-
+export
 class Action {
   /**
    * Creates new Action instance.
@@ -8823,7 +8748,7 @@ class Action {
  * @extends Action
  * @class
  */
-
+export
 class Acceleration extends Action {
   /**
    * Creates new Acceleration instance.
@@ -8874,7 +8799,7 @@ class Acceleration extends Action {
  * @extends Action
  * @class
  */
-
+export
 class AlphaOverLife extends Action {
   /**
    * Creates new AlphaOverLife instance.
@@ -8921,7 +8846,7 @@ class AlphaOverLife extends Action {
  * @extends Action
  * @class
  */
-
+export
 class ScaleOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -8963,7 +8888,7 @@ class ScaleOverLife extends Action {
  * @extends Action
  * @class
  */
-
+export
 class RotationOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -9005,7 +8930,7 @@ class RotationOverLife extends Action {
  * @extends Action
  * @class
  */
-
+export
 class TextureOverLife extends Action {
   constructor(floatScatter) {
     super();
@@ -9045,7 +8970,7 @@ class TextureOverLife extends Action {
  *
  * @cat particles.initializers
  */
-
+export
 class Initializer {
   /**
    * Creates new Initializer instance.
@@ -9067,7 +8992,7 @@ class Initializer {
  * @cat particles.initializers
  * @extends Initializer
  */
-
+export
 class Life extends Initializer {
   /**
    * Creates new LIfe instance.
@@ -9103,7 +9028,7 @@ class Life extends Initializer {
  * @extends Initializer
  * @class
  */
-
+export
 class Mass extends Initializer {
   /**
    * Creates new Mass instance.
@@ -9139,7 +9064,7 @@ class Mass extends Initializer {
  * @extends Initializer
  * @class
  */
-
+export
 class Scale extends Initializer {
   /**
    * Creates new Scale instance.
@@ -9175,7 +9100,7 @@ class Scale extends Initializer {
  * @extends Initializer
  * @class
  */
-
+export
 class Velocity extends Initializer {
   /**
    * Creates new Velocity instance.
@@ -9214,7 +9139,7 @@ class Velocity extends Initializer {
  * @extends Initializer
  * @class
  */
-
+export
 class Position extends Initializer {
   /**
    * Creates new Position instance.
@@ -9252,7 +9177,7 @@ class Position extends Initializer {
  * @cat particles.initializers
  * @extends Initializer
  */
-
+export
 class Rotation extends Initializer {
   /**
    * Creates new Rotation instance.
@@ -9288,7 +9213,7 @@ class Rotation extends Initializer {
  * @extends Initializer
  * @class
  */
-
+export
 class RandomTexture extends Initializer {
   /**
    * Creates new RandomTexture instance.
@@ -9335,7 +9260,7 @@ var EmitterState = {
  * @cat particles
  * @class
  */
-
+export
 class Particle {
   constructor() {
     this.reset();
@@ -9473,7 +9398,7 @@ class Particle {
  * @extends DisplayObject
  * @class
  */
-
+export
 class Emitter extends DisplayObject {
   /**
    * Creates new Emitter instance.
@@ -10022,7 +9947,7 @@ class Emitter extends DisplayObject {
  * @enum {number}
  * @cat input
  */
-
+export
 var Key = {
   /**
    * @type {number}
@@ -10423,7 +10348,7 @@ var Key = {
  *
  * @cat input
  */
-
+export
 class KeyInfo {
 
   /**
@@ -10456,7 +10381,7 @@ class KeyInfo {
  * @cat input
  * @extends System
  */
-
+export
 class Input extends System {
   /**
    * Private constructor.
@@ -10992,7 +10917,7 @@ Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
  *
  * @cat input
  */
-
+export
 class PointerInfo {
   /**
    * Creates new PointerInfo instance. For internal use only.
@@ -11046,7 +10971,7 @@ class PointerInfo {
  * @cat input
  * @extends Component
  */
-
+export
 class InputComponent extends Component {
   /**
    * @return {void}
@@ -11069,7 +10994,7 @@ class InputComponent extends Component {
  * @cat components
  * @extends Component
  */
-
+export
 class FPSComponent extends Component  {
   constructor() {
     super();
@@ -11102,7 +11027,7 @@ class FPSComponent extends Component  {
  * @cat components
  * @extends Component
  */
-
+export
 class MRComponent extends Component {
   /**
    * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
@@ -11202,7 +11127,7 @@ class MRComponent extends Component {
  * @cat animation
  * @static
  */
-
+export
 class Ease {
   /**
    * linear
@@ -11626,7 +11551,7 @@ class Ease {
  * @cat animation
  * @static
  */
-
+export
 class Interpolation {
   /**
    * Singleton.
@@ -11756,7 +11681,7 @@ Interpolation.__factorial = (function() {
  * @unrestricted
  * @extends Component
  */
-
+export
 class Tween extends Component {
   /**
    * Creates new instance of Tween Component.
@@ -12258,7 +12183,7 @@ class Tween extends Component {
  *
  * @cat animation
  */
-
+export
 class AnimationInfo {
   /**
    * Creates an instance of Animation class
@@ -12500,7 +12425,7 @@ class AnimationInfo {
  * @cat animation
  * @extends Component
  */
-
+export
 class AnimationController extends Component {
   /**
    * Creates an instance of AnimationController
@@ -12654,7 +12579,7 @@ class AnimationController extends Component {
  *
  * @extends MessageDispatcher
  */
-
+export
 class Black extends MessageDispatcher {
 
   /**
@@ -13423,4 +13348,4 @@ class Black extends MessageDispatcher {
   }
 }
 
-//# sourceMappingURL=black-es6.js.map
+//# sourceMappingURL=black-es6-module.js.map
