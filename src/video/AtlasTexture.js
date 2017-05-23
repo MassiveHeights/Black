@@ -106,37 +106,11 @@ class AtlasTexture extends Texture {
     return out;
   }
 
-  // /**
-  //  * @private
-  //  * @param {*} a
-  //  * @param {*} b
-  //  *
-  //  * @return {number}
-  //  */
-  // static __naturalComparer(a, b) {
-  //   const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
-  //   let aa = String(a).split(NUMBER_GROUPS);
-  //   let bb = String(b).split(NUMBER_GROUPS);
-  //   let min = Math.min(aa.length, bb.length);
-  //
-  //   for (let i = 0; i < min; i++) {
-  //     let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-  //     let y = parseFloat(bb[i]) || bb[i].toLowerCase();
-  //
-  //     if (x < y)
-  //       return -1;
-  //     else if (x > y)
-  //       return 1;
-  //   }
-  //
-  //   return 0;
-  // };
-
   static naturalSort(dataset, field = null) {
     dataset.sort(AtlasTexture.__naturalComparer(field));
   }
 
-  static __naturalComparer(field = null) {
+  static __naturalComparer(field = null, useAbs = true) {
     return function(a, b) {
       const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
       let aa = String(field == null ? a : a[field]).split(NUMBER_GROUPS);
@@ -144,8 +118,16 @@ class AtlasTexture extends Texture {
       let min = Math.min(aa.length, bb.length);
 
       for (let i = 0; i < min; i++) {
-        let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-        let y = parseFloat(bb[i]) || bb[i].toLowerCase();
+        let x = 0;
+        let y = 0;
+
+        if (useAbs) {
+          x = Math.abs(parseFloat(aa[i])) || aa[i].toLowerCase();
+          y = Math.abs(parseFloat(bb[i])) || bb[i].toLowerCase();
+        } else {
+          x = parseFloat(aa[i]) || aa[i].toLowerCase();
+          y = parseFloat(bb[i]) || bb[i].toLowerCase();
+        }
 
         if (x < y)
           return -1;

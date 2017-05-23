@@ -125,8 +125,10 @@ class DOMDriver extends VideoNullDriver {
   drawImage(texture, bounds) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
+    let uw = texture.untrimmedRect.x;
+    let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(bounds.x, bounds.y);
+    this.mTransform.translate(bounds.x + uw, bounds.y + uh);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);

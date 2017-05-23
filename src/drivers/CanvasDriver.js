@@ -110,7 +110,10 @@ class CanvasDriver extends VideoNullDriver {
     let w = texture.width;
     let h = texture.height;
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x, bounds.y, w, h);
+    let uw = texture.untrimmedRect.x;
+    let uh = texture.untrimmedRect.y;
+
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
   }
 
   /**
