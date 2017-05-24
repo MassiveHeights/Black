@@ -66,30 +66,16 @@ gulp.task('examples', ['build-es6'], function() {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
 });
 
+gulp.task('watch-es5', ['build-es5'], function() {
+  gulp.watch(['./src/**/*.js'], ['build-es5']);
+});
+
+gulp.task('watch-es6', ['build-es6'], function() {
+  gulp.watch(['./src/**/*.js'], ['build-es6']);
+});
+
 gulp.task('watch-es6-module', ['build-es6-module'], function() {
   gulp.watch(['./src/**/*.js'], ['build-es6-module']);
-});
-
-gulp.task('test:pre', function() {
-  return gulp.src('./src/**/*.js')
-    .pipe(preprocess({
-      context: {
-        EXPORT: 'export'
-      }
-    }))
-    .pipe(sourcemaps.init())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./dist-test/'));
-});
-
-gulp.task('test', ['test:pre'], function() {
-  gulp.src('./test/**/*.js', {
-      read: false
-    })
-    .pipe(mocha({
-      reporter: 'list',
-      compilers: ['js:babel-core/register']
-    }))
 });
 
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
