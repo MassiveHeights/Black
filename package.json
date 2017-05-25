@@ -10,7 +10,8 @@
     "docs": "jsdoc -c .jsdoc -R README.md",
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
-    "watch-es6-module": "gulp watch-es6-module"
+    "watch-es6-module": "gulp watch-es6-module",
+    "watch-test": "gulp watch-test"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "babel-plugin-root-import": "^5.1.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.24.1",
+    "browser-sync": "^2.18.12",
     "google-closure-compiler": "^20161024.3.0",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",

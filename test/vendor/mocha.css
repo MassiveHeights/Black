@@ -3,6 +3,7 @@
 * {
   font-size: 13px;
   -webkit-font-smoothing: none;
+  font-style:normal;
 }
 
 body {
@@ -255,21 +256,24 @@ body {
 }
 
 #mocha-stats {
-  position: fixed;
-  top: 15px;
-  right: 10px;
   margin: 0;
-  color: #888;
+  color: black;
   z-index: 1;
+
+  margin-left: 10px !important;
+  margin-bottom: 20px !important;
 }
 
 #mocha-stats .progress {
   float: right;
   padding-top: 0;
+  margin-top: -2px;
+  font-weight: bold;
 }
 
 #mocha-stats em {
   color: black;
+  font-weight: bold;
 }
 
 #mocha-stats a {
