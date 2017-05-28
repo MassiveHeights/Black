@@ -1249,7 +1249,7 @@ var Rectangle = function () {
     }
 
     /**
-     * Copies values from this rectangle into description.
+     * Copies values from this rectangle into given rectangle.
      *
      * @param {Rectangle} rect The destination rect.
      *
@@ -1365,7 +1365,7 @@ var Rectangle = function () {
     }
 
     /**
-     * Adds two rects ]
+     * Adds given rectangle into this.
      *
      * @param {Rectangle} toUnion A rectangle object to add to this rect.
      *
@@ -1676,7 +1676,7 @@ var Rectangle = function () {
   }, {
     key: "bottomLeft",
     get: function get() {
-      return new Vector(this.right, this.bottom);
+      return new Vector(this.x, this.bottom);
     }
 
     /**
@@ -1686,7 +1686,7 @@ var Rectangle = function () {
      */
     ,
     set: function set(vector) {
-      this.left = vector.x;
+      this.x = vector.x;
       this.bottom = vector.y;
     }
   }, {
@@ -3407,6 +3407,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * The MessageDispatcher class is the base class for all classes that posts messages.
  *
+ * Global messages will not be dispatched on non GameObject objects.
+ *
  * @cat core
  * @unrestricted
  */
@@ -3495,15 +3497,22 @@ var MessageDispatcher = function () {
   }, {
     key: 'hasOn',
     value: function hasOn(name) {
-      if (this.mListeners === null) return false;
+      Debug.assert(name !== null, 'name cannot be null.');
 
-      if (this.mListeners.hasOwnProperty(name) === false) return false;
+      var filterIx = name.indexOf('@');
+      if (filterIx !== -1) {
+        var pureName = name.substring(0, filterIx);
+        if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false) return false;
+      } else {
+        if (this.mListeners === null) return false;else if (this.mListeners.hasOwnProperty(name) === false) return false;
+      }
 
       return true;
     }
 
     /**
-     * Removes listener
+     * Removes listener.
+     * If callback is null then all callbacks will be removed.
      *
      * @param {string} name
      * @param {Function=} [callback=null]
@@ -3516,23 +3525,48 @@ var MessageDispatcher = function () {
     value: function removeOn(name) {
       var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      if (name === null || name.length === 0) throw new Error('Name cannot be null.');
+      Debug.assert(name !== null, 'name cannot be null.');
+      //Debug.assert(callback !== null, 'callback cannot be null.');
 
-      if (this.mListeners === null) return;
+      var filterIx = name.indexOf('@');
+      if (filterIx !== -1) {
+        //we are working with overheared message
+        var pureName = name.substring(0, filterIx);
+        var pathMask = name.substring(filterIx + 1);
 
-      var dispatchers = /** @type {Array<{callback: Function, context}>} */this.mListeners[name];
+        if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false) return;
 
-      if (dispatchers === undefined) return;
+        var dispatchers = MessageDispatcher.mGlobalHandlers[pureName];
 
-      if (callback === null) {
-        dispatchers.splice(0, dispatchers.length);
-        return;
-      }
-
-      for (var i = dispatchers.length; i--;) {
-        if (dispatchers[i].callback === callback) {
-          dispatchers.splice(i, 1);
+        if (callback === null) {
+          dispatchers.splice(0, dispatchers.length);
           return;
+        } else {
+          for (var i = dispatchers.length; i--;) {
+            if (dispatchers[i].callback === callback) {
+              dispatchers.splice(i, 1);
+              return;
+            }
+          }
+        }
+      } else {
+        // regular message
+        if (this.mListeners === null) return;
+
+        var _dispatchers2 = /** @type {Array<{callback: Function, context}>} */this.mListeners[name];
+
+        if (_dispatchers2 === undefined) return;
+
+        if (callback === null) {
+          _dispatchers2.splice(0, _dispatchers2.length);
+          return;
+        } else {
+          for (var _i = _dispatchers2.length; _i--;) {
+            if (_dispatchers2[_i].callback === callback) {
+              _dispatchers2.splice(_i, 1);
+              return;
+            }
+          }
         }
       }
     }
@@ -3618,8 +3652,8 @@ var MessageDispatcher = function () {
           dispatcher.__invoke.apply(dispatcher, [sender, message].concat(params));
         }
       } else {
-        for (var _i = list.length - 1; _i >= 0; _i--) {
-          var _dispatcher = /** @type {GameObject} */list[_i];
+        for (var _i2 = list.length - 1; _i2 >= 0; _i2--) {
+          var _dispatcher = /** @type {GameObject} */list[_i2];
           _dispatcher.__invoke.apply(_dispatcher, [sender, message].concat(params));
         }
       }
@@ -3761,21 +3795,6 @@ var MessageDispatcher = function () {
     value: function __parseMessage(sender, info) {
       // TODO: make message pool... this type of objects shall not be
       // but dont forget to take care about cancel property
-
-      // EXAMPLES:
-      //  this.post('clicked', data); // Sends to all listeners of this
-      //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
-      //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
-      //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
-      //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
-      //  this.post('~clicked@mySprite#ColliderComponent');
-
-      // DIRECTIONS
-      // clicked - none, direct
-      // ~clicked - up, bubbling
-      // clicked@ - down starting from root, with no filter to everyone
-      // clicked@mySpriter - down with 'mySprite' filter
-      // ~clicked@ - inversed bubbling starting from the root, ending at this
 
       var result = new Message();
       result.mSender = sender;
@@ -6541,33 +6560,6 @@ var AtlasTexture = function (_Texture) {
         out.push(this.mSubTextures[names[i]]);
       }return out;
     }
-
-    // /**
-    //  * @private
-    //  * @param {*} a
-    //  * @param {*} b
-    //  *
-    //  * @return {number}
-    //  */
-    // static __naturalComparer(a, b) {
-    //   const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
-    //   let aa = String(a).split(NUMBER_GROUPS);
-    //   let bb = String(b).split(NUMBER_GROUPS);
-    //   let min = Math.min(aa.length, bb.length);
-    //
-    //   for (let i = 0; i < min; i++) {
-    //     let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-    //     let y = parseFloat(bb[i]) || bb[i].toLowerCase();
-    //
-    //     if (x < y)
-    //       return -1;
-    //     else if (x > y)
-    //       return 1;
-    //   }
-    //
-    //   return 0;
-    // };
-
   }], [{
     key: "naturalSort",
     value: function naturalSort(dataset) {
@@ -6579,6 +6571,7 @@ var AtlasTexture = function (_Texture) {
     key: "__naturalComparer",
     value: function __naturalComparer() {
       var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var useAbs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
       return function (a, b) {
         var NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
@@ -6587,8 +6580,16 @@ var AtlasTexture = function (_Texture) {
         var min = Math.min(aa.length, bb.length);
 
         for (var i = 0; i < min; i++) {
-          var x = parseFloat(aa[i]) || aa[i].toLowerCase();
-          var y = parseFloat(bb[i]) || bb[i].toLowerCase();
+          var x = 0;
+          var y = 0;
+
+          if (useAbs) {
+            x = Math.abs(parseFloat(aa[i])) || aa[i].toLowerCase();
+            y = Math.abs(parseFloat(bb[i])) || bb[i].toLowerCase();
+          } else {
+            x = parseFloat(aa[i]) || aa[i].toLowerCase();
+            y = parseFloat(bb[i]) || bb[i].toLowerCase();
+          }
 
           if (x < y) return -1;else if (x > y) return 1;
         }
@@ -6997,6 +6998,12 @@ var FontAsset = function (_Asset) {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    _this.mElementAdded = false;
+
+    /**
+     * @private
      * @type {HTMLElement}
      */
     _this.mLoaderElement = _this.__getLoaderElement(_this.mLocal);
@@ -7043,7 +7050,9 @@ var FontAsset = function (_Asset) {
       testingElement.style.visibility = 'hidden';
       testingElement.style.fontSize = '250px';
       testingElement.innerHTML = this.mTestingString;
-      document.body.appendChild(testingElement);
+
+      // body may be not ready
+      //document.body.appendChild(testingElement);
 
       return testingElement;
     }
@@ -7068,6 +7077,16 @@ var FontAsset = function (_Asset) {
   }, {
     key: 'checkLoadingStatus',
     value: function checkLoadingStatus() {
+      if (this.mElementAdded === false) {
+        if (document.body != null) {
+          document.body.appendChild(this.mTestingElement);
+          this.mElementAdded = true;
+        } else {
+          setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+          return;
+        }
+      }
+
       if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
         if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
           this.onLoadingFail();
@@ -8000,7 +8019,10 @@ var CanvasDriver = function (_VideoNullDriver) {
       var w = texture.width;
       var h = texture.height;
 
-      this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x, bounds.y, w, h);
+      var uw = texture.untrimmedRect.x;
+      var uh = texture.untrimmedRect.y;
+
+      this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
     }
 
     /**
@@ -8316,8 +8338,10 @@ var DOMDriver = function (_VideoNullDriver) {
     value: function drawImage(texture, bounds) {
       /** @type {Matrix|null} */
       var oldTransform = this.mTransform;
+      var uw = texture.untrimmedRect.x;
+      var uh = texture.untrimmedRect.y;
 
-      this.mTransform.translate(bounds.x, bounds.y);
+      this.mTransform.translate(bounds.x + uw, bounds.y + uh);
 
       var el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
       this.__updateElementCommon(el);
@@ -15484,6 +15508,8 @@ var Black = function (_MessageDispatcher) {
       this.mIsStarted = false;
       this.mIsRunning = false;
       cancelAnimationFrame(this.mRAFHandle);
+
+      console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
     }
 
     /**
@@ -15748,6 +15774,11 @@ var Black = function (_MessageDispatcher) {
      * @return {boolean}
      */
 
+  }, {
+    key: 'dispose',
+    value: function dispose() {
+      // todo: call dispose on eveyrthing!
+    }
   }, {
     key: 'root',
     get: function get() {

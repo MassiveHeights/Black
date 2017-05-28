@@ -1077,7 +1077,7 @@ class Rectangle {
   }
 
   /**
-   * Copies values from this rectangle into description.
+   * Copies values from this rectangle into given rectangle.
    *
    * @param {Rectangle} rect The destination rect.
    *
@@ -1227,7 +1227,7 @@ class Rectangle {
    * @return {Vector} Description
    */
   get bottomLeft() {
-    return new Vector(this.right, this.bottom);
+    return new Vector(this.x, this.bottom);
   }
 
   /**
@@ -1236,7 +1236,7 @@ class Rectangle {
    * @param {Vector} vector
    */
   set bottomLeft(vector) {
-    this.left = vector.x;
+    this.x = vector.x;
     this.bottom = vector.y;
   }
 
@@ -1315,7 +1315,7 @@ class Rectangle {
 
 
   /**
-   * Adds two rects ]
+   * Adds given rectangle into this.
    *
    * @param {Rectangle} toUnion A rectangle object to add to this rect.
    *
@@ -2912,6 +2912,8 @@ Debug.logOnFail = true;
 /**
  * The MessageDispatcher class is the base class for all classes that posts messages.
  *
+ * Global messages will not be dispatched on non GameObject objects.
+ *
  * @cat core
  * @unrestricted
  */
@@ -2941,7 +2943,7 @@ class MessageDispatcher {
     Debug.assert(callback !== null, 'callback cannot be null.');
 
     // TODO: refactor, expore dispatching provider
-    let filterIx = name.indexOf('@') ;
+    let filterIx = name.indexOf('@');
     if (filterIx !== -1) {
       // global handler
 
@@ -2992,17 +2994,26 @@ class MessageDispatcher {
    * @returns {boolean} True if found.
    */
   hasOn(name) {
-    if (this.mListeners === null)
-      return false;
+    Debug.assert(name !== null, 'name cannot be null.');
 
-    if (this.mListeners.hasOwnProperty(name) === false)
-      return false;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      let pureName = name.substring(0, filterIx);
+      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
+        return false;
+    } else {
+      if (this.mListeners === null)
+        return false;
+      else if (this.mListeners.hasOwnProperty(name) === false)
+        return false;
+    }
 
     return true;
   }
 
   /**
-   * Removes listener
+   * Removes listener.
+   * If callback is null then all callbacks will be removed.
    *
    * @param {string} name
    * @param {Function=} [callback=null]
@@ -3010,26 +3021,52 @@ class MessageDispatcher {
    * @return {void}
    */
   removeOn(name, callback = null) {
-    if (name === null || name.length === 0)
-      throw new Error('Name cannot be null.');
+    Debug.assert(name !== null, 'name cannot be null.');
+    //Debug.assert(callback !== null, 'callback cannot be null.');
 
-    if (this.mListeners === null)
-      return;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      //we are working with overheared message
+      let pureName = name.substring(0, filterIx);
+      let pathMask = name.substring(filterIx + 1);
 
-    let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
-
-    if (dispatchers === undefined)
-      return;
-
-    if (callback === null) {
-      dispatchers.splice(0, dispatchers.length);
-      return;
-    }
-
-    for (let i = dispatchers.length; i--;) {
-      if (dispatchers[i].callback === callback) {
-        dispatchers.splice(i, 1);
+      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         return;
+
+      let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
+      }
+
+    } else {
+      // regular message
+      if (this.mListeners === null)
+        return;
+
+      let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
+
+      if (dispatchers === undefined)
+        return;
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
       }
     }
   }
@@ -3064,8 +3101,7 @@ class MessageDispatcher {
       if (message.mSibblings === true) {
         this.__sendGlobal(this, message, null, ...params);
         message.mOrigin.__invokeGlobal(this, message, ...params);
-      }
-      else
+      } else
         this.__sendBubbles(this, message, false, ...params);
     } else if (message.mDirection === 'up') {
       this.__sendBubbles(this, message, true, ...params);
@@ -3221,21 +3257,6 @@ class MessageDispatcher {
   __parseMessage(sender, info) {
     // TODO: make message pool... this type of objects shall not be
     // but dont forget to take care about cancel property
-
-    // EXAMPLES:
-    //  this.post('clicked', data); // Sends to all listeners of this
-    //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
-    //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
-    //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
-    //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
-    //  this.post('~clicked@mySprite#ColliderComponent');
-
-    // DIRECTIONS
-    // clicked - none, direct
-    // ~clicked - up, bubbling
-    // clicked@ - down starting from root, with no filter to everyone
-    // clicked@mySpriter - down with 'mySprite' filter
-    // ~clicked@ - inversed bubbling starting from the root, ending at this
 
     let result = new Message();
     result.mSender = sender;
@@ -3453,7 +3474,6 @@ class Message {
     return 'complete';
   }
 }
-
 /**
  * Provides time related methods.
  *
@@ -5564,37 +5584,11 @@ class AtlasTexture extends Texture {
     return out;
   }
 
-  // /**
-  //  * @private
-  //  * @param {*} a
-  //  * @param {*} b
-  //  *
-  //  * @return {number}
-  //  */
-  // static __naturalComparer(a, b) {
-  //   const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
-  //   let aa = String(a).split(NUMBER_GROUPS);
-  //   let bb = String(b).split(NUMBER_GROUPS);
-  //   let min = Math.min(aa.length, bb.length);
-  //
-  //   for (let i = 0; i < min; i++) {
-  //     let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-  //     let y = parseFloat(bb[i]) || bb[i].toLowerCase();
-  //
-  //     if (x < y)
-  //       return -1;
-  //     else if (x > y)
-  //       return 1;
-  //   }
-  //
-  //   return 0;
-  // };
-
   static naturalSort(dataset, field = null) {
     dataset.sort(AtlasTexture.__naturalComparer(field));
   }
 
-  static __naturalComparer(field = null) {
+  static __naturalComparer(field = null, useAbs = true) {
     return function(a, b) {
       const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
       let aa = String(field == null ? a : a[field]).split(NUMBER_GROUPS);
@@ -5602,8 +5596,16 @@ class AtlasTexture extends Texture {
       let min = Math.min(aa.length, bb.length);
 
       for (let i = 0; i < min; i++) {
-        let x = parseFloat(aa[i]) || aa[i].toLowerCase();
-        let y = parseFloat(bb[i]) || bb[i].toLowerCase();
+        let x = 0;
+        let y = 0;
+
+        if (useAbs) {
+          x = Math.abs(parseFloat(aa[i])) || aa[i].toLowerCase();
+          y = Math.abs(parseFloat(bb[i])) || bb[i].toLowerCase();
+        } else {
+          x = parseFloat(aa[i]) || aa[i].toLowerCase();
+          y = parseFloat(bb[i]) || bb[i].toLowerCase();
+        }
 
         if (x < y)
           return -1;
@@ -5909,6 +5911,12 @@ class FontAsset extends Asset {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.mElementAdded = false;
+
+    /**
+     * @private
      * @type {HTMLElement}
      */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
@@ -5947,7 +5955,9 @@ class FontAsset extends Asset {
     testingElement.style.visibility = 'hidden';
     testingElement.style.fontSize = '250px';
     testingElement.innerHTML = this.mTestingString;
-    document.body.appendChild(testingElement);
+
+    // body may be not ready
+    //document.body.appendChild(testingElement);
 
     return testingElement;
   }
@@ -5969,6 +5979,17 @@ class FontAsset extends Asset {
    * @return {void}
    */
   checkLoadingStatus() {
+    if (this.mElementAdded === false) {
+      if (document.body != null) {
+        document.body.appendChild(this.mTestingElement);
+        this.mElementAdded = true;
+      } else {
+        setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+        return;
+      }
+    }
+
+
     if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
       if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
         this.onLoadingFail();
@@ -6763,7 +6784,10 @@ class CanvasDriver extends VideoNullDriver {
     let w = texture.width;
     let h = texture.height;
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x, bounds.y, w, h);
+    let uw = texture.untrimmedRect.x;
+    let uh = texture.untrimmedRect.y;
+
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
   }
 
   /**
@@ -7002,8 +7026,10 @@ class DOMDriver extends VideoNullDriver {
   drawImage(texture, bounds) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
+    let uw = texture.untrimmedRect.x;
+    let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(bounds.x, bounds.y);
+    this.mTransform.translate(bounds.x + uw, bounds.y + uh);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
@@ -13005,7 +13031,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function(timestamp) {
+    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -13033,6 +13059,8 @@ class Black extends MessageDispatcher {
     this.mIsStarted = false;
     this.mIsRunning = false;
     cancelAnimationFrame(this.mRAFHandle);
+
+    console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
   }
 
   /**
@@ -13418,9 +13446,12 @@ class Black extends MessageDispatcher {
     this.mEnableFixedTimeStep = value;
   }
 
+  dispose() {
+    // todo: call dispose on eveyrthing!
+  }
+
   get magic() {
     return Math.random();
   }
 }
-
 //# sourceMappingURL=black-es6.js.map
