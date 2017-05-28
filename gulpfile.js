@@ -13,8 +13,9 @@ const preprocess = require('gulp-preprocess');
 const mocha = require('gulp-mocha');
 const info = JSON.parse(fs.readFileSync('./build.json'));
 const files = info.files;
+const bs = require('browser-sync').create();
 
-gulp.task('build-es5', function() {
+gulp.task('build-es5', function () {
   return gulp.src(files)
     .pipe(preprocess({
       context: {
@@ -30,7 +31,7 @@ gulp.task('build-es5', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build-es6', function() {
+gulp.task('build-es6', function () {
   return gulp.src(files)
     .pipe(preprocess({
       context: {
@@ -44,7 +45,7 @@ gulp.task('build-es6', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build-es6-module', function() {
+gulp.task('build-es6-module', function () {
   return gulp.src(files)
     .pipe(preprocess({
       context: {
@@ -57,39 +58,38 @@ gulp.task('build-es6-module', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-examples', ['build-es6'], function() {
+gulp.task('copy-examples', ['build-es6'], function () {
   return gulp.src('./dist/black-es6.*')
     .pipe(gulp.dest('../Black-Examples/node_modules/black/dist/'));
 });
 
-gulp.task('examples', ['build-es6'], function() {
+gulp.task('examples', ['build-es6'], function () {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
 });
 
-gulp.task('watch-es6-module', ['build-es6-module'], function() {
+gulp.task('watch-es5', ['build-es5'], function () {
+  gulp.watch(['./src/**/*.js'], ['build-es5']);
+});
+
+gulp.task('watch-es6', ['build-es6'], function () {
+  gulp.watch(['./src/**/*.js'], ['build-es6']);
+});
+
+gulp.task('watch-es6-module', ['build-es6-module'], function () {
   gulp.watch(['./src/**/*.js'], ['build-es6-module']);
 });
 
-gulp.task('test:pre', function() {
-  return gulp.src('./src/**/*.js')
-    .pipe(preprocess({
-      context: {
-        EXPORT: 'export'
-      }
-    }))
-    .pipe(sourcemaps.init())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./dist-test/'));
-});
+gulp.task('watch-test', ['build-es6'], function () {
+  bs.init({
+    server: {
+      baseDir: './',
+      directory: true,
+      index: './test/index.html'
+    },
+    open: false
+  });
 
-gulp.task('test', ['test:pre'], function() {
-  gulp.src('./test/**/*.js', {
-      read: false
-    })
-    .pipe(mocha({
-      reporter: 'list',
-      compilers: ['js:babel-core/register']
-    }))
+  gulp.watch(['./src/**/*.js', './test/src/**/*.js'], ['build-es6']).on('change', bs.reload);
 });
 
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);

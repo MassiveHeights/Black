@@ -1,6 +1,8 @@
 /**
  * The MessageDispatcher class is the base class for all classes that posts messages.
  *
+ * Global messages will not be dispatched on non GameObject objects.
+ *
  * @cat core
  * @unrestricted
  */
@@ -30,7 +32,7 @@ class MessageDispatcher {
     Debug.assert(callback !== null, 'callback cannot be null.');
 
     // TODO: refactor, expore dispatching provider
-    let filterIx = name.indexOf('@') ;
+    let filterIx = name.indexOf('@');
     if (filterIx !== -1) {
       // global handler
 
@@ -81,17 +83,26 @@ class MessageDispatcher {
    * @returns {boolean} True if found.
    */
   hasOn(name) {
-    if (this.mListeners === null)
-      return false;
+    Debug.assert(name !== null, 'name cannot be null.');
 
-    if (this.mListeners.hasOwnProperty(name) === false)
-      return false;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      let pureName = name.substring(0, filterIx);
+      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
+        return false;
+    } else {
+      if (this.mListeners === null)
+        return false;
+      else if (this.mListeners.hasOwnProperty(name) === false)
+        return false;
+    }
 
     return true;
   }
 
   /**
-   * Removes listener
+   * Removes listener.
+   * If callback is null then all callbacks will be removed.
    *
    * @param {string} name
    * @param {Function=} [callback=null]
@@ -99,26 +110,52 @@ class MessageDispatcher {
    * @return {void}
    */
   removeOn(name, callback = null) {
-    if (name === null || name.length === 0)
-      throw new Error('Name cannot be null.');
+    Debug.assert(name !== null, 'name cannot be null.');
+    //Debug.assert(callback !== null, 'callback cannot be null.');
 
-    if (this.mListeners === null)
-      return;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      //we are working with overheared message
+      let pureName = name.substring(0, filterIx);
+      let pathMask = name.substring(filterIx + 1);
 
-    let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
-
-    if (dispatchers === undefined)
-      return;
-
-    if (callback === null) {
-      dispatchers.splice(0, dispatchers.length);
-      return;
-    }
-
-    for (let i = dispatchers.length; i--;) {
-      if (dispatchers[i].callback === callback) {
-        dispatchers.splice(i, 1);
+      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
         return;
+
+      let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
+      }
+
+    } else {
+      // regular message
+      if (this.mListeners === null)
+        return;
+
+      let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
+
+      if (dispatchers === undefined)
+        return;
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
       }
     }
   }
@@ -153,8 +190,7 @@ class MessageDispatcher {
       if (message.mSibblings === true) {
         this.__sendGlobal(this, message, null, ...params);
         message.mOrigin.__invokeGlobal(this, message, ...params);
-      }
-      else
+      } else
         this.__sendBubbles(this, message, false, ...params);
     } else if (message.mDirection === 'up') {
       this.__sendBubbles(this, message, true, ...params);
@@ -310,21 +346,6 @@ class MessageDispatcher {
   __parseMessage(sender, info) {
     // TODO: make message pool... this type of objects shall not be
     // but dont forget to take care about cancel property
-
-    // EXAMPLES:
-    //  this.post('clicked', data); // Sends to all listeners of this
-    //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
-    //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
-    //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
-    //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
-    //  this.post('~clicked@mySprite#ColliderComponent');
-
-    // DIRECTIONS
-    // clicked - none, direct
-    // ~clicked - up, bubbling
-    // clicked@ - down starting from root, with no filter to everyone
-    // clicked@mySpriter - down with 'mySprite' filter
-    // ~clicked@ - inversed bubbling starting from the root, ending at this
 
     let result = new Message();
     result.mSender = sender;

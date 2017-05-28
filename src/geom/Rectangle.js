@@ -75,7 +75,7 @@ class Rectangle {
   }
 
   /**
-   * Copies values from this rectangle into description.
+   * Copies values from this rectangle into given rectangle.
    *
    * @param {Rectangle} rect The destination rect.
    *
@@ -225,7 +225,7 @@ class Rectangle {
    * @return {Vector} Description
    */
   get bottomLeft() {
-    return new Vector(this.right, this.bottom);
+    return new Vector(this.x, this.bottom);
   }
 
   /**
@@ -234,7 +234,7 @@ class Rectangle {
    * @param {Vector} vector
    */
   set bottomLeft(vector) {
-    this.left = vector.x;
+    this.x = vector.x;
     this.bottom = vector.y;
   }
 
@@ -313,7 +313,7 @@ class Rectangle {
 
 
   /**
-   * Adds two rects ]
+   * Adds given rectangle into this.
    *
    * @param {Rectangle} toUnion A rectangle object to add to this rect.
    *

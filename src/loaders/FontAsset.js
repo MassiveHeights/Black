@@ -53,6 +53,12 @@ class FontAsset extends Asset {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.mElementAdded = false;
+
+    /**
+     * @private
      * @type {HTMLElement}
      */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
@@ -91,7 +97,9 @@ class FontAsset extends Asset {
     testingElement.style.visibility = 'hidden';
     testingElement.style.fontSize = '250px';
     testingElement.innerHTML = this.mTestingString;
-    document.body.appendChild(testingElement);
+
+    // body may be not ready
+    //document.body.appendChild(testingElement);
 
     return testingElement;
   }
@@ -113,6 +121,17 @@ class FontAsset extends Asset {
    * @return {void}
    */
   checkLoadingStatus() {
+    if (this.mElementAdded === false) {
+      if (document.body != null) {
+        document.body.appendChild(this.mTestingElement);
+        this.mElementAdded = true;
+      } else {
+        setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
+        return;
+      }
+    }
+
+
     if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
       if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
         this.onLoadingFail();

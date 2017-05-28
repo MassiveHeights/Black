@@ -8,8 +8,10 @@
     "start": "gulp",
     "examples": "gulp examples",
     "docs": "jsdoc -c .jsdoc -R README.md",
+    "watch-es5": "gulp watch-es5",
+    "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",
-    "test": "gulp build-es6-module && mocha --require babel-core/register test/**/*.js"
+    "watch-test": "gulp watch-test"
   },
   "repository": {
     "type": "git",
@@ -21,9 +23,10 @@
     "babel-cli": "^6.24.1",
     "babel-concat": "^1.0.3",
     "babel-core": "^6.5.2",
+    "babel-plugin-root-import": "^5.1.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.24.1",
-    "chai": "^3.5.0",
+    "browser-sync": "^2.18.12",
     "google-closure-compiler": "^20161024.3.0",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",
@@ -31,8 +34,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-template": "^4.0.0",
-    "gulp-watch": "^4.3.5",
-    "mocha": "^3.4.1"
+    "gulp-watch": "^4.3.5"
   },
   "dependencies": {
     "gulp": "^3.9.1"
