@@ -39,12 +39,13 @@
     "src/drivers/DOMDriver.js",
 
     "src/drivers/webgl/WebGLDriver.js",
-    "src/drivers/webgl/WebGLBuffer.js",
-    "src/drivers/webgl/WebGLElementBuffer.js",
-    "src/drivers/webgl/WebGLProgram.js",
-    "src/drivers/webgl/WebGLState.js",
-    "src/drivers/webgl/WebGLTextures.js",
+    "src/drivers/webgl/WebGLConstants.js",
     "src/drivers/webgl/WebGLBlendMode.js",
+    "src/drivers/webgl/WebGLBaseProgramInfo.js",
+    "src/drivers/webgl/WebGLSpritesProgramInfo.js",
+    "src/drivers/webgl/WebGLState.js",
+    "src/drivers/webgl/WebGLTexturesManager.js",
+    "src/drivers/webgl/WebGLVAO.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",

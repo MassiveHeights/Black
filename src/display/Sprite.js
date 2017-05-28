@@ -25,20 +25,19 @@ class Sprite extends DisplayObject {
     else
       this.mTexture = /** @type {Texture} */ (texture);
 
-    /**
-     * @protected
-     * @type {Object}
-     */
-    this.mTint = {r: 1, g: 1, b: 1}; // todo
+    this.mTint = 0xffffff;
+
+    this.material = {
+      Program: WebGLSpritesProgramInfo
+    }
   }
 
-  /**
-   * tint - Returns sprite tint object.
-   *
-   * @return {Object} The current texture set on this Sprite or null.
-   */
   get tint() {
     return this.mTint;
+  }
+  
+  set tint(value) {
+    this.mTint = value;
   }
 
   /**
@@ -62,6 +61,7 @@ class Sprite extends DisplayObject {
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+      video.tint = this.mTint;
       video.drawImage(this.mTexture, this.onGetLocalBounds(Rectangle.__cache));
       video.restore();
     }

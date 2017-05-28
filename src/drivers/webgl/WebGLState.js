@@ -1,29 +1,16 @@
 /* @echo EXPORT */
 class WebGLState {
   constructor(renderer) {
-    this.renderer = renderer;
-    this.gl = renderer.gl;
+    const gl = this.gl = renderer.gl;
+    this.mRenderer = renderer;
 
-    /** @type {WebGLBuffer} */
-    this.mBoundArrayBuffer = null;
-
-    /** @type {WebGLBuffer} */
+    this.mTexturesManager = new WebGLTexturesManager(renderer);
     this.mBoundElementBuffer = null;
-
-    /** @type {WebGLTexture} */
-    this.mBoundTexture = null;
-
-    /** @type {WebGLTexture} */
-    this.mActiveTexture = null;
-
-    /** @type {WebGLProgram} */
-    this.mProgram = null;
-
-    /** @type {BlendMode} */
+    this.mBoundArrayBuffer = null;
     this.mBlendMode = null;
 
-    this.gl.enable(this.gl.BLEND);
-    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND);
+    this.setBlendMode(BlendMode.NORMAL);
   }
 
   bindArrayBuffer(buffer) {
@@ -41,37 +28,24 @@ class WebGLState {
   }
   
   bindTexture(texture) {
-    if (texture === this.mBoundTexture) return;
-    
-    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.mBoundTexture = texture;
-  }
-
-  setActiveTexture(slot) {
-    if (slot === this.mActiveTexture) return;
-    
-    this.gl.activeTexture(slot);
-    this.mActiveTexture = slot;
-  }
-
-  useProgram(program) {
-    if (program === this.mProgram) return;
-
-    this.gl.useProgram(program);
-    this.mProgram = program;
+    this.mTexturesManager.bindTexture(texture);
   }
   
   setBlendMode(blend) {
     if (blend === this.mBlendMode) return;
 
     this.mBlendMode = blend;
-    const blendEquation = WebGLBlendMode(blend, this.gl);
-    this.gl.blendFunc(blendEquation.src, blendEquation.dst);
+    const blendFunc = WebGLBlendMode(blend, this.gl);
+    this.gl.blendFunc(blendFunc.src, blendFunc.dst);
     
     return true;
   }
   
   checkBlendMode(blend) {
     return blend === this.mBlendMode;
+  }
+
+  endBatch() {
+    this.mTexturesManager.endBatch();
   }
 }

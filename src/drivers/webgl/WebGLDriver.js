@@ -16,53 +16,13 @@ class WebGLDriver extends VideoNullDriver {
 
     console.log(`WebGL`);
 
-    /** @type {Number} */
-    this.MAX_BATCH_SIZE = 65535;
-
-    /**
-     * @public
-     * @type {WebGLRenderingContext|null}
-     */
     this.gl = null;
     
-    /**
-     * Contains current rendering object.
-     *
-     * @private
-     * @type {DisplayObject|null}
-     */
-    this.mCurrentObject = null;
-
-    /**
-     * Counts batch objects amount.
-     * 
-     * @private
-     * @type {Number|null}
-     */
-    this.mObjectsAmount = 0;
-
     this.__createCanvas();
-
-    /** 
-     * Contains WebGL context state
-     * 
-     * @type {WebGLState} 
-     * */
+    
+    this.mPrograms = {};
+    this.mActiveProgram = null;
     this.state = new WebGLState(this);
-
-    /**
-     * Manager for WebGL textures
-     *
-     * @type {WebGLTextures}
-     * */
-    this.textures = new WebGLTextures(this);
-
-    /**
-     * Program that renders sprites
-     *
-     * @type {WebGLProgram}
-     * */
-    this.program = new WebGLProgram(this);
   }
 
   /**
@@ -81,60 +41,68 @@ class WebGLDriver extends VideoNullDriver {
       premultipliedAlpha: false
     };
 
-    this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
-    this.gl.canvas.width = this.mClientWidth;
-    this.gl.canvas.height = this.mClientHeight;
-    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
-    this.gl.clearColor(0, 0, 0, 1);
+    const gl = this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
+    gl.canvas.width = this.mClientWidth;
+    gl.canvas.height = this.mClientHeight;
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.clearColor(0, 0, 0, 1);
   }
 
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
-    this.gl.canvas.width = this.mClientWidth;
-    this.gl.canvas.height = this.mClientHeight;
-    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
-    this.program.resize();
+    const gl = this.gl;
+    gl.canvas.width = this.mClientWidth;
+    gl.canvas.height = this.mClientHeight;
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    Object.values(this.mPrograms).forEach(program => program.onResize(msg, rect));
   }
 
   save(gameObject) {
-    this.mCurrentObject = gameObject;
+    let program = this.mPrograms[gameObject.material.Program.name];
+    
+    if (!program) {
+      program = this.mPrograms[gameObject.material.Program.name] = new gameObject.material.Program(this);
+      this.__flush();
+      program.activate();
+      program.init(this.mClientWidth, this.mClientHeight);
+      this.mActiveProgram = program;
+    } else if (program !== this.mActiveProgram) {
+      this.__flush();
+      program.activate();
+      this.mActiveProgram = program;
+    }
+    
+    program.save(gameObject);
+  }
+  
+  setTransform(m) {
+    this.mActiveProgram.setTransform(m);
   }
 
+  set globalAlpha(value) {
+    this.mActiveProgram.globalAlpha = value;
+  }
+  
   set globalBlendMode(blendMode) {
     const same = this.state.checkBlendMode(blendMode);
-
+  
     if (!same) {
-      this.flush();
+      this.__flush();
       this.state.setBlendMode(blendMode);
     }
   }
 
+  set tint(value) {
+    this.mActiveProgram.tint = value;
+  }
+  
   drawImage(texture, bounds) {
-    const object = this.mCurrentObject;
-    const coords = texture.relativeRegion;
-    const m = this.mTransform.value;
-    const tint = object.tint || {r: 1, g: 1, b: 1};
-
-    let texSlot = this.textures.bindTexture(texture);
-
-    if (texSlot === undefined) {
-      this.flush();
-      texSlot = this.textures.bindTexture(texture);
-    }
-    
-    if (this.mObjectsAmount === this.MAX_BATCH_SIZE) {
-      this.flush();
-    }
-
-    this.mObjectsAmount++;
-    this.program.push(bounds, m, this.mGlobalAlpha, coords, texSlot, tint);
+    this.mActiveProgram.drawImage(texture, bounds);
   }
 
-  flush() {
-    this.program.draw(this.mObjectsAmount);
-    this.mObjectsAmount = 0;
-    this.textures.endBatch();
+  drawText(text, style, bounds, textWidth, textHeight) {
+    this.mActiveProgram.drawText(text, style, bounds, textWidth, textHeight);
   }
 
   beginFrame() {
@@ -144,6 +112,10 @@ class WebGLDriver extends VideoNullDriver {
 
   endFrame() {
     super.endFrame();
-    this.flush();
+    this.__flush();
+  }
+  
+  __flush() {
+    this.mActiveProgram && this.mActiveProgram.flush();
   }
 }
