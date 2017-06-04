@@ -28,7 +28,7 @@ class WebGLState {
   }
   
   bindTexture(texture) {
-    this.mTexturesManager.bindTexture(texture);
+    return this.mTexturesManager.bindTexture(texture);
   }
   
   setBlendMode(blend) {

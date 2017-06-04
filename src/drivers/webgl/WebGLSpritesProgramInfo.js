@@ -44,7 +44,7 @@ const fragmentShaderSource = `
   }
 `;
 
-const QUAD = [`left`, `top`, `right`, `top`, `right`, `bottom`, `left`, `bottom`];
+const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
 
 /* @echo EXPORT */
 class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
@@ -68,12 +68,12 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
   }
 
   init(clientWidth, clientHeight) {
-    this.uniforms.uProjection = new Float32Array([clientWidth, clientHeight]);
+    this.uniforms.uProjection = new Float32Array([2 / clientWidth, 2 / clientHeight]);
     this.uniforms.uSamplers = new Int32Array(new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(0).map((v, i) => i));
   }
 
   onResize(msg, rect) {
-    this.uniforms.uProjection = new Float32Array(rect.width, rect.height);
+    this.uniforms.uProjection = new Float32Array([1 / rect.width, 1 / rect.height]);
   }
 
   save(gameObject) {
@@ -140,10 +140,13 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
 
     this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
     this.mRenderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
-const a = new Float32Array(this.attributes.data)
+
+    let count = this.attributes.countForElementsDraw;
+
+    if (count <= 0) return;
     gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
     gl.drawElements(gl.TRIANGLE_STRIP, this.attributes.countForElementsDraw, gl.UNSIGNED_SHORT, 0);
-    
+
     this.attributes.clear();
   }
 }

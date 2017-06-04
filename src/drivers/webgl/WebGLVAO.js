@@ -67,11 +67,10 @@ class WebGLVAO {
 
       createSetter(attribInfo);
     }
-    
-    this.mStride = offset + 4 - offset % 4;
-    // this.mBuffer = new ArrayBuffer(65535 * this.mStride);
-    this.mBatchOffsetInBytes = 0;
 
+    let mod = offset % 4;
+    this.mStride = offset + (mod ? 4 - mod : 0);
+    this.mBatchOffsetInBytes = 0;
     
     let infos = Object.values(attributesInfo);
     for (let i = 0, l = infos.length; i < l; i++) {

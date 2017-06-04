@@ -43,7 +43,7 @@ class WebGLBaseProgramInfo {
 
       const location = gl.getUniformLocation(program, uniformInfo.name);
       const sSetter = typeMap[uniformInfo.type] + (isArray ? `v` : ``);
-      const setter = () => gl[sSetter].length === 2 ?
+      const setter = gl[sSetter].length === 2 ?
         v => gl[sSetter](location, v) : v => gl[sSetter](location, false, v);
 
       // setter.location = location;
