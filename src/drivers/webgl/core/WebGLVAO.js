@@ -25,7 +25,6 @@ class WebGLVAO {
   constructor(programInfo, attributesInfo) {
     const gl = programInfo.gl;
     const views = {};
-    this.mBuffer = new ArrayBuffer(65532/* * this.mStride*/);
 
     const createSetter = attribInfo => {
       const view = views[attribInfo.Type.name] = views[attribInfo.Type.name] || new attribInfo.Type(this.mBuffer);
@@ -46,7 +45,6 @@ class WebGLVAO {
       }
     };
 
-
     let offset = 0;
     const program = programInfo.program;
     const attribsAmount = gl.getProgramParameter(programInfo.program, gl.ACTIVE_ATTRIBUTES);
@@ -56,7 +54,12 @@ class WebGLVAO {
       const name = attrib.name;
       const type = attrib.type;
 
-      const attribInfo = attributesInfo[name] = attributesInfo[name] || {Type: Float32Array, normalize: false, type: gl.FLOAT};
+      const attribInfo = attributesInfo[name] = attributesInfo[name] || {
+          Type     : Float32Array,
+          normalize: false,
+          type     : gl.FLOAT
+        };
+
       attribInfo.location = gl.getAttribLocation(program, name);
       attribInfo.size = attribTypeMap[type].size;
       attribInfo.name = name;
@@ -64,19 +67,19 @@ class WebGLVAO {
       offset += offset % attribInfo.Type.BYTES_PER_ELEMENT;
       attribInfo.offset = offset;
       offset += attribInfo.size * attribInfo.Type.BYTES_PER_ELEMENT;
-
-      createSetter(attribInfo);
     }
 
     let mod = offset % 4;
     this.mStride = offset + (mod ? 4 - mod : 0);
+    this.mBuffer = new ArrayBuffer(65535 * this.mStride);
     this.mBatchOffsetInBytes = 0;
-    
+
     let infos = Object.values(attributesInfo);
     for (let i = 0, l = infos.length; i < l; i++) {
-      const info = infos[i];
-      gl.vertexAttribPointer(info.location, info.size, info.type, info.normalize, this.mStride, info.offset);
-      gl.enableVertexAttribArray(info.location);
+      const attribInfo = infos[i];
+      createSetter(attribInfo);
+      gl.vertexAttribPointer(attribInfo.location, attribInfo.size, attribInfo.type, attribInfo.normalize, this.mStride, attribInfo.offset);
+      gl.enableVertexAttribArray(attribInfo.location);
     }
   }
 

@@ -59,10 +59,11 @@ class WebGLDriver extends VideoNullDriver {
   }
 
   save(gameObject) {
-    let program = this.mPrograms[gameObject.material.Program.name];
+    let Program = gameObject.material && gameObject.material.Program || WebGLSpritesProgramInfo;
+    let program = this.mPrograms[Program.name];
     
     if (!program) {
-      program = this.mPrograms[gameObject.material.Program.name] = new gameObject.material.Program(this);
+      program = this.mPrograms[Program.name] = new Program(this);
       this.__flush();
       program.activate();
       program.init(this.mClientWidth, this.mClientHeight);

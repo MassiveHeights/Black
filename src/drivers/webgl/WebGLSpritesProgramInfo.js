@@ -45,26 +45,43 @@ const fragmentShaderSource = `
 `;
 
 const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
+const MAX_BATCH = 65532 / 4 - 1;
 
 /* @echo EXPORT */
 class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
   constructor(renderer) {
     const gl = renderer.gl;
     const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-
-    super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS));
-
-    this.setAttributesInfo({
-      // aVertexPos  : {Type: Float32Array, normalize: false},
+    
+    const attributesInfo = {
+      // aVertexPos  : {Type: Float32Array, normalize: false}, // default
       // aModelMatrix: {Type: Float32Array, normalize: false},
       // aModelPos   : {Type: Float32Array, normalize: false},
       // aAlpha      : {Type: Float32Array, normalize: false},
       // aTexCoord   : {Type: Float32Array, normalize: false},
       // aTexSlot    : {Type: Float32Array, normalize: false},
-      aTint       : {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE},
-    });
+      aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
+    };
+
+    super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS), attributesInfo);
 
     this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
+    this.mBatchObjects = 0;
+
+    // Elements Buffer
+    this.mGLElementArrayBuffer = gl.createBuffer();
+    renderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
+    
+    const MAX_INDEX = 65535;
+    const QUAD_INDICES = [0, 1, 2, 3, 3, 4];
+    const len = MAX_INDEX * 6 | 0;
+    const indices = new Uint16Array(len);
+
+    for (let i = 0; i < len; i++) {
+      indices[i] = QUAD_INDICES[i % 6] + (i / 6 | 0) * 4;
+    }
+
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
   }
 
   init(clientWidth, clientHeight) {
@@ -73,7 +90,7 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
   }
 
   onResize(msg, rect) {
-    this.uniforms.uProjection = new Float32Array([1 / rect.width, 1 / rect.height]);
+    this.uniforms.uProjection = new Float32Array([2 / rect.width, 2 / rect.height]);
   }
 
   save(gameObject) {
@@ -97,12 +114,17 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
     const attributes = this.attributes;
     const region = texture.relativeRegion;
     const alpha = this.mGlobalAlpha;
-    const tint = this.mTint;
-    let texSlot = this.mRenderer.state.bindTexture(texture);
-
+    const tint = this.mTint || 0xffffff;
     const r = (tint >> 16) & 255;
     const g = (tint >> 8) & 255;
     const b = tint & 255;
+    let texSlot = this.mRenderer.state.bindTexture(texture);
+
+    this.mBatchObjects++;
+    
+    if (this.mBatchObjects > MAX_BATCH) {
+      this.flush();
+    }
 
     if (texSlot === -1) {
       this.flush();
@@ -129,7 +151,7 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
       attributes.aTint[1] = g;
       attributes.aTint[2] = b;
 
-      attributes.nextVertex(); 
+      attributes.nextVertex();
     }
   }
 
@@ -145,8 +167,9 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
 
     if (count <= 0) return;
     gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
-    gl.drawElements(gl.TRIANGLE_STRIP, this.attributes.countForElementsDraw, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
 
     this.attributes.clear();
+    this.mBatchObjects = 0;
   }
 }

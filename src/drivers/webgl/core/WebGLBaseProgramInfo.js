@@ -15,7 +15,7 @@ const typeMap = {
 
 /* @echo EXPORT */
 class WebGLBaseProgramInfo {
-  constructor(renderer, vertexShaderSource, fragmentShaderSource) {
+  constructor(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
     this.mRenderer = renderer;
 
     const gl = this.gl = renderer.gl;
@@ -51,29 +51,12 @@ class WebGLBaseProgramInfo {
     }
 
     this.mGLArrayBuffer = gl.createBuffer();
-    this.mGLElementArrayBuffer = gl.createBuffer();
-
-    // Elements Buffer
-    const MAX_INDEX = 65535;
-    const QUAD_INDICES = [0, 1, 2, 3, 3, 4];
-    renderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
-    const len = MAX_INDEX / 4 | 0;
-    const indices = new Uint16Array(len);
-
-    for (let i = 0; i < len; i++) {
-      indices[i] = QUAD_INDICES[i % 6] + (i / 6 | 0) * 4;
-    }
-    
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
+    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
+    this.attributes = new WebGLVAO(this, attributesInfo);
   }
 
   init(clientWidth, clientHeight) {
 
-  }
-
-  setAttributesInfo(attributesInfo) {
-    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
-    this.attributes = new WebGLVAO(this, attributesInfo);
   }
 
   onResize(msg, rect) {
