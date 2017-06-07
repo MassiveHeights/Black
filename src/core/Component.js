@@ -13,17 +13,20 @@ class Component extends MessageDispatcher {
   constructor() {
     super();
 
-    /** @private
+    /**
+     * @private
      * @type {number} 
      */
     this.mId = ++GameObject.ID;
 
-    /** @private
+    /**
+     * @private
      * @type {GameObject|null}
      */
     this.mGameObject = null;
 
-    /** @private
+    /**
+     * @private
      * @type {boolean}
      */
     this.mAdded = false;
@@ -94,6 +97,21 @@ class Component extends MessageDispatcher {
    */
   get gameObject() {
     return this.mGameObject;
+  }
+
+  /**
+   * Returns string representing a url like path to this object in the display
+   * tree.
+   *
+   * @readonly
+   *
+   * @return {string|null}
+   */
+  get path() {
+    if (this.mGameObject !== null)
+      return this.mGameObject.path + '#' + this.constructor.name;
+
+    return this.constructor.name;
   }
 }
 

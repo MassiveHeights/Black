@@ -19,8 +19,8 @@ describe('MessageDispatcher', function () {
       super();
 
       this.name = 'document';
-      this.add(head, body);
-
+      this.addChild(body);
+      body.addChild(head);
       head.addChild(nose);
     }
 
@@ -51,8 +51,8 @@ describe('MessageDispatcher', function () {
     it('Should add global listener', function () {
       let dis = new MessageDispatcher();
       dis.on('ready@', x => {});
-      assert.isDefined(MessageDispatcher.mGlobalHandlers['ready']);
-    });
+      assert.isDefined(MessageDispatcher.mOverheardHandlers['ready']);
+    });``
   });
 
   describe('#hasOn', function () {
@@ -67,7 +67,7 @@ describe('MessageDispatcher', function () {
       let dis = new MessageDispatcher();
       dis.on('ready', x => {});
 
-      assert.isFalse(dis.hasOn('reFakeady'));
+      assert.isFalse(dis.hasOn('fakeReady'));
     });
 
     it('Should return True if global (overheared) listener exists', function () {
@@ -80,6 +80,22 @@ describe('MessageDispatcher', function () {
       assert.isFalse(body.hasOn('missing@*'));
     });
   });
+
+  // describe('#cancel', function () {
+  //   it('Should stop propagation', function () {
+  //     body.on('sniff', x => {
+  //       console.log('body sniff');
+  //     });
+
+  //     head.on('sniff', x => {
+  //       console.log('head sniff');
+  //       debugger;
+  //       x.cancel();
+  //     });
+
+  //     nose.post('~sniff');
+  //   });
+  // });
 
   describe('#post', function () {
     it('Should deliver local message', function (done) {
@@ -111,10 +127,10 @@ describe('MessageDispatcher', function () {
         done();
       });
 
-      root.post('shot@root/head');
+      root.post('shot@root/body/head');
     });
 
-    it('Should deliver private message with given component mask', function (done) {
+    it('Should deliver top-to-bottom private message to all components by given component type name', function (done) {
       root.on('shot', x => {
         assert.fail();
       });
@@ -125,7 +141,49 @@ describe('MessageDispatcher', function () {
         done();
       });
 
-      root.post('shot@root/head#SampleComponent');
+      root.post('shot@*#SampleComponent');
+    });
+
+    it('Should deliver regular message to all components by given component type name', function (done) {
+      root.on('shot', x => {
+        assert.fail();
+      });
+
+      let c = head.addComponent(new SampleComponent());
+      c.on('shot', x => {
+        c.removeOn('shot');
+        done();
+      });
+      
+      root.post('shot@*#SampleComponent');
+    });
+
+    it('Should deliver inverse bubbled message to all components by given component type name', function (done) {
+      root.on('shot', x => {
+        assert.fail();
+      });
+
+      let c = head.addComponent(new SampleComponent());
+      c.on('shot', x => {
+        c.removeOn('shot');
+        done();
+      });
+
+      nose.post('~shot@*#SampleComponent');
+    });
+
+    it('Should deliver regular message with given path and component mask', function (done) {
+      root.on('shot', x => {
+        assert.fail();
+      });
+
+      let c = head.addComponent(new SampleComponent());
+      c.on('shot', x => {
+        c.removeOn('shot');
+        done();
+      });
+
+      root.post('shot@root/body/head#SampleComponent');
     });
 
     it('Should deliver private message with given pathMask', function (done) {
@@ -133,7 +191,7 @@ describe('MessageDispatcher', function () {
         done();
       });
 
-      root.post('shot@root/head');
+      root.post('shot@root/body/head');
     });
 
     it('Should overhear any message', function (done) {
@@ -151,7 +209,7 @@ describe('MessageDispatcher', function () {
         done();
       });
 
-      body.post('ready@root/head');
+      body.post('ready@root/body/head');
     });
 
     it('Should bubble the message', function (done) {
@@ -185,25 +243,37 @@ describe('MessageDispatcher', function () {
 
 /* NAME DEFINITION TABLE
            
-LOCAL - will be only invoked on this
-DIRECT - 
-GLOBAL - 
-PRIVATE - if path mask applied
-OVERHEARED
+REGULAR
+DIRECTED
+OVERHEARD
+
+If path is specified then message is directed else regular
+
+'clicked' - a regular message. just invoke.
+
+'clicked@' - regular top 2 bottom
+'clicked@mySprite' - directed message
+
+'~clicked' - regular bubbled message
+'~clicked@' - regular inverse bubbled message
+'~clicked@mySprite' - directed inverse bubbled message
+
+'~clicked@mySprite#SampleComponent' - directed inverse bubbled message to a components
+'clicked@#SampleComponent' - directed to components
+'~clicked@#SampleComponent' - inverse bubbled to components with name "SampleComponent"
+
+'clicked@#*' - regular from top to bottom to all components
+'clicked@#*' - regular from top to bottom to all components
+
+'~clicked@#*' - IB to all components
+
+'~clicked@#' - IB to all components - not legal
+`clicked#SampleComponent' - not legal
+
+'~clicked@`
+
+<?BUBBLING><NAME>(<@><PATH>(#<COMPONENT>))
+
+and 100 masks test...
+mask will be applied onto message path split by /
 */
-
-
-// EXAMPLES:
-//  this.post('clicked', data); // Sends to all listeners of this
-//  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
-//  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
-//  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
-//  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
-//  this.post('~clicked@mySprite#ColliderComponent');
-
-// DIRECTIONS
-// clicked - none, direct
-// ~clicked - up, bubbling
-// clicked@ - down starting from root, with no filter to everyone
-// clicked@mySpriter - down with 'mySprite' filter
-// ~clicked@ - inversed bubbling starting from the root, ending at this

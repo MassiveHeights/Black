@@ -15,6 +15,7 @@
 
     "src/core/Debug.js",
 
+    "src/core/Message.js",
     "src/core/MessageDispatcher.js",
 
     "src/core/Time.js",
