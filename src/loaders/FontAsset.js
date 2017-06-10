@@ -1,18 +1,22 @@
 /**
  * Font file asset class responsible for loading local font files.
  *
+ * Note: this class need a body to work preoperly.
+ *
  * @cat loaders
  * @extends Asset
  */
 /* @echo EXPORT */
 class FontAsset extends Asset {
   /**
-   * @param {string} name font name
-   * @param {string} url font url
-   *
-   * @return {void}
+   * @param {string} name        The custom name of the font
+   * @param {string|null} url    The path to the font
+   * @param {boolean} local      Is this font local?
    */
   constructor(name, url, local) {
+    if (local === false)
+      url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');
+    
     super(name, url);
 
     /**
@@ -53,22 +57,17 @@ class FontAsset extends Asset {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.mElementAdded = false;
-
-    /**
-     * @private
      * @type {HTMLElement}
      */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
-
+    
     /**
      * @private
      * @type {number}
      */
     this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
+
     this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
   }
 
@@ -81,6 +80,10 @@ class FontAsset extends Asset {
     loaderElement.type = 'text/css';
     loaderElement.media = 'all';
     loaderElement.rel = 'stylesheet';
+    loaderElement.onerror = function () {
+      //debugger;
+      // TODO: handle fail
+    };
     document.getElementsByTagName('head')[0].appendChild(loaderElement);
     return loaderElement;
   }
@@ -97,9 +100,7 @@ class FontAsset extends Asset {
     testingElement.style.visibility = 'hidden';
     testingElement.style.fontSize = '250px';
     testingElement.innerHTML = this.mTestingString;
-
-    // body may be not ready
-    //document.body.appendChild(testingElement);
+    document.body.appendChild(testingElement);
 
     return testingElement;
   }
@@ -121,17 +122,6 @@ class FontAsset extends Asset {
    * @return {void}
    */
   checkLoadingStatus() {
-    if (this.mElementAdded === false) {
-      if (document.body != null) {
-        document.body.appendChild(this.mTestingElement);
-        this.mElementAdded = true;
-      } else {
-        setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
-        return;
-      }
-    }
-
-
     if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
       if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
         this.onLoadingFail();
@@ -145,6 +135,8 @@ class FontAsset extends Asset {
   }
 
   onLoaded() {
+    var a = this.mLoaderElement;
+
     super.onLoaded();
     this.mTestingElement.parentNode.removeChild(this.mTestingElement);
   }
@@ -155,12 +147,5 @@ class FontAsset extends Asset {
   onLoadingFail() {
     console.warn(`loading ${this.name} font failed.`);
     this.onLoaded(); //TODO what to do here?
-  }
-
-  /**
-   * @return {string}
-   */
-  get type() {
-    return "FontAsset";
   }
 }
