@@ -47,7 +47,7 @@ const fragmentShaderSource = `
 const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
 
 /* @echo EXPORT */
-class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
+class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
   constructor(renderer) {
     const gl = renderer.gl;
     const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
@@ -65,6 +65,11 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
     });
 
     this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
+
+    // text
+    this.mCanvas = document.createElement(`canvas`);
+    this.mCtx2D = this.mCanvas.getContext(`2d`);
+    this.mTextTextures = {};
   }
 
   init(clientWidth, clientHeight) {
@@ -131,6 +136,46 @@ class WebGLSpritesProgramInfo extends WebGLBaseProgramInfo {
 
       attributes.nextVertex(); 
     }
+  }
+
+  drawText(text, style, bounds, textWidth, textHeight) {
+    const font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    const key = `${text}${font}${style.align}${style.color}${style.strokeThickness}${style.strokeColor}`;
+    let texture = this.mTextTextures[key];
+
+    if (!texture) {
+      const canvas = this.mCanvas;
+      const ctx = this.mCtx2D;
+
+      canvas.width = textWidth;
+      canvas.height = textHeight;
+
+      ctx.font = font;
+      ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
+
+      ctx.textAlign = style.align;
+      ctx.textBaseline = `top`;
+
+      const x = style.align === `center` ? textWidth / 2 : style.align === `left` ? 0 : textWidth;
+      const lines = text.split(`\n`);
+      const lineHeight = textHeight / lines.length;
+
+      for (let i = 0, l = lines.length; i < l; i++) {
+        const y = lineHeight * i;
+        ctx.fillText(lines[i], x, y);
+
+        if (style.strokeThickness > 0) {
+          ctx.lineWidth = style.strokeThickness;
+          ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
+          ctx.strokeText(text, x, y);
+        }
+      }
+
+      texture = this.mTextTextures[key] = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
+    }
+
+    this.mTint = 0xffffff;
+    this.drawImage(texture, bounds);
   }
 
   flush() {

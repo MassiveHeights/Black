@@ -24,20 +24,6 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
-
-    this.mTint = 0xffffff;
-
-    this.material = {
-      Program: WebGLSpritesProgramInfo
-    }
-  }
-
-  get tint() {
-    return this.mTint;
-  }
-  
-  set tint(value) {
-    this.mTint = value;
   }
 
   /**
