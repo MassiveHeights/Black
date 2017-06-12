@@ -7298,7 +7298,8 @@ var SoundAsset = function (_Asset) {
       this.mAudioElement.src = this.mUrl;
       this.mAudioElement.preload = 'auto';
       this.mAudioElement.oncanplaythrough = function () {
-        if (_this2.mData != null) {
+        if (!_this2.mData) {
+          console.warn('loaded');
           _this2.onLoaded();
         }
       };
@@ -10163,7 +10164,7 @@ var Device = function () {
 
       if (/android/i.test(userAgent)) return 'Android';
 
-      if (/iPad|iPhone|iPod/.test(userAgent /* && !window.MSStream*/)) return 'iOS';
+      if (/iPad|iPhone|iPod/.test(userAgent) /* && !window.MSStream*/) return 'iOS';
 
       return 'unknown';
     }

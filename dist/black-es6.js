@@ -6136,10 +6136,11 @@ class SoundAsset extends Asset {
     this.mAudioElement.src = this.mUrl;
     this.mAudioElement.preload = 'auto';
     this.mAudioElement.oncanplaythrough = () => {
-      if (this.mData != null) {
+      if (!this.mData) {
+        console.warn('loaded');
         this.onLoaded();
       }
-    }
+    };
   }
 }
 
