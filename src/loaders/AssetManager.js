@@ -71,6 +71,14 @@ class AssetManager extends MessageDispatcher {
      * @dict
      */
     this.mJsons = {};
+
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mSounds = {};
   }
 
   /**
@@ -108,6 +116,18 @@ class AssetManager extends MessageDispatcher {
    */
   enqueueJson(name, url) {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
+  }
+
+  /**
+   * Adds single sound to the loading queue.
+   *
+   * @param {string} name Name of the sound.
+   * @param {string} url  The URL of the sound.
+   *
+   * @returns {void}
+   */
+  enqueueSound(name, url) {
+    this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
   }
 
   enqueueLocalFont(name, url) {
@@ -155,6 +175,8 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
+    else if (item.constructor === SoundAsset)
+      this.mSounds[item.name] = item.data;
     else if (item.constructor === FontAsset) {} else
       console.error('Unable to handle asset type.', item);
 
@@ -248,6 +270,17 @@ class AssetManager extends MessageDispatcher {
    */
   getAtlas(name) {
     return this.mAtlases[name];
+  }
+
+  /**
+   * Returns Sound by given name.
+   *
+   * @param {string} name The name of the sound.
+   *
+   * @return {Audio} Returns sound or null.
+   */
+  getSound(name) {
+    return this.mSounds[name];
   }
 
   /**
