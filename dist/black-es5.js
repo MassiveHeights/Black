@@ -7299,7 +7299,6 @@ var SoundAsset = function (_Asset) {
       this.mAudioElement.preload = 'auto';
       this.mAudioElement.oncanplaythrough = function () {
         if (!_this2.mData) {
-          console.warn('loaded');
           _this2.onLoaded();
         }
       };
