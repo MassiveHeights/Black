@@ -26,6 +26,21 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
+
+    
+    this.material = {
+      Program: WebGLTexProgramInfo
+    };
+
+    this.mTint = 0xffffff;
+  }
+
+  get tint() {
+    return this.mTint;
+  }
+
+  set tint(value) {
+    this.mTint = value;
   }
 
   /**

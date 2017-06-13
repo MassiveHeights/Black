@@ -45,7 +45,8 @@
     "src/drivers/webgl/core/WebGLState.js",
     "src/drivers/webgl/core/WebGLTexturesManager.js",
     "src/drivers/webgl/core/WebGLVAO.js",
-    "src/drivers/webgl/WebGLSpritesProgramInfo.js",
+
+    "src/drivers/webgl/texture/WebGLTexProgramInfo.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",
