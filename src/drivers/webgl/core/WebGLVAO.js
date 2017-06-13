@@ -24,24 +24,33 @@ const attribTypeMap = {
 class WebGLVAO {
   constructor(programInfo, attributesInfo) {
     const gl = programInfo.gl;
-    const views = {};
+    const viewsHash = {};
+    this.mViews = [];
 
     const createSetter = attribInfo => {
-      const view = views[attribInfo.Type.name] = views[attribInfo.Type.name] || new attribInfo.Type(this.mBuffer);
+      let view = viewsHash[attribInfo.Type.name];
+
+      if (!view) {
+        view = viewsHash[attribInfo.Type.name] = new attribInfo.Type(this.mBuffer);
+        this.mViews.push(view);
+        view.batchOffset = 0;
+      }
+
       const BYTES_PER_ELEMENT = view.BYTES_PER_ELEMENT;
+      attribInfo.offsetInView = attribInfo.offset / BYTES_PER_ELEMENT;
 
       if (attribInfo.size === 1) {
         Object.defineProperty(this, attribInfo.name, {
-          set: v => view[(attribInfo.offset + this.mBatchOffsetInBytes) / BYTES_PER_ELEMENT] = v
+          set: v => view[attribInfo.offsetInView + view.batchOffset] = v
         });
       } else {
-        this[attribInfo.name] = [];
-
-        for (let i = 0; i < attribInfo.size; i++) {
-          Object.defineProperty(this[attribInfo.name], i.toString(), {
-            set: v => view[(attribInfo.offset + this.mBatchOffsetInBytes) / BYTES_PER_ELEMENT + i] = v
-          });
-        }
+        Object.defineProperty(this, attribInfo.name, {
+          set: v => {
+            for (let i = 0, l = attribInfo.size; i < l; i++) {
+              view[attribInfo.offsetInView + view.batchOffset + i] = v[i];
+            }
+          }
+        });
       }
     };
 
@@ -75,6 +84,7 @@ class WebGLVAO {
     this.mBatchOffsetInBytes = 0;
 
     let infos = Object.values(attributesInfo);
+
     for (let i = 0, l = infos.length; i < l; i++) {
       const attribInfo = infos[i];
       createSetter(attribInfo);
@@ -85,6 +95,10 @@ class WebGLVAO {
 
   nextVertex() {
     this.mBatchOffsetInBytes += this.mStride;
+
+    for (let i = 0, l = this.mViews.length; i < l; i++) {
+      this.mViews[i].batchOffset = this.mBatchOffsetInBytes / this.mViews[i].BYTES_PER_ELEMENT;
+    }
   }
 
   get data() {
@@ -101,5 +115,9 @@ class WebGLVAO {
 
   clear() {
     this.mBatchOffsetInBytes = 0;
+
+    for (let i = 0, l = this.mViews.length; i < l; i++) {
+      this.mViews[i].batchOffset = 0;
+    }
   }
 }

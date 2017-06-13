@@ -47,6 +47,11 @@ const fragmentShaderSource = `
 const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
 const MAX_BATCH = 65532 / 4 - 1;
 
+const aModelPosCache = [];
+const aVertexPosCache = [];
+const aTexCoordCache = [];
+const aTintCache = [];
+
 /* @echo EXPORT */
 class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
   constructor(renderer) {
@@ -121,7 +126,7 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     const attributes = this.attributes;
     const region = texture.relativeRegion;
     const alpha = this.mGlobalAlpha;
-    const tint = this.mTint || 0xffffff;
+    const tint = this.mTint === undefined ? 0xffffff : this.mTint;
     const r = (tint >> 16) & 255;
     const g = (tint >> 8) & 255;
     const b = tint & 255;
@@ -138,25 +143,28 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
       texSlot = this.mRenderer.state.bindTexture(texture);
     }
 
+    aModelPosCache[0] = modelMatrix[4];
+    aModelPosCache[1] = modelMatrix[5];
+
+    aTintCache[0] = r;
+    aTintCache[1] = g;
+    aTintCache[2] = b;
+
     for (let i = 0; i < 8; i += 2) {
-      attributes.aModelMatrix[0] = modelMatrix[0];
-      attributes.aModelMatrix[1] = modelMatrix[1];
-      attributes.aModelMatrix[2] = modelMatrix[2];
-      attributes.aModelMatrix[3] = modelMatrix[3];
-      attributes.aModelPos[0] = modelMatrix[4];
-      attributes.aModelPos[1] = modelMatrix[5];
+      attributes.aModelMatrix = modelMatrix;
+      attributes.aModelPos = aModelPosCache;
 
-      attributes.aVertexPos[0] = bounds[QUAD[i]];
-      attributes.aVertexPos[1] = bounds[QUAD[i + 1]];
+      aVertexPosCache[0] = bounds[QUAD[i]];
+      aVertexPosCache[1] = bounds[QUAD[i + 1]];
+      attributes.aVertexPos = aVertexPosCache;
 
-      attributes.aTexCoord[0] = region[QUAD[i]];
-      attributes.aTexCoord[1] = region[QUAD[i + 1]];
+      aTexCoordCache[0] = region[QUAD[i]];
+      aTexCoordCache[1] = region[QUAD[i + 1]];
+      attributes.aTexCoord = aTexCoordCache;
 
       attributes.aAlpha = alpha;
       attributes.aTexSlot = texSlot;
-      attributes.aTint[0] = r;
-      attributes.aTint[1] = g;
-      attributes.aTint[2] = b;
+      attributes.aTint = aTintCache;
 
       attributes.nextVertex();
     }
@@ -196,9 +204,9 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
       }
 
       texture = this.mTextTextures[key] = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    this.mTint = 0xffffff;
     this.drawImage(texture, bounds);
   }
 
@@ -213,6 +221,7 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     let count = this.attributes.countForElementsDraw;
 
     if (count <= 0) return;
+
     gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
     gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
 
