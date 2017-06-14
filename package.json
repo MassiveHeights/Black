@@ -7,7 +7,7 @@
   "scripts": {
     "start": "gulp",
     "examples": "gulp examples",
-    "docs": "jsdoc -c .jsdoc -R README.md",
+    "docs": "node docs.js",
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",
@@ -34,7 +34,9 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-template": "^4.0.0",
-    "gulp-watch": "^4.3.5"
+    "gulp-watch": "^4.3.5",
+    "jsdoc": "^3.4.3",
+    "jsdoc-to-markdown": "^3.0.0"
   },
   "dependencies": {
     "gulp": "^3.9.1"

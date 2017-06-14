@@ -145,14 +145,18 @@ class CanvasDriver extends VideoNullDriver {
     else if (style.align === 'right')
       x += (bounds.width - textWidth);
 
-    this.mCtx.textBaseline = 'top';
-    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    this.mCtx.textBaseline = 'top';    
 
     if (style.strokeThickness > 0) {
+      this.mCtx.lineJoin = 'round';
+      this.mCtx.miterLimit = 2;
       this.mCtx.lineWidth = style.strokeThickness;
       this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
-      this.mCtx.strokeText(text, x, 0);
+      this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
     }
+
+    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    
     this.mCtx.closePath();
   }
 
