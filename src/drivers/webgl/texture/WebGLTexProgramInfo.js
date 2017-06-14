@@ -47,17 +47,12 @@ const fragmentShaderSource = `
 const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
 const MAX_BATCH = 65532 / 4 - 1;
 
-const aModelPosCache = [];
-const aVertexPosCache = [];
-const aTexCoordCache = [];
-const aTintCache = [];
-
 /* @echo EXPORT */
 class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
   constructor(renderer) {
     const gl = renderer.gl;
     const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-    
+
     const attributesInfo = {
       // aVertexPos  : {Type: Float32Array, normalize: false}, // default
       // aModelMatrix: {Type: Float32Array, normalize: false},
@@ -65,19 +60,19 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
       // aAlpha      : {Type: Float32Array, normalize: false},
       // aTexCoord   : {Type: Float32Array, normalize: false},
       // aTexSlot    : {Type: Float32Array, normalize: false},
-      aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
+      // aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
     };
 
     super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS), attributesInfo);
 
     this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
     this.mBatchObjects = 0;
-    
-    
+
+
     // Elements Buffer
     this.mGLElementArrayBuffer = gl.createBuffer();
     renderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
-    
+
     const MAX_INDEX = 65535;
     const QUAD_INDICES = [0, 1, 2, 3, 3, 4];
     const len = MAX_INDEX * 6 | 0;
@@ -133,7 +128,7 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     let texSlot = this.mRenderer.state.bindTexture(texture);
 
     this.mBatchObjects++;
-    
+
     if (this.mBatchObjects > MAX_BATCH) {
       this.flush();
     }
@@ -142,29 +137,36 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
       this.flush();
       texSlot = this.mRenderer.state.bindTexture(texture);
     }
+    
+    const view = attributes.mViews[0];
+    const rn = r / 255;
+    const gn = g / 255;
+    const bn = b / 255;
 
-    aModelPosCache[0] = modelMatrix[4];
-    aModelPosCache[1] = modelMatrix[5];
+    for (let i = 0; i < 4; i++) {
+      let batchOffset = view.batchOffset;
 
-    aTintCache[0] = r;
-    aTintCache[1] = g;
-    aTintCache[2] = b;
+      view[batchOffset + 0] = bounds[QUAD[i * 2]];
+      view[batchOffset + 1] = bounds[QUAD[i * 2 + 1]];
 
-    for (let i = 0; i < 8; i += 2) {
-      attributes.aModelMatrix = modelMatrix;
-      attributes.aModelPos = aModelPosCache;
+      view[batchOffset + 2] = modelMatrix[0];
+      view[batchOffset + 3] = modelMatrix[1];
+      view[batchOffset + 4] = modelMatrix[2];
+      view[batchOffset + 5] = modelMatrix[3];
 
-      aVertexPosCache[0] = bounds[QUAD[i]];
-      aVertexPosCache[1] = bounds[QUAD[i + 1]];
-      attributes.aVertexPos = aVertexPosCache;
+      view[batchOffset + 6] = modelMatrix[4];
+      view[batchOffset + 7] = modelMatrix[5];
 
-      aTexCoordCache[0] = region[QUAD[i]];
-      aTexCoordCache[1] = region[QUAD[i + 1]];
-      attributes.aTexCoord = aTexCoordCache;
+      view[batchOffset + 8] = alpha;
 
-      attributes.aAlpha = alpha;
-      attributes.aTexSlot = texSlot;
-      attributes.aTint = aTintCache;
+      view[batchOffset + 9] = region[QUAD[i * 2]];
+      view[batchOffset + 10] = region[QUAD[i * 2 + 1]];
+
+      view[batchOffset + 11] = texSlot;
+
+      view[batchOffset + 12] = rn;
+      view[batchOffset + 13] = gn;
+      view[batchOffset + 14] = bn;
 
       attributes.nextVertex();
     }

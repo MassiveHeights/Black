@@ -46,7 +46,7 @@ class WebGLVAO {
       } else {
         Object.defineProperty(this, attribInfo.name, {
           set: v => {
-            for (let i = 0, l = attribInfo.size; i < l; i++) {
+            for (let i = 0, l = v.length; i < l; i++) {
               view[attribInfo.offsetInView + view.batchOffset + i] = v[i];
             }
           }
