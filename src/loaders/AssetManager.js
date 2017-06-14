@@ -77,6 +77,13 @@ class AssetManager extends MessageDispatcher {
      * @member
      * @dict
      */
+    this.mSounds = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mFonts = {};
   }
 
@@ -118,6 +125,18 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
+   * Adds single sound to the loading queue.
+   *
+   * @param {string} name Name of the sound.
+   * @param {string} url  The URL of the sound.
+   *
+   * @returns {void}
+   */
+  enqueueSound(name, url) {
+    this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
+  }
+
+  /*
    * Adds local font to the loading queue.
    *
    * @param {string} name Name of the asset.
@@ -136,7 +155,7 @@ class AssetManager extends MessageDispatcher {
    *
    * @returns {void}
    */
-  enqueueGoogleFont(name) {    
+  enqueueGoogleFont(name) {
     this.mQueue.push(new FontAsset(name, null, false));
   }
 
@@ -177,6 +196,8 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
+    else if (item.constructor === SoundAsset)
+      this.mSounds[item.name] = item.data;
     else if (item.constructor === FontAsset) {
       this.mFonts[item.name] = item.data;
     } else
@@ -272,6 +293,17 @@ class AssetManager extends MessageDispatcher {
    */
   getAtlas(name) {
     return this.mAtlases[name];
+  }
+
+  /**
+   * Returns Sound by given name.
+   *
+   * @param {string} name The name of the sound.
+   *
+   * @return {Audio} Returns sound or null.
+   */
+  getSound(name) {
+    return this.mSounds[name];
   }
 
   /**
