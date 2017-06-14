@@ -7230,87 +7230,6 @@ var AtlasTextureAsset = function (_Asset) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * Sound file asset class responsible for preloading audio files.
- *
- * @cat loaders
- * @extends Asset
- */
-
-var SoundAsset = function (_Asset) {
-  _inherits(SoundAsset, _Asset);
-
-  /**
-   * Creates SoundAsset instance.
-   *
-   * @param {string} name Sound name.
-   * @param {string} url  URL to load audio from.
-   */
-  function SoundAsset(name, url) {
-    _classCallCheck(this, SoundAsset);
-
-    /**
-     * @private
-     * @type {Audio}
-     */
-    var _this = _possibleConstructorReturn(this, (SoundAsset.__proto__ || Object.getPrototypeOf(SoundAsset)).call(this, name, url));
-
-    _this.mAudioElement = new Audio();
-    return _this;
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   *
-   * @return {void}
-   */
-
-
-  _createClass(SoundAsset, [{
-    key: 'onLoaded',
-    value: function onLoaded() {
-      this.mData = this.mAudioElement;
-
-      _get(SoundAsset.prototype.__proto__ || Object.getPrototypeOf(SoundAsset.prototype), 'onLoaded', this).call(this);
-    }
-
-    /**
-     * @override
-     * @inheritDoc
-     *
-     * @return {void}
-     */
-
-  }, {
-    key: 'load',
-    value: function load() {
-      var _this2 = this;
-
-      this.mAudioElement.src = this.mUrl;
-      this.mAudioElement.preload = 'auto';
-      this.mAudioElement.oncanplaythrough = function () {
-        if (!_this2.mData) {
-          _this2.onLoaded();
-        }
-      };
-    }
-  }]);
-
-  return SoundAsset;
-}(Asset);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -7394,13 +7313,6 @@ var AssetManager = function (_MessageDispatcher) {
      * @dict
      */
     _this.mJsons = {};
-
-    /**
-     * @private
-     * @member
-     * @dict
-     */
-    _this.mSounds = {};
     return _this;
   }
 
@@ -7450,21 +7362,6 @@ var AssetManager = function (_MessageDispatcher) {
     value: function enqueueJson(name, url) {
       this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
     }
-
-    /**
-     * Adds single sound to the loading queue.
-     *
-     * @param {string} name Name of the sound.
-     * @param {string} url  The URL of the sound.
-     *
-     * @returns {void}
-     */
-
-  }, {
-    key: 'enqueueSound',
-    value: function enqueueSound(name, url) {
-      this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
-    }
   }, {
     key: 'enqueueLocalFont',
     value: function enqueueLocalFont(name, url) {
@@ -7513,7 +7410,7 @@ var AssetManager = function (_MessageDispatcher) {
 
       // TODO: rework this
       // TODO: check for dups
-      if (item.constructor === TextureAsset) this.mTextures[item.name] = item.data;else if (item.constructor === AtlasTextureAsset) this.mAtlases[item.name] = item.data;else if (item.constructor === JSONAsset) this.mJsons[item.name] = item.data;else if (item.constructor === SoundAsset) this.mSounds[item.name] = item.data;else if (item.constructor === FontAsset) {} else console.error('Unable to handle asset type.', item);
+      if (item.constructor === TextureAsset) this.mTextures[item.name] = item.data;else if (item.constructor === AtlasTextureAsset) this.mAtlases[item.name] = item.data;else if (item.constructor === JSONAsset) this.mJsons[item.name] = item.data;else if (item.constructor === FontAsset) {} else console.error('Unable to handle asset type.', item);
 
       this.post(Message.PROGRESS, this.mLoadingProgress);
 
@@ -7605,20 +7502,6 @@ var AssetManager = function (_MessageDispatcher) {
     key: 'getAtlas',
     value: function getAtlas(name) {
       return this.mAtlases[name];
-    }
-
-    /**
-     * Returns Sound by given name.
-     *
-     * @param {string} name The name of the sound.
-     *
-     * @return {Audio} Returns sound or null.
-     */
-
-  }, {
-    key: 'getSound',
-    value: function getSound(name) {
-      return this.mSounds[name];
     }
 
     /**
@@ -8902,50 +8785,50 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * */
 
 var WebGLElementBuffer = function () {
-  function WebGLElementBuffer(renderer) {
-    _classCallCheck(this, WebGLElementBuffer);
+    function WebGLElementBuffer(renderer) {
+        _classCallCheck(this, WebGLElementBuffer);
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
+        /** @type {WebGLDriver} */
+        this.renderer = renderer;
 
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
+        /** @type {WebGLRenderingContext} */
+        this.gl = renderer.gl;
 
-    /** @type {Number[]} */
-    this.mTemplate = [0, 1, 2, 3, 3, 4];
+        /** @type {Number[]} */
+        this.mTemplate = [0, 1, 2, 3, 3, 4];
 
-    /** @type {Uint16Array} */
-    this.mData = new Uint16Array(renderer.MAX_BATCH_SIZE * 6 - 2);
+        /** @type {Uint16Array} */
+        this.mData = new Uint16Array(renderer.MAX_BATCH_SIZE * 6 - 2);
 
-    /** @type {WebGLBuffer} */
-    this.mGlBuffer = this.gl.createBuffer();
+        /** @type {WebGLBuffer} */
+        this.mGlBuffer = this.gl.createBuffer();
 
-    for (var i = 0, l = this.mData.length; i < l; i++) {
-      this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
+        for (var i = 0, l = this.mData.length; i < l; i++) {
+            this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
+        }
+
+        this.renderer.state.bindElementBuffer(this.mGlBuffer);
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
     }
 
-    this.renderer.state.bindElementBuffer(this.mGlBuffer);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
-  }
+    _createClass(WebGLElementBuffer, [{
+        key: "prepare",
+        value: function prepare(objectsAmount) {
+            this.renderer.state.bindElementBuffer(this.mGlBuffer);
+            // if (this.mData.length >= objectsAmount * 6 - 2) return;
+            //
+            // this.mData = new Uint16Array(objectsAmount * 6 - 2);
+            //
+            // for (let i = 0, l = this.mData.length; i < l; i++) {
+            //   this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
+            // }
+            //
+            // this.renderer.state.bindElementBuffer(this.mGlBuffer);
+            // this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
+        }
+    }]);
 
-  _createClass(WebGLElementBuffer, [{
-    key: "prepare",
-    value: function prepare(objectsAmount) {
-      this.renderer.state.bindElementBuffer(this.mGlBuffer);
-      // if (this.mData.length >= objectsAmount * 6 - 2) return;
-      //
-      // this.mData = new Uint16Array(objectsAmount * 6 - 2);
-      //
-      // for (let i = 0, l = this.mData.length; i < l; i++) {
-      //   this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
-      // }
-      //
-      // this.renderer.state.bindElementBuffer(this.mGlBuffer);
-      // this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
-    }
-  }]);
-
-  return WebGLElementBuffer;
+    return WebGLElementBuffer;
 }();
 "use strict";
 
@@ -9166,76 +9049,76 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var WebGLTextures = function () {
-  function WebGLTextures(renderer) {
-    _classCallCheck(this, WebGLTextures);
+    function WebGLTextures(renderer) {
+        _classCallCheck(this, WebGLTextures);
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
+        /** @type {WebGLDriver} */
+        this.renderer = renderer;
 
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
+        /** @type {WebGLRenderingContext} */
+        this.gl = renderer.gl;
 
-    this.MAX_TEXTURE_IMAGE_UNITS = this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS);
-    this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        this.MAX_TEXTURE_IMAGE_UNITS = this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS);
+        this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
-    /** @type {WebGLTextures[]} */
-    this.mBoundTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
+        /** @type {WebGLTextures[]} */
+        this.mBoundTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
 
-    /** @type {WebGLTextures[]} */
-    this.mBatchTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
+        /** @type {WebGLTextures[]} */
+        this.mBatchTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
 
-    /** @type {WebGLTextures[]} */
-    this.mGlTextures = [];
+        /** @type {WebGLTextures[]} */
+        this.mGlTextures = [];
 
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    canvas.width = canvas.height = 8;
-    ctx.fillRect(0, 0, 8, 8);
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = canvas.height = 8;
+        ctx.fillRect(0, 0, 8, 8);
 
-    for (var i = 0; i < this.MAX_TEXTURE_IMAGE_UNITS; i++) {
-      var glTexture = this.mGlTextures[i] = this.gl.createTexture();
+        for (var i = 0; i < this.MAX_TEXTURE_IMAGE_UNITS; i++) {
+            var glTexture = this.mGlTextures[i] = this.gl.createTexture();
 
-      this.gl.activeTexture(this.gl["TEXTURE" + i]);
-      this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
-      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+            this.gl.activeTexture(this.gl["TEXTURE" + i]);
+            this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
+            this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+        }
     }
-  }
 
-  _createClass(WebGLTextures, [{
-    key: "bindTexture",
-    value: function bindTexture(texture) {
-      var index = this.mBoundTextures.indexOf(texture);
+    _createClass(WebGLTextures, [{
+        key: "bindTexture",
+        value: function bindTexture(texture) {
+            var index = this.mBoundTextures.indexOf(texture);
 
-      if (index === -1) {
+            if (index === -1) {
 
-        index = this.mBoundTextures.indexOf(null);
-        index = index === -1 ? this.mBatchTextures.indexOf(null) : index;
+                index = this.mBoundTextures.indexOf(null);
+                index = index === -1 ? this.mBatchTextures.indexOf(null) : index;
 
-        if (index === -1) return;
+                if (index === -1) return;
 
-        this.renderer.state.setActiveTexture(this.gl["TEXTURE" + index]);
-        this.renderer.state.bindTexture(this.mGlTextures[index]);
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.native);
-        // todo texture settings repeat nearest clamp from sprite
-      }
+                this.renderer.state.setActiveTexture(this.gl["TEXTURE" + index]);
+                this.renderer.state.bindTexture(this.mGlTextures[index]);
+                this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.native);
+                // todo texture settings repeat nearest clamp from sprite
+            }
 
-      this.mBoundTextures[index] = texture;
-      this.mBatchTextures[index] = texture;
+            this.mBoundTextures[index] = texture;
+            this.mBatchTextures[index] = texture;
 
-      return index;
-    }
-  }, {
-    key: "endBatch",
-    value: function endBatch() {
-      this.mBatchTextures.fill(null);
-    }
-  }]);
+            return index;
+        }
+    }, {
+        key: "endBatch",
+        value: function endBatch() {
+            this.mBatchTextures.fill(null);
+        }
+    }]);
 
-  return WebGLTextures;
+    return WebGLTextures;
 }();
 "use strict";
 
@@ -9393,40 +9276,40 @@ var TextInfo =
  * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
  */
 function TextInfo() {
-  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
-  var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
-  var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
-  var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
-  var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
-  var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
-  var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
-  var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
+    var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sans-serif';
+    var color = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0x000000;
+    var size = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 14;
+    var style = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : TextInfo.FontStyle.NORMAL;
+    var weight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : TextInfo.FontWeight.NORMAL;
+    var align = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : TextInfo.FontAlign.LEFT;
+    var strokeThickness = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+    var strokeColor = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 0xffffff;
 
-  _classCallCheck(this, TextInfo);
+    _classCallCheck(this, TextInfo);
 
-  /** @type {string} */
-  this.name = name;
+    /** @type {string} */
+    this.name = name;
 
-  /** @type {number} */
-  this.size = size;
+    /** @type {number} */
+    this.size = size;
 
-  /** @type {number} */
-  this.color = color;
+    /** @type {number} */
+    this.color = color;
 
-  /** @type {TextInfo.FontStyle} */
-  this.style = style;
+    /** @type {TextInfo.FontStyle} */
+    this.style = style;
 
-  /** @type {TextInfo.FontWeight} */
-  this.weight = weight;
+    /** @type {TextInfo.FontWeight} */
+    this.weight = weight;
 
-  /** @type {TextInfo.FontAlign} */
-  this.align = align;
+    /** @type {TextInfo.FontAlign} */
+    this.align = align;
 
-  /** @type {number} */
-  this.strokeThickness = strokeThickness;
+    /** @type {number} */
+    this.strokeThickness = strokeThickness;
 
-  /** @type {number} */
-  this.strokeColor = strokeColor;
+    /** @type {number} */
+    this.strokeColor = strokeColor;
 };
 
 /**
@@ -9435,26 +9318,26 @@ function TextInfo() {
 
 
 TextInfo.FontStyle = {
-  NORMAL: 'normal',
-  ITALIC: 'italic'
+    NORMAL: 'normal',
+    ITALIC: 'italic'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontWeight = {
-  NORMAL: '400',
-  BOLD: '700',
-  SUPERBOLD: '800'
+    NORMAL: '400',
+    BOLD: '700',
+    SUPERBOLD: '800'
 };
 
 /**
  * @enum {string}
  */
 TextInfo.FontAlign = {
-  LEFT: 'left',
-  RIGHT: 'right',
-  CENTER: 'center'
+    LEFT: 'left',
+    RIGHT: 'right',
+    CENTER: 'center'
 };
 "use strict";
 
@@ -10042,7 +9925,7 @@ var TextField = function (_DisplayObject) {
     }
 
     /**Text to be displayed inside this text field.
-      * @return {string}
+       * @return {string}
      */
 
   }, {
@@ -11387,145 +11270,145 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var Particle = function () {
-  function Particle() {
-    _classCallCheck(this, Particle);
+    function Particle() {
+        _classCallCheck(this, Particle);
 
-    this.reset();
-  }
-
-  /**
-   * Resets particle to default state.
-   *
-   * @returns {void}
-   */
-
-
-  _createClass(Particle, [{
-    key: "reset",
-    value: function reset() {
-      /**
-       * The index of a texture.
-       * @type {number}
-       */
-      this.textureIndex = 0;
-
-      /**
-       * The x/y scale of this particle.
-       * @type {number}
-       */
-      this.scale = 1;
-
-      /**
-       * Alpha value.
-       * @type {number}
-       */
-      this.alpha = 1;
-
-      /**
-       * The life of this particle.
-       * @type {number}
-       */
-      this.life = 1;
-
-      /**
-       * The age of this particle.
-       * @type {number}
-       */
-      this.age = 0;
-
-      /**
-       * Relation of life to age.
-       * @type {number}
-       */
-      this.energy = this.age / this.life;
-
-      /**
-       * The mass.
-       * @type {number}
-       */
-      this.mass = 0;
-
-      /**
-       * X-component.
-       * @type {number}
-       */
-      this.x = 0;
-
-      /**
-       * Y-component.
-       * @type {number}
-       */
-      this.y = 0;
-
-      /**
-       * Rotation of this particle.
-       * @type {number}
-       */
-      this.r = 0;
-
-      /**
-       * Velocity by x.
-       * @type {number}
-       */
-      this.vx = 0;
-
-      /**
-       * Velocity by y.
-       * @type {number}
-       */
-      this.vy = 0;
-
-      /**
-       * Particle x-acceleration.
-       * @type {number}
-       */
-      this.ax = 0;
-
-      /**
-       * Particle y-acceleration.
-       * @type {number}
-       */
-      this.ay = 0;
+        this.reset();
     }
 
     /**
-     * Internal update method.
+     * Resets particle to default state.
      *
-     * @param {number} dt Time since last update.
-     *
-     * @return {void}
+     * @returns {void}
      */
 
-  }, {
-    key: "update",
-    value: function update(dt) {
-      if (this.life <= 0) {
-        this.life = 0;
-        return;
-      }
 
-      this.x += this.vx * dt;
-      this.y += this.vy * dt;
+    _createClass(Particle, [{
+        key: "reset",
+        value: function reset() {
+            /**
+             * The index of a texture.
+             * @type {number}
+             */
+            this.textureIndex = 0;
 
-      if (this.mass > 0) {
-        this.ax *= 1 / this.mass;
-        this.ay *= 1 / this.mass;
-      }
+            /**
+             * The x/y scale of this particle.
+             * @type {number}
+             */
+            this.scale = 1;
 
-      this.vx += this.ax * dt;
-      this.vy += this.ay * dt;
+            /**
+             * Alpha value.
+             * @type {number}
+             */
+            this.alpha = 1;
 
-      this.ax = 0;
-      this.ay = 0;
+            /**
+             * The life of this particle.
+             * @type {number}
+             */
+            this.life = 1;
 
-      this.life -= dt;
-      this.age += dt;
+            /**
+             * The age of this particle.
+             * @type {number}
+             */
+            this.age = 0;
 
-      this.energy = this.age / (this.age + this.life);
-    }
-  }]);
+            /**
+             * Relation of life to age.
+             * @type {number}
+             */
+            this.energy = this.age / this.life;
 
-  return Particle;
+            /**
+             * The mass.
+             * @type {number}
+             */
+            this.mass = 0;
+
+            /**
+             * X-component.
+             * @type {number}
+             */
+            this.x = 0;
+
+            /**
+             * Y-component.
+             * @type {number}
+             */
+            this.y = 0;
+
+            /**
+             * Rotation of this particle.
+             * @type {number}
+             */
+            this.r = 0;
+
+            /**
+             * Velocity by x.
+             * @type {number}
+             */
+            this.vx = 0;
+
+            /**
+             * Velocity by y.
+             * @type {number}
+             */
+            this.vy = 0;
+
+            /**
+             * Particle x-acceleration.
+             * @type {number}
+             */
+            this.ax = 0;
+
+            /**
+             * Particle y-acceleration.
+             * @type {number}
+             */
+            this.ay = 0;
+        }
+
+        /**
+         * Internal update method.
+         *
+         * @param {number} dt Time since last update.
+         *
+         * @return {void}
+         */
+
+    }, {
+        key: "update",
+        value: function update(dt) {
+            if (this.life <= 0) {
+                this.life = 0;
+                return;
+            }
+
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
+
+            if (this.mass > 0) {
+                this.ax *= 1 / this.mass;
+                this.ay *= 1 / this.mass;
+            }
+
+            this.vx += this.ax * dt;
+            this.vy += this.ay * dt;
+
+            this.ax = 0;
+            this.ay = 0;
+
+            this.life -= dt;
+            this.age += dt;
+
+            this.energy = this.age / (this.age + this.life);
+        }
+    }]);
+
+    return Particle;
 }();
 'use strict';
 
@@ -13344,118 +13227,118 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 var MRComponent = function (_Component) {
-  _inherits(MRComponent, _Component);
-
-  /**
-   * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
-   * Simplified version of scale manager.
-   *
-   * @param {number} [width=960]  The width.
-   * @param {number} [height=640] The height.
-   */
-  function MRComponent() {
-    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
-
-    _classCallCheck(this, MRComponent);
+    _inherits(MRComponent, _Component);
 
     /**
-     * @private
-     * @type {number}
-     */
-    var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
-
-    _this.mWidth = width;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    _this.mHeight = height;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    _this.mScale = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    _this.mInvScale = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    _this.mAspect = 0;
-
-    Black.instance.viewport.on('resize', _this.__onResize, _this);
-    return _this;
-  }
-
-  _createClass(MRComponent, [{
-    key: '__onResize',
-    value: function __onResize(msg, rect) {
-      this.setSize(this.mWidth, this.mHeight);
-    }
-
-    /**
-     * Sets size of the latout.
+     * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+     * Simplified version of scale manager.
      *
-     * @param  {number} width = 960  The width.
-     * @param  {number} height = 640 The height.
-     * @return {void}
+     * @param {number} [width=960]  The width.
+     * @param {number} [height=640] The height.
      */
+    function MRComponent() {
+        var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+        var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
 
-  }, {
-    key: 'setSize',
-    value: function setSize() {
-      var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-      var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
+        _classCallCheck(this, MRComponent);
 
-      this.mWidth = width;
-      this.mHeight = height;
+        /**
+         * @private
+         * @type {number}
+         */
+        var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
 
-      this.updateLayout();
+        _this.mWidth = width;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mHeight = height;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mScale = 0;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mInvScale = 0;
+
+        /**
+         * @private
+         * @type {number}
+         */
+        _this.mAspect = 0;
+
+        Black.instance.viewport.on('resize', _this.__onResize, _this);
+        return _this;
     }
 
-    /**
-     * Updates layout to match specified settings.
-     *
-     * @return {void}
-     */
+    _createClass(MRComponent, [{
+        key: '__onResize',
+        value: function __onResize(msg, rect) {
+            this.setSize(this.mWidth, this.mHeight);
+        }
 
-  }, {
-    key: 'updateLayout',
-    value: function updateLayout() {
-      if (!this.gameObject) return;
+        /**
+         * Sets size of the latout.
+         *
+         * @param  {number} width = 960  The width.
+         * @param  {number} height = 640 The height.
+         * @return {void}
+         */
 
-      /** @type {Rectangle} */
-      var size = Black.instance.viewport.size;
+    }, {
+        key: 'setSize',
+        value: function setSize() {
+            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
 
-      /** @type {number} */
-      var scaleX = size.width / this.mWidth;
+            this.mWidth = width;
+            this.mHeight = height;
 
-      /** @type {number} */
-      var scaleY = size.height / this.mHeight;
+            this.updateLayout();
+        }
 
-      this.mScale = Math.min(scaleX, scaleY);
-      this.mInvScale = 1 / this.mScale;
+        /**
+         * Updates layout to match specified settings.
+         *
+         * @return {void}
+         */
 
-      this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-      this.gameObject.x = size.width / 2 - this.mWidth / 2 * this.mScale;
-      this.gameObject.y = size.height / 2 - this.mHeight / 2 * this.mScale;
-    }
-  }, {
-    key: 'onAdded',
-    value: function onAdded() {
-      this.updateLayout();
-    }
-  }]);
+    }, {
+        key: 'updateLayout',
+        value: function updateLayout() {
+            if (!this.gameObject) return;
 
-  return MRComponent;
+            /** @type {Rectangle} */
+            var size = Black.instance.viewport.size;
+
+            /** @type {number} */
+            var scaleX = size.width / this.mWidth;
+
+            /** @type {number} */
+            var scaleY = size.height / this.mHeight;
+
+            this.mScale = Math.min(scaleX, scaleY);
+            this.mInvScale = 1 / this.mScale;
+
+            this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
+            this.gameObject.x = size.width / 2 - this.mWidth / 2 * this.mScale;
+            this.gameObject.y = size.height / 2 - this.mHeight / 2 * this.mScale;
+        }
+    }, {
+        key: 'onAdded',
+        value: function onAdded() {
+            this.updateLayout();
+        }
+    }]);
+
+    return MRComponent;
 }(Component);
 "use strict";
 
