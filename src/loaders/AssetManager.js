@@ -72,13 +72,19 @@ class AssetManager extends MessageDispatcher {
      */
     this.mJsons = {};
 
-
     /**
      * @private
      * @member
      * @dict
      */
     this.mSounds = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mFonts = {};
   }
 
   /**
@@ -130,12 +136,27 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
   }
 
-  enqueueLocalFont(name, url) {
+  /*
+   * Adds local font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL to the font.
+   *
+   * @returns {void}
+   */
+  enqueueFont(name, url) {
     this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
   }
 
-  enqueueGoogleFont(name, url) {
-    this.mQueue.push(new FontAsset(name, url, false));
+  /**
+   * Adds Google Font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   *
+   * @returns {void}
+   */
+  enqueueGoogleFont(name) {
+    this.mQueue.push(new FontAsset(name, null, false));
   }
 
   /**
@@ -177,14 +198,16 @@ class AssetManager extends MessageDispatcher {
       this.mJsons[item.name] = item.data;
     else if (item.constructor === SoundAsset)
       this.mSounds[item.name] = item.data;
-    else if (item.constructor === FontAsset) {} else
+    else if (item.constructor === FontAsset) {
+      this.mFonts[item.name] = item.data;
+    } else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
       this.mQueue.splice(0, this.mQueue.length);
-
+      this.mTotalLoaded = 0;
       this.mIsAllLoaded = true;
       this.post(Message.COMPLETE);
     }
