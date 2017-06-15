@@ -2,7 +2,7 @@
  * Manages WebGl element buffer data for sprite program.
  * */
 /* @echo EXPORT */
-class WebGLElementBuffer {
+class WebGLElementBufferEx {
   constructor(renderer) {
 
     /** @type {WebGLDriver} */

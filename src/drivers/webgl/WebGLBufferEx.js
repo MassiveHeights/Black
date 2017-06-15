@@ -2,7 +2,7 @@
 * Manages WebGl array buffer data for sprite program.
 * */
 /* @echo EXPORT */
-class WebGLBuffer {
+class WebGLBufferEx {
   constructor(renderer) {
 
     /** @type {WebGLDriver} */

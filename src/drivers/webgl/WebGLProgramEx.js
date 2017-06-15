@@ -50,7 +50,7 @@ const fragmentShaderSource = `
  */
 
 /* @echo EXPORT */
-class WebGLProgram {
+class WebGLProgramEx {
   constructor(renderer) {
 
     /** @type {WebGLDriver} */
@@ -103,7 +103,7 @@ class WebGLProgram {
     this.resize();
 
     /** @type {WebGLBuffer} */
-    this.mBuffer = new WebGLBuffer(renderer);
+    this.mBuffer = new WebGLBufferEx(renderer);
     this.push = this.mBuffer.push.bind(this.mBuffer);
 
     const stride = Float32Array.BYTES_PER_ELEMENT * 15;
@@ -119,7 +119,7 @@ class WebGLProgram {
     this.enableAttribute(this.mAttributes.aTint, 3, float, false, stride, 12 * floatSize);        // vec 3  // uint * 3
 
     /** @type {WebGLElementBuffer} */
-    this.mElementBuffer = new WebGLElementBuffer(renderer);
+    this.mElementBuffer = new WebGLElementBufferEx(renderer);
   }
 
   enableAttribute(index, size, type, normalize, stride, offset) {

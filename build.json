@@ -41,9 +41,9 @@
     "src/drivers/DOMDriver.js",
 
     "src/drivers/webgl/WebGLDriver.js",
-    "src/drivers/webgl/WebGLBuffer.js",
-    "src/drivers/webgl/WebGLElementBuffer.js",
-    "src/drivers/webgl/WebGLProgram.js",
+    "src/drivers/webgl/WebGLBufferEx.js",
+    "src/drivers/webgl/WebGLElementBufferEx.js",
+    "src/drivers/webgl/WebGLProgramEx.js",
     "src/drivers/webgl/WebGLState.js",
     "src/drivers/webgl/WebGLTextures.js",
     "src/drivers/webgl/WebGLBlendMode.js",
