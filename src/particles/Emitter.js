@@ -297,7 +297,7 @@ class Emitter extends DisplayObject {
         video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
 
         pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-        video.drawImage(texture, pbounds);
+        video.drawImage(texture, tw, th);
       }
     }
 

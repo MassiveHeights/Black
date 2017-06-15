@@ -76,7 +76,9 @@ class CanvasDriver extends VideoNullDriver {
    */
   set globalAlpha(value) {
     this.mGlobalAlpha = value;
-    this.mCtx.globalAlpha = value;
+
+    if (this.mCtx.globalAlpha !== value)
+      this.mCtx.globalAlpha = value;
   }
 
   /**
@@ -90,6 +92,9 @@ class CanvasDriver extends VideoNullDriver {
   set globalBlendMode(blendMode) {
     if (blendMode === BlendMode.AUTO)
       return;
+    
+    if (this.mCtx.globalCompositeOperation === blendMode)
+      return;
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
@@ -102,18 +107,18 @@ class CanvasDriver extends VideoNullDriver {
    * @override
    *
    * @param {Texture} texture
-   * @param {Rectangle} bounds
+   * @param {number} px
+   * @param {number} py
    *
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     let w = texture.width;
     let h = texture.height;
+    let ox = texture.untrimmedRect.x;
+    let oy = texture.untrimmedRect.y;
 
-    let uw = texture.untrimmedRect.x;
-    let uh = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
 
   /**
@@ -168,6 +173,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -181,7 +187,7 @@ class CanvasDriver extends VideoNullDriver {
     super.beginFrame();
 
     this.clear();
-    this.mCtx.save();
+    //this.mCtx.save();
   }
 
   /**
@@ -193,7 +199,7 @@ class CanvasDriver extends VideoNullDriver {
   endFrame() {
     super.endFrame();
 
-    this.mCtx.restore();
+    //this.mCtx.restore();
   }
 
   /**

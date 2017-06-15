@@ -66,10 +66,10 @@ class VideoNullDriver {
   /**
    * @protected
    * @ignore
-   * @param {type} msg
-   * @param {type} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    *
-   * @returns {type}
+   * @returns {void}
    */
   __onResize(msg, rect) {
     let w = this.mContainerElement.clientWidth;
@@ -177,9 +177,10 @@ class VideoNullDriver {
    * @protected
    *
    * @param  {Texture} texture
-   * @param  {Texture} bounds
+   * @param  {number} px
+   * @param  {number} py
    */
-  drawImage(texture, bounds) {}
+  drawImage(texture, px, py) {}
 
   /**
    * Draws text onto back-buffer.

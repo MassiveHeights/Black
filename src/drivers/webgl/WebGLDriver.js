@@ -60,9 +60,9 @@ class WebGLDriver extends VideoNullDriver {
     /**
      * Program that renders sprites
      *
-     * @type {WebGLProgram}
+     * @type {WebGLProgramEx}
      * */
-    this.program = new WebGLProgram(this);
+    this.program = new WebGLProgramEx(this);
   }
 
   /**
@@ -110,7 +110,7 @@ class WebGLDriver extends VideoNullDriver {
     }
   }
 
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     const object = this.mCurrentObject;
     const coords = texture.relativeRegion;
     const m = this.mTransform.value;

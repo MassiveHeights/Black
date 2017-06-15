@@ -149,7 +149,7 @@ class TextField extends DisplayObject {
       this.mFieldHeight = this.mTextHeight;
     }
 
-    return outRect.set(strokeCorrection-this.mPivotX, strokeCorrection-this.mPivotY, this.mFieldWidth, this.mFieldHeight);
+    return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
   }
 
 
