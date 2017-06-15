@@ -175,8 +175,8 @@ class Vector {
    * @return {Vector} This.
    */
   clamp(min, max) {
-    this.x = Math.clamp(this.x, min, max);
-    this.y = Math.clamp(this.y, min, max);
+    this.x = MathEx.clamp(this.x, min, max);
+    this.y = MathEx.clamp(this.y, min, max);
 
     return this;
   }
@@ -190,8 +190,8 @@ class Vector {
    * @return {Vector} This.
    */
   lerp(vector, t) {
-    this.x = Math.lerp(this.x, vector.x, t);
-    this.y = Math.lerp(this.y, vector.y, t);
+    this.x = MathEx.lerp(this.x, vector.x, t);
+    this.y = MathEx.lerp(this.y, vector.y, t);
 
     return this;
   }
