@@ -265,7 +265,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   removeFromParent(dispose = false) {
-    if (this.mParent)
+    if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     if (dispose)
@@ -475,7 +475,7 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent)
+      if (this.mParent !== null)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);

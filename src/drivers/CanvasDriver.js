@@ -75,10 +75,11 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalAlpha(value) {
+    if (value == this.mGlobalAlpha)
+      return;
+    
     this.mGlobalAlpha = value;
-
-    if (this.mCtx.globalAlpha !== value)
-      this.mCtx.globalAlpha = value;
+    this.mCtx.globalAlpha = value;
   }
 
   /**
@@ -90,11 +91,15 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
-    if (blendMode === BlendMode.AUTO)
-      return;
+    // if (blendMode === BlendMode.AUTO)
+    //   return;
+
+    if (this.mGlobalBlendMode === blendMode)
+      return;  
     
-    if (this.mCtx.globalCompositeOperation === blendMode)
-      return;
+    // small performance win
+    // if (this.mCtx.globalCompositeOperation === blendMode)
+    //   return;
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
@@ -188,6 +193,8 @@ class CanvasDriver extends VideoNullDriver {
 
     this.clear();
     //this.mCtx.save();
+
+    this.mCtx.globalCompositeOperation = this.mGlobalBlendMode;
   }
 
   /**
