@@ -65,7 +65,7 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
-    this.mAlpha = Math.clamp(value, 0, 1);
+    this.mAlpha = MathEx.clamp(value, 0, 1);
   }
 
 
