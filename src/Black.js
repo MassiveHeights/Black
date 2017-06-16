@@ -254,7 +254,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootSystems() {
-    this.addSystem(new Input());
+    //this.addSystem(new Input());
   }
 
   /**
