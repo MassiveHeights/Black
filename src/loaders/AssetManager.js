@@ -71,6 +71,20 @@ class AssetManager extends MessageDispatcher {
      * @dict
      */
     this.mJsons = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mSounds = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mFonts = {};
   }
 
   /**
@@ -110,12 +124,39 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
-  enqueueLocalFont(name, url) {
+  /**
+   * Adds single sound to the loading queue.
+   *
+   * @param {string} name Name of the sound.
+   * @param {string} url  The URL of the sound.
+   *
+   * @returns {void}
+   */
+  enqueueSound(name, url) {
+    this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
+  }
+
+  /*
+   * Adds local font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL to the font.
+   *
+   * @returns {void}
+   */
+  enqueueFont(name, url) {
     this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
   }
 
-  enqueueGoogleFont(name, url) {
-    this.mQueue.push(new FontAsset(name, url, false));
+  /**
+   * Adds Google Font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   *
+   * @returns {void}
+   */
+  enqueueGoogleFont(name) {
+    this.mQueue.push(new FontAsset(name, null, false));
   }
 
   /**
@@ -155,14 +196,18 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
-    else if (item.constructor === FontAsset) {} else
+    else if (item.constructor === SoundAsset)
+      this.mSounds[item.name] = item.data;
+    else if (item.constructor === FontAsset) {
+      this.mFonts[item.name] = item.data;
+    } else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
       this.mQueue.splice(0, this.mQueue.length);
-
+      this.mTotalLoaded = 0;
       this.mIsAllLoaded = true;
       this.post(Message.COMPLETE);
     }
@@ -248,6 +293,17 @@ class AssetManager extends MessageDispatcher {
    */
   getAtlas(name) {
     return this.mAtlases[name];
+  }
+
+  /**
+   * Returns Sound by given name.
+   *
+   * @param {string} name The name of the sound.
+   *
+   * @return {Audio} Returns sound or null.
+   */
+  getSound(name) {
+    return this.mSounds[name];
   }
 
   /**

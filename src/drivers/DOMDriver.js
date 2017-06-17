@@ -293,9 +293,8 @@ class DOMDriver extends VideoNullDriver {
       if (el.style.webkitTextStrokeColor != strokeColor)
         el.style.webkitTextStrokeColor = strokeColor;
 
-      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') {
+      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px')
         el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
-      }
     }
 
     if (el.style.backgroundImage !== 'none')

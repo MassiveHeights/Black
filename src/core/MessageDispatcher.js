@@ -1,6 +1,10 @@
 /**
  * The MessageDispatcher class is the base class for all classes that posts messages.
  *
+ * Global messages will not be dispatched on non GameObject objects.
+ *
+ *
+ *
  * @cat core
  * @unrestricted
  */
@@ -30,17 +34,17 @@ class MessageDispatcher {
     Debug.assert(callback !== null, 'callback cannot be null.');
 
     // TODO: refactor, expore dispatching provider
-    let filterIx = name.indexOf('@') ;
+    let filterIx = name.indexOf('@');
     if (filterIx !== -1) {
       // global handler
 
       let pureName = name.substring(0, filterIx);
       let pathMask = name.substring(filterIx + 1);
 
-      if (MessageDispatcher.mGlobalHandlers.hasOwnProperty(pureName) === false)
-        MessageDispatcher.mGlobalHandlers[pureName] = [];
+      if (MessageDispatcher.mOverheardHandlers.hasOwnProperty(pureName) === false)
+        MessageDispatcher.mOverheardHandlers[pureName] = [];
 
-      let dispatchers = (MessageDispatcher.mGlobalHandlers[pureName]);
+      let dispatchers = (MessageDispatcher.mOverheardHandlers[pureName]);
       // for (let i = 0; i < dispatchers.length; i++)
       //   if (dispatchers[i].callback === callback)
       //     return;
@@ -81,17 +85,26 @@ class MessageDispatcher {
    * @returns {boolean} True if found.
    */
   hasOn(name) {
-    if (this.mListeners === null)
-      return false;
+    Debug.assert(name !== null, 'name cannot be null.');
 
-    if (this.mListeners.hasOwnProperty(name) === false)
-      return false;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      let pureName = name.substring(0, filterIx);
+      if (MessageDispatcher.mOverheardHandlers.hasOwnProperty(pureName) === false)
+        return false;
+    } else {
+      if (this.mListeners === null)
+        return false;
+      else if (this.mListeners.hasOwnProperty(name) === false)
+        return false;
+    }
 
     return true;
   }
 
   /**
-   * Removes listener
+   * Removes listener.
+   * If callback is null then all callbacks will be removed.
    *
    * @param {string} name
    * @param {Function=} [callback=null]
@@ -99,26 +112,52 @@ class MessageDispatcher {
    * @return {void}
    */
   removeOn(name, callback = null) {
-    if (name === null || name.length === 0)
-      throw new Error('Name cannot be null.');
+    Debug.assert(name !== null, 'name cannot be null.');
+    //Debug.assert(callback !== null, 'callback cannot be null.');
 
-    if (this.mListeners === null)
-      return;
+    let filterIx = name.indexOf('@');
+    if (filterIx !== -1) {
+      //we are working with overheared message
+      let pureName = name.substring(0, filterIx);
+      let pathMask = name.substring(filterIx + 1);
 
-    let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
-
-    if (dispatchers === undefined)
-      return;
-
-    if (callback === null) {
-      dispatchers.splice(0, dispatchers.length);
-      return;
-    }
-
-    for (let i = dispatchers.length; i--;) {
-      if (dispatchers[i].callback === callback) {
-        dispatchers.splice(i, 1);
+      if (MessageDispatcher.mOverheardHandlers.hasOwnProperty(pureName) === false)
         return;
+
+      let dispatchers = (MessageDispatcher.mOverheardHandlers[pureName]);
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
+      }
+
+    } else {
+      // regular message
+      if (this.mListeners === null)
+        return;
+
+      let dispatchers = /** @type {Array<{callback: Function, context}>} */ (this.mListeners[name]);
+
+      if (dispatchers === undefined)
+        return;
+
+      if (callback === null) {
+        dispatchers.splice(0, dispatchers.length);
+        return;
+      } else {
+        for (let i = dispatchers.length; i--;) {
+          if (dispatchers[i].callback === callback) {
+            dispatchers.splice(i, 1);
+            return;
+          }
+        }
       }
     }
   }
@@ -139,6 +178,9 @@ class MessageDispatcher {
 
     let message = this.__parseMessage(this, name);
 
+    //if (message.name === null && message.name === '')
+    Debug.assert(message.name !== '', 'Message.name cannot be null.');  
+
     // TODO: o'really 62?
     let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
     if (message.mDirection !== 'none' && isGameObjectOrComponent === false)
@@ -146,18 +188,21 @@ class MessageDispatcher {
 
     if (message.mDirection === 'none') {
       this.__invoke(this, message, ...params);
-      this.__invokeGlobal(this, message, ...params);
+      this.__invokeComponents(this, message, ...params);
+      this.__invokeOverheard(this, message, ...params);
     } else if (message.mDirection === 'down') {
       message.mOrigin = ( /** @type {GameObject} */ (this)).root;
 
       if (message.mSibblings === true) {
         this.__sendGlobal(this, message, null, ...params);
-        message.mOrigin.__invokeGlobal(this, message, ...params);
-      }
-      else
+        message.mOrigin.__invokeOverheard(this, message, ...params);
+      } else {
         this.__sendBubbles(this, message, false, ...params);
+        message.mSender.__invokeOverheard(message.sender, message, ...params);
+      }
     } else if (message.mDirection === 'up') {
       this.__sendBubbles(this, message, true, ...params);
+      message.mSender.__invokeOverheard(message.sender, message, ...params);
     } else {
       throw new Error('Unknown message type.');
     }
@@ -187,15 +232,15 @@ class MessageDispatcher {
       for (let i = 0; i < list.length; i++) {
         let dispatcher = /** @type {GameObject} */ (list[i]);
         dispatcher.__invoke(sender, message, ...params);
+        dispatcher.__invokeComponents(sender, message, ...params);
       }
     } else {
       for (let i = list.length - 1; i >= 0; i--) {
         let dispatcher = /** @type {GameObject} */ (list[i]);
         dispatcher.__invoke(sender, message, ...params);
+        dispatcher.__invokeComponents(sender, message, ...params);
       }
     }
-
-    message.mSender.__invokeGlobal(message.sender, message, ...params);
   }
 
   /**
@@ -212,6 +257,7 @@ class MessageDispatcher {
       origin = /** @type {GameObject} */ (message.mOrigin);
 
     origin.__invoke(sender, message, ...params);
+    origin.__invokeComponents(sender, message, ...params);
 
     for (let i = 0; i < origin.numChildren; i++) {
       let child = origin.getChildAt(i);
@@ -236,8 +282,8 @@ class MessageDispatcher {
     if (dispatchers === undefined || dispatchers.length === 0)
       return;
 
-    if (message.mPathMask !== null) {
-      let inPath = this.__checkPath(this.path, message.mPathMask);
+    if (message.path !== null) {
+      let inPath = this.__checkPath(this.path, message.path);
       if (!inPath)
         return;
     }
@@ -252,6 +298,20 @@ class MessageDispatcher {
     }
   }
 
+  __invokeComponents(sender, message, toTop, ...params) {
+    let isGameObject = this instanceof GameObject;
+    if (isGameObject === false)
+      return;  
+    
+    let go = /** @type {GameObject} */ (this);
+
+    let len = go.mComponents.length;
+    for (let i = 0; i < len; i++) {
+      let c = go.mComponents[i];
+      c.__invoke(sender, message, ...params);
+    }
+  }
+
   /**
    * @private
    * @param {*}  sender
@@ -260,8 +320,8 @@ class MessageDispatcher {
    *
    * @return {void}
    */
-  __invokeGlobal(sender, message, ...params) {
-    let dispatchers = MessageDispatcher.mGlobalHandlers[message.mName];
+  __invokeOverheard(sender, message, ...params) {
+    let dispatchers = MessageDispatcher.mOverheardHandlers[message.mName];
 
     if (dispatchers === undefined || dispatchers.length === 0)
       return;
@@ -311,21 +371,6 @@ class MessageDispatcher {
     // TODO: make message pool... this type of objects shall not be
     // but dont forget to take care about cancel property
 
-    // EXAMPLES:
-    //  this.post('clicked', data); // Sends to all listeners of this
-    //  this.post('~clicked', data); // Sends to all listeners of this and to each parent of this object
-    //  this.post('clicked@mySprite'); // From top to bottom looking for mySprite
-    //  this.post('~clicked@mySprite'); // From this to top over each parent looks for mySprite
-    //  this.post('clicked@mySprite#ColliderComponent'); // message to a component with type of ColliderComponent
-    //  this.post('~clicked@mySprite#ColliderComponent');
-
-    // DIRECTIONS
-    // clicked - none, direct
-    // ~clicked - up, bubbling
-    // clicked@ - down starting from root, with no filter to everyone
-    // clicked@mySpriter - down with 'mySprite' filter
-    // ~clicked@ - inversed bubbling starting from the root, ending at this
-
     let result = new Message();
     result.mSender = sender;
     result.mDirection = 'none';
@@ -346,6 +391,8 @@ class MessageDispatcher {
       result.mName = info.substr(result.mDirection === 'up' ? 1 : 0);
       return result;
     }
+
+    Debug.assert(ixHash !== -1 && ixAt >= 0, 'Message syntax is not correct. Did you miss @?');
 
     result.mDirection = 'down';
 
@@ -380,165 +427,4 @@ class MessageDispatcher {
  * @private
  * @dict
  */
-MessageDispatcher.mGlobalHandlers = {};
-
-/**
- * Message holds all information about dispatched event.
- *
- * @cat core
- */
-/* @echo EXPORT */
-class Message {
-  constructor() {
-    /**
-     * @private
-     * @type {*}
-     */
-    this.mSender = null;
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.mName;
-
-    /**
-     * @private
-     * @type {string|null}
-     */
-    this.mPathMask = null;
-
-    /**
-     * @private
-     * @type {string|null}
-     */
-    this.mComponentMask = null;
-
-    /**
-     * @private
-     * @type {string}
-     */
-    this.mDirection = 'none';
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.mSibblings = false;
-
-    /**
-     * @private
-     * @type {Object}
-     */
-    this.mOrigin = null;
-
-    /**
-     * @private
-     * @type {Object}
-     */
-    this.mTarget = null;
-
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.mCanceled = false;
-  }
-
-  /**
-   * Who send the message.
-   *
-   * @return {*}
-   */
-  get sender() {
-    return this.mSender;
-  }
-
-  /**
-   * The name of the message.
-   *
-   * @return {string}
-   */
-  get name() {
-    return this.mName;
-  }
-
-  /**
-   * Direction in what message was sent. Can be 'none', 'up' and 'down'.
-   *
-   * @return {string}
-   */
-  get direction() {
-    return this.mDirection;
-  }
-
-  /**
-   * Indicates if sibblings should be included into dispatching process.
-   *
-   * @return {boolean}
-   */
-  get sibblings() {
-    return this.mSibblings;
-  }
-
-  /**
-   * The GameObject.name mask string if was used.
-   *
-   * @return {string|null}
-   */
-  get pathMask() {
-    return this.mPathMask;
-  }
-
-  /**
-   * Component mask string if was used.
-   *
-   * @return {string|null}
-   */
-  get componentMask() {
-    return this.mComponentMask;
-  }
-
-  /**
-   * The original sender of a message.
-   *
-   * @return {*|null}
-   */
-  get origin() {
-    return this.mOrigin;
-  }
-
-  /**
-   * The listener object.
-   *
-   * @return {*|null}
-   */
-  get target() {
-    return this.mTarget;
-  }
-
-  /**
-   * Stops propagation of the message.
-   *
-   * @return {void}
-   */
-  cancel() {
-    this.mCanceled = true;
-  }
-
-  /**
-   * True if message was canceled by the user.
-   *
-   * @return {boolean}
-   */
-  get canceled() {
-    return this.mCanceled;
-  }
-
-  static get PROGRESS() {
-    return 'progress';
-  }
-  static get COMPLETE() {
-    return 'complete';
-  }
-}
+MessageDispatcher.mOverheardHandlers = {};

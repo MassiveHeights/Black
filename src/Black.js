@@ -254,7 +254,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootSystems() {
-    this.addSystem(new Input());
+    //this.addSystem(new Input());
   }
 
   /**
@@ -354,7 +354,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function(timestamp) {
+    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -382,6 +382,8 @@ class Black extends MessageDispatcher {
     this.mIsStarted = false;
     this.mIsRunning = false;
     cancelAnimationFrame(this.mRAFHandle);
+
+    console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
   }
 
   /**
@@ -765,6 +767,10 @@ class Black extends MessageDispatcher {
    */
   set enableFixedTimeStep(value) {
     this.mEnableFixedTimeStep = value;
+  }
+
+  dispose() {
+    // todo: call dispose on eveyrthing!
   }
 
   get magic() {

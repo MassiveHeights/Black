@@ -75,6 +75,9 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalAlpha(value) {
+    if (value == this.mGlobalAlpha)
+      return;
+    
     this.mGlobalAlpha = value;
     this.mCtx.globalAlpha = value;
   }
@@ -88,8 +91,15 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
-    if (blendMode === BlendMode.AUTO)
-      return;
+    // if (blendMode === BlendMode.AUTO)
+    //   return;
+
+    if (this.mGlobalBlendMode === blendMode)
+      return;  
+    
+    // small performance win
+    // if (this.mCtx.globalCompositeOperation === blendMode)
+    //   return;
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
@@ -102,18 +112,18 @@ class CanvasDriver extends VideoNullDriver {
    * @override
    *
    * @param {Texture} texture
-   * @param {Rectangle} bounds
+   * @param {number} px
+   * @param {number} py
    *
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     let w = texture.width;
     let h = texture.height;
+    let ox = texture.untrimmedRect.x;
+    let oy = texture.untrimmedRect.y;
 
-    let uw = texture.untrimmedRect.x;
-    let uh = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
 
   /**
@@ -145,14 +155,18 @@ class CanvasDriver extends VideoNullDriver {
     else if (style.align === 'right')
       x += (bounds.width - textWidth);
 
-    this.mCtx.textBaseline = 'top';
-    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    this.mCtx.textBaseline = 'top';    
 
     if (style.strokeThickness > 0) {
+      this.mCtx.lineJoin = 'round';
+      this.mCtx.miterLimit = 2;
       this.mCtx.lineWidth = style.strokeThickness;
       this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
-      this.mCtx.strokeText(text, x, 0);
+      this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
     }
+
+    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    
     this.mCtx.closePath();
   }
 
@@ -164,6 +178,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -177,7 +192,9 @@ class CanvasDriver extends VideoNullDriver {
     super.beginFrame();
 
     this.clear();
-    this.mCtx.save();
+    //this.mCtx.save();
+
+    this.mCtx.globalCompositeOperation = this.mGlobalBlendMode;
   }
 
   /**
@@ -189,7 +206,7 @@ class CanvasDriver extends VideoNullDriver {
   endFrame() {
     super.endFrame();
 
-    this.mCtx.restore();
+    //this.mCtx.restore();
   }
 
   /**

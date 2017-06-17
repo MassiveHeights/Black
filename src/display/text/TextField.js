@@ -135,7 +135,7 @@ class TextField extends DisplayObject {
    * @return {Rectangle}
    */
   __validate(outRect) {
-    let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
+    let strokeCorrection = 0;
     if (this.mNeedInvalidate === false)
       return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
 
@@ -149,7 +149,7 @@ class TextField extends DisplayObject {
       this.mFieldHeight = this.mTextHeight;
     }
 
-    return outRect.set(strokeCorrection-this.mPivotX, strokeCorrection-this.mPivotY, this.mFieldWidth, this.mFieldHeight);
+    return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
   }
 
 

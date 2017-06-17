@@ -2,8 +2,8 @@
 
 Black is a highly optimized 2D framework for desktop and mobile games.  
 
-[Features](http://blacksmith2d.io/Features)
+[Features](http://blacksmith2d.io/#features)
 
-[Getting Started](http://blacksmith2d.io/Tutorials/Index/Getting%20Started)
+[Getting Started](http://blacksmith2d.io/Docs/Tutorials/Getting%20Started)
 
-[Examples](http://blacksmith2d.io/Examples)
+[Examples](http://blacksmith2d.io/Docs/Examples)

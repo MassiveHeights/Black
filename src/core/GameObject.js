@@ -265,7 +265,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   removeFromParent(dispose = false) {
-    if (this.mParent)
+    if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     if (dispose)
@@ -447,7 +447,9 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * this.mScaleX;
+        let ty = this.mY - this.mPivotY * this.mScaleY;
+        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
         let sin = Math.sin(this.mRotation);
@@ -455,7 +457,9 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        return this.mLocalTransform.set(a, b, c, d, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
+        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
 
@@ -467,17 +471,17 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {
+  get worldTransformation() {  
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent)
+      if (this.mParent !== null)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
 
-    return this.mWorldTransform.clone();
+    return this.mWorldTransform;
   }
 
   /**
@@ -499,13 +503,15 @@ class GameObject extends MessageDispatcher {
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onFixedUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__fixedUpdate(dt);
   }
 
@@ -518,13 +524,15 @@ class GameObject extends MessageDispatcher {
   __update(dt) {
     this.onUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__update(dt);
   }
 
@@ -537,15 +545,16 @@ class GameObject extends MessageDispatcher {
   __postUpdate(dt) {
     this.onPostUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onPostUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__postUpdate(dt);
-    }
   }
 
   /**
@@ -591,7 +600,8 @@ class GameObject extends MessageDispatcher {
     this.onRender(video, time);
 
     let child = null;
-    for (let i = 0; i < this.mChildren.length; i++) {
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++) {
       child = this.mChildren[i];
       child.__render(video, time, parentAlpha, parentBlendMode);
     }
@@ -1236,7 +1246,7 @@ class GameObject extends MessageDispatcher {
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
-    let inv = gameObject.worldTransformation.invert();
+    let inv = gameObject.worldTransformationInversed;
 
     inv.transformVector(point, tmpVector);
 

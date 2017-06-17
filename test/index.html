@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Black tests</title>
+  <link rel="stylesheet" media="all" href="vendor/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+
+  <div id="container">
+  </div>
+
+  <script src="vendor/mocha.js"></script>
+  <script src="vendor/chai.js"></script>
+  <script src="../dist/black-es6.js"></script>
+
+  <script>mocha.setup('bdd')</script>
+
+  <script>
+  'use strict';
+  var assert = chai.assert;
+  var expect = chai.expect;
+
+  // class MyTestGame extends GameObject {
+  //   constructor() {
+  //     super();
+  //   }
+  //
+  //   onAdded() {
+  //   }
+  // }
+  //
+  // let black = new Black('container', MyTestGame, VideoNullDriver);
+  // black.start();
+  </script>
+
+  <!-- CORE -->
+  <script src="src/core/Black.js"></script>
+  <script src="src/core/GameObject.js"></script>
+  <script src="src/core/MessageDispatcher.js"></script>
+
+  <!-- GEOM -->
+  <script src="src/geom/Matrix.js"></script>
+  <script src="src/geom/Rectangle.js"></script>
+  <script src="src/geom/Vector.js"></script>
+  <script src="src/geom/Circle.js"></script>
+  <script src="src/geom/Line.js"></script>
+  <!-- <script src="src/geom/Polygon.js"></script> -->
+  <script src="src/geom/Curve.js"></script>
+
+  <!-- SYSTEM -->
+  <script src="src/system/Device.js"></script>
+
+
+
+  <script>mocha.run();</script>
+
+</body>
+</html>

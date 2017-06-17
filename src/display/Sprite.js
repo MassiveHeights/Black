@@ -43,13 +43,11 @@ class Sprite extends DisplayObject {
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
-      video.save(this);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
       video.tint = this.mTint;
-      video.drawImage(this.mTexture, this.onGetLocalBounds(Rectangle.__cache));
-      video.restore();
+      video.drawImage(this.mTexture, this.mPivotX, this.mPivotY);
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
@@ -70,7 +68,7 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(-this.mPivotX, -this.mPivotY, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
   }
 
   /**
