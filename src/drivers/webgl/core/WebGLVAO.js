@@ -24,7 +24,7 @@ const attribTypeMap = {
 class WebGLVAO {
   constructor(programInfo, attributesInfo) {
     const gl = programInfo.gl;
-    const viewsHash = {};
+    const viewsHash = this.viewsHash = {};
     this.mViews = [];
 
     const createSetter = attribInfo => {
@@ -41,7 +41,8 @@ class WebGLVAO {
 
       if (attribInfo.size === 1) {
         Object.defineProperty(this, attribInfo.name, {
-          set: v => view[attribInfo.offsetInView + view.batchOffset] = v
+          set: v => view[attribInfo.offsetInView + view.batchOffset] = v,
+          get: () => attribInfo.location
         });
       } else {
         Object.defineProperty(this, attribInfo.name, {
@@ -49,7 +50,8 @@ class WebGLVAO {
             for (let i = 0, l = v.length; i < l; i++) {
               view[attribInfo.offsetInView + view.batchOffset + i] = v[i];
             }
-          }
+          },
+          get: () => attribInfo.location
         });
       }
     };
@@ -80,7 +82,7 @@ class WebGLVAO {
 
     let mod = offset % 4;
     this.mStride = offset + (mod ? 4 - mod : 0);
-    this.mBuffer = new ArrayBuffer(65535 * this.mStride);
+    this.mBuffer = new ArrayBuffer(4 * 2000 * this.mStride); // todo 2000 pass
     this.mBatchOffsetInBytes = 0;
 
     let infos = Object.values(attributesInfo);

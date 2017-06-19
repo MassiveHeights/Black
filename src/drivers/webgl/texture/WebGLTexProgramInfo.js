@@ -45,7 +45,6 @@ const fragmentShaderSource = `
 `;
 
 const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
-const MAX_BATCH = 65532 / 4 - 1;
 
 /* @echo EXPORT */
 class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
@@ -54,13 +53,7 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 
     const attributesInfo = {
-      // aVertexPos  : {Type: Float32Array, normalize: false}, // default
-      // aModelMatrix: {Type: Float32Array, normalize: false},
-      // aModelPos   : {Type: Float32Array, normalize: false},
-      // aAlpha      : {Type: Float32Array, normalize: false},
-      // aTexCoord   : {Type: Float32Array, normalize: false},
-      // aTexSlot    : {Type: Float32Array, normalize: false},
-      // aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
+      aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
     };
 
     super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS), attributesInfo);
@@ -72,10 +65,11 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     // Elements Buffer
     this.mGLElementArrayBuffer = gl.createBuffer();
     renderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
+    
+    this.maxBatchSize = 2000;
 
-    const MAX_INDEX = 65535;
     const QUAD_INDICES = [0, 1, 2, 3, 3, 4];
-    const len = MAX_INDEX * 6 | 0;
+    const len = this.maxBatchSize * 6;
     const indices = new Uint16Array(len);
 
     for (let i = 0; i < len; i++) {
@@ -83,12 +77,6 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     }
 
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
-
-
-    // text
-    this.mCanvas = document.createElement(`canvas`);
-    this.mCtx2D = this.mCanvas.getContext(`2d`);
-    this.mTextTextures = {};
   }
 
   init(clientWidth, clientHeight) {
@@ -100,8 +88,8 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     this.uniforms.uProjection = new Float32Array([2 / rect.width, 2 / rect.height]);
   }
 
-  save(gameObject) {
-
+  setMaterial(material) {
+    this.mMaterial = material;
   }
 
   setTransform(m) {
@@ -112,61 +100,59 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
     this.mGlobalAlpha = value;
   }
 
-  set tint(value) {
-    this.mTint = value;
-  }
-
-  drawImage(texture, bounds) {
+  drawImage(texture, pivotX, pivotY) {
     const modelMatrix = this.mTransform.value;
     const attributes = this.attributes;
     const region = texture.relativeRegion;
     const alpha = this.mGlobalAlpha;
-    const tint = this.mTint === undefined ? 0xffffff : this.mTint;
+    const tint = this.mMaterial.tint;
     const r = (tint >> 16) & 255;
     const g = (tint >> 8) & 255;
     const b = tint & 255;
     let texSlot = this.mRenderer.state.bindTexture(texture);
 
-    this.mBatchObjects++;
-
-    if (this.mBatchObjects > MAX_BATCH) {
+    if (++this.mBatchObjects > this.maxBatchSize) {
       this.flush();
+      this.mBatchObjects = 1;
     }
 
     if (texSlot === -1) {
       this.flush();
+      this.mBatchObjects = 1;
       texSlot = this.mRenderer.state.bindTexture(texture);
     }
     
-    const view = attributes.mViews[0];
-    const rn = r / 255;
-    const gn = g / 255;
-    const bn = b / 255;
+    const uintView = attributes.viewsHash.Uint8Array;
+    const floatView =  attributes.viewsHash.Float32Array;
+
+    const bounds = Rectangle.__cache;
+    bounds.set(0, 0, texture.width, texture.height);
 
     for (let i = 0; i < 4; i++) {
-      let batchOffset = view.batchOffset;
+      let batchOffset = floatView.batchOffset;
 
-      view[batchOffset + 0] = bounds[QUAD[i * 2]];
-      view[batchOffset + 1] = bounds[QUAD[i * 2 + 1]];
+      floatView[batchOffset + 0] = bounds[QUAD[i * 2]];
+      floatView[batchOffset + 1] = bounds[QUAD[i * 2 + 1]];
 
-      view[batchOffset + 2] = modelMatrix[0];
-      view[batchOffset + 3] = modelMatrix[1];
-      view[batchOffset + 4] = modelMatrix[2];
-      view[batchOffset + 5] = modelMatrix[3];
+      floatView[batchOffset + 2] = modelMatrix[0];
+      floatView[batchOffset + 3] = modelMatrix[1];
+      floatView[batchOffset + 4] = modelMatrix[2];
+      floatView[batchOffset + 5] = modelMatrix[3];
 
-      view[batchOffset + 6] = modelMatrix[4];
-      view[batchOffset + 7] = modelMatrix[5];
+      floatView[batchOffset + 6] = modelMatrix[4];
+      floatView[batchOffset + 7] = modelMatrix[5];
 
-      view[batchOffset + 8] = alpha;
+      floatView[batchOffset + 8] = alpha;
 
-      view[batchOffset + 9] = region[QUAD[i * 2]];
-      view[batchOffset + 10] = region[QUAD[i * 2 + 1]];
+      floatView[batchOffset + 9] = region[QUAD[i * 2]];
+      floatView[batchOffset + 10] = region[QUAD[i * 2 + 1]];
 
-      view[batchOffset + 11] = texSlot;
+      floatView[batchOffset + 11] = texSlot;
 
-      view[batchOffset + 12] = rn;
-      view[batchOffset + 13] = gn;
-      view[batchOffset + 14] = bn;
+      let offset = (batchOffset + 12) * 4;
+      uintView[offset] = r;
+      uintView[offset + 1] = g;
+      uintView[offset + 2] = b;
 
       attributes.nextVertex();
     }
@@ -175,11 +161,20 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
   drawText(text, style, bounds, textWidth, textHeight) {
     const font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     const key = `${text}${font}${style.align}${style.color}${style.strokeThickness}${style.strokeColor}`;
-    let texture = this.mTextTextures[key];
+    const material = this.mMaterial;
+    let tex = material.tex;
 
-    if (!texture) {
-      const canvas = this.mCanvas;
-      const ctx = this.mCtx2D;
+    if (key !== material.key) {
+      let ctx = material.ctx;
+      let canvas;
+
+      if (!ctx) {
+        canvas = document.createElement(`canvas`);
+        ctx = canvas.getContext(`2d`);
+      } else {
+        canvas = ctx.canvas;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
       canvas.width = textWidth;
       canvas.height = textHeight;
@@ -205,11 +200,10 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
         }
       }
 
-      texture = this.mTextTextures[key] = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
-      // ctx.clearRect(0, 0, canvas.width, canvas.height);
+      tex = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
     }
 
-    this.drawImage(texture, bounds);
+    this.drawImage(tex, bounds.x, bounds.y);  // todo there is no pivots there
   }
 
   flush() {
@@ -222,12 +216,13 @@ class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
 
     let count = this.attributes.countForElementsDraw;
 
-    if (count <= 0) return;
+    if (count > 0) {
+      gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
+      gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
 
-    gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
-    gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
-
-    this.attributes.clear();
-    this.mBatchObjects = 0;
+      this.attributes.clear();
+      this.mBatchObjects = 0;
+      this.mRenderer.state.endBatch();
+    }
   }
 }

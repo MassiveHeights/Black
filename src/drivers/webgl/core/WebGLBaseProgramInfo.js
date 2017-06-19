@@ -63,7 +63,7 @@ class WebGLBaseProgramInfo {
 
   }
 
-  save(gameObject) {
+  setMaterial(material) {
 
   }
 
@@ -72,10 +72,6 @@ class WebGLBaseProgramInfo {
   }
 
   set globalAlpha(value) {
-
-  }
-
-  set tint(value) {
 
   }
 

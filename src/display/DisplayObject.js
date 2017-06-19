@@ -29,18 +29,22 @@ class DisplayObject extends GameObject {
 
     
     this.material = {
-      Program: WebGLTexProgramInfo
+      Program: WebGLTexProgramInfo,
+      tint: 0xffffff,
+      
+      // text
+      ctx: null,
+      key: null,
+      tex: null
     };
-
-    this.mTint = 0xffffff;
   }
 
   get tint() {
-    return this.mTint;
+    return this.material.tint;
   }
 
   set tint(value) {
-    this.mTint = value;
+    this.material.tint = value;
   }
 
   /**

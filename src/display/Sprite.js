@@ -43,11 +43,11 @@ class Sprite extends DisplayObject {
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
+      video.setMaterial(this.material);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-      video.tint = this.mTint;
-      video.drawImage(this.mTexture, this.mPivotX, this.mPivotY);
+      video.drawImage(this.mTexture);
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);

@@ -82,6 +82,11 @@ class Texture {
       this.mRegion.width / w,
       this.mRegion.height / h
     );
+
+    this.mRelativeRegion.top = this.mRelativeRegion.top;
+    this.mRelativeRegion.left = this.mRelativeRegion.left;
+    this.mRelativeRegion.right = this.mRelativeRegion.right;
+    this.mRelativeRegion.bottom = this.mRelativeRegion.bottom;
   }
 
   get relativeRegion() {

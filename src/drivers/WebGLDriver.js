@@ -14,7 +14,7 @@ class WebGLDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    console.log(`WebGL`);
+    console.log(`WebGL-`);
 
     this.gl = null;
     
@@ -58,12 +58,11 @@ class WebGLDriver extends VideoNullDriver {
     Object.values(this.mPrograms).forEach(program => program.onResize(msg, rect));
   }
 
-  save(gameObject) {
-    let Program = gameObject.material && gameObject.material.Program || WebGLSpritesProgramInfo;
-    let program = this.mPrograms[Program.name];
-    
+  setMaterial(material) {
+    let program = this.mPrograms[material.Program.name];
+
     if (!program) {
-      program = this.mPrograms[Program.name] = new Program(this);
+      program = this.mPrograms[material.Program.name] = new material.Program(this);
       this.__flush();
       program.activate();
       program.init(this.mClientWidth, this.mClientHeight);
@@ -73,8 +72,8 @@ class WebGLDriver extends VideoNullDriver {
       program.activate();
       this.mActiveProgram = program;
     }
-    
-    program.save(gameObject);
+
+    program.setMaterial(material);
   }
   
   setTransform(m) {
@@ -92,10 +91,6 @@ class WebGLDriver extends VideoNullDriver {
       this.__flush();
       this.state.setBlendMode(blendMode);
     }
-  }
-
-  set tint(value) {
-    this.mActiveProgram.tint = value;
   }
   
   drawImage(texture, bounds) {
