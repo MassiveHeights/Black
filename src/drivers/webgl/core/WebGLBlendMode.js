@@ -2,8 +2,8 @@
  * Maps black blend modes to WebGl blend functions.
  */
 /* @echo EXPORT */
-var WebGLBlendMode = (blendMode, gl) => {
-  var map = {
+let WebGLBlendMode = (blendMode, gl) => {
+  const map = {
     [BlendMode.NORMAL]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
     [BlendMode.ADD]        : {src: gl.ONE, dst: gl.DST_ALPHA},
     [BlendMode.MULTIPLY]   : {src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA},

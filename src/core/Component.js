@@ -116,7 +116,9 @@ class Component extends MessageDispatcher {
 }
 
 
-/** @type {number}
+/**
+ * @ignore
+ * @type {number}
  * @nocollapse
  */
 Component.ID = 0;

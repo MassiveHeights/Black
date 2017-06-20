@@ -7,7 +7,7 @@
   "scripts": {
     "start": "gulp",
     "examples": "gulp examples",
-    "docs": "node docs.js",
+    "docs": "node scripts/docs.js",
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",

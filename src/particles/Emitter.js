@@ -139,18 +139,16 @@ class Emitter extends DisplayObject {
      */
     this.__tmpWorld = new Matrix();
 
+    /**
+     * @private
+     * @type {EmitterSortOrder}
+     */
+    this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
-
-  // reset() {
-  //   this.mState = 0;
-  //
-  //   // todo: reset simulation
-  //   // todo: clear all particles
-  //   this.updateNextTick(0);
-  // }
 
   resetState() {
     this.mState = EmitterState.PENDING;
@@ -258,51 +256,59 @@ class Emitter extends DisplayObject {
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
-      let particle;
-      for (let i = 0; i < plength; i++) {
-      //for (let i = plength - 1; i > 0; i--) {
-        particle = this.mParticles[i];
-        texture = this.mTextures[particle.textureIndex];
 
-        let tw = texture.width * 0.5;
-        let th = texture.height * 0.5;
-
-        if (particle.r === 0) {
-          let tx = particle.x - tw * particle.scale;
-          let ty = particle.y - th * particle.scale;
-          localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
-        } else {
-          let cos = Math.cos(particle.r);
-          let sin = Math.sin(particle.r);
-          let a = particle.scale * cos;
-          let b = particle.scale * sin;
-          let c = particle.scale * -sin;
-          let d = particle.scale * cos;
-
-          let tx = particle.x - tw * a - th * c;
-          let ty = particle.y - tw * b - th * d;
-          localTransform.set(a, b, c, d, tx, ty);
-        }
-
-        if (this.mIsLocal === true) {
-          worldTransform.identity();
-          worldTransform.copyFrom(localTransform);
-          worldTransform.prepend(this.worldTransformation);
-        } else {
-          this.mSpace.worldTransformation.copyTo(worldTransform);
-          worldTransform.append(localTransform);
-        }
-
-        video.setTransform(worldTransform);
-        video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
-
-        pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-        video.drawImage(texture, pbounds);
+      if (this.__sortOrder == EmitterSortOrder.FRONT_TO_BACK) {
+        for (let i = 0; i < plength; i++)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
       }
+      else {
+        for (let i = plength - 1; i > 0; i--)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
+      }
+      
     }
 
     video.restore();
     super.__render(video, time, parentAlpha, parentBlendMode);
+  }
+
+  __renderParticle(particle, video, parentAlpha, localTransform, worldTransform) {
+    let texture = this.mTextures[particle.textureIndex];
+
+    let tw = texture.width * 0.5;
+    let th = texture.height * 0.5;
+
+    if (particle.r === 0) {
+      let tx = particle.x - tw * particle.scale;
+      let ty = particle.y - th * particle.scale;
+      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+    } else {
+      let cos = Math.cos(particle.r);
+      let sin = Math.sin(particle.r);
+      let a = particle.scale * cos;
+      let b = particle.scale * sin;
+      let c = particle.scale * -sin;
+      let d = particle.scale * cos;
+
+      let tx = particle.x - tw * a - th * c;
+      let ty = particle.y - tw * b - th * d;
+      localTransform.set(a, b, c, d, tx, ty);
+    }
+
+    if (this.mIsLocal === true) {
+      worldTransform.identity();
+      worldTransform.copyFrom(localTransform);
+      worldTransform.prepend(this.worldTransformation);
+    } else {
+      this.mSpace.worldTransformation.copyTo(worldTransform);
+      worldTransform.append(localTransform);
+    }
+
+    video.setTransform(worldTransform);
+    video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
+
+    //pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
+    video.drawImage(texture, tw, th);
   }
 
   onUpdate(dt) {
@@ -545,4 +551,32 @@ class Emitter extends DisplayObject {
 
     this.mTextures = value;
   }
+
+  /**
+   * @return {EmitterSortOrder}
+   */  
+  get sortOrder() {
+    return this.__sortOrder;
+  }
+
+  /**
+   *
+   * @param {EmitterSortOrder} value The order in which particles will be sorted when rendering.
+   *
+   * @return {void}
+   */
+  set sortOrder(value) {
+    return this.__sortOrder = value;
+  }
 }
+
+/**
+ * A blend mode enum.
+ * @cat particles
+ * @enum {string}
+ */
+/* @echo EXPORT */
+var EmitterSortOrder = {
+  FRONT_TO_BACK: 'frontToBack',
+  BACK_TO_FRONT: 'backToFront'
+};

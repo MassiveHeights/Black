@@ -40,13 +40,15 @@
     "src/drivers/CanvasDriver.js",
     "src/drivers/DOMDriver.js",
 
-    "src/drivers/webgl/WebGLDriver.js",
-    "src/drivers/webgl/WebGLBuffer.js",
-    "src/drivers/webgl/WebGLElementBuffer.js",
-    "src/drivers/webgl/WebGLProgram.js",
-    "src/drivers/webgl/WebGLState.js",
-    "src/drivers/webgl/WebGLTextures.js",
-    "src/drivers/webgl/WebGLBlendMode.js",
+    "src/drivers/WebGLDriver.js",
+    "src/drivers/webgl/core/WebGLConstants.js",
+    "src/drivers/webgl/core/WebGLBlendMode.js",
+    "src/drivers/webgl/core/WebGLBaseProgramInfo.js",
+    "src/drivers/webgl/core/WebGLState.js",
+    "src/drivers/webgl/core/WebGLTexturesManager.js",
+    "src/drivers/webgl/core/WebGLVAO.js",
+
+    "src/drivers/webgl/texture/WebGLTexProgramInfo.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",

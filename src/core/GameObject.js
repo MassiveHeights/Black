@@ -126,6 +126,18 @@ class GameObject extends MessageDispatcher {
      * @type {boolean}
      */
     this.mAdded = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mNumChildrenRemoved = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mNumComponentsRemoved = 0;
   }
 
   /**
@@ -265,7 +277,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   removeFromParent(dispose = false) {
-    if (this.mParent)
+    if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     if (dispose)
@@ -335,6 +347,8 @@ class GameObject extends MessageDispatcher {
 
     this.setTransformDirty();
 
+    this.mNumChildrenRemoved++;
+
     return child;
   }
 
@@ -393,6 +407,8 @@ class GameObject extends MessageDispatcher {
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
+    
+    this.mNumComponentsRemoved++;
 
     return instance;
   }
@@ -447,7 +463,9 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * this.mScaleX;
+        let ty = this.mY - this.mPivotY * this.mScaleY;
+        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
         let sin = Math.sin(this.mRotation);
@@ -455,7 +473,9 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        return this.mLocalTransform.set(a, b, c, d, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
+        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
 
@@ -467,17 +487,17 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {
+  get worldTransformation() {  
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent)
+      if (this.mParent !== null)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
 
-    return this.mWorldTransform.clone();
+    return this.mWorldTransform;
   }
 
   /**
@@ -503,10 +523,17 @@ class GameObject extends MessageDispatcher {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onFixedUpdate(dt);
+
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__fixedUpdate(dt);
+
+      if (this.__checkRemovedChildren(i))
+        break;
+    }
   }
 
   /**
@@ -522,10 +549,17 @@ class GameObject extends MessageDispatcher {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onUpdate(dt);
+
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
+      
+      if (this.__checkRemovedChildren(i))
+        break;
+    }
   }
 
   /**
@@ -541,12 +575,45 @@ class GameObject extends MessageDispatcher {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onPostUpdate(dt);
+
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__postUpdate(dt);
+
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
+
+  __checkRemovedComponents(i) {
+    if (this.mComponents == 0)
+      return false;
+    
+    i -= this.mNumComponentsRemoved;
+    this.mNumComponentsRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
+  __checkRemovedChildren(i) {
+    if (this.mNumChildrenRemoved == 0)
+      return false;
+    
+    i -= this.mNumChildrenRemoved;
+    this.mNumChildrenRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
 
   /**
    * Called at every fixed frame update.
@@ -591,7 +658,8 @@ class GameObject extends MessageDispatcher {
     this.onRender(video, time);
 
     let child = null;
-    for (let i = 0; i < this.mChildren.length; i++) {
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++) {
       child = this.mChildren[i];
       child.__render(video, time, parentAlpha, parentBlendMode);
     }
@@ -1236,7 +1304,7 @@ class GameObject extends MessageDispatcher {
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
-    let inv = gameObject.worldTransformation.invert();
+    let inv = gameObject.worldTransformationInversed;
 
     inv.transformVector(point, tmpVector);
 
@@ -1349,7 +1417,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} tag Tag to find.
    *
-   * @return {Array<GameObject>|null} Array of GameObject or null if not found.
+   * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.instance.mTagCache.hasOwnProperty(tag) === false)

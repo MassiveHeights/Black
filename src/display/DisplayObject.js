@@ -26,6 +26,25 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
+
+    
+    this.material = {
+      Program: WebGLTexProgramInfo,
+      tint: 0xffffff,
+      
+      // text
+      ctx: null,
+      key: null,
+      tex: null
+    };
+  }
+
+  get tint() {
+    return this.material.tint;
+  }
+
+  set tint(value) {
+    this.material.tint = value;
   }
 
   /**
@@ -65,7 +84,7 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
-    this.mAlpha = Math.clamp(value, 0, 1);
+    this.mAlpha = MathEx.clamp(value, 0, 1);
   }
 
 
