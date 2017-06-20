@@ -141,6 +141,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {
+    this.mCtx.save();
     this.mCtx.beginPath();
     this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     this.mCtx.clip();
@@ -168,6 +169,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
     
     this.mCtx.closePath();
+    this.mCtx.restore();
   }
 
   /**
