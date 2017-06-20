@@ -524,19 +524,15 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onFixedUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }    
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__fixedUpdate(dt);
 
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
 
@@ -554,19 +550,15 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }      
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
       
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
 
@@ -584,21 +576,44 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onPostUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__postUpdate(dt);
 
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
+
+  __checkRemovedComponents(i) {
+    if (this.mComponents == 0)
+      return false;
+    
+    i -= this.mNumComponentsRemoved;
+    this.mNumComponentsRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
+  __checkRemovedChildren(i) {
+    if (this.mNumChildrenRemoved == 0)
+      return false;
+    
+    i -= this.mNumChildrenRemoved;
+    this.mNumChildrenRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
 
   /**
    * Called at every fixed frame update.
