@@ -4690,6 +4690,18 @@ var GameObject = function (_MessageDispatcher) {
      * @type {boolean}
      */
     _this.mAdded = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mNumChildrenRemoved = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mNumComponentsRemoved = 0;
     return _this;
   }
 
@@ -4921,6 +4933,8 @@ var GameObject = function (_MessageDispatcher) {
 
       this.setTransformDirty();
 
+      this.mNumChildrenRemoved++;
+
       return child;
     }
 
@@ -4983,6 +4997,8 @@ var GameObject = function (_MessageDispatcher) {
       instance.onRemoved(this);
 
       if (this.root !== null) Black.instance.onComponentRemoved(this, instance);
+
+      this.mNumComponentsRemoved++;
 
       return instance;
     }
@@ -5048,16 +5064,24 @@ var GameObject = function (_MessageDispatcher) {
     value: function __fixedUpdate(dt) {
       this.onFixedUpdate(dt);
 
-      var clength = this.mComponents.length;
-      for (var k = 0; k < clength; k++) {
+      for (var k = 0; k < this.mComponents.length; k++) {
         var c = this.mComponents[k];
         c.mGameObject = this;
         c.onFixedUpdate(dt);
+
+        if (this.mNumComponentsRemoved > 0) {
+          k -= this.mNumComponentsRemoved;
+          this.mNumComponentsRemoved = 0;
+        }
       }
 
-      var childLen = this.mChildren.length;
-      for (var i = 0; i < childLen; i++) {
+      for (var i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].__fixedUpdate(dt);
+
+        if (this.mNumChildrenRemoved > 0) {
+          i -= this.mNumChildrenRemoved;
+          this.mNumChildrenRemoved = 0;
+        }
       }
     }
 
@@ -5073,16 +5097,24 @@ var GameObject = function (_MessageDispatcher) {
     value: function __update(dt) {
       this.onUpdate(dt);
 
-      var clength = this.mComponents.length;
-      for (var k = 0; k < clength; k++) {
+      for (var k = 0; k < this.mComponents.length; k++) {
         var c = this.mComponents[k];
         c.mGameObject = this;
         c.onUpdate(dt);
+
+        if (this.mNumComponentsRemoved > 0) {
+          k -= this.mNumComponentsRemoved;
+          this.mNumComponentsRemoved = 0;
+        }
       }
 
-      var childLen = this.mChildren.length;
-      for (var i = 0; i < childLen; i++) {
+      for (var i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].__update(dt);
+
+        if (this.mNumChildrenRemoved > 0) {
+          i -= this.mNumChildrenRemoved;
+          this.mNumChildrenRemoved = 0;
+        }
       }
     }
 
@@ -5098,16 +5130,24 @@ var GameObject = function (_MessageDispatcher) {
     value: function __postUpdate(dt) {
       this.onPostUpdate(dt);
 
-      var clength = this.mComponents.length;
-      for (var k = 0; k < clength; k++) {
+      for (var k = 0; k < this.mComponents.length; k++) {
         var c = this.mComponents[k];
         c.mGameObject = this;
         c.onPostUpdate(dt);
+
+        if (this.mNumComponentsRemoved > 0) {
+          k -= this.mNumComponentsRemoved;
+          this.mNumComponentsRemoved = 0;
+        }
       }
 
-      var childLen = this.mChildren.length;
-      for (var i = 0; i < childLen; i++) {
+      for (var i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].__postUpdate(dt);
+
+        if (this.mNumChildrenRemoved > 0) {
+          i -= this.mNumChildrenRemoved;
+          this.mNumChildrenRemoved = 0;
+        }
       }
     }
 
