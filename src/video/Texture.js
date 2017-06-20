@@ -73,12 +73,20 @@ class Texture {
      */
     this.mIsLoaded = true;
 
+    let w = nativeTexture.naturalWidth || nativeTexture.width;
+    let h = nativeTexture.naturalHeight || nativeTexture.height;
+
     this.mRelativeRegion = new Rectangle(
-      this.mRegion.x / nativeTexture.naturalWidth,
-      this.mRegion.y / nativeTexture.naturalHeight,
-      this.mRegion.width / nativeTexture.naturalWidth,
-      this.mRegion.height / nativeTexture.naturalHeight
+      this.mRegion.x / w,
+      this.mRegion.y / h,
+      this.mRegion.width / w,
+      this.mRegion.height / h
     );
+
+    this.mRelativeRegion.top = this.mRelativeRegion.top;
+    this.mRelativeRegion.left = this.mRelativeRegion.left;
+    this.mRelativeRegion.right = this.mRelativeRegion.right;
+    this.mRelativeRegion.bottom = this.mRelativeRegion.bottom;
   }
 
   get relativeRegion() {

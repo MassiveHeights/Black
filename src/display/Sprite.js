@@ -24,21 +24,6 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
-
-    /**
-     * @protected
-     * @type {Object}
-     */
-    this.mTint = {r: 1, g: 1, b: 1}; // todo
-  }
-
-  /**
-   * tint - Returns sprite tint object.
-   *
-   * @return {Object} The current texture set on this Sprite or null.
-   */
-  get tint() {
-    return this.mTint;
   }
 
   /**
@@ -58,10 +43,11 @@ class Sprite extends DisplayObject {
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
+      video.setMaterial(this.material);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-      video.drawImage(this.mTexture, this.mPivotX, this.mPivotY);
+      video.drawImage(this.mTexture);
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);

@@ -103,13 +103,12 @@ class TextField extends DisplayObject {
 
     let tmpBlendMode = BlendMode.AUTO;
 
-    video.save(this);
+    video.setMaterial(this.material);
     video.setTransform(this.worldTransformation);
     video.globalAlpha = parentAlpha * this.mAlpha;
     video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
 
     video.drawText(this.mText, this.mStyle, this.mCacheBounds, this.mTextWidth, this.mTextHeight);
-    video.restore();
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
   }
