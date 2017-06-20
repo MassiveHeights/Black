@@ -16,9 +16,9 @@
 class Texture {
   /**
    * Creates new Texture instance.
-   * @param  {Image} nativeTexture description
-   * @param  {Rectangle=} region = undefined description
-   * @param  {Rectangle=} untrimmedRect = undefined description
+   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} nativeTexture A source of the texture.
+   * @param  {Rectangle=} region = undefined                                     A region to be drawn.
+   * @param  {Rectangle=} untrimmedRect = undefined                              Actual size of a texture when not trimmed.
    */
   constructor(nativeTexture, region, untrimmedRect) {
     /**
