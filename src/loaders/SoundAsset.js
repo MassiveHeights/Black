@@ -41,8 +41,10 @@ class SoundAsset extends Asset {
    * @return {void}
    */
   load() {
+    this.mAudioElement.autoplay = false;
     this.mAudioElement.src = this.mUrl;
     this.mAudioElement.preload = 'auto';
+    this.mAudioElement.load();
     this.mAudioElement.oncanplaythrough = () => {
       if (!this.mData) {
         this.onLoaded();
