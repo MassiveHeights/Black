@@ -46,7 +46,10 @@ class Texture {
     this.mId = ++Texture.__ID;
 
     if (region === undefined) {
-      this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+      if(nativeTexture instanceof HTMLImageElement)
+        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+      else
+        this.mRegion = new Rectangle(0, 0, nativeTexture.width, nativeTexture.height);
     } else {
       this.mRegion = /** @type {Rectangle} */ (region);
       this.mIsSubtexture = true;
