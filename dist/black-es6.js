@@ -1,117 +1,79 @@
-/**
- * randomBetween
- *
- * @param {number} a
- * @param {number} b
- *
- * @return {number}
- */
-Math.randomBetween = function (a, b) {
-  return Math.floor(Math.random() * (b - a + 1) + a);
-};
+
+class MathEx {
+  /**
+   * randomBetween
+   *
+   * @param {number} a
+   * @param {number} b
+   *
+   * @return {number}
+   */
+  static randomBetween(a, b) {
+    return Math.floor(Math.random() * (b - a + 1) + a);
+  };
 
 
-/**
- * clamp
- *
- * @param {number} value
- * @param {number} min
- * @param {number} max
- *
- * @return {number}
- */
-Math.clamp = function (value, min, max) {
-  return (value < min) ? min : (value > max) ? max : value;
-};
+  /**
+   * clamp
+   *
+   * @param {number} value
+   * @param {number} min
+   * @param {number} max
+   *
+   * @return {number}
+   */
+  static clamp(value, min, max) {
+    return (value < min) ? min : (value > max) ? max : value;
+  };
 
 
-/**
- * lerp
- *
- * @param {number} a
- * @param {number} b
- * @param {number} t
- *
- * @return {number}
- */
-Math.lerp = function (a, b, t) {
-  return a + t * (b - a);
-};
+  /**
+   * lerp
+   *
+   * @param {number} a
+   * @param {number} b
+   * @param {number} t
+   *
+   * @return {number}
+   */
+  static lerp(a, b, t) {
+    return a + t * (b - a);
+  };
 
 
-/**
- * lerpp
- *
- * @param {number} a
- * @param {number} b
- * @param {number} t
- *
- * @return {number}
- */
-Math.lerpp = function (a, b, t) {
-  return (1 - t) * a + t * b;
-};
-
-/** @const
- *  @type {number}
- */
-Math.PI_Q = Math.PI / 4;
+  /**
+   * lerpp
+   *
+   * @param {number} a
+   * @param {number} b
+   * @param {number} t
+   *
+   * @return {number}
+   */
+  static lerpp(a, b, t) {
+    return (1 - t) * a + t * b;
+  };
+}
 
 /** @const
  *  @type {number}
  */
-Math.PI2 = Math.PI * 2;
+MathEx.PI_Q = Math.PI / 4;
 
 /** @const
  *  @type {number}
  */
-Math.DEG2RAD = 0.01745329251994329576923690768489;
+MathEx.PI2 = Math.PI * 2;
 
 /** @const
  *  @type {number}
  */
-Math.RAD2DEG = 57.295779513082320876798154814105;
-// 
-//
-//
-// /**
-//  * fsin - Fast sin
-//  *
-//  * @param {number} x
-//  *
-//  * @return {number}
-//  */
-// Math.fsin = function(x) {
-//   if (x === 0)
-//     return 0;
-//
-//   // modulo to range of -PI..PI
-//   const width = 3.14159265 - -3.14159265;
-//   const offsetValue = x - -3.14159265;
-//   x = (offsetValue - (Math.floor(offsetValue / width) * width)) + -3.14159265;
-//
-//   return x < 0 ? 1.27323954 * x + 0.405284735 * x * x : 1.27323954 * x - 0.405284735 * x * x;
-// }
-//
-//
-// /**
-//  * fcos - Fast cos
-//  *
-//  * @param {number} x
-//  *
-//  * @return {number}
-//  */
-// Math.fcos = function(x) {
-//   x += 1.57079632;
-//
-//   // modulo to range of -PI..PI
-//   const width = 3.14159265 - -3.14159265;
-//   const offsetValue = x - -3.14159265;
-//   x = (offsetValue - (Math.floor(offsetValue / width) * width)) + -3.14159265;
-//
-//   return x < 0 ? 1.27323954 * x + 0.405284735 * x * x : 1.27323954 * x - 0.405284735 * x * x;
-// }
+MathEx.DEG2RAD = 0.01745329251994329576923690768489;
 
+/** @const
+ *  @type {number}
+ */
+MathEx.RAD2DEG = 57.295779513082320876798154814105;
 // function assert(title, condition) {
 //   if (condition)
 //     console.log('%s %c[  OK  ]', title + ' ' + '.'.repeat(88 - title.length), 'color:green;')
@@ -330,8 +292,8 @@ class Vector {
    * @return {Vector} This.
    */
   clamp(min, max) {
-    this.x = Math.clamp(this.x, min, max);
-    this.y = Math.clamp(this.y, min, max);
+    this.x = MathEx.clamp(this.x, min, max);
+    this.y = MathEx.clamp(this.y, min, max);
 
     return this;
   }
@@ -345,8 +307,8 @@ class Vector {
    * @return {Vector} This.
    */
   lerp(vector, t) {
-    this.x = Math.lerp(this.x, vector.x, t);
-    this.y = Math.lerp(this.y, vector.y, t);
+    this.x = MathEx.lerp(this.x, vector.x, t);
+    this.y = MathEx.lerp(this.y, vector.y, t);
 
     return this;
   }
@@ -3529,18 +3491,31 @@ class Time {
   constructor() {
   }
 
+  /**
+   * Time since start in seconds.
+   * @returns {number}
+   */
   static get time(){
     return Time.mTime;
   }
 
+  /**
+   * @ignore
+   */
   static get dt() {
     return Time.mDeltaTime;
   }
 
+  /**
+   * @ignore
+   */
   static get scale() {
     return Time.mScale;
   }
 
+  /**
+   * @ignore
+   */
   static set scale(value) {
     Debug.assert(value >= 0, 'Time.scale must be >= 0.');
 
@@ -3548,13 +3523,22 @@ class Time {
   }
 }
 
-/** @type {number} */
+/**
+ * @ignore
+ * @type {number}
+ */
 Time.mTime = 0;
 
-/** @type {number} */
+/** 
+ * @ignore
+ * @type {number}
+ */
 Time.mDeltaTime = 0;
 
-/** @type {number} */
+/** 
+ * @ignore
+ * @type {number}
+ */
 Time.mScale = 1;
 
 /**
@@ -3828,7 +3812,9 @@ class Component extends MessageDispatcher {
 }
 
 
-/** @type {number}
+/**
+ * @ignore
+ * @type {number}
  * @nocollapse
  */
 Component.ID = 0;
@@ -4099,7 +4085,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   removeFromParent(dispose = false) {
-    if (this.mParent)
+    if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     if (dispose)
@@ -4281,7 +4267,9 @@ class GameObject extends MessageDispatcher {
       this.mDirty ^= DirtyFlag.LOCAL;
 
       if (this.mRotation === 0) {
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * this.mScaleX;
+        let ty = this.mY - this.mPivotY * this.mScaleY;
+        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
       } else {
         let cos = Math.cos(this.mRotation);
         let sin = Math.sin(this.mRotation);
@@ -4289,7 +4277,9 @@ class GameObject extends MessageDispatcher {
         let b = this.mScaleX * sin;
         let c = this.mScaleY * -sin;
         let d = this.mScaleY * cos;
-        return this.mLocalTransform.set(a, b, c, d, this.mX, this.mY);
+        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
+        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+        return this.mLocalTransform.set(a, b, c, d, tx, ty);
       }
     }
 
@@ -4301,17 +4291,17 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {
+  get worldTransformation() {  
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent)
+      if (this.mParent !== null)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
 
-    return this.mWorldTransform.clone();
+    return this.mWorldTransform;
   }
 
   /**
@@ -4333,13 +4323,15 @@ class GameObject extends MessageDispatcher {
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onFixedUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__fixedUpdate(dt);
   }
 
@@ -4352,13 +4344,15 @@ class GameObject extends MessageDispatcher {
   __update(dt) {
     this.onUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++)
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__update(dt);
   }
 
@@ -4371,15 +4365,16 @@ class GameObject extends MessageDispatcher {
   __postUpdate(dt) {
     this.onPostUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
+    let clength = this.mComponents.length;
+    for (let k = 0; k < clength; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onPostUpdate(dt);
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++)
       this.mChildren[i].__postUpdate(dt);
-    }
   }
 
   /**
@@ -4425,7 +4420,8 @@ class GameObject extends MessageDispatcher {
     this.onRender(video, time);
 
     let child = null;
-    for (let i = 0; i < this.mChildren.length; i++) {
+    let childLen = this.mChildren.length;
+    for (let i = 0; i < childLen; i++) {
       child = this.mChildren[i];
       child.__render(video, time, parentAlpha, parentBlendMode);
     }
@@ -5070,7 +5066,7 @@ class GameObject extends MessageDispatcher {
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
-    let inv = gameObject.worldTransformation.invert();
+    let inv = gameObject.worldTransformationInversed;
 
     inv.transformVector(point, tmpVector);
 
@@ -5183,7 +5179,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} tag Tag to find.
    *
-   * @return {Array<GameObject>|null} Array of GameObject or null if not found.
+   * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.instance.mTagCache.hasOwnProperty(tag) === false)
@@ -5305,9 +5301,9 @@ var DirtyFlag = {
 class Texture {
   /**
    * Creates new Texture instance.
-   * @param  {Image} nativeTexture description
-   * @param  {Rectangle=} region = undefined description
-   * @param  {Rectangle=} untrimmedRect = undefined description
+   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} nativeTexture A source of the texture.
+   * @param  {Rectangle=} region = undefined                                     A region to be drawn.
+   * @param  {Rectangle=} untrimmedRect = undefined                              Actual size of a texture when not trimmed.
    */
   constructor(nativeTexture, region, untrimmedRect) {
     /**
@@ -5362,12 +5358,20 @@ class Texture {
      */
     this.mIsLoaded = true;
 
+    let w = nativeTexture.naturalWidth || nativeTexture.width;
+    let h = nativeTexture.naturalHeight || nativeTexture.height;
+
     this.mRelativeRegion = new Rectangle(
-      this.mRegion.x / nativeTexture.naturalWidth,
-      this.mRegion.y / nativeTexture.naturalHeight,
-      this.mRegion.width / nativeTexture.naturalWidth,
-      this.mRegion.height / nativeTexture.naturalHeight
+      this.mRegion.x / w,
+      this.mRegion.y / h,
+      this.mRegion.width / w,
+      this.mRegion.height / h
     );
+
+    this.mRelativeRegion.top = this.mRelativeRegion.top;
+    this.mRelativeRegion.left = this.mRelativeRegion.left;
+    this.mRelativeRegion.right = this.mRelativeRegion.right;
+    this.mRelativeRegion.bottom = this.mRelativeRegion.bottom;
   }
 
   get relativeRegion() {
@@ -5920,18 +5924,22 @@ class JSONAsset extends Asset {
 /**
  * Font file asset class responsible for loading local font files.
  *
+ * Note: this class need a body to work preoperly.
+ *
  * @cat loaders
  * @extends Asset
  */
 
 class FontAsset extends Asset {
   /**
-   * @param {string} name font name
-   * @param {string} url font url
-   *
-   * @return {void}
+   * @param {string} name        The custom name of the font
+   * @param {string|null} url    The path to the font
+   * @param {boolean} local      Is this font local?
    */
   constructor(name, url, local) {
+    if (local === false)
+      url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');
+    
     super(name, url);
 
     /**
@@ -5972,22 +5980,17 @@ class FontAsset extends Asset {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.mElementAdded = false;
-
-    /**
-     * @private
      * @type {HTMLElement}
      */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
-
+    
     /**
      * @private
      * @type {number}
      */
     this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
+
     this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
   }
 
@@ -6000,6 +6003,10 @@ class FontAsset extends Asset {
     loaderElement.type = 'text/css';
     loaderElement.media = 'all';
     loaderElement.rel = 'stylesheet';
+    loaderElement.onerror = function () {
+      //debugger;
+      // TODO: handle fail
+    };
     document.getElementsByTagName('head')[0].appendChild(loaderElement);
     return loaderElement;
   }
@@ -6016,9 +6023,7 @@ class FontAsset extends Asset {
     testingElement.style.visibility = 'hidden';
     testingElement.style.fontSize = '250px';
     testingElement.innerHTML = this.mTestingString;
-
-    // body may be not ready
-    //document.body.appendChild(testingElement);
+    document.body.appendChild(testingElement);
 
     return testingElement;
   }
@@ -6040,17 +6045,6 @@ class FontAsset extends Asset {
    * @return {void}
    */
   checkLoadingStatus() {
-    if (this.mElementAdded === false) {
-      if (document.body != null) {
-        document.body.appendChild(this.mTestingElement);
-        this.mElementAdded = true;
-      } else {
-        setTimeout(this.checkLoadingStatus.bind(this), this.mCheckDelay);
-        return;
-      }
-    }
-
-
     if (this.mDefaultFontWidth === this.mTestingElement.offsetWidth) {
       if ((this.mLoadingTimeout -= this.mCheckDelay) <= 0) {
         this.onLoadingFail();
@@ -6064,6 +6058,8 @@ class FontAsset extends Asset {
   }
 
   onLoaded() {
+    var a = this.mLoaderElement;
+
     super.onLoaded();
     this.mTestingElement.parentNode.removeChild(this.mTestingElement);
   }
@@ -6075,15 +6071,7 @@ class FontAsset extends Asset {
     console.warn(`loading ${this.name} font failed.`);
     this.onLoaded(); //TODO what to do here?
   }
-
-  /**
-   * @return {string}
-   */
-  get type() {
-    return "FontAsset";
-  }
 }
-
 /**
  * Texture Atlas asset responsible for loading Image file and coresponding Json
  * file.
@@ -6148,6 +6136,59 @@ class AtlasTextureAsset extends Asset {
    */
   load() {
     this.dataAsset.load();
+  }
+}
+
+/**
+ * Sound file asset class responsible for preloading audio files.
+ *
+ * @cat loaders
+ * @extends Asset
+ */
+
+class SoundAsset extends Asset {
+  /**
+   * Creates SoundAsset instance.
+   *
+   * @param {string} name Sound name.
+   * @param {string} url  URL to load audio from.
+   */
+  constructor(name, url) {
+    super(name, url);
+
+    /**
+     * @private
+     * @type {Audio}
+     */
+    this.mAudioElement = new Audio();
+  }
+
+  /**
+   * @override
+   * @inheritDoc
+   *
+   * @return {void}
+   */
+  onLoaded() {
+    this.mData = this.mAudioElement;
+
+    super.onLoaded();
+  }
+
+  /**
+   * @override
+   * @inheritDoc
+   *
+   * @return {void}
+   */
+  load() {
+    this.mAudioElement.src = this.mUrl;
+    this.mAudioElement.preload = 'auto';
+    this.mAudioElement.oncanplaythrough = () => {
+      if (!this.mData) {
+        this.onLoaded();
+      }
+    };
   }
 }
 
@@ -6224,6 +6265,20 @@ class AssetManager extends MessageDispatcher {
      * @dict
      */
     this.mJsons = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mSounds = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mFonts = {};
   }
 
   /**
@@ -6263,12 +6318,39 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
-  enqueueLocalFont(name, url) {
+  /**
+   * Adds single sound to the loading queue.
+   *
+   * @param {string} name Name of the sound.
+   * @param {string} url  The URL of the sound.
+   *
+   * @returns {void}
+   */
+  enqueueSound(name, url) {
+    this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
+  }
+
+  /*
+   * Adds local font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL to the font.
+   *
+   * @returns {void}
+   */
+  enqueueFont(name, url) {
     this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
   }
 
-  enqueueGoogleFont(name, url) {
-    this.mQueue.push(new FontAsset(name, url, false));
+  /**
+   * Adds Google Font to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   *
+   * @returns {void}
+   */
+  enqueueGoogleFont(name) {
+    this.mQueue.push(new FontAsset(name, null, false));
   }
 
   /**
@@ -6308,14 +6390,18 @@ class AssetManager extends MessageDispatcher {
       this.mAtlases[item.name] = item.data;
     else if (item.constructor === JSONAsset)
       this.mJsons[item.name] = item.data;
-    else if (item.constructor === FontAsset) {} else
+    else if (item.constructor === SoundAsset)
+      this.mSounds[item.name] = item.data;
+    else if (item.constructor === FontAsset) {
+      this.mFonts[item.name] = item.data;
+    } else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mQueue.length) {
       this.mQueue.splice(0, this.mQueue.length);
-
+      this.mTotalLoaded = 0;
       this.mIsAllLoaded = true;
       this.post(Message.COMPLETE);
     }
@@ -6401,6 +6487,17 @@ class AssetManager extends MessageDispatcher {
    */
   getAtlas(name) {
     return this.mAtlases[name];
+  }
+
+  /**
+   * Returns Sound by given name.
+   *
+   * @param {string} name The name of the sound.
+   *
+   * @return {Audio} Returns sound or null.
+   */
+  getSound(name) {
+    return this.mSounds[name];
   }
 
   /**
@@ -6535,10 +6632,10 @@ class VideoNullDriver {
   /**
    * @protected
    * @ignore
-   * @param {type} msg
-   * @param {type} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    *
-   * @returns {type}
+   * @returns {void}
    */
   __onResize(msg, rect) {
     let w = this.mContainerElement.clientWidth;
@@ -6646,9 +6743,10 @@ class VideoNullDriver {
    * @protected
    *
    * @param  {Texture} texture
-   * @param  {Texture} bounds
+   * @param  {number} px
+   * @param  {number} py
    */
-  drawImage(texture, bounds) {}
+  drawImage(texture, px, py) {}
 
   /**
    * Draws text onto back-buffer.
@@ -6685,7 +6783,8 @@ class VideoNullDriver {
    * @return {void}
    */
   save(gameObject) {}
-
+  
+  setMaterial(material) {}
 
   /**
    * Used to restore context if extists.
@@ -6810,6 +6909,9 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalAlpha(value) {
+    if (value == this.mGlobalAlpha)
+      return;
+    
     this.mGlobalAlpha = value;
     this.mCtx.globalAlpha = value;
   }
@@ -6823,8 +6925,15 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
-    if (blendMode === BlendMode.AUTO)
-      return;
+    // if (blendMode === BlendMode.AUTO)
+    //   return;
+
+    if (this.mGlobalBlendMode === blendMode)
+      return;  
+    
+    // small performance win
+    // if (this.mCtx.globalCompositeOperation === blendMode)
+    //   return;
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
@@ -6837,18 +6946,18 @@ class CanvasDriver extends VideoNullDriver {
    * @override
    *
    * @param {Texture} texture
-   * @param {Rectangle} bounds
+   * @param {number} px
+   * @param {number} py
    *
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     let w = texture.width;
     let h = texture.height;
+    let ox = texture.untrimmedRect.x;
+    let oy = texture.untrimmedRect.y;
 
-    let uw = texture.untrimmedRect.x;
-    let uh = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, bounds.x + uw, bounds.y + uh, w, h);
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
 
   /**
@@ -6880,14 +6989,18 @@ class CanvasDriver extends VideoNullDriver {
     else if (style.align === 'right')
       x += (bounds.width - textWidth);
 
-    this.mCtx.textBaseline = 'top';
-    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    this.mCtx.textBaseline = 'top';    
 
     if (style.strokeThickness > 0) {
+      this.mCtx.lineJoin = 'round';
+      this.mCtx.miterLimit = 2;
       this.mCtx.lineWidth = style.strokeThickness;
       this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
-      this.mCtx.strokeText(text, x, 0);
+      this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
     }
+
+    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+    
     this.mCtx.closePath();
   }
 
@@ -6899,6 +7012,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -6912,7 +7026,9 @@ class CanvasDriver extends VideoNullDriver {
     super.beginFrame();
 
     this.clear();
-    this.mCtx.save();
+    //this.mCtx.save();
+
+    this.mCtx.globalCompositeOperation = this.mGlobalBlendMode;
   }
 
   /**
@@ -6924,7 +7040,7 @@ class CanvasDriver extends VideoNullDriver {
   endFrame() {
     super.endFrame();
 
-    this.mCtx.restore();
+    //this.mCtx.restore();
   }
 
   /**
@@ -6934,7 +7050,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
-    return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
+    return new Texture(canvas);
   }
 
   /**
@@ -7255,9 +7371,8 @@ class DOMDriver extends VideoNullDriver {
       if (el.style.webkitTextStrokeColor != strokeColor)
         el.style.webkitTextStrokeColor = strokeColor;
 
-      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') {
+      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px')
         el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
-      }
     }
 
     if (el.style.backgroundImage !== 'none')
@@ -7281,55 +7396,15 @@ class WebGLDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    console.log(`WebGL`);
+    console.log(`WebGL-`);
 
-    /** @type {Number} */
-    this.MAX_BATCH_SIZE = 65535;
-
-    /**
-     * @public
-     * @type {WebGLRenderingContext|null}
-     */
     this.gl = null;
     
-    /**
-     * Contains current rendering object.
-     *
-     * @private
-     * @type {DisplayObject|null}
-     */
-    this.mCurrentObject = null;
-
-    /**
-     * Counts batch objects amount.
-     * 
-     * @private
-     * @type {Number|null}
-     */
-    this.mObjectsAmount = 0;
-
     this.__createCanvas();
-
-    /** 
-     * Contains WebGL context state
-     * 
-     * @type {WebGLState} 
-     * */
+    
+    this.mPrograms = {};
+    this.mActiveProgram = null;
     this.state = new WebGLState(this);
-
-    /**
-     * Manager for WebGL textures
-     *
-     * @type {WebGLTextures}
-     * */
-    this.textures = new WebGLTextures(this);
-
-    /**
-     * Program that renders sprites
-     *
-     * @type {WebGLProgram}
-     * */
-    this.program = new WebGLProgram(this);
   }
 
   /**
@@ -7348,60 +7423,64 @@ class WebGLDriver extends VideoNullDriver {
       premultipliedAlpha: false
     };
 
-    this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
-    this.gl.canvas.width = this.mClientWidth;
-    this.gl.canvas.height = this.mClientHeight;
-    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
-    this.gl.clearColor(0, 0, 0, 1);
+    const gl = this.gl = cvs.getContext(`webgl`, config) || cvs.getContext(`webgl-experimental`, config);
+    gl.canvas.width = this.mClientWidth;
+    gl.canvas.height = this.mClientHeight;
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.clearColor(0, 0, 0, 1);
   }
 
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
-    this.gl.canvas.width = this.mClientWidth;
-    this.gl.canvas.height = this.mClientHeight;
-    this.gl.viewport(0, 0, this.gl.drawingBufferWidth, this.gl.drawingBufferHeight);
-    this.program.resize();
+    const gl = this.gl;
+    gl.canvas.width = this.mClientWidth;
+    gl.canvas.height = this.mClientHeight;
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    Object.values(this.mPrograms).forEach(program => program.onResize(msg, rect));
   }
 
-  save(gameObject) {
-    this.mCurrentObject = gameObject;
+  setMaterial(material) {
+    let program = this.mPrograms[material.Program.name];
+
+    if (!program) {
+      program = this.mPrograms[material.Program.name] = new material.Program(this);
+      this.__flush();
+      program.activate();
+      program.init(this.mClientWidth, this.mClientHeight);
+      this.mActiveProgram = program;
+    } else if (program !== this.mActiveProgram) {
+      this.__flush();
+      program.activate();
+      this.mActiveProgram = program;
+    }
+
+    program.setMaterial(material);
+  }
+  
+  setTransform(m) {
+    this.mActiveProgram.setTransform(m);
   }
 
+  set globalAlpha(value) {
+    this.mActiveProgram.globalAlpha = value;
+  }
+  
   set globalBlendMode(blendMode) {
     const same = this.state.checkBlendMode(blendMode);
-
+  
     if (!same) {
-      this.flush();
+      this.__flush();
       this.state.setBlendMode(blendMode);
     }
   }
-
+  
   drawImage(texture, bounds) {
-    const object = this.mCurrentObject;
-    const coords = texture.relativeRegion;
-    const m = this.mTransform.value;
-    const tint = object.tint || {r: 1, g: 1, b: 1};
-
-    let texSlot = this.textures.bindTexture(texture);
-
-    if (texSlot === undefined) {
-      this.flush();
-      texSlot = this.textures.bindTexture(texture);
-    }
-    
-    if (this.mObjectsAmount === this.MAX_BATCH_SIZE) {
-      this.flush();
-    }
-
-    this.mObjectsAmount++;
-    this.program.push(bounds, m, this.mGlobalAlpha, coords, texSlot, tint);
+    this.mActiveProgram.drawImage(texture, bounds);
   }
 
-  flush() {
-    this.program.draw(this.mObjectsAmount);
-    this.mObjectsAmount = 0;
-    this.textures.endBatch();
+  drawText(text, style, bounds, textWidth, textHeight) {
+    this.mActiveProgram.drawText(text, style, bounds, textWidth, textHeight);
   }
 
   beginFrame() {
@@ -7411,122 +7490,423 @@ class WebGLDriver extends VideoNullDriver {
 
   endFrame() {
     super.endFrame();
-    this.flush();
+    this.__flush();
+  }
+  
+  __flush() {
+    this.mActiveProgram && this.mActiveProgram.flush();
   }
 }
 
+
+const WebGLConstants = {
+  FLOAT                        : 0x1406,
+  FLOAT_VEC2                   : 0x8B50,
+  FLOAT_VEC3                   : 0x8B51,
+  FLOAT_VEC4                   : 0x8B52,
+  INT                          : 0x1404,
+  INT_VEC2                     : 0x8B53,
+  INT_VEC3                     : 0x8B54,
+  INT_VEC4                     : 0x8B55,
+  BOOL                         : 0x8B56,
+  BOOL_VEC2                    : 0x8B57,
+  BOOL_VEC3                    : 0x8B58,
+  BOOL_VEC4                    : 0x8B59,
+  FLOAT_MAT2                   : 0x8B5A,
+  FLOAT_MAT3                   : 0x8B5B,
+  FLOAT_MAT4                   : 0x8B5C,
+  SAMPLER_2D                   : 0x8B5E,
+  SAMPLER_CUBE                 : 0x8B60,
+  SAMPLER_3D                   : 0x8B5F,
+  SAMPLER_2D_SHADOW            : 0x8B62,
+  FLOAT_MAT2x3                 : 0x8B65,
+  FLOAT_MAT2x4                 : 0x8B66,
+  FLOAT_MAT3x2                 : 0x8B67,
+  FLOAT_MAT3x4                 : 0x8B68,
+  FLOAT_MAT4x2                 : 0x8B69,
+  FLOAT_MAT4x3                 : 0x8B6A,
+  SAMPLER_2D_ARRAY             : 0x8DC1,
+  SAMPLER_2D_ARRAY_SHADOW      : 0x8DC4,
+  SAMPLER_CUBE_SHADOW          : 0x8DC5,
+  UNSIGNED_INT                 : 0x1405,
+  UNSIGNED_INT_VEC2            : 0x8DC6,
+  UNSIGNED_INT_VEC3            : 0x8DC7,
+  UNSIGNED_INT_VEC4            : 0x8DC8,
+  INT_SAMPLER_2D               : 0x8DCA,
+  INT_SAMPLER_3D               : 0x8DCB,
+  INT_SAMPLER_CUBE             : 0x8DCC,
+  INT_SAMPLER_2D_ARRAY         : 0x8DCF,
+  UNSIGNED_INT_SAMPLER_2D      : 0x8DD2,
+  UNSIGNED_INT_SAMPLER_3D      : 0x8DD3,
+  UNSIGNED_INT_SAMPLER_CUBE    : 0x8DD4,
+  UNSIGNED_INT_SAMPLER_2D_ARRAY: 0x8DD7,
+
+  TEXTURE_2D      : 0x0DE1,
+  TEXTURE_CUBE_MAP: 0x8513,
+  TEXTURE_3D      : 0x806F,
+  TEXTURE_2D_ARRAY: 0x8C1A
+};
+
 /**
-* Manages WebGl array buffer data for sprite program.
-* */
+ * Maps black blend modes to WebGl blend functions.
+ */
 
-class WebGLBuffer {
-  constructor(renderer) {
+let WebGLBlendMode = (blendMode, gl) => {
+  const map = {
+    [BlendMode.NORMAL]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.ADD]        : {src: gl.ONE, dst: gl.DST_ALPHA},
+    [BlendMode.MULTIPLY]   : {src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SCREEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_COLOR},
+    [BlendMode.OVERLAY]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.DARKEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.LIGHTEN]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR_DODGE]: {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR_BURN] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.HARD_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SOFT_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.DIFFERENCE] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.EXCLUSION]  : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.HUE]        : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.SATURATE]   : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.COLOR]      : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
+    [BlendMode.LUMINOSITY] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA}
+  };
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
-    
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
+  return (WebGLBlendMode = blendMode => map[blendMode])(blendMode);
+};
+const typeMap = {
+  [WebGLConstants.FLOAT]     : `uniform1f`,
+  [WebGLConstants.FLOAT_VEC2]: `uniform2fv`,
+  [WebGLConstants.FLOAT_VEC3]: `uniform3fv`,
+  [WebGLConstants.FLOAT_VEC4]: `uniform4fv`,
+  [WebGLConstants.INT]       : `uniform1i`,
+  [WebGLConstants.INT_VEC2]  : `uniform2iv`,
+  [WebGLConstants.INT_VEC3]  : `uniform3iv`,
+  [WebGLConstants.INT_VEC4]  : `uniform4iv`,
+  [WebGLConstants.FLOAT_MAT2]: `uniformMatrix2fv`,
+  [WebGLConstants.FLOAT_MAT3]: `uniformMatrix3fv`,
+  [WebGLConstants.FLOAT_MAT4]: `uniformMatrix4fv`,
+  [WebGLConstants.SAMPLER_2D]: `uniform1i`
+};
 
-    /** @type {WebGLBuffer} */
-    this.mGlBuffer = this.gl.createBuffer();
 
-    /** @type {Float32Array} */
-    this.mFloatView = new Float32Array(renderer.MAX_BATCH_SIZE * 60);
+class WebGLBaseProgramInfo {
+  constructor(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
+    this.mRenderer = renderer;
 
-    /** @type {Number} */
-    this.mBatchFloatsOffset = 0;
+    const gl = this.gl = renderer.gl;
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(vertexShader, vertexShaderSource);
+    gl.shaderSource(fragmentShader, fragmentShaderSource);
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
+    const program = this.program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
 
-    /** @type {String[]} */
-    this.ORDER = [
-      `left`, `top`,
-      `right`, `top`,
-      `left`, `bottom`,
-      `right`, `bottom`
-    ];
+    const uniforms = this.uniforms = {};
+    const uniformsAmount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
 
-    renderer.state.bindArrayBuffer(this.mGlBuffer);
-  }
+    for (let i = 0; i < uniformsAmount; i++) {
+      const uniformInfo = gl.getActiveUniform(program, i);
+      let name = uniformInfo.name;
+      const isArray = name.slice(-3) === `[0]`;
+      name = isArray ? name.slice(0, -3) : name;
 
-  prepare(objectsAmount) {
-    this.renderer.state.bindArrayBuffer(this.mGlBuffer);
-    
-    const len = objectsAmount * 60;
-    const buffer = len === this.mFloatView.length ? this.mFloatView : this.mFloatView.slice(0, len);
-    
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, buffer, this.gl.STATIC_DRAW);
-    this.mBatchFloatsOffset = 0;
-  }
+      const location = gl.getUniformLocation(program, uniformInfo.name);
+      const sSetter = typeMap[uniformInfo.type] + (isArray ? `v` : ``);
+      const setter = gl[sSetter].length === 2 ?
+        v => gl[sSetter](location, v) : v => gl[sSetter](location, false, v);
 
-  push(bounds, m, alpha, texCoords, texSlot, tint) {
-    const floatView = this.mFloatView;
-    const ORDER = this.ORDER;
-    let floatOffset = this.mBatchFloatsOffset;
-    
-    for (let i = 0; i < 8; i += 2) {
-      floatView[floatOffset++] = bounds[ORDER[i]];
-      floatView[floatOffset++] = bounds[ORDER[i + 1]];
-      floatView[floatOffset++] = m[0];
-      floatView[floatOffset++] = m[1];
-      floatView[floatOffset++] = m[2];
-      floatView[floatOffset++] = m[3];
-      floatView[floatOffset++] = m[4];
-      floatView[floatOffset++] = m[5];
-      floatView[floatOffset++] = alpha;
-      floatView[floatOffset++] = texCoords[ORDER[i]];
-      floatView[floatOffset++] = texCoords[ORDER[i + 1]];
-      floatView[floatOffset++] = texSlot;
-      floatView[floatOffset++] = tint.r;  // todo tint to UNSIGNED_BYTE
-      floatView[floatOffset++] = tint.g;
-      floatView[floatOffset++] = tint.b;
+      // setter.location = location;
+      Object.defineProperty(uniforms, name, {set: setter});
     }
-    
-    this.mBatchFloatsOffset = floatOffset;
+
+    this.mGLArrayBuffer = gl.createBuffer();
+    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
+    this.attributes = new WebGLVAO(this, attributesInfo);
+  }
+
+  init(clientWidth, clientHeight) {
+
+  }
+
+  onResize(msg, rect) {
+
+  }
+
+  setMaterial(material) {
+
+  }
+
+  setTransform(m) {
+
+  }
+
+  set globalAlpha(value) {
+
+  }
+
+  drawImage(texture, bounds) {
+
+  }
+
+  drawText(text, style, bounds, textWidth, textHeight) {
+
+  }
+
+  activate() {
+    this.gl.useProgram(this.program);
+  }
+
+  flush() {
+    this.mRenderer.state.endBatch();
   }
 }
 
-/**
- * Manages WebGl element buffer data for sprite program.
- * */
 
-class WebGLElementBuffer {
+class WebGLState {
   constructor(renderer) {
+    const gl = this.gl = renderer.gl;
+    this.mRenderer = renderer;
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
+    this.mTexturesManager = new WebGLTexturesManager(renderer);
+    this.mBoundElementBuffer = null;
+    this.mBoundArrayBuffer = null;
+    this.mBlendMode = null;
 
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
-
-    /** @type {Number[]} */
-    this.mTemplate = [0, 1, 2, 3, 3, 4];
-
-    /** @type {Uint16Array} */
-    this.mData = new Uint16Array(renderer.MAX_BATCH_SIZE * 6 - 2);
-
-    /** @type {WebGLBuffer} */
-    this.mGlBuffer = this.gl.createBuffer();
-
-    for (let i = 0, l = this.mData.length; i < l; i++) {
-      this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
-    }
-    
-    this.renderer.state.bindElementBuffer(this.mGlBuffer);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
+    gl.enable(gl.BLEND);
+    this.setBlendMode(BlendMode.NORMAL);
   }
 
-  prepare(objectsAmount) {
-    this.renderer.state.bindElementBuffer(this.mGlBuffer);
-    // if (this.mData.length >= objectsAmount * 6 - 2) return;
-    //
-    // this.mData = new Uint16Array(objectsAmount * 6 - 2);
-    //
-    // for (let i = 0, l = this.mData.length; i < l; i++) {
-    //   this.mData[i] = this.mTemplate[i % 6] + (i / 6 | 0) * 4;
-    // }
-    //
-    // this.renderer.state.bindElementBuffer(this.mGlBuffer);
-    // this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.mData, this.gl.STATIC_DRAW);
+  bindArrayBuffer(buffer) {
+    if (buffer === this.mBoundArrayBuffer) return;
+
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    this.mBoundArrayBuffer = buffer;
+  }
+  
+  bindElementBuffer(buffer) {
+    if (buffer === this.mBoundElementBuffer) return;
+
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
+    this.mBoundElementBuffer = buffer;
+  }
+  
+  bindTexture(texture) {
+    return this.mTexturesManager.bindTexture(texture);
+  }
+  
+  setBlendMode(blend) {
+    if (blend === this.mBlendMode) return;
+
+    this.mBlendMode = blend;
+    const blendFunc = WebGLBlendMode(blend, this.gl);
+    this.gl.blendFunc(blendFunc.src, blendFunc.dst);
+    
+    return true;
+  }
+  
+  checkBlendMode(blend) {
+    return blend === this.mBlendMode;
+  }
+
+  endBatch() {
+    this.mTexturesManager.endBatch();
+  }
+}
+
+
+class WebGLTexturesManager {
+  constructor(renderer) {
+
+    const gl = this.gl = renderer.gl;
+    const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    
+    this.mRenderer = renderer;
+    this.mBoundTextures = new Array(UNITS).fill(null);
+    this.mBatchTextures = new Array(UNITS).fill(null);
+    this.mGLTextures = [];
+
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+
+    const canvas = document.createElement(`canvas`);
+    const ctx = canvas.getContext(`2d`);
+    canvas.width = canvas.height = 8;
+    ctx.fillRect(0, 0, 8, 8);
+
+    for (let i = 0; i < UNITS; i++) {
+      const glTexture = this.mGLTextures[i] = gl.createTexture();
+
+      gl.activeTexture(gl.TEXTURE0 + i);
+      gl.bindTexture(gl.TEXTURE_2D, glTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }
+  }
+
+  bindTexture(texture) {
+    const gl = this.gl;
+    const boundTextures = this.mBoundTextures;
+    const batchTextures = this.mBatchTextures;
+    let index = boundTextures.indexOf(texture);
+
+    if (index === -1) {
+
+      index = boundTextures.indexOf(null);
+      index = index === -1 ? batchTextures.indexOf(null) : index;
+
+      if (index === -1) {
+        return -1;
+      }
+
+      gl.activeTexture(gl.TEXTURE0 + index);
+      gl.bindTexture(gl.TEXTURE_2D, this.mGLTextures[index]);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
+      // todo texture settings repeat nearest clamp from sprite
+    }
+
+    boundTextures[index] = texture;
+    batchTextures[index] = texture;
+
+    return index;
+  }
+  
+  endBatch() {
+    this.mBatchTextures.fill(null);
+  }
+}
+
+const attribTypeMap = {
+  [WebGLConstants.FLOAT]            : {size: 1},
+  [WebGLConstants.FLOAT_VEC2]       : {size: 2},
+  [WebGLConstants.FLOAT_VEC3]       : {size: 3},
+  [WebGLConstants.FLOAT_VEC4]       : {size: 4},
+  [WebGLConstants.INT]              : {size: 1},
+  [WebGLConstants.INT_VEC2]         : {size: 2},
+  [WebGLConstants.INT_VEC3]         : {size: 3},
+  [WebGLConstants.INT_VEC4]         : {size: 4},
+  [WebGLConstants.UNSIGNED_INT]     : {size: 1},
+  [WebGLConstants.UNSIGNED_INT_VEC2]: {size: 2},
+  [WebGLConstants.UNSIGNED_INT_VEC3]: {size: 3},
+  [WebGLConstants.UNSIGNED_INT_VEC4]: {size: 4},
+  [WebGLConstants.BOOL]             : {size: 1},
+  [WebGLConstants.BOOL_VEC2]        : {size: 2},
+  [WebGLConstants.BOOL_VEC3]        : {size: 3},
+  [WebGLConstants.BOOL_VEC4]        : {size: 4},
+  // [WebGLConstants.FLOAT_MAT2]       : {size: 4, setter: matAttribSetter, count: 2},
+  // [WebGLConstants.FLOAT_MAT3]       : {size: 9, setter: matAttribSetter, count: 3},
+  // [WebGLConstants.FLOAT_MAT4]       : {size: 16, setter: matAttribSetter, count: 4}
+};
+
+
+class WebGLVAO {
+  constructor(programInfo, attributesInfo) {
+    const gl = programInfo.gl;
+    const viewsHash = this.viewsHash = {};
+    this.mViews = [];
+
+    const createSetter = attribInfo => {
+      let view = viewsHash[attribInfo.Type.name];
+
+      if (!view) {
+        view = viewsHash[attribInfo.Type.name] = new attribInfo.Type(this.mBuffer);
+        this.mViews.push(view);
+        view.batchOffset = 0;
+      }
+
+      const BYTES_PER_ELEMENT = view.BYTES_PER_ELEMENT;
+      attribInfo.offsetInView = attribInfo.offset / BYTES_PER_ELEMENT;
+
+      if (attribInfo.size === 1) {
+        Object.defineProperty(this, attribInfo.name, {
+          set: v => view[attribInfo.offsetInView + view.batchOffset] = v,
+          get: () => attribInfo.location
+        });
+      } else {
+        Object.defineProperty(this, attribInfo.name, {
+          set: v => {
+            for (let i = 0, l = v.length; i < l; i++) {
+              view[attribInfo.offsetInView + view.batchOffset + i] = v[i];
+            }
+          },
+          get: () => attribInfo.location
+        });
+      }
+    };
+
+    let offset = 0;
+    const program = programInfo.program;
+    const attribsAmount = gl.getProgramParameter(programInfo.program, gl.ACTIVE_ATTRIBUTES);
+
+    for (let i = 0; i < attribsAmount; i++) {
+      const attrib = gl.getActiveAttrib(program, i);
+      const name = attrib.name;
+      const type = attrib.type;
+
+      const attribInfo = attributesInfo[name] = attributesInfo[name] || {
+          Type     : Float32Array,
+          normalize: false,
+          type     : gl.FLOAT
+        };
+
+      attribInfo.location = gl.getAttribLocation(program, name);
+      attribInfo.size = attribTypeMap[type].size;
+      attribInfo.name = name;
+
+      offset += offset % attribInfo.Type.BYTES_PER_ELEMENT;
+      attribInfo.offset = offset;
+      offset += attribInfo.size * attribInfo.Type.BYTES_PER_ELEMENT;
+    }
+
+    let mod = offset % 4;
+    this.mStride = offset + (mod ? 4 - mod : 0);
+    this.mBuffer = new ArrayBuffer(4 * 2000 * this.mStride); // todo 2000 pass
+    this.mBatchOffsetInBytes = 0;
+
+    let infos = Object.values(attributesInfo);
+
+    for (let i = 0, l = infos.length; i < l; i++) {
+      const attribInfo = infos[i];
+      createSetter(attribInfo);
+      gl.vertexAttribPointer(attribInfo.location, attribInfo.size, attribInfo.type, attribInfo.normalize, this.mStride, attribInfo.offset);
+      gl.enableVertexAttribArray(attribInfo.location);
+    }
+  }
+
+  nextVertex() {
+    this.mBatchOffsetInBytes += this.mStride;
+
+    for (let i = 0, l = this.mViews.length; i < l; i++) {
+      this.mViews[i].batchOffset = this.mBatchOffsetInBytes / this.mViews[i].BYTES_PER_ELEMENT;
+    }
+  }
+
+  get data() {
+    return this.mBuffer.slice(0, this.mBatchOffsetInBytes);
+  }
+
+  get countForElementsDraw() {
+    return this.mBatchOffsetInBytes / this.mStride * 6 / 4 - 2;
+  }
+
+  get countForArraysDraw() {
+    return this.mBatchOffsetInBytes / this.mStride;
+  }
+
+  clear() {
+    this.mBatchOffsetInBytes = 0;
+
+    for (let i = 0, l = this.mViews.length; i < l; i++) {
+      this.mViews[i].batchOffset = 0;
+    }
   }
 }
 
@@ -7576,277 +7956,189 @@ const fragmentShaderSource = `
   }
 `;
 
-/**
- * A WebGLProgram manage data for render simple sprites batch. Contains WebGl program cra.
- *
- */
+const QUAD = [`left`, `top`, `right`, `top`, `left`, `bottom`, `right`, `bottom`];
 
 
-class WebGLProgram {
+class WebGLTexProgramInfo extends WebGLBaseProgramInfo {
   constructor(renderer) {
+    const gl = renderer.gl;
+    const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
-
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
-
-    const vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);
-    const fragmentShader = this.gl.createShader(this.gl.FRAGMENT_SHADER);
-
-    this.gl.shaderSource(vertexShader, vertexShaderSource);
-    this.gl.shaderSource(fragmentShader, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, renderer.textures.MAX_TEXTURE_IMAGE_UNITS));
-    this.gl.compileShader(vertexShader);
-    this.gl.compileShader(fragmentShader);
-
-    this.mGlProgram = this.gl.createProgram();
-    this.gl.attachShader(this.mGlProgram, vertexShader);
-    this.gl.attachShader(this.mGlProgram, fragmentShader);
-    this.gl.linkProgram(this.mGlProgram);
-    this.gl.deleteShader(vertexShader);
-    this.gl.deleteShader(fragmentShader);
-
-    /**
-     * Contains attributes location on GPU program.
-     *
-     * @type {Object} */
-    this.mAttributes = {
-      aVertexPos  : this.gl.getAttribLocation(this.mGlProgram, `aVertexPos`),
-      aModelMatrix: this.gl.getAttribLocation(this.mGlProgram, `aModelMatrix`),
-      aModelPos   : this.gl.getAttribLocation(this.mGlProgram, `aModelPos`),
-      aAlpha      : this.gl.getAttribLocation(this.mGlProgram, `aAlpha`),
-      aTexCoord   : this.gl.getAttribLocation(this.mGlProgram, `aTexCoord`),
-      aTexSlot    : this.gl.getAttribLocation(this.mGlProgram, `aTexSlot`),
-      aTint       : this.gl.getAttribLocation(this.mGlProgram, `aTint`)
+    const attributesInfo = {
+      aTint: {Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE}
     };
 
-    /**
-     * Contains uniforms location on GPU program.
-     *
-     * @type {Object} */
-    this.mUniforms = {
-      uProjection: this.gl.getUniformLocation(this.mGlProgram, `uProjection`),
-      uSamplers  : this.gl.getUniformLocation(this.mGlProgram, `uSamplers`)
-    };
+    super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS), attributesInfo);
 
-    renderer.state.useProgram(this.mGlProgram);
+    this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
+    this.mBatchObjects = 0;
 
-    this.gl.uniform1iv(this.mUniforms.uSamplers, new Int32Array(renderer.textures.MAX_TEXTURE_IMAGE_UNITS).map((v, i) => i));
-    this.resize();
 
-    /** @type {WebGLBuffer} */
-    this.mBuffer = new WebGLBuffer(renderer);
-    this.push = this.mBuffer.push.bind(this.mBuffer);
-
-    const stride = Float32Array.BYTES_PER_ELEMENT * 15;
-    const float = this.gl.FLOAT;
-    const floatSize = Float32Array.BYTES_PER_ELEMENT;
+    // Elements Buffer
+    this.mGLElementArrayBuffer = gl.createBuffer();
+    renderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
     
-    this.enableAttribute(this.mAttributes.aVertexPos, 2, float, false, stride, 0);        // vec 2
-    this.enableAttribute(this.mAttributes.aModelMatrix, 4, float, false, stride, 2 * floatSize);  // vec 4
-    this.enableAttribute(this.mAttributes.aModelPos, 2, float, false, stride, 6 * floatSize);     // vec 2          
-    this.enableAttribute(this.mAttributes.aAlpha, 1, float, false, stride, 8 * floatSize);       // float
-    this.enableAttribute(this.mAttributes.aTexCoord, 2, float, false, stride, 9 * floatSize);     // vec 2
-    this.enableAttribute(this.mAttributes.aTexSlot, 1, float, false, stride, 11 * floatSize);     // float  // uint
-    this.enableAttribute(this.mAttributes.aTint, 3, float, false, stride, 12 * floatSize);        // vec 3  // uint * 3
+    this.maxBatchSize = 2000;
 
-    /** @type {WebGLElementBuffer} */
-    this.mElementBuffer = new WebGLElementBuffer(renderer);
+    const QUAD_INDICES = [0, 1, 2, 3, 3, 4];
+    const len = this.maxBatchSize * 6;
+    const indices = new Uint16Array(len);
+
+    for (let i = 0; i < len; i++) {
+      indices[i] = QUAD_INDICES[i % 6] + (i / 6 | 0) * 4;
+    }
+
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
   }
 
-  enableAttribute(index, size, type, normalize, stride, offset) {
-    this.gl.vertexAttribPointer(index, size, type, normalize, stride, offset);
-    this.gl.enableVertexAttribArray(index);
+  init(clientWidth, clientHeight) {
+    this.uniforms.uProjection = new Float32Array([2 / clientWidth, 2 / clientHeight]);
+    this.uniforms.uSamplers = new Int32Array(new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(0).map((v, i) => i));
   }
 
-  resize() {
-    this.gl.uniform2f(this.mUniforms.uProjection, 2 / this.gl.drawingBufferWidth, 2 / this.gl.drawingBufferHeight);
+  onResize(msg, rect) {
+    this.uniforms.uProjection = new Float32Array([2 / rect.width, 2 / rect.height]);
   }
 
-  draw(objectsAmount) {
-    if (!objectsAmount) return;
-
-    this.renderer.state.useProgram(this.mGlProgram);
-
-    this.mElementBuffer.prepare(objectsAmount);
-    this.mBuffer.prepare(objectsAmount);
-
-    this.gl.drawElements(this.gl.TRIANGLE_STRIP, objectsAmount * 6 - 2, this.gl.UNSIGNED_SHORT, 0);
-  }
-}
-
-
-class WebGLState {
-  constructor(renderer) {
-    this.renderer = renderer;
-    this.gl = renderer.gl;
-
-    /** @type {WebGLBuffer} */
-    this.mBoundArrayBuffer = null;
-
-    /** @type {WebGLBuffer} */
-    this.mBoundElementBuffer = null;
-
-    /** @type {WebGLTexture} */
-    this.mBoundTexture = null;
-
-    /** @type {WebGLTexture} */
-    this.mActiveTexture = null;
-
-    /** @type {WebGLProgram} */
-    this.mProgram = null;
-
-    /** @type {BlendMode} */
-    this.mBlendMode = null;
-
-    this.gl.enable(this.gl.BLEND);
-    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+  setMaterial(material) {
+    this.mMaterial = material;
   }
 
-  bindArrayBuffer(buffer) {
-    if (buffer === this.mBoundArrayBuffer) return;
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-    this.mBoundArrayBuffer = buffer;
+  setTransform(m) {
+    this.mTransform = m;
   }
-  
-  bindElementBuffer(buffer) {
-    if (buffer === this.mBoundElementBuffer) return;
 
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-    this.mBoundElementBuffer = buffer;
+  set globalAlpha(value) {
+    this.mGlobalAlpha = value;
   }
-  
-  bindTexture(texture) {
-    if (texture === this.mBoundTexture) return;
+
+  drawImage(texture, pivotX, pivotY) {
+    const modelMatrix = this.mTransform.value;
+    const attributes = this.attributes;
+    const region = texture.relativeRegion;
+    const alpha = this.mGlobalAlpha;
+    const tint = this.mMaterial.tint;
+    const r = (tint >> 16) & 255;
+    const g = (tint >> 8) & 255;
+    const b = tint & 255;
+    let texSlot = this.mRenderer.state.bindTexture(texture);
+
+    if (++this.mBatchObjects > this.maxBatchSize) {
+      this.flush();
+      this.mBatchObjects = 1;
+    }
+
+    if (texSlot === -1) {
+      this.flush();
+      this.mBatchObjects = 1;
+      texSlot = this.mRenderer.state.bindTexture(texture);
+    }
     
-    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.mBoundTexture = texture;
-  }
+    const uintView = attributes.viewsHash.Uint8Array;
+    const floatView =  attributes.viewsHash.Float32Array;
 
-  setActiveTexture(slot) {
-    if (slot === this.mActiveTexture) return;
-    
-    this.gl.activeTexture(slot);
-    this.mActiveTexture = slot;
-  }
+    const bounds = Rectangle.__cache;
+    bounds.set(0, 0, texture.width, texture.height);
 
-  useProgram(program) {
-    if (program === this.mProgram) return;
+    for (let i = 0; i < 4; i++) {
+      let batchOffset = floatView.batchOffset;
 
-    this.gl.useProgram(program);
-    this.mProgram = program;
-  }
-  
-  setBlendMode(blend) {
-    if (blend === this.mBlendMode) return;
+      floatView[batchOffset + 0] = bounds[QUAD[i * 2]];
+      floatView[batchOffset + 1] = bounds[QUAD[i * 2 + 1]];
 
-    this.mBlendMode = blend;
-    const blendEquation = WebGLBlendMode(blend, this.gl);
-    this.gl.blendFunc(blendEquation.src, blendEquation.dst);
-    
-    return true;
-  }
-  
-  checkBlendMode(blend) {
-    return blend === this.mBlendMode;
-  }
-}
+      floatView[batchOffset + 2] = modelMatrix[0];
+      floatView[batchOffset + 3] = modelMatrix[1];
+      floatView[batchOffset + 4] = modelMatrix[2];
+      floatView[batchOffset + 5] = modelMatrix[3];
 
+      floatView[batchOffset + 6] = modelMatrix[4];
+      floatView[batchOffset + 7] = modelMatrix[5];
 
-class WebGLTextures {
-  constructor(renderer) {
+      floatView[batchOffset + 8] = alpha;
 
-    /** @type {WebGLDriver} */
-    this.renderer = renderer;
+      floatView[batchOffset + 9] = region[QUAD[i * 2]];
+      floatView[batchOffset + 10] = region[QUAD[i * 2 + 1]];
 
-    /** @type {WebGLRenderingContext} */
-    this.gl = renderer.gl;
+      floatView[batchOffset + 11] = texSlot;
 
-    this.MAX_TEXTURE_IMAGE_UNITS = this.gl.getParameter(this.gl.MAX_TEXTURE_IMAGE_UNITS);
-    this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+      let offset = (batchOffset + 12) * 4;
+      uintView[offset] = r;
+      uintView[offset + 1] = g;
+      uintView[offset + 2] = b;
 
-    /** @type {WebGLTextures[]} */
-    this.mBoundTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
-    
-    /** @type {WebGLTextures[]} */
-    this.mBatchTextures = new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(null);
-
-    /** @type {WebGLTextures[]} */
-    this.mGlTextures = [];
-    
-    const canvas = document.createElement(`canvas`);
-    const ctx = canvas.getContext(`2d`);
-    canvas.width = canvas.height = 8;
-    ctx.fillRect(0, 0, 8, 8);
-
-    for (let i = 0; i < this.MAX_TEXTURE_IMAGE_UNITS; i++) {
-      const glTexture = this.mGlTextures[i] = this.gl.createTexture();
-
-      this.gl.activeTexture(this.gl[`TEXTURE${i}`]);
-      this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
-      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, canvas);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+      attributes.nextVertex();
     }
   }
 
-  bindTexture(texture) {
-    let index = this.mBoundTextures.indexOf(texture);
+  drawText(text, style, bounds, textWidth, textHeight) {
+    const font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    const key = `${text}${font}${style.align}${style.color}${style.strokeThickness}${style.strokeColor}`;
+    const material = this.mMaterial;
+    let tex = material.tex;
 
-    if (index === -1) {
+    if (key !== material.key) {
+      let ctx = material.ctx;
+      let canvas;
 
-      index = this.mBoundTextures.indexOf(null);
-      index = index === -1 ? this.mBatchTextures.indexOf(null) : index;
+      if (!ctx) {
+        canvas = document.createElement(`canvas`);
+        ctx = canvas.getContext(`2d`);
+      } else {
+        canvas = ctx.canvas;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
-      if (index === -1) return;
+      canvas.width = textWidth;
+      canvas.height = textHeight;
 
-      this.renderer.state.setActiveTexture(this.gl[`TEXTURE${index}`]);
-      this.renderer.state.bindTexture(this.mGlTextures[index]);
-      this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.native);
-      // todo texture settings repeat nearest clamp from sprite
+      ctx.font = font;
+      ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
+
+      ctx.textAlign = style.align;
+      ctx.textBaseline = `top`;
+
+      const x = style.align === `center` ? textWidth / 2 : style.align === `left` ? 0 : textWidth;
+      const lines = text.split(`\n`);
+      const lineHeight = textHeight / lines.length;
+
+      for (let i = 0, l = lines.length; i < l; i++) {
+        const y = lineHeight * i;
+        ctx.fillText(lines[i], x, y);
+
+        if (style.strokeThickness > 0) {
+          ctx.lineWidth = style.strokeThickness;
+          ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
+          ctx.strokeText(text, x, y);
+        }
+      }
+
+      tex = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
     }
 
-    this.mBoundTextures[index] = texture;
-    this.mBatchTextures[index] = texture;
-
-    return index;
+    this.drawImage(tex, bounds.x, bounds.y);  // todo there is no pivots there
   }
-  
-  endBatch() {
-    this.mBatchTextures.fill(null);
+
+  flush() {
+    super.flush();
+
+    const gl = this.gl;
+
+    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
+    this.mRenderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
+
+    let count = this.attributes.countForElementsDraw;
+
+    if (count > 0) {
+      gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
+      gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
+
+      this.attributes.clear();
+      this.mBatchObjects = 0;
+      this.mRenderer.state.endBatch();
+    }
   }
 }
 
-/**
- * Maps black blend modes to WebGl blend functions.
- */
-
-var WebGLBlendMode = (blendMode, gl) => {
-  var map = {
-    [BlendMode.NORMAL]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.ADD]        : {src: gl.ONE, dst: gl.DST_ALPHA},
-    [BlendMode.MULTIPLY]   : {src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.SCREEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_COLOR},
-    [BlendMode.OVERLAY]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.DARKEN]     : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.LIGHTEN]    : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.COLOR_DODGE]: {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.COLOR_BURN] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.HARD_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.SOFT_LIGHT] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.DIFFERENCE] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.EXCLUSION]  : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.HUE]        : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.SATURATE]   : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.COLOR]      : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA},
-    [BlendMode.LUMINOSITY] : {src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA}
-  };
-
-  return (WebGLBlendMode = blendMode => map[blendMode])(blendMode);
-};
 /**
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
@@ -7875,6 +8167,25 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
+
+    
+    this.material = {
+      Program: WebGLTexProgramInfo,
+      tint: 0xffffff,
+      
+      // text
+      ctx: null,
+      key: null,
+      tex: null
+    };
+  }
+
+  get tint() {
+    return this.material.tint;
+  }
+
+  set tint(value) {
+    this.material.tint = value;
   }
 
   /**
@@ -7914,7 +8225,7 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
-    this.mAlpha = Math.clamp(value, 0, 1);
+    this.mAlpha = MathEx.clamp(value, 0, 1);
   }
 
 
@@ -8035,21 +8346,6 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     else
       this.mTexture = /** @type {Texture} */ (texture);
-
-    /**
-     * @protected
-     * @type {Object}
-     */
-    this.mTint = {r: 1, g: 1, b: 1}; // todo
-  }
-
-  /**
-   * tint - Returns sprite tint object.
-   *
-   * @return {Object} The current texture set on this Sprite or null.
-   */
-  get tint() {
-    return this.mTint;
   }
 
   /**
@@ -8069,12 +8365,11 @@ class Sprite extends DisplayObject {
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
-      video.save(this);
+      video.setMaterial(this.material);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-      video.drawImage(this.mTexture, this.onGetLocalBounds(Rectangle.__cache));
-      video.restore();
+      video.drawImage(this.mTexture);
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
@@ -8095,7 +8390,7 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(-this.mPivotX, -this.mPivotY, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
   }
 
   /**
@@ -8246,13 +8541,12 @@ class TextField extends DisplayObject {
 
     let tmpBlendMode = BlendMode.AUTO;
 
-    video.save(this);
+    video.setMaterial(this.material);
     video.setTransform(this.worldTransformation);
     video.globalAlpha = parentAlpha * this.mAlpha;
     video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
 
     video.drawText(this.mText, this.mStyle, this.mCacheBounds, this.mTextWidth, this.mTextHeight);
-    video.restore();
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
   }
@@ -8278,7 +8572,7 @@ class TextField extends DisplayObject {
    * @return {Rectangle}
    */
   __validate(outRect) {
-    let strokeCorrection = 0 - this.mStyle.strokeThickness * 0.5;
+    let strokeCorrection = 0;
     if (this.mNeedInvalidate === false)
       return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
 
@@ -8292,7 +8586,7 @@ class TextField extends DisplayObject {
       this.mFieldHeight = this.mTextHeight;
     }
 
-    return outRect.set(strokeCorrection-this.mPivotX, strokeCorrection-this.mPivotY, this.mFieldWidth, this.mFieldHeight);
+    return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
   }
 
 
@@ -9694,18 +9988,16 @@ class Emitter extends DisplayObject {
      */
     this.__tmpWorld = new Matrix();
 
+    /**
+     * @private
+     * @type {EmitterSortOrder}
+     */
+    this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
-
-  // reset() {
-  //   this.mState = 0;
-  //
-  //   // todo: reset simulation
-  //   // todo: clear all particles
-  //   this.updateNextTick(0);
-  // }
 
   resetState() {
     this.mState = EmitterState.PENDING;
@@ -9813,51 +10105,59 @@ class Emitter extends DisplayObject {
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
-      let particle;
-      for (let i = 0; i < plength; i++) {
-      //for (let i = plength - 1; i > 0; i--) {
-        particle = this.mParticles[i];
-        texture = this.mTextures[particle.textureIndex];
 
-        let tw = texture.width * 0.5;
-        let th = texture.height * 0.5;
-
-        if (particle.r === 0) {
-          let tx = particle.x - tw * particle.scale;
-          let ty = particle.y - th * particle.scale;
-          localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
-        } else {
-          let cos = Math.cos(particle.r);
-          let sin = Math.sin(particle.r);
-          let a = particle.scale * cos;
-          let b = particle.scale * sin;
-          let c = particle.scale * -sin;
-          let d = particle.scale * cos;
-
-          let tx = particle.x - tw * a - th * c;
-          let ty = particle.y - tw * b - th * d;
-          localTransform.set(a, b, c, d, tx, ty);
-        }
-
-        if (this.mIsLocal === true) {
-          worldTransform.identity();
-          worldTransform.copyFrom(localTransform);
-          worldTransform.prepend(this.worldTransformation);
-        } else {
-          this.mSpace.worldTransformation.copyTo(worldTransform);
-          worldTransform.append(localTransform);
-        }
-
-        video.setTransform(worldTransform);
-        video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
-
-        pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-        video.drawImage(texture, pbounds);
+      if (this.__sortOrder == EmitterSortOrder.FRONT_TO_BACK) {
+        for (let i = 0; i < plength; i++)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
       }
+      else {
+        for (let i = plength - 1; i > 0; i--)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
+      }
+      
     }
 
     video.restore();
     super.__render(video, time, parentAlpha, parentBlendMode);
+  }
+
+  __renderParticle(particle, video, parentAlpha, localTransform, worldTransform) {
+    let texture = this.mTextures[particle.textureIndex];
+
+    let tw = texture.width * 0.5;
+    let th = texture.height * 0.5;
+
+    if (particle.r === 0) {
+      let tx = particle.x - tw * particle.scale;
+      let ty = particle.y - th * particle.scale;
+      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+    } else {
+      let cos = Math.cos(particle.r);
+      let sin = Math.sin(particle.r);
+      let a = particle.scale * cos;
+      let b = particle.scale * sin;
+      let c = particle.scale * -sin;
+      let d = particle.scale * cos;
+
+      let tx = particle.x - tw * a - th * c;
+      let ty = particle.y - tw * b - th * d;
+      localTransform.set(a, b, c, d, tx, ty);
+    }
+
+    if (this.mIsLocal === true) {
+      worldTransform.identity();
+      worldTransform.copyFrom(localTransform);
+      worldTransform.prepend(this.worldTransformation);
+    } else {
+      this.mSpace.worldTransformation.copyTo(worldTransform);
+      worldTransform.append(localTransform);
+    }
+
+    video.setTransform(worldTransform);
+    video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
+
+    //pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
+    video.drawImage(texture, tw, th);
   }
 
   onUpdate(dt) {
@@ -10100,7 +10400,35 @@ class Emitter extends DisplayObject {
 
     this.mTextures = value;
   }
+
+  /**
+   * @return {EmitterSortOrder}
+   */  
+  get sortOrder() {
+    return this.__sortOrder;
+  }
+
+  /**
+   *
+   * @param {EmitterSortOrder} value The order in which particles will be sorted when rendering.
+   *
+   * @return {void}
+   */
+  set sortOrder(value) {
+    return this.__sortOrder = value;
+  }
 }
+
+/**
+ * A blend mode enum.
+ * @cat particles
+ * @enum {string}
+ */
+
+var EmitterSortOrder = {
+  FRONT_TO_BACK: 'frontToBack',
+  BACK_TO_FRONT: 'backToFront'
+};
 
 // TODO: fix jsdoc to display this enum
 
@@ -12992,7 +13320,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootSystems() {
-    this.addSystem(new Input());
+    //this.addSystem(new Input());
   }
 
   /**
