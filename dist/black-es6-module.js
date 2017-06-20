@@ -4269,19 +4269,15 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onFixedUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }    
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__fixedUpdate(dt);
 
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
 
@@ -4299,19 +4295,15 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }      
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
       
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
 
@@ -4329,21 +4321,44 @@ class GameObject extends MessageDispatcher {
       c.mGameObject = this;
       c.onPostUpdate(dt);
 
-      if (this.mNumComponentsRemoved > 0) {
-        k -= this.mNumComponentsRemoved;
-        this.mNumComponentsRemoved = 0;
-      }
+      if (this.__checkRemovedComponents(k))
+        break;
     }
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__postUpdate(dt);
 
-      if (this.mNumChildrenRemoved > 0) {
-        i -= this.mNumChildrenRemoved;
-        this.mNumChildrenRemoved = 0;
-      }
+      if (this.__checkRemovedChildren(i))
+        break;
     }
   }
+
+  __checkRemovedComponents(i) {
+    if (this.mComponents == 0)
+      return false;
+    
+    i -= this.mNumComponentsRemoved;
+    this.mNumComponentsRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
+  __checkRemovedChildren(i) {
+    if (this.mNumChildrenRemoved == 0)
+      return false;
+    
+    i -= this.mNumChildrenRemoved;
+    this.mNumChildrenRemoved = 0;
+
+    if (i < 0)
+      return true;
+
+    return false;
+  }
+
 
   /**
    * Called at every fixed frame update.
@@ -5299,7 +5314,10 @@ class Texture {
     this.mId = ++Texture.__ID;
 
     if (region === undefined) {
-      this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+      if(nativeTexture instanceof HTMLImageElement)
+        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+      else
+        this.mRegion = new Rectangle(0, 0, nativeTexture.width, nativeTexture.height);
     } else {
       this.mRegion = /** @type {Rectangle} */ (region);
       this.mIsSubtexture = true;
@@ -6943,6 +6961,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   drawText(text, style, bounds, textWidth, textHeight) {
+    this.mCtx.save();
     this.mCtx.beginPath();
     this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
     this.mCtx.clip();
@@ -6970,6 +6989,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
     
     this.mCtx.closePath();
+    this.mCtx.restore();
   }
 
   /**
@@ -7168,13 +7188,13 @@ class DOMDriver extends VideoNullDriver {
    * @param  {Rectangle} bounds
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
     let uw = texture.untrimmedRect.x;
     let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(bounds.x + uw, bounds.y + uh);
+    //this.mTransform.translate(px, py);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
