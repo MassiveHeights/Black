@@ -122,13 +122,13 @@ class DOMDriver extends VideoNullDriver {
    * @param  {Rectangle} bounds
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(texture, px, py) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
     let uw = texture.untrimmedRect.x;
     let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(bounds.x + uw, bounds.y + uh);
+    //this.mTransform.translate(px, py);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
