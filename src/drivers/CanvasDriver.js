@@ -216,7 +216,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
-    return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
+    return new Texture(canvas);
   }
 
   /**
