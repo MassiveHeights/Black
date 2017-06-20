@@ -1359,7 +1359,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {string} tag Tag to find.
    *
-   * @return {Array<GameObject>|null} Array of GameObject or null if not found.
+   * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.instance.mTagCache.hasOwnProperty(tag) === false)
