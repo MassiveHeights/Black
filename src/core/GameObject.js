@@ -126,6 +126,18 @@ class GameObject extends MessageDispatcher {
      * @type {boolean}
      */
     this.mAdded = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mNumChildrenRemoved = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mNumComponentsRemoved = 0;
   }
 
   /**
@@ -335,6 +347,8 @@ class GameObject extends MessageDispatcher {
 
     this.setTransformDirty();
 
+    this.mNumChildrenRemoved++;
+
     return child;
   }
 
@@ -393,6 +407,8 @@ class GameObject extends MessageDispatcher {
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
+    
+    this.mNumComponentsRemoved++;
 
     return instance;
   }
@@ -503,16 +519,25 @@ class GameObject extends MessageDispatcher {
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
 
-    let clength = this.mComponents.length;
-    for (let k = 0; k < clength; k++) {
+    for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onFixedUpdate(dt);
+
+      if (this.mNumComponentsRemoved > 0) {
+        k -= this.mNumComponentsRemoved;
+        this.mNumComponentsRemoved = 0;
+      }    
     }
 
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++)
+    for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__fixedUpdate(dt);
+
+      if (this.mNumChildrenRemoved > 0) {
+        i -= this.mNumChildrenRemoved;
+        this.mNumChildrenRemoved = 0;
+      }
+    }
   }
 
   /**
@@ -524,16 +549,25 @@ class GameObject extends MessageDispatcher {
   __update(dt) {
     this.onUpdate(dt);
 
-    let clength = this.mComponents.length;
-    for (let k = 0; k < clength; k++) {
+    for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onUpdate(dt);
+
+      if (this.mNumComponentsRemoved > 0) {
+        k -= this.mNumComponentsRemoved;
+        this.mNumComponentsRemoved = 0;
+      }      
     }
 
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++)
+    for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
+      
+      if (this.mNumChildrenRemoved > 0) {
+        i -= this.mNumChildrenRemoved;
+        this.mNumChildrenRemoved = 0;
+      }
+    }
   }
 
   /**
@@ -545,16 +579,25 @@ class GameObject extends MessageDispatcher {
   __postUpdate(dt) {
     this.onPostUpdate(dt);
 
-    let clength = this.mComponents.length;
-    for (let k = 0; k < clength; k++) {
+    for (let k = 0; k < this.mComponents.length; k++) {
       let c = this.mComponents[k];
       c.mGameObject = this;
       c.onPostUpdate(dt);
+
+      if (this.mNumComponentsRemoved > 0) {
+        k -= this.mNumComponentsRemoved;
+        this.mNumComponentsRemoved = 0;
+      }
     }
 
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++)
+    for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__postUpdate(dt);
+
+      if (this.mNumChildrenRemoved > 0) {
+        i -= this.mNumChildrenRemoved;
+        this.mNumChildrenRemoved = 0;
+      }
+    }
   }
 
   /**
