@@ -7433,8 +7433,10 @@ var SoundAsset = function (_Asset) {
     value: function load() {
       var _this2 = this;
 
+      this.mAudioElement.autoplay = false;
       this.mAudioElement.src = this.mUrl;
       this.mAudioElement.preload = 'auto';
+      this.mAudioElement.load();
       this.mAudioElement.oncanplaythrough = function () {
         if (!_this2.mData) {
           _this2.onLoaded();
@@ -8445,6 +8447,17 @@ var CanvasDriver = function (_VideoNullDriver) {
     key: 'restore',
     value: function restore() {
       this.mCtx.restore();
+    }
+  }, {
+    key: 'clip',
+    value: function clip(rect) {
+      //this.mCtx.beginPath();
+      console.log('123');
+
+      this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
+      this.mCtx.clip();
+
+      //this.mCtx.endPath();
     }
   }, {
     key: 'globalAlpha',
@@ -9914,7 +9927,16 @@ var Sprite = function (_DisplayObject) {
         video.setTransform(this.worldTransformation);
         video.globalAlpha = parentAlpha * this.mAlpha;
         video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+
+        // if (this.mClipRect != null) {
+        //   video.save();
+        //   video.clip(this.mClipRect);
+        // }
+
         video.drawImage(this.mTexture);
+        // if (this.mClipRect != null) {
+        //   video.restore();
+        // }
       }
 
       _get(Sprite.prototype.__proto__ || Object.getPrototypeOf(Sprite.prototype), "__render", this).call(this, video, time, parentAlpha * this.mAlpha, tmpBlendMode);
@@ -10663,7 +10685,7 @@ var FloatScatter = function (_Scatter) {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(Number):Number} [ease=null]     Easing function.
+   * @param {function(number):Number} [ease=null]     Easing function.
    */
   function FloatScatter(min) {
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
@@ -10673,15 +10695,15 @@ var FloatScatter = function (_Scatter) {
 
     // NOTE: dont make us @private @member
 
-    /** @type {Number} */
+    /** @type {number} */
     var _this = _possibleConstructorReturn(this, (FloatScatter.__proto__ || Object.getPrototypeOf(FloatScatter)).call(this));
 
     _this.min = min;
 
-    /** @type {Number} */
+    /** @type {number} */
     _this.max = max == null ? min : max;
 
-    /** @type {function(Number):Number} */
+    /** @type {function(number):number} */
     _this.ease = ease;
     return _this;
   }
