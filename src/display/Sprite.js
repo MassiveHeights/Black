@@ -39,7 +39,7 @@ class Sprite extends DisplayObject {
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mAlpha <= 0 || this.mVisible === false)
       return;
-
+    
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
@@ -47,7 +47,17 @@ class Sprite extends DisplayObject {
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+
+      // if (this.mClipRect != null) {
+      //   video.save();
+      //   video.clip(this.mClipRect);
+      // }
+      
       video.drawImage(this.mTexture);
+      // if (this.mClipRect != null) {
+      //   video.restore();
+      // }
+      
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);

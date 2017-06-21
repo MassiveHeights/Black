@@ -242,4 +242,14 @@ class CanvasDriver extends VideoNullDriver {
   restore() {
     this.mCtx.restore();
   }
+
+  clip(rect) {
+    //this.mCtx.beginPath();
+    console.log('123');
+    
+    this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
+    this.mCtx.clip();
+
+    //this.mCtx.endPath();
+  }
 }

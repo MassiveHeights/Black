@@ -26,7 +26,6 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
-
     
     this.material = {
       Program: WebGLTexProgramInfo,
@@ -59,14 +58,14 @@ class DisplayObject extends GameObject {
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mVisible === false)
       return;
-
+    
     this.onRender(video, time);
 
     let child = null;
     for (var i = 0; i < this.mChildren.length; i++) {
       child = this.mChildren[i];
       child.__render(video, time, parentAlpha, parentBlendMode);
-    }
+    }    
   }
 
   /**
