@@ -6168,8 +6168,10 @@ class SoundAsset extends Asset {
    * @return {void}
    */
   load() {
+    this.mAudioElement.autoplay = false;
     this.mAudioElement.src = this.mUrl;
     this.mAudioElement.preload = 'auto';
+    this.mAudioElement.load();
     this.mAudioElement.oncanplaythrough = () => {
       if (!this.mData) {
         this.onLoaded();
@@ -7061,6 +7063,16 @@ class CanvasDriver extends VideoNullDriver {
    */
   restore() {
     this.mCtx.restore();
+  }
+
+  clip(rect) {
+    //this.mCtx.beginPath();
+    console.log('123');
+    
+    this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
+    this.mCtx.clip();
+
+    //this.mCtx.endPath();
   }
 }
 
@@ -8155,7 +8167,6 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
-
     
     this.material = {
       Program: WebGLTexProgramInfo,
@@ -8188,14 +8199,14 @@ class DisplayObject extends GameObject {
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mVisible === false)
       return;
-
+    
     this.onRender(video, time);
 
     let child = null;
     for (var i = 0; i < this.mChildren.length; i++) {
       child = this.mChildren[i];
       child.__render(video, time, parentAlpha, parentBlendMode);
-    }
+    }    
   }
 
   /**
@@ -8349,7 +8360,7 @@ class Sprite extends DisplayObject {
   __render(video, time, parentAlpha, parentBlendMode) {
     if (this.mAlpha <= 0 || this.mVisible === false)
       return;
-
+    
     let tmpBlendMode = BlendMode.AUTO;
 
     if (this.mTexture !== null) {
@@ -8357,7 +8368,17 @@ class Sprite extends DisplayObject {
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
       video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+
+      // if (this.mClipRect != null) {
+      //   video.save();
+      //   video.clip(this.mClipRect);
+      // }
+      
       video.drawImage(this.mTexture);
+      // if (this.mClipRect != null) {
+      //   video.restore();
+      // }
+      
     }
 
     super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
@@ -8978,20 +8999,20 @@ class FloatScatter extends Scatter {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(Number):Number} [ease=null]     Easing function.
+   * @param {function(number):Number} [ease=null]     Easing function.
    */
   constructor(min, max = undefined, ease = null) {
     super();
 
     // NOTE: dont make us @private @member
 
-    /** @type {Number} */
+    /** @type {number} */
     this.min = min;
 
-    /** @type {Number} */
+    /** @type {number} */
     this.max = max == null ? min : max;
 
-    /** @type {function(Number):Number} */
+    /** @type {function(number):number} */
     this.ease = ease;
   }
 
