@@ -23,7 +23,6 @@ class Rotation extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}

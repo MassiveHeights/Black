@@ -12,6 +12,9 @@ class Initializer {
   }
 
   /**
+   * This method is called on every new particle and sets its starting values.
+   * Override this method when creating custom initializers.
+   *
    * @param {Particle} particle
    *
    * @return {void}

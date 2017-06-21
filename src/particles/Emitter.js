@@ -566,7 +566,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   set sortOrder(value) {
-    return this.__sortOrder = value;
+    this.__sortOrder = value;
   }
 }
 
