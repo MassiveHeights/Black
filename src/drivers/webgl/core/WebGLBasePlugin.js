@@ -14,7 +14,7 @@ const typeMap = {
 };
 
 /* @echo EXPORT */
-class WebGLBaseProgramInfo {
+class WebGLBasePlugin {
   constructor(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
     this.mRenderer = renderer;
 
@@ -29,6 +29,7 @@ class WebGLBaseProgramInfo {
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    gl.useProgram(program); // set up uniforms for
     gl.deleteShader(vertexShader);
     gl.deleteShader(fragmentShader);
 
@@ -47,35 +48,15 @@ class WebGLBaseProgramInfo {
         v => gl[sSetter](location, v) : v => gl[sSetter](location, false, v);
 
       // setter.location = location;
-      Object.defineProperty(uniforms, name, {set: setter});
+      Object.defineProperty(uniforms, name, {set: setter, get: () => location});
     }
-
-    this.mGLArrayBuffer = gl.createBuffer();
-    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
-    this.attributes = new WebGLVAO(this, attributesInfo);
-  }
-
-  init(clientWidth, clientHeight) {
-
   }
 
   onResize(msg, rect) {
 
   }
 
-  setMaterial(material) {
-
-  }
-
-  setTransform(m) {
-
-  }
-
-  set globalAlpha(value) {
-
-  }
-
-  drawImage(texture, bounds) {
+  drawImage(object) {
 
   }
 
@@ -83,11 +64,11 @@ class WebGLBaseProgramInfo {
 
   }
 
-  activate() {
-    this.gl.useProgram(this.program);
+  start() {
+    
   }
-
-  flush() {
-    this.mRenderer.state.endBatch();
+  
+  stop() {
+    
   }
 }

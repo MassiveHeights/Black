@@ -21,9 +21,9 @@ const attribTypeMap = {
 };
 
 /* @echo EXPORT */
-class WebGLVAO {
-  constructor(programInfo, attributesInfo) {
-    const gl = programInfo.gl;
+class WebGLAttributes {
+  constructor(plugin, attributesInfo, sizeInObjects) {
+    const gl = plugin.gl;
     const viewsHash = this.viewsHash = {};
     this.mViews = [];
 
@@ -57,8 +57,8 @@ class WebGLVAO {
     };
 
     let offset = 0;
-    const program = programInfo.program;
-    const attribsAmount = gl.getProgramParameter(programInfo.program, gl.ACTIVE_ATTRIBUTES);
+    const program = plugin.program;
+    const attribsAmount = gl.getProgramParameter(plugin.program, gl.ACTIVE_ATTRIBUTES);
 
     for (let i = 0; i < attribsAmount; i++) {
       const attrib = gl.getActiveAttrib(program, i);
@@ -82,7 +82,7 @@ class WebGLVAO {
 
     let mod = offset % 4;
     this.mStride = offset + (mod ? 4 - mod : 0);
-    this.mBuffer = new ArrayBuffer(4 * 2000 * this.mStride); // todo 2000 pass
+    this.mBuffer = new ArrayBuffer(4 * sizeInObjects * this.mStride);
     this.mBatchOffsetInBytes = 0;
 
     let infos = Object.values(attributesInfo);

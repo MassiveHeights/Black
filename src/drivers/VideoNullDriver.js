@@ -217,8 +217,6 @@ class VideoNullDriver {
    * @return {void}
    */
   save(gameObject) {}
-  
-  setMaterial(material) {}
 
   /**
    * Used to restore context if extists.
