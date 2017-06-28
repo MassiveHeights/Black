@@ -3657,6 +3657,7 @@ class Component extends MessageDispatcher {
    * Called when attached to GameObject.
    *
    * @public
+   *
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -3666,6 +3667,7 @@ class Component extends MessageDispatcher {
    * Called when detached from GameObject.
    *
    * @public
+   *
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -3674,6 +3676,7 @@ class Component extends MessageDispatcher {
   /**
    * Called at every fixed frame update.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -3682,6 +3685,7 @@ class Component extends MessageDispatcher {
   /**
    * Called at every engine update.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -3690,6 +3694,7 @@ class Component extends MessageDispatcher {
   /**
    * Called after all updates have been executed.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -3735,7 +3740,6 @@ class Component extends MessageDispatcher {
     return this.constructor.name;
   }
 }
-
 
 /**
  * @ignore
@@ -7202,17 +7206,23 @@ class DOMDriver extends VideoNullDriver {
    */
   drawImage(texture, px, py) {
     /** @type {Matrix|null} */
-    let oldTransform = this.mTransform;
+    let oldTransform = this.mTransform.clone();
     let uw = texture.untrimmedRect.x;
     let uh = texture.untrimmedRect.y;
 
     //this.mTransform.translate(px, py);
 
+    if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
+      Matrix.__cache.set(1, 0, 0, 1, texture.untrimmedRect.x, texture.untrimmedRect.y);
+      this.mTransform = this.mTransform.clone().append(Matrix.__cache);
+      //this.mTransform = this.mTransform.clone().translate(texture.untrimmedRect.x, texture.untrimmedRect.y);
+    }
+
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
     this.__updateImageElement(el, texture);
 
-    this.mTransform = oldTransform;
+    this.mTransform = oldTransform.clone();
   }
 
   /**
@@ -8999,7 +9009,7 @@ class FloatScatter extends Scatter {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(number):Number} [ease=null]     Easing function.
+   * @param {function(number):number} [ease=null]     Easing function.
    */
   constructor(min, max = undefined, ease = null) {
     super();
@@ -9185,7 +9195,6 @@ class Action {
   /**
    * Called for every particle.
    *
-   * @protected
    * @param {Emitter} emmiter   The owner of the particle.
    * @param {Particle} particle The particle to execute update on.
    * @param {number} dt         Amount of seconds since the last update.
@@ -9198,7 +9207,6 @@ class Action {
   /**
    * Called after all updates have been executed.
    *
-   * @protected
    * @param {number} dt Amount of seconds since the last update.
    *
    * @return {void}
@@ -9231,8 +9239,8 @@ class Acceleration extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -9282,8 +9290,8 @@ class AlphaOverLife extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -9324,8 +9332,8 @@ class ScaleOverLife extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   * 
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -9366,8 +9374,8 @@ class RotationOverLife extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -9408,8 +9416,8 @@ class TextureOverLife extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -9444,6 +9452,9 @@ class Initializer {
   }
 
   /**
+   * This method is called on every new particle and sets its starting values.
+   * Override this method when creating custom initializers.
+   *
    * @param {Particle} particle
    *
    * @return {void}
@@ -9476,7 +9487,6 @@ class Life extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9512,7 +9522,6 @@ class Mass extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9548,7 +9557,6 @@ class Scale extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9584,7 +9592,6 @@ class Velocity extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9623,7 +9630,6 @@ class Position extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9661,7 +9667,6 @@ class Rotation extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -9700,7 +9705,6 @@ class RandomTexture extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -10424,7 +10428,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   set sortOrder(value) {
-    return this.__sortOrder = value;
+    this.__sortOrder = value;
   }
 }
 
@@ -11096,7 +11100,7 @@ class Input extends System {
 
   /**
    * @inheritDoc
-   * @override
+   * 
    * @param {number} dt
    *
    * @return {void}
@@ -12565,8 +12569,8 @@ class Tween extends Component {
   }
 
   /**
-   * @override
-   * @protected
+   * @inheritDoc
+   * 
    * @param  {GameObject} gameObject
    * @return {void}
    */
@@ -12600,8 +12604,8 @@ class Tween extends Component {
   }
 
   /**
-   * @protected
-   * @override
+   * @inheritDoc
+   *
    * @param {number} dt
    *
    * @returns {void}
@@ -13044,9 +13048,8 @@ class AnimationController extends Component {
   }
 
   /**
-   * @ignore
-   * @override
-   * @protected
+   * @inheritDoc
+   * 
    * @param  {number} dt
    * @return {void}
    */

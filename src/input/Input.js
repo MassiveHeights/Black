@@ -227,7 +227,7 @@ class Input extends System {
 
   /**
    * @inheritDoc
-   * @override
+   * 
    * @param {number} dt
    *
    * @return {void}

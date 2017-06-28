@@ -24,7 +24,6 @@ class Mass extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}

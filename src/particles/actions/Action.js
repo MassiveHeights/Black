@@ -27,7 +27,6 @@ class Action {
   /**
    * Called for every particle.
    *
-   * @protected
    * @param {Emitter} emmiter   The owner of the particle.
    * @param {Particle} particle The particle to execute update on.
    * @param {number} dt         Amount of seconds since the last update.
@@ -40,7 +39,6 @@ class Action {
   /**
    * Called after all updates have been executed.
    *
-   * @protected
    * @param {number} dt Amount of seconds since the last update.
    *
    * @return {void}
