@@ -4432,6 +4432,7 @@ var Component = function (_MessageDispatcher) {
    * Called when attached to GameObject.
    *
    * @public
+   *
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -4445,6 +4446,7 @@ var Component = function (_MessageDispatcher) {
      * Called when detached from GameObject.
      *
      * @public
+     *
      * @param  {GameObject} gameObject The owner of this component.
      * @return {void}
      */
@@ -4456,6 +4458,7 @@ var Component = function (_MessageDispatcher) {
     /**
      * Called at every fixed frame update.
      * @public
+     *
      * @param  {number} dt Amount of seconds since the last update.
      * @return {void}
      */
@@ -4467,6 +4470,7 @@ var Component = function (_MessageDispatcher) {
     /**
      * Called at every engine update.
      * @public
+     *
      * @param  {number} dt Amount of seconds since the last update.
      * @return {void}
      */
@@ -4478,6 +4482,7 @@ var Component = function (_MessageDispatcher) {
     /**
      * Called after all updates have been executed.
      * @public
+     *
      * @param  {number} dt Amount of seconds since the last update.
      * @return {void}
      */
@@ -8655,17 +8660,23 @@ var DOMDriver = function (_VideoNullDriver) {
         key: 'drawImage',
         value: function drawImage(texture, px, py) {
             /** @type {Matrix|null} */
-            var oldTransform = this.mTransform;
+            var oldTransform = this.mTransform.clone();
             var uw = texture.untrimmedRect.x;
             var uh = texture.untrimmedRect.y;
 
             //this.mTransform.translate(px, py);
 
+            if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
+                Matrix.__cache.set(1, 0, 0, 1, texture.untrimmedRect.x, texture.untrimmedRect.y);
+                this.mTransform = this.mTransform.clone().append(Matrix.__cache);
+                //this.mTransform = this.mTransform.clone().translate(texture.untrimmedRect.x, texture.untrimmedRect.y);
+            }
+
             var el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
             this.__updateElementCommon(el);
             this.__updateImageElement(el, texture);
 
-            this.mTransform = oldTransform;
+            this.mTransform = oldTransform.clone();
         }
 
         /**
@@ -10685,7 +10696,7 @@ var FloatScatter = function (_Scatter) {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(number):Number} [ease=null]     Easing function.
+   * @param {function(number):number} [ease=null]     Easing function.
    */
   function FloatScatter(min) {
     var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
@@ -10945,7 +10956,6 @@ var Action = function () {
     /**
      * Called for every particle.
      *
-     * @protected
      * @param {Emitter} emmiter   The owner of the particle.
      * @param {Particle} particle The particle to execute update on.
      * @param {number} dt         Amount of seconds since the last update.
@@ -10960,7 +10970,6 @@ var Action = function () {
     /**
      * Called after all updates have been executed.
      *
-     * @protected
      * @param {number} dt Amount of seconds since the last update.
      *
      * @return {void}
@@ -11013,8 +11022,8 @@ var Acceleration = function (_Action) {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -11087,8 +11096,8 @@ var AlphaOverLife = function (_Action) {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -11153,8 +11162,8 @@ var ScaleOverLife = function (_Action) {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   * 
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -11219,8 +11228,8 @@ var RotationOverLife = function (_Action) {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -11285,8 +11294,8 @@ var TextureOverLife = function (_Action) {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt
@@ -11337,6 +11346,9 @@ var Initializer = function () {
   }
 
   /**
+   * This method is called on every new particle and sets its starting values.
+   * Override this method when creating custom initializers.
+   *
    * @param {Particle} particle
    *
    * @return {void}
@@ -11390,7 +11402,6 @@ var Life = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11447,7 +11458,6 @@ var Mass = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11504,7 +11514,6 @@ var Scale = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11561,7 +11570,6 @@ var Velocity = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11621,7 +11629,6 @@ var Position = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11680,7 +11687,6 @@ var Rotation = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -11740,7 +11746,6 @@ var RandomTexture = function (_Initializer) {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
@@ -12555,7 +12560,7 @@ var Emitter = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      return this.__sortOrder = value;
+      this.__sortOrder = value;
     }
   }]);
 
@@ -13268,7 +13273,7 @@ var Input = function (_System) {
 
     /**
      * @inheritDoc
-     * @override
+     * 
      * @param {number} dt
      *
      * @return {void}
@@ -14901,8 +14906,8 @@ var Tween = function (_Component) {
     }
 
     /**
-     * @override
-     * @protected
+     * @inheritDoc
+     * 
      * @param  {GameObject} gameObject
      * @return {void}
      */
@@ -14944,8 +14949,8 @@ var Tween = function (_Component) {
     }
 
     /**
-     * @protected
-     * @override
+     * @inheritDoc
+     *
      * @param {number} dt
      *
      * @returns {void}
@@ -15590,9 +15595,8 @@ var AnimationController = function (_Component) {
     }
 
     /**
-     * @ignore
-     * @override
-     * @protected
+     * @inheritDoc
+     * 
      * @param  {number} dt
      * @return {void}
      */
