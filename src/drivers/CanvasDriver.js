@@ -156,10 +156,11 @@ class CanvasDriver extends VideoNullDriver {
     else if (style.align === 'right')
       x += (bounds.width - textWidth);
 
-    this.mCtx.textBaseline = 'top';    
+    this.mCtx.textBaseline = 'top'; // 'alphabetic'
 
     if (style.strokeThickness > 0) {
       this.mCtx.lineJoin = 'round';
+      this.mCtx.lineCap = 'round';
       this.mCtx.miterLimit = 2;
       this.mCtx.lineWidth = style.strokeThickness;
       this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
