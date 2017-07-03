@@ -8338,9 +8338,6 @@ var CanvasDriver = function (_VideoNullDriver) {
     key: 'drawText',
     value: function drawText(text, style, bounds, textWidth, textHeight) {
       this.mCtx.save();
-      this.mCtx.beginPath();
-      this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-      this.mCtx.clip();
 
       this.mCtx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
       this.mCtx.fillStyle = this.hexColorToString(style.color);
@@ -8349,19 +8346,25 @@ var CanvasDriver = function (_VideoNullDriver) {
       var y = 0;
       if (style.align === 'center') x += (bounds.width - textWidth) * 0.5;else if (style.align === 'right') x += bounds.width - textWidth;
 
-      this.mCtx.textBaseline = 'top';
+      this.mCtx.textBaseline = 'top'; // 'alphabetic'
 
       if (style.strokeThickness > 0) {
         this.mCtx.lineJoin = 'round';
+        this.mCtx.lineCap = 'round';
         this.mCtx.miterLimit = 2;
         this.mCtx.lineWidth = style.strokeThickness;
         this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
         this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
       }
 
+      this.mCtx.beginPath();
+      this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+      this.mCtx.clip();
+
       this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
 
       this.mCtx.closePath();
+
       this.mCtx.restore();
     }
 
