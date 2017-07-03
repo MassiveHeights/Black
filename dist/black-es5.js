@@ -7423,6 +7423,10 @@ var SoundAsset = function (_Asset) {
     value: function onLoaded() {
       this.mData = this.mAudioElement;
 
+      if (Device.isMobile) {
+        this.__enableOnMobile();
+      }
+
       _get(SoundAsset.prototype.__proto__ || Object.getPrototypeOf(SoundAsset.prototype), 'onLoaded', this).call(this);
     }
 
@@ -7447,6 +7451,25 @@ var SoundAsset = function (_Asset) {
           _this2.onLoaded();
         }
       };
+    }
+
+    /**
+     * @private
+     *
+     * @return {void}
+     */
+
+  }, {
+    key: '__enableOnMobile',
+    value: function __enableOnMobile() {
+      var _this3 = this;
+
+      var unlock = function unlock() {
+        _this3.mAudioElement.play();
+        _this3.mAudioElement.pause();
+        document.removeEventListener('touchend', unlock, true);
+      };
+      document.addEventListener('touchend', unlock, true);
     }
   }]);
 
