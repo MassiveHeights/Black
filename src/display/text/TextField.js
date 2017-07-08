@@ -43,7 +43,7 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mFieldHeight = 0;
+    this.mFieldHeight = size;
 
     /**
      * @private
@@ -81,7 +81,31 @@ class TextField extends DisplayObject {
      */
     this.mAutoSize = true;
 
-    this.__validate(this.mCacheBounds);
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mMultiLine = true;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mLineOffset = this.mStyle.size * 1.5;
+
+    /**
+     * @public
+     * @type {string[]|string}
+     */
+    this.lines = [];
+
+    /**
+     * @public
+     * @type {number[]}
+     */
+    this.lineWidths = [];
+
+    this.onGetLocalBounds(this.mCacheBounds);
   }
 
   /**
@@ -96,21 +120,20 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   __render(video, time, parentAlpha, parentBlendMode) {
-    if (this.mAlpha <= 0 || this.mVisible === false)
-      return;
+    if (this.mAlpha <= 0 || this.mVisible === false) return;
 
-    this.__validate(this.mCacheBounds);
+    if (this.mNeedInvalidate) {
+      this.onGetLocalBounds(this.mCacheBounds);
+      this.mNeedInvalidate = false;
+      // this.setTransformDirty();
+    }
 
-    let tmpBlendMode = BlendMode.AUTO;
-
-    video.setMaterial(this.material);
     video.setTransform(this.worldTransformation);
     video.globalAlpha = parentAlpha * this.mAlpha;
-    video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+    video.globalBlendMode = this.blendMode;
+    video.drawText(this, this.mStyle, this.mCacheBounds);
 
-    video.drawText(this.mText, this.mStyle, this.mCacheBounds, this.mTextWidth, this.mTextHeight);
-
-    super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
+    super.__render(video, time, parentAlpha * this.mAlpha, this.blendMode);
   }
 
   /**
@@ -123,34 +146,53 @@ class TextField extends DisplayObject {
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
-    return this.__validate(outRect);
+
+    if (this.mNeedInvalidate) {
+      Black.instance.video.measureText(this, this.mStyle, this.mCacheBounds);
+    }
+
+    return outRect.copyFrom(this.mCacheBounds);
   }
 
   /**
-   * @private
+   * @param {boolean} value
    * @ignore
-   * @param {Rectangle} outRect
    *
-   * @return {Rectangle}
+   * @return {void}
    */
-  __validate(outRect) {
-    let strokeCorrection = 0;
-    if (this.mNeedInvalidate === false)
-      return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
-
-    let driver = Black.instance.video;
-    let vSize = driver.measureText(this.mText, this.mStyle);
-    this.mTextWidth = vSize.x;
-    this.mTextHeight = vSize.y;
-
-    if (this.mAutoSize) {
-      this.mFieldWidth = this.mTextWidth;
-      this.mFieldHeight = this.mTextHeight;
-    }
-
-    return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
+  set multiLine(value) {
+    this.mMultiLine = value;
+    this.mNeedInvalidate = true;
   }
 
+  /**
+   * Get/Set multiLine value switcher.
+   *
+   * @return {boolean}
+   */
+  get multiLine() {
+    return this.mMultiLine;
+  }
+
+  /**
+   * @param {number} value
+   * @ignore
+   *
+   * @return {void}
+   */
+  set lineOffset(value) {
+    this.mLineOffset = value;
+    this.mNeedInvalidate = true;
+  }
+
+  /**
+   * Get/Set lines vertical offset. From top previous to top next line.
+   *
+   * @return {number}
+   */
+  get lineOffset() {
+    return this.mLineOffset;
+  }
 
   /**
    * Get/Set text size.
@@ -304,9 +346,7 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeThickness(value) {
-    if (value === this.mStyle.strokeThickness)
-      return;
-
+    if (value === this.mStyle.strokeThickness) return;
     this.mStyle.strokeThickness = value;
     this.mNeedInvalidate = true;
   }
@@ -327,9 +367,7 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set fieldWidth(value) {
-    if (this.mAutoSize || value === this.mFieldWidth)
-      return;
-
+    if (value === this.mFieldWidth) return;
     this.mFieldWidth = value;
     this.mNeedInvalidate = true;
   }
@@ -350,9 +388,7 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set fieldHeight(value) {
-    if (this.mAutoSize || value === this.mFieldHeight)
-      return;
-
+    if (value === this.mFieldHeight) return;
     this.mFieldHeight = value;
     this.mNeedInvalidate = true;
   }
@@ -395,10 +431,13 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set autoSize(value) {
-    if (this.mAutoSize === value)
-      return;
-
+    if (this.mAutoSize === value) return;
     this.mAutoSize = value;
     this.mNeedInvalidate = true;
   }
+
+  // alignPivot(ax, ay, includeChildren = false) {
+  //   this.mNeedInvalidate = true;
+  //   super.alignPivot(ax, ay, includeChildren);
+  // }
 }

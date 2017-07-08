@@ -77,7 +77,7 @@ class CanvasDriver extends VideoNullDriver {
   set globalAlpha(value) {
     if (value == this.mGlobalAlpha)
       return;
-    
+
     this.mGlobalAlpha = value;
     this.mCtx.globalAlpha = value;
   }
@@ -95,8 +95,8 @@ class CanvasDriver extends VideoNullDriver {
     //   return;
 
     if (this.mGlobalBlendMode === blendMode)
-      return;  
-    
+      return;
+
     // small performance win
     // if (this.mCtx.globalCompositeOperation === blendMode)
     //   return;
@@ -125,6 +125,44 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
+  
+  /**
+   * Measures text with a given style.
+   *
+   * @inheritDoc
+   * @override
+   * 
+   * @param {TextField} textField    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
+   * @param {Rectangle} bounds.
+   *
+   * @return {Rectangle} A Vector with width and height of the text bounds.
+   */
+  measureText(textField, style, bounds) {
+    let lines = textField.lines;
+    let widths = textField.lineWidths;
+    let lineOffset = textField.lineOffset;
+    let text = textField.text;
+    let multiLine = textField.multiLine;
+    let strokeThickness = style.strokeThickness;
+    let ctx = this.mCtx;
+    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    ctx.textBaseline = `top`;
+    
+    lines.length = 0;
+    widths.length = 0;
+    multiLine ? lines.push(...text.split(`\n`)) : lines.push(text);
+
+    for (let i = 0, l = lines.length; i < l; i++) {
+      widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
+    }
+    
+    if (!textField.autoSize) {
+      return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+    }
+    
+    return bounds.set(0, 0, Math.max(...widths), (lines.length - 1) * lineOffset + style.size);
+  }
 
   /**
    * drawText
@@ -132,42 +170,53 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    * @override
    *
-   * @param {string} text
+   * @param {TextField} textField
    * @param {TextInfo} style
    * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
    *
    * @return {void}
    */
-  drawText(text, style, bounds, textWidth, textHeight) {
-    this.mCtx.beginPath();
-    this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-    this.mCtx.clip();
+  drawText(textField, style, bounds) {
+    let lines = textField.lines;
+    let widths = textField.lineWidths;
+    let lineOffset = textField.lineOffset;
+    let strokeThickness = style.strokeThickness;
+    let align = style.align;
+    let maxWidth = bounds.width;
+    
+    let ctx = this.mCtx;
+    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    ctx.fillStyle = this.hexColorToString(style.color);
+    ctx.textBaseline = `top`;
 
-    this.mCtx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    this.mCtx.fillStyle = this.hexColorToString(style.color);
-
-    let x = 0;
-    let y = 0;
-    if (style.align === 'center')
-      x += (bounds.width - textWidth) * 0.5;
-    else if (style.align === 'right')
-      x += (bounds.width - textWidth);
-
-    this.mCtx.textBaseline = 'top';    
-
-    if (style.strokeThickness > 0) {
-      this.mCtx.lineJoin = 'round';
-      this.mCtx.miterLimit = 2;
-      this.mCtx.lineWidth = style.strokeThickness;
-      this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
-      this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
+    if (strokeThickness !== 0) {
+      ctx.lineJoin = `round`;
+      ctx.miterLimit = 2;
+      ctx.lineWidth = strokeThickness;
+      ctx.strokeStyle = this.hexColorToString(style.strokeColor);
     }
 
-    this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
-    
-    this.mCtx.closePath();
+    if (!textField.autoSize) {
+      ctx.rect(0, 0, maxWidth, bounds.height);
+      ctx.clip();
+    }
+
+    // ctx.fillRect(0, 0, maxWidth, bounds.height);
+
+    for (let i = 0, l = lines.length; i < l; i++) {
+      let width = widths[i];
+      let y = strokeThickness / 2 + lineOffset * i;
+      let x = strokeThickness / 2;
+
+      if (align === `center`) {
+        x += maxWidth / 2 - width / 2;
+      } else if (align === `right`) {
+        x += maxWidth - width;
+      }
+
+      strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
+      ctx.fillText(lines[i], x, y);
+    }
   }
 
   /**

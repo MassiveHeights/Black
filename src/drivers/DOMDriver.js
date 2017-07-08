@@ -138,26 +138,59 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
+   * Measures text with a given style.
+   *
    * @inheritDoc
    * @override
    *
-   * @param {string} text
+   * @param {TextField} textField    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
+   * @param {Rectangle} bounds.
+   *
+   * @return {Rectangle} A Vector with width and height of the text bounds.
+   */
+  measureText(textField, style, bounds) {
+    let el = this.__popElement('text');
+
+    textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ` `);
+    
+    if (!textField.autoSize) {
+      return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+    }
+
+    el.style.whiteSpace = 'pre';
+    el.style.fontSize = style.size + 'px';
+    el.style.fontFamily = style.name;
+    el.style.fontStyle = style.style;
+    el.style.fontWeight = style.weight;
+    el.innerHTML = textField.lines;
+
+    bounds.set(0, 0,
+      el.offsetWidth + style.strokeThickness,
+      el.offsetHeight + style.strokeThickness);
+
+    el.innerHTML = ``;
+
+    return bounds;
+  }
+
+  /**
+   * @inheritDoc
+   * @override
+   *
+   * @param {TextField} textField
    * @param {TextInfo} style
    * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
    *
    * @return {void}
    */
-  drawText(text, style, bounds, textWidth, textHeight) {
+  drawText(textField, style, bounds) {
     let el = this.__popElement('text');
-
-    this.mTransform.translate(bounds.x, bounds.y);
 
     this.__updateElementCommon(el);
 
     // TODO: check this type. review the code.
-    this.__updateTextElement( /** @type {HTMLElement} */ (el), text, style, bounds);
+    this.__updateTextElement( /** @type {HTMLElement} */ (el), textField.lines, style, bounds);
   }
 
   /**
@@ -260,44 +293,54 @@ class DOMDriver extends VideoNullDriver {
    *
    * @return {void}
    */
-  __updateTextElement(el, text, style, bounds) {
-    el.innerHTML = text;
+  __updateTextElement(el, text, style, bounds) { 
     el.style.fontSize = style.size + 'px';
 
-    if (el.style.width !== bounds.width + 'px')
+    if (el.style.width !== bounds.width + 'px') {
       el.style.width = bounds.width + 'px';
+    }
 
-    if (el.style.height !== bounds.height + 'px')
+    if (el.style.height !== bounds.height + 'px') {
       el.style.height = bounds.height + 'px';
+    }
 
-    if (el.style.fontFamily !== style.name)
+    if (el.style.fontFamily !== style.name) {
       el.style.fontFamily = style.name;
+    }
 
     let color = this.hexColorToString(style.color);
 
-    if (el.style.color != color)
+    if (el.style.color != color) {
       el.style.color = color;
+    }
 
     if (el.style.fontStyle !== style.style)
       el.style.fontStyle = style.style;
 
-    if (el.style.fontWeight != style.weight)
+    if (el.style.fontWeight != style.weight) {
       el.style.fontWeight = style.weight;
+    }
 
-    if (el.style.textAlign !== style.align)
+    if (el.style.textAlign !== style.align) {
       el.style.textAlign = style.align;
+    }
 
+    if (el.style.backgroundImage !== 'none') {
+      el.style.backgroundImage = 'none';
+    }
+    
     if (style.strokeThickness > 0) {
       let strokeColor = this.hexColorToString(style.strokeColor);
 
-      if (el.style.webkitTextStrokeColor != strokeColor)
+      if (el.style.webkitTextStrokeColor != strokeColor) {
         el.style.webkitTextStrokeColor = strokeColor;
+      }
 
-      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px')
+      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') {
         el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
+      }
     }
-
-    if (el.style.backgroundImage !== 'none')
-      el.style.backgroundImage = 'none';
+    
+    el.innerHTML = text;
   }
 }

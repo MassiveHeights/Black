@@ -16,7 +16,7 @@ class DisplayObject extends GameObject {
     this.mAlpha = 1;
 
     /**
-     * @private
+     * @public
      * @type {string}
      */
     this.blendMode = BlendMode.NORMAL;
