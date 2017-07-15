@@ -17,7 +17,13 @@ class WebGLDriver extends VideoNullDriver {
     console.log(`WebGL`);
 
     const fn = () => {};
-    this.mEmptyPlugin = {stop: fn, start: fn, drawImage: fn, drawText: fn, onResize: fn};
+    this.mEmptyPlugin = {
+      stop: fn, start: fn, drawImage: fn, drawText: fn, onResize: fn, setTransform: fn,
+      set blendMode(v) {
+      }, 
+      set globalAlpha(v) {
+      }
+    };
     this.mActivePlugin = this.mEmptyPlugin;
     this.mActiveArrayBuffer = null;
     this.mActiveElementBuffer = null;
@@ -25,16 +31,17 @@ class WebGLDriver extends VideoNullDriver {
     this.boundTextures = [];
 
     this.__createCanvas();
-    
+
     const gl = this.gl;
     gl.enable(gl.BLEND);
 
     this.MAX_TEXTURE_IMAGE_UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
     this.glTextures = new WebGLTextures(this);
     this.blender = new WebGLBlendMode(gl);
-    
+
     this.mPlugins = {
-      [WebGLTexPlugin.name]: new WebGLTexPlugin(this)
+      [WebGLTexPlugin.name]      : new WebGLTexPlugin(this),
+      [WebGLParticlesPlugin.name]: new WebGLParticlesPlugin(this)
     };
   }
 
@@ -49,9 +56,9 @@ class WebGLDriver extends VideoNullDriver {
     this.mContainerElement.appendChild(canvas);
 
     const config = {
-      antialias         : true, // default true
-      alpha             : false,
-      // premultipliedAlpha: false
+      antialias: true, // default true
+      alpha    : false,
+      premultipliedAlpha: false
     };
 
     this.gl = canvas.getContext(`webgl`, config) || canvas.getContext(`webgl-experimental`, config);
@@ -80,8 +87,8 @@ class WebGLDriver extends VideoNullDriver {
     this.mActivePlugin.onResize(msg, rect);
   }
 
-  drawImage(object) {
-    const plugin = this.mPlugins[object.PluginName];
+  drawImage(object, texture) {
+    let plugin = this.mPlugins[object.pluginName];
 
     if (plugin !== this.mActivePlugin) {
       this.mActivePlugin.stop();
@@ -89,15 +96,18 @@ class WebGLDriver extends VideoNullDriver {
       plugin.start();
     }
 
-    plugin.drawImage(object);
+    plugin.globalAlpha = this.mGlobalAlpha;
+    plugin.globalBlendMode = this.mGlobalBlendMode;
+    plugin.setTransform(this.mTransform);
+    plugin.drawImage(object, texture);
   }
-  
+
   bindTexture(texture, slot) {
     const gl = this.gl;
     gl.activeTexture(gl.TEXTURE0 + slot);
     // gl.bindTexture(gl.TEXTURE_2D, this.glTextures[slot]);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
-    
+
     // only sprite plugin usable
     // _vSlotWebGL can be -1 even texture is bound
     const boundTextures = this.boundTextures;
@@ -105,7 +115,7 @@ class WebGLDriver extends VideoNullDriver {
     boundTextures[slot] = texture;
     texture._vSlotWebGL = slot;
   }
-  
+
   bindArrayBuffer(buffer) {
     if (buffer === this.mActiveArrayBuffer) return;
 
@@ -119,55 +129,12 @@ class WebGLDriver extends VideoNullDriver {
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
     this.mActiveElementBuffer = buffer;
   }
-  
+
   setBlend(blend) {
     const blendFunc = this.blender[blend];
     this.gl.blendFunc(blendFunc.src, blendFunc.dst);
     this.blend = blend;
   }
-
-  // setMaterial(material) {
-  //   let program = this.mPrograms[material.Program.name];
-  //
-  //   if (!program) {
-  //     program = this.mPrograms[material.Program.name] = new material.Program(this);
-  //     this.__flush();
-  //     program.activate();
-  //     program.init(this.mClientWidth, this.mClientHeight);
-  //     this.mActiveProgram = program;
-  //   } else if (program !== this.mActiveProgram) {
-  //     this.__flush();
-  //     program.activate();
-  //     this.mActiveProgram = program;
-  //   }
-  //
-  //   program.setMaterial(material);
-  // }
-  //
-  // setTransform(m) {
-  //   this.mActiveProgram.setTransform(m);
-  // }
-  //
-  // set globalAlpha(value) {
-  //   this.mActiveProgram.globalAlpha = value;
-  // }
-  //
-  // set globalBlendMode(blendMode) {
-  //   const same = this.state.checkBlendMode(blendMode);
-  //
-  //   if (!same) {
-  //     this.__flush();
-  //     this.state.setBlendMode(blendMode);
-  //   }
-  // }
-  //
-  // drawImage(texture, bounds) {
-  //   this.mActiveProgram.drawImage(texture, bounds);
-  // }
-  //
-  // drawText(text, style, bounds, textWidth, textHeight) {
-  //   this.mActiveProgram.drawText(text, style, bounds, textWidth, textHeight);
-  // }
 
   endFrame() {
     this.mActivePlugin.stop();

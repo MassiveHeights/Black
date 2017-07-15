@@ -26,15 +26,6 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
-
-    
-    this.material = {
-      
-      // text
-      ctx: null,
-      key: null,
-      tex: null
-    };
   }
 
   /**
@@ -42,11 +33,10 @@ class DisplayObject extends GameObject {
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
-  __render(video, time, parentAlpha, parentBlendMode) {
+  __render(video, time, parentAlpha) {
     if (this.mVisible === false)
       return;
 
@@ -55,7 +45,7 @@ class DisplayObject extends GameObject {
     let child = null;
     for (var i = 0; i < this.mChildren.length; i++) {
       child = this.mChildren[i];
-      child.__render(video, time, parentAlpha, parentBlendMode);
+      child.__render(video, time, parentAlpha);
     }
   }
 

@@ -26,7 +26,7 @@ class Sprite extends DisplayObject {
       this.mTexture = /** @type {Texture} */ (texture);
     }
     
-    this.PluginName = WebGLTexPlugin.name;
+    this.pluginName = WebGLTexPlugin.name;
     this.vertexData = [];
     this.tint = 0xffffff;
   }
@@ -46,13 +46,10 @@ class Sprite extends DisplayObject {
     this.worldAlpha = parentAlpha * this.mAlpha;
 
     if (this.mTexture !== null) {
-      // video.setMaterial(this.material);
-      // video.setTransform(this.worldTransformation);
-      // video.globalAlpha = parentAlpha * this.mAlpha;
-      // video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-      // video.drawImage(this.mTexture);
-      
-      video.drawImage(this);
+      video.setTransform(this.worldTransformation);
+      video.globalAlpha = parentAlpha * this.mAlpha;
+      video.globalBlendMode = this.blendMode;
+      video.drawImage(this, this.mTexture);
     }
 
     super.__render(video, time, this.worldAlpha);
@@ -72,28 +69,28 @@ class Sprite extends DisplayObject {
     const w = region.width;
     const h = region.height;
 
-    if (texture.mTrimmed) {
+    if (texture.isTrimmed) {
       const untrimmedRegion = texture.untrimmedRect;
-      const l = untrimmedRegion.x;
-      const t = untrimmedRegion.y;
-      const r = l + w;
-      const b = t + h;
+      const left = untrimmedRegion.x;
+      const top = untrimmedRegion.y;
+      const right = left + w;
+      const bottom = top + h;
 
       // left top
-      vertexData[0] = a * l + c * t + tx;
-      vertexData[1] = d * t + b * l + ty;
+      vertexData[0] = a * left + c * top + tx;
+      vertexData[1] = d * top + b * left + ty;
 
       // right top
-      vertexData[2] = a * r + c * t + tx;
-      vertexData[3] = d * t + b * r + ty;
+      vertexData[2] = a * right + c * top + tx;
+      vertexData[3] = d * top + b * right + ty;
 
       // left bottom
-      vertexData[4] = a * l + c * b + tx;
-      vertexData[5] = d * b + b * l + ty;
+      vertexData[4] = a * left + c * bottom + tx;
+      vertexData[5] = d * bottom + b * left + ty;
 
       // right bottom
-      vertexData[6] = a * r + c * b + tx;
-      vertexData[7] = d * b + b * r + ty;
+      vertexData[6] = a * right + c * bottom + tx;
+      vertexData[7] = d * bottom + b * right + ty;
     } else {
 
       // left top
@@ -153,7 +150,6 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTexture = texture;
-    this.refreshTexCoord();
   }
 
   set touchable(value) {

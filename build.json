@@ -46,6 +46,7 @@
     "src/drivers/webgl/core/WebGLBasePlugin.js",
     "src/drivers/webgl/core/WebGLTextures.js",
     "src/drivers/webgl/plugins/WebGLTexPlugin.js",
+    "src/drivers/webgl/plugins/WebGLParticlesPlugin.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",

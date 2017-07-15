@@ -241,12 +241,11 @@ class Emitter extends DisplayObject {
     return action;
   }
 
-  __render(video, time, parentAlpha, parentBlendMode) {
-    video.save(this);
+  __render(video, time, parentAlpha) {
 
     // set blend mode
-    let tmpBlendMode = BlendMode.AUTO;
-    video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+    video.globalBlendMode = this.blendMode;
+    let emitterWorldAlpha = parentAlpha * this.alpha;
 
     // tmp matrices
     let localTransform = this.__tmpLocal;
@@ -254,7 +253,6 @@ class Emitter extends DisplayObject {
     localTransform.identity();
 
     let texture = null;
-    let pbounds = new Rectangle();
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
@@ -293,16 +291,16 @@ class Emitter extends DisplayObject {
           worldTransform.append(localTransform);
         }
 
-        video.setTransform(worldTransform);
-        video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
+        particle.worldAlpha = emitterWorldAlpha * particle.alpha;
 
-        pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-        video.drawImage(texture, tw, th);
+        video.setTransform(worldTransform);
+        video.globalAlpha = particle.worldAlpha;
+
+        video.drawImage(particle, texture);
       }
     }
 
-    video.restore();
-    super.__render(video, time, parentAlpha, parentBlendMode);
+    super.__render(video, time, emitterWorldAlpha);
   }
 
   onUpdate(dt) {

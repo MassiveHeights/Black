@@ -592,18 +592,17 @@ class GameObject extends MessageDispatcher {
    * @param {VideoNullDriver} video   *
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
-  __render(video, time, parentAlpha, parentBlendMode) {
+  __render(video, time, parentAlpha) {
     this.onRender(video, time);
 
     let child = null;
     let childLen = this.mChildren.length;
     for (let i = 0; i < childLen; i++) {
       child = this.mChildren[i];
-      child.__render(video, time, parentAlpha, parentBlendMode);
+      child.__render(video, time, parentAlpha);
     }
   }
 

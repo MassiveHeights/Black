@@ -19,7 +19,7 @@ class VideoNullDriver {
     this.mGlobalBlendMode = 'auto';
 
     /**
-     * @private
+     * @protected
      * @type {HTMLElement}
      */
     this.mContainerElement = /**
@@ -179,11 +179,11 @@ class VideoNullDriver {
    *
    * @public
    *
+   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
-   * @param  {number} px
-   * @param  {number} py
+   * 
    */
-  drawImage(texture, px, py) {
+  drawImage(object, texture) {
   }
 
   /**

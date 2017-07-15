@@ -56,11 +56,23 @@ class WebGLBasePlugin {
 
   }
 
-  drawImage(object) {
+  set globalBlendMode(blendMode) {
+    this.mBlendMode = blendMode;
+  }
+
+  setTransform(m) {
+    this.mTransform = m;
+  }
+
+  set globalAlpha(value) {
+    this.mGlobalAlpha = value;
+  }
+
+  drawImage(object, texture) {
 
   }
 
-  drawText(text, style, bounds, textWidth, textHeight) {
+  drawText(textField, style, bounds) {
 
   }
 

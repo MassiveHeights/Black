@@ -1,4 +1,4 @@
-const vertexShaderSource = `
+const vertexShaderSource1 = `
   precision highp float;
   
   attribute vec2 aPosition; // 2 * float = 8
@@ -21,7 +21,7 @@ const vertexShaderSource = `
   }
 `;
 
-const fragmentShaderSource = `
+const fragmentShaderSource1 = `
   precision lowp float;
   
   varying vec2 vTexCoord;
@@ -42,19 +42,23 @@ const fragmentShaderSource = `
   }
 `;
 
-let LAST_SLOT = 0;
+let LAST_SLOT_ = 0;
 
 /* @echo EXPORT */
-class WebGLTexPlugin extends WebGLBasePlugin {
+class WebGLParticlesPlugin extends WebGLBasePlugin {
   constructor(renderer) {
     const gl = renderer.gl;
     const UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 
-    super(renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS));
+    super(renderer, vertexShaderSource1, fragmentShaderSource1.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS));
 
     this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
     this.batchSize = 2048;
-    this.objects = [];
+    this.objects = new Array(this.batchSize).fill(``)
+      .map(v => {
+        return {transform: new Matrix(), vertexData: []}
+      });
+    this.objectsLength = 0;
     this.batches = [];
     this.buffers = [];
 
@@ -117,67 +121,92 @@ class WebGLTexPlugin extends WebGLBasePlugin {
     this.gl.uniform2f(this.uniforms.uProjection, 2 / rect.width, 2 / rect.height);
   }
 
-  drawImage(object) {
-    if (object.worldAlpha === 0) return;
+  set globalBlendMode(blendMode) {
+    this.mBlendMode = blendMode;
+  }
 
-    this.objects.push(object);
+  setTransform(m) {
+    this.mTransform = m;
+  }
 
-    if (this.objects.length === this.batchSize) {
+  set globalAlpha(value) {
+    this.mGlobalAlpha = value;
+  }
+
+  refreshVertexData(object) {
+    const vertexData = object.vertexData;
+    const transform = object.transform.value;
+    const a = transform[0];
+    const b = transform[1];
+    const c = transform[2];
+    const d = transform[3];
+    const tx = transform[4];
+    const ty = transform[5];
+    const texture = object.mTexture;
+    const region = texture.mRegion;
+    const w = region.width;
+    const h = region.height;
+
+    if (texture.isTrimmed) {
+      const untrimmedRegion = texture.untrimmedRect;
+      const left = untrimmedRegion.x;
+      const top = untrimmedRegion.y;
+      const right = left + w;
+      const bottom = top + h;
+
+      // left top
+      vertexData[0] = a * left + c * top + tx;
+      vertexData[1] = d * top + b * left + ty;
+
+      // right top
+      vertexData[2] = a * right + c * top + tx;
+      vertexData[3] = d * top + b * right + ty;
+
+      // left bottom
+      vertexData[4] = a * left + c * bottom + tx;
+      vertexData[5] = d * bottom + b * left + ty;
+
+      // right bottom
+      vertexData[6] = a * right + c * bottom + tx;
+      vertexData[7] = d * bottom + b * right + ty;
+    } else {
+
+      // left top
+      vertexData[0] = tx;
+      vertexData[1] = ty;
+
+      // right top
+      vertexData[2] = a * w + tx;
+      vertexData[3] = b * w + ty;
+
+      // left bottom
+      vertexData[4] = c * h + tx;
+      vertexData[5] = d * h + ty;
+
+      // right bottom
+      vertexData[6] = a * w + c * h + tx;
+      vertexData[7] = d * h + b * w + ty;
+    }
+  }
+  
+  drawImage(particle, texture) {
+    if (particle.worldAlpha === 0) return;
+
+    let object = this.objects[this.objectsLength++];
+    object.transform.copyFrom(this.mTransform);
+    object.mTexture = texture;
+    object.worldAlpha = particle.worldAlpha;
+    object.tint = 0xffffff;
+    object.blendMode = this.mBlendMode;
+
+    if (this.objectsLength === this.batchSize) {
       this.flush();
     }
   }
 
-  drawText(text, style, bounds, textWidth, textHeight) {
-    const font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    const key = `${text}${font}${style.align}${style.color}${style.strokeThickness}${style.strokeColor}`;
-    const material = this.mMaterial;
-    let tex = material.tex;
-
-    if (key !== material.key) {
-      let ctx = material.ctx;
-      let canvas;
-
-      if (!ctx) {
-        canvas = document.createElement(`canvas`);
-        ctx = canvas.getContext(`2d`);
-      } else {
-        canvas = ctx.canvas;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-
-      canvas.width = textWidth;
-      canvas.height = textHeight;
-
-      ctx.font = font;
-      ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
-
-      ctx.textAlign = style.align;
-      ctx.textBaseline = `top`;
-
-      const x = style.align === `center` ? textWidth / 2 : style.align === `left` ? 0 : textWidth;
-      const lines = text.split(`\n`);
-      const lineHeight = textHeight / lines.length;
-
-      for (let i = 0, l = lines.length; i < l; i++) {
-        const y = lineHeight * i;
-        ctx.fillText(lines[i], x, y);
-
-        if (style.strokeThickness > 0) {
-          ctx.lineWidth = style.strokeThickness;
-          ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
-          ctx.strokeText(text, x, y);
-        }
-      }
-
-      tex = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
-    }
-
-    this.drawImage(tex, bounds.x, bounds.y);  // todo there is no pivots there
-  }
-
   flush() {
     const objects = this.objects;
-    const length = objects.length;
+    const length = this.objectsLength;
 
     if (length === 0) return;
 
@@ -205,7 +234,6 @@ class WebGLTexPlugin extends WebGLBasePlugin {
       const tint = object.tint;
       const nextBlend = object.blendMode;
       const texture = object.mTexture;
-      /* object.lateDirty && */object.refreshVertexData();  // todo late dirt
 
       if (currentBlend !== nextBlend) {
         currentBlend = nextBlend;
@@ -228,14 +256,14 @@ class WebGLTexPlugin extends WebGLBasePlugin {
 
         if (texture._vSlotWebGL === -1) {
           for (let j = 0; j < MAX_TEXTURE_IMAGE_UNITS; j++) {
-            const k = (j + LAST_SLOT) % MAX_TEXTURE_IMAGE_UNITS;
+            const k = (j + LAST_SLOT_) % MAX_TEXTURE_IMAGE_UNITS;
             const tex = vBoundTextures[k];
 
             if (currentBatchSlots[tex.mId] === undefined) {
               tex._vSlotWebGL = -1;
               texture._vSlotWebGL = k;
               vBoundTextures[k] = texture;
-              LAST_SLOT++;
+              LAST_SLOT_++;
 
               break;
             }
@@ -246,6 +274,7 @@ class WebGLTexPlugin extends WebGLBasePlugin {
         currentBatch.textures[currentBatch.texturesLength++] = texture;
       }
 
+      this.refreshVertexData(object);
       const vertexData = object.vertexData;
       float32View[index] = vertexData[0];
       float32View[index + 1] = vertexData[1];
@@ -298,7 +327,7 @@ class WebGLTexPlugin extends WebGLBasePlugin {
       gl.drawElements(gl.TRIANGLE_STRIP, batch.size * 6 - 2, gl.UNSIGNED_SHORT, batch.start * 12);
     }
 
-    objects.length = 0;
+    this.objectsLength = 0;
   }
 
   start() {

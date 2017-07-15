@@ -112,13 +112,12 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    * @override
    *
+   * @param {Sprite|Particle} object
    * @param {Texture} texture
-   * @param {number} px
-   * @param {number} py
    *
    * @return {void}
    */
-  drawImage(texture, px, py) {
+  drawImage(object, texture) {
     let w = texture.width;
     let h = texture.height;
     let ox = texture.untrimmedRect.x;
@@ -205,7 +204,7 @@ class CanvasDriver extends VideoNullDriver {
 
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     ctx.fillStyle = this.hexColorToString(style.color);
-    ctx.textBaseline = `top`;
+    ctx.textBaseline = `top`; // or hanging. Clipping crops bottom of texts
 
     if (strokeThickness !== 0) {
       ctx.lineJoin = `round`;

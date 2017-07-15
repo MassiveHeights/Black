@@ -118,17 +118,18 @@ class DOMDriver extends VideoNullDriver {
    * @override
    * @inheritDoc
    *
+   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
-   * @param  {Rectangle} bounds
+   *
    * @return {void}
    */
-  drawImage(texture, bounds) {
+  drawImage(object, texture) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform;
     let uw = texture.untrimmedRect.x;
     let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(bounds.x + uw, bounds.y + uh);
+    this.mTransform.translate(uw, uh);
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
