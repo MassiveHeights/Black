@@ -23,6 +23,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalAlpha = 1;
     this.mGlobalBlendMode = BlendMode.NORMAL;
     this.mCurrentObject = null;
+    this.mLetterSpacing = 0;
 
     this.__createCanvas();
   }
@@ -146,6 +147,15 @@ class CanvasDriver extends VideoNullDriver {
     let multiLine = textField.multiLine;
     let strokeThickness = style.strokeThickness;
     let ctx = this.mCtx;
+    
+    if (this.mLetterSpacing !== textField.letterSpacing) {
+      this.mLetterSpacing = textField.letterSpacing;
+      
+      let canvas = ctx.canvas;
+      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
+      // ctx = this.mCtx = canvas.getContext(`2d`);
+    }
+    
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     ctx.textBaseline = `top`;
     
@@ -183,8 +193,16 @@ class CanvasDriver extends VideoNullDriver {
     let strokeThickness = style.strokeThickness;
     let align = style.align;
     let maxWidth = bounds.width;
-    
     let ctx = this.mCtx;
+
+    if (this.mLetterSpacing !== textField.letterSpacing) {
+      this.mLetterSpacing = textField.letterSpacing;
+
+      let canvas = ctx.canvas;
+      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
+      // ctx = this.mCtx = canvas.getContext(`2d`);
+    }
+
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     ctx.fillStyle = this.hexColorToString(style.color);
     ctx.textBaseline = `top`;

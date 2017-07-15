@@ -91,7 +91,7 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mLineOffset = this.mStyle.size * 1.5;
+    this.mLineOffset = this.mStyle.size * 1.2;
 
     /**
      * @public
@@ -100,10 +100,17 @@ class TextField extends DisplayObject {
     this.lines = [];
 
     /**
+     * Useful for drivers
      * @public
      * @type {number[]}
      */
     this.lineWidths = [];
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mLetterSpacing = 0;
 
     this.onGetLocalBounds(this.mCacheBounds);
   }
@@ -125,7 +132,7 @@ class TextField extends DisplayObject {
     if (this.mNeedInvalidate) {
       this.onGetLocalBounds(this.mCacheBounds);
       this.mNeedInvalidate = false;
-      // this.setTransformDirty();
+      // this.setTransformDirty();  // no anchor for rebound
     }
 
     video.setTransform(this.worldTransformation);
@@ -154,6 +161,29 @@ class TextField extends DisplayObject {
     return outRect.copyFrom(this.mCacheBounds);
   }
 
+  /**
+   * @param {number} value
+   * @ignore
+   *
+   * @return {void}
+   */
+  set letterSpacing(value) {
+    if (this.mLetterSpacing === value) return;
+
+    this.mLetterSpacing = value;
+    // this.setTransformDirty();  // needs pivot update and there is no anchor to accomplish
+    this.mNeedInvalidate = true;
+  }
+
+  /**
+   * Get/Set letterSpacing value. Default is 0 in pixels.
+   *
+   * @return {number}
+   */
+  get letterSpacing() {
+    return this.mLetterSpacing;
+  }
+  
   /**
    * @param {boolean} value
    * @ignore

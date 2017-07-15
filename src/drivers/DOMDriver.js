@@ -160,6 +160,7 @@ class DOMDriver extends VideoNullDriver {
     el.style.fontStyle = style.style;
     el.style.fontWeight = style.weight;
     el.style.lineHeight = `${textField.lineOffset / style.size}`;
+    el.style.letterSpacing = `${textField.letterSpacing}px`;
     el.innerHTML = textField.lines;
 
     let widths = textField.lineWidths;
@@ -320,6 +321,7 @@ class DOMDriver extends VideoNullDriver {
 
     el.style.lineHeight = `${textField.lineOffset / style.size}`;
     el.style.fontSize = style.size + 'px';
+    el.style.letterSpacing = `${textField.letterSpacing}px`;
     el.innerHTML = text;
 
     if (el.style.width !== bounds.width + x + 'px') {
