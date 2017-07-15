@@ -153,21 +153,26 @@ class DOMDriver extends VideoNullDriver {
     let el = this.__popElement('text');
 
     textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ` `);
-    
-    if (!textField.autoSize) {
-      return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
-    }
 
     el.style.whiteSpace = 'pre';
     el.style.fontSize = style.size + 'px';
     el.style.fontFamily = style.name;
     el.style.fontStyle = style.style;
     el.style.fontWeight = style.weight;
+    el.style.lineHeight = `${textField.lineOffset / style.size}`;
     el.innerHTML = textField.lines;
 
-    bounds.set(0, 0,
-      el.offsetWidth + style.strokeThickness,
-      el.offsetHeight + style.strokeThickness);
+    let widths = textField.lineWidths;
+    widths.length = 0;
+    widths[0] = el.offsetWidth + style.strokeThickness;
+
+    if (!textField.autoSize) {
+      bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+    } else {
+      bounds.set(0, 0,
+        el.offsetWidth + style.strokeThickness,
+        el.offsetHeight + style.strokeThickness);
+    }
 
     el.innerHTML = ``;
 
@@ -187,10 +192,9 @@ class DOMDriver extends VideoNullDriver {
   drawText(textField, style, bounds) {
     let el = this.__popElement('text');
 
-    this.__updateElementCommon(el);
-
     // TODO: check this type. review the code.
-    this.__updateTextElement( /** @type {HTMLElement} */ (el), textField.lines, style, bounds);
+    this.__updateTextElement(
+      /** @type {HTMLElement} */ (el), textField, style, bounds);
   }
 
   /**
@@ -287,17 +291,39 @@ class DOMDriver extends VideoNullDriver {
   /**
    * @private
    * @param {HTMLElement} el
-   * @param {string} text
+   * @param {TextField} textField
    * @param {TextInfo} style
    * @param {Rectangle} bounds
    *
    * @return {void}
    */
-  __updateTextElement(el, text, style, bounds) { 
-    el.style.fontSize = style.size + 'px';
+  __updateTextElement(el, textField, style, bounds) {
+    let width = textField.lineWidths[0];
+    let text = textField.lines;
+    let align = style.align;
+    let x = 0;
 
-    if (el.style.width !== bounds.width + 'px') {
-      el.style.width = bounds.width + 'px';
+    if (align === `center`) {
+      x -= bounds.width / 2 - width / 2;
+    } else if (align === `right`) {
+      x -= bounds.width - width;
+    }
+
+    let v = this.mTransform.value;
+    el.style.webkitTransform = `matrix(${v[0]}, ${v[1]}, ${v[2]}, ${v[3]}, ${v[4] - x}, ${v[5]})`;
+    el.style.opacity = this.mGlobalAlpha;
+
+    if (!textField.autoSize) {
+      // top right bottom left. There is no width and height
+      el.style.clip = `rect(0px ${bounds.width + x}px ${bounds.height}px ${x}px)`;
+    }
+
+    el.style.lineHeight = `${textField.lineOffset / style.size}`;
+    el.style.fontSize = style.size + 'px';
+    el.innerHTML = text;
+
+    if (el.style.width !== bounds.width + x + 'px') {
+      el.style.width = bounds.width + x + 'px';
     }
 
     if (el.style.height !== bounds.height + 'px') {
@@ -328,7 +354,7 @@ class DOMDriver extends VideoNullDriver {
     if (el.style.backgroundImage !== 'none') {
       el.style.backgroundImage = 'none';
     }
-    
+
     if (style.strokeThickness > 0) {
       let strokeColor = this.hexColorToString(style.strokeColor);
 
@@ -340,7 +366,5 @@ class DOMDriver extends VideoNullDriver {
         el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
       }
     }
-    
-    el.innerHTML = text;
   }
 }
