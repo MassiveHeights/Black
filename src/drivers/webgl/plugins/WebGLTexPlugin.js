@@ -126,53 +126,57 @@ class WebGLTexPlugin extends WebGLBasePlugin {
       this.flush();
     }
   }
-
-  drawText(text, style, bounds, textWidth, textHeight) {
-    const font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    const key = `${text}${font}${style.align}${style.color}${style.strokeThickness}${style.strokeColor}`;
-    const material = this.mMaterial;
-    let tex = material.tex;
-
-    if (key !== material.key) {
-      let ctx = material.ctx;
-      let canvas;
-
-      if (!ctx) {
-        canvas = document.createElement(`canvas`);
-        ctx = canvas.getContext(`2d`);
-      } else {
-        canvas = ctx.canvas;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-
-      canvas.width = textWidth;
-      canvas.height = textHeight;
-
-      ctx.font = font;
-      ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
-
-      ctx.textAlign = style.align;
-      ctx.textBaseline = `top`;
-
-      const x = style.align === `center` ? textWidth / 2 : style.align === `left` ? 0 : textWidth;
-      const lines = text.split(`\n`);
-      const lineHeight = textHeight / lines.length;
-
-      for (let i = 0, l = lines.length; i < l; i++) {
-        const y = lineHeight * i;
-        ctx.fillText(lines[i], x, y);
-
-        if (style.strokeThickness > 0) {
-          ctx.lineWidth = style.strokeThickness;
-          ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
-          ctx.strokeText(text, x, y);
-        }
-      }
-
-      tex = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
+  
+  drawText(textField, style, bounds) {
+    if (!textField.mNeedInvalidate) {
+      return this.drawImage(textField);
     }
 
-    this.drawImage(tex, bounds.x, bounds.y);  // todo there is no pivots there
+    let lines = textField.lines;
+    let widths = textField.lineWidths;
+    let lineOffset = textField.lineOffset;
+    let strokeThickness = style.strokeThickness;
+    let align = style.align;
+    let maxWidth = bounds.width;
+    let ctx = textField.context;
+
+    if (ctx.mLetterSpacing !== textField.letterSpacing) {
+      ctx.mLetterSpacing = textField.letterSpacing;
+
+      let canvas = ctx.canvas;
+      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
+      // ctx = this.mCtx = canvas.getContext(`2d`);
+    }
+
+    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
+    ctx.textBaseline = `bottom`; // or hanging. Clipping crops bottom of texts
+
+    if (strokeThickness !== 0) {
+      ctx.lineJoin = `round`;
+      ctx.miterLimit = 2;
+      ctx.lineWidth = strokeThickness;
+      ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
+    }
+
+    // ctx.fillRect(0, 0, maxWidth, bounds.height);
+
+    for (let i = 0, l = lines.length; i < l; i++) {
+      let width = widths[i];
+      let y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
+      let x = strokeThickness / 2;
+
+      if (align === `center`) {
+        x += maxWidth / 2 - width / 2;
+      } else if (align === `right`) {
+        x += maxWidth - width;
+      }
+
+      strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
+      ctx.fillText(lines[i], x, y);
+    }
+
+    this.drawImage(textField);
   }
 
   flush() {
@@ -281,7 +285,7 @@ class WebGLTexPlugin extends WebGLBasePlugin {
       const textures = batch.textures;
       const slots = batch.slots;
 
-      for (let j = 0, l = batch.texturesLength; j < l; j++) {
+      for (let j = 0, l = batch.textures.length; j < l; j++) {
         const texture = textures[j];
         const slot = slots[texture.id];
         slots[texture.id] = undefined;

@@ -37,18 +37,6 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mFieldWidth = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.mFieldHeight = size;
-
-    /**
-     * @private
-     * @type {number}
-     */
     this.mTextWidth = 0;
 
     /**
@@ -112,6 +100,18 @@ class TextField extends DisplayObject {
      */
     this.mLetterSpacing = 0;
 
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mFieldWidth = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mFieldHeight = this.mLineOffset;
+    
     this.onGetLocalBounds(this.mCacheBounds);
   }
 
@@ -122,16 +122,16 @@ class TextField extends DisplayObject {
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
-  __render(video, time, parentAlpha, parentBlendMode) {
+  __render(video, time, parentAlpha) {
     if (this.mAlpha <= 0 || this.mVisible === false) return;
+
+    this.worldAlpha = parentAlpha * this.mAlpha;
 
     if (this.mNeedInvalidate) {
       this.onGetLocalBounds(this.mCacheBounds);
-      this.mNeedInvalidate = false;
       // this.setTransformDirty();  // no anchor for rebound
     }
 
@@ -140,7 +140,8 @@ class TextField extends DisplayObject {
     video.globalBlendMode = this.blendMode;
     video.drawText(this, this.mStyle, this.mCacheBounds);
 
-    super.__render(video, time, parentAlpha * this.mAlpha, this.blendMode);
+    this.mNeedInvalidate = false;
+    super.__render(video, time, this.worldAlpha);
   }
 
   /**

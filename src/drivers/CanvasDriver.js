@@ -204,7 +204,7 @@ class CanvasDriver extends VideoNullDriver {
 
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     ctx.fillStyle = this.hexColorToString(style.color);
-    ctx.textBaseline = `top`; // or hanging. Clipping crops bottom of texts
+    ctx.textBaseline = `bottom`;
 
     if (strokeThickness !== 0) {
       ctx.lineJoin = `round`;
@@ -222,7 +222,7 @@ class CanvasDriver extends VideoNullDriver {
 
     for (let i = 0, l = lines.length; i < l; i++) {
       let width = widths[i];
-      let y = strokeThickness / 2 + lineOffset * i;
+      let y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
       let x = strokeThickness / 2;
 
       if (align === `center`) {

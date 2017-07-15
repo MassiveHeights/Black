@@ -17,6 +17,9 @@ const typeMap = {
 class WebGLBasePlugin {
   constructor(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
     this.mRenderer = renderer;
+    this.mBlendMode = BlendMode.NORMAL;
+    this.mTransform = new Matrix();
+    this.mGlobalAlpha = 1;
 
     const gl = this.gl = renderer.gl;
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);

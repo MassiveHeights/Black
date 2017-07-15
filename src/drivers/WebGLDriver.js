@@ -16,11 +16,12 @@ class WebGLDriver extends VideoNullDriver {
 
     console.log(`WebGL`);
 
-    const fn = () => {};
+    const fn = () => {
+    };
     this.mEmptyPlugin = {
       stop: fn, start: fn, drawImage: fn, drawText: fn, onResize: fn, setTransform: fn,
       set blendMode(v) {
-      }, 
+      },
       set globalAlpha(v) {
       }
     };
@@ -56,8 +57,8 @@ class WebGLDriver extends VideoNullDriver {
     this.mContainerElement.appendChild(canvas);
 
     const config = {
-      antialias: true, // default true
-      alpha    : false,
+      antialias         : true, // default true
+      alpha             : false,
       premultipliedAlpha: false
     };
 
@@ -102,10 +103,26 @@ class WebGLDriver extends VideoNullDriver {
     plugin.drawImage(object, texture);
   }
 
+  drawText(textField, style, bounds) {
+    let plugin = this.mPlugins[textField.pluginName];
+
+    if (plugin !== this.mActivePlugin) {
+      this.mActivePlugin.stop();
+      this.mActivePlugin = plugin;
+      plugin.start();
+    }
+
+    plugin.globalAlpha = this.mGlobalAlpha;
+    plugin.globalBlendMode = this.mGlobalBlendMode;
+    plugin.setTransform(this.mTransform);
+    plugin.drawText(textField, style, bounds);
+  }
+
   bindTexture(texture, slot) {
     const gl = this.gl;
     gl.activeTexture(gl.TEXTURE0 + slot);
     // gl.bindTexture(gl.TEXTURE_2D, this.glTextures[slot]);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, Number(texture.premultiplyAlpha));
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
 
     // only sprite plugin usable
@@ -132,11 +149,67 @@ class WebGLDriver extends VideoNullDriver {
 
   setBlend(blend) {
     const blendFunc = this.blender[blend];
+    if (!blendFunc) debugger
     this.gl.blendFunc(blendFunc.src, blendFunc.dst);
     this.blend = blend;
   }
 
   endFrame() {
     this.mActivePlugin.stop();
+  }
+
+  measureText(textField, style, bounds) {
+    let lines = textField.lines;
+    let widths = textField.lineWidths;
+    let lineOffset = textField.lineOffset;
+    let text = textField.text;
+    let multiLine = textField.multiLine;
+    let strokeThickness = style.strokeThickness;
+    let ctx = textField.context;
+    let canvas;
+
+    if (!ctx) {
+      canvas = document.createElement(`canvas`);
+      ctx = textField.context = canvas.getContext(`2d`);
+      ctx.mLetterSpacing = 0;
+    } else {
+      canvas = ctx.canvas;
+    }
+
+    if (ctx.mLetterSpacing !== textField.letterSpacing) {
+      ctx.mLetterSpacing = textField.letterSpacing;
+
+      let canvas = ctx.canvas;
+      document.getElementsByTagName(`body`)[0].appendChild(canvas);
+      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
+      canvas.style.visibility = `hidden`; // todo
+      // canvas.style.display = `none`;  this doesn't work
+      // ctx = textField.context = canvas.getContext(`2d`);
+    }
+
+    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
+    ctx.textBaseline = `top`;
+
+    lines.length = 0;
+    widths.length = 0;
+    multiLine ? lines.push(...text.split(`\n`)) : lines.push(text);
+
+    for (let i = 0, l = lines.length; i < l; i++) {
+      widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
+    }
+
+    if (!textField.autoSize) {
+      bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+    } else {
+      bounds.set(0, 0, Math.max(...widths), (lines.length - 1) * lineOffset + style.size);
+    }
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = canvas.naturalWidth = bounds.width;
+    canvas.height = canvas.naturalHeight = bounds.height;
+    textField.mTexture = new Texture(canvas); // todo cache
+    textField.mTexture.premultiplyAlpha = true;
+    
+    return bounds;
   }
 }

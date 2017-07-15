@@ -4,9 +4,6 @@ class WebGLTextures {
     const gl = this.gl = renderer.gl;
     const UNITS = renderer.MAX_TEXTURE_IMAGE_UNITS;
     const glTextures = [];
-
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-
     const canvas = document.createElement(`canvas`);
     const ctx = canvas.getContext(`2d`);
     canvas.width = canvas.height = 8;

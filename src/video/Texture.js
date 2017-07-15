@@ -80,6 +80,7 @@ class Texture {
     this.refreshCoord();
     
     this._vSlotWebGL = -1;  // virtual slot for batch calculations
+    this.premultiplyAlpha = true;
   }
 
   refreshCoord() {
