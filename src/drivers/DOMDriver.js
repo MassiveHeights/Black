@@ -29,6 +29,14 @@ class DOMDriver extends VideoNullDriver {
     /** @type {GameObject|null} */
     this.mCurrentObject = null;
     this.__initCSS();
+
+    this.measureEl = document.createElement(`div`);
+    this.measureEl.style.position = `absolute`;
+    this.measureEl.style.visibility = `hidden`;
+    this.measureEl.style.height = `auto`;
+    this.measureEl.style.width = `auto`;
+    this.measureEl.style.whiteSpace = `nowrap`;
+    document.getElementsByTagName(`body`)[0].appendChild(this.measureEl);
   }
 
   /**
@@ -118,11 +126,12 @@ class DOMDriver extends VideoNullDriver {
    * @override
    * @inheritDoc
    *
+   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
-   * @param  {Rectangle} bounds
+   *
    * @return {void}
    */
-  drawImage(texture, px, py) {
+  drawImage(object, texture) {
     /** @type {Matrix|null} */
     let oldTransform = this.mTransform.clone();
     let uw = texture.untrimmedRect.x;
@@ -144,26 +153,64 @@ class DOMDriver extends VideoNullDriver {
   }
 
   /**
+   * Measures text with a given style.
+   *
    * @inheritDoc
    * @override
    *
-   * @param {string} text
+   * @param {TextField} textField    Text to measure.
+   * @param {TextInfo} style Text style to apply onto text.
+   * @param {Rectangle} bounds.
+   *
+   * @return {Rectangle} A Vector with width and height of the text bounds.
+   */
+  measureText(textField, style, bounds) {
+    let el = this.measureEl;
+
+    textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ` `);
+
+    el.style.whiteSpace = 'pre';
+    el.style.fontSize = style.size + 'px';
+    el.style.fontFamily = style.name;
+    el.style.fontStyle = style.style;
+    el.style.fontWeight = style.weight;
+    el.style.lineHeight = `${textField.lineHeight}`;
+    el.style.letterSpacing = `${textField.letterSpacing}px`;
+    el.innerHTML = textField.lines;
+
+    let widths = textField.lineWidths;
+    widths.length = 0;
+    widths[0] = el.offsetWidth + style.strokeThickness;
+
+    if (!textField.autoSize) {
+      bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+    } else {
+      bounds.set(0, 0,
+        el.clientWidth + 1 + style.strokeThickness,
+        el.clientHeight + 1 + style.strokeThickness);
+    }
+
+    el.innerHTML = ``;
+
+    return bounds;
+  }
+
+  /**
+   * @inheritDoc
+   * @override
+   *
+   * @param {TextField} textField
    * @param {TextInfo} style
    * @param {Rectangle} bounds
-   * @param {number} textWidth
-   * @param {number} textHeight
    *
    * @return {void}
    */
-  drawText(text, style, bounds, textWidth, textHeight) {
+  drawText(textField, style, bounds) {
     let el = this.__popElement('text');
 
-    this.mTransform.translate(bounds.x, bounds.y);
-
-    this.__updateElementCommon(el);
-
     // TODO: check this type. review the code.
-    this.__updateTextElement( /** @type {HTMLElement} */ (el), text, style, bounds);
+    this.__updateTextElement(
+      /** @type {HTMLElement} */ (el), textField, style, bounds);
   }
 
   /**
@@ -260,50 +307,81 @@ class DOMDriver extends VideoNullDriver {
   /**
    * @private
    * @param {HTMLElement} el
-   * @param {string} text
+   * @param {TextField} textField
    * @param {TextInfo} style
    * @param {Rectangle} bounds
    *
    * @return {void}
    */
-  __updateTextElement(el, text, style, bounds) {
-    el.innerHTML = text;
+  __updateTextElement(el, textField, style, bounds) {
+    let width = textField.lineWidths[0];
+    let text = textField.lines;
+    let align = style.align;
+    let x = 0;
+
+    if (align === `center`) {
+      x -= bounds.width / 2 - width / 2;
+    } else if (align === `right`) {
+      x -= bounds.width - width;
+    }
+
+    let v = this.mTransform.value;
+    el.style.webkitTransform = `matrix(${v[0]}, ${v[1]}, ${v[2]}, ${v[3]}, ${v[4] - x}, ${v[5]})`;
+    el.style.opacity = this.mGlobalAlpha;
+
+    if (!textField.autoSize) {
+      // top right bottom left. There is no width and height
+      el.style.clip = `rect(0px ${bounds.width + x}px ${bounds.height}px ${x}px)`;
+    }
+
+    el.style.lineHeight = `${textField.lineHeight}`;
     el.style.fontSize = style.size + 'px';
+    el.style.letterSpacing = `${textField.letterSpacing}px`;
+    el.innerHTML = text;
 
-    if (el.style.width !== bounds.width + 'px')
-      el.style.width = bounds.width + 'px';
+    if (el.style.width !== bounds.width + x + 'px') {
+      el.style.width = bounds.width + x + 'px';
+    }
 
-    if (el.style.height !== bounds.height + 'px')
+    if (el.style.height !== bounds.height + 'px') {
       el.style.height = bounds.height + 'px';
+    }
 
-    if (el.style.fontFamily !== style.name)
+    if (el.style.fontFamily !== style.name) {
       el.style.fontFamily = style.name;
+    }
 
     let color = this.hexColorToString(style.color);
 
-    if (el.style.color != color)
+    if (el.style.color != color) {
       el.style.color = color;
+    }
 
     if (el.style.fontStyle !== style.style)
       el.style.fontStyle = style.style;
 
-    if (el.style.fontWeight != style.weight)
+    if (el.style.fontWeight != style.weight) {
       el.style.fontWeight = style.weight;
+    }
 
-    if (el.style.textAlign !== style.align)
+    if (el.style.textAlign !== style.align) {
       el.style.textAlign = style.align;
+    }
+
+    if (el.style.backgroundImage !== 'none') {
+      el.style.backgroundImage = 'none';
+    }
 
     if (style.strokeThickness > 0) {
       let strokeColor = this.hexColorToString(style.strokeColor);
 
-      if (el.style.webkitTextStrokeColor != strokeColor)
+      if (el.style.webkitTextStrokeColor != strokeColor) {
         el.style.webkitTextStrokeColor = strokeColor;
+      }
 
-      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px')
+      if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') {
         el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
+      }
     }
-
-    if (el.style.backgroundImage !== 'none')
-      el.style.backgroundImage = 'none';
   }
 }

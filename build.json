@@ -43,12 +43,10 @@
     "src/drivers/WebGLDriver.js",
     "src/drivers/webgl/core/WebGLConstants.js",
     "src/drivers/webgl/core/WebGLBlendMode.js",
-    "src/drivers/webgl/core/WebGLBaseProgramInfo.js",
-    "src/drivers/webgl/core/WebGLState.js",
-    "src/drivers/webgl/core/WebGLTexturesManager.js",
-    "src/drivers/webgl/core/WebGLVAO.js",
-
-    "src/drivers/webgl/texture/WebGLTexProgramInfo.js",
+    "src/drivers/webgl/core/WebGLBasePlugin.js",
+    "src/drivers/webgl/core/WebGLTextures.js",
+    "src/drivers/webgl/plugins/WebGLTexPlugin.js",
+    "src/drivers/webgl/plugins/WebGLParticlesPlugin.js",
 
     "src/display/DisplayObject.js",
     "src/display/text/TextInfo.js",

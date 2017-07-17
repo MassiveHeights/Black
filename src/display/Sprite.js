@@ -20,10 +20,11 @@ class Sprite extends DisplayObject {
      * @type {Texture|null} */
     this.mTexture = null;
 
-    if (texture !== null && texture.constructor === String)
+    if (texture !== null && texture.constructor === String) {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
-    else
+    } else {
       this.mTexture = /** @type {Texture} */ (texture);
+    }
   }
 
   /**
@@ -32,37 +33,24 @@ class Sprite extends DisplayObject {
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
-  __render(video, time, parentAlpha, parentBlendMode) {
-    if (this.mAlpha <= 0 || this.mVisible === false)
-      return;
-    
-    let tmpBlendMode = BlendMode.AUTO;
+  __render(video, time, parentAlpha) {
+    if (this.mAlpha <= 0 || this.mVisible === false) return;
+
+    this.worldAlpha = parentAlpha * this.mAlpha;
 
     if (this.mTexture !== null) {
-      video.setMaterial(this.material);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
-      video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-
-      // if (this.mClipRect != null) {
-      //   video.save();
-      //   video.clip(this.mClipRect);
-      // }
-      
-      video.drawImage(this.mTexture);
-      // if (this.mClipRect != null) {
-      //   video.restore();
-      // }
-      
+      video.globalBlendMode = this.blendMode;
+      video.drawImage(this, this.mTexture);
     }
 
-    super.__render(video, time, parentAlpha * this.mAlpha, tmpBlendMode);
+    super.__render(video, time, this.worldAlpha);
   }
-
+  
   /**
    * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
    *

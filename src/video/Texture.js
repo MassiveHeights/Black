@@ -31,7 +31,7 @@ class Texture {
      * @private
      * @type {Rectangle}
      */
-    this.mRegion;
+    this.mRegion = null;
 
     /**
      * @private
@@ -76,24 +76,38 @@ class Texture {
      */
     this.mIsLoaded = true;
 
-    let w = nativeTexture.naturalWidth || nativeTexture.width;
-    let h = nativeTexture.naturalHeight || nativeTexture.height;
+    this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
+    this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
-    this.mRelativeRegion = new Rectangle(
-      this.mRegion.x / w,
-      this.mRegion.y / h,
-      this.mRegion.width / w,
-      this.mRegion.height / h
-    );
-
-    this.mRelativeRegion.top = this.mRelativeRegion.top;
-    this.mRelativeRegion.left = this.mRelativeRegion.left;
-    this.mRelativeRegion.right = this.mRelativeRegion.right;
-    this.mRelativeRegion.bottom = this.mRelativeRegion.bottom;
+    this.coord = new Uint32Array(4);
+    this.refreshCoord();
+    
+    this._vSlotWebGL = -1;  // virtual slot for batch calculations
+    this.premultiplyAlpha = true;
   }
 
-  get relativeRegion() {
-    return this.mRelativeRegion;
+  refreshCoord() {
+    const coord = this.coord;
+    const region = this.mRegion;
+    const w = this.nativeWidth;
+    const h = this.nativeHeight;
+
+    const x0 = region.left / w;
+    const y0 = region.top / h;
+
+    const x1 = region.right / w;
+    const y1 = region.top / h;
+
+    const x2 = region.left / w;
+    const y2 = region.bottom / h;
+
+    const x3 = region.right / w;
+    const y3 = region.bottom / h;
+
+    coord[0] = (((y0 * 65535) & 0xffff) << 16) | ((x0 * 65535) & 0xffff);
+    coord[1] = (((y1 * 65535) & 0xffff) << 16) | ((x1 * 65535) & 0xffff);
+    coord[2] = (((y2 * 65535) & 0xffff) << 16) | ((x2 * 65535) & 0xffff);
+    coord[3] = (((y3 * 65535) & 0xffff) << 16) | ((x3 * 65535) & 0xffff);
   }
 
   /**

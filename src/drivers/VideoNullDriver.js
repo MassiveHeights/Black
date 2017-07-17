@@ -19,13 +19,13 @@ class VideoNullDriver {
     this.mGlobalBlendMode = 'auto';
 
     /**
-     * @private
+     * @protected
      * @type {HTMLElement}
      */
     this.mContainerElement = /**
      * @private
      * @type {HTMLElement} */ (containerElement
-   );
+    );
 
     /**
      * @private
@@ -86,7 +86,8 @@ class VideoNullDriver {
    *
    * @return {void}
    */
-  start() {}
+  start() {
+  }
 
 
   /**
@@ -96,7 +97,8 @@ class VideoNullDriver {
    *
    * @returns {void}
    */
-  beginFrame() {}
+  beginFrame() {
+  }
 
 
   /**
@@ -105,21 +107,22 @@ class VideoNullDriver {
    *
    * @returns {void}
    */
-  endFrame() {}
+  endFrame() {
+  }
 
   /**
    * @ignore
    * @param {HTMLElement} canvas
    * @return {Texture|null}
    */
-  getTextureFromCanvas(canvas){
+  getTextureFromCanvas(canvas) {
     return null;
   }
 
   /**
    * Sets world transformation for future use.
    *
-   * @protected
+   * @public
    * @param {Matrix} m An transformation matrix to store.
    *
    * @return {void}
@@ -174,28 +177,28 @@ class VideoNullDriver {
    * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
    * matrix must be set prior to calling this method.
    *
-   * @protected
+   * @public
    *
+   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
-   * @param  {number} px
-   * @param  {number} py
+   * 
    */
-  drawImage(texture, px, py) {}
+  drawImage(object, texture) {
+  }
 
   /**
    * Draws text onto back-buffer.
    *
-   * @protected
+   * @public
    *
-   * @param {string} text Text string to draw.
+   * @param {TextField} text TextField object to draw.
    * @param {TextInfo} style The style information.
-   * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
-   * @param {number} textWidth The width of the text.
-   * @param {number} textHeight The height of the text.
+   * @param {Rectangle} bounds Clipping bounds, text will be drawn outside this bounds.
    *
    * @return {void}
    */
-  drawText(text, style, bounds, textWidth, textHeight) {}
+  drawText(text, style, bounds) {
+  }
 
 
   /**
@@ -205,7 +208,8 @@ class VideoNullDriver {
    *
    * @returns {void}
    */
-  clear() {}
+  clear() {
+  }
 
   /**
    * Used to save context if extists.
@@ -216,9 +220,8 @@ class VideoNullDriver {
    *
    * @return {void}
    */
-  save(gameObject) {}
-  
-  setMaterial(material) {}
+  save(gameObject) {
+  }
 
   /**
    * Used to restore context if extists.
@@ -227,7 +230,8 @@ class VideoNullDriver {
    * @ignore
    * @returns {type}
    */
-  restore() {}
+  restore() {
+  }
 
 
   /**
@@ -245,23 +249,12 @@ class VideoNullDriver {
   /**
    * Measures text with a given style.
    *
-   * @param {string} text    Text to measure.
+   * @param {TextField} textField    Text to measure.
    * @param {TextInfo} style Text style to apply onto text.
+   * @param {Rectangle} bounds.
    *
-   * @return {Vector} A Vector with width and height of the text bounds.
+   * @return {Rectangle} Local bounds.
    */
-  measureText(text, style) {
-    let el = this.mMeasureElement;
-    el.innerHTML = text;
-    el.style.whiteSpace = 'pre';
-    el.style.fontSize = style.size + 'px';
-    el.style.fontFamily = style.name;
-    el.style.fontStyle = style.style;
-    el.style.fontWeight = style.weight;
-
-    let v = new Vector(el.offsetWidth + style.strokeThickness, el.offsetHeight + style.strokeThickness);
-    el.innerHTML = '';
-
-    return v;
+  measureText(textField, style, bounds) {
   }
 }

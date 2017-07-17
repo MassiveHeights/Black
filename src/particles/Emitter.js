@@ -239,12 +239,11 @@ class Emitter extends DisplayObject {
     return action;
   }
 
-  __render(video, time, parentAlpha, parentBlendMode) {
-    video.save(this);
+  __render(video, time, parentAlpha) {
 
     // set blend mode
-    let tmpBlendMode = BlendMode.AUTO;
-    video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+    video.globalBlendMode = this.blendMode;
+    let emitterWorldAlpha = parentAlpha * this.alpha;
 
     // tmp matrices
     let localTransform = this.__tmpLocal;
@@ -252,7 +251,6 @@ class Emitter extends DisplayObject {
     localTransform.identity();
 
     let texture = null;
-    let pbounds = new Rectangle();
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
@@ -265,11 +263,10 @@ class Emitter extends DisplayObject {
         for (let i = plength - 1; i > 0; i--)
           this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
       }
-      
+
     }
 
-    video.restore();
-    super.__render(video, time, parentAlpha, parentBlendMode);
+    super.__render(video, time, parentAlpha);
   }
 
   __renderParticle(particle, video, parentAlpha, localTransform, worldTransform) {
@@ -304,11 +301,12 @@ class Emitter extends DisplayObject {
       worldTransform.append(localTransform);
     }
 
-    video.setTransform(worldTransform);
-    video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
+    particle.worldAlpha = parentAlpha * particle.alpha;
 
-    //pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-    video.drawImage(texture, tw, th);
+    video.setTransform(worldTransform);
+    video.globalAlpha = particle.worldAlpha;
+
+    video.drawImage(particle, texture);
   }
 
   onUpdate(dt) {
@@ -445,7 +443,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitNumRepeats() { return this.mEmitNumRepeats; }
+  get emitNumRepeats() {
+    return this.mEmitNumRepeats;
+  }
 
   /**
    * emitNumRepeats
@@ -454,7 +454,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitNumRepeats(value) { this.mEmitNumRepeats = value; this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue(); }
+  set emitNumRepeats(value) {
+    this.mEmitNumRepeats = value;
+    this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+  }
 
 
   /**
@@ -462,7 +465,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitDuration() { return this.mEmitDuration; }
+  get emitDuration() {
+    return this.mEmitDuration;
+  }
 
   /**
    * emitDuration
@@ -471,7 +476,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitDuration(value) { this.mEmitDuration = value; this.mEmitDurationLeft = this.mEmitDuration.getValue(); }
+  set emitDuration(value) {
+    this.mEmitDuration = value;
+    this.mEmitDurationLeft = this.mEmitDuration.getValue();
+  }
 
 
   /**
@@ -479,7 +487,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitInterval() { return this.mEmitInterval; }
+  get emitInterval() {
+    return this.mEmitInterval;
+  }
 
   /**
    * emitInterval
@@ -488,7 +498,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitInterval(value) { this.mEmitInterval = value; this.mEmitIntervalLeft = this.mEmitInterval.getValue(); }
+  set emitInterval(value) {
+    this.mEmitInterval = value;
+    this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+  }
 
 
   /**
@@ -496,7 +509,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitDelay() { return this.mEmitDelay; }
+  get emitDelay() {
+    return this.mEmitDelay;
+  }
 
   /**
    * emitDelay
@@ -505,7 +520,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitDelay(value) { this.mEmitDelay = value; this.mEmitDelayLeft = this.mEmitDelay.getValue(); }
+  set emitDelay(value) {
+    this.mEmitDelay = value;
+    this.mEmitDelayLeft = this.mEmitDelay.getValue();
+  }
 
 
   /**
@@ -513,7 +531,9 @@ class Emitter extends DisplayObject {
    *
    * @return {GameObject}
    */
-  get space() { return this.mSpace; }
+  get space() {
+    return this.mSpace;
+  }
 
   /**
    * space
@@ -554,7 +574,7 @@ class Emitter extends DisplayObject {
 
   /**
    * @return {EmitterSortOrder}
-   */  
+   */
   get sortOrder() {
     return this.__sortOrder;
   }

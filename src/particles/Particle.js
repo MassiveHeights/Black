@@ -99,6 +99,8 @@ class Particle {
      * @type {number}
      */
     this.ay = 0;
+    
+    this.pluginName = WebGLParticlesPlugin.name;
   }
 
   /**
