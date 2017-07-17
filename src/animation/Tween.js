@@ -390,8 +390,8 @@ class Tween extends Component {
   }
 
   /**
-   * @override
-   * @protected
+   * @inheritDoc
+   * 
    * @param  {GameObject} gameObject
    * @return {void}
    */
@@ -425,8 +425,8 @@ class Tween extends Component {
   }
 
   /**
-   * @protected
-   * @override
+   * @inheritDoc
+   *
    * @param {number} dt
    *
    * @returns {void}

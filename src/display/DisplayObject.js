@@ -43,7 +43,7 @@ class DisplayObject extends GameObject {
   __render(video, time, parentAlpha) {
     if (this.mVisible === false)
       return;
-
+    
     this.onRender(video, time);
 
     let child = null;

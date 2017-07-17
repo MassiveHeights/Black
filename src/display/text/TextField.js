@@ -110,7 +110,7 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mFieldHeight = this.mLineOffset;
+    this.mFieldHeight = this.mStyle.size * this.mLineHeight;
     
     this.onGetLocalBounds(this.mCacheBounds);
   }

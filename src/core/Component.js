@@ -36,6 +36,7 @@ class Component extends MessageDispatcher {
    * Called when attached to GameObject.
    *
    * @public
+   *
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -45,6 +46,7 @@ class Component extends MessageDispatcher {
    * Called when detached from GameObject.
    *
    * @public
+   *
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -53,6 +55,7 @@ class Component extends MessageDispatcher {
   /**
    * Called at every fixed frame update.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -61,6 +64,7 @@ class Component extends MessageDispatcher {
   /**
    * Called at every engine update.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -69,6 +73,7 @@ class Component extends MessageDispatcher {
   /**
    * Called after all updates have been executed.
    * @public
+   *
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -115,8 +120,9 @@ class Component extends MessageDispatcher {
   }
 }
 
-
-/** @type {number}
+/**
+ * @ignore
+ * @type {number}
  * @nocollapse
  */
 Component.ID = 0;

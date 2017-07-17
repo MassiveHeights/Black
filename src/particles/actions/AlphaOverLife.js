@@ -23,8 +23,8 @@ class AlphaOverLife extends Action {
   }
 
   /**
-   * @ignore
-   * @override
+   * @inheritDoc
+   *
    * @param {Emitter} emmiter
    * @param {Particle} particle
    * @param {number} dt

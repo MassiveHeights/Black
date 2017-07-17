@@ -282,7 +282,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {Texture|null}
    */
   getTextureFromCanvas(canvas) {
-    return new Texture(canvas, new Rectangle(0, 0, canvas.width, canvas.height));
+    return new Texture(canvas);
   }
 
   /**
@@ -305,5 +305,15 @@ class CanvasDriver extends VideoNullDriver {
    */
   restore() {
     this.mCtx.restore();
+  }
+
+  clip(rect) {
+    //this.mCtx.beginPath();
+    console.log('123');
+    
+    this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
+    this.mCtx.clip();
+
+    //this.mCtx.endPath();
   }
 }

@@ -11,20 +11,20 @@ class FloatScatter extends Scatter {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(Number):Number} [ease=null]     Easing function.
+   * @param {function(number):number} [ease=null]     Easing function.
    */
   constructor(min, max = undefined, ease = null) {
     super();
 
     // NOTE: dont make us @private @member
 
-    /** @type {Number} */
+    /** @type {number} */
     this.min = min;
 
-    /** @type {Number} */
+    /** @type {number} */
     this.max = max == null ? min : max;
 
-    /** @type {function(Number):Number} */
+    /** @type {function(number):number} */
     this.ease = ease;
   }
 

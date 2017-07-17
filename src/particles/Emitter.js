@@ -139,18 +139,16 @@ class Emitter extends DisplayObject {
      */
     this.__tmpWorld = new Matrix();
 
+    /**
+     * @private
+     * @type {EmitterSortOrder}
+     */
+    this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
+
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
-
-  // reset() {
-  //   this.mState = 0;
-  //
-  //   // todo: reset simulation
-  //   // todo: clear all particles
-  //   this.updateNextTick(0);
-  // }
 
   resetState() {
     this.mState = EmitterState.PENDING;
@@ -256,51 +254,59 @@ class Emitter extends DisplayObject {
 
     if (this.mTextures.length > 0) {
       let plength = this.mParticles.length;
-      let particle;
-      for (let i = 0; i < plength; i++) {
-      //for (let i = plength - 1; i > 0; i--) {
-        particle = this.mParticles[i];
-        texture = this.mTextures[particle.textureIndex];
 
-        let tw = texture.width * 0.5;
-        let th = texture.height * 0.5;
-
-        if (particle.r === 0) {
-          let tx = particle.x - tw * particle.scale;
-          let ty = particle.y - th * particle.scale;
-          localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
-        } else {
-          let cos = Math.cos(particle.r);
-          let sin = Math.sin(particle.r);
-          let a = particle.scale * cos;
-          let b = particle.scale * sin;
-          let c = particle.scale * -sin;
-          let d = particle.scale * cos;
-
-          let tx = particle.x - tw * a - th * c;
-          let ty = particle.y - tw * b - th * d;
-          localTransform.set(a, b, c, d, tx, ty);
-        }
-
-        if (this.mIsLocal === true) {
-          worldTransform.identity();
-          worldTransform.copyFrom(localTransform);
-          worldTransform.prepend(this.worldTransformation);
-        } else {
-          this.mSpace.worldTransformation.copyTo(worldTransform);
-          worldTransform.append(localTransform);
-        }
-
-        particle.worldAlpha = emitterWorldAlpha * particle.alpha;
-
-        video.setTransform(worldTransform);
-        video.globalAlpha = particle.worldAlpha;
-
-        video.drawImage(particle, texture);
+      if (this.__sortOrder == EmitterSortOrder.FRONT_TO_BACK) {
+        for (let i = 0; i < plength; i++)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
       }
+      else {
+        for (let i = plength - 1; i > 0; i--)
+          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
+      }
+
     }
 
-    super.__render(video, time, emitterWorldAlpha);
+    super.__render(video, time, parentAlpha);
+  }
+
+  __renderParticle(particle, video, parentAlpha, localTransform, worldTransform) {
+    let texture = this.mTextures[particle.textureIndex];
+
+    let tw = texture.width * 0.5;
+    let th = texture.height * 0.5;
+
+    if (particle.r === 0) {
+      let tx = particle.x - tw * particle.scale;
+      let ty = particle.y - th * particle.scale;
+      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+    } else {
+      let cos = Math.cos(particle.r);
+      let sin = Math.sin(particle.r);
+      let a = particle.scale * cos;
+      let b = particle.scale * sin;
+      let c = particle.scale * -sin;
+      let d = particle.scale * cos;
+
+      let tx = particle.x - tw * a - th * c;
+      let ty = particle.y - tw * b - th * d;
+      localTransform.set(a, b, c, d, tx, ty);
+    }
+
+    if (this.mIsLocal === true) {
+      worldTransform.identity();
+      worldTransform.copyFrom(localTransform);
+      worldTransform.prepend(this.worldTransformation);
+    } else {
+      this.mSpace.worldTransformation.copyTo(worldTransform);
+      worldTransform.append(localTransform);
+    }
+
+    particle.worldAlpha = parentAlpha * particle.alpha;
+
+    video.setTransform(worldTransform);
+    video.globalAlpha = particle.worldAlpha;
+
+    video.drawImage(particle, texture);
   }
 
   onUpdate(dt) {
@@ -437,7 +443,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitNumRepeats() { return this.mEmitNumRepeats; }
+  get emitNumRepeats() {
+    return this.mEmitNumRepeats;
+  }
 
   /**
    * emitNumRepeats
@@ -446,7 +454,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitNumRepeats(value) { this.mEmitNumRepeats = value; this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue(); }
+  set emitNumRepeats(value) {
+    this.mEmitNumRepeats = value;
+    this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+  }
 
 
   /**
@@ -454,7 +465,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitDuration() { return this.mEmitDuration; }
+  get emitDuration() {
+    return this.mEmitDuration;
+  }
 
   /**
    * emitDuration
@@ -463,7 +476,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitDuration(value) { this.mEmitDuration = value; this.mEmitDurationLeft = this.mEmitDuration.getValue(); }
+  set emitDuration(value) {
+    this.mEmitDuration = value;
+    this.mEmitDurationLeft = this.mEmitDuration.getValue();
+  }
 
 
   /**
@@ -471,7 +487,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitInterval() { return this.mEmitInterval; }
+  get emitInterval() {
+    return this.mEmitInterval;
+  }
 
   /**
    * emitInterval
@@ -480,7 +498,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitInterval(value) { this.mEmitInterval = value; this.mEmitIntervalLeft = this.mEmitInterval.getValue(); }
+  set emitInterval(value) {
+    this.mEmitInterval = value;
+    this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+  }
 
 
   /**
@@ -488,7 +509,9 @@ class Emitter extends DisplayObject {
    *
    * @return {FloatScatter}
    */
-  get emitDelay() { return this.mEmitDelay; }
+  get emitDelay() {
+    return this.mEmitDelay;
+  }
 
   /**
    * emitDelay
@@ -497,7 +520,10 @@ class Emitter extends DisplayObject {
    *
    * @return {void}
    */
-  set emitDelay(value) { this.mEmitDelay = value; this.mEmitDelayLeft = this.mEmitDelay.getValue(); }
+  set emitDelay(value) {
+    this.mEmitDelay = value;
+    this.mEmitDelayLeft = this.mEmitDelay.getValue();
+  }
 
 
   /**
@@ -505,7 +531,9 @@ class Emitter extends DisplayObject {
    *
    * @return {GameObject}
    */
-  get space() { return this.mSpace; }
+  get space() {
+    return this.mSpace;
+  }
 
   /**
    * space
@@ -543,4 +571,32 @@ class Emitter extends DisplayObject {
 
     this.mTextures = value;
   }
+
+  /**
+   * @return {EmitterSortOrder}
+   */
+  get sortOrder() {
+    return this.__sortOrder;
+  }
+
+  /**
+   *
+   * @param {EmitterSortOrder} value The order in which particles will be sorted when rendering.
+   *
+   * @return {void}
+   */
+  set sortOrder(value) {
+    this.__sortOrder = value;
+  }
 }
+
+/**
+ * A blend mode enum.
+ * @cat particles
+ * @enum {string}
+ */
+/* @echo EXPORT */
+var EmitterSortOrder = {
+  FRONT_TO_BACK: 'frontToBack',
+  BACK_TO_FRONT: 'backToFront'
+};

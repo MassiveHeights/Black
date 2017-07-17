@@ -124,9 +124,8 @@ class AnimationController extends Component {
   }
 
   /**
-   * @ignore
-   * @override
-   * @protected
+   * @inheritDoc
+   * 
    * @param  {number} dt
    * @return {void}
    */

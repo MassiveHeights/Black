@@ -133,17 +133,23 @@ class DOMDriver extends VideoNullDriver {
    */
   drawImage(object, texture) {
     /** @type {Matrix|null} */
-    let oldTransform = this.mTransform;
+    let oldTransform = this.mTransform.clone();
     let uw = texture.untrimmedRect.x;
     let uh = texture.untrimmedRect.y;
 
-    this.mTransform.translate(uw, uh);
+    //this.mTransform.translate(px, py);
+
+    if (texture.untrimmedRect.x !== 0 || texture.untrimmedRect.y !== 0) {
+      Matrix.__cache.set(1, 0, 0, 1, texture.untrimmedRect.x, texture.untrimmedRect.y);
+      this.mTransform = this.mTransform.clone().append(Matrix.__cache);
+      //this.mTransform = this.mTransform.clone().translate(texture.untrimmedRect.x, texture.untrimmedRect.y);
+    }
 
     let el = this.__popElement(this.mPixelated ? 'sprite-p' : 'sprite');
     this.__updateElementCommon(el);
     this.__updateImageElement(el, texture);
 
-    this.mTransform = oldTransform;
+    this.mTransform = oldTransform.clone();
   }
 
   /**

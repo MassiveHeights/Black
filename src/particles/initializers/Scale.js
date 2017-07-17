@@ -24,7 +24,6 @@ class Scale extends Initializer {
 
   /**
    * @inheritDoc
-   * @override
    * @param {Particle} particle
    *
    * @return {void}
