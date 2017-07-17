@@ -134,7 +134,7 @@ class WebGLTexPlugin extends WebGLBasePlugin {
 
     let lines = textField.lines;
     let widths = textField.lineWidths;
-    let lineOffset = textField.lineOffset;
+    let lineOffset = textField.lineHeight * style.size;
     let strokeThickness = style.strokeThickness;
     let align = style.align;
     let maxWidth = bounds.width;
@@ -150,7 +150,7 @@ class WebGLTexPlugin extends WebGLBasePlugin {
 
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
     ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
-    ctx.textBaseline = `bottom`; // or hanging. Clipping crops bottom of texts
+    ctx.textBaseline = `bottom`;
 
     if (strokeThickness !== 0) {
       ctx.lineJoin = `round`;

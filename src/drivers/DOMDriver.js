@@ -29,6 +29,14 @@ class DOMDriver extends VideoNullDriver {
     /** @type {GameObject|null} */
     this.mCurrentObject = null;
     this.__initCSS();
+
+    this.measureEl = document.createElement(`div`);
+    this.measureEl.style.position = `absolute`;
+    this.measureEl.style.visibility = `hidden`;
+    this.measureEl.style.height = `auto`;
+    this.measureEl.style.width = `auto`;
+    this.measureEl.style.whiteSpace = `nowrap`;
+    document.getElementsByTagName(`body`)[0].appendChild(this.measureEl);
   }
 
   /**
@@ -151,7 +159,7 @@ class DOMDriver extends VideoNullDriver {
    * @return {Rectangle} A Vector with width and height of the text bounds.
    */
   measureText(textField, style, bounds) {
-    let el = this.__popElement('text');
+    let el = this.measureEl;
 
     textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ` `);
 
@@ -160,7 +168,7 @@ class DOMDriver extends VideoNullDriver {
     el.style.fontFamily = style.name;
     el.style.fontStyle = style.style;
     el.style.fontWeight = style.weight;
-    el.style.lineHeight = `${textField.lineOffset / style.size}`;
+    el.style.lineHeight = `${textField.lineHeight}`;
     el.style.letterSpacing = `${textField.letterSpacing}px`;
     el.innerHTML = textField.lines;
 
@@ -172,8 +180,8 @@ class DOMDriver extends VideoNullDriver {
       bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
     } else {
       bounds.set(0, 0,
-        el.offsetWidth + style.strokeThickness,
-        el.offsetHeight + style.strokeThickness);
+        el.clientWidth + 1 + style.strokeThickness,
+        el.clientHeight + 1 + style.strokeThickness);
     }
 
     el.innerHTML = ``;
@@ -320,7 +328,7 @@ class DOMDriver extends VideoNullDriver {
       el.style.clip = `rect(0px ${bounds.width + x}px ${bounds.height}px ${x}px)`;
     }
 
-    el.style.lineHeight = `${textField.lineOffset / style.size}`;
+    el.style.lineHeight = `${textField.lineHeight}`;
     el.style.fontSize = style.size + 'px';
     el.style.letterSpacing = `${textField.letterSpacing}px`;
     el.innerHTML = text;

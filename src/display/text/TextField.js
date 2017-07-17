@@ -79,7 +79,7 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mLineOffset = this.mStyle.size * 1.2;
+    this.mLineHeight = 1.2;
 
     /**
      * @public
@@ -211,8 +211,8 @@ class TextField extends DisplayObject {
    *
    * @return {void}
    */
-  set lineOffset(value) {
-    this.mLineOffset = value;
+  set lineHeight(value) {
+    this.mLineHeight = value;
     this.mNeedInvalidate = true;
   }
 
@@ -221,8 +221,8 @@ class TextField extends DisplayObject {
    *
    * @return {number}
    */
-  get lineOffset() {
-    return this.mLineOffset;
+  get lineHeight() {
+    return this.mLineHeight;
   }
 
   /**

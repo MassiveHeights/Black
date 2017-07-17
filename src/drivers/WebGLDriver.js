@@ -161,7 +161,7 @@ class WebGLDriver extends VideoNullDriver {
   measureText(textField, style, bounds) {
     let lines = textField.lines;
     let widths = textField.lineWidths;
-    let lineOffset = textField.lineOffset;
+    let lineHeight = textField.lineHeight;
     let text = textField.text;
     let multiLine = textField.multiLine;
     let strokeThickness = style.strokeThickness;
@@ -188,7 +188,7 @@ class WebGLDriver extends VideoNullDriver {
     }
 
     ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    ctx.textBaseline = `top`;
+    ctx.textBaseline = `bottom`;
 
     lines.length = 0;
     widths.length = 0;
@@ -201,7 +201,7 @@ class WebGLDriver extends VideoNullDriver {
     if (!textField.autoSize) {
       bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
     } else {
-      bounds.set(0, 0, Math.max(...widths), (lines.length - 1) * lineOffset + style.size);
+      bounds.set(0, 0, Math.max(...widths), lines.length * lineHeight * (style.size + strokeThickness));
     }
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);

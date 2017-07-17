@@ -141,7 +141,7 @@ class CanvasDriver extends VideoNullDriver {
   measureText(textField, style, bounds) {
     let lines = textField.lines;
     let widths = textField.lineWidths;
-    let lineOffset = textField.lineOffset;
+    let lineHeight = textField.lineHeight;
     let text = textField.text;
     let multiLine = textField.multiLine;
     let strokeThickness = style.strokeThickness;
@@ -170,7 +170,7 @@ class CanvasDriver extends VideoNullDriver {
       return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
     }
     
-    return bounds.set(0, 0, Math.max(...widths), (lines.length - 1) * lineOffset + style.size);
+    return bounds.set(0, 0, Math.max(...widths), lines.length * lineHeight * (style.size + strokeThickness));
   }
 
   /**
@@ -188,7 +188,7 @@ class CanvasDriver extends VideoNullDriver {
   drawText(textField, style, bounds) {
     let lines = textField.lines;
     let widths = textField.lineWidths;
-    let lineOffset = textField.lineOffset;
+    let lineOffset = textField.lineHeight * style.size;
     let strokeThickness = style.strokeThickness;
     let align = style.align;
     let maxWidth = bounds.width;
