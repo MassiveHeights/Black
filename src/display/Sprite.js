@@ -20,7 +20,13 @@ class Sprite extends DisplayObject {
      * @type {Texture|null} */
     this.mTexture = null;
 
+    /**
+     * @private
+     * @type {string|null} */
+    this.mTextureName = null;
+
     if (texture !== null && texture.constructor === String) {
+      this.mTextureName = /** @type {string} */ (texture);
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
@@ -50,7 +56,7 @@ class Sprite extends DisplayObject {
 
     super.__render(video, time, this.worldAlpha);
   }
-  
+
   /**
    * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
    *
@@ -86,10 +92,26 @@ class Sprite extends DisplayObject {
    * @return {void}
    */
   set texture(texture) {
-    if (this.mTexture === texture)
+    // if (this.mTexture !== null && this.mTexture === texture)
+    //   return;
+
+    if (this.mTexture !== texture)
+      this.mTexture = texture;
+  }
+
+  get textureName() {
+    return this.mTextureName;
+  }
+
+  /**
+   * @editor {TextureEditor}
+   */
+  set textureName(value) {
+    if (this.mTextureName === value)
       return;
 
-    this.mTexture = texture;
+    this.mTextureName = value;
+    this.texture = AssetManager.default.getTexture(value);
   }
 
   set touchable(value) {

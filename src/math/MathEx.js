@@ -53,6 +53,10 @@ class MathEx {
   static lerpp(a, b, t) {
     return (1 - t) * a + t * b;
   };
+
+  static equals(a, b, epsilon = Number.EPSILON) {
+    return (a - epsilon < b) && (a + epsilon > b);
+  }
 }
 
 /** @const

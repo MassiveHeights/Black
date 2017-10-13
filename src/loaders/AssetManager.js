@@ -233,6 +233,7 @@ class AssetManager extends MessageDispatcher {
         return t;
     }
 
+    Debug.warn('Unable to find texture', name);
     return null;
   }
 

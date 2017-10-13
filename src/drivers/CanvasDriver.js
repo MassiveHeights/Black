@@ -35,6 +35,7 @@ class CanvasDriver extends VideoNullDriver {
   __createCanvas() {
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.id = 'canvas';
+    cvs.style.position = 'absolute';
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
