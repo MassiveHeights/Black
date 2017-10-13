@@ -57,10 +57,6 @@ class Sprite extends DisplayObject {
     super.__render(video, time, this.worldAlpha);
   }
 
-  // __render(command) {
-  //   command.set(this.)
-  // }
-  
   /**
    * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
    *
@@ -99,7 +95,8 @@ class Sprite extends DisplayObject {
     // if (this.mTexture !== null && this.mTexture === texture)
     //   return;
 
-    this.mTexture = texture;
+    if (this.mTexture !== texture)
+      this.mTexture = texture;
   }
 
   get textureName() {
