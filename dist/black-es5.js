@@ -5206,21 +5206,20 @@ var GameObject = function (_MessageDispatcher) {
      * @param {VideoNullDriver} video   *
      * @param {number} time
      * @param {number} parentAlpha
-     * @param {string} parentBlendMode
      *
      * @return {void}
      */
 
   }, {
     key: '__render',
-    value: function __render(video, time, parentAlpha, parentBlendMode) {
+    value: function __render(video, time, parentAlpha) {
       this.onRender(video, time);
 
       var child = null;
       var childLen = this.mChildren.length;
       for (var i = 0; i < childLen; i++) {
         child = this.mChildren[i];
-        child.__render(video, time, parentAlpha, parentBlendMode);
+        child.__render(video, time, parentAlpha);
       }
     }
 
@@ -6325,7 +6324,7 @@ var Texture = function () {
      * @private
      * @type {Rectangle}
      */
-    this.mRegion;
+    this.mRegion = null;
 
     /**
      * @private
@@ -6366,18 +6365,49 @@ var Texture = function () {
      */
     this.mIsLoaded = true;
 
-    var w = nativeTexture.naturalWidth || nativeTexture.width;
-    var h = nativeTexture.naturalHeight || nativeTexture.height;
+    this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
+    this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
-    this.mRelativeRegion = new Rectangle(this.mRegion.x / w, this.mRegion.y / h, this.mRegion.width / w, this.mRegion.height / h);
+    this.coord = new Uint32Array(4);
+    this.refreshCoord();
 
-    this.mRelativeRegion.top = this.mRelativeRegion.top;
-    this.mRelativeRegion.left = this.mRelativeRegion.left;
-    this.mRelativeRegion.right = this.mRelativeRegion.right;
-    this.mRelativeRegion.bottom = this.mRelativeRegion.bottom;
+    this._vSlotWebGL = -1; // virtual slot for batch calculations
+    this.premultiplyAlpha = true;
   }
 
   _createClass(Texture, [{
+    key: 'refreshCoord',
+    value: function refreshCoord() {
+      var coord = this.coord;
+      var region = this.mRegion;
+      var w = this.nativeWidth;
+      var h = this.nativeHeight;
+
+      var x0 = region.left / w;
+      var y0 = region.top / h;
+
+      var x1 = region.right / w;
+      var y1 = region.top / h;
+
+      var x2 = region.left / w;
+      var y2 = region.bottom / h;
+
+      var x3 = region.right / w;
+      var y3 = region.bottom / h;
+
+      coord[0] = (y0 * 65535 & 0xffff) << 16 | x0 * 65535 & 0xffff;
+      coord[1] = (y1 * 65535 & 0xffff) << 16 | x1 * 65535 & 0xffff;
+      coord[2] = (y2 * 65535 & 0xffff) << 16 | x2 * 65535 & 0xffff;
+      coord[3] = (y3 * 65535 & 0xffff) << 16 | x3 * 65535 & 0xffff;
+    }
+
+    /**
+     * Returns the unique id of this texture.
+     *
+     * @return {number}
+     */
+
+  }, {
     key: 'dispose',
 
 
@@ -6396,18 +6426,6 @@ var Texture = function () {
      * @param {string} string
      *
      * @return {Texture}
-     */
-
-  }, {
-    key: 'relativeRegion',
-    get: function get() {
-      return this.mRelativeRegion;
-    }
-
-    /**
-     * Returns the unique id of this texture.
-     *
-     * @return {number}
      */
 
   }, {
@@ -7922,7 +7940,7 @@ var VideoNullDriver = function () {
     this.mGlobalBlendMode = 'auto';
 
     /**
-     * @private
+     * @protected
      * @type {HTMLElement}
      */
     this.mContainerElement = /**
@@ -8034,7 +8052,7 @@ var VideoNullDriver = function () {
     /**
      * Sets world transformation for future use.
      *
-     * @protected
+     * @public
      * @param {Matrix} m An transformation matrix to store.
      *
      * @return {void}
@@ -8063,31 +8081,29 @@ var VideoNullDriver = function () {
      * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
      * matrix must be set prior to calling this method.
      *
-     * @protected
+     * @public
      *
+     * @param  {Sprite|Particle} object
      * @param  {Texture} texture
-     * @param  {number} px
-     * @param  {number} py
+     * 
      */
-    value: function drawImage(texture, px, py) {}
+    value: function drawImage(object, texture) {}
 
     /**
      * Draws text onto back-buffer.
      *
-     * @protected
+     * @public
      *
-     * @param {string} text Text string to draw.
+     * @param {TextField} text TextField object to draw.
      * @param {TextInfo} style The style information.
-     * @param {Rectangle} bounds Clipping bounds, text wont be drawn outside this bounds.
-     * @param {number} textWidth The width of the text.
-     * @param {number} textHeight The height of the text.
+     * @param {Rectangle} bounds Clipping bounds, text will be drawn outside this bounds.
      *
      * @return {void}
      */
 
   }, {
     key: 'drawText',
-    value: function drawText(text, style, bounds, textWidth, textHeight) {}
+    value: function drawText(text, style, bounds) {}
 
     /**
      * Clears back-buffer.
@@ -8114,9 +8130,6 @@ var VideoNullDriver = function () {
   }, {
     key: 'save',
     value: function save(gameObject) {}
-  }, {
-    key: 'setMaterial',
-    value: function setMaterial(material) {}
 
     /**
      * Used to restore context if extists.
@@ -8148,28 +8161,16 @@ var VideoNullDriver = function () {
     /**
      * Measures text with a given style.
      *
-     * @param {string} text    Text to measure.
+     * @param {TextField} textField    Text to measure.
      * @param {TextInfo} style Text style to apply onto text.
+     * @param {Rectangle} bounds.
      *
-     * @return {Vector} A Vector with width and height of the text bounds.
+     * @return {Rectangle} Local bounds.
      */
 
   }, {
     key: 'measureText',
-    value: function measureText(text, style) {
-      var el = this.mMeasureElement;
-      el.innerHTML = text;
-      el.style.whiteSpace = 'pre';
-      el.style.fontSize = style.size + 'px';
-      el.style.fontFamily = style.name;
-      el.style.fontStyle = style.style;
-      el.style.fontWeight = style.weight;
-
-      var v = new Vector(el.offsetWidth + style.strokeThickness, el.offsetHeight + style.strokeThickness);
-      el.innerHTML = '';
-
-      return v;
-    }
+    value: function measureText(textField, style, bounds) {}
   }, {
     key: 'globalAlpha',
     get: function get() {
@@ -8220,6 +8221,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -8255,6 +8258,7 @@ var CanvasDriver = function (_VideoNullDriver) {
     _this.mGlobalAlpha = 1;
     _this.mGlobalBlendMode = BlendMode.NORMAL;
     _this.mCurrentObject = null;
+    _this.mLetterSpacing = 0;
 
     _this.__createCanvas();
     return _this;
@@ -8327,13 +8331,12 @@ var CanvasDriver = function (_VideoNullDriver) {
      * @inheritDoc
      * @override
      *
+     * @param {Sprite|Particle} object
      * @param {Texture} texture
-     * @param {number} px
-     * @param {number} py
      *
      * @return {void}
      */
-    value: function drawImage(texture, px, py) {
+    value: function drawImage(object, texture) {
       var w = texture.width;
       var h = texture.height;
       var ox = texture.untrimmedRect.x;
@@ -8343,52 +8346,119 @@ var CanvasDriver = function (_VideoNullDriver) {
     }
 
     /**
+     * Measures text with a given style.
+     *
+     * @inheritDoc
+     * @override
+     * 
+     * @param {TextField} textField    Text to measure.
+     * @param {TextInfo} style Text style to apply onto text.
+     * @param {Rectangle} bounds.
+     *
+     * @return {Rectangle} A Vector with width and height of the text bounds.
+     */
+
+  }, {
+    key: 'measureText',
+    value: function measureText(textField, style, bounds) {
+      var lines = textField.lines;
+      var widths = textField.lineWidths;
+      var lineHeight = textField.lineHeight;
+      var text = textField.text;
+      var multiLine = textField.multiLine;
+      var strokeThickness = style.strokeThickness;
+      var ctx = this.mCtx;
+
+      if (this.mLetterSpacing !== textField.letterSpacing) {
+        this.mLetterSpacing = textField.letterSpacing;
+
+        var canvas = ctx.canvas;
+        canvas.style.letterSpacing = textField.letterSpacing + 'px';
+        // ctx = this.mCtx = canvas.getContext(`2d`);
+      }
+
+      ctx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
+      ctx.textBaseline = 'top';
+
+      lines.length = 0;
+      widths.length = 0;
+      multiLine ? lines.push.apply(lines, _toConsumableArray(text.split('\n'))) : lines.push(text);
+
+      for (var i = 0, l = lines.length; i < l; i++) {
+        widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
+      }
+
+      if (!textField.autoSize) {
+        return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+      }
+
+      return bounds.set(0, 0, Math.max.apply(Math, _toConsumableArray(widths)), lines.length * lineHeight * (style.size + strokeThickness));
+    }
+
+    /**
      * drawText
      *
      * @inheritDoc
      * @override
      *
-     * @param {string} text
+     * @param {TextField} textField
      * @param {TextInfo} style
      * @param {Rectangle} bounds
-     * @param {number} textWidth
-     * @param {number} textHeight
      *
      * @return {void}
      */
 
   }, {
     key: 'drawText',
-    value: function drawText(text, style, bounds, textWidth, textHeight) {
-      this.mCtx.save();
+    value: function drawText(textField, style, bounds) {
+      var lines = textField.lines;
+      var widths = textField.lineWidths;
+      var lineOffset = textField.lineHeight * style.size;
+      var strokeThickness = style.strokeThickness;
+      var align = style.align;
+      var maxWidth = bounds.width;
+      var ctx = this.mCtx;
 
-      this.mCtx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
-      this.mCtx.fillStyle = this.hexColorToString(style.color);
+      if (this.mLetterSpacing !== textField.letterSpacing) {
+        this.mLetterSpacing = textField.letterSpacing;
 
-      var x = 0;
-      var y = 0;
-      if (style.align === 'center') x += (bounds.width - textWidth) * 0.5;else if (style.align === 'right') x += bounds.width - textWidth;
-
-      this.mCtx.textBaseline = 'top'; // 'alphabetic'
-
-      if (style.strokeThickness > 0) {
-        this.mCtx.lineJoin = 'round';
-        this.mCtx.lineCap = 'round';
-        this.mCtx.miterLimit = 2;
-        this.mCtx.lineWidth = style.strokeThickness;
-        this.mCtx.strokeStyle = this.hexColorToString(style.strokeColor);
-        this.mCtx.strokeText(text, x + bounds.x, y + bounds.y);
+        var canvas = ctx.canvas;
+        canvas.style.letterSpacing = textField.letterSpacing + 'px';
+        // ctx = this.mCtx = canvas.getContext(`2d`);
       }
 
-      this.mCtx.beginPath();
-      this.mCtx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-      this.mCtx.clip();
+      ctx.font = style.style + ' ' + style.weight + ' ' + style.size + 'px "' + style.name + '"';
+      ctx.fillStyle = this.hexColorToString(style.color);
+      ctx.textBaseline = 'bottom';
 
-      this.mCtx.fillText(text, x + bounds.x, y + bounds.y);
+      if (strokeThickness !== 0) {
+        ctx.lineJoin = 'round';
+        ctx.miterLimit = 2;
+        ctx.lineWidth = strokeThickness;
+        ctx.strokeStyle = this.hexColorToString(style.strokeColor);
+      }
 
-      this.mCtx.closePath();
+      if (!textField.autoSize) {
+        ctx.rect(0, 0, maxWidth, bounds.height);
+        ctx.clip();
+      }
 
-      this.mCtx.restore();
+      // ctx.fillRect(0, 0, maxWidth, bounds.height);
+
+      for (var i = 0, l = lines.length; i < l; i++) {
+        var width = widths[i];
+        var y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
+        var x = strokeThickness / 2;
+
+        if (align === 'center') {
+          x += maxWidth / 2 - width / 2;
+        } else if (align === 'right') {
+          x += maxWidth - width;
+        }
+
+        strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
+        ctx.fillText(lines[i], x, y);
+      }
     }
 
     /**
@@ -8572,6 +8642,14 @@ var DOMDriver = function (_VideoNullDriver) {
         /** @type {GameObject|null} */
         _this.mCurrentObject = null;
         _this.__initCSS();
+
+        _this.measureEl = document.createElement('div');
+        _this.measureEl.style.position = 'absolute';
+        _this.measureEl.style.visibility = 'hidden';
+        _this.measureEl.style.height = 'auto';
+        _this.measureEl.style.width = 'auto';
+        _this.measureEl.style.whiteSpace = 'nowrap';
+        document.getElementsByTagName('body')[0].appendChild(_this.measureEl);
         return _this;
     }
 
@@ -8677,14 +8755,15 @@ var DOMDriver = function (_VideoNullDriver) {
          * @override
          * @inheritDoc
          *
+         * @param  {Sprite|Particle} object
          * @param  {Texture} texture
-         * @param  {Rectangle} bounds
+         *
          * @return {void}
          */
 
     }, {
         key: 'drawImage',
-        value: function drawImage(texture, px, py) {
+        value: function drawImage(object, texture) {
             /** @type {Matrix|null} */
             var oldTransform = this.mTransform.clone();
             var uw = texture.untrimmedRect.x;
@@ -8706,29 +8785,68 @@ var DOMDriver = function (_VideoNullDriver) {
         }
 
         /**
+         * Measures text with a given style.
+         *
          * @inheritDoc
          * @override
          *
-         * @param {string} text
+         * @param {TextField} textField    Text to measure.
+         * @param {TextInfo} style Text style to apply onto text.
+         * @param {Rectangle} bounds.
+         *
+         * @return {Rectangle} A Vector with width and height of the text bounds.
+         */
+
+    }, {
+        key: 'measureText',
+        value: function measureText(textField, style, bounds) {
+            var el = this.measureEl;
+
+            textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ' ');
+
+            el.style.whiteSpace = 'pre';
+            el.style.fontSize = style.size + 'px';
+            el.style.fontFamily = style.name;
+            el.style.fontStyle = style.style;
+            el.style.fontWeight = style.weight;
+            el.style.lineHeight = '' + textField.lineHeight;
+            el.style.letterSpacing = textField.letterSpacing + 'px';
+            el.innerHTML = textField.lines;
+
+            var widths = textField.lineWidths;
+            widths.length = 0;
+            widths[0] = el.offsetWidth + style.strokeThickness;
+
+            if (!textField.autoSize) {
+                bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+            } else {
+                bounds.set(0, 0, el.clientWidth + 1 + style.strokeThickness, el.clientHeight + 1 + style.strokeThickness);
+            }
+
+            el.innerHTML = '';
+
+            return bounds;
+        }
+
+        /**
+         * @inheritDoc
+         * @override
+         *
+         * @param {TextField} textField
          * @param {TextInfo} style
          * @param {Rectangle} bounds
-         * @param {number} textWidth
-         * @param {number} textHeight
          *
          * @return {void}
          */
 
     }, {
         key: 'drawText',
-        value: function drawText(text, style, bounds, textWidth, textHeight) {
+        value: function drawText(textField, style, bounds) {
             var el = this.__popElement('text');
 
-            this.mTransform.translate(bounds.x, bounds.y);
-
-            this.__updateElementCommon(el);
-
             // TODO: check this type. review the code.
-            this.__updateTextElement( /** @type {HTMLElement} */el, text, style, bounds);
+            this.__updateTextElement(
+            /** @type {HTMLElement} */el, textField, style, bounds);
         }
 
         /**
@@ -8827,7 +8945,7 @@ var DOMDriver = function (_VideoNullDriver) {
         /**
          * @private
          * @param {HTMLElement} el
-         * @param {string} text
+         * @param {TextField} textField
          * @param {TextInfo} style
          * @param {Rectangle} bounds
          *
@@ -8836,35 +8954,75 @@ var DOMDriver = function (_VideoNullDriver) {
 
     }, {
         key: '__updateTextElement',
-        value: function __updateTextElement(el, text, style, bounds) {
-            el.innerHTML = text;
+        value: function __updateTextElement(el, textField, style, bounds) {
+            var width = textField.lineWidths[0];
+            var text = textField.lines;
+            var align = style.align;
+            var x = 0;
+
+            if (align === 'center') {
+                x -= bounds.width / 2 - width / 2;
+            } else if (align === 'right') {
+                x -= bounds.width - width;
+            }
+
+            var v = this.mTransform.value;
+            el.style.webkitTransform = 'matrix(' + v[0] + ', ' + v[1] + ', ' + v[2] + ', ' + v[3] + ', ' + (v[4] - x) + ', ' + v[5] + ')';
+            el.style.opacity = this.mGlobalAlpha;
+
+            if (!textField.autoSize) {
+                // top right bottom left. There is no width and height
+                el.style.clip = 'rect(0px ' + (bounds.width + x) + 'px ' + bounds.height + 'px ' + x + 'px)';
+            }
+
+            el.style.lineHeight = '' + textField.lineHeight;
             el.style.fontSize = style.size + 'px';
+            el.style.letterSpacing = textField.letterSpacing + 'px';
+            el.innerHTML = text;
 
-            if (el.style.width !== bounds.width + 'px') el.style.width = bounds.width + 'px';
+            if (el.style.width !== bounds.width + x + 'px') {
+                el.style.width = bounds.width + x + 'px';
+            }
 
-            if (el.style.height !== bounds.height + 'px') el.style.height = bounds.height + 'px';
+            if (el.style.height !== bounds.height + 'px') {
+                el.style.height = bounds.height + 'px';
+            }
 
-            if (el.style.fontFamily !== style.name) el.style.fontFamily = style.name;
+            if (el.style.fontFamily !== style.name) {
+                el.style.fontFamily = style.name;
+            }
 
             var color = this.hexColorToString(style.color);
 
-            if (el.style.color != color) el.style.color = color;
+            if (el.style.color != color) {
+                el.style.color = color;
+            }
 
             if (el.style.fontStyle !== style.style) el.style.fontStyle = style.style;
 
-            if (el.style.fontWeight != style.weight) el.style.fontWeight = style.weight;
+            if (el.style.fontWeight != style.weight) {
+                el.style.fontWeight = style.weight;
+            }
 
-            if (el.style.textAlign !== style.align) el.style.textAlign = style.align;
+            if (el.style.textAlign !== style.align) {
+                el.style.textAlign = style.align;
+            }
+
+            if (el.style.backgroundImage !== 'none') {
+                el.style.backgroundImage = 'none';
+            }
 
             if (style.strokeThickness > 0) {
                 var strokeColor = this.hexColorToString(style.strokeColor);
 
-                if (el.style.webkitTextStrokeColor != strokeColor) el.style.webkitTextStrokeColor = strokeColor;
+                if (el.style.webkitTextStrokeColor != strokeColor) {
+                    el.style.webkitTextStrokeColor = strokeColor;
+                }
 
-                if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
+                if (el.style.webkitTextStrokeWidth != style.strokeThickness + 'px') {
+                    el.style.webkitTextStrokeWidth = style.strokeThickness + 'px';
+                }
             }
-
-            if (el.style.backgroundImage !== 'none') el.style.backgroundImage = 'none';
         }
     }]);
 
@@ -8875,6 +9033,10 @@ var DOMDriver = function (_VideoNullDriver) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8898,19 +9060,36 @@ var WebGLDriver = function (_VideoNullDriver) {
    * @param  {number} height           description
    */
   function WebGLDriver(containerElement, width, height) {
+    var _this$mPlugins;
+
     _classCallCheck(this, WebGLDriver);
 
     var _this = _possibleConstructorReturn(this, (WebGLDriver.__proto__ || Object.getPrototypeOf(WebGLDriver)).call(this, containerElement, width, height));
 
-    console.log("WebGL-");
+    console.log("WebGL");
 
-    _this.gl = null;
+    var fn = function fn() {};
+    _this.mEmptyPlugin = {
+      stop: fn, start: fn, drawImage: fn, drawText: fn, onResize: fn, setTransform: fn,
+      set blendMode(v) {},
+      set globalAlpha(v) {}
+    };
+    _this.mActivePlugin = _this.mEmptyPlugin;
+    _this.mActiveArrayBuffer = null;
+    _this.mActiveElementBuffer = null;
+    _this.blend = null;
+    _this.boundTextures = [];
 
     _this.__createCanvas();
 
-    _this.mPrograms = {};
-    _this.mActiveProgram = null;
-    _this.state = new WebGLState(_this);
+    var gl = _this.gl;
+    gl.enable(gl.BLEND);
+
+    _this.MAX_TEXTURE_IMAGE_UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    _this.glTextures = new WebGLTextures(_this);
+    _this.blender = new WebGLBlendMode(gl);
+
+    _this.mPlugins = (_this$mPlugins = {}, _defineProperty(_this$mPlugins, WebGLTexPlugin.name, new WebGLTexPlugin(_this)), _defineProperty(_this$mPlugins, WebGLParticlesPlugin.name, new WebGLParticlesPlugin(_this)), _this$mPlugins);
     return _this;
   }
 
@@ -8924,9 +9103,9 @@ var WebGLDriver = function (_VideoNullDriver) {
   _createClass(WebGLDriver, [{
     key: "__createCanvas",
     value: function __createCanvas() {
-      var cvs = /** @type {HTMLCanvasElement} */document.createElement("canvas");
-      cvs.id = "canvas";
-      this.mContainerElement.appendChild(cvs);
+      var canvas = /** @type {HTMLCanvasElement} */document.createElement("canvas");
+      canvas.id = "canvas";
+      this.mContainerElement.appendChild(canvas);
 
       var config = {
         antialias: true, // default true
@@ -8934,11 +9113,8 @@ var WebGLDriver = function (_VideoNullDriver) {
         premultipliedAlpha: false
       };
 
-      var gl = this.gl = cvs.getContext("webgl", config) || cvs.getContext("webgl-experimental", config);
-      gl.canvas.width = this.mClientWidth;
-      gl.canvas.height = this.mClientHeight;
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-      gl.clearColor(0, 0, 0, 1);
+      this.gl = canvas.getContext("webgl", config) || canvas.getContext("webgl-experimental", config);
+      this.__onResize("init", new Rectangle(0, 0, this.mClientWidth, this.mClientHeight));
     }
   }, {
     key: "__onResize",
@@ -8946,78 +9122,155 @@ var WebGLDriver = function (_VideoNullDriver) {
       _get(WebGLDriver.prototype.__proto__ || Object.getPrototypeOf(WebGLDriver.prototype), "__onResize", this).call(this, msg, rect);
 
       var gl = this.gl;
-      gl.canvas.width = this.mClientWidth;
-      gl.canvas.height = this.mClientHeight;
+      var canvas = gl.canvas;
+
+      var desiredWidthInCSSPixels = rect.width;
+      var desiredHeightInCSSPixels = rect.height;
+
+      // set the display size of the canvas.
+      canvas.style.width = desiredWidthInCSSPixels + "px";
+      canvas.style.height = desiredHeightInCSSPixels + "px";
+
+      // set the size of the drawingBuffer
+      var devicePixelRatio = window.devicePixelRatio || 1;
+      canvas.width = desiredWidthInCSSPixels * devicePixelRatio;
+      canvas.height = desiredHeightInCSSPixels * devicePixelRatio;
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-      Object.values(this.mPrograms).forEach(function (program) {
-        return program.onResize(msg, rect);
-      });
-    }
-  }, {
-    key: "setMaterial",
-    value: function setMaterial(material) {
-      var program = this.mPrograms[material.Program.name];
 
-      if (!program) {
-        program = this.mPrograms[material.Program.name] = new material.Program(this);
-        this.__flush();
-        program.activate();
-        program.init(this.mClientWidth, this.mClientHeight);
-        this.mActiveProgram = program;
-      } else if (program !== this.mActiveProgram) {
-        this.__flush();
-        program.activate();
-        this.mActiveProgram = program;
-      }
-
-      program.setMaterial(material);
-    }
-  }, {
-    key: "setTransform",
-    value: function setTransform(m) {
-      this.mActiveProgram.setTransform(m);
+      this.mActivePlugin.onResize(msg, rect);
     }
   }, {
     key: "drawImage",
-    value: function drawImage(texture, bounds) {
-      this.mActiveProgram.drawImage(texture, bounds);
+    value: function drawImage(object, texture) {
+      var plugin = this.mPlugins[object.pluginName];
+
+      if (plugin !== this.mActivePlugin) {
+        this.mActivePlugin.stop();
+        this.mActivePlugin = plugin;
+        plugin.start();
+      }
+
+      plugin.globalAlpha = this.mGlobalAlpha;
+      plugin.globalBlendMode = this.mGlobalBlendMode;
+      plugin.setTransform(this.mTransform);
+      plugin.drawImage(object, texture);
     }
   }, {
     key: "drawText",
-    value: function drawText(text, style, bounds, textWidth, textHeight) {
-      this.mActiveProgram.drawText(text, style, bounds, textWidth, textHeight);
+    value: function drawText(textField, style, bounds) {
+      var plugin = this.mPlugins[textField.pluginName];
+
+      if (plugin !== this.mActivePlugin) {
+        this.mActivePlugin.stop();
+        this.mActivePlugin = plugin;
+        plugin.start();
+      }
+
+      plugin.globalAlpha = this.mGlobalAlpha;
+      plugin.globalBlendMode = this.mGlobalBlendMode;
+      plugin.setTransform(this.mTransform);
+      plugin.drawText(textField, style, bounds);
     }
   }, {
-    key: "beginFrame",
-    value: function beginFrame() {
-      _get(WebGLDriver.prototype.__proto__ || Object.getPrototypeOf(WebGLDriver.prototype), "beginFrame", this).call(this);
-      // this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    key: "bindTexture",
+    value: function bindTexture(texture, slot) {
+      var gl = this.gl;
+      gl.activeTexture(gl.TEXTURE0 + slot);
+      // gl.bindTexture(gl.TEXTURE_2D, this.glTextures[slot]);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, Number(texture.premultiplyAlpha));
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
+
+      // only sprite plugin usable
+      // _vSlotWebGL can be -1 even texture is bound
+      var boundTextures = this.boundTextures;
+      boundTextures[slot]._vSlotWebGL = -1;
+      boundTextures[slot] = texture;
+      texture._vSlotWebGL = slot;
+    }
+  }, {
+    key: "bindArrayBuffer",
+    value: function bindArrayBuffer(buffer) {
+      if (buffer === this.mActiveArrayBuffer) return;
+
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+      this.mActiveArrayBuffer = buffer;
+    }
+  }, {
+    key: "bindElementBuffer",
+    value: function bindElementBuffer(buffer) {
+      if (buffer === this.mActiveElementBuffer) return;
+
+      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
+      this.mActiveElementBuffer = buffer;
+    }
+  }, {
+    key: "setBlend",
+    value: function setBlend(blend) {
+      var blendFunc = this.blender[blend];
+      if (!blendFunc) debugger;
+      this.gl.blendFunc(blendFunc.src, blendFunc.dst);
+      this.blend = blend;
     }
   }, {
     key: "endFrame",
     value: function endFrame() {
-      _get(WebGLDriver.prototype.__proto__ || Object.getPrototypeOf(WebGLDriver.prototype), "endFrame", this).call(this);
-      this.__flush();
+      this.mActivePlugin.stop();
     }
   }, {
-    key: "__flush",
-    value: function __flush() {
-      this.mActiveProgram && this.mActiveProgram.flush();
-    }
-  }, {
-    key: "globalAlpha",
-    set: function set(value) {
-      this.mActiveProgram.globalAlpha = value;
-    }
-  }, {
-    key: "globalBlendMode",
-    set: function set(blendMode) {
-      var same = this.state.checkBlendMode(blendMode);
+    key: "measureText",
+    value: function measureText(textField, style, bounds) {
+      var lines = textField.lines;
+      var widths = textField.lineWidths;
+      var lineHeight = textField.lineHeight;
+      var text = textField.text;
+      var multiLine = textField.multiLine;
+      var strokeThickness = style.strokeThickness;
+      var ctx = textField.context;
+      var canvas = void 0;
 
-      if (!same) {
-        this.__flush();
-        this.state.setBlendMode(blendMode);
+      if (!ctx) {
+        canvas = document.createElement("canvas");
+        ctx = textField.context = canvas.getContext("2d");
+        ctx.mLetterSpacing = 0;
+      } else {
+        canvas = ctx.canvas;
       }
+
+      if (ctx.mLetterSpacing !== textField.letterSpacing) {
+        ctx.mLetterSpacing = textField.letterSpacing;
+
+        var _canvas = ctx.canvas;
+        document.getElementsByTagName("body")[0].appendChild(_canvas);
+        _canvas.style.letterSpacing = textField.letterSpacing + "px";
+        _canvas.style.visibility = "hidden"; // todo
+        // canvas.style.display = `none`;  this doesn't work
+        // ctx = textField.context = canvas.getContext(`2d`);
+      }
+
+      ctx.font = style.style + " " + style.weight + " " + style.size + "px \"" + style.name + "\"";
+      ctx.textBaseline = "bottom";
+
+      lines.length = 0;
+      widths.length = 0;
+      multiLine ? lines.push.apply(lines, _toConsumableArray(text.split("\n"))) : lines.push(text);
+
+      for (var i = 0, l = lines.length; i < l; i++) {
+        widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
+      }
+
+      if (!textField.autoSize) {
+        bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
+      } else {
+        bounds.set(0, 0, Math.max.apply(Math, _toConsumableArray(widths)), lines.length * lineHeight * (style.size + strokeThickness));
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = canvas.naturalWidth = bounds.width;
+      canvas.height = canvas.naturalHeight = bounds.height;
+      textField.mTexture = new Texture(canvas); // todo cache
+      textField.mTexture.premultiplyAlpha = true;
+
+      return bounds;
     }
   }]);
 
@@ -9076,18 +9329,18 @@ var WebGLConstants = {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 /**
  * Maps black blend modes to WebGl blend functions.
  */
 
-var _WebGLBlendMode = function WebGLBlendMode(blendMode, gl) {
-  var _map;
+var WebGLBlendMode = function WebGLBlendMode(gl) {
+  var _ref;
 
-  var map = (_map = {}, _defineProperty(_map, BlendMode.NORMAL, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.ADD, { src: gl.ONE, dst: gl.DST_ALPHA }), _defineProperty(_map, BlendMode.MULTIPLY, { src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.SCREEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_COLOR }), _defineProperty(_map, BlendMode.OVERLAY, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.DARKEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.LIGHTEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.COLOR_DODGE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.COLOR_BURN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.HARD_LIGHT, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.SOFT_LIGHT, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.DIFFERENCE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.EXCLUSION, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.HUE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.SATURATE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.COLOR, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_map, BlendMode.LUMINOSITY, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _map);
+  _classCallCheck(this, WebGLBlendMode);
 
-  return (_WebGLBlendMode = function WebGLBlendMode(blendMode) {
-    return map[blendMode];
-  })(blendMode);
+  return _ref = {}, _defineProperty(_ref, BlendMode.NORMAL, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.ADD, { src: gl.ONE, dst: gl.DST_ALPHA }), _defineProperty(_ref, BlendMode.MULTIPLY, { src: gl.DST_COLOR, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.SCREEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_COLOR }), _defineProperty(_ref, BlendMode.OVERLAY, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.DARKEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.LIGHTEN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.COLOR_DODGE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.COLOR_BURN, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.HARD_LIGHT, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.SOFT_LIGHT, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.DIFFERENCE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.EXCLUSION, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.HUE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.SATURATE, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.COLOR, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _defineProperty(_ref, BlendMode.LUMINOSITY, { src: gl.ONE, dst: gl.ONE_MINUS_SRC_ALPHA }), _ref;
 };
 "use strict";
 
@@ -9101,11 +9354,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var typeMap = (_typeMap = {}, _defineProperty(_typeMap, WebGLConstants.FLOAT, "uniform1f"), _defineProperty(_typeMap, WebGLConstants.FLOAT_VEC2, "uniform2fv"), _defineProperty(_typeMap, WebGLConstants.FLOAT_VEC3, "uniform3fv"), _defineProperty(_typeMap, WebGLConstants.FLOAT_VEC4, "uniform4fv"), _defineProperty(_typeMap, WebGLConstants.INT, "uniform1i"), _defineProperty(_typeMap, WebGLConstants.INT_VEC2, "uniform2iv"), _defineProperty(_typeMap, WebGLConstants.INT_VEC3, "uniform3iv"), _defineProperty(_typeMap, WebGLConstants.INT_VEC4, "uniform4iv"), _defineProperty(_typeMap, WebGLConstants.FLOAT_MAT2, "uniformMatrix2fv"), _defineProperty(_typeMap, WebGLConstants.FLOAT_MAT3, "uniformMatrix3fv"), _defineProperty(_typeMap, WebGLConstants.FLOAT_MAT4, "uniformMatrix4fv"), _defineProperty(_typeMap, WebGLConstants.SAMPLER_2D, "uniform1i"), _typeMap);
 
-var WebGLBaseProgramInfo = function () {
-  function WebGLBaseProgramInfo(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
-    _classCallCheck(this, WebGLBaseProgramInfo);
+var WebGLBasePlugin = function () {
+  function WebGLBasePlugin(renderer, vertexShaderSource, fragmentShaderSource, attributesInfo) {
+    _classCallCheck(this, WebGLBasePlugin);
 
     this.mRenderer = renderer;
+    this.mBlendMode = BlendMode.NORMAL;
+    this.mTransform = new Matrix();
+    this.mGlobalAlpha = 1;
 
     var gl = this.gl = renderer.gl;
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -9118,6 +9374,7 @@ var WebGLBaseProgramInfo = function () {
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    gl.useProgram(program); // set up uniforms for
     gl.deleteShader(vertexShader);
     gl.deleteShader(fragmentShader);
 
@@ -9139,401 +9396,19 @@ var WebGLBaseProgramInfo = function () {
       };
 
       // setter.location = location;
-      Object.defineProperty(uniforms, name, { set: setter });
+      Object.defineProperty(uniforms, name, { set: setter, get: function get() {
+          return location;
+        } });
     };
 
     for (var i = 0; i < uniformsAmount; i++) {
       _loop(i);
     }
-
-    this.mGLArrayBuffer = gl.createBuffer();
-    this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
-    this.attributes = new WebGLVAO(this, attributesInfo);
   }
 
-  _createClass(WebGLBaseProgramInfo, [{
-    key: "init",
-    value: function init(clientWidth, clientHeight) {}
-  }, {
+  _createClass(WebGLBasePlugin, [{
     key: "onResize",
     value: function onResize(msg, rect) {}
-  }, {
-    key: "setMaterial",
-    value: function setMaterial(material) {}
-  }, {
-    key: "setTransform",
-    value: function setTransform(m) {}
-  }, {
-    key: "drawImage",
-    value: function drawImage(texture, bounds) {}
-  }, {
-    key: "drawText",
-    value: function drawText(text, style, bounds, textWidth, textHeight) {}
-  }, {
-    key: "activate",
-    value: function activate() {
-      this.gl.useProgram(this.program);
-    }
-  }, {
-    key: "flush",
-    value: function flush() {
-      this.mRenderer.state.endBatch();
-    }
-  }, {
-    key: "globalAlpha",
-    set: function set(value) {}
-  }]);
-
-  return WebGLBaseProgramInfo;
-}();
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var WebGLState = function () {
-  function WebGLState(renderer) {
-    _classCallCheck(this, WebGLState);
-
-    var gl = this.gl = renderer.gl;
-    this.mRenderer = renderer;
-
-    this.mTexturesManager = new WebGLTexturesManager(renderer);
-    this.mBoundElementBuffer = null;
-    this.mBoundArrayBuffer = null;
-    this.mBlendMode = null;
-
-    gl.enable(gl.BLEND);
-    this.setBlendMode(BlendMode.NORMAL);
-  }
-
-  _createClass(WebGLState, [{
-    key: "bindArrayBuffer",
-    value: function bindArrayBuffer(buffer) {
-      if (buffer === this.mBoundArrayBuffer) return;
-
-      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-      this.mBoundArrayBuffer = buffer;
-    }
-  }, {
-    key: "bindElementBuffer",
-    value: function bindElementBuffer(buffer) {
-      if (buffer === this.mBoundElementBuffer) return;
-
-      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, buffer);
-      this.mBoundElementBuffer = buffer;
-    }
-  }, {
-    key: "bindTexture",
-    value: function bindTexture(texture) {
-      return this.mTexturesManager.bindTexture(texture);
-    }
-  }, {
-    key: "setBlendMode",
-    value: function setBlendMode(blend) {
-      if (blend === this.mBlendMode) return;
-
-      this.mBlendMode = blend;
-      var blendFunc = WebGLBlendMode(blend, this.gl);
-      this.gl.blendFunc(blendFunc.src, blendFunc.dst);
-
-      return true;
-    }
-  }, {
-    key: "checkBlendMode",
-    value: function checkBlendMode(blend) {
-      return blend === this.mBlendMode;
-    }
-  }, {
-    key: "endBatch",
-    value: function endBatch() {
-      this.mTexturesManager.endBatch();
-    }
-  }]);
-
-  return WebGLState;
-}();
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var WebGLTexturesManager = function () {
-  function WebGLTexturesManager(renderer) {
-    _classCallCheck(this, WebGLTexturesManager);
-
-    var gl = this.gl = renderer.gl;
-    var UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-
-    this.mRenderer = renderer;
-    this.mBoundTextures = new Array(UNITS).fill(null);
-    this.mBatchTextures = new Array(UNITS).fill(null);
-    this.mGLTextures = [];
-
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    canvas.width = canvas.height = 8;
-    ctx.fillRect(0, 0, 8, 8);
-
-    for (var i = 0; i < UNITS; i++) {
-      var glTexture = this.mGLTextures[i] = gl.createTexture();
-
-      gl.activeTexture(gl.TEXTURE0 + i);
-      gl.bindTexture(gl.TEXTURE_2D, glTexture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    }
-  }
-
-  _createClass(WebGLTexturesManager, [{
-    key: "bindTexture",
-    value: function bindTexture(texture) {
-      var gl = this.gl;
-      var boundTextures = this.mBoundTextures;
-      var batchTextures = this.mBatchTextures;
-      var index = boundTextures.indexOf(texture);
-
-      if (index === -1) {
-
-        index = boundTextures.indexOf(null);
-        index = index === -1 ? batchTextures.indexOf(null) : index;
-
-        if (index === -1) {
-          return -1;
-        }
-
-        gl.activeTexture(gl.TEXTURE0 + index);
-        gl.bindTexture(gl.TEXTURE_2D, this.mGLTextures[index]);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
-        // todo texture settings repeat nearest clamp from sprite
-      }
-
-      boundTextures[index] = texture;
-      batchTextures[index] = texture;
-
-      return index;
-    }
-  }, {
-    key: "endBatch",
-    value: function endBatch() {
-      this.mBatchTextures.fill(null);
-    }
-  }]);
-
-  return WebGLTexturesManager;
-}();
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _attribTypeMap;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var attribTypeMap = (_attribTypeMap = {}, _defineProperty(_attribTypeMap, WebGLConstants.FLOAT, { size: 1 }), _defineProperty(_attribTypeMap, WebGLConstants.FLOAT_VEC2, { size: 2 }), _defineProperty(_attribTypeMap, WebGLConstants.FLOAT_VEC3, { size: 3 }), _defineProperty(_attribTypeMap, WebGLConstants.FLOAT_VEC4, { size: 4 }), _defineProperty(_attribTypeMap, WebGLConstants.INT, { size: 1 }), _defineProperty(_attribTypeMap, WebGLConstants.INT_VEC2, { size: 2 }), _defineProperty(_attribTypeMap, WebGLConstants.INT_VEC3, { size: 3 }), _defineProperty(_attribTypeMap, WebGLConstants.INT_VEC4, { size: 4 }), _defineProperty(_attribTypeMap, WebGLConstants.UNSIGNED_INT, { size: 1 }), _defineProperty(_attribTypeMap, WebGLConstants.UNSIGNED_INT_VEC2, { size: 2 }), _defineProperty(_attribTypeMap, WebGLConstants.UNSIGNED_INT_VEC3, { size: 3 }), _defineProperty(_attribTypeMap, WebGLConstants.UNSIGNED_INT_VEC4, { size: 4 }), _defineProperty(_attribTypeMap, WebGLConstants.BOOL, { size: 1 }), _defineProperty(_attribTypeMap, WebGLConstants.BOOL_VEC2, { size: 2 }), _defineProperty(_attribTypeMap, WebGLConstants.BOOL_VEC3, { size: 3 }), _defineProperty(_attribTypeMap, WebGLConstants.BOOL_VEC4, { size: 4 }), _attribTypeMap);
-
-var WebGLVAO = function () {
-  function WebGLVAO(programInfo, attributesInfo) {
-    var _this = this;
-
-    _classCallCheck(this, WebGLVAO);
-
-    var gl = programInfo.gl;
-    var viewsHash = this.viewsHash = {};
-    this.mViews = [];
-
-    var createSetter = function createSetter(attribInfo) {
-      var view = viewsHash[attribInfo.Type.name];
-
-      if (!view) {
-        view = viewsHash[attribInfo.Type.name] = new attribInfo.Type(_this.mBuffer);
-        _this.mViews.push(view);
-        view.batchOffset = 0;
-      }
-
-      var BYTES_PER_ELEMENT = view.BYTES_PER_ELEMENT;
-      attribInfo.offsetInView = attribInfo.offset / BYTES_PER_ELEMENT;
-
-      if (attribInfo.size === 1) {
-        Object.defineProperty(_this, attribInfo.name, {
-          set: function set(v) {
-            return view[attribInfo.offsetInView + view.batchOffset] = v;
-          },
-          get: function get() {
-            return attribInfo.location;
-          }
-        });
-      } else {
-        Object.defineProperty(_this, attribInfo.name, {
-          set: function set(v) {
-            for (var i = 0, l = v.length; i < l; i++) {
-              view[attribInfo.offsetInView + view.batchOffset + i] = v[i];
-            }
-          },
-          get: function get() {
-            return attribInfo.location;
-          }
-        });
-      }
-    };
-
-    var offset = 0;
-    var program = programInfo.program;
-    var attribsAmount = gl.getProgramParameter(programInfo.program, gl.ACTIVE_ATTRIBUTES);
-
-    for (var i = 0; i < attribsAmount; i++) {
-      var attrib = gl.getActiveAttrib(program, i);
-      var name = attrib.name;
-      var type = attrib.type;
-
-      var attribInfo = attributesInfo[name] = attributesInfo[name] || {
-        Type: Float32Array,
-        normalize: false,
-        type: gl.FLOAT
-      };
-
-      attribInfo.location = gl.getAttribLocation(program, name);
-      attribInfo.size = attribTypeMap[type].size;
-      attribInfo.name = name;
-
-      offset += offset % attribInfo.Type.BYTES_PER_ELEMENT;
-      attribInfo.offset = offset;
-      offset += attribInfo.size * attribInfo.Type.BYTES_PER_ELEMENT;
-    }
-
-    var mod = offset % 4;
-    this.mStride = offset + (mod ? 4 - mod : 0);
-    this.mBuffer = new ArrayBuffer(4 * 2000 * this.mStride); // todo 2000 pass
-    this.mBatchOffsetInBytes = 0;
-
-    var infos = Object.values(attributesInfo);
-
-    for (var _i = 0, l = infos.length; _i < l; _i++) {
-      var _attribInfo = infos[_i];
-      createSetter(_attribInfo);
-      gl.vertexAttribPointer(_attribInfo.location, _attribInfo.size, _attribInfo.type, _attribInfo.normalize, this.mStride, _attribInfo.offset);
-      gl.enableVertexAttribArray(_attribInfo.location);
-    }
-  }
-
-  _createClass(WebGLVAO, [{
-    key: "nextVertex",
-    value: function nextVertex() {
-      this.mBatchOffsetInBytes += this.mStride;
-
-      for (var i = 0, l = this.mViews.length; i < l; i++) {
-        this.mViews[i].batchOffset = this.mBatchOffsetInBytes / this.mViews[i].BYTES_PER_ELEMENT;
-      }
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      this.mBatchOffsetInBytes = 0;
-
-      for (var i = 0, l = this.mViews.length; i < l; i++) {
-        this.mViews[i].batchOffset = 0;
-      }
-    }
-  }, {
-    key: "data",
-    get: function get() {
-      return this.mBuffer.slice(0, this.mBatchOffsetInBytes);
-    }
-  }, {
-    key: "countForElementsDraw",
-    get: function get() {
-      return this.mBatchOffsetInBytes / this.mStride * 6 / 4 - 2;
-    }
-  }, {
-    key: "countForArraysDraw",
-    get: function get() {
-      return this.mBatchOffsetInBytes / this.mStride;
-    }
-  }]);
-
-  return WebGLVAO;
-}();
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var vertexShaderSource = "\n  attribute vec2 aVertexPos;\n  attribute vec4 aModelMatrix;\n  attribute vec2 aModelPos;\n  attribute float aAlpha;\n  attribute vec2 aTexCoord;\n  attribute float aTexSlot;\n  attribute vec3 aTint;\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n\n  uniform vec2 uProjection;\n\n  void main() {\n    vec2 pos = mat2(aModelMatrix) * aVertexPos + aModelPos;\n    gl_Position = vec4(pos.x * uProjection.x - 1.0, -pos.y * uProjection.y + 1.0, 0.0, 1.0);\n    \n    vTexCoord = aTexCoord;\n    vTexSlot = aTexSlot + 0.5;\n    vColor = vec4(aTint * aAlpha, aAlpha);\n  }\n";
-
-var fragmentShaderSource = "\n  precision lowp float;\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n  \n  uniform sampler2D uSamplers[MAX_TEXTURE_IMAGE_UNITS];\n  \n  void main() {\n    int texSlot = int(vTexSlot);\n    \n    for (int i = 0; i < MAX_TEXTURE_IMAGE_UNITS; i++) {\n      if (i == texSlot) {\n        gl_FragColor = texture2D(uSamplers[i], vTexCoord) * vColor;\n        return;\n      }\n    }\n  }\n";
-
-var QUAD = ["left", "top", "right", "top", "left", "bottom", "right", "bottom"];
-
-var WebGLTexProgramInfo = function (_WebGLBaseProgramInfo) {
-  _inherits(WebGLTexProgramInfo, _WebGLBaseProgramInfo);
-
-  function WebGLTexProgramInfo(renderer) {
-    _classCallCheck(this, WebGLTexProgramInfo);
-
-    var gl = renderer.gl;
-    var UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-
-    var attributesInfo = {
-      aTint: { Type: Uint8Array, normalize: true, type: gl.UNSIGNED_BYTE }
-    };
-
-    var _this = _possibleConstructorReturn(this, (WebGLTexProgramInfo.__proto__ || Object.getPrototypeOf(WebGLTexProgramInfo)).call(this, renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS), attributesInfo));
-
-    _this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
-    _this.mBatchObjects = 0;
-
-    // Elements Buffer
-    _this.mGLElementArrayBuffer = gl.createBuffer();
-    renderer.state.bindElementBuffer(_this.mGLElementArrayBuffer);
-
-    _this.maxBatchSize = 2000;
-
-    var QUAD_INDICES = [0, 1, 2, 3, 3, 4];
-    var len = _this.maxBatchSize * 6;
-    var indices = new Uint16Array(len);
-
-    for (var i = 0; i < len; i++) {
-      indices[i] = QUAD_INDICES[i % 6] + (i / 6 | 0) * 4;
-    }
-
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
-    return _this;
-  }
-
-  _createClass(WebGLTexProgramInfo, [{
-    key: "init",
-    value: function init(clientWidth, clientHeight) {
-      this.uniforms.uProjection = new Float32Array([2 / clientWidth, 2 / clientHeight]);
-      this.uniforms.uSamplers = new Int32Array(new Array(this.MAX_TEXTURE_IMAGE_UNITS).fill(0).map(function (v, i) {
-        return i;
-      }));
-    }
-  }, {
-    key: "onResize",
-    value: function onResize(msg, rect) {
-      this.uniforms.uProjection = new Float32Array([2 / rect.width, 2 / rect.height]);
-    }
-  }, {
-    key: "setMaterial",
-    value: function setMaterial(material) {
-      this.mMaterial = material;
-    }
   }, {
     key: "setTransform",
     value: function setTransform(m) {
@@ -9541,132 +9416,20 @@ var WebGLTexProgramInfo = function (_WebGLBaseProgramInfo) {
     }
   }, {
     key: "drawImage",
-    value: function drawImage(texture, pivotX, pivotY) {
-      var modelMatrix = this.mTransform.value;
-      var attributes = this.attributes;
-      var region = texture.relativeRegion;
-      var alpha = this.mGlobalAlpha;
-      var tint = this.mMaterial.tint;
-      var r = tint >> 16 & 255;
-      var g = tint >> 8 & 255;
-      var b = tint & 255;
-      var texSlot = this.mRenderer.state.bindTexture(texture);
-
-      if (++this.mBatchObjects > this.maxBatchSize) {
-        this.flush();
-        this.mBatchObjects = 1;
-      }
-
-      if (texSlot === -1) {
-        this.flush();
-        this.mBatchObjects = 1;
-        texSlot = this.mRenderer.state.bindTexture(texture);
-      }
-
-      var uintView = attributes.viewsHash.Uint8Array;
-      var floatView = attributes.viewsHash.Float32Array;
-
-      var bounds = Rectangle.__cache;
-      bounds.set(0, 0, texture.width, texture.height);
-
-      for (var i = 0; i < 4; i++) {
-        var batchOffset = floatView.batchOffset;
-
-        floatView[batchOffset + 0] = bounds[QUAD[i * 2]];
-        floatView[batchOffset + 1] = bounds[QUAD[i * 2 + 1]];
-
-        floatView[batchOffset + 2] = modelMatrix[0];
-        floatView[batchOffset + 3] = modelMatrix[1];
-        floatView[batchOffset + 4] = modelMatrix[2];
-        floatView[batchOffset + 5] = modelMatrix[3];
-
-        floatView[batchOffset + 6] = modelMatrix[4];
-        floatView[batchOffset + 7] = modelMatrix[5];
-
-        floatView[batchOffset + 8] = alpha;
-
-        floatView[batchOffset + 9] = region[QUAD[i * 2]];
-        floatView[batchOffset + 10] = region[QUAD[i * 2 + 1]];
-
-        floatView[batchOffset + 11] = texSlot;
-
-        var offset = (batchOffset + 12) * 4;
-        uintView[offset] = r;
-        uintView[offset + 1] = g;
-        uintView[offset + 2] = b;
-
-        attributes.nextVertex();
-      }
-    }
+    value: function drawImage(object, texture) {}
   }, {
     key: "drawText",
-    value: function drawText(text, style, bounds, textWidth, textHeight) {
-      var font = style.style + " " + style.weight + " " + style.size + "px \"" + style.name + "\"";
-      var key = "" + text + font + style.align + style.color + style.strokeThickness + style.strokeColor;
-      var material = this.mMaterial;
-      var tex = material.tex;
-
-      if (key !== material.key) {
-        var ctx = material.ctx;
-        var canvas = void 0;
-
-        if (!ctx) {
-          canvas = document.createElement("canvas");
-          ctx = canvas.getContext("2d");
-        } else {
-          canvas = ctx.canvas;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        canvas.width = textWidth;
-        canvas.height = textHeight;
-
-        ctx.font = font;
-        ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
-
-        ctx.textAlign = style.align;
-        ctx.textBaseline = "top";
-
-        var x = style.align === "center" ? textWidth / 2 : style.align === "left" ? 0 : textWidth;
-        var lines = text.split("\n");
-        var lineHeight = textHeight / lines.length;
-
-        for (var i = 0, l = lines.length; i < l; i++) {
-          var y = lineHeight * i;
-          ctx.fillText(lines[i], x, y);
-
-          if (style.strokeThickness > 0) {
-            ctx.lineWidth = style.strokeThickness;
-            ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
-            ctx.strokeText(text, x, y);
-          }
-        }
-
-        tex = new Texture(canvas, Rectangle.__cache.set(0, 0, canvas.width, canvas.height));
-      }
-
-      this.drawImage(tex, bounds.x, bounds.y); // todo there is no pivots there
-    }
+    value: function drawText(textField, style, bounds) {}
   }, {
-    key: "flush",
-    value: function flush() {
-      _get(WebGLTexProgramInfo.prototype.__proto__ || Object.getPrototypeOf(WebGLTexProgramInfo.prototype), "flush", this).call(this);
-
-      var gl = this.gl;
-
-      this.mRenderer.state.bindArrayBuffer(this.mGLArrayBuffer);
-      this.mRenderer.state.bindElementBuffer(this.mGLElementArrayBuffer);
-
-      var count = this.attributes.countForElementsDraw;
-
-      if (count > 0) {
-        gl.bufferData(gl.ARRAY_BUFFER, this.attributes.data, gl.STREAM_DRAW);
-        gl.drawElements(gl.TRIANGLE_STRIP, count, gl.UNSIGNED_SHORT, 0);
-
-        this.attributes.clear();
-        this.mBatchObjects = 0;
-        this.mRenderer.state.endBatch();
-      }
+    key: "start",
+    value: function start() {}
+  }, {
+    key: "stop",
+    value: function stop() {}
+  }, {
+    key: "globalBlendMode",
+    set: function set(blendMode) {
+      this.mBlendMode = blendMode;
     }
   }, {
     key: "globalAlpha",
@@ -9675,8 +9438,671 @@ var WebGLTexProgramInfo = function (_WebGLBaseProgramInfo) {
     }
   }]);
 
-  return WebGLTexProgramInfo;
-}(WebGLBaseProgramInfo);
+  return WebGLBasePlugin;
+}();
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var WebGLTextures = function WebGLTextures(renderer) {
+  _classCallCheck(this, WebGLTextures);
+
+  var gl = this.gl = renderer.gl;
+  var UNITS = renderer.MAX_TEXTURE_IMAGE_UNITS;
+  var glTextures = [];
+  var canvas = document.createElement("canvas");
+  var ctx = canvas.getContext("2d");
+  canvas.width = canvas.height = 8;
+  ctx.fillRect(0, 0, 8, 8);
+
+  for (var i = 0; i < UNITS; i++) {
+    var glTexture = glTextures[i] = gl.createTexture();
+    var texture = new Texture(canvas);
+    texture._vSlotWebGL = i;
+    renderer.boundTextures[i] = texture;
+
+    gl.activeTexture(gl.TEXTURE0 + i);
+    gl.bindTexture(gl.TEXTURE_2D, glTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.native);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+
+  return glTextures;
+};
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var vertexShaderSource = "\n  precision highp float;\n  \n  attribute vec2 aPosition; // 2 * float = 8\n  attribute vec2 aTexCoord; // 2 * unsigned short = 4\n  attribute vec4 aColor;    // 4 * UNSIGNED BYTE = 4\n  attribute float aTexSlot; // 1 * float = 4\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n\n  uniform vec2 uProjection;\n\n  void main() {\n    gl_Position = vec4(aPosition.x * uProjection.x - 1.0, -aPosition.y * uProjection.y + 1.0, 0.0, 1.0);\n    \n    vTexCoord = aTexCoord;\n    vTexSlot = aTexSlot;\n    vColor = aColor;\n  }\n";
+
+var fragmentShaderSource = "\n  precision lowp float;\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n  \n  uniform sampler2D uSamplers[MAX_TEXTURE_IMAGE_UNITS];\n  \n  void main() {\n    int texSlot = int(vTexSlot);\n    \n    for (int i = 0; i < MAX_TEXTURE_IMAGE_UNITS; i++) {\n      if (i == texSlot) {\n        gl_FragColor = texture2D(uSamplers[i], vTexCoord) * vColor;\n        return;\n      }\n    }\n  }\n";
+
+var LAST_SLOT = 0;
+
+var WebGLTexPlugin = function (_WebGLBasePlugin) {
+  _inherits(WebGLTexPlugin, _WebGLBasePlugin);
+
+  function WebGLTexPlugin(renderer) {
+    _classCallCheck(this, WebGLTexPlugin);
+
+    var gl = renderer.gl;
+    var UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+
+    var _this = _possibleConstructorReturn(this, (WebGLTexPlugin.__proto__ || Object.getPrototypeOf(WebGLTexPlugin)).call(this, renderer, vertexShaderSource, fragmentShaderSource.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS)));
+
+    _this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
+    _this.batchSize = 2048;
+    _this.objects = [];
+    _this.batches = [];
+    _this.buffers = [];
+
+    for (var i = 0, l = _this.batchSize; i < l; i++) {
+      _this.batches.push({ textures: [], texturesLength: 0, slots: {}, start: 0, size: 0, blend: null });
+    }
+
+    for (var _i = 1, _l = _this.nextPow2(_this.batchSize); _i <= _l; _i *= 2) {
+      var buffer = { data: new ArrayBuffer(_i * 4 * 20) };
+      buffer.float32View = new Float32Array(buffer.data);
+      buffer.uint32View = new Uint32Array(buffer.data);
+      _this.buffers[_i] = buffer;
+    }
+
+    // Element Buffer
+    var len = _this.batchSize * 6;
+    var indices = new Uint16Array(len);
+
+    for (var _i2 = 0, j = 0; _i2 < len; _i2 += 6, j += 4) {
+      indices[_i2] = j;
+      indices[_i2 + 1] = j + 1;
+      indices[_i2 + 2] = j + 2;
+      indices[_i2 + 3] = j + 3;
+      indices[_i2 + 4] = j + 3;
+      indices[_i2 + 5] = j + 4;
+    }
+
+    _this.mElementBuffer = gl.createBuffer();
+    renderer.bindElementBuffer(_this.mElementBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
+
+    // Array Buffer
+    _this.mArrayBuffer = gl.createBuffer();
+    var location = {
+      aPosition: gl.getAttribLocation(_this.program, "aPosition"),
+      aTexCoord: gl.getAttribLocation(_this.program, "aTexCoord"),
+      aColor: gl.getAttribLocation(_this.program, "aColor"),
+      aTexSlot: gl.getAttribLocation(_this.program, "aTexSlot")
+    };
+    gl.bindBuffer(gl.ARRAY_BUFFER, _this.mArrayBuffer);
+    gl.vertexAttribPointer(location.aPosition, 2, gl.FLOAT, false, 20, 0);
+    gl.vertexAttribPointer(location.aTexCoord, 2, gl.UNSIGNED_SHORT, true, 20, 8);
+    gl.vertexAttribPointer(location.aColor, 4, gl.UNSIGNED_BYTE, true, 20, 12);
+    gl.vertexAttribPointer(location.aTexSlot, 1, gl.FLOAT, false, 20, 16);
+    gl.enableVertexAttribArray(location.aPosition);
+    gl.enableVertexAttribArray(location.aTexCoord);
+    gl.enableVertexAttribArray(location.aColor);
+    gl.enableVertexAttribArray(location.aTexSlot);
+
+    gl.uniform2f(_this.uniforms.uProjection, 2 / renderer.mClientWidth, 2 / renderer.mClientHeight);
+    gl.uniform1iv(_this.uniforms.uSamplers, new Int32Array(new Array(_this.MAX_TEXTURE_IMAGE_UNITS).fill(0).map(function (v, i) {
+      return i;
+    })));
+
+    _this.stop = _this.flush;
+    return _this;
+  }
+
+  _createClass(WebGLTexPlugin, [{
+    key: "onResize",
+    value: function onResize(msg, rect) {
+      this.gl.uniform2f(this.uniforms.uProjection, 2 / rect.width, 2 / rect.height);
+    }
+  }, {
+    key: "drawImage",
+    value: function drawImage(object) {
+      if (object.worldAlpha === 0) return;
+
+      this.objects.push(object);
+
+      if (this.objects.length === this.batchSize) {
+        this.flush();
+      }
+    }
+  }, {
+    key: "drawText",
+    value: function drawText(textField, style, bounds) {
+      if (!textField.mNeedInvalidate) {
+        return this.drawImage(textField);
+      }
+
+      var lines = textField.lines;
+      var widths = textField.lineWidths;
+      var lineOffset = textField.lineHeight * style.size;
+      var strokeThickness = style.strokeThickness;
+      var align = style.align;
+      var maxWidth = bounds.width;
+      var ctx = textField.context;
+
+      if (ctx.mLetterSpacing !== textField.letterSpacing) {
+        ctx.mLetterSpacing = textField.letterSpacing;
+
+        var canvas = ctx.canvas;
+        canvas.style.letterSpacing = textField.letterSpacing + "px";
+        // ctx = this.mCtx = canvas.getContext(`2d`);
+      }
+
+      ctx.font = style.style + " " + style.weight + " " + style.size + "px \"" + style.name + "\"";
+      ctx.fillStyle = this.mRenderer.hexColorToString(style.color);
+      ctx.textBaseline = "bottom";
+
+      if (strokeThickness !== 0) {
+        ctx.lineJoin = "round";
+        ctx.miterLimit = 2;
+        ctx.lineWidth = strokeThickness;
+        ctx.strokeStyle = this.mRenderer.hexColorToString(style.strokeColor);
+      }
+
+      // ctx.fillRect(0, 0, maxWidth, bounds.height);
+
+      for (var i = 0, l = lines.length; i < l; i++) {
+        var width = widths[i];
+        var y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
+        var x = strokeThickness / 2;
+
+        if (align === "center") {
+          x += maxWidth / 2 - width / 2;
+        } else if (align === "right") {
+          x += maxWidth - width;
+        }
+
+        strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
+        ctx.fillText(lines[i], x, y);
+      }
+
+      this.drawImage(textField);
+    }
+  }, {
+    key: "flush",
+    value: function flush() {
+      var objects = this.objects;
+      var length = objects.length;
+
+      if (length === 0) return;
+
+      var gl = this.gl;
+      var renderer = this.mRenderer;
+      var rendererBoundTextures = renderer.boundTextures;
+      var vBoundTextures = rendererBoundTextures.slice();
+      var batches = this.batches;
+      var MAX_TEXTURE_IMAGE_UNITS = this.MAX_TEXTURE_IMAGE_UNITS;
+      var buffer = this.buffers[this.nextPow2(length)];
+      var uint32View = buffer.uint32View;
+      var float32View = buffer.float32View;
+
+      var index = 0;
+      var currentBatchIndex = 0;
+      var currentBatch = batches[0];
+      var currentBlend = currentBatch.blend = objects[0].blendMode;
+      var currentBatchSlots = currentBatch.slots;
+      currentBatch.texturesLength = 0;
+      var i = void 0;
+
+      for (i = 0; i < length; i++) {
+        var object = objects[i];
+        var alpha = object.worldAlpha;
+        var tint = object.tint;
+        var nextBlend = object.blendMode;
+        var texture = object.mTexture;
+        /* object.lateDirty && */object.refreshVertexData(); // todo late dirt
+
+        if (currentBlend !== nextBlend) {
+          currentBlend = nextBlend;
+
+          currentBatchSlots = 0;
+          currentBatch.texturesLength = MAX_TEXTURE_IMAGE_UNITS;
+        }
+
+        if (currentBatchSlots[texture.id] === undefined) {
+          if (currentBatch.texturesLength === MAX_TEXTURE_IMAGE_UNITS) {
+            currentBatch.size = i - currentBatch.start;
+            // currentBatch.texturesLength = currentBatch.textures.length;
+
+            currentBatch = batches[++currentBatchIndex];
+            currentBatch.start = i;
+            currentBatch.blend = nextBlend;
+            currentBatch.texturesLength = 0;
+            currentBatchSlots = currentBatch.slots;
+          }
+
+          if (texture._vSlotWebGL === -1) {
+            for (var j = 0; j < MAX_TEXTURE_IMAGE_UNITS; j++) {
+              var k = (j + LAST_SLOT) % MAX_TEXTURE_IMAGE_UNITS;
+              var tex = vBoundTextures[k];
+
+              if (currentBatchSlots[tex.mId] === undefined) {
+                tex._vSlotWebGL = -1;
+                texture._vSlotWebGL = k;
+                vBoundTextures[k] = texture;
+                LAST_SLOT++;
+
+                break;
+              }
+            }
+          }
+
+          currentBatchSlots[texture.mId] = texture._vSlotWebGL;
+          currentBatch.textures[currentBatch.texturesLength++] = texture;
+        }
+
+        var vertexData = object.vertexData;
+        float32View[index] = vertexData[0];
+        float32View[index + 1] = vertexData[1];
+        float32View[index + 5] = vertexData[2];
+        float32View[index + 6] = vertexData[3];
+        float32View[index + 10] = vertexData[4];
+        float32View[index + 11] = vertexData[5];
+        float32View[index + 15] = vertexData[6];
+        float32View[index + 16] = vertexData[7];
+
+        var texCoord = texture.coord;
+        uint32View[index + 2] = texCoord[0];
+        uint32View[index + 7] = texCoord[1];
+        uint32View[index + 12] = texCoord[2];
+        uint32View[index + 17] = texCoord[3];
+
+        uint32View[index + 3] = uint32View[index + 8] = uint32View[index + 13] = uint32View[index + 18] = alpha === 1 ? (alpha * 255 << 24) + tint : (alpha * 255 << 24) + (((tint >> 16 & 0xff) * alpha + 0.5 | 0) << 16) + (((tint >> 8 & 0xff) * alpha + 0.5 | 0) << 8) + ((tint & 0xff) * alpha + 0.5 | 0);
+
+        float32View[index + 4] = float32View[index + 9] = float32View[index + 14] = float32View[index + 19] = texture._vSlotWebGL + 0.5;
+
+        index += 20;
+      }
+
+      currentBatch.size = i - currentBatch.start;
+      gl.bufferData(gl.ARRAY_BUFFER, buffer.data, gl.STREAM_DRAW);
+
+      for (var _i3 = 0, _len = currentBatchIndex + 1; _i3 < _len; _i3++) {
+        var batch = batches[_i3];
+        var textures = batch.textures;
+        var slots = batch.slots;
+
+        for (var _j = 0, l = batch.textures.length; _j < l; _j++) {
+          var _texture = textures[_j];
+          var slot = slots[_texture.id];
+          slots[_texture.id] = undefined;
+
+          if (rendererBoundTextures[slot] !== _texture) {
+            renderer.bindTexture(_texture, slot);
+          }
+        }
+
+        if (renderer.blend !== batch.blend) {
+          renderer.setBlend(batch.blend);
+        }
+
+        gl.drawElements(gl.TRIANGLE_STRIP, batch.size * 6 - 2, gl.UNSIGNED_SHORT, batch.start * 12);
+      }
+
+      objects.length = 0;
+    }
+  }, {
+    key: "start",
+    value: function start() {
+      this.gl.useProgram(this.program);
+    }
+  }, {
+    key: "nextPow2",
+    value: function nextPow2(v) {
+      v += v === 0;
+      --v;
+      v |= v >>> 1;
+      v |= v >>> 2;
+      v |= v >>> 4;
+      v |= v >>> 8;
+      v |= v >>> 16;
+
+      return v + 1;
+    }
+  }]);
+
+  return WebGLTexPlugin;
+}(WebGLBasePlugin);
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var vertexShaderSource1 = "\n  precision highp float;\n  \n  attribute vec2 aPosition; // 2 * float = 8\n  attribute vec2 aTexCoord; // 2 * unsigned short = 4\n  attribute vec4 aColor;    // 4 * UNSIGNED BYTE = 4\n  attribute float aTexSlot; // 1 * float = 4\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n\n  uniform vec2 uProjection;\n\n  void main() {\n    gl_Position = vec4(aPosition.x * uProjection.x - 1.0, -aPosition.y * uProjection.y + 1.0, 0.0, 1.0);\n    \n    vTexCoord = aTexCoord;\n    vTexSlot = aTexSlot;\n    vColor = aColor;\n  }\n";
+
+var fragmentShaderSource1 = "\n  precision lowp float;\n  \n  varying vec2 vTexCoord;\n  varying float vTexSlot;\n  varying vec4 vColor;\n  \n  uniform sampler2D uSamplers[MAX_TEXTURE_IMAGE_UNITS];\n  \n  void main() {\n    int texSlot = int(vTexSlot);\n    \n    for (int i = 0; i < MAX_TEXTURE_IMAGE_UNITS; i++) {\n      if (i == texSlot) {\n        gl_FragColor = texture2D(uSamplers[i], vTexCoord) * vColor;\n        return;\n      }\n    }\n  }\n";
+
+var LAST_SLOT_ = 0;
+
+var WebGLParticlesPlugin = function (_WebGLBasePlugin) {
+  _inherits(WebGLParticlesPlugin, _WebGLBasePlugin);
+
+  function WebGLParticlesPlugin(renderer) {
+    _classCallCheck(this, WebGLParticlesPlugin);
+
+    var gl = renderer.gl;
+    var UNITS = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+
+    var _this = _possibleConstructorReturn(this, (WebGLParticlesPlugin.__proto__ || Object.getPrototypeOf(WebGLParticlesPlugin)).call(this, renderer, vertexShaderSource1, fragmentShaderSource1.replace(/MAX_TEXTURE_IMAGE_UNITS/g, UNITS)));
+
+    _this.MAX_TEXTURE_IMAGE_UNITS = UNITS;
+    _this.batchSize = 2048;
+    _this.objects = new Array(_this.batchSize).fill("").map(function (v) {
+      return { transform: new Matrix(), vertexData: [] };
+    });
+    _this.objectsLength = 0;
+    _this.batches = [];
+    _this.buffers = [];
+
+    for (var i = 0, l = _this.batchSize; i < l; i++) {
+      _this.batches.push({ textures: [], texturesLength: 0, slots: {}, start: 0, size: 0, blend: null });
+    }
+
+    for (var _i = 1, _l = _this.nextPow2(_this.batchSize); _i <= _l; _i *= 2) {
+      var buffer = { data: new ArrayBuffer(_i * 4 * 20) };
+      buffer.float32View = new Float32Array(buffer.data);
+      buffer.uint32View = new Uint32Array(buffer.data);
+      _this.buffers[_i] = buffer;
+    }
+
+    // Element Buffer
+    var len = _this.batchSize * 6;
+    var indices = new Uint16Array(len);
+
+    for (var _i2 = 0, j = 0; _i2 < len; _i2 += 6, j += 4) {
+      indices[_i2] = j;
+      indices[_i2 + 1] = j + 1;
+      indices[_i2 + 2] = j + 2;
+      indices[_i2 + 3] = j + 3;
+      indices[_i2 + 4] = j + 3;
+      indices[_i2 + 5] = j + 4;
+    }
+
+    _this.mElementBuffer = gl.createBuffer();
+    renderer.bindElementBuffer(_this.mElementBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STREAM_DRAW);
+
+    // Array Buffer
+    _this.mArrayBuffer = gl.createBuffer();
+    var location = {
+      aPosition: gl.getAttribLocation(_this.program, "aPosition"),
+      aTexCoord: gl.getAttribLocation(_this.program, "aTexCoord"),
+      aColor: gl.getAttribLocation(_this.program, "aColor"),
+      aTexSlot: gl.getAttribLocation(_this.program, "aTexSlot")
+    };
+    gl.bindBuffer(gl.ARRAY_BUFFER, _this.mArrayBuffer);
+    gl.vertexAttribPointer(location.aPosition, 2, gl.FLOAT, false, 20, 0);
+    gl.vertexAttribPointer(location.aTexCoord, 2, gl.UNSIGNED_SHORT, true, 20, 8);
+    gl.vertexAttribPointer(location.aColor, 4, gl.UNSIGNED_BYTE, true, 20, 12);
+    gl.vertexAttribPointer(location.aTexSlot, 1, gl.FLOAT, false, 20, 16);
+    gl.enableVertexAttribArray(location.aPosition);
+    gl.enableVertexAttribArray(location.aTexCoord);
+    gl.enableVertexAttribArray(location.aColor);
+    gl.enableVertexAttribArray(location.aTexSlot);
+
+    gl.uniform2f(_this.uniforms.uProjection, 2 / renderer.mClientWidth, 2 / renderer.mClientHeight);
+    gl.uniform1iv(_this.uniforms.uSamplers, new Int32Array(new Array(_this.MAX_TEXTURE_IMAGE_UNITS).fill(0).map(function (v, i) {
+      return i;
+    })));
+
+    _this.stop = _this.flush;
+    return _this;
+  }
+
+  _createClass(WebGLParticlesPlugin, [{
+    key: "onResize",
+    value: function onResize(msg, rect) {
+      this.gl.uniform2f(this.uniforms.uProjection, 2 / rect.width, 2 / rect.height);
+    }
+  }, {
+    key: "setTransform",
+    value: function setTransform(m) {
+      this.mTransform = m;
+    }
+  }, {
+    key: "refreshVertexData",
+    value: function refreshVertexData(object) {
+      var vertexData = object.vertexData;
+      var transform = object.transform.value;
+      var a = transform[0];
+      var b = transform[1];
+      var c = transform[2];
+      var d = transform[3];
+      var tx = transform[4];
+      var ty = transform[5];
+      var texture = object.mTexture;
+      var region = texture.mRegion;
+      var w = region.width;
+      var h = region.height;
+
+      if (texture.isTrimmed) {
+        var untrimmedRegion = texture.untrimmedRect;
+        var left = untrimmedRegion.x;
+        var top = untrimmedRegion.y;
+        var right = left + w;
+        var bottom = top + h;
+
+        // left top
+        vertexData[0] = a * left + c * top + tx;
+        vertexData[1] = d * top + b * left + ty;
+
+        // right top
+        vertexData[2] = a * right + c * top + tx;
+        vertexData[3] = d * top + b * right + ty;
+
+        // left bottom
+        vertexData[4] = a * left + c * bottom + tx;
+        vertexData[5] = d * bottom + b * left + ty;
+
+        // right bottom
+        vertexData[6] = a * right + c * bottom + tx;
+        vertexData[7] = d * bottom + b * right + ty;
+      } else {
+
+        // left top
+        vertexData[0] = tx;
+        vertexData[1] = ty;
+
+        // right top
+        vertexData[2] = a * w + tx;
+        vertexData[3] = b * w + ty;
+
+        // left bottom
+        vertexData[4] = c * h + tx;
+        vertexData[5] = d * h + ty;
+
+        // right bottom
+        vertexData[6] = a * w + c * h + tx;
+        vertexData[7] = d * h + b * w + ty;
+      }
+    }
+  }, {
+    key: "drawImage",
+    value: function drawImage(particle, texture) {
+      if (particle.worldAlpha === 0) return;
+
+      var object = this.objects[this.objectsLength++];
+      object.transform.copyFrom(this.mTransform);
+      object.mTexture = texture;
+      object.worldAlpha = particle.worldAlpha;
+      object.tint = 0xffffff;
+      object.blendMode = this.mBlendMode;
+
+      if (this.objectsLength === this.batchSize) {
+        this.flush();
+      }
+    }
+  }, {
+    key: "flush",
+    value: function flush() {
+      var objects = this.objects;
+      var length = this.objectsLength;
+
+      if (length === 0) return;
+
+      var gl = this.gl;
+      var renderer = this.mRenderer;
+      var rendererBoundTextures = renderer.boundTextures;
+      var vBoundTextures = rendererBoundTextures.slice();
+      var batches = this.batches;
+      var MAX_TEXTURE_IMAGE_UNITS = this.MAX_TEXTURE_IMAGE_UNITS;
+      var buffer = this.buffers[this.nextPow2(length)];
+      var uint32View = buffer.uint32View;
+      var float32View = buffer.float32View;
+
+      var index = 0;
+      var currentBatchIndex = 0;
+      var currentBatch = batches[0];
+      var currentBlend = currentBatch.blend = objects[0].blendMode;
+      var currentBatchSlots = currentBatch.slots;
+      currentBatch.texturesLength = 0;
+      var i = void 0;
+
+      for (i = 0; i < length; i++) {
+        var object = objects[i];
+        var alpha = object.worldAlpha;
+        var tint = object.tint;
+        var nextBlend = object.blendMode;
+        var texture = object.mTexture;
+
+        if (currentBlend !== nextBlend) {
+          currentBlend = nextBlend;
+
+          currentBatchSlots = 0;
+          currentBatch.texturesLength = MAX_TEXTURE_IMAGE_UNITS;
+        }
+
+        if (currentBatchSlots[texture.id] === undefined) {
+          if (currentBatch.texturesLength === MAX_TEXTURE_IMAGE_UNITS) {
+            currentBatch.size = i - currentBatch.start;
+            // currentBatch.texturesLength = currentBatch.textures.length;
+
+            currentBatch = batches[++currentBatchIndex];
+            currentBatch.start = i;
+            currentBatch.blend = nextBlend;
+            currentBatch.texturesLength = 0;
+            currentBatchSlots = currentBatch.slots;
+          }
+
+          if (texture._vSlotWebGL === -1) {
+            for (var j = 0; j < MAX_TEXTURE_IMAGE_UNITS; j++) {
+              var k = (j + LAST_SLOT_) % MAX_TEXTURE_IMAGE_UNITS;
+              var tex = vBoundTextures[k];
+
+              if (currentBatchSlots[tex.mId] === undefined) {
+                tex._vSlotWebGL = -1;
+                texture._vSlotWebGL = k;
+                vBoundTextures[k] = texture;
+                LAST_SLOT_++;
+
+                break;
+              }
+            }
+          }
+
+          currentBatchSlots[texture.mId] = texture._vSlotWebGL;
+          currentBatch.textures[currentBatch.texturesLength++] = texture;
+        }
+
+        this.refreshVertexData(object);
+        var vertexData = object.vertexData;
+        float32View[index] = vertexData[0];
+        float32View[index + 1] = vertexData[1];
+        float32View[index + 5] = vertexData[2];
+        float32View[index + 6] = vertexData[3];
+        float32View[index + 10] = vertexData[4];
+        float32View[index + 11] = vertexData[5];
+        float32View[index + 15] = vertexData[6];
+        float32View[index + 16] = vertexData[7];
+
+        var texCoord = texture.coord;
+        uint32View[index + 2] = texCoord[0];
+        uint32View[index + 7] = texCoord[1];
+        uint32View[index + 12] = texCoord[2];
+        uint32View[index + 17] = texCoord[3];
+
+        uint32View[index + 3] = uint32View[index + 8] = uint32View[index + 13] = uint32View[index + 18] = alpha === 1 ? (alpha * 255 << 24) + tint : (alpha * 255 << 24) + (((tint >> 16 & 0xff) * alpha + 0.5 | 0) << 16) + (((tint >> 8 & 0xff) * alpha + 0.5 | 0) << 8) + ((tint & 0xff) * alpha + 0.5 | 0);
+
+        float32View[index + 4] = float32View[index + 9] = float32View[index + 14] = float32View[index + 19] = texture._vSlotWebGL + 0.5;
+
+        index += 20;
+      }
+
+      currentBatch.size = i - currentBatch.start;
+      gl.bufferData(gl.ARRAY_BUFFER, buffer.data, gl.STREAM_DRAW);
+
+      for (var _i3 = 0, _len = currentBatchIndex + 1; _i3 < _len; _i3++) {
+        var batch = batches[_i3];
+        var textures = batch.textures;
+        var slots = batch.slots;
+
+        for (var _j = 0, l = batch.texturesLength; _j < l; _j++) {
+          var _texture = textures[_j];
+          var slot = slots[_texture.id];
+          slots[_texture.id] = undefined;
+
+          if (rendererBoundTextures[slot] !== _texture) {
+            renderer.bindTexture(_texture, slot);
+          }
+        }
+
+        if (renderer.blend !== batch.blend) {
+          renderer.setBlend(batch.blend);
+        }
+
+        gl.drawElements(gl.TRIANGLE_STRIP, batch.size * 6 - 2, gl.UNSIGNED_SHORT, batch.start * 12);
+      }
+
+      this.objectsLength = 0;
+    }
+  }, {
+    key: "start",
+    value: function start() {
+      this.gl.useProgram(this.program);
+    }
+  }, {
+    key: "nextPow2",
+    value: function nextPow2(v) {
+      v += v === 0;
+      --v;
+      v |= v >>> 1;
+      v |= v >>> 2;
+      v |= v >>> 4;
+      v |= v >>> 8;
+      v |= v >>> 16;
+
+      return v + 1;
+    }
+  }, {
+    key: "globalBlendMode",
+    set: function set(blendMode) {
+      this.mBlendMode = blendMode;
+    }
+  }, {
+    key: "globalAlpha",
+    set: function set(value) {
+      this.mGlobalAlpha = value;
+    }
+  }]);
+
+  return WebGLParticlesPlugin;
+}(WebGLBasePlugin);
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -9709,7 +10135,7 @@ var DisplayObject = function (_GameObject) {
     _this.mAlpha = 1;
 
     /**
-     * @private
+     * @public
      * @type {string}
      */
     _this.blendMode = BlendMode.NORMAL;
@@ -9720,32 +10146,25 @@ var DisplayObject = function (_GameObject) {
      */
     _this.mVisible = true;
 
-    _this.material = {
-      Program: WebGLTexProgramInfo,
-      tint: 0xffffff,
-
-      // text
-      ctx: null,
-      key: null,
-      tex: null
-    };
+    _this.pluginName = WebGLTexPlugin.name;
+    _this.vertexData = [];
+    _this.tint = 0xffffff;
     return _this;
   }
 
+  /**
+   * @ignore
+   * @param {VideoNullDriver} video
+   * @param {number} time
+   * @param {number} parentAlpha
+   *
+   * @return {void}
+   */
+
+
   _createClass(DisplayObject, [{
     key: "__render",
-
-
-    /**
-     * @ignore
-     * @param {VideoNullDriver} video
-     * @param {number} time
-     * @param {number} parentAlpha
-     * @param {string} parentBlendMode
-     *
-     * @return {void}
-     */
-    value: function __render(video, time, parentAlpha, parentBlendMode) {
+    value: function __render(video, time, parentAlpha) {
       if (this.mVisible === false) return;
 
       this.onRender(video, time);
@@ -9753,7 +10172,64 @@ var DisplayObject = function (_GameObject) {
       var child = null;
       for (var i = 0; i < this.mChildren.length; i++) {
         child = this.mChildren[i];
-        child.__render(video, time, parentAlpha, parentBlendMode);
+        child.__render(video, time, parentAlpha);
+      }
+    }
+  }, {
+    key: "refreshVertexData",
+    value: function refreshVertexData() {
+      var vertexData = this.vertexData;
+      var transform = this.worldTransformation.value;
+      var a = transform[0];
+      var b = transform[1];
+      var c = transform[2];
+      var d = transform[3];
+      var tx = transform[4];
+      var ty = transform[5];
+      var texture = this.mTexture;
+      var region = texture.mRegion;
+      var w = region.width;
+      var h = region.height;
+
+      if (texture.isTrimmed) {
+        var untrimmedRegion = texture.untrimmedRect;
+        var left = untrimmedRegion.x;
+        var top = untrimmedRegion.y;
+        var right = left + w;
+        var bottom = top + h;
+
+        // left top
+        vertexData[0] = a * left + c * top + tx;
+        vertexData[1] = d * top + b * left + ty;
+
+        // right top
+        vertexData[2] = a * right + c * top + tx;
+        vertexData[3] = d * top + b * right + ty;
+
+        // left bottom
+        vertexData[4] = a * left + c * bottom + tx;
+        vertexData[5] = d * bottom + b * left + ty;
+
+        // right bottom
+        vertexData[6] = a * right + c * bottom + tx;
+        vertexData[7] = d * bottom + b * right + ty;
+      } else {
+
+        // left top
+        vertexData[0] = tx;
+        vertexData[1] = ty;
+
+        // right top
+        vertexData[2] = a * w + tx;
+        vertexData[3] = b * w + ty;
+
+        // left bottom
+        vertexData[4] = c * h + tx;
+        vertexData[5] = d * h + ty;
+
+        // right bottom
+        vertexData[6] = a * w + c * h + tx;
+        vertexData[7] = d * h + b * w + ty;
       }
     }
 
@@ -9763,14 +10239,6 @@ var DisplayObject = function (_GameObject) {
      * @return {number}
      */
 
-  }, {
-    key: "tint",
-    get: function get() {
-      return this.material.tint;
-    },
-    set: function set(value) {
-      this.material.tint = value;
-    }
   }, {
     key: "alpha",
     get: function get() {
@@ -9936,7 +10404,11 @@ var Sprite = function (_DisplayObject) {
 
     _this.mTexture = null;
 
-    if (texture !== null && texture.constructor === String) _this.mTexture = AssetManager.default.getTexture( /** @type {string} */texture);else _this.mTexture = /** @type {Texture} */texture;
+    if (texture !== null && texture.constructor === String) {
+      _this.mTexture = AssetManager.default.getTexture( /** @type {string} */texture);
+    } else {
+      _this.mTexture = /** @type {Texture} */texture;
+    }
     return _this;
   }
 
@@ -9946,7 +10418,6 @@ var Sprite = function (_DisplayObject) {
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
@@ -9954,29 +10425,19 @@ var Sprite = function (_DisplayObject) {
 
   _createClass(Sprite, [{
     key: "__render",
-    value: function __render(video, time, parentAlpha, parentBlendMode) {
+    value: function __render(video, time, parentAlpha) {
       if (this.mAlpha <= 0 || this.mVisible === false) return;
 
-      var tmpBlendMode = BlendMode.AUTO;
+      this.worldAlpha = parentAlpha * this.mAlpha;
 
       if (this.mTexture !== null) {
-        video.setMaterial(this.material);
         video.setTransform(this.worldTransformation);
         video.globalAlpha = parentAlpha * this.mAlpha;
-        video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
-
-        // if (this.mClipRect != null) {
-        //   video.save();
-        //   video.clip(this.mClipRect);
-        // }
-
-        video.drawImage(this.mTexture);
-        // if (this.mClipRect != null) {
-        //   video.restore();
-        // }
+        video.globalBlendMode = this.blendMode;
+        video.drawImage(this, this.mTexture);
       }
 
-      _get(Sprite.prototype.__proto__ || Object.getPrototypeOf(Sprite.prototype), "__render", this).call(this, video, time, parentAlpha * this.mAlpha, tmpBlendMode);
+      _get(Sprite.prototype.__proto__ || Object.getPrototypeOf(Sprite.prototype), "__render", this).call(this, video, time, this.worldAlpha);
     }
 
     /**
@@ -10105,18 +10566,6 @@ var TextField = function (_DisplayObject) {
      * @private
      * @type {number}
      */
-    _this.mFieldWidth = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    _this.mFieldHeight = 0;
-
-    /**
-     * @private
-     * @type {number}
-     */
     _this.mTextWidth = 0;
 
     /**
@@ -10149,7 +10598,50 @@ var TextField = function (_DisplayObject) {
      */
     _this.mAutoSize = true;
 
-    _this.__validate(_this.mCacheBounds);
+    /**
+     * @private
+     * @type {boolean}
+     */
+    _this.mMultiLine = true;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mLineHeight = 1.2;
+
+    /**
+     * @public
+     * @type {string[]|string}
+     */
+    _this.lines = [];
+
+    /**
+     * Useful for drivers
+     * @public
+     * @type {number[]}
+     */
+    _this.lineWidths = [];
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mLetterSpacing = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mFieldWidth = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mFieldHeight = _this.mStyle.size * _this.mLineHeight;
+
+    _this.onGetLocalBounds(_this.mCacheBounds);
     return _this;
   }
 
@@ -10160,7 +10652,6 @@ var TextField = function (_DisplayObject) {
    * @param {VideoNullDriver} video
    * @param {number} time
    * @param {number} parentAlpha
-   * @param {string} parentBlendMode
    *
    * @return {void}
    */
@@ -10168,21 +10659,23 @@ var TextField = function (_DisplayObject) {
 
   _createClass(TextField, [{
     key: '__render',
-    value: function __render(video, time, parentAlpha, parentBlendMode) {
+    value: function __render(video, time, parentAlpha) {
       if (this.mAlpha <= 0 || this.mVisible === false) return;
 
-      this.__validate(this.mCacheBounds);
+      this.worldAlpha = parentAlpha * this.mAlpha;
 
-      var tmpBlendMode = BlendMode.AUTO;
+      if (this.mNeedInvalidate) {
+        this.onGetLocalBounds(this.mCacheBounds);
+        // this.setTransformDirty();  // no anchor for rebound
+      }
 
-      video.setMaterial(this.material);
       video.setTransform(this.worldTransformation);
       video.globalAlpha = parentAlpha * this.mAlpha;
-      video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+      video.globalBlendMode = this.blendMode;
+      video.drawText(this, this.mStyle, this.mCacheBounds);
 
-      video.drawText(this.mText, this.mStyle, this.mCacheBounds, this.mTextWidth, this.mTextHeight);
-
-      _get(TextField.prototype.__proto__ || Object.getPrototypeOf(TextField.prototype), '__render', this).call(this, video, time, parentAlpha * this.mAlpha, tmpBlendMode);
+      this.mNeedInvalidate = false;
+      _get(TextField.prototype.__proto__ || Object.getPrototypeOf(TextField.prototype), '__render', this).call(this, video, time, this.worldAlpha);
     }
 
     /**
@@ -10200,34 +10693,87 @@ var TextField = function (_DisplayObject) {
       var outRect = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
 
       outRect = outRect || new Rectangle();
-      return this.__validate(outRect);
+
+      if (this.mNeedInvalidate) {
+        Black.instance.video.measureText(this, this.mStyle, this.mCacheBounds);
+      }
+
+      return outRect.copyFrom(this.mCacheBounds);
     }
 
     /**
-     * @private
+     * @param {number} value
      * @ignore
-     * @param {Rectangle} outRect
      *
-     * @return {Rectangle}
+     * @return {void}
      */
 
   }, {
-    key: '__validate',
-    value: function __validate(outRect) {
-      var strokeCorrection = 0;
-      if (this.mNeedInvalidate === false) return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
+    key: 'letterSpacing',
+    set: function set(value) {
+      if (this.mLetterSpacing === value) return;
 
-      var driver = Black.instance.video;
-      var vSize = driver.measureText(this.mText, this.mStyle);
-      this.mTextWidth = vSize.x;
-      this.mTextHeight = vSize.y;
+      this.mLetterSpacing = value;
+      // this.setTransformDirty();  // needs pivot update and there is no anchor to accomplish
+      this.mNeedInvalidate = true;
+    }
 
-      if (this.mAutoSize) {
-        this.mFieldWidth = this.mTextWidth;
-        this.mFieldHeight = this.mTextHeight;
-      }
+    /**
+     * Get/Set letterSpacing value. Default is 0 in pixels.
+     *
+     * @return {number}
+     */
+    ,
+    get: function get() {
+      return this.mLetterSpacing;
+    }
 
-      return outRect.set(strokeCorrection, strokeCorrection, this.mFieldWidth, this.mFieldHeight);
+    /**
+     * @param {boolean} value
+     * @ignore
+     *
+     * @return {void}
+     */
+
+  }, {
+    key: 'multiLine',
+    set: function set(value) {
+      this.mMultiLine = value;
+      this.mNeedInvalidate = true;
+    }
+
+    /**
+     * Get/Set multiLine value switcher.
+     *
+     * @return {boolean}
+     */
+    ,
+    get: function get() {
+      return this.mMultiLine;
+    }
+
+    /**
+     * @param {number} value
+     * @ignore
+     *
+     * @return {void}
+     */
+
+  }, {
+    key: 'lineHeight',
+    set: function set(value) {
+      this.mLineHeight = value;
+      this.mNeedInvalidate = true;
+    }
+
+    /**
+     * Get/Set lines vertical offset. From top previous to top next line.
+     *
+     * @return {number}
+     */
+    ,
+    get: function get() {
+      return this.mLineHeight;
     }
 
     /**
@@ -10415,7 +10961,6 @@ var TextField = function (_DisplayObject) {
     ,
     set: function set(value) {
       if (value === this.mStyle.strokeThickness) return;
-
       this.mStyle.strokeThickness = value;
       this.mNeedInvalidate = true;
     }
@@ -10440,8 +10985,7 @@ var TextField = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      if (this.mAutoSize || value === this.mFieldWidth) return;
-
+      if (value === this.mFieldWidth) return;
       this.mFieldWidth = value;
       this.mNeedInvalidate = true;
     }
@@ -10465,8 +11009,7 @@ var TextField = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      if (this.mAutoSize || value === this.mFieldHeight) return;
-
+      if (value === this.mFieldHeight) return;
       this.mFieldHeight = value;
       this.mNeedInvalidate = true;
     }
@@ -10516,10 +11059,15 @@ var TextField = function (_DisplayObject) {
     ,
     set: function set(value) {
       if (this.mAutoSize === value) return;
-
       this.mAutoSize = value;
       this.mNeedInvalidate = true;
     }
+
+    // alignPivot(ax, ay, includeChildren = false) {
+    //   this.mNeedInvalidate = true;
+    //   super.alignPivot(ax, ay, includeChildren);
+    // }
+
   }]);
 
   return TextField;
@@ -11910,6 +12458,8 @@ var Particle = function () {
              * @type {number}
              */
             this.ay = 0;
+
+            this.pluginName = WebGLParticlesPlugin.name;
         }
 
         /**
@@ -12218,12 +12768,11 @@ var Emitter = function (_DisplayObject) {
     }
   }, {
     key: '__render',
-    value: function __render(video, time, parentAlpha, parentBlendMode) {
-      video.save(this);
+    value: function __render(video, time, parentAlpha) {
 
       // set blend mode
-      var tmpBlendMode = BlendMode.AUTO;
-      video.globalBlendMode = tmpBlendMode = this.blendMode === BlendMode.AUTO ? parentBlendMode : this.blendMode;
+      video.globalBlendMode = this.blendMode;
+      var emitterWorldAlpha = parentAlpha * this.alpha;
 
       // tmp matrices
       var localTransform = this.__tmpLocal;
@@ -12231,7 +12780,6 @@ var Emitter = function (_DisplayObject) {
       localTransform.identity();
 
       var texture = null;
-      var pbounds = new Rectangle();
 
       if (this.mTextures.length > 0) {
         var plength = this.mParticles.length;
@@ -12247,8 +12795,7 @@ var Emitter = function (_DisplayObject) {
         }
       }
 
-      video.restore();
-      _get(Emitter.prototype.__proto__ || Object.getPrototypeOf(Emitter.prototype), '__render', this).call(this, video, time, parentAlpha, parentBlendMode);
+      _get(Emitter.prototype.__proto__ || Object.getPrototypeOf(Emitter.prototype), '__render', this).call(this, video, time, parentAlpha);
     }
   }, {
     key: '__renderParticle',
@@ -12284,11 +12831,12 @@ var Emitter = function (_DisplayObject) {
         worldTransform.append(localTransform);
       }
 
-      video.setTransform(worldTransform);
-      video.globalAlpha = parentAlpha * this.mAlpha * particle.alpha;
+      particle.worldAlpha = parentAlpha * particle.alpha;
 
-      //pbounds.set(0, 0, texture.untrimmedRect.width, texture.untrimmedRect.height);
-      video.drawImage(texture, tw, th);
+      video.setTransform(worldTransform);
+      video.globalAlpha = particle.worldAlpha;
+
+      video.drawImage(particle, texture);
     }
   }, {
     key: 'onUpdate',
@@ -12442,7 +12990,8 @@ var Emitter = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      this.mEmitNumRepeats = value;this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+      this.mEmitNumRepeats = value;
+      this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
     }
 
     /**
@@ -12466,7 +13015,8 @@ var Emitter = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      this.mEmitDuration = value;this.mEmitDurationLeft = this.mEmitDuration.getValue();
+      this.mEmitDuration = value;
+      this.mEmitDurationLeft = this.mEmitDuration.getValue();
     }
 
     /**
@@ -12490,7 +13040,8 @@ var Emitter = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      this.mEmitInterval = value;this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+      this.mEmitInterval = value;
+      this.mEmitIntervalLeft = this.mEmitInterval.getValue();
     }
 
     /**
@@ -12514,7 +13065,8 @@ var Emitter = function (_DisplayObject) {
      */
     ,
     set: function set(value) {
-      this.mEmitDelay = value;this.mEmitDelayLeft = this.mEmitDelay.getValue();
+      this.mEmitDelay = value;
+      this.mEmitDelayLeft = this.mEmitDelay.getValue();
     }
 
     /**

@@ -23,15 +23,15 @@ class Debug {
   }
 
   static log(...message) {
-    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+    console.info('%c%s', 'color: black;', 'LOG:', ...message);
   }
 
   static info(...message) {
-    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
+    console.info('%c%s', 'color: #003bd2;', 'INFO:', ...message);
   }
 
   static warn(...message) {
-    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+    console.info('%c%s', 'color: #f67400;', 'WARN:', ...message);
   }
 
   static error(...message) {

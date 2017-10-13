@@ -54,3 +54,5 @@ yarn.lock
 #########
 docs/*
 dist-test/*
+dist/*
+.vscode/*
