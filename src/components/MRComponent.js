@@ -46,11 +46,23 @@ class MRComponent extends Component {
      */
     this.mAspect = 0;
 
+    let size = Black.instance.viewport.size;
+    this.mCacheWidth = size.width;
+    this.mCacheHeight = size.height;
+
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  onUpdate() {
+    // TODO: performance wise
+    let size = Black.instance.viewport.size;
+
+    if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height)
+      this.setSize(this.mWidth, this.mHeight);
+  }
+
   __onResize(msg, rect) {
-    this.setSize(this.mWidth, this.mHeight);    
+    this.setSize(this.mWidth, this.mHeight);
   }
 
   /**
@@ -80,19 +92,26 @@ class MRComponent extends Component {
 
     /** @type {Rectangle} */
     let size = Black.instance.viewport.size;
+    let width = this.mWidth;
+    let height = this.mHeight;
+
+    if (size.width <= size.height) {
+      width = this.mHeight;
+      height = this.mWidth;
+    }
 
     /** @type {number} */
-    let scaleX = size.width / this.mWidth;
+    let scaleX = size.width / width;
 
     /** @type {number} */
-    let scaleY = size.height / this.mHeight;
+    let scaleY = size.height / height;
 
     this.mScale = Math.min(scaleX, scaleY);
     this.mInvScale = 1 / this.mScale;
 
     this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-    this.gameObject.x = (size.width / 2) - (this.mWidth / 2) * this.mScale;
-    this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
+    this.gameObject.x = (size.width / 2) - (width / 2) * this.mScale;
+    this.gameObject.y = (size.height / 2) - (height / 2) * this.mScale;
   }
 
   onAdded() {
@@ -100,7 +119,8 @@ class MRComponent extends Component {
   }
 
   get isLandscape() {
-    return this.mWidth > this.mHeight;
+    let size = Black.instance.viewport.size;
+    return size.width >= size.height;
   }
 
   get isPortrait() {
