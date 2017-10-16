@@ -35,11 +35,11 @@ class CanvasDriver extends VideoNullDriver {
   __createCanvas() {
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.id = 'canvas';
+    cvs.width = this.mClientWidth;
+    cvs.height = this.mClientHeight;
     this.mContainerElement.appendChild(cvs);
 
-    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
-    this.mCtx.canvas.width = this.mClientWidth;
-    this.mCtx.canvas.height = this.mClientHeight;
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));    
   }
 
 
@@ -92,15 +92,8 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
-    // if (blendMode === BlendMode.AUTO)
-    //   return;
-
     if (this.mGlobalBlendMode === blendMode)
       return;
-
-    // small performance win
-    // if (this.mCtx.globalCompositeOperation === blendMode)
-    //   return;
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;

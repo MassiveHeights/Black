@@ -49,8 +49,10 @@ yarn.lock
 ########
 .tags
 .tags_swap
+.vscode
 
 # BLACK #
 #########
 docs/*
 dist-test/*
+dist/*

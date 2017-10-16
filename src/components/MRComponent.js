@@ -1,5 +1,5 @@
 /**
- * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ * Basic multi resolution utility component. Resizes an GameObject to match desired resolution.
  *
  * @cat components
  * @extends Component
@@ -50,7 +50,7 @@ class MRComponent extends Component {
   }
 
   __onResize(msg, rect) {
-    this.setSize(this.mWidth, this.mHeight);
+    this.setSize(this.mWidth, this.mHeight);    
   }
 
   /**
@@ -65,6 +65,8 @@ class MRComponent extends Component {
     this.mHeight = height;
 
     this.updateLayout();
+
+    this.post('~resize', this.isLandscape);
   }
 
   /**
@@ -95,5 +97,13 @@ class MRComponent extends Component {
 
   onAdded() {
     this.updateLayout();
+  }
+
+  get isLandscape() {
+    return this.mWidth > this.mHeight;
+  }
+
+  get isPortrait() {
+    return !this.isLandscape;
   }
 }
