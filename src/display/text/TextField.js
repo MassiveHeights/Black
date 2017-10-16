@@ -111,7 +111,7 @@ class TextField extends DisplayObject {
      * @type {number}
      */
     this.mFieldHeight = this.mStyle.size * this.mLineHeight;
-    
+
     this.onGetLocalBounds(this.mCacheBounds);
   }
 
@@ -126,7 +126,8 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false) return;
+    if (this.mAlpha <= 0 || this.mVisible === false)
+      return;
 
     this.worldAlpha = parentAlpha * this.mAlpha;
 
@@ -184,7 +185,7 @@ class TextField extends DisplayObject {
   get letterSpacing() {
     return this.mLetterSpacing;
   }
-  
+
   /**
    * @param {boolean} value
    * @ignore
@@ -377,7 +378,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeThickness(value) {
-    if (value === this.mStyle.strokeThickness) return;
+    if (value === this.mStyle.strokeThickness)
+      return;
+
     this.mStyle.strokeThickness = value;
     this.mNeedInvalidate = true;
   }
@@ -398,7 +401,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set fieldWidth(value) {
-    if (value === this.mFieldWidth) return;
+    if (value === this.mFieldWidth)
+      return;
+
     this.mFieldWidth = value;
     this.mNeedInvalidate = true;
   }
@@ -462,7 +467,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set autoSize(value) {
-    if (this.mAutoSize === value) return;
+    if (this.mAutoSize === value)
+      return;
+
     this.mAutoSize = value;
     this.mNeedInvalidate = true;
   }
