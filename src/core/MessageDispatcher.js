@@ -222,7 +222,14 @@ class MessageDispatcher {
 
     let list = [this];
 
-    let current = /** @type {GameObject} */ (this);
+    let current = /** @type {GameObject|Component} */ (this);
+    if (this instanceof Component) {
+      if (current.gameObject !== null) {
+        list.push(current.gameObject);
+        current = current.gameObject;
+      }
+    }
+
     while (current.parent !== null) {
       list.push(current.parent);
       current = current.parent;
