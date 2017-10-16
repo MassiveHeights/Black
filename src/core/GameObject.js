@@ -155,7 +155,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onAdded() {}
+  onAdded() { }
 
   /**
    * Called when object is removed from stage.
@@ -163,7 +163,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onRemoved() {}
+  onRemoved() { }
 
 
   /**
@@ -177,9 +177,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild( /** @type {!GameObject} */ (gooc));
+        this.addChild( /** @type {!GameObject} */(gooc));
       else
-        this.addComponent( /** @type {!Component} */ (gooc));
+        this.addComponent( /** @type {!Component} */(gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -407,7 +407,7 @@ class GameObject extends MessageDispatcher {
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
-    
+
     this.mNumComponentsRemoved++;
 
     return instance;
@@ -487,7 +487,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {  
+  get worldTransformation() {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
@@ -498,6 +498,41 @@ class GameObject extends MessageDispatcher {
     }
 
     return this.mWorldTransform;
+  }
+
+  set worldTransformation(matrix) {
+    const PI_Q = Math.PI / 4.0;
+
+    let a = matrix.value[0];
+    let b = matrix.value[1];
+    let c = matrix.value[2];
+    let d = matrix.value[3];
+    let tx = matrix.value[4];
+    let ty = matrix.value[5];
+
+    this.mPivotX = this.mPivotX = 0;
+    this.mX = tx;
+    this.mY = ty;
+
+    let skewX = Math.atan(-c / d);
+    let skewY = Math.atan(b / a);
+
+    if (skewX != skewX)
+      skewX = 0.0;
+    if (skewY != skewY)
+      skewY = 0.0;
+
+    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ?  d / Math.cos(skewX) : -c / Math.sin(skewX);
+    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ?  a / Math.cos(skewY) :  b / Math.sin(skewY);
+
+    if (MathEx.equals(skewX, skewY)) {
+      this.mRotation = skewX;
+      skewX = skewY = 0;
+    } else {
+      this.mRotation = 0;
+    }
+
+    this.setTransformDirty();
   }
 
   /**
@@ -556,7 +591,7 @@ class GameObject extends MessageDispatcher {
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
-      
+
       if (this.__checkRemovedChildren(i))
         break;
     }
@@ -591,7 +626,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedComponents(i) {
     if (this.mComponents == 0)
       return false;
-    
+
     i -= this.mNumComponentsRemoved;
     this.mNumComponentsRemoved = 0;
 
@@ -604,7 +639,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedChildren(i) {
     if (this.mNumChildrenRemoved == 0)
       return false;
-    
+
     i -= this.mNumChildrenRemoved;
     this.mNumChildrenRemoved = 0;
 
@@ -623,7 +658,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onFixedUpdate(dt) {}
+  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update.
@@ -633,7 +668,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onUpdate(dt) {}
+  onUpdate(dt) { }
 
   /**
    * Called after all updates have been executed.
@@ -643,7 +678,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onPostUpdate(dt) {}
+  onPostUpdate(dt) { }
 
   /**
    * @ignore
@@ -671,7 +706,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onRender(video, time) {}
+  onRender(video, time) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -1005,6 +1040,9 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject|null}
    */
   get root() {
+    if (Black.instance == null)
+      return null;
+
     let current = this;
 
     if (current === Black.instance.root)
@@ -1022,34 +1060,36 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-  /**
-   * Returns how deep this GameObject in the display tree.
-   *
-   * @readonly
-   *
-   * @return {number}
-   */
-  get depth() {
-    if (this.mParent)
-      return this.mParent.depth + 1;
-    else
-      return 0;
-  }
+  // /**
+  //  * Returns how deep this GameObject in the display tree.
+  //  *
+  //  * @readonly
+  //  *
+  //  * @return {number}
+  //  */
+  // get depth() {
+  //   if (this.mParent)
+  //     return this.mParent.depth + 1;
+  //   else
+  //     return 0;
+  // }
 
-  get displayDepth() {
-    // Many thanks to Roman Kopansky
-    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
-    return flatten(this.root.mChildren).indexOf(this);
-  }
-  /**
-   * @ignore
-   * @return {number}
-   */
-  get index() {
-    // TODO: this is only required by Input component and its pretty heavy.
-    // Try to workaround it.
-    return this.parent.mChildren.indexOf(this);
-  }
+  // TODO: review and make sure this func is required
+  // get displayDepth() {
+  //   // Many thanks to Roman Kopansky
+  //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+  //   return flatten(this.root.mChildren).indexOf(this);
+  // }
+
+  // /**
+  //  * @ignore
+  //  * @return {number}
+  //  */
+  // get index() {
+  //   // TODO: this is only required by Input component and its pretty heavy.
+  //   // Try to workaround it.
+  //   return this.parent.mChildren.indexOf(this);
+  // }
 
   /**
    * Gets/sets the width of this object.
@@ -1250,7 +1290,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  dispose() {}
+  dispose() { }
 
   // TODO: rename method
   /**
@@ -1496,6 +1536,31 @@ class GameObject extends MessageDispatcher {
     for (let i = 0; i < node.numChildren; i++) {
       let r = GameObject.find(name, node.getChildAt(i));
       if (r != null)
+        return r;
+    }
+
+    return null;
+  }
+
+  /**
+   * Finds object by its id property. If node is not passed the root will be taken as
+   * starting point.
+   *
+   * @param {number} id         Id to search.
+   * @param {GameObject=} node  Starting GameObject or null.
+   *
+   * @return {GameObject} GameObject or null.
+   */
+  static findById(id, node) {
+    if (node == null)
+      node = Black.instance.root;
+
+    if (node.id === id)
+      return node;
+
+    for (let i = 0; i < node.numChildren; i++) {
+      let r = GameObject.findById(id, node.getChildAt(i));
+      if (r !== null)
         return r;
     }
 

@@ -76,6 +76,7 @@ class Texture {
      */
     this.mIsLoaded = true;
 
+    // TODO: refactor, make private
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
