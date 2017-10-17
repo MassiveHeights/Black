@@ -55,4 +55,5 @@ yarn.lock
 #########
 docs/*
 dist-test/*
-dist/*
+dist
+dist/**/*.*
