@@ -53,6 +53,10 @@ class MathEx {
   static lerpp(a, b, t) {
     return (1 - t) * a + t * b;
   };
+
+  static equals(a, b, epsilon = Number.EPSILON) {
+    return (a - epsilon < b) && (a + epsilon > b);
+  }
 }
 
 /** @const
@@ -2777,15 +2781,15 @@ class Debug {
   }
 
   static log(...message) {
-    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+    console.info('%c%s', 'color: black;', 'LOG:', ...message);
   }
 
   static info(...message) {
-    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
+    console.info('%c%s', 'color: #003bd2;', 'INFO:', ...message);
   }
 
   static warn(...message) {
-    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+    console.info('%c%s', 'color: #f67400;', 'WARN:', ...message);
   }
 
   static error(...message) {
@@ -3199,7 +3203,14 @@ class MessageDispatcher {
 
     let list = [this];
 
-    let current = /** @type {GameObject} */ (this);
+    let current = /** @type {GameObject|Component} */ (this);
+    if (this instanceof Component) {
+      if (current.gameObject !== null) {
+        list.push(current.gameObject);
+        current = current.gameObject;
+      }
+    }
+
     while (current.parent !== null) {
       list.push(current.parent);
       current = current.parent;
@@ -3904,7 +3915,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onAdded() {}
+  onAdded() { }
 
   /**
    * Called when object is removed from stage.
@@ -3912,7 +3923,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onRemoved() {}
+  onRemoved() { }
 
 
   /**
@@ -3926,9 +3937,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild( /** @type {!GameObject} */ (gooc));
+        this.addChild( /** @type {!GameObject} */(gooc));
       else
-        this.addComponent( /** @type {!Component} */ (gooc));
+        this.addComponent( /** @type {!Component} */(gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -4156,7 +4167,7 @@ class GameObject extends MessageDispatcher {
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
-    
+
     this.mNumComponentsRemoved++;
 
     return instance;
@@ -4236,7 +4247,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {  
+  get worldTransformation() {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
@@ -4247,6 +4258,41 @@ class GameObject extends MessageDispatcher {
     }
 
     return this.mWorldTransform;
+  }
+
+  set worldTransformation(matrix) {
+    const PI_Q = Math.PI / 4.0;
+
+    let a = matrix.value[0];
+    let b = matrix.value[1];
+    let c = matrix.value[2];
+    let d = matrix.value[3];
+    let tx = matrix.value[4];
+    let ty = matrix.value[5];
+
+    this.mPivotX = this.mPivotX = 0;
+    this.mX = tx;
+    this.mY = ty;
+
+    let skewX = Math.atan(-c / d);
+    let skewY = Math.atan(b / a);
+
+    if (skewX != skewX)
+      skewX = 0.0;
+    if (skewY != skewY)
+      skewY = 0.0;
+
+    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ?  d / Math.cos(skewX) : -c / Math.sin(skewX);
+    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ?  a / Math.cos(skewY) :  b / Math.sin(skewY);
+
+    if (MathEx.equals(skewX, skewY)) {
+      this.mRotation = skewX;
+      skewX = skewY = 0;
+    } else {
+      this.mRotation = 0;
+    }
+
+    this.setTransformDirty();
   }
 
   /**
@@ -4305,7 +4351,7 @@ class GameObject extends MessageDispatcher {
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
-      
+
       if (this.__checkRemovedChildren(i))
         break;
     }
@@ -4340,7 +4386,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedComponents(i) {
     if (this.mComponents == 0)
       return false;
-    
+
     i -= this.mNumComponentsRemoved;
     this.mNumComponentsRemoved = 0;
 
@@ -4353,7 +4399,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedChildren(i) {
     if (this.mNumChildrenRemoved == 0)
       return false;
-    
+
     i -= this.mNumChildrenRemoved;
     this.mNumChildrenRemoved = 0;
 
@@ -4372,7 +4418,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onFixedUpdate(dt) {}
+  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update.
@@ -4382,7 +4428,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onUpdate(dt) {}
+  onUpdate(dt) { }
 
   /**
    * Called after all updates have been executed.
@@ -4392,7 +4438,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onPostUpdate(dt) {}
+  onPostUpdate(dt) { }
 
   /**
    * @ignore
@@ -4420,7 +4466,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onRender(video, time) {}
+  onRender(video, time) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -4754,6 +4800,9 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject|null}
    */
   get root() {
+    if (Black.instance == null)
+      return null;
+
     let current = this;
 
     if (current === Black.instance.root)
@@ -4771,34 +4820,36 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-  /**
-   * Returns how deep this GameObject in the display tree.
-   *
-   * @readonly
-   *
-   * @return {number}
-   */
-  get depth() {
-    if (this.mParent)
-      return this.mParent.depth + 1;
-    else
-      return 0;
-  }
+  // /**
+  //  * Returns how deep this GameObject in the display tree.
+  //  *
+  //  * @readonly
+  //  *
+  //  * @return {number}
+  //  */
+  // get depth() {
+  //   if (this.mParent)
+  //     return this.mParent.depth + 1;
+  //   else
+  //     return 0;
+  // }
 
-  get displayDepth() {
-    // Many thanks to Roman Kopansky
-    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
-    return flatten(this.root.mChildren).indexOf(this);
-  }
-  /**
-   * @ignore
-   * @return {number}
-   */
-  get index() {
-    // TODO: this is only required by Input component and its pretty heavy.
-    // Try to workaround it.
-    return this.parent.mChildren.indexOf(this);
-  }
+  // TODO: review and make sure this func is required
+  // get displayDepth() {
+  //   // Many thanks to Roman Kopansky
+  //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+  //   return flatten(this.root.mChildren).indexOf(this);
+  // }
+
+  // /**
+  //  * @ignore
+  //  * @return {number}
+  //  */
+  // get index() {
+  //   // TODO: this is only required by Input component and its pretty heavy.
+  //   // Try to workaround it.
+  //   return this.parent.mChildren.indexOf(this);
+  // }
 
   /**
    * Gets/sets the width of this object.
@@ -4999,7 +5050,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  dispose() {}
+  dispose() { }
 
   // TODO: rename method
   /**
@@ -5250,6 +5301,31 @@ class GameObject extends MessageDispatcher {
 
     return null;
   }
+
+  /**
+   * Finds object by its id property. If node is not passed the root will be taken as
+   * starting point.
+   *
+   * @param {number} id         Id to search.
+   * @param {GameObject=} node  Starting GameObject or null.
+   *
+   * @return {GameObject} GameObject or null.
+   */
+  static findById(id, node) {
+    if (node == null)
+      node = Black.instance.root;
+
+    if (node.id === id)
+      return node;
+
+    for (let i = 0; i < node.numChildren; i++) {
+      let r = GameObject.findById(id, node.getChildAt(i));
+      if (r !== null)
+        return r;
+    }
+
+    return null;
+  }
 }
 
 /**
@@ -5347,6 +5423,7 @@ class Texture {
      */
     this.mIsLoaded = true;
 
+    // TODO: refactor, make private
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
@@ -5610,7 +5687,7 @@ class AtlasTexture extends Texture {
     /** @type {Texture} */
     let t = this.mSubTextures[name];
     if (t === undefined)
-      console.warn('Texture \'%s\' was not found in cache.', name);
+      Debug.warn(`Texture '${name}' was not found`);
 
     return /** @type {Texture} */ (t);
   }
@@ -5650,6 +5727,10 @@ class AtlasTexture extends Texture {
       out.push(this.mSubTextures[names[i]]);
 
     return out;
+  }
+
+  get subTextures() {
+    return this.mSubTextures;
   }
 
   static naturalSort(dataset, field = null) {
@@ -6445,11 +6526,12 @@ class AssetManager extends MessageDispatcher {
       return t;
 
     for (let key in this.mAtlases) {
-      t = this.mAtlases[key].getTexture(name);
+      t = this.mAtlases[key].subTextures[name];
       if (t != null)
         return t;
     }
 
+    Debug.warn(`Texture '${name}' was not found`);
     return null;
   }
 
@@ -8878,7 +8960,13 @@ class Sprite extends DisplayObject {
      * @type {Texture|null} */
     this.mTexture = null;
 
+    /**
+     * @private
+     * @type {string|null} */
+    this.mTextureName = null;
+
     if (texture !== null && texture.constructor === String) {
+      this.mTextureName = /** @type {string} */ (texture);
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
@@ -8908,7 +8996,7 @@ class Sprite extends DisplayObject {
 
     super.__render(video, time, this.worldAlpha);
   }
-  
+
   /**
    * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
    *
@@ -8944,10 +9032,26 @@ class Sprite extends DisplayObject {
    * @return {void}
    */
   set texture(texture) {
-    if (this.mTexture === texture)
+    // if (this.mTexture !== null && this.mTexture === texture)
+    //   return;
+
+    if (this.mTexture !== texture)
+      this.mTexture = texture;
+  }
+
+  get textureName() {
+    return this.mTextureName;
+  }
+
+  /**
+   * @editor {TextureEditor}
+   */
+  set textureName(value) {
+    if (this.mTextureName === value)
       return;
 
-    this.mTexture = texture;
+    this.mTextureName = value;
+    this.texture = AssetManager.default.getTexture(value);
   }
 
   set touchable(value) {
@@ -12179,11 +12283,23 @@ class MRComponent extends Component {
      */
     this.mAspect = 0;
 
+    let size = Black.instance.viewport.size;
+    this.mCacheWidth = size.width;
+    this.mCacheHeight = size.height;
+
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  onUpdate() {
+    // TODO: performance wise
+    let size = Black.instance.viewport.size;
+
+    if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height)
+      this.setSize(this.mWidth, this.mHeight);
+  }
+
   __onResize(msg, rect) {
-    this.setSize(this.mWidth, this.mHeight);    
+    this.setSize(this.mWidth, this.mHeight);
   }
 
   /**
@@ -12199,7 +12315,7 @@ class MRComponent extends Component {
 
     this.updateLayout();
 
-    this.post('resize', this.isLandscape);
+    this.post('~resize', this.isLandscape);
   }
 
   /**
@@ -12213,19 +12329,26 @@ class MRComponent extends Component {
 
     /** @type {Rectangle} */
     let size = Black.instance.viewport.size;
+    let width = this.mWidth;
+    let height = this.mHeight;
+
+    if (size.width <= size.height) {
+      width = this.mHeight;
+      height = this.mWidth;
+    }
 
     /** @type {number} */
-    let scaleX = size.width / this.mWidth;
+    let scaleX = size.width / width;
 
     /** @type {number} */
-    let scaleY = size.height / this.mHeight;
+    let scaleY = size.height / height;
 
     this.mScale = Math.min(scaleX, scaleY);
     this.mInvScale = 1 / this.mScale;
 
     this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-    this.gameObject.x = (size.width / 2) - (this.mWidth / 2) * this.mScale;
-    this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
+    this.gameObject.x = (size.width / 2) - (width / 2) * this.mScale;
+    this.gameObject.y = (size.height / 2) - (height / 2) * this.mScale;
   }
 
   onAdded() {
@@ -12233,7 +12356,8 @@ class MRComponent extends Component {
   }
 
   get isLandscape() {
-    return this.mWidth > this.mHeight;
+    let size = Black.instance.viewport.size;
+    return size.width >= size.height;
   }
 
   get isPortrait() {

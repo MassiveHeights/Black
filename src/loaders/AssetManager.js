@@ -233,7 +233,7 @@ class AssetManager extends MessageDispatcher {
         return t;
     }
 
-    Debug.warn('Texture \'%s\' was not found', name);
+    Debug.warn(`Texture '${name}' was not found`);
     return null;
   }
 

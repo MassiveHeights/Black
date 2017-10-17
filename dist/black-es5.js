@@ -71,6 +71,13 @@ var MathEx = function () {
     value: function lerpp(a, b, t) {
       return (1 - t) * a + t * b;
     }
+  }, {
+    key: "equals",
+    value: function equals(a, b) {
+      var epsilon = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Number.EPSILON;
+
+      return a - epsilon < b && a + epsilon > b;
+    }
   }]);
 
   return MathEx;
@@ -3343,7 +3350,7 @@ var Debug = function () {
         message[_key] = arguments[_key];
       }
 
-      (_console = console).info.apply(_console, ['  %c%s', 'color: black;', 'LOG:'].concat(message));
+      (_console = console).info.apply(_console, ['%c%s', 'color: black;', 'LOG:'].concat(message));
     }
   }, {
     key: 'info',
@@ -3354,7 +3361,7 @@ var Debug = function () {
         message[_key2] = arguments[_key2];
       }
 
-      (_console2 = console).info.apply(_console2, [' %c%s', 'color: #003bd2;', 'INFO:'].concat(message));
+      (_console2 = console).info.apply(_console2, ['%c%s', 'color: #003bd2;', 'INFO:'].concat(message));
     }
   }, {
     key: 'warn',
@@ -3365,7 +3372,7 @@ var Debug = function () {
         message[_key3] = arguments[_key3];
       }
 
-      (_console3 = console).info.apply(_console3, [' %c%s', 'color: #f67400;', 'WARN:'].concat(message));
+      (_console3 = console).info.apply(_console3, ['%c%s', 'color: #f67400;', 'WARN:'].concat(message));
     }
   }, {
     key: 'error',
@@ -3853,7 +3860,14 @@ var MessageDispatcher = function () {
 
       var list = [this];
 
-      var current = /** @type {GameObject} */this;
+      var current = /** @type {GameObject|Component} */this;
+      if (this instanceof Component) {
+        if (current.gameObject !== null) {
+          list.push(current.gameObject);
+          current = current.gameObject;
+        }
+      }
+
       while (current.parent !== null) {
         list.push(current.parent);
         current = current.parent;
@@ -5586,6 +5600,38 @@ var GameObject = function (_MessageDispatcher) {
       }
 
       return this.mWorldTransform;
+    },
+    set: function set(matrix) {
+      var PI_Q = Math.PI / 4.0;
+
+      var a = matrix.value[0];
+      var b = matrix.value[1];
+      var c = matrix.value[2];
+      var d = matrix.value[3];
+      var tx = matrix.value[4];
+      var ty = matrix.value[5];
+
+      this.mPivotX = this.mPivotX = 0;
+      this.mX = tx;
+      this.mY = ty;
+
+      var skewX = Math.atan(-c / d);
+      var skewY = Math.atan(b / a);
+
+      if (skewX != skewX) skewX = 0.0;
+      if (skewY != skewY) skewY = 0.0;
+
+      this.mScaleY = skewX > -PI_Q && skewX < PI_Q ? d / Math.cos(skewX) : -c / Math.sin(skewX);
+      this.mScaleX = skewY > -PI_Q && skewY < PI_Q ? a / Math.cos(skewY) : b / Math.sin(skewY);
+
+      if (MathEx.equals(skewX, skewY)) {
+        this.mRotation = skewX;
+        skewX = skewY = 0;
+      } else {
+        this.mRotation = 0;
+      }
+
+      this.setTransformDirty();
     }
 
     /**
@@ -5829,6 +5875,8 @@ var GameObject = function (_MessageDispatcher) {
   }, {
     key: 'root',
     get: function get() {
+      if (Black.instance == null) return null;
+
       var current = this;
 
       if (current === Black.instance.root) return current;
@@ -5840,42 +5888,36 @@ var GameObject = function (_MessageDispatcher) {
       return null;
     }
 
-    /**
-     * Returns how deep this GameObject in the display tree.
-     *
-     * @readonly
-     *
-     * @return {number}
-     */
+    // /**
+    //  * Returns how deep this GameObject in the display tree.
+    //  *
+    //  * @readonly
+    //  *
+    //  * @return {number}
+    //  */
+    // get depth() {
+    //   if (this.mParent)
+    //     return this.mParent.depth + 1;
+    //   else
+    //     return 0;
+    // }
 
-  }, {
-    key: 'depth',
-    get: function get() {
-      if (this.mParent) return this.mParent.depth + 1;else return 0;
-    }
-  }, {
-    key: 'displayDepth',
-    get: function get() {
-      // Many thanks to Roman Kopansky
-      var flatten = function flatten(arr) {
-        return arr.reduce(function (acc, val) {
-          return acc.concat(val.mChildren.length ? flatten(val.mChildren) : val);
-        }, []);
-      };
-      return flatten(this.root.mChildren).indexOf(this);
-    }
-    /**
-     * @ignore
-     * @return {number}
-     */
+    // TODO: review and make sure this func is required
+    // get displayDepth() {
+    //   // Many thanks to Roman Kopansky
+    //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+    //   return flatten(this.root.mChildren).indexOf(this);
+    // }
 
-  }, {
-    key: 'index',
-    get: function get() {
-      // TODO: this is only required by Input component and its pretty heavy.
-      // Try to workaround it.
-      return this.parent.mChildren.indexOf(this);
-    }
+    // /**
+    //  * @ignore
+    //  * @return {number}
+    //  */
+    // get index() {
+    //   // TODO: this is only required by Input component and its pretty heavy.
+    //   // Try to workaround it.
+    //   return this.parent.mChildren.indexOf(this);
+    // }
 
     /**
      * Gets/sets the width of this object.
@@ -6260,6 +6302,31 @@ var GameObject = function (_MessageDispatcher) {
 
       return null;
     }
+
+    /**
+     * Finds object by its id property. If node is not passed the root will be taken as
+     * starting point.
+     *
+     * @param {number} id         Id to search.
+     * @param {GameObject=} node  Starting GameObject or null.
+     *
+     * @return {GameObject} GameObject or null.
+     */
+
+  }, {
+    key: 'findById',
+    value: function findById(id, node) {
+      if (node == null) node = Black.instance.root;
+
+      if (node.id === id) return node;
+
+      for (var i = 0; i < node.numChildren; i++) {
+        var r = GameObject.findById(id, node.getChildAt(i));
+        if (r !== null) return r;
+      }
+
+      return null;
+    }
   }]);
 
   return GameObject;
@@ -6365,6 +6432,7 @@ var Texture = function () {
      */
     this.mIsLoaded = true;
 
+    // TODO: refactor, make private
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
@@ -6694,7 +6762,7 @@ var AtlasTexture = function (_Texture) {
     value: function getTexture(name) {
       /** @type {Texture} */
       var t = this.mSubTextures[name];
-      if (t === undefined) console.warn('Texture \'%s\' was not found in cache.', name);
+      if (t === undefined) Debug.warn("Texture '" + name + "' was not found");
 
       return (/** @type {Texture} */t
       );
@@ -6738,6 +6806,11 @@ var AtlasTexture = function (_Texture) {
       for (var i = 0; i < names.length; i++) {
         out.push(this.mSubTextures[names[i]]);
       }return out;
+    }
+  }, {
+    key: "subTextures",
+    get: function get() {
+      return this.mSubTextures;
     }
   }], [{
     key: "naturalSort",
@@ -7756,10 +7829,11 @@ var AssetManager = function (_MessageDispatcher) {
       if (t != null) return t;
 
       for (var key in this.mAtlases) {
-        t = this.mAtlases[key].getTexture(name);
+        t = this.mAtlases[key].subTextures[name];
         if (t != null) return t;
       }
 
+      Debug.warn('Texture \'' + name + '\' was not found');
       return null;
     }
 
@@ -8275,11 +8349,11 @@ var CanvasDriver = function (_VideoNullDriver) {
     value: function __createCanvas() {
       var cvs = /** @type {HTMLCanvasElement} */document.createElement('canvas');
       cvs.id = 'canvas';
+      cvs.width = this.mClientWidth;
+      cvs.height = this.mClientHeight;
       this.mContainerElement.appendChild(cvs);
 
       this.mCtx = /** @type {CanvasRenderingContext2D} */cvs.getContext('2d');
-      this.mCtx.canvas.width = this.mClientWidth;
-      this.mCtx.canvas.height = this.mClientHeight;
     }
 
     /**
@@ -8581,14 +8655,7 @@ var CanvasDriver = function (_VideoNullDriver) {
   }, {
     key: 'globalBlendMode',
     set: function set(blendMode) {
-      // if (blendMode === BlendMode.AUTO)
-      //   return;
-
       if (this.mGlobalBlendMode === blendMode) return;
-
-      // small performance win
-      // if (this.mCtx.globalCompositeOperation === blendMode)
-      //   return;
 
       this.mGlobalBlendMode = blendMode;
       this.mCtx.globalCompositeOperation = blendMode;
@@ -10404,7 +10471,13 @@ var Sprite = function (_DisplayObject) {
 
     _this.mTexture = null;
 
+    /**
+     * @private
+     * @type {string|null} */
+    _this.mTextureName = null;
+
     if (texture !== null && texture.constructor === String) {
+      _this.mTextureName = /** @type {string} */texture;
       _this.mTexture = AssetManager.default.getTexture( /** @type {string} */texture);
     } else {
       _this.mTexture = /** @type {Texture} */texture;
@@ -10483,9 +10556,26 @@ var Sprite = function (_DisplayObject) {
      */
     ,
     set: function set(texture) {
-      if (this.mTexture === texture) return;
+      // if (this.mTexture !== null && this.mTexture === texture)
+      //   return;
 
-      this.mTexture = texture;
+      if (this.mTexture !== texture) this.mTexture = texture;
+    }
+  }, {
+    key: "textureName",
+    get: function get() {
+      return this.mTextureName;
+    }
+
+    /**
+     * @editor {TextureEditor}
+     */
+    ,
+    set: function set(value) {
+      if (this.mTextureName === value) return;
+
+      this.mTextureName = value;
+      this.texture = AssetManager.default.getTexture(value);
     }
   }, {
     key: "touchable",
@@ -14352,125 +14442,157 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Basic mulri resolution utility component. Resizes an GameObject to match desired resolution.
+ * Basic multi resolution utility component. Resizes an GameObject to match desired resolution.
  *
  * @cat components
  * @extends Component
  */
 
 var MRComponent = function (_Component) {
-    _inherits(MRComponent, _Component);
+  _inherits(MRComponent, _Component);
+
+  /**
+   * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
+   * Simplified version of scale manager.
+   *
+   * @param {number} [width=960]  The width.
+   * @param {number} [height=640] The height.
+   */
+  function MRComponent() {
+    var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+    var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
+
+    _classCallCheck(this, MRComponent);
 
     /**
-     * Creates new instance of MRComponent. Used to scale and position GameObject to a specified width and height.
-     * Simplified version of scale manager.
-     *
-     * @param {number} [width=960]  The width.
-     * @param {number} [height=640] The height.
+     * @private
+     * @type {number}
      */
-    function MRComponent() {
-        var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-        var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
+    var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
 
-        _classCallCheck(this, MRComponent);
+    _this.mWidth = width;
 
-        /**
-         * @private
-         * @type {number}
-         */
-        var _this = _possibleConstructorReturn(this, (MRComponent.__proto__ || Object.getPrototypeOf(MRComponent)).call(this));
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mHeight = height;
 
-        _this.mWidth = width;
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mScale = 0;
 
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.mHeight = height;
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mInvScale = 0;
 
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.mScale = 0;
+    /**
+     * @private
+     * @type {number}
+     */
+    _this.mAspect = 0;
 
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.mInvScale = 0;
+    var size = Black.instance.viewport.size;
+    _this.mCacheWidth = size.width;
+    _this.mCacheHeight = size.height;
 
-        /**
-         * @private
-         * @type {number}
-         */
-        _this.mAspect = 0;
+    Black.instance.viewport.on('resize', _this.__onResize, _this);
+    return _this;
+  }
 
-        Black.instance.viewport.on('resize', _this.__onResize, _this);
-        return _this;
+  _createClass(MRComponent, [{
+    key: 'onUpdate',
+    value: function onUpdate() {
+      // TODO: performance wise
+      var size = Black.instance.viewport.size;
+
+      if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) this.setSize(this.mWidth, this.mHeight);
+    }
+  }, {
+    key: '__onResize',
+    value: function __onResize(msg, rect) {
+      this.setSize(this.mWidth, this.mHeight);
     }
 
-    _createClass(MRComponent, [{
-        key: '__onResize',
-        value: function __onResize(msg, rect) {
-            this.setSize(this.mWidth, this.mHeight);
-        }
+    /**
+     * Sets size of the latout.
+     *
+     * @param  {number} width = 960  The width.
+     * @param  {number} height = 640 The height.
+     * @return {void}
+     */
 
-        /**
-         * Sets size of the latout.
-         *
-         * @param  {number} width = 960  The width.
-         * @param  {number} height = 640 The height.
-         * @return {void}
-         */
+  }, {
+    key: 'setSize',
+    value: function setSize() {
+      var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
+      var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
 
-    }, {
-        key: 'setSize',
-        value: function setSize() {
-            var width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 960;
-            var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
+      this.mWidth = width;
+      this.mHeight = height;
 
-            this.mWidth = width;
-            this.mHeight = height;
+      this.updateLayout();
 
-            this.updateLayout();
-        }
+      this.post('~resize', this.isLandscape);
+    }
 
-        /**
-         * Updates layout to match specified settings.
-         *
-         * @return {void}
-         */
+    /**
+     * Updates layout to match specified settings.
+     *
+     * @return {void}
+     */
 
-    }, {
-        key: 'updateLayout',
-        value: function updateLayout() {
-            if (!this.gameObject) return;
+  }, {
+    key: 'updateLayout',
+    value: function updateLayout() {
+      if (!this.gameObject) return;
 
-            /** @type {Rectangle} */
-            var size = Black.instance.viewport.size;
+      /** @type {Rectangle} */
+      var size = Black.instance.viewport.size;
+      var width = this.mWidth;
+      var height = this.mHeight;
 
-            /** @type {number} */
-            var scaleX = size.width / this.mWidth;
+      if (size.width <= size.height) {
+        width = this.mHeight;
+        height = this.mWidth;
+      }
 
-            /** @type {number} */
-            var scaleY = size.height / this.mHeight;
+      /** @type {number} */
+      var scaleX = size.width / width;
 
-            this.mScale = Math.min(scaleX, scaleY);
-            this.mInvScale = 1 / this.mScale;
+      /** @type {number} */
+      var scaleY = size.height / height;
 
-            this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-            this.gameObject.x = size.width / 2 - this.mWidth / 2 * this.mScale;
-            this.gameObject.y = size.height / 2 - this.mHeight / 2 * this.mScale;
-        }
-    }, {
-        key: 'onAdded',
-        value: function onAdded() {
-            this.updateLayout();
-        }
-    }]);
+      this.mScale = Math.min(scaleX, scaleY);
+      this.mInvScale = 1 / this.mScale;
 
-    return MRComponent;
+      this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
+      this.gameObject.x = size.width / 2 - width / 2 * this.mScale;
+      this.gameObject.y = size.height / 2 - height / 2 * this.mScale;
+    }
+  }, {
+    key: 'onAdded',
+    value: function onAdded() {
+      this.updateLayout();
+    }
+  }, {
+    key: 'isLandscape',
+    get: function get() {
+      var size = Black.instance.viewport.size;
+      return size.width >= size.height;
+    }
+  }, {
+    key: 'isPortrait',
+    get: function get() {
+      return !this.isLandscape;
+    }
+  }]);
+
+  return MRComponent;
 }(Component);
 "use strict";
 

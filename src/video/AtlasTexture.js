@@ -64,7 +64,7 @@ class AtlasTexture extends Texture {
     /** @type {Texture} */
     let t = this.mSubTextures[name];
     if (t === undefined)
-      Debug.warn('Texture \'%s\' was not found', name);
+      Debug.warn(`Texture '${name}' was not found`);
 
     return /** @type {Texture} */ (t);
   }
