@@ -58,7 +58,11 @@ class MRComponent extends Component {
     let size = Black.instance.viewport.size;
 
     if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height)
+    {
+      this.mCacheWidth = size.width;
+      this.mCacheHeight = size.height;
       this.setSize(this.mWidth, this.mHeight);
+    }
   }
 
   __onResize(msg, rect) {
