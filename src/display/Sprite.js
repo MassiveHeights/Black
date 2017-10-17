@@ -27,7 +27,7 @@ class Sprite extends DisplayObject {
 
     if (texture !== null && texture.constructor === String) {
       this.mTextureName = /** @type {string} */ (texture);
-      this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
+      this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
@@ -43,7 +43,8 @@ class Sprite extends DisplayObject {
    * @return {void}
    */
   __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false) return;
+    if (this.mAlpha <= 0 || this.mVisible === false)
+      return;
 
     this.worldAlpha = parentAlpha * this.mAlpha;
 

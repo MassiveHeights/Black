@@ -46,10 +46,12 @@ class DisplayObject extends GameObject {
     
     this.onRender(video, time);
 
+    let worldAlpha = parentAlpha * this.mAlpha;
+
     let child = null;
     for (var i = 0; i < this.mChildren.length; i++) {
       child = this.mChildren[i];
-      child.__render(video, time, parentAlpha);
+      child.__render(video, time, worldAlpha);
     }
   }
 

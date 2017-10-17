@@ -22,10 +22,7 @@ class VideoNullDriver {
      * @protected
      * @type {HTMLElement}
      */
-    this.mContainerElement = /**
-     * @private
-     * @type {HTMLElement} */ (containerElement
-    );
+    this.mContainerElement = /** @type {HTMLElement} */ (containerElement);
 
     /**
      * @private

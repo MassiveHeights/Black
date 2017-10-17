@@ -39,7 +39,7 @@ class CanvasDriver extends VideoNullDriver {
     cvs.height = this.mClientHeight;
     this.mContainerElement.appendChild(cvs);
 
-    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));    
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
   }
 
 
