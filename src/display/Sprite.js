@@ -6,9 +6,8 @@
  */
 /* @echo EXPORT */
 class Sprite extends DisplayObject {
-
   /**
-   * constructor - Creates a new Sprite object instance.
+   * Creates a new Sprite instance.
    *
    * @param {Texture|string|null} texture The Texture instance or null.
    */
@@ -27,34 +26,29 @@ class Sprite extends DisplayObject {
 
     if (texture !== null && texture.constructor === String) {
       this.mTextureName = /** @type {string} */ (texture);
-      this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
+      this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    this.mRenderer = Black.instance.video.getRendererForType(Sprite);
   }
 
-  /**
-   * @override
-   * @private
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false) return;
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
-    this.worldAlpha = parentAlpha * this.mAlpha;
+    renderer.dirty = this.mDirty;
 
-    if (this.mTexture !== null) {
-      video.setTransform(this.worldTransformation);
-      video.globalAlpha = parentAlpha * this.mAlpha;
-      video.globalBlendMode = this.blendMode;
-      video.drawImage(this, this.mTexture);
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.texture = this.mTexture;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      this.mDirty ^= DirtyFlag.RENDER;
     }
 
-    super.__render(video, time, this.worldAlpha);
+    return driver.registerRenderer(renderer);
   }
 
   /**
@@ -85,16 +79,14 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Sets the Texture on this sprite.
+   * texture - Sets the Texture on this sprite by name.
+   * Only AssetManager.default is used.
    *
    * @param {Texture|null} texture Texture to apply on.
    *
    * @return {void}
    */
   set texture(texture) {
-    // if (this.mTexture !== null && this.mTexture === texture)
-    //   return;
-
     if (this.mTexture !== texture)
       this.mTexture = texture;
   }

@@ -129,7 +129,7 @@ class TextField extends DisplayObject {
     if (this.mAlpha <= 0 || this.mVisible === false)
       return;
 
-    this.worldAlpha = parentAlpha * this.mAlpha;
+    let worldAlpha = parentAlpha * this.mAlpha;
 
     if (this.mNeedInvalidate) {
       this.onGetLocalBounds(this.mCacheBounds);
@@ -137,12 +137,12 @@ class TextField extends DisplayObject {
     }
 
     video.setTransform(this.worldTransformation);
-    video.globalAlpha = parentAlpha * this.mAlpha;
+    video.globalAlpha = worldAlpha;
     video.globalBlendMode = this.blendMode;
     video.drawText(this, this.mStyle, this.mCacheBounds);
 
     this.mNeedInvalidate = false;
-    super.__render(video, time, this.worldAlpha);
+    super.__render(video, time, worldAlpha);
   }
 
   /**

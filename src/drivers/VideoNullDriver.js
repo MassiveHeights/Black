@@ -62,6 +62,14 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  getRenderSupport() {
+    let supportMap = {
+
+    };
+
+    return new RenderSupportCanvas();
+  }
+
 
   /**
    * @protected

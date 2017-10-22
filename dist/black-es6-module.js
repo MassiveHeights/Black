@@ -53,6 +53,10 @@ class MathEx {
   static lerpp(a, b, t) {
     return (1 - t) * a + t * b;
   };
+
+  static equals(a, b, epsilon = Number.EPSILON) {
+    return (a - epsilon < b) && (a + epsilon > b);
+  }
 }
 
 /** @const
@@ -909,6 +913,16 @@ class Matrix {
     return matrix.copyTo(this);
   }
 
+  exactEquals(matrix) {
+    if (!matrix)
+    return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;
+    
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
+  }
+
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
@@ -917,10 +931,11 @@ class Matrix {
    * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
-    let a = this._matrix;
-    let b = matrix._matrix;
     if (!matrix)
       return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;    
 
     return (Math.abs(a[0] - b[0]) < epsilon) && (Math.abs(a[1] - b[1]) < epsilon) && (Math.abs(a[2] - b[2]) < epsilon) &&
       (Math.abs(a[3] - b[3]) < epsilon) && (Math.abs(a[4] - b[4]) < epsilon) && (Math.abs(a[5] - b[5]) < epsilon);
@@ -2777,15 +2792,15 @@ class Debug {
   }
 
   static log(...message) {
-    console.info('  %c%s', 'color: black;', 'LOG:', ...message);
+    console.info('%c%s', 'color: black;', 'LOG:', ...message);
   }
 
   static info(...message) {
-    console.info(' %c%s', 'color: #003bd2;', 'INFO:', ...message);
+    console.info('%c%s', 'color: #003bd2;', 'INFO:', ...message);
   }
 
   static warn(...message) {
-    console.info(' %c%s', 'color: #f67400;', 'WARN:', ...message);
+    console.info('%c%s', 'color: #f67400;', 'WARN:', ...message);
   }
 
   static error(...message) {
@@ -3199,7 +3214,14 @@ class MessageDispatcher {
 
     let list = [this];
 
-    let current = /** @type {GameObject} */ (this);
+    let current = /** @type {GameObject|Component} */ (this);
+    if (this instanceof Component) {
+      if (current.gameObject !== null) {
+        list.push(current.gameObject);
+        current = current.gameObject;
+      }
+    }
+
     while (current.parent !== null) {
       list.push(current.parent);
       current = current.parent;
@@ -3904,7 +3926,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onAdded() {}
+  onAdded() { }
 
   /**
    * Called when object is removed from stage.
@@ -3912,7 +3934,7 @@ class GameObject extends MessageDispatcher {
    * @public
    * @return {void}
    */
-  onRemoved() {}
+  onRemoved() { }
 
 
   /**
@@ -3926,9 +3948,9 @@ class GameObject extends MessageDispatcher {
       let gooc = gameObjectsAndOrComponents[i];
 
       if (gooc instanceof GameObject)
-        this.addChild( /** @type {!GameObject} */ (gooc));
+        this.addChild( /** @type {!GameObject} */(gooc));
       else
-        this.addComponent( /** @type {!Component} */ (gooc));
+        this.addComponent( /** @type {!Component} */(gooc));
     }
 
     return gameObjectsAndOrComponents;
@@ -4156,7 +4178,7 @@ class GameObject extends MessageDispatcher {
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
-    
+
     this.mNumComponentsRemoved++;
 
     return instance;
@@ -4236,7 +4258,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {Matrix}
    */
-  get worldTransformation() {  
+  get worldTransformation() {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
@@ -4247,6 +4269,41 @@ class GameObject extends MessageDispatcher {
     }
 
     return this.mWorldTransform;
+  }
+
+  set worldTransformation(matrix) {
+    const PI_Q = Math.PI / 4.0;
+
+    let a = matrix.value[0];
+    let b = matrix.value[1];
+    let c = matrix.value[2];
+    let d = matrix.value[3];
+    let tx = matrix.value[4];
+    let ty = matrix.value[5];
+
+    this.mPivotX = this.mPivotX = 0;
+    this.mX = tx;
+    this.mY = ty;
+
+    let skewX = Math.atan(-c / d);
+    let skewY = Math.atan(b / a);
+
+    if (skewX != skewX)
+      skewX = 0.0;
+    if (skewY != skewY)
+      skewY = 0.0;
+
+    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ?  d / Math.cos(skewX) : -c / Math.sin(skewX);
+    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ?  a / Math.cos(skewY) :  b / Math.sin(skewY);
+
+    if (MathEx.equals(skewX, skewY)) {
+      this.mRotation = skewX;
+      skewX = skewY = 0;
+    } else {
+      this.mRotation = 0;
+    }
+
+    this.setTransformDirty();
   }
 
   /**
@@ -4305,7 +4362,7 @@ class GameObject extends MessageDispatcher {
 
     for (let i = 0; i < this.mChildren.length; i++) {
       this.mChildren[i].__update(dt);
-      
+
       if (this.__checkRemovedChildren(i))
         break;
     }
@@ -4340,7 +4397,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedComponents(i) {
     if (this.mComponents == 0)
       return false;
-    
+
     i -= this.mNumComponentsRemoved;
     this.mNumComponentsRemoved = 0;
 
@@ -4353,7 +4410,7 @@ class GameObject extends MessageDispatcher {
   __checkRemovedChildren(i) {
     if (this.mNumChildrenRemoved == 0)
       return false;
-    
+
     i -= this.mNumChildrenRemoved;
     this.mNumChildrenRemoved = 0;
 
@@ -4372,7 +4429,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onFixedUpdate(dt) {}
+  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update.
@@ -4382,7 +4439,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onUpdate(dt) {}
+  onUpdate(dt) { }
 
   /**
    * Called after all updates have been executed.
@@ -4392,35 +4449,15 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  onPostUpdate(dt) {}
-
-  /**
-   * @ignore
-   * @param {VideoNullDriver} video   *
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    this.onRender(video, time);
-
-    let child = null;
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++) {
-      child = this.mChildren[i];
-      child.__render(video, time, parentAlpha);
-    }
-  }
+  onPostUpdate(dt) { }
 
   /**
    * @protected
-   * @param {VideoNullDriver} video Description
-   * @param {number} time  Description
+   * @param {VideoNullDriver} driver
    *
    * @return {void}
    */
-  onRender(video, time) {}
+  onRender(video, time) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -4754,6 +4791,9 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject|null}
    */
   get root() {
+    if (Black.instance == null)
+      return null;
+
     let current = this;
 
     if (current === Black.instance.root)
@@ -4771,34 +4811,36 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-  /**
-   * Returns how deep this GameObject in the display tree.
-   *
-   * @readonly
-   *
-   * @return {number}
-   */
-  get depth() {
-    if (this.mParent)
-      return this.mParent.depth + 1;
-    else
-      return 0;
-  }
+  // /**
+  //  * Returns how deep this GameObject in the display tree.
+  //  *
+  //  * @readonly
+  //  *
+  //  * @return {number}
+  //  */
+  // get depth() {
+  //   if (this.mParent)
+  //     return this.mParent.depth + 1;
+  //   else
+  //     return 0;
+  // }
 
-  get displayDepth() {
-    // Many thanks to Roman Kopansky
-    const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
-    return flatten(this.root.mChildren).indexOf(this);
-  }
-  /**
-   * @ignore
-   * @return {number}
-   */
-  get index() {
-    // TODO: this is only required by Input component and its pretty heavy.
-    // Try to workaround it.
-    return this.parent.mChildren.indexOf(this);
-  }
+  // TODO: review and make sure this func is required
+  // get displayDepth() {
+  //   // Many thanks to Roman Kopansky
+  //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
+  //   return flatten(this.root.mChildren).indexOf(this);
+  // }
+
+  // /**
+  //  * @ignore
+  //  * @return {number}
+  //  */
+  // get index() {
+  //   // TODO: this is only required by Input component and its pretty heavy.
+  //   // Try to workaround it.
+  //   return this.parent.mChildren.indexOf(this);
+  // }
 
   /**
    * Gets/sets the width of this object.
@@ -4991,7 +5033,11 @@ class GameObject extends MessageDispatcher {
    */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.RENDER, true);
+  }
+
+  setRenderDirty() {
+    this.setDirty(DirtyFlag.RENDER, false);
   }
 
   /**
@@ -4999,7 +5045,7 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  dispose() {}
+  dispose() { }
 
   // TODO: rename method
   /**
@@ -5250,6 +5296,31 @@ class GameObject extends MessageDispatcher {
 
     return null;
   }
+
+  /**
+   * Finds object by its id property. If node is not passed the root will be taken as
+   * starting point.
+   *
+   * @param {number} id         Id to search.
+   * @param {GameObject=} node  Starting GameObject or null.
+   *
+   * @return {GameObject} GameObject or null.
+   */
+  static findById(id, node) {
+    if (node == null)
+      node = Black.instance.root;
+
+    if (node.id === id)
+      return node;
+
+    for (let i = 0; i < node.numChildren; i++) {
+      let r = GameObject.findById(id, node.getChildAt(i));
+      if (r !== null)
+        return r;
+    }
+
+    return null;
+  }
 }
 
 /**
@@ -5266,6 +5337,7 @@ export
 var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
+  RENDER: 4,
   DIRTY: 0xffffff
 };
 
@@ -5347,6 +5419,7 @@ class Texture {
      */
     this.mIsLoaded = true;
 
+    // TODO: refactor, make private
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
@@ -6450,6 +6523,7 @@ class AssetManager extends MessageDispatcher {
         return t;
     }
 
+    Debug.warn('Unable to find texture', name);
     return null;
   }
 
@@ -6651,6 +6725,14 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  getRenderSupport() {
+    let supportMap = {
+
+    };
+
+    return new RenderSupportCanvas();
+  }
+
 
   /**
    * @protected
@@ -6848,13 +6930,137 @@ class VideoNullDriver {
   }
 }
 
-/**
- * An video driver that draw everything into DOM Canvas element.
- *
- * @cat drivers
- * @extends VideoNullDriver
- */
-export
+class Shader {
+}
+
+class MeshBatch {
+  constructor() {
+  }
+}
+
+class Material {
+  constructor() {
+    //this.shader = Black.instance.video.getShader('default');
+  }
+}
+
+class Renderer {
+  constructor() {
+    this.updateRequired = true;
+    this.zIndex = 0;
+    this.dirty = DirtyFlag.DIRTY;
+    this.texture = null;
+    this.alpha = 1;
+    this.blendMode = BlendMode.AUTO;
+    this.transform = null;
+    this.visible = true;
+  }
+
+  render(driver) {
+  }
+
+  get isRenderable() {
+    return this.alpha > 0 && this.texture !== null && this.visible === true;
+  }
+}
+
+class StageNullRenderer extends Renderer {
+  constructor() {
+    super();
+  }
+
+  get isRenderable() {
+    return true;
+  }
+}
+
+class SpriteRendererCanvas extends Renderer {
+  render(driver) {
+    const ctx = driver.mCtx;
+    const w = this.texture.width;
+    const h = this.texture.height;
+    const ox = this.texture.untrimmedRect.x;
+    const oy = this.texture.untrimmedRect.y;
+
+    ctx.drawImage(this.texture.native, this.texture.region.x, this.texture.region.y, w, h, ox, oy, w, h);
+  }
+}
+
+
+class SpriteRendererWebGL extends Renderer {
+  constructor() {
+    this.material = new Material();
+    this.vertexData = [];
+  }
+
+  render() {
+    // if (this.dirty == false)
+    //   return;
+
+  }
+
+  refreshVertexData() {
+    const vertexData = this.vertexData;
+    const transform = this.transform.value;
+    const a = transform[0];
+    const b = transform[1];
+    const c = transform[2];
+    const d = transform[3];
+    const tx = transform[4];
+    const ty = transform[5];
+    const texture = this.texture;
+    const region = texture.mRegion;
+    const w = region.width;
+    const h = region.height;
+
+    if (texture.isTrimmed) {
+      const untrimmedRegion = texture.untrimmedRect;
+      const left = untrimmedRegion.x;
+      const top = untrimmedRegion.y;
+      const right = left + w;
+      const bottom = top + h;
+
+      // left top
+      vertexData[0] = a * left + c * top + tx;
+      vertexData[1] = d * top + b * left + ty;
+
+      // right top
+      vertexData[2] = a * right + c * top + tx;
+      vertexData[3] = d * top + b * right + ty;
+
+      // left bottom
+      vertexData[4] = a * left + c * bottom + tx;
+      vertexData[5] = d * bottom + b * left + ty;
+
+      // right bottom
+      vertexData[6] = a * right + c * bottom + tx;
+      vertexData[7] = d * bottom + b * right + ty;
+    } else {
+
+      // left top
+      vertexData[0] = tx;
+      vertexData[1] = ty;
+
+      // right top
+      vertexData[2] = a * w + tx;
+      vertexData[3] = b * w + ty;
+
+      // left bottom
+      vertexData[4] = c * h + tx;
+      vertexData[5] = d * h + ty;
+
+      // right bottom
+      vertexData[6] = a * w + c * h + tx;
+      vertexData[7] = d * h + b * w + ty;
+    }
+  }
+}
+
+class NativeFontRenderSupport extends Renderer {
+
+}
+
+
 class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement The DOM element to draw into.
@@ -6870,12 +7076,46 @@ class CanvasDriver extends VideoNullDriver {
      */
     this.mCtx = null;
 
+    // cache
     this.mGlobalAlpha = 1;
     this.mGlobalBlendMode = BlendMode.NORMAL;
-    this.mCurrentObject = null;
+    this.mIdentityMatrix = new Matrix();
+
     this.mLetterSpacing = 0;
+    this.mRenderers = [];
+    this.skipChildren = false;
 
     this.__createCanvas();
+  }
+
+  getRendererForType(type) {
+    return new SpriteRendererCanvas;
+  }
+
+  registerRenderer(renderRenderer) {
+    if (renderRenderer.isRenderable === false) {
+      this.skipChildren = true;
+      return;
+    }
+
+    this.skipChildren = false;
+    this.mRenderers.push(renderRenderer);
+
+    return renderRenderer;
+  }
+
+  render(driver) {
+    const length = this.mRenderers.length;
+
+    for (let i = 0; i < length; i++) {
+      let renderer = this.mRenderers[i];
+
+      this.setTransform(renderer.transform);
+      this.globalAlpha = renderer.alpha;
+      this.globalBlendMode = renderer.blendMode;
+
+      renderer.render(driver);
+    }
   }
 
   /**
@@ -6889,7 +7129,7 @@ class CanvasDriver extends VideoNullDriver {
     cvs.height = this.mClientHeight;
     this.mContainerElement.appendChild(cvs);
 
-    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));    
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
   }
 
 
@@ -6914,9 +7154,12 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   setTransform(m) {
+    if (this.mTransform.exactEquals(m) === true)
+      return;
+
     super.setTransform(m);
 
-    let v = m.value;
+    const v = m.value;
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   }
 
@@ -6950,136 +7193,6 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * drawImage
-   *
-   * @inheritDoc
-   * @override
-   *
-   * @param {Sprite|Particle} object
-   * @param {Texture} texture
-   *
-   * @return {void}
-   */
-  drawImage(object, texture) {
-    let w = texture.width;
-    let h = texture.height;
-    let ox = texture.untrimmedRect.x;
-    let oy = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
-  }
-  
-  /**
-   * Measures text with a given style.
-   *
-   * @inheritDoc
-   * @override
-   * 
-   * @param {TextField} textField    Text to measure.
-   * @param {TextInfo} style Text style to apply onto text.
-   * @param {Rectangle} bounds.
-   *
-   * @return {Rectangle} A Vector with width and height of the text bounds.
-   */
-  measureText(textField, style, bounds) {
-    let lines = textField.lines;
-    let widths = textField.lineWidths;
-    let lineHeight = textField.lineHeight;
-    let text = textField.text;
-    let multiLine = textField.multiLine;
-    let strokeThickness = style.strokeThickness;
-    let ctx = this.mCtx;
-    
-    if (this.mLetterSpacing !== textField.letterSpacing) {
-      this.mLetterSpacing = textField.letterSpacing;
-      
-      let canvas = ctx.canvas;
-      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
-      // ctx = this.mCtx = canvas.getContext(`2d`);
-    }
-    
-    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    ctx.textBaseline = `top`;
-    
-    lines.length = 0;
-    widths.length = 0;
-    multiLine ? lines.push(...text.split(`\n`)) : lines.push(text);
-
-    for (let i = 0, l = lines.length; i < l; i++) {
-      widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
-    }
-    
-    if (!textField.autoSize) {
-      return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
-    }
-    
-    return bounds.set(0, 0, Math.max(...widths), lines.length * lineHeight * (style.size + strokeThickness));
-  }
-
-  /**
-   * drawText
-   *
-   * @inheritDoc
-   * @override
-   *
-   * @param {TextField} textField
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   *
-   * @return {void}
-   */
-  drawText(textField, style, bounds) {
-    let lines = textField.lines;
-    let widths = textField.lineWidths;
-    let lineOffset = textField.lineHeight * style.size;
-    let strokeThickness = style.strokeThickness;
-    let align = style.align;
-    let maxWidth = bounds.width;
-    let ctx = this.mCtx;
-
-    if (this.mLetterSpacing !== textField.letterSpacing) {
-      this.mLetterSpacing = textField.letterSpacing;
-
-      let canvas = ctx.canvas;
-      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
-      // ctx = this.mCtx = canvas.getContext(`2d`);
-    }
-
-    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    ctx.fillStyle = this.hexColorToString(style.color);
-    ctx.textBaseline = `bottom`;
-
-    if (strokeThickness !== 0) {
-      ctx.lineJoin = `round`;
-      ctx.miterLimit = 2;
-      ctx.lineWidth = strokeThickness;
-      ctx.strokeStyle = this.hexColorToString(style.strokeColor);
-    }
-
-    if (!textField.autoSize) {
-      ctx.rect(0, 0, maxWidth, bounds.height);
-      ctx.clip();
-    }
-
-    // ctx.fillRect(0, 0, maxWidth, bounds.height);
-
-    for (let i = 0, l = lines.length; i < l; i++) {
-      let width = widths[i];
-      let y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
-      let x = strokeThickness / 2;
-
-      if (align === `center`) {
-        x += maxWidth / 2 - width / 2;
-      } else if (align === `right`) {
-        x += maxWidth - width;
-      }
-
-      strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
-      ctx.fillText(lines[i], x, y);
-    }
-  }
-
-  /**
    * clear
    * @inheritDoc
    * @override
@@ -7087,7 +7200,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
+    this.setTransform(this.mIdentityMatrix);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -7098,12 +7211,10 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   beginFrame() {
-    super.beginFrame();
-
     this.clear();
-    //this.mCtx.save();
+    this.skipChildren = false;
 
-    this.mCtx.globalCompositeOperation = this.mGlobalBlendMode;
+    this.mRenderers.splice(0, this.mRenderers.length);
   }
 
   /**
@@ -7113,9 +7224,6 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   endFrame() {
-    super.endFrame();
-
-    //this.mCtx.restore();
   }
 
   /**
@@ -7127,40 +7235,7 @@ class CanvasDriver extends VideoNullDriver {
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);
   }
-
-  /**
-   * save
-   *
-   * @override
-   * @param {GameObject|null} gameObject Used for internal binding.
-   *
-   * @return {void}
-   */
-  save(gameObject) {
-    this.mCtx.save();
-    this.mCurrentObject = gameObject;
-  }
-
-  /**
-   * restore
-   *
-   * @return {void}
-   */
-  restore() {
-    this.mCtx.restore();
-  }
-
-  clip(rect) {
-    //this.mCtx.beginPath();
-    console.log('123');
-    
-    this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
-    this.mCtx.clip();
-
-    //this.mCtx.endPath();
-  }
 }
-
 /**
  * An video driver that draw everything into DOM elements itself.
  *
@@ -8664,86 +8739,9 @@ class DisplayObject extends GameObject {
      */
     this.mVisible = true;
     
-    this.pluginName = WebGLTexPlugin.name;
-    this.vertexData = [];
-    this.tint = 0xffffff;
-  }
-
-  /**
-   * @ignore
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mVisible === false)
-      return;
-    
-    this.onRender(video, time);
-
-    let child = null;
-    for (var i = 0; i < this.mChildren.length; i++) {
-      child = this.mChildren[i];
-      child.__render(video, time, parentAlpha);
-    }
-  }
-
-  refreshVertexData() {
-    const vertexData = this.vertexData;
-    const transform = this.worldTransformation.value;
-    const a = transform[0];
-    const b = transform[1];
-    const c = transform[2];
-    const d = transform[3];
-    const tx = transform[4];
-    const ty = transform[5];
-    const texture = this.mTexture;
-    const region = texture.mRegion;
-    const w = region.width;
-    const h = region.height;
-
-    if (texture.isTrimmed) {
-      const untrimmedRegion = texture.untrimmedRect;
-      const left = untrimmedRegion.x;
-      const top = untrimmedRegion.y;
-      const right = left + w;
-      const bottom = top + h;
-
-      // left top
-      vertexData[0] = a * left + c * top + tx;
-      vertexData[1] = d * top + b * left + ty;
-
-      // right top
-      vertexData[2] = a * right + c * top + tx;
-      vertexData[3] = d * top + b * right + ty;
-
-      // left bottom
-      vertexData[4] = a * left + c * bottom + tx;
-      vertexData[5] = d * bottom + b * left + ty;
-
-      // right bottom
-      vertexData[6] = a * right + c * bottom + tx;
-      vertexData[7] = d * bottom + b * right + ty;
-    } else {
-
-      // left top
-      vertexData[0] = tx;
-      vertexData[1] = ty;
-
-      // right top
-      vertexData[2] = a * w + tx;
-      vertexData[3] = b * w + ty;
-
-      // left bottom
-      vertexData[4] = c * h + tx;
-      vertexData[5] = d * h + ty;
-
-      // right bottom
-      vertexData[6] = a * w + c * h + tx;
-      vertexData[7] = d * h + b * w + ty;
-    }
+    // this.pluginName = WebGLTexPlugin.name;
+    // this.vertexData = [];
+    // this.tint = 0xffffff;
   }
 
   /**
@@ -8761,7 +8759,12 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
+    if (this.mAlpha === MathEx.clamp(value, 0, 1))
+      return;
+
     this.mAlpha = MathEx.clamp(value, 0, 1);
+    
+    this.setRenderDirty();
   }
 
 
@@ -8781,7 +8784,11 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set visible(value) {
+    if (this.mVisible === value)
+      return;
+
     this.mVisible = value;
+    this.setRenderDirty();
   }
 }
 
@@ -8864,9 +8871,8 @@ TextInfo.FontAlign = {
  */
 export
 class Sprite extends DisplayObject {
-
   /**
-   * constructor - Creates a new Sprite object instance.
+   * Creates a new Sprite instance.
    *
    * @param {Texture|string|null} texture The Texture instance or null.
    */
@@ -8878,37 +8884,38 @@ class Sprite extends DisplayObject {
      * @type {Texture|null} */
     this.mTexture = null;
 
+    /**
+     * @private
+     * @type {string|null} */
+    this.mTextureName = null;
+
     if (texture !== null && texture.constructor === String) {
-      this.mTexture = AssetManager.default.getTexture(/** @type {string} */ (texture));
+      this.mTextureName = /** @type {string} */ (texture);
+      this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    this.mRenderer = Black.instance.video.getRendererForType(Sprite);
   }
 
-  /**
-   * @override
-   * @private
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false) return;
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
-    this.worldAlpha = parentAlpha * this.mAlpha;
+    renderer.dirty = this.mDirty;
 
-    if (this.mTexture !== null) {
-      video.setTransform(this.worldTransformation);
-      video.globalAlpha = parentAlpha * this.mAlpha;
-      video.globalBlendMode = this.blendMode;
-      video.drawImage(this, this.mTexture);
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.texture = this.mTexture;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      this.mDirty ^= DirtyFlag.RENDER;
     }
 
-    super.__render(video, time, this.worldAlpha);
+    return driver.registerRenderer(renderer);
   }
-  
+
   /**
    * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
    *
@@ -8937,17 +8944,31 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Sets the Texture on this sprite.
+   * texture - Sets the Texture on this sprite by name.
+   * Only AssetManager.default is used.
    *
    * @param {Texture|null} texture Texture to apply on.
    *
    * @return {void}
    */
   set texture(texture) {
-    if (this.mTexture === texture)
+    if (this.mTexture !== texture)
+      this.mTexture = texture;
+  }
+
+  get textureName() {
+    return this.mTextureName;
+  }
+
+  /**
+   * @editor {TextureEditor}
+   */
+  set textureName(value) {
+    if (this.mTextureName === value)
       return;
 
-    this.mTexture = texture;
+    this.mTextureName = value;
+    this.texture = AssetManager.default.getTexture(value);
   }
 
   set touchable(value) {
@@ -9083,7 +9104,7 @@ class TextField extends DisplayObject {
      * @type {number}
      */
     this.mFieldHeight = this.mStyle.size * this.mLineHeight;
-    
+
     this.onGetLocalBounds(this.mCacheBounds);
   }
 
@@ -9098,9 +9119,10 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false) return;
+    if (this.mAlpha <= 0 || this.mVisible === false)
+      return;
 
-    this.worldAlpha = parentAlpha * this.mAlpha;
+    let worldAlpha = parentAlpha * this.mAlpha;
 
     if (this.mNeedInvalidate) {
       this.onGetLocalBounds(this.mCacheBounds);
@@ -9108,12 +9130,12 @@ class TextField extends DisplayObject {
     }
 
     video.setTransform(this.worldTransformation);
-    video.globalAlpha = parentAlpha * this.mAlpha;
+    video.globalAlpha = worldAlpha;
     video.globalBlendMode = this.blendMode;
     video.drawText(this, this.mStyle, this.mCacheBounds);
 
     this.mNeedInvalidate = false;
-    super.__render(video, time, this.worldAlpha);
+    super.__render(video, time, worldAlpha);
   }
 
   /**
@@ -9156,7 +9178,7 @@ class TextField extends DisplayObject {
   get letterSpacing() {
     return this.mLetterSpacing;
   }
-  
+
   /**
    * @param {boolean} value
    * @ignore
@@ -9349,7 +9371,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeThickness(value) {
-    if (value === this.mStyle.strokeThickness) return;
+    if (value === this.mStyle.strokeThickness)
+      return;
+
     this.mStyle.strokeThickness = value;
     this.mNeedInvalidate = true;
   }
@@ -9370,7 +9394,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set fieldWidth(value) {
-    if (value === this.mFieldWidth) return;
+    if (value === this.mFieldWidth)
+      return;
+
     this.mFieldWidth = value;
     this.mNeedInvalidate = true;
   }
@@ -9434,7 +9460,9 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set autoSize(value) {
-    if (this.mAutoSize === value) return;
+    if (this.mAutoSize === value)
+      return;
+
     this.mAutoSize = value;
     this.mNeedInvalidate = true;
   }
@@ -12179,11 +12207,23 @@ class MRComponent extends Component {
      */
     this.mAspect = 0;
 
+    let size = Black.instance.viewport.size;
+    this.mCacheWidth = size.width;
+    this.mCacheHeight = size.height;
+
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  onUpdate() {
+    // TODO: performance wise
+    let size = Black.instance.viewport.size;
+
+    if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height)
+      this.setSize(this.mWidth, this.mHeight);
+  }
+
   __onResize(msg, rect) {
-    this.setSize(this.mWidth, this.mHeight);    
+    this.setSize(this.mWidth, this.mHeight);
   }
 
   /**
@@ -12199,7 +12239,7 @@ class MRComponent extends Component {
 
     this.updateLayout();
 
-    this.post('resize', this.isLandscape);
+    this.post('~resize', this.isLandscape);
   }
 
   /**
@@ -12213,19 +12253,26 @@ class MRComponent extends Component {
 
     /** @type {Rectangle} */
     let size = Black.instance.viewport.size;
+    let width = this.mWidth;
+    let height = this.mHeight;
+
+    if (size.width <= size.height) {
+      width = this.mHeight;
+      height = this.mWidth;
+    }
 
     /** @type {number} */
-    let scaleX = size.width / this.mWidth;
+    let scaleX = size.width / width;
 
     /** @type {number} */
-    let scaleY = size.height / this.mHeight;
+    let scaleY = size.height / height;
 
     this.mScale = Math.min(scaleX, scaleY);
     this.mInvScale = 1 / this.mScale;
 
     this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-    this.gameObject.x = (size.width / 2) - (this.mWidth / 2) * this.mScale;
-    this.gameObject.y = (size.height / 2) - (this.mHeight / 2) * this.mScale;
+    this.gameObject.x = (size.width / 2) - (width / 2) * this.mScale;
+    this.gameObject.y = (size.height / 2) - (height / 2) * this.mScale;
   }
 
   onAdded() {
@@ -12233,7 +12280,8 @@ class MRComponent extends Component {
   }
 
   get isLandscape() {
-    return this.mWidth > this.mHeight;
+    let size = Black.instance.viewport.size;
+    return size.width >= size.height;
   }
 
   get isPortrait() {
@@ -13907,6 +13955,12 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
+     * @type {StageRenderSupport}
+     */
+    this.mStageNullRenderer = new StageNullRenderer();
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.mEnableFixedTimeStep = false;
@@ -14149,7 +14203,8 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.mRoot.__render(this.mVideo, this.mUptime, 1, BlendMode.AUTO);
+      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageNullRenderer);
+      this.mVideo.render(this.mVideo);
       this.mVideo.endFrame();
 
       // TODO: remove uptime
@@ -14160,6 +14215,22 @@ class Black extends MessageDispatcher {
     }
 
     this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+  }
+
+  __renderGameObjects(gameObject, driver, parentRenderer) {
+    if (gameObject == null)
+      gameObject = Black.instance.root;
+
+    let renderer = gameObject.onRender(driver, parentRenderer);
+    if (renderer == null)
+      renderer = parentRenderer;
+
+    if (driver.skipChildren === true)
+      return;
+
+    const len = gameObject.numChildren;
+    for (let i = 0; i < len; i++)
+      this.__renderGameObjects(gameObject.getChildAt(i), driver, renderer);
   }
 
   /**

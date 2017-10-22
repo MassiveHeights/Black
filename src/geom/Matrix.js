@@ -451,6 +451,16 @@ class Matrix {
     return matrix.copyTo(this);
   }
 
+  exactEquals(matrix) {
+    if (!matrix)
+    return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;
+    
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
+  }
+
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
@@ -459,10 +469,11 @@ class Matrix {
    * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
-    let a = this._matrix;
-    let b = matrix._matrix;
     if (!matrix)
       return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;    
 
     return (Math.abs(a[0] - b[0]) < epsilon) && (Math.abs(a[1] - b[1]) < epsilon) && (Math.abs(a[2] - b[2]) < epsilon) &&
       (Math.abs(a[3] - b[3]) < epsilon) && (Math.abs(a[4] - b[4]) < epsilon) && (Math.abs(a[5] - b[5]) < epsilon);

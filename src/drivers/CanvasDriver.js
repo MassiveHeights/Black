@@ -1,10 +1,134 @@
-/**
- * An video driver that draw everything into DOM Canvas element.
- *
- * @cat drivers
- * @extends VideoNullDriver
- */
-/* @echo EXPORT */
+class Shader {
+}
+
+class MeshBatch {
+  constructor() {
+  }
+}
+
+class Material {
+  constructor() {
+    //this.shader = Black.instance.video.getShader('default');
+  }
+}
+
+class Renderer {
+  constructor() {
+    this.updateRequired = true;
+    this.zIndex = 0;
+    this.dirty = DirtyFlag.DIRTY;
+    this.texture = null;
+    this.alpha = 1;
+    this.blendMode = BlendMode.AUTO;
+    this.transform = null;
+    this.visible = true;
+  }
+
+  render(driver) {
+  }
+
+  get isRenderable() {
+    return this.alpha > 0 && this.texture !== null && this.visible === true;
+  }
+}
+
+class StageNullRenderer extends Renderer {
+  constructor() {
+    super();
+  }
+
+  get isRenderable() {
+    return true;
+  }
+}
+
+class SpriteRendererCanvas extends Renderer {
+  render(driver) {
+    const ctx = driver.mCtx;
+    const w = this.texture.width;
+    const h = this.texture.height;
+    const ox = this.texture.untrimmedRect.x;
+    const oy = this.texture.untrimmedRect.y;
+
+    ctx.drawImage(this.texture.native, this.texture.region.x, this.texture.region.y, w, h, ox, oy, w, h);
+  }
+}
+
+
+class SpriteRendererWebGL extends Renderer {
+  constructor() {
+    this.material = new Material();
+    this.vertexData = [];
+  }
+
+  render() {
+    // if (this.dirty == false)
+    //   return;
+
+  }
+
+  refreshVertexData() {
+    const vertexData = this.vertexData;
+    const transform = this.transform.value;
+    const a = transform[0];
+    const b = transform[1];
+    const c = transform[2];
+    const d = transform[3];
+    const tx = transform[4];
+    const ty = transform[5];
+    const texture = this.texture;
+    const region = texture.mRegion;
+    const w = region.width;
+    const h = region.height;
+
+    if (texture.isTrimmed) {
+      const untrimmedRegion = texture.untrimmedRect;
+      const left = untrimmedRegion.x;
+      const top = untrimmedRegion.y;
+      const right = left + w;
+      const bottom = top + h;
+
+      // left top
+      vertexData[0] = a * left + c * top + tx;
+      vertexData[1] = d * top + b * left + ty;
+
+      // right top
+      vertexData[2] = a * right + c * top + tx;
+      vertexData[3] = d * top + b * right + ty;
+
+      // left bottom
+      vertexData[4] = a * left + c * bottom + tx;
+      vertexData[5] = d * bottom + b * left + ty;
+
+      // right bottom
+      vertexData[6] = a * right + c * bottom + tx;
+      vertexData[7] = d * bottom + b * right + ty;
+    } else {
+
+      // left top
+      vertexData[0] = tx;
+      vertexData[1] = ty;
+
+      // right top
+      vertexData[2] = a * w + tx;
+      vertexData[3] = b * w + ty;
+
+      // left bottom
+      vertexData[4] = c * h + tx;
+      vertexData[5] = d * h + ty;
+
+      // right bottom
+      vertexData[6] = a * w + c * h + tx;
+      vertexData[7] = d * h + b * w + ty;
+    }
+  }
+}
+
+class NativeFontRenderSupport extends Renderer {
+
+}
+
+
 class CanvasDriver extends VideoNullDriver {
   /**
    * @param  {HTMLElement} containerElement The DOM element to draw into.
@@ -20,12 +144,46 @@ class CanvasDriver extends VideoNullDriver {
      */
     this.mCtx = null;
 
+    // cache
     this.mGlobalAlpha = 1;
     this.mGlobalBlendMode = BlendMode.NORMAL;
-    this.mCurrentObject = null;
+    this.mIdentityMatrix = new Matrix();
+
     this.mLetterSpacing = 0;
+    this.mRenderers = [];
+    this.skipChildren = false;
 
     this.__createCanvas();
+  }
+
+  getRendererForType(type) {
+    return new SpriteRendererCanvas;
+  }
+
+  registerRenderer(renderRenderer) {
+    if (renderRenderer.isRenderable === false) {
+      this.skipChildren = true;
+      return;
+    }
+
+    this.skipChildren = false;
+    this.mRenderers.push(renderRenderer);
+
+    return renderRenderer;
+  }
+
+  render(driver) {
+    const length = this.mRenderers.length;
+
+    for (let i = 0; i < length; i++) {
+      let renderer = this.mRenderers[i];
+
+      this.setTransform(renderer.transform);
+      this.globalAlpha = renderer.alpha;
+      this.globalBlendMode = renderer.blendMode;
+
+      renderer.render(driver);
+    }
   }
 
   /**
@@ -39,7 +197,7 @@ class CanvasDriver extends VideoNullDriver {
     cvs.height = this.mClientHeight;
     this.mContainerElement.appendChild(cvs);
 
-    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));    
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
   }
 
 
@@ -64,9 +222,12 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   setTransform(m) {
+    if (this.mTransform.exactEquals(m) === true)
+      return;
+
     super.setTransform(m);
 
-    let v = m.value;
+    const v = m.value;
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
   }
 
@@ -100,136 +261,6 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * drawImage
-   *
-   * @inheritDoc
-   * @override
-   *
-   * @param {Sprite|Particle} object
-   * @param {Texture} texture
-   *
-   * @return {void}
-   */
-  drawImage(object, texture) {
-    let w = texture.width;
-    let h = texture.height;
-    let ox = texture.untrimmedRect.x;
-    let oy = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
-  }
-  
-  /**
-   * Measures text with a given style.
-   *
-   * @inheritDoc
-   * @override
-   * 
-   * @param {TextField} textField    Text to measure.
-   * @param {TextInfo} style Text style to apply onto text.
-   * @param {Rectangle} bounds.
-   *
-   * @return {Rectangle} A Vector with width and height of the text bounds.
-   */
-  measureText(textField, style, bounds) {
-    let lines = textField.lines;
-    let widths = textField.lineWidths;
-    let lineHeight = textField.lineHeight;
-    let text = textField.text;
-    let multiLine = textField.multiLine;
-    let strokeThickness = style.strokeThickness;
-    let ctx = this.mCtx;
-    
-    if (this.mLetterSpacing !== textField.letterSpacing) {
-      this.mLetterSpacing = textField.letterSpacing;
-      
-      let canvas = ctx.canvas;
-      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
-      // ctx = this.mCtx = canvas.getContext(`2d`);
-    }
-    
-    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    ctx.textBaseline = `top`;
-    
-    lines.length = 0;
-    widths.length = 0;
-    multiLine ? lines.push(...text.split(`\n`)) : lines.push(text);
-
-    for (let i = 0, l = lines.length; i < l; i++) {
-      widths[i] = ctx.measureText(lines[i]).width + strokeThickness;
-    }
-    
-    if (!textField.autoSize) {
-      return bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
-    }
-    
-    return bounds.set(0, 0, Math.max(...widths), lines.length * lineHeight * (style.size + strokeThickness));
-  }
-
-  /**
-   * drawText
-   *
-   * @inheritDoc
-   * @override
-   *
-   * @param {TextField} textField
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   *
-   * @return {void}
-   */
-  drawText(textField, style, bounds) {
-    let lines = textField.lines;
-    let widths = textField.lineWidths;
-    let lineOffset = textField.lineHeight * style.size;
-    let strokeThickness = style.strokeThickness;
-    let align = style.align;
-    let maxWidth = bounds.width;
-    let ctx = this.mCtx;
-
-    if (this.mLetterSpacing !== textField.letterSpacing) {
-      this.mLetterSpacing = textField.letterSpacing;
-
-      let canvas = ctx.canvas;
-      canvas.style.letterSpacing = `${textField.letterSpacing}px`;
-      // ctx = this.mCtx = canvas.getContext(`2d`);
-    }
-
-    ctx.font = `${style.style} ${style.weight} ${style.size}px "${style.name}"`;
-    ctx.fillStyle = this.hexColorToString(style.color);
-    ctx.textBaseline = `bottom`;
-
-    if (strokeThickness !== 0) {
-      ctx.lineJoin = `round`;
-      ctx.miterLimit = 2;
-      ctx.lineWidth = strokeThickness;
-      ctx.strokeStyle = this.hexColorToString(style.strokeColor);
-    }
-
-    if (!textField.autoSize) {
-      ctx.rect(0, 0, maxWidth, bounds.height);
-      ctx.clip();
-    }
-
-    // ctx.fillRect(0, 0, maxWidth, bounds.height);
-
-    for (let i = 0, l = lines.length; i < l; i++) {
-      let width = widths[i];
-      let y = bounds.height - strokeThickness / 2 - lineOffset * (l - i - 1);
-      let x = strokeThickness / 2;
-
-      if (align === `center`) {
-        x += maxWidth / 2 - width / 2;
-      } else if (align === `right`) {
-        x += maxWidth - width;
-      }
-
-      strokeThickness !== 0 && ctx.strokeText(lines[i], x, y);
-      ctx.fillText(lines[i], x, y);
-    }
-  }
-
-  /**
    * clear
    * @inheritDoc
    * @override
@@ -237,7 +268,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
+    this.setTransform(this.mIdentityMatrix);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -248,12 +279,10 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   beginFrame() {
-    super.beginFrame();
-
     this.clear();
-    //this.mCtx.save();
+    this.skipChildren = false;
 
-    this.mCtx.globalCompositeOperation = this.mGlobalBlendMode;
+    this.mRenderers.splice(0, this.mRenderers.length);
   }
 
   /**
@@ -263,9 +292,6 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   endFrame() {
-    super.endFrame();
-
-    //this.mCtx.restore();
   }
 
   /**
@@ -276,37 +302,5 @@ class CanvasDriver extends VideoNullDriver {
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);
-  }
-
-  /**
-   * save
-   *
-   * @override
-   * @param {GameObject|null} gameObject Used for internal binding.
-   *
-   * @return {void}
-   */
-  save(gameObject) {
-    this.mCtx.save();
-    this.mCurrentObject = gameObject;
-  }
-
-  /**
-   * restore
-   *
-   * @return {void}
-   */
-  restore() {
-    this.mCtx.restore();
-  }
-
-  clip(rect) {
-    //this.mCtx.beginPath();
-    console.log('123');
-    
-    this.mCtx.rect(rect.x, rect.y, rect.width, rect.height);
-    this.mCtx.clip();
-
-    //this.mCtx.endPath();
   }
 }

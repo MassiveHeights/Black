@@ -681,28 +681,8 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) { }
 
   /**
-   * @ignore
-   * @param {VideoNullDriver} video   *
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    this.onRender(video, time);
-
-    let child = null;
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++) {
-      child = this.mChildren[i];
-      child.__render(video, time, parentAlpha);
-    }
-  }
-
-  /**
    * @protected
-   * @param {VideoNullDriver} video Description
-   * @param {number} time  Description
+   * @param {VideoNullDriver} driver
    *
    * @return {void}
    */
@@ -1282,7 +1262,11 @@ class GameObject extends MessageDispatcher {
    */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.RENDER, true);
+  }
+
+  setRenderDirty() {
+    this.setDirty(DirtyFlag.RENDER, false);
   }
 
   /**
@@ -1582,5 +1566,6 @@ GameObject.ID = 0;
 var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
+  RENDER: 4,
   DIRTY: 0xffffff
 };

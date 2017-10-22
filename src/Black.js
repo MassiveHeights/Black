@@ -212,6 +212,12 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
+     * @type {StageRenderSupport}
+     */
+    this.mStageNullRenderer = new StageNullRenderer();
+
+    /**
+     * @private
      * @type {boolean}
      */
     this.mEnableFixedTimeStep = false;
@@ -454,7 +460,8 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.mRoot.__render(this.mVideo, this.mUptime, 1, BlendMode.AUTO);
+      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageNullRenderer);
+      this.mVideo.render(this.mVideo);
       this.mVideo.endFrame();
 
       // TODO: remove uptime
@@ -465,6 +472,22 @@ class Black extends MessageDispatcher {
     }
 
     this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+  }
+
+  __renderGameObjects(gameObject, driver, parentRenderer) {
+    if (gameObject == null)
+      gameObject = Black.instance.root;
+
+    let renderer = gameObject.onRender(driver, parentRenderer);
+    if (renderer == null)
+      renderer = parentRenderer;
+
+    if (driver.skipChildren === true)
+      return;
+
+    const len = gameObject.numChildren;
+    for (let i = 0; i < len; i++)
+      this.__renderGameObjects(gameObject.getChildAt(i), driver, renderer);
   }
 
   /**
