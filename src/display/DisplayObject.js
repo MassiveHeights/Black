@@ -39,11 +39,15 @@ class DisplayObject extends GameObject {
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      
       if (this.blendMode === BlendMode.AUTO)
         renderer.blendMode = parentRenderer.blendMode;
       else
         renderer.blendMode = this.blendMode;
+
       renderer.visible = this.mVisible;
+      renderer.dirty = true;
+
       this.mDirty ^= DirtyFlag.RENDER;
     }
 

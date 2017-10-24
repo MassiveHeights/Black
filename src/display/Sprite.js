@@ -48,6 +48,7 @@ class Sprite extends DisplayObject {
         renderer.blendMode = this.blendMode;
 
       renderer.visible = this.mVisible;
+      renderer.dirty = true;
       this.mDirty ^= DirtyFlag.RENDER;
     }
 
