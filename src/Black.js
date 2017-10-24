@@ -224,7 +224,7 @@ class Black extends MessageDispatcher {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.AUTO;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;
   }
 
   /**

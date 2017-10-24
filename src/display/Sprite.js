@@ -41,7 +41,12 @@ class Sprite extends DisplayObject {
       renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode;
+
+      if (this.blendMode === BlendMode.AUTO)
+        renderer.blendMode = parentRenderer.blendMode;
+      else
+        renderer.blendMode = this.blendMode;
+
       renderer.visible = this.mVisible;
       this.mDirty ^= DirtyFlag.RENDER;
     }

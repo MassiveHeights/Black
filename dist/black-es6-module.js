@@ -8789,7 +8789,7 @@ class DisplayObject extends GameObject {
      * @public
      * @type {string}
      */
-    this.blendMode = BlendMode.NORMAL;
+    this.blendMode = BlendMode.AUTO;
 
     /**
      * @private
@@ -8798,7 +8798,7 @@ class DisplayObject extends GameObject {
     this.mVisible = true;
 
     this.mRenderer = new Renderer();
-    
+
     // this.pluginName = WebGLTexPlugin.name;
     // this.vertexData = [];
     // this.tint = 0xffffff;
@@ -8809,7 +8809,10 @@ class DisplayObject extends GameObject {
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode;
+      if (this.blendMode === BlendMode.AUTO)
+        renderer.blendMode = parentRenderer.blendMode;
+      else
+        renderer.blendMode = this.blendMode;
       renderer.visible = this.mVisible;
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -8835,7 +8838,7 @@ class DisplayObject extends GameObject {
     if (this.mAlpha === MathEx.clamp(value, 0, 1))
       return;
 
-    this.mAlpha = MathEx.clamp(value, 0, 1);    
+    this.mAlpha = MathEx.clamp(value, 0, 1);
     this.setRenderDirty();
   }
 
@@ -8978,7 +8981,12 @@ class Sprite extends DisplayObject {
       renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode;
+
+      if (this.blendMode === BlendMode.AUTO)
+        renderer.blendMode = parentRenderer.blendMode;
+      else
+        renderer.blendMode = this.blendMode;
+
       renderer.visible = this.mVisible;
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -14052,7 +14060,7 @@ class Black extends MessageDispatcher {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.AUTO;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;
   }
 
   /**
