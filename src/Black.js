@@ -212,12 +212,6 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
-     * @type {StageRenderSupport}
-     */
-    this.mStageNullRenderer = new StageNullRenderer();
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.mEnableFixedTimeStep = false;
@@ -227,6 +221,10 @@ class Black extends MessageDispatcher {
      * @type {boolean}
      */
     this.mWasStopped = false;
+
+    this.mStageRenderer = new Renderer();
+    this.mStageRenderer.alpha = 1;
+    this.mStageRenderer.blendMode = BlendMode.AUTO;
   }
 
   /**
@@ -460,7 +458,7 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageNullRenderer);
+      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageRenderer);
       this.mVideo.render(this.mVideo);
       this.mVideo.endFrame();
 
@@ -475,19 +473,17 @@ class Black extends MessageDispatcher {
   }
 
   __renderGameObjects(gameObject, driver, parentRenderer) {
-    if (gameObject == null)
-      gameObject = Black.instance.root;
-
     let renderer = gameObject.onRender(driver, parentRenderer);
-    if (renderer == null)
-      renderer = parentRenderer;
+
+    if (renderer != null)
+      parentRenderer = renderer;
 
     if (driver.skipChildren === true)
       return;
 
     const len = gameObject.numChildren;
     for (let i = 0; i < len; i++)
-      this.__renderGameObjects(gameObject.getChildAt(i), driver, renderer);
+      this.__renderGameObjects(gameObject.getChildAt(i), driver, parentRenderer);
   }
 
   /**

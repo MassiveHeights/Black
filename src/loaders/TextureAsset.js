@@ -21,6 +21,7 @@ class TextureAsset extends Asset {
      * @type {Image}
      */
     this.mImageElement = new Image();
+    this.mImageElement.crossOrigin = true;
   }
 
   /**

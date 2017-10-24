@@ -496,10 +496,16 @@ class GameObject extends MessageDispatcher {
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
-
+    
     return this.mWorldTransform;
   }
 
+  /**
+   * @ignore
+   * @param {Matrix} value
+   *
+   * @return {void}
+   */
   set worldTransformation(matrix) {
     const PI_Q = Math.PI / 4.0;
 
@@ -683,10 +689,11 @@ class GameObject extends MessageDispatcher {
   /**
    * @protected
    * @param {VideoNullDriver} driver
+   * @param {Renderer} parentRenderer
    *
    * @return {void}
    */
-  onRender(video, time) { }
+  onRender(driver, parentRenderer) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.

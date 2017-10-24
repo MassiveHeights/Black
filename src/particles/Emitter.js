@@ -145,7 +145,7 @@ class Emitter extends DisplayObject {
      */
     this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-
+    this.mRenderer = Black.instance.video.getRenderer(this);
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
@@ -239,8 +239,25 @@ class Emitter extends DisplayObject {
     return action;
   }
 
-  __render(video, time, parentAlpha) {
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
+    //if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      renderer.particles = this.mParticles;
+      renderer.textures = this.mTextures;
+      renderer.dirty = true;
+      renderer.space = this.mSpace;
+      renderer.isLocal = this.mIsLocal;
+    //}
+
+    return driver.registerRenderer(renderer);
+  }
+
+  __render(video, time, parentAlpha) {
     // set blend mode
     video.globalBlendMode = this.blendMode;
     let emitterWorldAlpha = parentAlpha * this.alpha;

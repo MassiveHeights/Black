@@ -26,10 +26,25 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
+
+    this.mRenderer = new Renderer();
     
     // this.pluginName = WebGLTexPlugin.name;
     // this.vertexData = [];
     // this.tint = 0xffffff;
+  }
+
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
+
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      this.mDirty ^= DirtyFlag.RENDER;
+    }
+
+    return driver.registerRenderer(renderer);
   }
 
   /**
@@ -50,8 +65,7 @@ class DisplayObject extends GameObject {
     if (this.mAlpha === MathEx.clamp(value, 0, 1))
       return;
 
-    this.mAlpha = MathEx.clamp(value, 0, 1);
-    
+    this.mAlpha = MathEx.clamp(value, 0, 1);    
     this.setRenderDirty();
   }
 

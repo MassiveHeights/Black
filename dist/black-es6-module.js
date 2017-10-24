@@ -4267,10 +4267,16 @@ class GameObject extends MessageDispatcher {
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
-
+    
     return this.mWorldTransform;
   }
 
+  /**
+   * @ignore
+   * @param {Matrix} value
+   *
+   * @return {void}
+   */
   set worldTransformation(matrix) {
     const PI_Q = Math.PI / 4.0;
 
@@ -4454,10 +4460,11 @@ class GameObject extends MessageDispatcher {
   /**
    * @protected
    * @param {VideoNullDriver} driver
+   * @param {Renderer} parentRenderer
    *
    * @return {void}
    */
-  onRender(video, time) { }
+  onRender(driver, parentRenderer) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -5935,6 +5942,7 @@ class TextureAsset extends Asset {
      * @type {Image}
      */
     this.mImageElement = new Image();
+    this.mImageElement.crossOrigin = true;
   }
 
   /**
@@ -6172,6 +6180,7 @@ class AtlasTextureAsset extends Asset {
      * @type {Image}
      */
     this.mImageElement = new Image();
+    this.mImageElement.crossOrigin = true;
 
     /**
      * @private
@@ -6688,7 +6697,7 @@ class VideoNullDriver {
     this.mContainerElement = /**
      * @private
      * @type {HTMLElement} */ (containerElement
-    );
+      );
 
     /**
      * @private
@@ -6714,6 +6723,18 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
+
+    this.mRendererMap = {
+      VideoNullDriver: {
+      },
+      CanvasDriver: {
+        Sprite: SpriteRendererCanvas,
+        Emitter: EmitterRendererCanvas
+      },
+      WebGLDriver: {
+      }
+    };
+
     /**
      * @private
      * @type {HTMLElement}
@@ -6725,14 +6746,12 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  getRenderSupport() {
-    let supportMap = {
+  getRenderer(object) {
+    let driverType = this.constructor.name;
+    let objectType = object.constructor.name;
 
-    };
-
-    return new RenderSupportCanvas();
+    return new this.mRendererMap[driverType][objectType]();
   }
-
 
   /**
    * @protected
@@ -6845,32 +6864,16 @@ class VideoNullDriver {
   }
 
   /**
-   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * Draws texture onto back-buffer. GlobalAlpha, BlendMode and transformation
    * matrix must be set prior to calling this method.
    *
    * @public
    *
-   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
    * 
    */
-  drawImage(object, texture) {
+  drawTexture(texture) {
   }
-
-  /**
-   * Draws text onto back-buffer.
-   *
-   * @public
-   *
-   * @param {TextField} text TextField object to draw.
-   * @param {TextInfo} style The style information.
-   * @param {Rectangle} bounds Clipping bounds, text will be drawn outside this bounds.
-   *
-   * @return {void}
-   */
-  drawText(text, style, bounds) {
-  }
-
 
   /**
    * Clears back-buffer.
@@ -6930,25 +6933,24 @@ class VideoNullDriver {
   }
 }
 
-class Shader {
-}
+// class Shader {
+// }
 
-class MeshBatch {
-  constructor() {
-  }
-}
+// class MeshBatch {
+//   constructor() {
+//   }
+// }
 
-class Material {
-  constructor() {
-    //this.shader = Black.instance.video.getShader('default');
-  }
-}
+// class Material {
+//   constructor() {
+//     //this.shader = Black.instance.video.getShader('default');
+//   }
+// }
 
 class Renderer {
   constructor() {
     this.updateRequired = true;
     this.zIndex = 0;
-    this.dirty = DirtyFlag.DIRTY;
     this.texture = null;
     this.alpha = 1;
     this.blendMode = BlendMode.AUTO;
@@ -6960,36 +6962,25 @@ class Renderer {
   }
 
   get isRenderable() {
-    return this.alpha > 0 && this.texture !== null && this.visible === true;
-  }
-}
-
-class StageNullRenderer extends Renderer {
-  constructor() {
-    super();
-  }
-
-  get isRenderable() {
-    return true;
+    return this.alpha > 0 && this.visible === true;
   }
 }
 
 class SpriteRendererCanvas extends Renderer {
   render(driver) {
-    const ctx = driver.mCtx;
-    const w = this.texture.width;
-    const h = this.texture.height;
-    const ox = this.texture.untrimmedRect.x;
-    const oy = this.texture.untrimmedRect.y;
-
-    ctx.drawImage(this.texture.native, this.texture.region.x, this.texture.region.y, w, h, ox, oy, w, h);
+    driver.setTransform(this.transform);
+    driver.globalAlpha = this.alpha;
+    driver.globalBlendMode = this.blendMode;
+    driver.drawTexture(this.texture);
   }
 }
 
 
 class SpriteRendererWebGL extends Renderer {
   constructor() {
-    this.material = new Material();
+    super();
+
+    //this.material = new Material();
     this.vertexData = [];
   }
 
@@ -7056,10 +7047,75 @@ class SpriteRendererWebGL extends Renderer {
   }
 }
 
-class NativeFontRenderSupport extends Renderer {
+// class NativeFontRenderRenderer extends Renderer {
 
+// }
+
+class EmitterRendererCanvas extends Renderer {
+  constructor() {
+    super();
+
+    this.particles = []; // []
+    this.textures = []; // []
+    this.space = null;
+
+    this.__tmpLocal = new Matrix();
+    this.__tmpWorld = new Matrix();
+  }
+
+  render(driver) {
+    driver.globalBlendMode = this.blendMode;
+
+    const plength = this.particles.length;
+
+    let localTransform = this.__tmpLocal;
+    let worldTransform = this.__tmpWorld;
+    localTransform.identity();
+
+    for (let i = 0; i < plength; i++) {
+      let particle = this.particles[i];
+
+      let texture = this.textures[particle.textureIndex];
+      let tw = texture.width * 0.5;
+      let th = texture.height * 0.5;
+
+      if (particle.r === 0) {
+        let tx = particle.x - tw * particle.scale;
+        let ty = particle.y - th * particle.scale;
+        localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+      } else {
+        let cos = Math.cos(particle.r);
+        let sin = Math.sin(particle.r);
+        let a = particle.scale * cos;
+        let b = particle.scale * sin;
+        let c = particle.scale * -sin;
+        let d = particle.scale * cos;
+
+        let tx = particle.x - tw * a - th * c;
+        let ty = particle.y - tw * b - th * d;
+        localTransform.set(a, b, c, d, tx, ty);
+      }
+
+      if (this.isLocal === true) {
+        worldTransform.identity();
+        worldTransform.copyFrom(localTransform);
+        worldTransform.prepend(this.transform);
+      } else {
+        this.space.worldTransformation.copyTo(worldTransform);
+        worldTransform.append(localTransform);
+      }
+
+      driver.globalAlpha = this.alpha * particle.alpha;
+
+      driver.setTransform(worldTransform);
+      driver.drawTexture(texture);
+    }
+  }
+
+  get isRenderable() {
+    return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
+  }
 }
-
 
 class CanvasDriver extends VideoNullDriver {
   /**
@@ -7084,12 +7140,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mLetterSpacing = 0;
     this.mRenderers = [];
     this.skipChildren = false;
-
     this.__createCanvas();
-  }
-
-  getRendererForType(type) {
-    return new SpriteRendererCanvas;
   }
 
   registerRenderer(renderRenderer) {
@@ -7105,17 +7156,20 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   render(driver) {
-    const length = this.mRenderers.length;
-
-    for (let i = 0; i < length; i++) {
+    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
-
-      this.setTransform(renderer.transform);
-      this.globalAlpha = renderer.alpha;
-      this.globalBlendMode = renderer.blendMode;
 
       renderer.render(driver);
     }
+  }
+
+  drawTexture(texture) {
+    const w = texture.width;
+    const h = texture.height;
+    const ox = texture.untrimmedRect.x;
+    const oy = texture.untrimmedRect.y;
+
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
 
   /**
@@ -7154,8 +7208,9 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   setTransform(m) {
-    if (this.mTransform.exactEquals(m) === true)
-      return;
+    //TODO: does not work as expected
+    // if (this.mTransform.exactEquals(m) === true)
+    //   return;
 
     super.setTransform(m);
 
@@ -7200,7 +7255,10 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
-    this.setTransform(this.mIdentityMatrix);
+    // this.mTransform.identity();
+    // this.setTransform(this.mIdentityMatrix);
+
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }
 
@@ -8738,10 +8796,25 @@ class DisplayObject extends GameObject {
      * @type {boolean}
      */
     this.mVisible = true;
+
+    this.mRenderer = new Renderer();
     
     // this.pluginName = WebGLTexPlugin.name;
     // this.vertexData = [];
     // this.tint = 0xffffff;
+  }
+
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
+
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      this.mDirty ^= DirtyFlag.RENDER;
+    }
+
+    return driver.registerRenderer(renderer);
   }
 
   /**
@@ -8762,8 +8835,7 @@ class DisplayObject extends GameObject {
     if (this.mAlpha === MathEx.clamp(value, 0, 1))
       return;
 
-    this.mAlpha = MathEx.clamp(value, 0, 1);
-    
+    this.mAlpha = MathEx.clamp(value, 0, 1);    
     this.setRenderDirty();
   }
 
@@ -8896,13 +8968,11 @@ class Sprite extends DisplayObject {
       this.mTexture = /** @type {Texture} */ (texture);
     }
 
-    this.mRenderer = Black.instance.video.getRendererForType(Sprite);
+    this.mRenderer = Black.instance.video.getRenderer(this);
   }
 
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
-
-    renderer.dirty = this.mDirty;
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
@@ -10437,8 +10507,6 @@ class Particle {
      * @type {number}
      */
     this.ay = 0;
-    
-    this.pluginName = WebGLParticlesPlugin.name;
   }
 
   /**
@@ -10622,7 +10690,7 @@ class Emitter extends DisplayObject {
      */
     this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-
+    this.mRenderer = Black.instance.video.getRenderer(this);
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
@@ -10716,8 +10784,25 @@ class Emitter extends DisplayObject {
     return action;
   }
 
-  __render(video, time, parentAlpha) {
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
+    //if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      renderer.particles = this.mParticles;
+      renderer.textures = this.mTextures;
+      renderer.dirty = true;
+      renderer.space = this.mSpace;
+      renderer.isLocal = this.mIsLocal;
+    //}
+
+    return driver.registerRenderer(renderer);
+  }
+
+  __render(video, time, parentAlpha) {
     // set blend mode
     video.globalBlendMode = this.blendMode;
     let emitterWorldAlpha = parentAlpha * this.alpha;
@@ -13955,12 +14040,6 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
-     * @type {StageRenderSupport}
-     */
-    this.mStageNullRenderer = new StageNullRenderer();
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.mEnableFixedTimeStep = false;
@@ -13970,6 +14049,10 @@ class Black extends MessageDispatcher {
      * @type {boolean}
      */
     this.mWasStopped = false;
+
+    this.mStageRenderer = new Renderer();
+    this.mStageRenderer.alpha = 1;
+    this.mStageRenderer.blendMode = BlendMode.AUTO;
   }
 
   /**
@@ -14203,7 +14286,7 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageNullRenderer);
+      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageRenderer);
       this.mVideo.render(this.mVideo);
       this.mVideo.endFrame();
 
@@ -14218,19 +14301,17 @@ class Black extends MessageDispatcher {
   }
 
   __renderGameObjects(gameObject, driver, parentRenderer) {
-    if (gameObject == null)
-      gameObject = Black.instance.root;
-
     let renderer = gameObject.onRender(driver, parentRenderer);
-    if (renderer == null)
-      renderer = parentRenderer;
+
+    if (renderer != null)
+      parentRenderer = renderer;
 
     if (driver.skipChildren === true)
       return;
 
     const len = gameObject.numChildren;
     for (let i = 0; i < len; i++)
-      this.__renderGameObjects(gameObject.getChildAt(i), driver, renderer);
+      this.__renderGameObjects(gameObject.getChildAt(i), driver, parentRenderer);
   }
 
   /**

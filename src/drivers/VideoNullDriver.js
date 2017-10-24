@@ -25,7 +25,7 @@ class VideoNullDriver {
     this.mContainerElement = /**
      * @private
      * @type {HTMLElement} */ (containerElement
-    );
+      );
 
     /**
      * @private
@@ -51,6 +51,18 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
+
+    this.mRendererMap = {
+      VideoNullDriver: {
+      },
+      CanvasDriver: {
+        Sprite: SpriteRendererCanvas,
+        Emitter: EmitterRendererCanvas
+      },
+      WebGLDriver: {
+      }
+    };
+
     /**
      * @private
      * @type {HTMLElement}
@@ -62,14 +74,12 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  getRenderSupport() {
-    let supportMap = {
+  getRenderer(object) {
+    let driverType = this.constructor.name;
+    let objectType = object.constructor.name;
 
-    };
-
-    return new RenderSupportCanvas();
+    return new this.mRendererMap[driverType][objectType]();
   }
-
 
   /**
    * @protected
@@ -182,32 +192,16 @@ class VideoNullDriver {
   }
 
   /**
-   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * Draws texture onto back-buffer. GlobalAlpha, BlendMode and transformation
    * matrix must be set prior to calling this method.
    *
    * @public
    *
-   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
    * 
    */
-  drawImage(object, texture) {
+  drawTexture(texture) {
   }
-
-  /**
-   * Draws text onto back-buffer.
-   *
-   * @public
-   *
-   * @param {TextField} text TextField object to draw.
-   * @param {TextInfo} style The style information.
-   * @param {Rectangle} bounds Clipping bounds, text will be drawn outside this bounds.
-   *
-   * @return {void}
-   */
-  drawText(text, style, bounds) {
-  }
-
 
   /**
    * Clears back-buffer.

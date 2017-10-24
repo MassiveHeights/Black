@@ -31,13 +31,11 @@ class Sprite extends DisplayObject {
       this.mTexture = /** @type {Texture} */ (texture);
     }
 
-    this.mRenderer = Black.instance.video.getRendererForType(Sprite);
+    this.mRenderer = Black.instance.video.getRenderer(this);
   }
 
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
-
-    renderer.dirty = this.mDirty;
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
