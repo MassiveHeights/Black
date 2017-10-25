@@ -64,7 +64,7 @@ class AtlasTexture extends Texture {
     /** @type {Texture} */
     let t = this.mSubTextures[name];
     if (t === undefined)
-      console.warn('Texture \'%s\' was not found in cache.', name);
+      Debug.warn(`Texture '${name}' was not found`);
 
     return /** @type {Texture} */ (t);
   }
@@ -104,6 +104,10 @@ class AtlasTexture extends Texture {
       out.push(this.mSubTextures[names[i]]);
 
     return out;
+  }
+
+  get subTextures() {
+    return this.mSubTextures;
   }
 
   static naturalSort(dataset, field = null) {

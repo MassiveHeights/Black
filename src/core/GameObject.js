@@ -381,8 +381,6 @@ class GameObject extends MessageDispatcher {
     if (this.root !== null)
       Black.instance.onComponentAdded(this, instance);
 
-    instance.onAdded(this);
-
     return instance;
   }
 
@@ -403,7 +401,6 @@ class GameObject extends MessageDispatcher {
 
     // detach game object after or before?
     instance.mGameObject = null;
-    instance.onRemoved(this);
 
     if (this.root !== null)
       Black.instance.onComponentRemoved(this, instance);
@@ -1491,20 +1488,20 @@ class GameObject extends MessageDispatcher {
   /**
    * Runs action accross all GameObjects.
    *
-   * @param {GameObject} node                  GameObject to start iteration from.
+   * @param {GameObject} gameObject       GameObject to start iteration from.
    * @param {function(GameObject)} action The function to be executed on
    * every GameObject.
    *
    * @return {void}
    */
-  static forEach(node, action) {
-    if (node == null)
-      node = Black.instance.root;
+  static forEach(gameObject, action) {
+    if (gameObject == null)
+      gameObject = Black.instance.root;
 
-    action(node);
+    action(gameObject);
 
-    for (let i = 0; i < node.numChildren; i++)
-      GameObject.forEach(node.getChildAt(i), action);
+    for (let i = 0; i < gameObject.numChildren; i++)
+      GameObject.forEach(gameObject.getChildAt(i), action);
   }
 
 

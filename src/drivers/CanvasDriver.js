@@ -25,13 +25,14 @@ class CanvasDriver extends VideoNullDriver {
     this.__createCanvas();
 
     this.mRendererMap = {
+      DisplayObject: Renderer,
       Sprite: SpriteRendererCanvas,
       Emitter: EmitterRendererCanvas
     };
   }
 
-  getRenderer(object) {
-    return new this.mRendererMap[object.constructor.name]();
+  getRenderer(type) {
+    return new this.mRendererMap[type]();
     //return new SpriteRendererCanvas();
   }
 

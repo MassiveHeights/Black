@@ -144,10 +144,13 @@ class Emitter extends DisplayObject {
      * @type {EmitterSortOrder}
      */
     this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
-
-    this.mRenderer = Black.instance.video.getRenderer(this);
+    
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
+  }
+
+  getRenderer() {
+    return Black.instance.video.getRenderer('Emitter');
   }
 
   resetState() {

@@ -122,7 +122,7 @@ class Tween extends Component {
     * @private
     * @type {function(number):number}
     */
-    this.mEase = Ease.smootherStep;
+    this.mEase = Tween.DEFAULT_EASE;
 
     // TODO: fix ESDOC issue
     if (this.mProperties !== null) {
@@ -272,6 +272,19 @@ class Tween extends Component {
 
     this.mIsPlaying = false;
 
+    return this;
+  }
+
+  /**
+   * Resets current tween.
+   *
+   * @return {Tween} Returns this.
+   */
+  reset() {
+    this.mElapsed = 0;
+    if (this.mIsPlaying)
+      this.play();
+    
     return this;
   }
 
@@ -501,3 +514,5 @@ class Tween extends Component {
     }
   }
 }
+
+Tween.DEFAULT_EASE = Ease.smootherStep;

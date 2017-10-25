@@ -30,8 +30,10 @@ class Sprite extends DisplayObject {
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+  }
 
-    this.mRenderer = Black.instance.video.getRenderer(this);
+  getRenderer() {
+    return Black.instance.video.getRenderer('Sprite');
   }
 
   onRender(driver, parentRenderer) {
@@ -49,6 +51,7 @@ class Sprite extends DisplayObject {
 
       renderer.visible = this.mVisible;
       renderer.dirty = true;
+
       this.mDirty ^= DirtyFlag.RENDER;
     }
 
@@ -91,8 +94,11 @@ class Sprite extends DisplayObject {
    * @return {void}
    */
   set texture(texture) {
-    if (this.mTexture !== texture)
-      this.mTexture = texture;
+    if (this.mTexture === texture)
+      return;
+
+    this.mTexture = texture;
+    this.setRenderDirty();
   }
 
   get textureName() {

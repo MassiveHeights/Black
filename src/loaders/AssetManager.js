@@ -228,12 +228,12 @@ class AssetManager extends MessageDispatcher {
       return t;
 
     for (let key in this.mAtlases) {
-      t = this.mAtlases[key].getTexture(name);
+      t = this.mAtlases[key].subTextures[name];
       if (t != null)
         return t;
     }
 
-    Debug.warn('Unable to find texture', name);
+    Debug.warn(`Texture '${name}' was not found`);
     return null;
   }
 

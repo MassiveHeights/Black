@@ -27,17 +27,25 @@ class DisplayObject extends GameObject {
      */
     this.mVisible = true;
 
-    this.mRenderer = new Renderer();
+    /**
+     * @private
+     * @type {Renderer|null} */
+    this.mRenderer = this.getRenderer();
 
     // this.pluginName = WebGLTexPlugin.name;
     // this.vertexData = [];
     // this.tint = 0xffffff;
   }
 
+  getRenderer() {
+    return Black.instance.video.getRenderer('DisplayObject');
+  }
+
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       
       if (this.blendMode === BlendMode.AUTO)

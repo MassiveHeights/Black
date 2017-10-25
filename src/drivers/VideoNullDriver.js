@@ -51,18 +51,6 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
-
-    this.mRendererMap = {
-      VideoNullDriver: {
-      },
-      CanvasDriver: {
-        Sprite: SpriteRendererCanvas,
-        Emitter: EmitterRendererCanvas
-      },
-      WebGLDriver: {
-      }
-    };
-
     /**
      * @private
      * @type {HTMLElement}
@@ -75,11 +63,6 @@ class VideoNullDriver {
   }
 
   getRenderer(object) {
-    // let driverType = this.constructor.name;
-    // let objectType = object.constructor.name;
-
-    //return new this.mRendererMap[driverType][objectType]();
-    //return new SpriteRendererCanvas();
     throw new Error('Not implemented');
   }
 
