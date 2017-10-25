@@ -145,6 +145,10 @@ class TextField extends DisplayObject {
     super.__render(video, time, worldAlpha);
   }
 
+  onRender(driver, parentRenderer) {
+
+  }
+
   /**
    * @protected
    * @override

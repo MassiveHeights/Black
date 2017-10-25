@@ -75,10 +75,12 @@ class VideoNullDriver {
   }
 
   getRenderer(object) {
-    let driverType = this.constructor.name;
-    let objectType = object.constructor.name;
+    // let driverType = this.constructor.name;
+    // let objectType = object.constructor.name;
 
-    return new this.mRendererMap[driverType][objectType]();
+    //return new this.mRendererMap[driverType][objectType]();
+    //return new SpriteRendererCanvas();
+    throw new Error('Not implemented');
   }
 
   /**
