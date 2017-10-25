@@ -81,7 +81,7 @@ class DisplayObject extends GameObject {
       return;
 
     this.mAlpha = MathEx.clamp(value, 0, 1);
-    this.setRenderDirty();
+    this.setTransformDirty();
   }
 
 
@@ -105,6 +105,6 @@ class DisplayObject extends GameObject {
       return;
 
     this.mVisible = value;
-    this.setRenderDirty();
+    this.setTransformDirty();
   }
 }

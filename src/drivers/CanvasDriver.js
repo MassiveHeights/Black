@@ -36,16 +36,16 @@ class CanvasDriver extends VideoNullDriver {
     //return new SpriteRendererCanvas();
   }
 
-  registerRenderer(renderRenderer) {
-    if (renderRenderer.isRenderable === false) {
+  registerRenderer(renderer) {
+    if (renderer.isRenderable === false) {
       this.skipChildren = true;
       return;
     }
 
     this.skipChildren = false;
-    this.mRenderers.push(renderRenderer);
+    this.mRenderers.push(renderer);
 
-    return renderRenderer;
+    return renderer;
   }
 
   render(driver) {
