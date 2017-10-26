@@ -262,8 +262,12 @@ class GameObject extends MessageDispatcher {
       return child;
 
     // NOTE: systems needs to know when trees changes
-    child.removeFromParent();
-    this.addChildAt(child, index);
+    this.mChildren.splice(ix, 1);
+    this.mChildren.splice(index, 0, child);
+
+    if (this.root !== null)
+      Black.instance.onChildrenChanged(child);
+
     this.setTransformDirty();
 
     return child;
@@ -272,16 +276,11 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes this GameObject instance from its parent.
    *
-   * @param {boolean} [dispose=false]
-   *
    * @return {void}
    */
-  removeFromParent(dispose = false) {
+  removeFromParent() {
     if (this.mParent !== null)
       this.mParent.removeChild(this);
-
-    if (dispose)
-      this.dispose();
 
     this.setTransformDirty();
   }
@@ -290,11 +289,10 @@ class GameObject extends MessageDispatcher {
    * Removes specified child GameObject instance from children.
    *
    * @param {GameObject} child GameObject instance to remove.
-   * @param {boolean} [dispose=false]
    *
    * @return {GameObject} The GameObject instance that you pass in the child parameter.
    */
-  removeChild(child, dispose) {
+  removeChild(child) {
     let ix = this.mChildren.indexOf(child);
 
     if (ix < 0)
@@ -324,11 +322,10 @@ class GameObject extends MessageDispatcher {
    * Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
-   * @param {boolean} [dispose=false]
    *
    * @return {GameObject} The removed GameObject instance.
    */
-  removeChildAt(index, dispose) {
+  removeChildAt(index) {
     if (index < 0 || index > this.numChildren)
       throw new Error('Child index is out of bounds.');
 
@@ -341,9 +338,6 @@ class GameObject extends MessageDispatcher {
 
     if (hadRoot)
       Black.instance.onChildrenRemoved(child);
-
-    if (dispose)
-      child.dispose();
 
     this.setTransformDirty();
 
@@ -493,7 +487,7 @@ class GameObject extends MessageDispatcher {
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
-    
+
     return this.mWorldTransform;
   }
 
@@ -525,8 +519,8 @@ class GameObject extends MessageDispatcher {
     if (skewY != skewY)
       skewY = 0.0;
 
-    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ?  d / Math.cos(skewX) : -c / Math.sin(skewX);
-    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ?  a / Math.cos(skewY) :  b / Math.sin(skewY);
+    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ? d / Math.cos(skewX) : -c / Math.sin(skewX);
+    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ? a / Math.cos(skewY) : b / Math.sin(skewY);
 
     if (MathEx.equals(skewX, skewY)) {
       this.mRotation = skewX;
@@ -1248,7 +1242,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   setDirty(flag, includeChildren = true) {
-    if (includeChildren) {      
+    if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
       });
@@ -1272,13 +1266,6 @@ class GameObject extends MessageDispatcher {
   setRenderDirty() {
     this.setDirty(DirtyFlag.RENDER, true);
   }
-
-  /**
-   * @ignore
-   *
-   * @return {void}
-   */
-  dispose() { }
 
   // TODO: rename method
   /**

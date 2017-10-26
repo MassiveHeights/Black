@@ -663,6 +663,11 @@ class Black extends MessageDispatcher {
     });
   }
 
+  onChildrenChanged(child) {
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onChildrenChanged(child);
+  }
+
   /**
    * @protected
    * @param  {GameObject} child
