@@ -8,7 +8,7 @@ class Renderer {
     this.blendMode = BlendMode.AUTO;
     this.transform = null;
     this.visible = true;
-    this.dirty = true;
+    this.dirty = DirtyFlag.DIRTY;
   }
 
   render(driver) {

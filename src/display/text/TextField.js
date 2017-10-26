@@ -115,6 +115,35 @@ class TextField extends DisplayObject {
     this.onGetLocalBounds(this.mCacheBounds);
   }
 
+  getRenderer() {
+    return Black.instance.video.getRenderer('Text');
+  }
+
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
+
+    let oldDirty = this.mDirty;
+
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
+      renderer.visible = this.mVisible;
+      
+      this.mDirty ^= DirtyFlag.RENDER;
+    }
+
+    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
+      renderer.text = this.text;
+
+      this.mDirty ^= DirtyFlag.RENDER_CACHE;
+    }
+
+    renderer.dirty = oldDirty;
+
+    return driver.registerRenderer(renderer);
+  }
+
   /**
    * @ignore
    * @override
@@ -143,10 +172,6 @@ class TextField extends DisplayObject {
 
     this.mNeedInvalidate = false;
     super.__render(video, time, worldAlpha);
-  }
-
-  onRender(driver, parentRenderer) {
-
   }
 
   /**
@@ -369,7 +394,7 @@ class TextField extends DisplayObject {
 
   /**
    * Specifies the thickness of the stroke. 0 means that no stroke
-   * @return {number}
+   * @return {number} 
    */
   get strokeThickness() {
     return this.mStyle.strokeThickness;
@@ -452,7 +477,8 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
-    this.mNeedInvalidate = true;
+    //this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**

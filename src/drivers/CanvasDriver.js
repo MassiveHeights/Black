@@ -27,7 +27,8 @@ class CanvasDriver extends VideoNullDriver {
     this.mRendererMap = {
       DisplayObject: Renderer,
       Sprite: SpriteRendererCanvas,
-      Emitter: EmitterRendererCanvas
+      Emitter: EmitterRendererCanvas,
+      Text: TextRendererCanvas
     };
   }
 
@@ -53,7 +54,7 @@ class CanvasDriver extends VideoNullDriver {
       let renderer = this.mRenderers[i];
 
       renderer.render(driver);
-      renderer.dirty = false;
+      renderer.dirty = 0;
     }
   }
 

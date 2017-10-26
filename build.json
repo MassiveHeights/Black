@@ -37,6 +37,7 @@
 
     "src/drivers/BlendMode.js",
     "src/drivers/renderers/Renderer.js",
+    "src/drivers/renderers/TextRenderer.js",
     "src/drivers/renderers/EmitterRendererCanvas.js",
     "src/drivers/renderers/SpriteRendererCanvas.js",
     "src/drivers/renderers/SpriteRendererWebGL.js",

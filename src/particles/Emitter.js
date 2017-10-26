@@ -144,7 +144,7 @@ class Emitter extends DisplayObject {
      * @type {EmitterSortOrder}
      */
     this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
-    
+
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
   }
@@ -245,17 +245,19 @@ class Emitter extends DisplayObject {
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
-    //if (this.mDirty & DirtyFlag.RENDER) {
+    if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode;
       renderer.visible = this.mVisible;
       renderer.particles = this.mParticles;
       renderer.textures = this.mTextures;
-      renderer.dirty = true;
       renderer.space = this.mSpace;
       renderer.isLocal = this.mIsLocal;
-    //}
+      renderer.dirty = this.mDirty;
+
+      this.mDirty ^= DirtyFlag.RENDER;
+    }
 
     return driver.registerRenderer(renderer);
   }

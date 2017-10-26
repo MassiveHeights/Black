@@ -1248,7 +1248,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   setDirty(flag, includeChildren = true) {
-    if (includeChildren) {
+    if (includeChildren) {      
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
       });
@@ -1270,7 +1270,7 @@ class GameObject extends MessageDispatcher {
   }
 
   setRenderDirty() {
-    this.setDirty(DirtyFlag.RENDER, false);
+    this.setDirty(DirtyFlag.RENDER, true);
   }
 
   /**
@@ -1571,5 +1571,6 @@ var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
   RENDER: 4,
+  RENDER_CACHE: 8,
   DIRTY: 0xffffff
 };

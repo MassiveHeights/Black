@@ -19,7 +19,7 @@ class DisplayObject extends GameObject {
      * @public
      * @type {string}
      */
-    this.blendMode = BlendMode.AUTO;
+    this.mBlendMode = BlendMode.AUTO;
 
     /**
      * @private
@@ -31,10 +31,6 @@ class DisplayObject extends GameObject {
      * @private
      * @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
-
-    // this.pluginName = WebGLTexPlugin.name;
-    // this.vertexData = [];
-    // this.tint = 0xffffff;
   }
 
   getRenderer() {
@@ -44,20 +40,16 @@ class DisplayObject extends GameObject {
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
-    if (this.mDirty & DirtyFlag.RENDER) {
+    if (this.mDirty & DirtyFlag.RENDER) {      
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      
-      if (this.blendMode === BlendMode.AUTO)
-        renderer.blendMode = parentRenderer.blendMode;
-      else
-        renderer.blendMode = this.blendMode;
-
+      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
-      renderer.dirty = true;
+      renderer.dirty = this.mDirty;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
+
 
     return driver.registerRenderer(renderer);
   }
@@ -81,9 +73,8 @@ class DisplayObject extends GameObject {
       return;
 
     this.mAlpha = MathEx.clamp(value, 0, 1);
-    this.setTransformDirty();
+    this.setRenderDirty();
   }
-
 
   /**
    * Gets/Sets visibility of the object.
@@ -93,7 +84,6 @@ class DisplayObject extends GameObject {
   get visible() {
     return this.mVisible;
   }
-
 
   /**
    * @ignore
@@ -105,6 +95,18 @@ class DisplayObject extends GameObject {
       return;
 
     this.mVisible = value;
-    this.setTransformDirty();
+    this.setRenderDirty();
+  }
+
+  get blendMode() {
+    return this.mBlendMode;
+  }
+
+  set blendMode(value) {
+    if (this.mBlendMode === value)
+      return;
+
+    this.mBlendMode = value;
+    this.setRenderDirty();
   }
 }
