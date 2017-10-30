@@ -232,16 +232,4 @@ class VideoNullDriver {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
   }
-
-  /**
-   * Measures text with a given style.
-   *
-   * @param {TextField} textField    Text to measure.
-   * @param {TextInfo} style Text style to apply onto text.
-   * @param {Rectangle} bounds.
-   *
-   * @return {Rectangle} Local bounds.
-   */
-  measureText(textField, style, bounds) {
-  }
 }

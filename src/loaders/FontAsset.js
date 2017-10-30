@@ -16,7 +16,7 @@ class FontAsset extends Asset {
   constructor(name, url, local) {
     if (local === false)
       url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');
-    
+
     super(name, url);
 
     /**
@@ -55,13 +55,15 @@ class FontAsset extends Asset {
      */
     this.mTestingElement = this.__getTestingElement();
 
+    this.metrics = null;
+
     /**
      * @private
      * @type {HTMLElement}
      */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
-    
+
     /**
      * @private
      * @type {number}
@@ -136,6 +138,8 @@ class FontAsset extends Asset {
 
   onLoaded() {
     var a = this.mLoaderElement;
+
+    this.metrics = FontMetrics.get(this.mName);
 
     super.onLoaded();
     this.mTestingElement.parentNode.removeChild(this.mTestingElement);

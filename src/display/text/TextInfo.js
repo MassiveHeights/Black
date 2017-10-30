@@ -32,9 +32,6 @@ class TextInfo {
     /** @type {TextInfo.FontWeight} */
     this.weight = weight;
 
-    /** @type {TextInfo.FontAlign} */
-    this.align = align;
-
     /** @type {number} */
     this.strokeThickness = strokeThickness;
 

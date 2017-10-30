@@ -18,6 +18,9 @@
     "src/core/Message.js",
     "src/core/MessageDispatcher.js",
 
+    "src/display/text/FontMetrics.js",
+    "src/display/text/TextMetrics.js",
+
     "src/core/Time.js",
     "src/core/System.js",
     "src/core/Viewport.js",
@@ -54,8 +57,8 @@
     "src/drivers/webgl/plugins/WebGLParticlesPlugin.js",
 
     "src/display/DisplayObject.js",
-    "src/display/text/TextInfo.js",
     "src/display/Sprite.js",
+    "src/display/text/TextInfo.js",
     "src/display/text/TextField.js",
     "src/system/Device.js",
 

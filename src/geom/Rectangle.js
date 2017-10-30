@@ -271,7 +271,7 @@ class Rectangle {
    */
   equals(rect, epsilon = Number.EPSILON) {
     return rect !== null && (Math.abs(this.x - rect.x) < epsilon) && (Math.abs(this.y - rect.y) < epsilon) &&
-           (Math.abs(this.width - rect.width) < epsilon) && (Math.abs(this.height - rect.height) < epsilon);
+      (Math.abs(this.width - rect.width) < epsilon) && (Math.abs(this.height - rect.height) < epsilon);
   }
 
 
@@ -308,7 +308,7 @@ class Rectangle {
    */
   intersects(rect) {
     return rect.right > this.x && rect.bottom > this.y &&
-           rect.x < this.right && rect.y < this.bottom;
+      rect.x < this.right && rect.y < this.bottom;
   }
 
 
@@ -320,19 +320,13 @@ class Rectangle {
    * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
-    if (this.width === 0 || this.height === 0)
-      return toUnion.clone();
-    else if (toUnion.width === 0 || toUnion.height === 0)
-      return this.clone();
-
     let x0 = this.x > toUnion.x ? toUnion.x : this.x;
     let x1 = this.right < toUnion.right ? toUnion.right : this.right;
     let y0 = this.y > toUnion.y ? toUnion.y : this.y;
     let y1 = this.bottom < toUnion.bottom ? toUnion.bottom : this.bottom;
 
-    return new Rectangle(x0, y0, x1 - x0, y1 - y0);
+    return this.set(x0, y0, x1 - x0, y1 - y0);
   }
-
 
   /**
    * Returns volume of this Rectangle.
@@ -359,7 +353,7 @@ class Rectangle {
       return this.set(x, y, width, height);
 
     let cacheRight = this.right;
-		let cacheBottom = this.bottom;
+    let cacheBottom = this.bottom;
 
     if (this.x > x) {
       this.x = x;
@@ -374,7 +368,7 @@ class Rectangle {
     if (cacheRight < x + width)
       this.width = x + width - this.x;
 
-		if (cacheBottom < y + height)
+    if (cacheBottom < y + height)
       this.height = y + height - this.y;
 
     return this;

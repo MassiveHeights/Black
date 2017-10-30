@@ -40,7 +40,7 @@ class DisplayObject extends GameObject {
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
-    if (this.mDirty & DirtyFlag.RENDER) {      
+    if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;

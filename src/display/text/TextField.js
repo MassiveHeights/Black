@@ -23,12 +23,6 @@ class TextField extends DisplayObject {
 
     /**
      * @private
-     * @type {boolean}
-     */
-    this.mNeedInvalidate = true;
-
-    /**
-     * @private
      * @type {Rectangle}
      */
     this.mCacheBounds = new Rectangle();
@@ -69,11 +63,14 @@ class TextField extends DisplayObject {
      */
     this.mAutoSize = true;
 
+    /** @type {TextInfo.FontAlign} */
+    this.mAlign = TextInfo.FontAlign.LEFT;
+
     /**
      * @private
      * @type {boolean}
      */
-    this.mMultiLine = true;
+    this.mMultiline = false;
 
     /**
      * @private
@@ -82,23 +79,16 @@ class TextField extends DisplayObject {
     this.mLineHeight = 1.2;
 
     /**
-     * @public
-     * @type {string[]|string}
+     * @private
+     * @type {Rectangle}
      */
-    this.lines = [];
-
-    /**
-     * Useful for drivers
-     * @public
-     * @type {number[]}
-     */
-    this.lineWidths = [];
+    this.mBounds = new Rectangle();
 
     /**
      * @private
-     * @type {number}
+     * @type {Array<Rectangle>|null}
      */
-    this.mLetterSpacing = 0;
+    this.mLineBounds = null;
 
     /**
      * @private
@@ -110,9 +100,7 @@ class TextField extends DisplayObject {
      * @private
      * @type {number}
      */
-    this.mFieldHeight = this.mStyle.size * this.mLineHeight;
-
-    this.onGetLocalBounds(this.mCacheBounds);
+    this.mFieldHeight = 0;
   }
 
   getRenderer() {
@@ -129,12 +117,21 @@ class TextField extends DisplayObject {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
-      
+
       this.mDirty ^= DirtyFlag.RENDER;
     }
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       renderer.text = this.text;
+      renderer.style = this.mStyle;
+      renderer.multiline = this.mMultiline;
+      renderer.lineHeight = this.mLineHeight;
+      renderer.align = this.mAlign;
+      renderer.fieldWidth = this.mFieldWidth;
+      renderer.fieldHeight = this.mFieldHeight;
+      renderer.autoSize = this.mAutoSize;
+      renderer.bounds = this.onGetLocalBounds();
+      renderer.lineBounds = this.mLineBounds;
 
       this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
@@ -142,36 +139,6 @@ class TextField extends DisplayObject {
     renderer.dirty = oldDirty;
 
     return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * @ignore
-   * @override
-   * @protected
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false)
-      return;
-
-    let worldAlpha = parentAlpha * this.mAlpha;
-
-    if (this.mNeedInvalidate) {
-      this.onGetLocalBounds(this.mCacheBounds);
-      // this.setTransformDirty();  // no anchor for rebound
-    }
-
-    video.setTransform(this.worldTransformation);
-    video.globalAlpha = worldAlpha;
-    video.globalBlendMode = this.blendMode;
-    video.drawText(this, this.mStyle, this.mCacheBounds);
-
-    this.mNeedInvalidate = false;
-    super.__render(video, time, worldAlpha);
   }
 
   /**
@@ -183,36 +150,22 @@ class TextField extends DisplayObject {
    * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
-    outRect = outRect || new Rectangle();
+    //outRect = outRect || new Rectangle();
 
-    if (this.mNeedInvalidate) {
-      Black.instance.video.measureText(this, this.mStyle, this.mCacheBounds);
+    if (this.mDirty & DirtyFlag.RENDER_CACHE)
+      this.mLineBounds = TextMetrics.measure(this.text, this.mStyle, this.mLineHeight, this.mBounds);
+
+    if (this.mAutoSize === false) {
+      outRect.width = this.mFieldWidth;
+      outRect.height = this.mFieldHeight;
     }
 
-    return outRect.copyFrom(this.mCacheBounds);
-  }
+    if (outRect != null) {
+      this.mBounds.copyTo(outRect);
+      return outRect;
+    }
 
-  /**
-   * @param {number} value
-   * @ignore
-   *
-   * @return {void}
-   */
-  set letterSpacing(value) {
-    if (this.mLetterSpacing === value) return;
-
-    this.mLetterSpacing = value;
-    // this.setTransformDirty();  // needs pivot update and there is no anchor to accomplish
-    this.mNeedInvalidate = true;
-  }
-
-  /**
-   * Get/Set letterSpacing value. Default is 0 in pixels.
-   *
-   * @return {number}
-   */
-  get letterSpacing() {
-    return this.mLetterSpacing;
+    return this.mBounds;
   }
 
   /**
@@ -221,9 +174,9 @@ class TextField extends DisplayObject {
    *
    * @return {void}
    */
-  set multiLine(value) {
-    this.mMultiLine = value;
-    this.mNeedInvalidate = true;
+  set multiline(value) {
+    this.mMultiline = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -231,8 +184,8 @@ class TextField extends DisplayObject {
    *
    * @return {boolean}
    */
-  get multiLine() {
-    return this.mMultiLine;
+  get multiline() {
+    return this.mMultiline;
   }
 
   /**
@@ -243,7 +196,7 @@ class TextField extends DisplayObject {
    */
   set lineHeight(value) {
     this.mLineHeight = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -271,8 +224,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set size(value) {
+    if (this.mStyle.size === value)
+      return;
+
     this.mStyle.size = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -291,8 +247,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set font(value) {
+    if (this.mStyle.name === value)
+      return;
+
     this.mStyle.name = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -311,7 +270,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set color(value) {
+    if (this.mStyle.color === value)
+      return;
+
     this.mStyle.color = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -331,8 +294,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set style(value) {
+    if (this.mStyle.style === value)
+      return;
+
     this.mStyle.style = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -351,8 +317,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set weight(value) {
+    if (this.mStyle.weight === value)
+      return;
+
     this.mStyle.weight = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -361,7 +330,7 @@ class TextField extends DisplayObject {
    * @return {TextInfo.FontAlign}
    */
   get align() {
-    return this.mStyle.align;
+    return this.mAlign;
   }
 
   /**
@@ -371,7 +340,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set align(value) {
-    this.mStyle.align = value;
+    if (this.mAlign === value)
+      return;
+
+    this.mAlign = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -389,11 +362,17 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeColor(value) {
+    if (this.mStyle.strokeColor === value)
+      return;
+
     this.mStyle.strokeColor = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
-   * Specifies the thickness of the stroke. 0 means that no stroke
+   * Specifies the thickness of the stroke. 0 means that no stroke.
+   * Note: stroke works like filter meaning that position of the text will not be adjusted and bounds will be the same.
+   * 
    * @return {number} 
    */
   get strokeThickness() {
@@ -411,7 +390,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mStyle.strokeThickness = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
@@ -434,7 +413,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mFieldWidth = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /** Specifies the height of the text field, if autoSize set as false
@@ -453,9 +432,11 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set fieldHeight(value) {
-    if (value === this.mFieldHeight) return;
+    if (value === this.mFieldHeight)
+      return;
+
     this.mFieldHeight = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**Text to be displayed inside this text field.
@@ -477,7 +458,6 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
-    //this.mNeedInvalidate = true;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
@@ -501,11 +481,8 @@ class TextField extends DisplayObject {
       return;
 
     this.mAutoSize = value;
-    this.mNeedInvalidate = true;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
-
-  // alignPivot(ax, ay, includeChildren = false) {
-  //   this.mNeedInvalidate = true;
-  //   super.alignPivot(ax, ay, includeChildren);
-  // }
 }
+
+TextField.__cache = null;
