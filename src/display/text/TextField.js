@@ -156,8 +156,8 @@ class TextField extends DisplayObject {
       this.mLineBounds = TextMetrics.measure(this.text, this.mStyle, this.mLineHeight, this.mBounds);
 
     if (this.mAutoSize === false) {
-      outRect.width = this.mFieldWidth;
-      outRect.height = this.mFieldHeight;
+      this.mBounds.width = this.mFieldWidth;
+      this.mBounds.height = this.mFieldHeight;
     }
 
     if (outRect != null) {
