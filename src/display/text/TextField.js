@@ -66,6 +66,9 @@ class TextField extends DisplayObject {
     /** @type {TextInfo.FontAlign} */
     this.mAlign = TextInfo.FontAlign.LEFT;
 
+    /** @type {TextInfo.FontVerticalAlign} */
+    this.mVerticalAlign = TextInfo.FontVerticalAlign.MIDDLE;
+
     /**
      * @private
      * @type {boolean}
@@ -83,6 +86,12 @@ class TextField extends DisplayObject {
      * @type {Rectangle}
      */
     this.mBounds = new Rectangle();
+
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mTextBounds = new Rectangle();
 
     /**
      * @private
@@ -122,15 +131,18 @@ class TextField extends DisplayObject {
     }
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
+      this.onGetLocalBounds();
+
       renderer.text = this.text;
       renderer.style = this.mStyle;
       renderer.multiline = this.mMultiline;
       renderer.lineHeight = this.mLineHeight;
       renderer.align = this.mAlign;
+      renderer.vAlign = this.mVerticalAlign;
       renderer.fieldWidth = this.mFieldWidth;
       renderer.fieldHeight = this.mFieldHeight;
       renderer.autoSize = this.mAutoSize;
-      renderer.bounds = this.onGetLocalBounds();
+      renderer.bounds = this.mTextBounds;
       renderer.lineBounds = this.mLineBounds;
 
       this.mDirty ^= DirtyFlag.RENDER_CACHE;
@@ -150,22 +162,20 @@ class TextField extends DisplayObject {
    * @return {Rectangle}
    */
   onGetLocalBounds(outRect = undefined) {
-    //outRect = outRect || new Rectangle();
+    outRect = outRect || new Rectangle();
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE)
-      this.mLineBounds = TextMetrics.measure(this.text, this.mStyle, this.mLineHeight, this.mBounds);
+      this.mLineBounds = TextMetrics.measure(this.text, this.mStyle, this.mLineHeight, this.mTextBounds);
 
     if (this.mAutoSize === false) {
-      this.mBounds.width = this.mFieldWidth;
-      this.mBounds.height = this.mFieldHeight;
+      outRect.width = this.mFieldWidth;
+      outRect.height = this.mFieldHeight;
+    } else {
+      outRect.width = this.mTextBounds.width;
+      outRect.height = this.mTextBounds.height;
     }
 
-    if (outRect != null) {
-      this.mBounds.copyTo(outRect);
-      return outRect;
-    }
-
-    return this.mBounds;
+    return outRect;
   }
 
   /**
@@ -325,7 +335,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * Specifies the horizontal alignment left | center | right
+   * Specifies the horizontal alignment of the text (left | center | right).
    *
    * @return {TextInfo.FontAlign}
    */
@@ -344,6 +354,29 @@ class TextField extends DisplayObject {
       return;
 
     this.mAlign = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * Specifies the vertical alignment of the text (top | middle | bottom).
+   *
+   * @return {TextInfo.FontAlign}
+   */
+  get vAlign() {
+    return this.mVerticalAlign;
+  }
+
+  /**
+   * @param {TextInfo.FontAlign} value
+   * @ignore
+   *
+   * @return {void}
+   */
+  set vAlign(value) {
+    if (this.mVerticalAlign === value)
+      return;
+
+    this.mVerticalAlign = value;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
@@ -371,7 +404,7 @@ class TextField extends DisplayObject {
 
   /**
    * Specifies the thickness of the stroke. 0 means that no stroke.
-   * Note: stroke works like filter meaning that position of the text will not be adjusted and bounds will be the same.
+   * Note: if autoSize is true stroke works like filter meaning that position of the text will not be adjusted and bounds will be the same.
    * 
    * @return {number} 
    */

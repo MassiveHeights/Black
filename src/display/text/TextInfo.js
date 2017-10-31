@@ -65,3 +65,12 @@ TextInfo.FontAlign = {
   RIGHT: 'right',
   CENTER: 'center'
 };
+
+/**
+ * @enum {string}
+ */
+TextInfo.FontVerticalAlign = {
+  TOP: 'top',
+  MIDDLE: 'middle',
+  BOTTOM: 'bottom'
+};

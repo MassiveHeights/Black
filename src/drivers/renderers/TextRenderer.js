@@ -11,6 +11,7 @@ class TextRenderer extends Renderer {
     this.lineBounds = null; // array
     this.align = null; // TextInfo.FontAlign
     this.drawBounds = false;
+    this.vAlign = null;
 
     this.__transformCache = new Matrix();
     this.__canvas = document.createElement('canvas');
@@ -37,10 +38,10 @@ class TextRenderer extends Renderer {
     let width = this.bounds.width;
     let height = this.bounds.width;
 
-    if (this.autoSize === false) {
-      width = this.fieldWidth;
-      height = this.fieldHeight;
-    }
+    // if (this.autoSize === false) {
+    //   width = this.fieldWidth;
+    //   height = this.fieldHeight;
+    // }
 
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i];
@@ -65,30 +66,27 @@ class TextRenderer extends Renderer {
       return;
 
     const strokeThickness = this.style.strokeThickness;
+    const cvs = this.__canvas;
+    const ctx = this.__context;
+
+    let canvasBounds = this.bounds.clone().inflate(strokeThickness, strokeThickness);
 
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
-      const cvs = this.__canvas;
-      const ctx = this.__context;
+      cvs.width = canvasBounds.width;
+      cvs.height = canvasBounds.height;
 
       let fontMetrics = FontMetrics.get(this.style.name);
-
-      let canvasBounds = this.bounds.clone().inflate(strokeThickness, strokeThickness);
-
-      if (this.autoSize === true) {
-        cvs.width = canvasBounds.width;
-        cvs.height = canvasBounds.height;
-      } else {
-        cvs.width = this.fieldWidth;
-        cvs.height = this.fieldHeight;
-      }      
 
       if (this.drawBounds === true) {
         ctx.strokeStyle = driver.hexColorToString(0xff0000);
         ctx.strokeRect(0, 0, cvs.width, cvs.height);
+
+        ctx.strokeStyle = driver.hexColorToString(0xff00ff);
+        ctx.strokeRect(0, 0, this.bounds.width, this.bounds.height);
       }
 
       ctx.font = `${this.style.size}px ${this.style.name}`;
-      ctx.textBaseline = 'alphabetic'; // alphabetic
+      ctx.textBaseline = 'alphabetic'; // alphabetic      
 
       const lines = this.multiline === true ? this.text.split('\n') : [this.text.replace(/\n/g, '')];
 
@@ -99,8 +97,11 @@ class TextRenderer extends Renderer {
         }
       }
 
-      if (strokeThickness > 0)
+      if (strokeThickness > 0) {
+        ctx.lineJoin = 'round';
+        ctx.miterLimit = 2;
         this.__renderLines(ctx, driver, lines, fontMetrics, true)
+      }
 
       this.__renderLines(ctx, driver, lines, fontMetrics, false)
 
@@ -110,9 +111,24 @@ class TextRenderer extends Renderer {
         this.texture.update(cvs);
     }
 
-    if (strokeThickness !== 0) {
+    let fieldXOffset = 0;
+    let fieldYOffset = 0;
+
+    if (this.autoSize === false) {
+      if (this.align === 'center')
+        fieldXOffset = (this.fieldWidth - this.bounds.width) * 0.5;
+      else if (this.align === 'right')
+        fieldXOffset = this.fieldWidth - this.bounds.width;
+
+      if (this.vAlign === 'middle')
+        fieldYOffset = (this.fieldHeight - this.bounds.height) * 0.5;
+      else if (this.vAlign === 'bottom')
+        fieldYOffset = this.fieldHeight - this.bounds.height;
+    }
+
+    if (strokeThickness !== 0 || this.autoSize === false) {
       this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate(-strokeThickness, -strokeThickness);
+      this.__transformCache.translate(-strokeThickness + fieldXOffset, -strokeThickness + fieldYOffset);
       driver.setTransform(this.__transformCache);
     } else {
       driver.setTransform(this.transform);
