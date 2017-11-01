@@ -1,18 +1,22 @@
 /* @echo EXPORT */
 class Renderer {
   constructor() {
-    this.updateRequired = true;
-    this.zIndex = 0;
     this.texture = null;
     this.alpha = 1;
     this.blendMode = BlendMode.AUTO;
     this.transform = null;
     this.visible = true;
+    this.clipRect = null;
     this.dirty = DirtyFlag.DIRTY;
+
+    this.index = 0;
+    this.endPassRequiredAt = -1;
+    this.endPassRequired = false;
   }
 
-  render(driver) {
-  }
+  render(driver) { }
+
+  childrenRendered(driver) { }
 
   get isRenderable() {
     return this.alpha > 0 && this.visible === true;

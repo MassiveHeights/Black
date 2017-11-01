@@ -29,6 +29,12 @@ class DisplayObject extends GameObject {
 
     /**
      * @private
+     * @type {Rectangle}
+     */
+    this.mClipRect = null;
+
+    /**
+     * @private
      * @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
   }
@@ -46,6 +52,7 @@ class DisplayObject extends GameObject {
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
       renderer.dirty = this.mDirty;
+      renderer.clipRect = this.mClipRect;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -107,6 +114,18 @@ class DisplayObject extends GameObject {
       return;
 
     this.mBlendMode = value;
+    this.setRenderDirty();
+  }
+
+  get clipRect() {
+    return this.mClipRect;
+  }
+
+  set clipRect(value) {
+    if (this.mClipRect === value)
+      return;
+
+    this.mClipRect = value;
     this.setRenderDirty();
   }
 }

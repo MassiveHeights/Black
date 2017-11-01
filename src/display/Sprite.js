@@ -39,13 +39,14 @@ class Sprite extends DisplayObject {
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
-    if (this.mDirty & DirtyFlag.RENDER) {      
+    if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
       renderer.dirty = this.mDirty;
+      renderer.clipRect = this.mClipRect;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

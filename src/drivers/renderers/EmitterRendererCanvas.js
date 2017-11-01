@@ -14,6 +14,13 @@ class EmitterRendererCanvas extends Renderer {
   render(driver) {
     driver.globalBlendMode = this.blendMode;
 
+    if (this.clipRect !== null && this.clipRect.isEmpty === false) {
+      this.endPassRequired = true;
+
+      driver.setTransform(this.transform);
+      driver.beginClip(this.clipRect);
+    }
+
     const plength = this.particles.length;
 
     let localTransform = this.__tmpLocal;
@@ -58,6 +65,10 @@ class EmitterRendererCanvas extends Renderer {
       driver.setTransform(worldTransform);
       driver.drawTexture(texture);
     }
+  }
+
+  childrenRendered(driver) {
+    driver.endClip();
   }
 
   get isRenderable() {

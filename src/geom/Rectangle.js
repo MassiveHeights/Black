@@ -311,6 +311,22 @@ class Rectangle {
       rect.x < this.right && rect.y < this.bottom;
   }
 
+  intersection(toIntersect) {
+    var x0 = this.x < toIntersect.x ? toIntersect.x : this.x;
+    var x1 = this.right > toIntersect.right ? toIntersect.right : this.right;
+
+    if (x1 <= x0)
+      return new Rectangle();
+
+    var y0 = this.y < toIntersect.y ? toIntersect.y : this.y;
+    var y1 = this.bottom > toIntersect.bottom ? toIntersect.bottom : this.bottom;
+
+    if (y1 <= y0)
+      return new Rectangle();
+
+    return new Rectangle(x0, y0, x1 - x0, y1 - y0);
+  }
+
 
   /**
    * Adds given rectangle into this.
@@ -442,8 +458,8 @@ class Rectangle {
    *
    * @return {boolean} True if has.
    */
-  isEmpty() {
-    return this.width === 0 && this.height === 0;
+  get isEmpty() {
+    return this.width <= 0 || this.height <= 0;
   }
 
   get lines() { // todo

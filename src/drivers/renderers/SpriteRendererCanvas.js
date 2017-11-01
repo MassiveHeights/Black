@@ -1,12 +1,20 @@
 /* @echo EXPORT */
-class SpriteRendererCanvas extends Renderer {
+class SpriteRendererCanvas extends DisplayObjectRendererCanvas {
   render(driver) {
-    if (this.texture == null)
-      return;
-      
     driver.setTransform(this.transform);
     driver.globalAlpha = this.alpha;
     driver.globalBlendMode = this.blendMode;
-    driver.drawTexture(this.texture);
+
+    if (this.clipRect !== null && this.clipRect.isEmpty === false) {
+      this.endPassRequired = true;
+      driver.beginClip();
+    }
+
+    if (this.texture !== null)
+      driver.drawTexture(this.texture);
+  }
+
+  childrenRendered(driver) { 
+    this.beginClip()
   }
 }

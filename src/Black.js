@@ -458,6 +458,7 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
+      this.mRendererIndex = 0;
       this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageRenderer);
       this.mVideo.render(this.mVideo);
       this.mVideo.endFrame();
@@ -475,15 +476,21 @@ class Black extends MessageDispatcher {
   __renderGameObjects(gameObject, driver, parentRenderer) {
     let renderer = gameObject.onRender(driver, parentRenderer);
 
-    if (renderer != null)
+    if (renderer != null) {
       parentRenderer = renderer;
+      this.mRendererIndex++;
+    }
 
-    if (driver.skipChildren === true)
+    if (driver.mSkipChildren === true)
       return;
 
     const len = gameObject.numChildren;
     for (let i = 0; i < len; i++)
-      this.__renderGameObjects(gameObject.getChildAt(i), driver, parentRenderer);
+      this.__renderGameObjects(gameObject.mChildren[i], driver, parentRenderer);
+
+    if (renderer != null && renderer.endPassRequired) {
+      renderer.endPassRequiredAt = this.mRendererIndex - 1;
+    }
   }
 
   /**

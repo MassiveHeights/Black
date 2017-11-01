@@ -21,11 +21,13 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mLetterSpacing = 0;
     this.mRenderers = [];
-    this.skipChildren = false;
+    this.mSkipChildren = false;
+    this.mEndPassStack = [];
+    this.mEndPassRenderer = null;
     this.__createCanvas();
 
     this.mRendererMap = {
-      DisplayObject: Renderer,
+      DisplayObject: DisplayObjectRendererCanvas,
       Sprite: SpriteRendererCanvas,
       Emitter: EmitterRendererCanvas,
       Text: TextRendererCanvas
@@ -34,27 +36,44 @@ class CanvasDriver extends VideoNullDriver {
 
   getRenderer(type) {
     return new this.mRendererMap[type]();
-    //return new SpriteRendererCanvas();
   }
 
   registerRenderer(renderer) {
     if (renderer.isRenderable === false) {
-      this.skipChildren = true;
+      this.mSkipChildren = true;
       return;
     }
 
-    this.skipChildren = false;
+    // renderer.endPassRequired = false;
+    // renderer.endPassRequiredAt = -1;
+
+    this.mSkipChildren = false;
     this.mRenderers.push(renderer);
 
     return renderer;
   }
 
   render(driver) {
+    //debugger
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
+      if (renderer.endPassRequired === true) {
+        this.mEndPassStack.push(renderer);
+        this.mEndPassRenderer = renderer;
+      }
+
       renderer.render(driver);
       renderer.dirty = 0;
+
+      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
+        this.mEndPassRenderer.childrenRendered(driver);
+
+        this.mEndPassStack.pop();
+        //this.mEndPassRenderer.endPassRequired = false;
+        //this.mEndPassRenderer.endPassRequiredAt = -1;
+        this.mEndPassRenderer = null;
+      }
     }
   }
 
@@ -65,6 +84,17 @@ class CanvasDriver extends VideoNullDriver {
     const oy = texture.untrimmedRect.y;
 
     this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
+  }
+
+  beginClip(clipRect) {
+    this.mCtx.save();
+    this.mCtx.beginPath();
+    this.mCtx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+    this.mCtx.clip();
+  }
+
+  endClip() {
+    this.mCtx.restore();
   }
 
   /**
@@ -165,9 +195,11 @@ class CanvasDriver extends VideoNullDriver {
    */
   beginFrame() {
     this.clear();
-    this.skipChildren = false;
+    this.mSkipChildren = false;
 
     this.mRenderers.splice(0, this.mRenderers.length);
+    this.mEndPassStack.splice(0, this.mEndPassStack.length);
+    this.mEndPassRenderer = null;
   }
 
   /**
