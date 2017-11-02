@@ -15,17 +15,20 @@ class FontMetrics {
     this.mCanvasWidth = this.mCanvas.width = info.size * 2;
     this.mCanvasHeight = this.mCanvas.height = info.size * 2 + this.mPadding;
 
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.font = `${info.weight} ${info.size}px ${info.name}`;
     this.mCtx.textBaseline = 'top';
     this.mCtx.textAlign = 'center';
 
+    this.bottom = this.__computeLineHeight();
     this.capHeight = this.__measureTop(FontMetrics.CHAR_CAPITAL_HEIGHT);
     this.baseline = this.__measureBottom(FontMetrics.CHAR_BASELINE);
     this.xHeight = this.__measureTop(FontMetrics.CHAR_XHEIGHT);
-    this.bottom = this.__computeLineHeight();
     this.ascent = this.__measureTop(FontMetrics.CHAR_ASCENT);
     this.descent = this.__measureBottom(FontMetrics.CHAR_DESCENT);
     this.top = 0;
+
+    console.log(`baseline for ${info.name}`, this.baseline, this.mCanvasWidth, this.mCanvasHeight, this.mPadding);
   }
 
   get capHeightNormalized() {
@@ -56,14 +59,14 @@ class FontMetrics {
     const letter = 'A';
 
     let ty = this.mCanvas.height;
-    FontMetrics.__CONTEXT.setTransform(1, 0, 0, 1, 0, ty)
-    FontMetrics.__CONTEXT.textBaseline = 'bottom';
+    this.mCtx.setTransform(1, 0, 0, 1, 0, ty)
+    this.mCtx.textBaseline = 'bottom';
 
     const gutter = this.mCanvas.height - this.__measureBottom(letter);
 
     ty = 0;
-    FontMetrics.__CONTEXT.setTransform(1, 0, 0, 1, 0, ty)
-    FontMetrics.__CONTEXT.textBaseline = 'top';
+    this.mCtx.setTransform(1, 0, 0, 1, 0, ty)
+    this.mCtx.textBaseline = 'top';
 
     return this.__measureBottom(letter) + gutter;
   }
@@ -105,10 +108,9 @@ class FontMetrics {
 
   static get(fontName) {
     let cache = FontMetrics.CACHE[fontName];
-    
 
     if (cache == null) {
-      let info = new TextInfo('arial', 0, 24);
+      let info = new TextInfo(fontName, 0, 24);
       cache = new FontMetrics(info);
       FontMetrics.CACHE[fontName] = cache;
     }

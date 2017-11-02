@@ -12,11 +12,6 @@ class VideoNullDriver {
    * @param  {number} height
    */
   constructor(containerElement, width, height) {
-    /**
-     * @private
-     * @type {string}
-     */
-    this.mGlobalBlendMode = 'auto';
 
     /**
      * @protected
@@ -45,6 +40,19 @@ class VideoNullDriver {
      */
     this.mTransform = new Matrix();
 
+    this.mIdentityMatrix = new Matrix();
+
+    this.mRenderers = [];
+    this.mSkipChildren = false;
+    this.mEndPassStack = [];
+    this.mEndPassRenderer = null;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mGlobalBlendMode = BlendMode.AUTO;
+
     /**
      * @private
      * @type {number}
@@ -62,8 +70,44 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  getRenderer(object) {
-    throw new Error('Not implemented');
+  getRenderer(type) {
+    return new this.mRendererMap[type]();
+  }
+
+  render(driver) {
+    //debugger
+    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
+      let renderer = this.mRenderers[i];
+
+      if (renderer.endPassRequired === true) {
+        this.mEndPassStack.push(renderer);
+        this.mEndPassRenderer = renderer;
+      }
+
+      renderer.render(driver);
+      renderer.dirty = 0;
+
+      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
+        this.mEndPassRenderer.childrenRendered(driver);
+
+        this.mEndPassStack.pop();
+        //this.mEndPassRenderer.endPassRequired = false;
+        //this.mEndPassRenderer.endPassRequiredAt = -1;
+        this.mEndPassRenderer = null;
+      }
+    }
+  }
+
+  registerRenderer(renderer) {
+    if (renderer.isRenderable === false) {
+      this.mSkipChildren = true;
+      return;
+    }
+
+    this.mSkipChildren = false;
+    this.mRenderers.push(renderer);
+
+    return renderer;
   }
 
   /**
@@ -92,7 +136,6 @@ class VideoNullDriver {
   start() {
   }
 
-
   /**
    * Called before rendering anything. Usually used to clear back-buffer.
    *
@@ -101,8 +144,13 @@ class VideoNullDriver {
    * @returns {void}
    */
   beginFrame() {
-  }
+    this.clear();
+    this.mSkipChildren = false;
 
+    this.mRenderers.splice(0, this.mRenderers.length);
+    this.mEndPassStack.splice(0, this.mEndPassStack.length);
+    this.mEndPassRenderer = null;
+  }
 
   /**
    * Called after rendering is finished.
@@ -197,29 +245,6 @@ class VideoNullDriver {
    */
   clear() {
   }
-
-  /**
-   * Used to save context if extists.
-   *
-   * @ignore
-   * @protected
-   * @param {GameObject|null} gameObject Used for internal binding.
-   *
-   * @return {void}
-   */
-  save(gameObject) {
-  }
-
-  /**
-   * Used to restore context if extists.
-   *
-   * @protected
-   * @ignore
-   * @returns {type}
-   */
-  restore() {
-  }
-
 
   /**
    * Convers number color to hex string.

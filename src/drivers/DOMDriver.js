@@ -14,9 +14,6 @@ class DOMDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @type {number} */
-    this.mGlobalAlpha = 1;
-
     /** @type {Array<Element>} */
     this.mCache = [];
 
@@ -26,28 +23,14 @@ class DOMDriver extends VideoNullDriver {
     /** @type {boolean} */
     this.mPixelated = true;
 
-    /** @type {GameObject|null} */
-    this.mCurrentObject = null;
     this.__initCSS();
 
-    this.measureEl = document.createElement(`div`);
-    this.measureEl.style.position = `absolute`;
-    this.measureEl.style.visibility = `hidden`;
-    this.measureEl.style.height = `auto`;
-    this.measureEl.style.width = `auto`;
-    this.measureEl.style.whiteSpace = `nowrap`;
-    document.getElementsByTagName(`body`)[0].appendChild(this.measureEl);
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   * @param {GameObject|null} gameObject Used for internal binding.
-   *
-   * @return {void} Description
-   */
-  save(gameObject) {
-    this.mCurrentObject = gameObject;
+    this.mRendererMap = {
+      DisplayObject: DisplayObjectRendererDOM,
+      Sprite: SpriteRendererDOM,
+      Emitter: EmitterRendererDOM,
+      Text: TextRendererDOM
+    };
   }
 
   /**
@@ -79,37 +62,6 @@ class DOMDriver extends VideoNullDriver {
     document.getElementsByTagName('head')[0].appendChild(sViewport);
 
     this.mContainerElement.className = 'viewport';
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   *
-   * @return {void}  description
-   */
-  beginFrame() {
-    this.mCounter = 0;
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   *
-   * @return {void}  description
-   */
-  endFrame() {
-    if (this.mCounter === this.mCache.length)
-      return;
-
-    //TODO: cleanup unused divs
-    //TODO: remove them instead of hiding
-    for (let i = this.mCounter; i < this.mCache.length; i++) {
-      let el = this.mCache[i];
-
-      el.parentNode.removeChild(el);
-    }
-
-    this.mCache.splice(this.mCounter);
   }
 
   /**
@@ -150,67 +102,6 @@ class DOMDriver extends VideoNullDriver {
     this.__updateImageElement(el, texture);
 
     this.mTransform = oldTransform.clone();
-  }
-
-  /**
-   * Measures text with a given style.
-   *
-   * @inheritDoc
-   * @override
-   *
-   * @param {TextField} textField    Text to measure.
-   * @param {TextInfo} style Text style to apply onto text.
-   * @param {Rectangle} bounds.
-   *
-   * @return {Rectangle} A Vector with width and height of the text bounds.
-   */
-  measureText(textField, style, bounds) {
-    let el = this.measureEl;
-
-    textField.lines = textField.multiLine ? textField.text : textField.text.replace(/\n/mg, ` `);
-
-    el.style.whiteSpace = 'pre';
-    el.style.fontSize = style.size + 'px';
-    el.style.fontFamily = style.name;
-    el.style.fontStyle = style.style;
-    el.style.fontWeight = style.weight;
-    el.style.lineHeight = `${textField.lineHeight}`;
-    el.style.letterSpacing = `${textField.letterSpacing}px`;
-    el.innerHTML = textField.lines;
-
-    let widths = textField.lineWidths;
-    widths.length = 0;
-    widths[0] = el.offsetWidth + style.strokeThickness;
-
-    if (!textField.autoSize) {
-      bounds.set(0, 0, textField.fieldWidth, textField.fieldHeight);
-    } else {
-      bounds.set(0, 0,
-        el.clientWidth + 1 + style.strokeThickness,
-        el.clientHeight + 1 + style.strokeThickness);
-    }
-
-    el.innerHTML = ``;
-
-    return bounds;
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   *
-   * @param {TextField} textField
-   * @param {TextInfo} style
-   * @param {Rectangle} bounds
-   *
-   * @return {void}
-   */
-  drawText(textField, style, bounds) {
-    let el = this.__popElement('text');
-
-    // TODO: check this type. review the code.
-    this.__updateTextElement(
-      /** @type {HTMLElement} */ (el), textField, style, bounds);
   }
 
   /**

@@ -14,16 +14,6 @@ class CanvasDriver extends VideoNullDriver {
      */
     this.mCtx = null;
 
-    // cache
-    this.mGlobalAlpha = 1;
-    this.mGlobalBlendMode = BlendMode.NORMAL;
-    this.mIdentityMatrix = new Matrix();
-
-    this.mLetterSpacing = 0;
-    this.mRenderers = [];
-    this.mSkipChildren = false;
-    this.mEndPassStack = [];
-    this.mEndPassRenderer = null;
     this.__createCanvas();
 
     this.mRendererMap = {
@@ -33,48 +23,34 @@ class CanvasDriver extends VideoNullDriver {
       Text: TextRendererCanvas
     };
   }
+  
+  /**
+   * @private
+   * @return {void}
+   */
+  __createCanvas() {
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.style.position = 'absolute';
+    cvs.id = 'canvas';
+    cvs.width = this.mClientWidth;
+    cvs.height = this.mClientHeight;
+    this.mContainerElement.appendChild(cvs);
 
-  getRenderer(type) {
-    return new this.mRendererMap[type]();
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
   }
+  
+  /**
+   * @private
+   * @param {Message} msg
+   * @param {Rectangle} rect
+   *
+   * @returns {void}
+   */
+  __onResize(msg, rect) {
+    super.__onResize(msg, rect);
 
-  registerRenderer(renderer) {
-    if (renderer.isRenderable === false) {
-      this.mSkipChildren = true;
-      return;
-    }
-
-    // renderer.endPassRequired = false;
-    // renderer.endPassRequiredAt = -1;
-
-    this.mSkipChildren = false;
-    this.mRenderers.push(renderer);
-
-    return renderer;
-  }
-
-  render(driver) {
-    //debugger
-    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
-      let renderer = this.mRenderers[i];
-
-      if (renderer.endPassRequired === true) {
-        this.mEndPassStack.push(renderer);
-        this.mEndPassRenderer = renderer;
-      }
-
-      renderer.render(driver);
-      renderer.dirty = 0;
-
-      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
-        this.mEndPassRenderer.childrenRendered(driver);
-
-        this.mEndPassStack.pop();
-        //this.mEndPassRenderer.endPassRequired = false;
-        //this.mEndPassRenderer.endPassRequiredAt = -1;
-        this.mEndPassRenderer = null;
-      }
-    }
+    this.mCtx.canvas.width = this.mClientWidth;
+    this.mCtx.canvas.height = this.mClientHeight;
   }
 
   drawTexture(texture) {
@@ -95,36 +71,6 @@ class CanvasDriver extends VideoNullDriver {
 
   endClip() {
     this.mCtx.restore();
-  }
-
-  /**
-   * @private
-   * @return {void}
-   */
-  __createCanvas() {
-    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    cvs.style.position = 'absolute';
-    cvs.id = 'canvas';
-    cvs.width = this.mClientWidth;
-    cvs.height = this.mClientHeight;
-    this.mContainerElement.appendChild(cvs);
-
-    this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
-  }
-
-
-  /**
-   * @private
-   * @param {Message} msg
-   * @param {Rectangle} rect
-   *
-   * @returns {void}
-   */
-  __onResize(msg, rect) {
-    super.__onResize(msg, rect);
-
-    this.mCtx.canvas.width = this.mClientWidth;
-    this.mCtx.canvas.height = this.mClientHeight;
   }
 
   /**
@@ -185,30 +131,6 @@ class CanvasDriver extends VideoNullDriver {
     // this.setTransform(this.mIdentityMatrix);
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   *
-   * @return {void}
-   */
-  beginFrame() {
-    this.clear();
-    this.mSkipChildren = false;
-
-    this.mRenderers.splice(0, this.mRenderers.length);
-    this.mEndPassStack.splice(0, this.mEndPassStack.length);
-    this.mEndPassRenderer = null;
-  }
-
-  /**
-   * @inheritDoc
-   * @override
-   *
-   * @return {void}
-   */
-  endFrame() {
   }
 
   /**

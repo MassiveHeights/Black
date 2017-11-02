@@ -343,6 +343,10 @@ class Black extends MessageDispatcher {
     if (this.mIsStarted === true)
       return;
 
+    // TODO: show only when needed, eg required by any system
+    if (this.mEnableFixedTimeStep === false)
+      Debug.info('Fixed time-step is disabled, some systems may not work.');
+
     this.__bootViewport();
     this.__bootSystems();
     this.__bootVideo();
@@ -371,10 +375,6 @@ class Black extends MessageDispatcher {
         self.__update(x);
       });
     });
-
-    // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false)
-      Debug.info('Fixed time-step is disabled, some systems may not work.');
   }
 
   /**
