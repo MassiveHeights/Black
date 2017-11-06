@@ -1,5 +1,5 @@
 /* @echo EXPORT */
-class TextMetrics {
+class TextMetricsEx {
   constructor() {
     throw new Error('Singlton');
   }
@@ -9,10 +9,10 @@ class TextMetrics {
 
     let lineBounds = [];
 
-    let span = TextMetrics.__span;
+    let span = TextMetricsEx.__span;
 
-    if (TextMetrics.__span === null) {
-      span = TextMetrics.__span = document.createElement('span');
+    if (TextMetricsEx.__span === null) {
+      span = TextMetricsEx.__span = document.createElement('span');
       span.id = 'font';
       span.style.position = 'absolute';
       span.style.width = 'auto';
@@ -39,23 +39,15 @@ class TextMetrics {
 
     for (let i = 0; i < lines.length; i++) {
       span.innerHTML = lines[i].replace(/ /g, '&nbsp');
-      
+
       const bounds = new Rectangle(0, (fontMetrics.baselineNormalized * info.size) * i * lineHeight, span.offsetWidth, fontMetrics.bottomNormalized * info.size);
       lineBounds.push(bounds);
 
-      //   console.log(fontMetrics.baselineNormalized);
-
       outBounds.union(bounds);
     }
-
-    //console.log(lineBounds[lineBounds.length-1].y);
-    
-
-    //console.log(outBounds.width);
-    
 
     return lineBounds;
   }
 }
 
-TextMetrics.__span = null;
+TextMetricsEx.__span = null;

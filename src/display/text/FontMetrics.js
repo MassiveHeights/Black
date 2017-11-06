@@ -3,7 +3,7 @@ class FontMetrics {
   constructor(info) {
     if (FontMetrics.__CONTEXT === null) {
       FontMetrics.__CANVAS = document.createElement('canvas');
-      FontMetrics.__CONTEXT = canvas.getContext('2d');
+      FontMetrics.__CONTEXT = FontMetrics.__CANVAS.getContext('2d');
     }
 
     this.mCanvas = FontMetrics.__CANVAS;
@@ -27,8 +27,6 @@ class FontMetrics {
     this.ascent = this.__measureTop(FontMetrics.CHAR_ASCENT);
     this.descent = this.__measureBottom(FontMetrics.CHAR_DESCENT);
     this.top = 0;
-
-    console.log(`baseline for ${info.name}`, this.baseline, this.mCanvasWidth, this.mCanvasHeight, this.mPadding);
   }
 
   get capHeightNormalized() {

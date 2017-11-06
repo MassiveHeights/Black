@@ -23,6 +23,10 @@ class CanvasDriver extends VideoNullDriver {
       Text: TextRendererCanvas
     };
   }
+
+  getRenderTarget(width, height) {
+    return new RenderTargetCanvas(width, height);
+  }
   
   /**
    * @private
@@ -62,14 +66,14 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
   }
 
-  beginClip(clipRect) {
+  beginClip(clipRect, px, py) {
     this.mCtx.save();
     this.mCtx.beginPath();
-    this.mCtx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+    this.mCtx.rect(clipRect.x + px, clipRect.y + py, clipRect.width, clipRect.height);
     this.mCtx.clip();
   }
 
-  endClip() {
+  endClip() {    
     this.mCtx.restore();
   }
 
@@ -127,8 +131,6 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
-    // this.mTransform.identity();
-    // this.setTransform(this.mIdentityMatrix);
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }

@@ -70,12 +70,6 @@ class Texture {
      */
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.mIsLoaded = true;
-
     // TODO: refactor, make private
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
@@ -202,15 +196,6 @@ class Texture {
    */
   get native() {
     return this.mTexture;
-  }
-
-  /**
-   * True if fully loaded and ready.
-   *
-   * @return {boolean}
-   */
-  get isLoaded() {
-    return this.mIsLoaded;
   }
 
   /**

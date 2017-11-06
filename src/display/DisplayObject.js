@@ -43,6 +43,39 @@ class DisplayObject extends GameObject {
     return Black.instance.video.getRenderer('DisplayObject');
   }
 
+  onGetLocalBounds(outRect = undefined) {
+    outRect = outRect || new Rectangle();
+    return outRect.set(0, 0, 0, 0);
+  }
+
+  getBounds(space = undefined, includeChildren = true, outRect = undefined) {
+    outRect = outRect || new Rectangle();
+
+    let matrix = this.worldTransformation;
+
+    // TODO: optimize, check if space == null, space == this, space == parent
+    // TODO: use wtInversed instead
+    if (space != null) {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
+    }
+
+    let bounds = new Rectangle();
+    this.onGetLocalBounds(bounds);
+
+    matrix.transformRect(bounds, bounds);
+    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    if (this.mClipRect !== null)
+      return outRect;
+
+    if (includeChildren)
+      for (let i = 0; i < this.numChildren; i++)
+        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+
+    return outRect;
+  }
+  
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
@@ -56,7 +89,6 @@ class DisplayObject extends GameObject {
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
-
 
     return driver.registerRenderer(renderer);
   }

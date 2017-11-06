@@ -4,11 +4,8 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     driver.setTransform(this.transform);
 
-    if (this.clipRect !== null && this.clipRect.isEmpty === false) {
-      this.endPassRequired = true;
-
+    if (this.clipRect !== null && this.clipRect.isEmpty === false)
       driver.beginClip(this.clipRect);
-    }
   }
 
   childrenRendered(driver) {

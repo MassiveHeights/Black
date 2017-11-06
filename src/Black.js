@@ -216,6 +216,8 @@ class Black extends MessageDispatcher {
      */
     this.mEnableFixedTimeStep = false;
 
+    this.mFrameNum = 0;
+
     /**
      * @private
      * @type {boolean}
@@ -400,8 +402,6 @@ class Black extends MessageDispatcher {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
     this.constructor.instance = this;
 
-    const self = this;
-
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = this.mPaused = false;
 
@@ -413,7 +413,9 @@ class Black extends MessageDispatcher {
     }
 
     if (timestamp < this.mLastFrameTimeMs + this.mMinFrameDelay) {
-      this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+      this.mRAFHandle = window.requestAnimationFrame(x=> {
+        this.__update(x);
+      });
       return;
     }
 
@@ -457,11 +459,11 @@ class Black extends MessageDispatcher {
       this.__internalUpdate(dt);
       this.__internalPostUpdate(dt);
 
-      this.mVideo.beginFrame();
-      this.mRendererIndex = 0;
-      this.__renderGameObjects(this.mRoot, this.mVideo, this.mStageRenderer);
-      this.mVideo.render(this.mVideo);
+      this.mVideo.beginFrame();      
+      this.mVideo.render(this.mRoot, this.mStageRenderer);
       this.mVideo.endFrame();
+
+      this.mFrameNum++;
 
       // TODO: remove uptime
       this.mUptime += dt;
@@ -470,27 +472,9 @@ class Black extends MessageDispatcher {
       this.mIsPanic = false;
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
-  }
-
-  __renderGameObjects(gameObject, driver, parentRenderer) {
-    let renderer = gameObject.onRender(driver, parentRenderer);
-
-    if (renderer != null) {
-      parentRenderer = renderer;
-      this.mRendererIndex++;
-    }
-
-    if (driver.mSkipChildren === true)
-      return;
-
-    const len = gameObject.numChildren;
-    for (let i = 0; i < len; i++)
-      this.__renderGameObjects(gameObject.mChildren[i], driver, parentRenderer);
-
-    if (renderer != null && renderer.endPassRequired) {
-      renderer.endPassRequiredAt = this.mRendererIndex - 1;
-    }
+    this.mRAFHandle = window.requestAnimationFrame(x=> {
+      this.__update(x);
+    });
   }
 
   /**
@@ -780,7 +764,6 @@ class Black extends MessageDispatcher {
     return this.mEnableFixedTimeStep;
   }
 
-
   /**
    * Returns True if engine is paused.
    *
@@ -800,11 +783,11 @@ class Black extends MessageDispatcher {
     this.mEnableFixedTimeStep = value;
   }
 
-  dispose() {
-    // todo: call dispose on eveyrthing!
-  }
-
   get magic() {
     return Math.random();
+  }
+
+  get frameNum() {
+    return this.mFrameNum;
   }
 }

@@ -99,6 +99,12 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
+     * @type {Matrix}
+     */
+    this.mWorldTransformInversed = new Matrix();
+
+    /**
+     * @private
      * @type {DirtyFlag}
      */
     this.mDirty = DirtyFlag.DIRTY;
@@ -117,12 +123,6 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
-     * @type {number}
-     */
-    this.mIndex = 0;
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.mAdded = false;
@@ -138,6 +138,12 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mNumComponentsRemoved = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mDirtyFrameNum = 0;
   }
 
   /**
@@ -147,6 +153,13 @@ class GameObject extends MessageDispatcher {
    */
   get id() {
     return this.mId;
+  }
+
+  /**
+   * Note: Make sure to apply all changes to this game object before checking for static.
+   */
+  get isStatic() {
+    return this.mDirtyFrameNum < Black.instance.frameNum;
   }
 
   /**
@@ -164,7 +177,6 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   onRemoved() { }
-
 
   /**
    * Sugar method for adding child GameObjects or Components in a simple manner.
@@ -538,8 +550,13 @@ class GameObject extends MessageDispatcher {
    * @return {Matrix}
    */
   get worldTransformationInversed() {
-    // TODO: optimize, cache
-    return this.worldTransformation.clone().invert();
+    if ((this.mDirty & DirtyFlag.WORLD_INV)) {
+      this.mDirty ^= DirtyFlag.WORLD_INV;
+
+      this.worldTransformation.copyTo(this.mWorldTransformInversed).invert();
+    }
+
+    return this.mWorldTransformInversed;
   }
 
   /**
@@ -722,7 +739,7 @@ class GameObject extends MessageDispatcher {
     // TODO: use wtInversed instead
     if (space != null) {
       matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformation.clone().invert());
+      matrix.prepend(space.worldTransformationInversed);
     }
 
     let bounds = new Rectangle();
@@ -736,6 +753,10 @@ class GameObject extends MessageDispatcher {
         this.getChildAt(i).getBounds(space, includeChildren, outRect);
 
     return outRect;
+  }
+
+  get bounds() {
+    return this.getBounds(this, false);
   }
 
   /**
@@ -1245,9 +1266,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
+        x.mDirtyFrameNum = Black.instance.frameNum;
       });
     } else {
       this.mDirty |= flag;
+      this.mDirtyFrameNum = Black.instance.frameNum;
     }
   }
 
@@ -1260,7 +1283,7 @@ class GameObject extends MessageDispatcher {
    */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD | DirtyFlag.RENDER, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER, true);
   }
 
   setRenderDirty() {
@@ -1557,7 +1580,8 @@ GameObject.ID = 0;
 var DirtyFlag = {
   LOCAL: 1,
   WORLD: 2,
-  RENDER: 4,
-  RENDER_CACHE: 8,
+  WORLD_INV: 4,
+  RENDER: 8,
+  RENDER_CACHE: 16,
   DIRTY: 0xffffff
 };

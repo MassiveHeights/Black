@@ -15,8 +15,6 @@ class EmitterRendererCanvas extends Renderer {
     driver.globalBlendMode = this.blendMode;
 
     if (this.clipRect !== null && this.clipRect.isEmpty === false) {
-      this.endPassRequired = true;
-
       driver.setTransform(this.transform);
       driver.beginClip(this.clipRect);
     }

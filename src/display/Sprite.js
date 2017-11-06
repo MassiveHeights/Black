@@ -46,6 +46,8 @@ class Sprite extends DisplayObject {
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
       renderer.dirty = this.mDirty;
+      renderer.pivotX = this.mPivotX;
+      renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;
 
       this.mDirty ^= DirtyFlag.RENDER;
@@ -69,7 +71,15 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      outRect.x += this.mPivotX;
+      outRect.y += this.mPivotY;
+    } else {
+      outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    }
+
+    return outRect;
   }
 
   /**

@@ -5,7 +5,7 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
 
     this.element = null;
 
-    this.mTransformCache = null; //matrix
+    this.mTransformCache = new Matrix(); //matrix
     this.mUrlCache = '';
     this.mWidthCache = 0;
     this.mHeightCache = 0;
@@ -14,16 +14,25 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
 
   render(driver) {
     if (this.texture === null)
-      return;
+      return false;
 
-    if (this.element === null)
-      this.element = this.__createElement(driver, 'sprite');
+    if (!(this.dirty & DirtyFlag.RENDER))
+      return false;
+
+    if (this.visible === false || this.alpha === 0)
+      return false;
+
+    if (this.element === null) {
+      this.element = driver.__createElement('div', 'sprite');
+      this.elements.push(this.element);
+    }
 
     let style = this.element.style;
 
-    if (this.mTransformCache !== this.transform) {
-      
+    if (style.zIndex !== this.zIndex)
+      style.zIndex = this.zIndex;
 
+    if (this.mTransformCache.exactEquals(this.transform) !== true) {
       if (this.texture.untrimmedRect.x !== 0 || this.texture.untrimmedRect.y !== 0) {
         Matrix.__cache.set(1, 0, 0, 1, this.texture.untrimmedRect.x, this.texture.untrimmedRect.y);
         this.transform = this.transform.clone().append(Matrix.__cache);
@@ -32,7 +41,7 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
       let v = this.transform.value;
 
       style.transform = `matrix(${v[0].toFixed(6)}, ${v[1].toFixed(6)}, ${v[2].toFixed(6)}, ${v[3].toFixed(6)}, ${v[4].toFixed(6)}, ${v[5].toFixed(6)})`
-      this.mTransformCache = this.transform;
+      this.transform.copyTo(this.mTransformCache);
     }
 
     if (this.texture.native.src !== this.mUrlCache) {
@@ -60,16 +69,18 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
 
     if (this.mGlobalAlpha !== this.mOpacityCache)
       style.opacity = this.mOpacityCache = this.mGlobalAlpha;
+
+    return true;
   }
 
   childrenRendered(driver) {
   }
 
+  cleanup(driver) {
+    if (this.element === null)
+      return;
 
-  __createElement(driver, className) {
-    let element = document.createElement('div');
-    element.className = className;
-    driver.mContainerElement.appendChild(element);
-    return element;
+    driver.__removeElement(this.element);
+    this.element = null;
   }
 }

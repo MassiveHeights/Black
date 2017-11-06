@@ -165,7 +165,7 @@ class TextField extends DisplayObject {
     outRect = outRect || new Rectangle();
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE)
-      this.mLineBounds = TextMetrics.measure(this.text, this.mStyle, this.mLineHeight, this.mTextBounds);
+      this.mLineBounds = TextMetricsEx.measure(this.text, this.mStyle, this.mLineHeight, this.mTextBounds);
 
     if (this.mAutoSize === false) {
       outRect.width = this.mFieldWidth;

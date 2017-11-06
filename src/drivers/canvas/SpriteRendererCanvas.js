@@ -5,16 +5,14 @@ class SpriteRendererCanvas extends DisplayObjectRendererCanvas {
     driver.globalAlpha = this.alpha;
     driver.globalBlendMode = this.blendMode;
 
-    if (this.clipRect !== null && this.clipRect.isEmpty === false) {
-      this.endPassRequired = true;
-      driver.beginClip();
-    }
+    if (this.clipRect !== null && this.clipRect.isEmpty === false)
+      driver.beginClip(this.clipRect, this.pivotX, this.pivotY);
 
     if (this.texture !== null)
       driver.drawTexture(this.texture);
   }
 
-  childrenRendered(driver) { 
-    this.beginClip()
+  childrenRendered(driver) {
+    driver.endClip();
   }
 }
