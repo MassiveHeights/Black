@@ -12,17 +12,15 @@ class VideoNullDriver {
    * @param  {number} height
    */
   constructor(containerElement, width, height) {
-    /**
-     * @private
-     * @type {string}
-     */
-    this.mGlobalBlendMode = 'auto';
 
     /**
      * @protected
      * @type {HTMLElement}
      */
-    this.mContainerElement = /** @type {HTMLElement} */ (containerElement);
+    this.mContainerElement = /**
+     * @private
+     * @type {HTMLElement} */ (containerElement
+      );
 
     /**
      * @private
@@ -37,10 +35,26 @@ class VideoNullDriver {
     this.mClientHeight = height;
 
     /**
+     * Actual object - do not change
      * @private
      * @type {Matrix}
      */
     this.mTransform = new Matrix();
+
+    this.mIdentityMatrix = new Matrix();
+
+    this.mRenderers = [];
+    this.mSkipChildren = false;
+    this.mEndPassRenderer = null;
+    this.mRendererIndex = 0;
+    this.mLastRenderTexture = null;
+    this.mCurrentRenderTexture = null;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mGlobalBlendMode = BlendMode.AUTO;
 
     /**
      * @private
@@ -48,17 +62,153 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
-    this.mMeasureElement = /** @type {HTMLElement} */ (document.createElement('span'));
-    this.mMeasureElement.style.position = 'absolute';
-    this.mContainerElement.appendChild(this.mMeasureElement);
-
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  getRenderer(type) {
+    return new this.mRendererMap[type]();
+  }
+
+  getRenderTarget(width, height) {
+    throw new Error('Not Implemented Error');
+  }
+
+  render(gameObject, parentRenderer, renderTexture) {
+    let numEndClipsRequired = 0;
+    if (renderTexture != null) {
+      this.mLastRenderTexture = this.mCtx;
+      this.mCtx = renderTexture.renderTarget.context;
+
+      // collect parents alpha, blending, clipping and masking
+      if (parentRenderer === null) {
+        parentRenderer = new Renderer();
+        parentRenderer.alpha = 1;
+        parentRenderer.blendMode = BlendMode.AUTO;
+
+        this.mGlobalAlpha = -1;
+        this.mGlobalBlendMode = null;
+        this.mRenderers.splice(0, this.mRenderers.length);
+        this.mSkipChildren = false;
+      }
+
+      numEndClipsRequired = this.__collectParentRenderables(gameObject, parentRenderer);
+    }
+
+    this.mRendererIndex = 0;
+
+    this.__collectRenderables(gameObject, parentRenderer);
+
+    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
+      let renderer = this.mRenderers[i];
+
+      this.setTransform(renderer.getTransform());
+      this.globalAlpha = renderer.getAlpha();
+      this.globalBlendMode = renderer.getBlendMode();
+
+      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
+        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
+
+      renderer.render(this);
+      renderer.dirty = 0;
+
+      if (renderer.endPassRequired === true) {
+        this.mEndPassRenderer = renderer;
+      }
+
+      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
+        this.endClip();
+
+        this.mEndPassRenderer.endPassRequiredAt = -1;
+        this.mEndPassRenderer.endPassRequired = false;
+        this.mEndPassRenderer = null;
+      }
+    }
+
+    if (renderTexture != null) {
+      for (let i = 0; i < numEndClipsRequired; i++)
+        this.endClip();
+
+      this.mCtx = this.mLastRenderTexture;
+
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+      this.mRenderers.splice(0, this.mRenderers.length);
+      this.mSkipChildren = false;
+    }
+  }
+
+  __collectRenderables(gameObject, parentRenderer) {
+    let renderer = gameObject.onRender(this, parentRenderer);
+
+    if (renderer != null) {
+      if (renderer.clipRect !== null)
+        renderer.endPassRequired = true;
+
+      parentRenderer = renderer;
+      this.mRendererIndex++;
+    }
+
+    if (this.mSkipChildren === true)
+      return;
+
+    const len = gameObject.numChildren;
+    for (let i = 0; i < len; i++)
+      this.__collectRenderables(gameObject.mChildren[i], parentRenderer);
+
+    if (renderer != null && renderer.endPassRequired === true)
+      renderer.endPassRequiredAt = this.mRendererIndex - 1;
+  }
+
+  __collectParentRenderables(gameObject, parentRenderer) {
+    let numClippedParents = 0;
+
+    let current = gameObject;
+    if (current === null)
+      return numClippedParents;
+
+    let parents = [];
+
+    for (current = current.parent; current !== null; current = current.parent)
+      parents.splice(0, 0, current);
+
+    for (let i = 0; i < parents.length; i++) {
+      let parent = parents[i];
+
+      let oldDirty = parent.mDirty;
+      let renderer = parent.onRender(this, parentRenderer);
+      parent.mDirty = oldDirty;
+
+      if (renderer != null) {
+        if (renderer.clipRect !== null)
+          numClippedParents++;
+
+        parentRenderer = renderer;
+      }
+
+      if (this.mSkipChildren === true)
+        return numClippedParents;
+    }
+
+    return numClippedParents;
+  }
+
+  beginClip(clipRect, px, py) {
+  }
+
+  endClip() {
+  }
+
+  registerRenderer(renderer) {
+    if (renderer.isRenderable === false) {
+      this.mSkipChildren = true;
+      return;
+    }
+
+    this.mSkipChildren = false;
+    this.mRenderers.push(renderer);
+
+    return renderer;
+  }
 
   /**
    * @protected
@@ -86,7 +236,6 @@ class VideoNullDriver {
   start() {
   }
 
-
   /**
    * Called before rendering anything. Usually used to clear back-buffer.
    *
@@ -95,8 +244,9 @@ class VideoNullDriver {
    * @returns {void}
    */
   beginFrame() {
+    this.clear();
+    this.mSkipChildren = false;
   }
-
 
   /**
    * Called after rendering is finished.
@@ -105,6 +255,7 @@ class VideoNullDriver {
    * @returns {void}
    */
   endFrame() {
+    this.mRenderers.splice(0, this.mRenderers.length);
   }
 
   /**
@@ -171,32 +322,16 @@ class VideoNullDriver {
   }
 
   /**
-   * Draws image onto the back-buffer. GlobalAlpha, BlendMode and transformation
+   * Draws texture onto back-buffer. GlobalAlpha, BlendMode and transformation
    * matrix must be set prior to calling this method.
    *
    * @public
    *
-   * @param  {Sprite|Particle} object
    * @param  {Texture} texture
    * 
    */
-  drawImage(object, texture) {
+  drawTexture(texture) {
   }
-
-  /**
-   * Draws text onto back-buffer.
-   *
-   * @public
-   *
-   * @param {TextField} text TextField object to draw.
-   * @param {TextInfo} style The style information.
-   * @param {Rectangle} bounds Clipping bounds, text will be drawn outside this bounds.
-   *
-   * @return {void}
-   */
-  drawText(text, style, bounds) {
-  }
-
 
   /**
    * Clears back-buffer.
@@ -209,29 +344,6 @@ class VideoNullDriver {
   }
 
   /**
-   * Used to save context if extists.
-   *
-   * @ignore
-   * @protected
-   * @param {GameObject|null} gameObject Used for internal binding.
-   *
-   * @return {void}
-   */
-  save(gameObject) {
-  }
-
-  /**
-   * Used to restore context if extists.
-   *
-   * @protected
-   * @ignore
-   * @returns {type}
-   */
-  restore() {
-  }
-
-
-  /**
    * Convers number color to hex string.
    *
    * @param {number} color The color to convert.
@@ -241,17 +353,5 @@ class VideoNullDriver {
   hexColorToString(color) {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
-  }
-
-  /**
-   * Measures text with a given style.
-   *
-   * @param {TextField} textField    Text to measure.
-   * @param {TextInfo} style Text style to apply onto text.
-   * @param {Rectangle} bounds.
-   *
-   * @return {Rectangle} Local bounds.
-   */
-  measureText(textField, style, bounds) {
   }
 }

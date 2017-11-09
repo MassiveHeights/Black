@@ -145,9 +145,12 @@ class Emitter extends DisplayObject {
      */
     this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
+  }
+
+  getRenderer() {
+    return Black.instance.video.getRenderer('Emitter');
   }
 
   resetState() {
@@ -213,7 +216,6 @@ class Emitter extends DisplayObject {
     }
   }
 
-
   /**
    * addInitializer - Adds Initializer to the end of the list.
    *
@@ -225,7 +227,6 @@ class Emitter extends DisplayObject {
     this.mInitializers.push(initializer);
     return initializer;
   }
-
 
   /**
    * addAction - Adds action to the end of the list.
@@ -239,74 +240,25 @@ class Emitter extends DisplayObject {
     return action;
   }
 
-  __render(video, time, parentAlpha) {
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
-    // set blend mode
-    video.globalBlendMode = this.blendMode;
-    let emitterWorldAlpha = parentAlpha * this.alpha;
-
-    // tmp matrices
-    let localTransform = this.__tmpLocal;
-    let worldTransform = this.__tmpWorld;
-    localTransform.identity();
-
-    let texture = null;
-
-    if (this.mTextures.length > 0) {
-      let plength = this.mParticles.length;
-
-      if (this.__sortOrder == EmitterSortOrder.FRONT_TO_BACK) {
-        for (let i = 0; i < plength; i++)
-          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
-      }
-      else {
-        for (let i = plength - 1; i > 0; i--)
-          this.__renderParticle(this.mParticles[i], video, parentAlpha, localTransform, worldTransform);
-      }
-
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode;
+      renderer.visible = this.mVisible;
+      renderer.particles = this.mParticles;
+      renderer.textures = this.mTextures;
+      renderer.space = this.mSpace;
+      renderer.isLocal = this.mIsLocal;
+      renderer.dirty = this.mDirty;
+      renderer.clipRect = this.clipRect;
+      
+      this.mDirty ^= DirtyFlag.RENDER;
     }
-
-    super.__render(video, time, parentAlpha);
-  }
-
-  __renderParticle(particle, video, parentAlpha, localTransform, worldTransform) {
-    let texture = this.mTextures[particle.textureIndex];
-
-    let tw = texture.width * 0.5;
-    let th = texture.height * 0.5;
-
-    if (particle.r === 0) {
-      let tx = particle.x - tw * particle.scale;
-      let ty = particle.y - th * particle.scale;
-      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
-    } else {
-      let cos = Math.cos(particle.r);
-      let sin = Math.sin(particle.r);
-      let a = particle.scale * cos;
-      let b = particle.scale * sin;
-      let c = particle.scale * -sin;
-      let d = particle.scale * cos;
-
-      let tx = particle.x - tw * a - th * c;
-      let ty = particle.y - tw * b - th * d;
-      localTransform.set(a, b, c, d, tx, ty);
-    }
-
-    if (this.mIsLocal === true) {
-      worldTransform.identity();
-      worldTransform.copyFrom(localTransform);
-      worldTransform.prepend(this.worldTransformation);
-    } else {
-      this.mSpace.worldTransformation.copyTo(worldTransform);
-      worldTransform.append(localTransform);
-    }
-
-    particle.worldAlpha = parentAlpha * particle.alpha;
-
-    video.setTransform(worldTransform);
-    video.globalAlpha = particle.worldAlpha;
-
-    video.drawImage(particle, texture);
+    
+    return driver.registerRenderer(renderer);
   }
 
   onUpdate(dt) {
@@ -317,8 +269,8 @@ class Emitter extends DisplayObject {
       this.__create(this.mEmitCount.getValue());
 
     // main update login
-    let alength = this.mActions.length;
-    let plength = this.mParticles.length;
+    const alength = this.mActions.length;
+    const plength = this.mParticles.length;
 
     for (let i = 0; i < alength; i++)
       this.mActions[i].preUpdate(dt);
@@ -342,6 +294,9 @@ class Emitter extends DisplayObject {
 
     for (let j = 0; j < alength; j++)
       this.mActions[j].postUpdate(dt);
+
+    // set dummy dirty flag so unchanged frames can be detected
+    this.setDirty(DirtyFlag.LOCAL, false);
   }
 
   __create(amount) {
@@ -390,7 +345,6 @@ class Emitter extends DisplayObject {
     }
   }
 
-
   /**
    * maxParticles
    *
@@ -399,7 +353,6 @@ class Emitter extends DisplayObject {
   get maxParticles() {
     return this.mMaxParticles;
   }
-
 
   /**
    * maxParticles
@@ -415,7 +368,6 @@ class Emitter extends DisplayObject {
     this.mMaxParticles = value;
   }
 
-
   /**
    * emitCount
    *
@@ -424,7 +376,6 @@ class Emitter extends DisplayObject {
   get emitCount() {
     return this.mEmitCount;
   }
-
 
   /**
    * emitCount
@@ -436,7 +387,6 @@ class Emitter extends DisplayObject {
   set emitCount(value) {
     this.mEmitCount = value;
   }
-
 
   /**
    * emitNumRepeats
@@ -458,7 +408,6 @@ class Emitter extends DisplayObject {
     this.mEmitNumRepeats = value;
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
   }
-
 
   /**
    * emitDuration

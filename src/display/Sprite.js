@@ -6,9 +6,8 @@
  */
 /* @echo EXPORT */
 class Sprite extends DisplayObject {
-
   /**
-   * constructor - Creates a new Sprite object instance.
+   * Creates a new Sprite instance.
    *
    * @param {Texture|string|null} texture The Texture instance or null.
    */
@@ -33,29 +32,28 @@ class Sprite extends DisplayObject {
     }
   }
 
-  /**
-   * @override
-   * @private
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mAlpha <= 0 || this.mVisible === false)
-      return;
+  getRenderer() {
+    return Black.instance.video.getRenderer('Sprite');
+  }
 
-    this.worldAlpha = parentAlpha * this.mAlpha;
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
 
-    if (this.mTexture !== null) {
-      video.setTransform(this.worldTransformation);
-      video.globalAlpha = parentAlpha * this.mAlpha;
-      video.globalBlendMode = this.blendMode;
-      video.drawImage(this, this.mTexture);
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.texture = this.mTexture;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
+      renderer.visible = this.mVisible;
+      renderer.dirty = this.mDirty;
+      renderer.pivotX = this.mPivotX;
+      renderer.pivotY = this.mPivotY;
+      renderer.clipRect = this.mClipRect;
+
+      this.mDirty ^= DirtyFlag.RENDER;
     }
 
-    super.__render(video, time, this.worldAlpha);
+    return driver.registerRenderer(renderer);
   }
 
   /**
@@ -73,7 +71,15 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    return outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      outRect.x += this.mPivotX;
+      outRect.y += this.mPivotY;
+    } else {
+      outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+    }
+
+    return outRect;
   }
 
   /**
@@ -86,18 +92,19 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Sets the Texture on this sprite.
+   * texture - Sets the Texture on this sprite by name.
+   * Only AssetManager.default is used.
    *
    * @param {Texture|null} texture Texture to apply on.
    *
    * @return {void}
    */
   set texture(texture) {
-    // if (this.mTexture !== null && this.mTexture === texture)
-    //   return;
+    if (this.mTexture === texture)
+      return;
 
-    if (this.mTexture !== texture)
-      this.mTexture = texture;
+    this.mTexture = texture;
+    this.setRenderDirty();
   }
 
   get textureName() {

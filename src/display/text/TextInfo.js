@@ -32,9 +32,6 @@ class TextInfo {
     /** @type {TextInfo.FontWeight} */
     this.weight = weight;
 
-    /** @type {TextInfo.FontAlign} */
-    this.align = align;
-
     /** @type {number} */
     this.strokeThickness = strokeThickness;
 
@@ -67,4 +64,13 @@ TextInfo.FontAlign = {
   LEFT: 'left',
   RIGHT: 'right',
   CENTER: 'center'
+};
+
+/**
+ * @enum {string}
+ */
+TextInfo.FontVerticalAlign = {
+  TOP: 'top',
+  MIDDLE: 'middle',
+  BOTTOM: 'bottom'
 };

@@ -216,11 +216,17 @@ class Black extends MessageDispatcher {
      */
     this.mEnableFixedTimeStep = false;
 
+    this.mFrameNum = 0;
+
     /**
      * @private
      * @type {boolean}
      */
     this.mWasStopped = false;
+
+    this.mStageRenderer = new Renderer();
+    this.mStageRenderer.alpha = 1;
+    this.mStageRenderer.blendMode = BlendMode.AUTO;
   }
 
   /**
@@ -339,6 +345,10 @@ class Black extends MessageDispatcher {
     if (this.mIsStarted === true)
       return;
 
+    // TODO: show only when needed, eg required by any system
+    if (this.mEnableFixedTimeStep === false)
+      Debug.info('Fixed time-step is disabled, some systems may not work.');
+
     this.__bootViewport();
     this.__bootSystems();
     this.__bootVideo();
@@ -367,10 +377,6 @@ class Black extends MessageDispatcher {
         self.__update(x);
       });
     });
-
-    // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false)
-      Debug.info('Fixed time-step is disabled, some systems may not work.');
   }
 
   /**
@@ -396,8 +402,6 @@ class Black extends MessageDispatcher {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
     this.constructor.instance = this;
 
-    const self = this;
-
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = this.mPaused = false;
 
@@ -409,7 +413,9 @@ class Black extends MessageDispatcher {
     }
 
     if (timestamp < this.mLastFrameTimeMs + this.mMinFrameDelay) {
-      this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+      this.mRAFHandle = window.requestAnimationFrame(x => {
+        this.__update(x);
+      });
       return;
     }
 
@@ -454,8 +460,10 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.mRoot.__render(this.mVideo, this.mUptime, 1, BlendMode.AUTO);
+      this.mVideo.render(this.mRoot, this.mStageRenderer);
       this.mVideo.endFrame();
+
+      this.mFrameNum++;
 
       // TODO: remove uptime
       this.mUptime += dt;
@@ -464,7 +472,9 @@ class Black extends MessageDispatcher {
       this.mIsPanic = false;
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+    this.mRAFHandle = window.requestAnimationFrame(x => {
+      this.__update(x);
+    });
   }
 
   /**
@@ -644,6 +654,11 @@ class Black extends MessageDispatcher {
     });
   }
 
+  onChildrenChanged(child) {
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onChildrenChanged(child);
+  }
+
   /**
    * @protected
    * @param  {GameObject} child
@@ -749,7 +764,6 @@ class Black extends MessageDispatcher {
     return this.mEnableFixedTimeStep;
   }
 
-
   /**
    * Returns True if engine is paused.
    *
@@ -769,11 +783,11 @@ class Black extends MessageDispatcher {
     this.mEnableFixedTimeStep = value;
   }
 
-  dispose() {
-    // todo: call dispose on eveyrthing!
-  }
-
   get magic() {
     return Math.random();
+  }
+
+  get frameNum() {
+    return this.mFrameNum;
   }
 }

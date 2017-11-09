@@ -18,24 +18,32 @@ class Viewport extends MessageDispatcher {
     /** @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
-    this.mContainerElement.style.userSelect = 'none';
-    this.mContainerElement.style.touchAction = 'none';
-    this.mContainerElement.style.overflow = 'hidden';
-    this.mContainerElement.style.cursor = 'auto';
-    this.mContainerElement.style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+    let style = this.mContainerElement.style;
+    style.userSelect = 'none';
+    style.touchAction = 'none';
+    style.overflow = 'hidden';
+    style.cursor = 'auto';
+    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
 
     let size = this.mContainerElement.getBoundingClientRect();
 
     /** @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    window.addEventListener('resize', x=> this.__onResize());
+    this.isTransperent = false;
+    this.backgroundColor = 0x000000;
+
+    window.addEventListener('resize', x => this.__onResize());
   }
 
   __onResize() {
     let size = this.mContainerElement.getBoundingClientRect();
-    this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+    let newSize = new Rectangle(size.left, size.top, size.width, size.height);
 
+    if (this.mSize.equals(newSize) === true)
+      return;
+
+    this.mSize = newSize;
     this.post('resize', this.mSize);
   }
 
@@ -43,7 +51,7 @@ class Viewport extends MessageDispatcher {
    * size - Returns the size of a viewport.
    * @return {Rectangle}
    */
-  get size(){
+  get size() {
     return this.mSize;
   }
 
@@ -51,7 +59,7 @@ class Viewport extends MessageDispatcher {
    * nativeDOM - Retruns the HTML container element the engine runs in.
    * @return {Element}
    */
-  get nativeDOM(){
+  get nativeDOM() {
     return this.mContainerElement;
   }
 

@@ -6,87 +6,83 @@
  */
 /* @echo EXPORT */
 class System extends MessageDispatcher {
-  constructor(){
+  constructor() {
     super();
   }
 
+  /**
+   * onFixedUpdate
+   *
+   * @param {number} dt
+   *
+   * @return {void}
+   */
+  onFixedUpdate(dt) { }
 
   /**
-   * onFixedUpdate - Description
+   * onUpdate
    *
-   * @param {number} dt Description
+   * @param {number} dt
+   * @param {number} t
    *
-   * @return {void} Description
+   * @return {void} 
    */
-  onFixedUpdate(dt){
-  }
-
+  onUpdate(dt, t) { }
 
   /**
-   * onUpdate - Description
+   * onPostUpdate
    *
-   * @param {number} dt Description
-   * @param {number} t Description
+   * @param {number} dt
+   * @param {number} t
    *
-   * @return {void} Description
+   * @return {void}
    */
-  onUpdate(dt, t){
-  }
+  onPostUpdate(dt, t) { }
 
   /**
-   * onPostUpdate - Description
+   * onChildrenAdded
    *
-   * @param {number} dt Description
-   * @param {number} t Description
+   * @param {GameObject} gameObject
    *
-   * @return {void} Description
+   * @return {void}
    */
-  onPostUpdate(dt, t){
-  }
-
+  onChildrenAdded(gameObject) { }
 
   /**
-   * onChildrenAdded - Description
+   * onChildrenRemoved
    *
-   * @param {GameObject} child Description
+   * @param {GameObject} child
    *
-   * @return {void} Description
+   * @return {void}
    */
-  onChildrenAdded(child){
-  }
-
+  onChildrenRemoved(gameObject) { }
 
   /**
-   * onChildrenRemoved - Description
+   * onChildrenRemoved
    *
-   * @param {GameObject} child Description
+   * @param {GameObject} gameObject
    *
-   * @return {void} Description
+   * @return {void}
    */
-  onChildrenRemoved(child){
-  }
-
+  onChildrenChanged(gameObject) { }
 
   /**
-   * onComponentAdded - Description
+   * onComponentAdded
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} gameObject
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void} 
    */
-  onComponentAdded(child, component)
-  {}
-
+  onComponentAdded(child, component) { }
 
   /**
-   * onComponentRemoved - Description
+   * onComponentRemoved
    *
-   * @param {GameObject} child     Description
-   * @param {Component} component Description
+   * @param {GameObject} child
+   * @param {Component} component
    *
-   * @return {void} Description
+   * @return {void}
    */
-  onComponentRemoved(child, component)
-  {}
+  onComponentRemoved(child, component) { }
 }

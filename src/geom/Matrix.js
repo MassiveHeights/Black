@@ -293,27 +293,23 @@ class Matrix {
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
-
+    
     let minX = Number.MAX_VALUE;
     let maxX = -Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
     let maxY = -Number.MAX_VALUE;
+    let m = this._matrix;
     let xx = 0;
     let yy = 0;
     let tmpVector = new Vector();
-
-    // TODO: fix dirty hack. rewrite to use rect
-    //let points = [rect.x, rect.y, rect.x + rect.width, rect.y + rect.height];
 
     /** @type {Array<number>} */
     let points = [rect.x, rect.y, rect.x + rect.width, rect.y, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height];
 
     for (var i = 0; i < points.length; i += 2) {
-      xx = points[i];
-      yy = points[i + 1];
-
-      this.transformXY(xx, yy, tmpVector);
-
+      tmpVector.x = m[0] * points[i] + m[2] * points[i + 1] + m[4];
+      tmpVector.y = m[1] * points[i] + m[3] * points[i + 1] + m[5];
+  
       if (minX > tmpVector.x)
         minX = tmpVector.x;
       if (maxX < tmpVector.x)
@@ -324,8 +320,7 @@ class Matrix {
         maxY = tmpVector.y;
     }
 
-    outRect.set(minX, minY, maxX - minX, maxY - minY);
-    return outRect;
+    return outRect.set(minX, minY, maxX - minX, maxY - minY);
   }
 
   /**
@@ -451,6 +446,16 @@ class Matrix {
     return matrix.copyTo(this);
   }
 
+  exactEquals(matrix) {
+    if (!matrix)
+    return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;
+    
+    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
+  }
+
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
@@ -459,10 +464,11 @@ class Matrix {
    * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {
-    let a = this._matrix;
-    let b = matrix._matrix;
     if (!matrix)
       return false;
+
+    let a = this._matrix;
+    let b = matrix._matrix;    
 
     return (Math.abs(a[0] - b[0]) < epsilon) && (Math.abs(a[1] - b[1]) < epsilon) && (Math.abs(a[2] - b[2]) < epsilon) &&
       (Math.abs(a[3] - b[3]) < epsilon) && (Math.abs(a[4] - b[4]) < epsilon) && (Math.abs(a[5] - b[5]) < epsilon);

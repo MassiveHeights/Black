@@ -99,6 +99,12 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
+     * @type {Matrix}
+     */
+    this.mWorldTransformInversed = new Matrix();
+
+    /**
+     * @private
      * @type {DirtyFlag}
      */
     this.mDirty = DirtyFlag.DIRTY;
@@ -117,12 +123,6 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
-     * @type {number}
-     */
-    this.mIndex = 0;
-
-    /**
-     * @private
      * @type {boolean}
      */
     this.mAdded = false;
@@ -138,6 +138,12 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mNumComponentsRemoved = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mDirtyFrameNum = 0;
   }
 
   /**
@@ -147,6 +153,24 @@ class GameObject extends MessageDispatcher {
    */
   get id() {
     return this.mId;
+  }
+
+  /**
+   * Note: Make sure to apply all changes to this game object before checking for static.
+   */
+  checkStatic(includeChildren = true) {
+    if (includeChildren === false)
+      return this.mDirtyFrameNum < Black.instance.frameNum - 1;
+
+    let isDynamic = false;
+    GameObject.forEach(this, x => {
+      if (x.mDirtyFrameNum >= Black.instance.frameNum - 1) {
+        isDynamic = true;
+        return true;
+      }
+    });
+
+    return !isDynamic;
   }
 
   /**
@@ -164,7 +188,6 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   onRemoved() { }
-
 
   /**
    * Sugar method for adding child GameObjects or Components in a simple manner.
@@ -262,8 +285,12 @@ class GameObject extends MessageDispatcher {
       return child;
 
     // NOTE: systems needs to know when trees changes
-    child.removeFromParent();
-    this.addChildAt(child, index);
+    this.mChildren.splice(ix, 1);
+    this.mChildren.splice(index, 0, child);
+
+    if (this.root !== null)
+      Black.instance.onChildrenChanged(child);
+
     this.setTransformDirty();
 
     return child;
@@ -272,16 +299,11 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes this GameObject instance from its parent.
    *
-   * @param {boolean} [dispose=false]
-   *
    * @return {void}
    */
-  removeFromParent(dispose = false) {
+  removeFromParent() {
     if (this.mParent !== null)
       this.mParent.removeChild(this);
-
-    if (dispose)
-      this.dispose();
 
     this.setTransformDirty();
   }
@@ -290,11 +312,10 @@ class GameObject extends MessageDispatcher {
    * Removes specified child GameObject instance from children.
    *
    * @param {GameObject} child GameObject instance to remove.
-   * @param {boolean} [dispose=false]
    *
    * @return {GameObject} The GameObject instance that you pass in the child parameter.
    */
-  removeChild(child, dispose) {
+  removeChild(child) {
     let ix = this.mChildren.indexOf(child);
 
     if (ix < 0)
@@ -324,11 +345,10 @@ class GameObject extends MessageDispatcher {
    * Removes GameObjects instance from specified index.
    *
    * @param {number} index Description
-   * @param {boolean} [dispose=false]
    *
    * @return {GameObject} The removed GameObject instance.
    */
-  removeChildAt(index, dispose) {
+  removeChildAt(index) {
     if (index < 0 || index > this.numChildren)
       throw new Error('Child index is out of bounds.');
 
@@ -341,9 +361,6 @@ class GameObject extends MessageDispatcher {
 
     if (hadRoot)
       Black.instance.onChildrenRemoved(child);
-
-    if (dispose)
-      child.dispose();
 
     this.setTransformDirty();
 
@@ -497,6 +514,12 @@ class GameObject extends MessageDispatcher {
     return this.mWorldTransform;
   }
 
+  /**
+   * @ignore
+   * @param {Matrix} value
+   *
+   * @return {void}
+   */
   set worldTransformation(matrix) {
     const PI_Q = Math.PI / 4.0;
 
@@ -519,8 +542,8 @@ class GameObject extends MessageDispatcher {
     if (skewY != skewY)
       skewY = 0.0;
 
-    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ?  d / Math.cos(skewX) : -c / Math.sin(skewX);
-    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ?  a / Math.cos(skewY) :  b / Math.sin(skewY);
+    this.mScaleY = (skewX > -PI_Q && skewX < PI_Q) ? d / Math.cos(skewX) : -c / Math.sin(skewX);
+    this.mScaleX = (skewY > -PI_Q && skewY < PI_Q) ? a / Math.cos(skewY) : b / Math.sin(skewY);
 
     if (MathEx.equals(skewX, skewY)) {
       this.mRotation = skewX;
@@ -538,8 +561,13 @@ class GameObject extends MessageDispatcher {
    * @return {Matrix}
    */
   get worldTransformationInversed() {
-    // TODO: optimize, cache
-    return this.worldTransformation.clone().invert();
+    if ((this.mDirty & DirtyFlag.WORLD_INV)) {
+      this.mDirty ^= DirtyFlag.WORLD_INV;
+
+      this.worldTransformation.copyTo(this.mWorldTransformInversed).invert();
+    }
+
+    return this.mWorldTransformInversed;
   }
 
   /**
@@ -678,32 +706,13 @@ class GameObject extends MessageDispatcher {
   onPostUpdate(dt) { }
 
   /**
-   * @ignore
-   * @param {VideoNullDriver} video   *
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    this.onRender(video, time);
-
-    let child = null;
-    let childLen = this.mChildren.length;
-    for (let i = 0; i < childLen; i++) {
-      child = this.mChildren[i];
-      child.__render(video, time, parentAlpha);
-    }
-  }
-
-  /**
    * @protected
-   * @param {VideoNullDriver} video Description
-   * @param {number} time  Description
+   * @param {VideoNullDriver} driver
+   * @param {Renderer} parentRenderer
    *
    * @return {void}
    */
-  onRender(video, time) { }
+  onRender(driver, parentRenderer) { }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -741,7 +750,7 @@ class GameObject extends MessageDispatcher {
     // TODO: use wtInversed instead
     if (space != null) {
       matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformation.clone().invert());
+      matrix.prepend(space.worldTransformationInversed);
     }
 
     let bounds = new Rectangle();
@@ -756,6 +765,14 @@ class GameObject extends MessageDispatcher {
 
     return outRect;
   }
+
+  get localBounds() {
+    return this.getBounds(this, false);
+  }
+
+  get bounds() {
+    return this.getBounds(this, true);
+  }  
 
   /**
    * Sets the object transform in one line.
@@ -942,8 +959,8 @@ class GameObject extends MessageDispatcher {
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotX = Rectangle.__cache.width * ax;
-    this.mPivotY = Rectangle.__cache.height * ay;
+    this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
+    this.mPivotY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
     this.setTransformDirty();
 
     return this;
@@ -1264,9 +1281,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
+        x.mDirtyFrameNum = Black.instance.frameNum;
       });
     } else {
       this.mDirty |= flag;
+      this.mDirtyFrameNum = Black.instance.frameNum;
     }
   }
 
@@ -1279,15 +1298,12 @@ class GameObject extends MessageDispatcher {
    */
   setTransformDirty() {
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER, true);
   }
 
-  /**
-   * @ignore
-   *
-   * @return {void}
-   */
-  dispose() { }
+  setRenderDirty() {
+    this.setDirty(DirtyFlag.RENDER, true);
+  }
 
   // TODO: rename method
   /**
@@ -1507,10 +1523,17 @@ class GameObject extends MessageDispatcher {
     if (gameObject == null)
       gameObject = Black.instance.root;
 
-    action(gameObject);
+    let r = action(gameObject);
+    if (r === true)
+      return;
 
-    for (let i = 0; i < gameObject.numChildren; i++)
-      GameObject.forEach(gameObject.getChildAt(i), action);
+    for (let i = 0; i < gameObject.mChildren.length; i++) {
+      r = GameObject.forEach(gameObject.mChildren[i], action);
+      if (r === true)
+        return;
+    }
+
+    return r;
   }
 
 
@@ -1573,11 +1596,22 @@ class GameObject extends MessageDispatcher {
 GameObject.ID = 0;
 
 /**
+ * @private
+ * @type {boolean}
+ * @nocollapse
+ */
+GameObject.IS_ANY_DIRTY = true;
+
+/**
  * @enum {number}
  */
 /* @echo EXPORT */
 var DirtyFlag = {
+  CLEAN: 0,
   LOCAL: 1,
   WORLD: 2,
+  WORLD_INV: 4,
+  RENDER: 8,
+  RENDER_CACHE: 16,
   DIRTY: 0xffffff
 };

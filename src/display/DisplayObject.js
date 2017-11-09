@@ -19,96 +19,78 @@ class DisplayObject extends GameObject {
      * @public
      * @type {string}
      */
-    this.blendMode = BlendMode.NORMAL;
+    this.mBlendMode = BlendMode.AUTO;
 
     /**
      * @private
      * @type {boolean}
      */
     this.mVisible = true;
-    
-    this.pluginName = WebGLTexPlugin.name;
-    this.vertexData = [];
-    this.tint = 0xffffff;
+
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mClipRect = null;
+
+    /**
+     * @private
+     * @type {Renderer|null} */
+    this.mRenderer = this.getRenderer();
   }
 
-  /**
-   * @ignore
-   * @param {VideoNullDriver} video
-   * @param {number} time
-   * @param {number} parentAlpha
-   *
-   * @return {void}
-   */
-  __render(video, time, parentAlpha) {
-    if (this.mVisible === false)
-      return;
-    
-    this.onRender(video, time);
-
-    let worldAlpha = parentAlpha * this.mAlpha;
-
-    let child = null;
-    for (var i = 0; i < this.mChildren.length; i++) {
-      child = this.mChildren[i];
-      child.__render(video, time, worldAlpha);
-    }
+  getRenderer() {
+    return Black.instance.video.getRenderer('DisplayObject');
   }
 
-  refreshVertexData() {
-    const vertexData = this.vertexData;
-    const transform = this.worldTransformation.value;
-    const a = transform[0];
-    const b = transform[1];
-    const c = transform[2];
-    const d = transform[3];
-    const tx = transform[4];
-    const ty = transform[5];
-    const texture = this.mTexture;
-    const region = texture.mRegion;
-    const w = region.width;
-    const h = region.height;
+  onGetLocalBounds(outRect = undefined) {
+    outRect = outRect || new Rectangle();
+    return outRect.set(0, 0, 0, 0);
+  }
 
-    if (texture.isTrimmed) {
-      const untrimmedRegion = texture.untrimmedRect;
-      const left = untrimmedRegion.x;
-      const top = untrimmedRegion.y;
-      const right = left + w;
-      const bottom = top + h;
+  getBounds(space = undefined, includeChildren = true, outRect = undefined) {
+    outRect = outRect || new Rectangle();
 
-      // left top
-      vertexData[0] = a * left + c * top + tx;
-      vertexData[1] = d * top + b * left + ty;
+    let matrix = this.worldTransformation;
 
-      // right top
-      vertexData[2] = a * right + c * top + tx;
-      vertexData[3] = d * top + b * right + ty;
-
-      // left bottom
-      vertexData[4] = a * left + c * bottom + tx;
-      vertexData[5] = d * bottom + b * left + ty;
-
-      // right bottom
-      vertexData[6] = a * right + c * bottom + tx;
-      vertexData[7] = d * bottom + b * right + ty;
-    } else {
-
-      // left top
-      vertexData[0] = tx;
-      vertexData[1] = ty;
-
-      // right top
-      vertexData[2] = a * w + tx;
-      vertexData[3] = b * w + ty;
-
-      // left bottom
-      vertexData[4] = c * h + tx;
-      vertexData[5] = d * h + ty;
-
-      // right bottom
-      vertexData[6] = a * w + c * h + tx;
-      vertexData[7] = d * h + b * w + ty;
+    // TODO: optimize, check if space == null, space == this, space == parent
+    // TODO: use wtInversed instead
+    if (space != null) {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
     }
+
+    let bounds = new Rectangle();
+    this.onGetLocalBounds(bounds);
+
+    matrix.transformRect(bounds, bounds);
+    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    if (this.mClipRect !== null)
+      return outRect;
+
+    if (includeChildren)
+      for (let i = 0; i < this.numChildren; i++)
+        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+
+    return outRect;
+  }
+  
+  onRender(driver, parentRenderer) {
+    let renderer = this.mRenderer;
+
+    if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.transform = this.worldTransformation;
+      renderer.alpha = this.mAlpha * parentRenderer.alpha;
+      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
+      renderer.visible = this.mVisible;
+      renderer.dirty = this.mDirty;
+      renderer.clipRect = this.mClipRect;
+
+      this.mDirty ^= DirtyFlag.RENDER;
+    }
+
+    return driver.registerRenderer(renderer);
   }
 
   /**
@@ -126,9 +108,12 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
-    this.mAlpha = MathEx.clamp(value, 0, 1);
-  }
+    if (this.mAlpha === MathEx.clamp(value, 0, 1))
+      return;
 
+    this.mAlpha = MathEx.clamp(value, 0, 1);
+    this.setRenderDirty();
+  }
 
   /**
    * Gets/Sets visibility of the object.
@@ -139,13 +124,40 @@ class DisplayObject extends GameObject {
     return this.mVisible;
   }
 
-
   /**
    * @ignore
    * @param {boolean} value
    * @return {void}
    */
   set visible(value) {
+    if (this.mVisible === value)
+      return;
+
     this.mVisible = value;
+    this.setRenderDirty();
+  }
+
+  get blendMode() {
+    return this.mBlendMode;
+  }
+
+  set blendMode(value) {
+    if (this.mBlendMode === value)
+      return;
+
+    this.mBlendMode = value;
+    this.setRenderDirty();
+  }
+
+  get clipRect() {
+    return this.mClipRect;
+  }
+
+  set clipRect(value) {
+    if (this.mClipRect === value)
+      return;
+
+    this.mClipRect = value;
+    this.setRenderDirty();
   }
 }

@@ -1,11 +1,3 @@
-// TODO:
-// [_] Do not handle is loaded or not.
-// Texture shall not be responsible for loading itself.
-// We have TextureAsset for it.
-// native size - always the size of physical texture
-// source size - the original size of a texture to
-//
-
 /**
  * A number scatter for defining a range in 2D space.
  *
@@ -16,9 +8,9 @@
 class Texture {
   /**
    * Creates new Texture instance.
-   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} nativeTexture A source of the texture.
-   * @param  {Rectangle=} region = undefined                                     A region to be drawn.
-   * @param  {Rectangle=} untrimmedRect = undefined                              Actual size of a texture when not trimmed.
+   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|null} nativeTexture A source of the texture.
+   * @param  {Rectangle|null} region = undefined                                      A region to be drawn.
+   * @param  {Rectangle|null} untrimmedRect = undefined                               Actual size of a texture when not trimmed.
    */
   constructor(nativeTexture, region, untrimmedRect) {
     /**
@@ -45,11 +37,13 @@ class Texture {
      */
     this.mId = ++Texture.__ID;
 
-    if (region === undefined) {
-      if(nativeTexture instanceof HTMLImageElement)
-        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+    this.mValid = nativeTexture != null;
+
+    if (region == null) {
+      if (nativeTexture != null)
+        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth || nativeTexture.width, nativeTexture.naturalHeight || nativeTexture.height);
       else
-        this.mRegion = new Rectangle(0, 0, nativeTexture.width, nativeTexture.height);
+        this.mRegion = new Rectangle();
     } else {
       this.mRegion = /** @type {Rectangle} */ (region);
       this.mIsSubtexture = true;
@@ -70,21 +64,31 @@ class Texture {
      */
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
-    /**
-     * @private
-     * @type {boolean}
-     */
-    this.mIsLoaded = true;
+    if (nativeTexture != null) {
+      this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
+      this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+    } else {
+      this.nativeWidth = 0;
+      this.nativeHeight = 0;
+    }
 
-    // TODO: refactor, make private
+    // this.coord = new Uint32Array(4);
+    // this.refreshCoord();
+
+    // this._vSlotWebGL = -1;  // virtual slot for batch calculations
+    // this.premultiplyAlpha = true;
+  }
+
+  update(nativeTexture) {
+    // TODO: refactor dups
+    this.mTexture = nativeTexture;
+
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
 
-    this.coord = new Uint32Array(4);
-    this.refreshCoord();
-    
-    this._vSlotWebGL = -1;  // virtual slot for batch calculations
-    this.premultiplyAlpha = true;
+    this.mRegion = new Rectangle(0, 0, this.nativeWidth, this.nativeHeight);
+    this.mUntrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
+    this.mValid = true;
   }
 
   refreshCoord() {
@@ -110,6 +114,7 @@ class Texture {
     coord[2] = (((y2 * 65535) & 0xffff) << 16) | ((x2 * 65535) & 0xffff);
     coord[3] = (((y3 * 65535) & 0xffff) << 16) | ((x3 * 65535) & 0xffff);
   }
+
 
   /**
    * Returns the unique id of this texture.
@@ -138,16 +143,6 @@ class Texture {
     return this.mIsSubtexture;
   }
 
-  // TODO: if we update texture we have to nofity everything, send signal
-  // update(nativeTexture = null, region = null, source = null, crop = null){
-  // }
-
-  // render width
-  // render height
-  // croppedWidth, croppedHeight
-  // width, height
-  //
-
   /**
    * Returns a Rect object representing the untrimmed size and position of this
    * texture withing other texture if so.
@@ -164,7 +159,7 @@ class Texture {
    * @return {number}
    */
   get width() {
-    if (this.mRegion)
+    if (this.mRegion != null)
       return this.mRegion.width;
 
     return this.mTexture.naturalWidth;
@@ -176,7 +171,7 @@ class Texture {
    * @return {number}
    */
   get height() {
-    if (this.mRegion)
+    if (this.mRegion != null)
       return this.mRegion.height;
 
     return this.mTexture.naturalHeight;
@@ -200,13 +195,8 @@ class Texture {
     return this.mTexture;
   }
 
-  /**
-   * True if fully loaded and ready.
-   *
-   * @return {boolean}
-   */
-  get isLoaded() {
-    return this.mIsLoaded;
+  get isValid() {
+    return this.mValid;
   }
 
   /**
