@@ -37,27 +37,27 @@ class DOMDriver extends VideoNullDriver {
     };
   }
 
-  render(driver) {
-    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
-      let renderer = this.mRenderers[i];
+  // render(driver) {
+  //   for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
+  //     let renderer = this.mRenderers[i];
 
-      renderer.render(driver);
-      renderer.dirty = 0;
+  //     renderer.render(driver);
+  //     renderer.dirty = 0;
 
-      if (renderer.endPassRequired === true) {
-        this.mEndPassStack.push(renderer);
-        this.mEndPassRenderer = renderer;
-        renderer.endPassRequired = false;
-      }
+  //     if (renderer.endPassRequired === true) {
+  //       this.mEndPassStack.push(renderer);
+  //       this.mEndPassRenderer = renderer;
+  //       renderer.endPassRequired = false;
+  //     }
 
-      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
-        this.mEndPassRenderer.childrenRendered(driver);
+  //     if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
+  //       this.mEndPassRenderer.childrenRendered(driver);
 
-        this.mEndPassStack.pop();
-        this.mEndPassRenderer = null;
-      }
-    }
-  }
+  //       this.mEndPassStack.pop();
+  //       this.mEndPassRenderer = null;
+  //     }
+  //   }
+  // }
 
   registerRenderer(renderer) {
     this.mRenderers.push(renderer);

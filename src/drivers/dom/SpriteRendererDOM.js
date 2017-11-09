@@ -67,8 +67,8 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
         style.backgroundPosition = vBackgroundPosition;
     }
 
-    if (this.mGlobalAlpha !== this.mOpacityCache)
-      style.opacity = this.mOpacityCache = this.mGlobalAlpha;
+    if (this.mOpacityCache !== this.alpha)
+      style.opacity = this.mOpacityCache = this.alpha;
 
     return true;
   }
