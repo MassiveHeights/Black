@@ -1,8 +1,9 @@
 /* @echo EXPORT */
 class RenderTexture extends Texture {
   constructor(width, height) {
-    this.renderTarget = null; // will be defined during 
-    //renderTarget.resize(
-    //this.resize(width, height);
+    super();
+
+    this.renderTarget = Black.instance.video.getRenderTarget(width, height);
+    this.update(this.renderTarget.native);
   }
 }

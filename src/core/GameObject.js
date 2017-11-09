@@ -158,8 +158,19 @@ class GameObject extends MessageDispatcher {
   /**
    * Note: Make sure to apply all changes to this game object before checking for static.
    */
-  get isStatic() {
-    return this.mDirtyFrameNum < Black.instance.frameNum;
+  checkStatic(includeChildren = true) {
+    if (includeChildren === false)
+      return this.mDirtyFrameNum < Black.instance.frameNum - 1;
+
+    let isDynamic = false;
+    GameObject.forEach(this, x => {
+      if (x.mDirtyFrameNum >= Black.instance.frameNum - 1) {
+        isDynamic = true;
+        return true;
+      }
+    });
+
+    return !isDynamic;
   }
 
   /**
@@ -755,9 +766,13 @@ class GameObject extends MessageDispatcher {
     return outRect;
   }
 
-  get bounds() {
+  get localBounds() {
     return this.getBounds(this, false);
   }
+
+  get bounds() {
+    return this.getBounds(this, true);
+  }  
 
   /**
    * Sets the object transform in one line.
@@ -944,8 +959,8 @@ class GameObject extends MessageDispatcher {
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotX = Rectangle.__cache.width * ax;
-    this.mPivotY = Rectangle.__cache.height * ay;
+    this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
+    this.mPivotY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
     this.setTransformDirty();
 
     return this;
@@ -1508,10 +1523,17 @@ class GameObject extends MessageDispatcher {
     if (gameObject == null)
       gameObject = Black.instance.root;
 
-    action(gameObject);
+    let r = action(gameObject);
+    if (r === true)
+      return;
 
-    for (let i = 0; i < gameObject.numChildren; i++)
-      GameObject.forEach(gameObject.getChildAt(i), action);
+    for (let i = 0; i < gameObject.mChildren.length; i++) {
+      r = GameObject.forEach(gameObject.mChildren[i], action);
+      if (r === true)
+        return;
+    }
+
+    return r;
   }
 
 
@@ -1574,10 +1596,18 @@ class GameObject extends MessageDispatcher {
 GameObject.ID = 0;
 
 /**
+ * @private
+ * @type {boolean}
+ * @nocollapse
+ */
+GameObject.IS_ANY_DIRTY = true;
+
+/**
  * @enum {number}
  */
 /* @echo EXPORT */
 var DirtyFlag = {
+  CLEAN: 0,
   LOCAL: 1,
   WORLD: 2,
   WORLD_INV: 4,

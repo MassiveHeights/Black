@@ -68,7 +68,7 @@
     "src/scatters/Scatter.js",
     "src/scatters/FloatScatter.js",
     "src/scatters/VectorScatter.js",
-    "src/scatters/CurveScatter.js",
+    "src/scatters/FloatCurveScatter.js",
     "src/particles/actions/Action.js",
     "src/particles/actions/Acceleration.js",
     "src/particles/actions/AlphaOverLife.js",

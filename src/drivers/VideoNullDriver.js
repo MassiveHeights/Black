@@ -35,6 +35,7 @@ class VideoNullDriver {
     this.mClientHeight = height;
 
     /**
+     * Actual object - do not change
      * @private
      * @type {Matrix}
      */
@@ -44,9 +45,10 @@ class VideoNullDriver {
 
     this.mRenderers = [];
     this.mSkipChildren = false;
-    this.mEndPassStack = [];
     this.mEndPassRenderer = null;
     this.mRendererIndex = 0;
+    this.mLastRenderTexture = null;
+    this.mCurrentRenderTexture = null;
 
     /**
      * @private
@@ -67,11 +69,31 @@ class VideoNullDriver {
     return new this.mRendererMap[type]();
   }
 
-  getRenderTarget() {
+  getRenderTarget(width, height) {
     throw new Error('Not Implemented Error');
   }
-  
-  render(gameObject, parentRenderer) {
+
+  render(gameObject, parentRenderer, renderTexture) {
+    let numEndClipsRequired = 0;
+    if (renderTexture != null) {
+      this.mLastRenderTexture = this.mCtx;
+      this.mCtx = renderTexture.renderTarget.context;
+
+      // collect parents alpha, blending, clipping and masking
+      if (parentRenderer === null) {
+        parentRenderer = new Renderer();
+        parentRenderer.alpha = 1;
+        parentRenderer.blendMode = BlendMode.AUTO;
+
+        this.mGlobalAlpha = -1;
+        this.mGlobalBlendMode = null;
+        this.mRenderers.splice(0, this.mRenderers.length);
+        this.mSkipChildren = false;
+      }
+
+      numEndClipsRequired = this.__collectParentRenderables(gameObject, parentRenderer);
+    }
+
     this.mRendererIndex = 0;
 
     this.__collectRenderables(gameObject, parentRenderer);
@@ -79,20 +101,39 @@ class VideoNullDriver {
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
+      this.setTransform(renderer.getTransform());
+      this.globalAlpha = renderer.getAlpha();
+      this.globalBlendMode = renderer.getBlendMode();
+
+      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
+        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
+
       renderer.render(this);
       renderer.dirty = 0;
 
       if (renderer.endPassRequired === true) {
-        this.mEndPassStack.push(renderer);
         this.mEndPassRenderer = renderer;
       }
 
       if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
-        this.mEndPassRenderer.childrenRendered(this);
+        this.endClip();
 
-        this.mEndPassStack.pop();
+        this.mEndPassRenderer.endPassRequiredAt = -1;
+        this.mEndPassRenderer.endPassRequired = false;
         this.mEndPassRenderer = null;
       }
+    }
+
+    if (renderTexture != null) {
+      for (let i = 0; i < numEndClipsRequired; i++)
+        this.endClip();
+
+      this.mCtx = this.mLastRenderTexture;
+
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+      this.mRenderers.splice(0, this.mRenderers.length);
+      this.mSkipChildren = false;
     }
   }
 
@@ -100,6 +141,9 @@ class VideoNullDriver {
     let renderer = gameObject.onRender(this, parentRenderer);
 
     if (renderer != null) {
+      if (renderer.clipRect !== null)
+        renderer.endPassRequired = true;
+
       parentRenderer = renderer;
       this.mRendererIndex++;
     }
@@ -113,6 +157,39 @@ class VideoNullDriver {
 
     if (renderer != null && renderer.endPassRequired === true)
       renderer.endPassRequiredAt = this.mRendererIndex - 1;
+  }
+
+  __collectParentRenderables(gameObject, parentRenderer) {
+    let numClippedParents = 0;
+
+    let current = gameObject;
+    if (current === null)
+      return numClippedParents;
+
+    let parents = [];
+
+    for (current = current.parent; current !== null; current = current.parent)
+      parents.splice(0, 0, current);
+
+    for (let i = 0; i < parents.length; i++) {
+      let parent = parents[i];
+
+      let oldDirty = parent.mDirty;
+      let renderer = parent.onRender(this, parentRenderer);
+      parent.mDirty = oldDirty;
+
+      if (renderer != null) {
+        if (renderer.clipRect !== null)
+          numClippedParents++;
+
+        parentRenderer = renderer;
+      }
+
+      if (this.mSkipChildren === true)
+        return numClippedParents;
+    }
+
+    return numClippedParents;
   }
 
   registerRenderer(renderer) {
@@ -173,7 +250,6 @@ class VideoNullDriver {
    */
   endFrame() {
     this.mRenderers.splice(0, this.mRenderers.length);
-    this.mEndPassStack.splice(0, this.mEndPassStack.length);
   }
 
   /**

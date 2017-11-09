@@ -27,7 +27,7 @@ class CanvasDriver extends VideoNullDriver {
   getRenderTarget(width, height) {
     return new RenderTargetCanvas(width, height);
   }
-  
+
   /**
    * @private
    * @return {void}
@@ -42,7 +42,7 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
   }
-  
+
   /**
    * @private
    * @param {Message} msg
@@ -53,11 +53,17 @@ class CanvasDriver extends VideoNullDriver {
   __onResize(msg, rect) {
     super.__onResize(msg, rect);
 
+    // canvas will reset state after changing size
+    this.mGlobalBlendMode = null;
+    this.mGlobalAlpha = -1;
     this.mCtx.canvas.width = this.mClientWidth;
     this.mCtx.canvas.height = this.mClientHeight;
   }
 
   drawTexture(texture) {
+    if (texture.isValid === false)
+      return;
+
     const w = texture.width;
     const h = texture.height;
     const ox = texture.untrimmedRect.x;
@@ -70,10 +76,11 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.save();
     this.mCtx.beginPath();
     this.mCtx.rect(clipRect.x + px, clipRect.y + py, clipRect.width, clipRect.height);
+    
     this.mCtx.clip();
   }
 
-  endClip() {    
+  endClip() {
     this.mCtx.restore();
   }
 
@@ -84,11 +91,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   setTransform(m) {
-    //TODO: does not work as expected
-    // if (this.mTransform.exactEquals(m) === true)
-    //   return;
-
-    super.setTransform(m);
+    this.mTransform = m;
 
     const v = m.value;
     this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
@@ -131,6 +134,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   clear() {
+    // TODO: clear only changed region
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
   }

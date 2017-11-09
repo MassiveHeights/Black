@@ -29,13 +29,17 @@ class Viewport extends MessageDispatcher {
     /** @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    window.addEventListener('resize', x=> this.__onResize());
+    window.addEventListener('resize', x => this.__onResize());
   }
 
   __onResize() {
     let size = this.mContainerElement.getBoundingClientRect();
-    this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+    let newSize = new Rectangle(size.left, size.top, size.width, size.height);
 
+    if (this.mSize.equals(newSize) === true)
+      return;
+
+    this.mSize = newSize;
     this.post('resize', this.mSize);
   }
 
@@ -43,7 +47,7 @@ class Viewport extends MessageDispatcher {
    * size - Returns the size of a viewport.
    * @return {Rectangle}
    */
-  get size(){
+  get size() {
     return this.mSize;
   }
 
@@ -51,7 +55,7 @@ class Viewport extends MessageDispatcher {
    * nativeDOM - Retruns the HTML container element the engine runs in.
    * @return {Element}
    */
-  get nativeDOM(){
+  get nativeDOM() {
     return this.mContainerElement;
   }
 

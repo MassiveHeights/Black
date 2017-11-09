@@ -1,11 +1,3 @@
-// TODO:
-// [_] Do not handle is loaded or not.
-// Texture shall not be responsible for loading itself.
-// We have TextureAsset for it.
-// native size - always the size of physical texture
-// source size - the original size of a texture to
-//
-
 /**
  * A number scatter for defining a range in 2D space.
  *
@@ -16,9 +8,9 @@
 class Texture {
   /**
    * Creates new Texture instance.
-   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} nativeTexture A source of the texture.
-   * @param  {Rectangle=} region = undefined                                     A region to be drawn.
-   * @param  {Rectangle=} untrimmedRect = undefined                              Actual size of a texture when not trimmed.
+   * @param  {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement|null} nativeTexture A source of the texture.
+   * @param  {Rectangle|null} region = undefined                                      A region to be drawn.
+   * @param  {Rectangle|null} untrimmedRect = undefined                               Actual size of a texture when not trimmed.
    */
   constructor(nativeTexture, region, untrimmedRect) {
     /**
@@ -45,11 +37,13 @@ class Texture {
      */
     this.mId = ++Texture.__ID;
 
-    if (region === undefined) {
-      if (nativeTexture instanceof HTMLImageElement)
-        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
+    this.mValid = nativeTexture != null;
+
+    if (region == null) {
+      if (nativeTexture != null)
+        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth || nativeTexture.width, nativeTexture.naturalHeight || nativeTexture.height);
       else
-        this.mRegion = new Rectangle(0, 0, nativeTexture.width, nativeTexture.height);
+        this.mRegion = new Rectangle();
     } else {
       this.mRegion = /** @type {Rectangle} */ (region);
       this.mIsSubtexture = true;
@@ -70,9 +64,13 @@ class Texture {
      */
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
-    // TODO: refactor, make private
-    this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
-    this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+    if (nativeTexture != null) {
+      this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
+      this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+    } else {
+      this.nativeWidth = 0;
+      this.nativeHeight = 0;
+    }
 
     // this.coord = new Uint32Array(4);
     // this.refreshCoord();
@@ -85,13 +83,12 @@ class Texture {
     // TODO: refactor dups
     this.mTexture = nativeTexture;
 
-    if (nativeTexture instanceof HTMLImageElement)
-      this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth, nativeTexture.naturalHeight);
-    else
-      this.mRegion = new Rectangle(0, 0, nativeTexture.width, nativeTexture.height);
-
     this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
     this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+
+    this.mRegion = new Rectangle(0, 0, this.nativeWidth, this.nativeHeight);
+    this.mUntrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
+    this.mValid = true;
   }
 
   refreshCoord() {
@@ -162,7 +159,7 @@ class Texture {
    * @return {number}
    */
   get width() {
-    if (this.mRegion)
+    if (this.mRegion != null)
       return this.mRegion.width;
 
     return this.mTexture.naturalWidth;
@@ -174,7 +171,7 @@ class Texture {
    * @return {number}
    */
   get height() {
-    if (this.mRegion)
+    if (this.mRegion != null)
       return this.mRegion.height;
 
     return this.mTexture.naturalHeight;
@@ -196,6 +193,10 @@ class Texture {
    */
   get native() {
     return this.mTexture;
+  }
+
+  get isValid() {
+    return this.mValid;
   }
 
   /**

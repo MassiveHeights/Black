@@ -10,26 +10,28 @@ class Renderer {
     this.pivotY = 0;
     this.dirty = DirtyFlag.DIRTY;
 
-    this.mClipRect = null;
+    this.clipRect = null;
 
     this.endPassRequiredAt = -1;
     this.endPassRequired = false;
+    //this.isBatchable = null;
   }
 
   render(driver) { }
-
-  childrenRendered(driver) { }
 
   get isRenderable() {
     return this.alpha > 0 && this.visible === true;
   }
 
-  get clipRect() {
-    return this.mClipRect;
+  getTransform() {
+    return this.transform;
   }
 
-  set clipRect(value) {
-    this.mClipRect = value;
-    this.endPassRequired = value !== null;
+  getAlpha() {
+    return this.alpha;
+  }
+
+  getBlendMode() {
+    return this.blendMode;
   }
 }

@@ -12,13 +12,6 @@ class EmitterRendererCanvas extends Renderer {
   }
 
   render(driver) {
-    driver.globalBlendMode = this.blendMode;
-
-    if (this.clipRect !== null && this.clipRect.isEmpty === false) {
-      driver.setTransform(this.transform);
-      driver.beginClip(this.clipRect);
-    }
-
     const plength = this.particles.length;
 
     let localTransform = this.__tmpLocal;

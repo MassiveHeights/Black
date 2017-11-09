@@ -18,8 +18,6 @@ class TextRenderer extends Renderer {
     this.__context = this.__canvas.getContext('2d');
     this.__context.lineJoin = 'round';
     this.__context.miterLimit = 2;
-    // this.canvas = document.createElement('canvas');
-    // this.context = cvs.getContext('2d');
   }
 
   __renderLines(ctx, driver, lines, fontMetrics, isStroke = false) {
@@ -37,11 +35,6 @@ class TextRenderer extends Renderer {
 
     let width = this.bounds.width;
     let height = this.bounds.width;
-
-    // if (this.autoSize === false) {
-    //   width = this.fieldWidth;
-    //   height = this.fieldHeight;
-    // }
 
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i];
@@ -110,6 +103,10 @@ class TextRenderer extends Renderer {
       else
         this.texture.update(cvs);
     }
+  }
+
+  getTransform() {
+    const strokeThickness = this.style.strokeThickness;
 
     let fieldXOffset = 0;
     let fieldYOffset = 0;
@@ -129,12 +126,9 @@ class TextRenderer extends Renderer {
     if (strokeThickness !== 0 || this.autoSize === false) {
       this.transform.copyTo(this.__transformCache);
       this.__transformCache.translate(-strokeThickness + fieldXOffset, -strokeThickness + fieldYOffset);
-      driver.setTransform(this.__transformCache);
+      return this.__transformCache;
     } else {
-      driver.setTransform(this.transform);
+      return this.transform;
     }
-
-    driver.globalAlpha = this.alpha;
-    driver.globalBlendMode = this.blendMode;
   }
 }

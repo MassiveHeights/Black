@@ -226,7 +226,7 @@ class Black extends MessageDispatcher {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.NORMAL;
+    this.mStageRenderer.blendMode = BlendMode.AUTO;
   }
 
   /**
@@ -413,7 +413,7 @@ class Black extends MessageDispatcher {
     }
 
     if (timestamp < this.mLastFrameTimeMs + this.mMinFrameDelay) {
-      this.mRAFHandle = window.requestAnimationFrame(x=> {
+      this.mRAFHandle = window.requestAnimationFrame(x => {
         this.__update(x);
       });
       return;
@@ -459,7 +459,7 @@ class Black extends MessageDispatcher {
       this.__internalUpdate(dt);
       this.__internalPostUpdate(dt);
 
-      this.mVideo.beginFrame();      
+      this.mVideo.beginFrame();
       this.mVideo.render(this.mRoot, this.mStageRenderer);
       this.mVideo.endFrame();
 
@@ -472,7 +472,7 @@ class Black extends MessageDispatcher {
       this.mIsPanic = false;
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(x=> {
+    this.mRAFHandle = window.requestAnimationFrame(x => {
       this.__update(x);
     });
   }

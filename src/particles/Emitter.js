@@ -254,10 +254,10 @@ class Emitter extends DisplayObject {
       renderer.isLocal = this.mIsLocal;
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
-
+      
       this.mDirty ^= DirtyFlag.RENDER;
     }
-
+    
     return driver.registerRenderer(renderer);
   }
 
@@ -269,8 +269,8 @@ class Emitter extends DisplayObject {
       this.__create(this.mEmitCount.getValue());
 
     // main update login
-    let alength = this.mActions.length;
-    let plength = this.mParticles.length;
+    const alength = this.mActions.length;
+    const plength = this.mParticles.length;
 
     for (let i = 0; i < alength; i++)
       this.mActions[i].preUpdate(dt);
@@ -294,6 +294,9 @@ class Emitter extends DisplayObject {
 
     for (let j = 0; j < alength; j++)
       this.mActions[j].postUpdate(dt);
+
+    // set dummy dirty flag so unchanged frames can be detected
+    this.setDirty(DirtyFlag.LOCAL, false);
   }
 
   __create(amount) {
