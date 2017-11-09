@@ -18,16 +18,20 @@ class Viewport extends MessageDispatcher {
     /** @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
-    this.mContainerElement.style.userSelect = 'none';
-    this.mContainerElement.style.touchAction = 'none';
-    this.mContainerElement.style.overflow = 'hidden';
-    this.mContainerElement.style.cursor = 'auto';
-    this.mContainerElement.style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+    let style = this.mContainerElement.style;
+    style.userSelect = 'none';
+    style.touchAction = 'none';
+    style.overflow = 'hidden';
+    style.cursor = 'auto';
+    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
 
     let size = this.mContainerElement.getBoundingClientRect();
 
     /** @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+
+    this.isTransperent = false;
+    this.backgroundColor = 0x000000;
 
     window.addEventListener('resize', x => this.__onResize());
   }

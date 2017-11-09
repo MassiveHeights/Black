@@ -76,7 +76,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.save();
     this.mCtx.beginPath();
     this.mCtx.rect(clipRect.x + px, clipRect.y + py, clipRect.width, clipRect.height);
-    
+
     this.mCtx.clip();
   }
 
@@ -137,6 +137,13 @@ class CanvasDriver extends VideoNullDriver {
     // TODO: clear only changed region
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
     this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+
+    let viewport = Black.instance.viewport;
+    if (viewport.isTransperent === false) {
+      this.mCtx.fillStyle = this.hexColorToString(viewport.backgroundColor);
+      this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+    }
+
   }
 
   /**

@@ -192,6 +192,12 @@ class VideoNullDriver {
     return numClippedParents;
   }
 
+  beginClip(clipRect, px, py) {
+  }
+
+  endClip() {
+  }
+
   registerRenderer(renderer) {
     if (renderer.isRenderable === false) {
       this.mSkipChildren = true;
