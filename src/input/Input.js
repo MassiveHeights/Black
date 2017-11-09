@@ -238,8 +238,8 @@ class Input extends System {
 
     // we had no actual events but still we need to know if something were moved
     if (this.mPointerQueue.length === 0) {
-      this.__findTarget(Input.pointerPosition);
-      this.__processInOut(Input.pointerPosition);
+      // this.__findTarget(Input.pointerPosition);
+      // this.__processInOut(Input.pointerPosition);
     }
 
     for (var i = 0; i < this.mPointerQueue.length; i++) {
@@ -253,7 +253,7 @@ class Input extends System {
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
       this.__findTarget(pointerPos);
-      this.__processInOut(Input.pointerPosition);
+      //this.__processInOut(Input.pointerPosition);
       this.__processNativeEvent(nativeEvent, pointerPos, eventType);
     }
 
@@ -263,7 +263,8 @@ class Input extends System {
   }
 
   __findTarget(pos) {
-    let obj = GameObject.hits(Black.instance.root, pos);
+    //let obj = GameObject.hits(Black.instance.root, pos);
+    let obj = Black.instance.root.hitTest(pos);
 
     if (obj === null) {
       this.mTarget = null;
@@ -271,21 +272,8 @@ class Input extends System {
       return;
     }
 
-    let c = obj.getComponent(InputComponent);
-    if (c === null) {
-      this.mTarget = null;
-      this.mTargetComponent = null;
-      return;
-    }
-
-    if (c.touchable === false) {
-      this.mTarget = null;
-      this.mTargetComponent = null;
-      return;
-    }
-
     this.mTarget = obj;
-    this.mTargetComponent = c;
+    this.mTargetComponent = obj.getComponent(InputComponent);
   }
 
   __processNativeEvent(nativeEvent, pos, type) {
@@ -328,10 +316,8 @@ class Input extends System {
       }
       else {
         // send skipping this gameObject
-        if (this.mLockedTarget.mParent !== null && this.mTarget !== null) {
-          console.log('parent');
+        if (this.mLockedTarget.mParent !== null && this.mTarget !== null)
           this.mLockedTarget.mParent.post('~' + type, info);
-        }
       }
     }
   }
@@ -359,7 +345,6 @@ class Input extends System {
   }
 
   __processInOut(pos) {
-
     if (this.mTargetComponent === null) {
       if (this.mLastInTargetComponent !== null)
         this.__postOutMessage();
@@ -540,7 +525,6 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mou
  * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
-
 
 /**
  * Stores additional information about pointer events.

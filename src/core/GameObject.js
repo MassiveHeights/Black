@@ -772,7 +772,7 @@ class GameObject extends MessageDispatcher {
 
   get bounds() {
     return this.getBounds(this, true);
-  }  
+  }
 
   /**
    * Sets the object transform in one line.
@@ -1256,7 +1256,6 @@ class GameObject extends MessageDispatcher {
     return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
   }
 
-
   /**
    * Waits for a speceific message.
    *
@@ -1267,7 +1266,6 @@ class GameObject extends MessageDispatcher {
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
   }
-
 
   /**
    * Marks this GameObject and/or its children elements as dirty.
@@ -1289,7 +1287,6 @@ class GameObject extends MessageDispatcher {
     }
   }
 
-
   /**
    * Marks this GameObject as Local dirty and all children elements as World
    * dirty.
@@ -1303,6 +1300,25 @@ class GameObject extends MessageDispatcher {
 
   setRenderDirty() {
     this.setDirty(DirtyFlag.RENDER, true);
+  }
+
+  set touchable(value) {
+    let c = this.getComponent(InputComponent);
+
+    if (value === true) {
+      if (c === null)
+        this.addComponent(new InputComponent());
+      else
+        c.touchable = true;
+    } else {
+      if (c !== null)
+        this.removeComponent(c);
+    }
+  }
+
+  get touchable() {
+    let c = this.getComponent(InputComponent);
+    return c !== null && c.touchable === true;
   }
 
   // TODO: rename method
@@ -1393,44 +1409,40 @@ class GameObject extends MessageDispatcher {
     return true;
   }
 
-  /**
-   * Checks if GameObject or any of its children elements intersects the given
-   * point, the difference between `hits` and `intersectsWith` that `hits` also
-   * checks for presence of `InputComponent`.
-   *
-   * @param {GameObject} gameObject GameObject to test.
-   * @param {Vector} point          Point to test.
-   *
-   * @return {GameObject|null} Intersecting object or null.
-   */
-  static hits(gameObject, point) {
-    // TODO: add colliders
+  hitTest(point) {
+    let c = this.getComponent(InputComponent);
+    let touchable = c !== null && c.touchable;
+    let insideMask = this.onHitTestMask(point);
 
-    let obj = null;
-    for (let i = gameObject.numChildren - 1; i >= 0; --i) {
-      let child = gameObject.mChildren[i];
+    if (this.visible === false || touchable === false || insideMask === false)
+      return null;
 
-      obj = GameObject.hits(child, point);
-      if (obj != null)
-        return obj;
+    var target = null;
+    var numChildren = this.mChildren.length;
 
-      let c = child.getComponent(InputComponent);
-      let touchable = c !== null && c.touchable;
-      if (touchable && GameObject.intersects(child, point)) {
-        obj = child;
-        break;
-      }
+    for (var i = numChildren - 1; i >= 0; --i) {
+      var child = this.mChildren[i];
+
+      target = child.hitTest(point);
+
+      if (target !== null)
+        return target;
     }
 
-    if (obj === null) {
-      let c = gameObject.getComponent(InputComponent);
-      let touchable = c !== null && c.touchable;
-
-      if (touchable && GameObject.intersects(gameObject, point))
-        return gameObject;
-    }
+    if (this.onHitTest(point) === true)
+      return this;
 
     return null;
+  }
+
+  onHitTest(point) {
+    let tmpVector = new Vector();
+    this.worldTransformationInversed.transformVector(point, tmpVector);
+    return this.getBounds(this, false).containsXY(tmpVector.x, tmpVector.y);
+  }
+  
+  onHitTestMask(point) {
+    return true;
   }
 
   /**

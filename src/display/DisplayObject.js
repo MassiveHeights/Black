@@ -45,6 +45,14 @@ class DisplayObject extends GameObject {
 
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
+
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      outRect.x += this.mPivotX;
+      outRect.y += this.mPivotY;
+      return outRect;
+    }
+
     return outRect.set(0, 0, 0, 0);
   }
 
@@ -66,8 +74,9 @@ class DisplayObject extends GameObject {
     matrix.transformRect(bounds, bounds);
     outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
 
-    if (this.mClipRect !== null)
+    if (this.mClipRect !== null) {
       return outRect;
+    }
 
     if (includeChildren)
       for (let i = 0; i < this.numChildren; i++)
@@ -75,7 +84,7 @@ class DisplayObject extends GameObject {
 
     return outRect;
   }
-  
+
   onRender(driver, parentRenderer) {
     let renderer = this.mRenderer;
 
@@ -91,6 +100,16 @@ class DisplayObject extends GameObject {
     }
 
     return driver.registerRenderer(renderer);
+  }
+
+  onHitTestMask(point) {
+    if (this.mClipRect === null)
+      return true;
+
+    let tmpVector = new Vector();
+    this.worldTransformationInversed.transformVector(point, tmpVector);
+
+    return this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
   }
 
   /**
