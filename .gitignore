@@ -58,3 +58,4 @@ dist-test/*
 dist/*
 dist/**/*.*
 dist
+/package-lock.json
