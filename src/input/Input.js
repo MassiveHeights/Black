@@ -238,8 +238,8 @@ class Input extends System {
 
     // we had no actual events but still we need to know if something were moved
     if (this.mPointerQueue.length === 0) {
-      // this.__findTarget(Input.pointerPosition);
-      // this.__processInOut(Input.pointerPosition);
+      this.__findTarget(Input.pointerPosition);
+      this.__processInOut(Input.pointerPosition);
     }
 
     for (var i = 0; i < this.mPointerQueue.length; i++) {
@@ -253,7 +253,7 @@ class Input extends System {
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
       this.__findTarget(pointerPos);
-      //this.__processInOut(Input.pointerPosition);
+      this.__processInOut(Input.pointerPosition);
       this.__processNativeEvent(nativeEvent, pointerPos, eventType);
     }
 
