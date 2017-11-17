@@ -27,13 +27,11 @@ class Interpolation {
       return (p1 - p0) * t + p0;
     };
 
-    if (k < 0) {
+    if (k < 0)
       return fn(v[0], v[1], f);
-    }
 
-    if (k > 1) {
+    if (k > 1)
       return fn(v[m], v[m - 1], m - f);
-    }
 
     return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
   }
@@ -55,9 +53,8 @@ class Interpolation {
       return fc(n) / fc(i) / fc(n - i);
     };
 
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++)
       b += pow(1 - k, n - i) * pow(k, i) * v[i] * bn(n, i);
-    }
 
     return b;
   }
@@ -73,6 +70,7 @@ class Interpolation {
     let m = v.length - 1;
     let f = m * k;
     let i = Math.floor(f);
+
     let fn = (p0, p1, p2, p3, t) => {
       let v0 = (p2 - p0) * 0.5;
       let v1 = (p3 - p1) * 0.5;
@@ -83,19 +81,15 @@ class Interpolation {
     };
 
     if (v[0] === v[m]) {
-      if (k < 0) {
+      if (k < 0)
         i = Math.floor(f = m * (1 + k));
-      }
 
       return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
     } else {
-      if (k < 0) {
+      if (k < 0)
         return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-      }
-
-      if (k > 1) {
+      else if (k > 1)
         return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-      }
 
       return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
     }
@@ -112,15 +106,13 @@ Interpolation.__factorial = (function() {
   let a = [1];
 
   return function(n) {
-    if (a[n]) {
+    if (a[n])
       return a[n];
-    }
 
     let s = n;
 
-    while (--n) {
+    while (--n)
       s *= n;
-    }
 
     a[n] = s;
     return s;
