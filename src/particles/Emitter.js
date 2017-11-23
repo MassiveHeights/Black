@@ -1,3 +1,6 @@
+// TODO: pretty much the emitter is always dirty and caching should not be applied onto it.
+// TODO: q/a every property
+
 /**
  * Particle emitter.
  *
@@ -494,6 +497,7 @@ class Emitter extends DisplayObject {
   set space(gameObject) {
     this.mSpace = gameObject;
     this.mIsLocal = this.mSpace === null || this.mSpace === this;
+    this.setRenderDirty();
   }
 
 
@@ -519,6 +523,7 @@ class Emitter extends DisplayObject {
       throw new Error('At least one texture must be provided.');
 
     this.mTextures = value;
+    this.setRenderDirty();
   }
 
   /**
@@ -536,6 +541,7 @@ class Emitter extends DisplayObject {
    */
   set sortOrder(value) {
     this.__sortOrder = value;
+    this.setRenderDirty();
   }
 }
 

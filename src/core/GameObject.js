@@ -1059,19 +1059,26 @@ class GameObject extends MessageDispatcher {
 
     let current = this;
 
-    if (current === Black.instance.root)
+    if (current === Black.instance.stage)
       return current;
 
     while (current.mParent) {
-      if (current === Black.instance.root)
+      if (current === Black.instance.stage)
         return current;
-      else if (current.mParent === Black.instance.root)
-        return Black.instance.root;
+      else if (current.mParent === Black.instance.stage)
+        return Black.instance.stage;
       else
         current = current.mParent;
     }
 
     return null;
+  }
+
+  /**
+   * Returns the stage Game Object to which this game object belongs to. Shortcut for `Black.instance.stage`.
+   */
+  get stage() {
+    return Black.instance.stage;
   }
 
   // /**
@@ -1533,7 +1540,7 @@ class GameObject extends MessageDispatcher {
    */
   static forEach(gameObject, action) {
     if (gameObject == null)
-      gameObject = Black.instance.root;
+      gameObject = Black.instance.stage;
 
     let r = action(gameObject);
     if (r === true)
@@ -1560,7 +1567,7 @@ class GameObject extends MessageDispatcher {
    */
   static find(name, node) {
     if (node == null)
-      node = Black.instance.root;
+      node = Black.instance.stage;
 
     if (node.name === name)
       return node;
@@ -1585,7 +1592,7 @@ class GameObject extends MessageDispatcher {
    */
   static findById(id, node) {
     if (node == null)
-      node = Black.instance.root;
+      node = Black.instance.stage;
 
     if (node.id === id)
       return node;

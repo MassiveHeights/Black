@@ -247,8 +247,6 @@ class AssetManager extends MessageDispatcher {
    * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
-    //if (nameMask == null)
-
     let out = [];
     let names = [];
 

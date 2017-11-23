@@ -264,7 +264,7 @@ class Input extends System {
 
   __findTarget(pos) {
     //let obj = GameObject.hits(Black.instance.root, pos);
-    let obj = Black.instance.root.hitTest(pos);
+    let obj = Black.instance.stage.hitTest(pos);
 
     if (obj === null) {
       this.mTarget = null;

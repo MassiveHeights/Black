@@ -9,10 +9,10 @@ class Black extends MessageDispatcher {
   /**
    * Creates a new Black instance.
    * @param {string}                          containerElementId The id of an DOM element.
-   * @param {function(new: GameObject)}       rootClass          Type name of an GameObject to start execution from.
+   * @param {function(new: GameObject)}       gameClass          Type name of an GameObject to start execution from.
    * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
    */
-  constructor(containerElementId, rootClass, videoDriverClass) {
+  constructor(containerElementId, gameClass, videoDriverClass) {
     super();
 
     // Dirty GCC workaround
@@ -202,13 +202,21 @@ class Black extends MessageDispatcher {
      * @private
      * @type {function(new: GameObject)|null}
      */
-    this.mRootClass = rootClass;
+    this.mGameClass = gameClass;
 
     /**
      * @private
      * @type {GameObject|null}
      */
-    this.mRoot = null;
+    this.mGame = null;
+
+    /**
+     * @private
+     * @type {GameObject}
+     */
+    this.mStage = new GameObject();
+    this.mStage.name = 'stage';
+    this.mStage.addComponent(new InputComponent());
 
     /**
      * @private
@@ -354,10 +362,8 @@ class Black extends MessageDispatcher {
     this.__bootVideo();
     this.__bootStage();
 
-    this.mRoot = new this.mRootClass();
-    this.mRoot.name = 'root';
-    this.mRoot.mAdded = true; // why are not added actually?
-    this.mRoot.onAdded();
+    this.mGameObject = new this.mGameClass();
+    this.mStage.addChild(this.mGameObject);
 
     const self = this;
 
@@ -460,7 +466,7 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.mVideo.render(this.mRoot, this.mStageRenderer);
+      this.mVideo.render(this.mStage, this.mStageRenderer);
       this.mVideo.endFrame();
 
       this.mFrameNum++;
@@ -486,7 +492,7 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onFixedUpdate(dt);
 
-    this.mRoot.__fixedUpdate(dt);
+    this.mStage.__fixedUpdate(dt);
   }
 
   /**
@@ -498,7 +504,7 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onUpdate(dt, this.mUptime);
 
-    this.mRoot.__update(dt);
+    this.mStage.__update(dt);
   }
 
   /**
@@ -510,15 +516,15 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onPostUpdate(dt, this.mUptime);
 
-    this.mRoot.__postUpdate(dt);
+    this.mStage.__postUpdate(dt);
   }
 
   /**
    * Returns the root GameObject.
    * @return {GameObject}
    */
-  get root() {
-    return this.mRoot;
+  get stage() {
+    return this.mStage;
   }
 
   /**
