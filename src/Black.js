@@ -231,10 +231,6 @@ class Black extends MessageDispatcher {
      * @type {boolean}
      */
     this.mWasStopped = false;
-
-    this.mStageRenderer = new Renderer();
-    this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.AUTO;
   }
 
   /**
@@ -466,7 +462,7 @@ class Black extends MessageDispatcher {
       this.__internalPostUpdate(dt);
 
       this.mVideo.beginFrame();
-      this.mVideo.render(this.mStage, this.mStageRenderer);
+      this.mVideo.render(this.mStage);
       this.mVideo.endFrame();
 
       this.mFrameNum++;

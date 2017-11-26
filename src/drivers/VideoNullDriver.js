@@ -62,6 +62,10 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
+    this.mStageRenderer = new Renderer();
+    this.mStageRenderer.alpha = 1;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;
+
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
@@ -73,30 +77,24 @@ class VideoNullDriver {
     throw new Error('Not Implemented Error');
   }
 
-  render(gameObject, parentRenderer, renderTexture) {
+  render(gameObject, renderTexture) {
     let numEndClipsRequired = 0;
     if (renderTexture != null) {
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
 
       // collect parents alpha, blending, clipping and masking
-      if (parentRenderer === null) {
-        parentRenderer = new Renderer();
-        parentRenderer.alpha = 1;
-        parentRenderer.blendMode = BlendMode.AUTO;
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+      this.mRenderers.splice(0, this.mRenderers.length);
+      this.mSkipChildren = false;
 
-        this.mGlobalAlpha = -1;
-        this.mGlobalBlendMode = null;
-        this.mRenderers.splice(0, this.mRenderers.length);
-        this.mSkipChildren = false;
-      }
-
-      numEndClipsRequired = this.__collectParentRenderables(gameObject, parentRenderer);
+      numEndClipsRequired = this.__collectParentRenderables(gameObject, this.mStageRenderer);
     }
 
     this.mRendererIndex = 0;
 
-    this.__collectRenderables(gameObject, parentRenderer);
+    this.__collectRenderables(gameObject, this.mStageRenderer);
 
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];

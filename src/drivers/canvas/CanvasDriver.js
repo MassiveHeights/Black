@@ -119,6 +119,8 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
+    blendMode = CanvasBlendMode[blendMode];
+
     if (this.mGlobalBlendMode === blendMode)
       return;
 
