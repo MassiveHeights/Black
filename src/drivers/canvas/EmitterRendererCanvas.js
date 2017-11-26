@@ -5,6 +5,7 @@ class EmitterRendererCanvas extends Renderer {
 
     this.particles = []; // []
     this.textures = []; // []
+    this.sortOrder = EmitterSortOrder.FRONT_TO_BACK;
     this.space = null;
 
     this.__tmpLocal = new Matrix();
@@ -18,44 +19,50 @@ class EmitterRendererCanvas extends Renderer {
     let worldTransform = this.__tmpWorld;
     localTransform.identity();
 
-    for (let i = 0; i < plength; i++) {
-      let particle = this.particles[i];
-
-      let texture = this.textures[particle.textureIndex];
-      let tw = texture.width * 0.5;
-      let th = texture.height * 0.5;
-
-      if (particle.r === 0) {
-        let tx = particle.x - tw * particle.scale;
-        let ty = particle.y - th * particle.scale;
-        localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
-      } else {
-        let cos = Math.cos(particle.r);
-        let sin = Math.sin(particle.r);
-        let a = particle.scale * cos;
-        let b = particle.scale * sin;
-        let c = particle.scale * -sin;
-        let d = particle.scale * cos;
-
-        let tx = particle.x - tw * a - th * c;
-        let ty = particle.y - tw * b - th * d;
-        localTransform.set(a, b, c, d, tx, ty);
-      }
-
-      if (this.isLocal === true) {
-        worldTransform.identity();
-        worldTransform.copyFrom(localTransform);
-        worldTransform.prepend(this.transform);
-      } else {
-        this.space.worldTransformation.copyTo(worldTransform);
-        worldTransform.append(localTransform);
-      }
-
-      driver.globalAlpha = this.alpha * particle.alpha;
-
-      driver.setTransform(worldTransform);
-      driver.drawTexture(texture);
+    if (this.sortOrder === EmitterSortOrder.FRONT_TO_BACK) {
+      for (let i = 0; i < plength; i++)
+        this.__renderParticle(this.particles[i], localTransform, worldTransform, driver);
+    } else {
+      for (let i = plength - 1; i > 0; i--)
+        this.__renderParticle(this.particles[i], localTransform, worldTransform, driver);
     }
+  }
+
+  __renderParticle(particle, localTransform, worldTransform, driver) {
+    let texture = this.textures[particle.textureIndex];
+    let tw = texture.width * 0.5;
+    let th = texture.height * 0.5;
+
+    if (particle.r === 0) {
+      let tx = particle.x - tw * particle.scale;
+      let ty = particle.y - th * particle.scale;
+      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+    } else {
+      let cos = Math.cos(particle.r);
+      let sin = Math.sin(particle.r);
+      let a = particle.scale * cos;
+      let b = particle.scale * sin;
+      let c = particle.scale * -sin;
+      let d = particle.scale * cos;
+
+      let tx = particle.x - tw * a - th * c;
+      let ty = particle.y - tw * b - th * d;
+      localTransform.set(a, b, c, d, tx, ty);
+    }
+
+    if (this.isLocal === true) {
+      worldTransform.identity();
+      worldTransform.copyFrom(localTransform);
+      worldTransform.prepend(this.transform);
+    } else {
+      this.space.worldTransformation.copyTo(worldTransform);
+      worldTransform.append(localTransform);
+    }
+
+    driver.globalAlpha = this.alpha * particle.alpha;
+
+    driver.setTransform(worldTransform);
+    driver.drawTexture(texture);
   }
 
   childrenRendered(driver) {

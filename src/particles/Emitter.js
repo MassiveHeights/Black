@@ -146,7 +146,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {EmitterSortOrder}
      */
-    this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
+    this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
@@ -257,6 +257,7 @@ class Emitter extends DisplayObject {
       renderer.isLocal = this.mIsLocal;
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
+      renderer.sortOrder = this.mSortOrder;
       
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -530,7 +531,7 @@ class Emitter extends DisplayObject {
    * @return {EmitterSortOrder}
    */
   get sortOrder() {
-    return this.__sortOrder;
+    return this.mSortOrder;
   }
 
   /**
@@ -540,7 +541,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   set sortOrder(value) {
-    this.__sortOrder = value;
+    this.mSortOrder = value;
     this.setRenderDirty();
   }
 }
