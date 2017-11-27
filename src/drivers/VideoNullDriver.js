@@ -44,6 +44,7 @@ class VideoNullDriver {
     this.mIdentityMatrix = new Matrix();
 
     this.mRenderers = [];
+    this.mDebugRenderers = [];
     this.mSkipChildren = false;
     this.mEndPassRenderer = null;
     this.mRendererIndex = 0;
@@ -95,6 +96,7 @@ class VideoNullDriver {
     this.mRendererIndex = 0;
 
     this.__collectRenderables(gameObject, this.mStageRenderer);
+    this.__collectDebugRenderables();
 
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
@@ -109,9 +111,8 @@ class VideoNullDriver {
       renderer.render(this);
       renderer.dirty = 0;
 
-      if (renderer.endPassRequired === true) {
+      if (renderer.endPassRequired === true)
         this.mEndPassRenderer = renderer;
-      }
 
       if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
         this.endClip();
@@ -155,6 +156,20 @@ class VideoNullDriver {
 
     if (renderer != null && renderer.endPassRequired === true)
       renderer.endPassRequiredAt = this.mRendererIndex - 1;
+  }
+
+  __collectDebugRenderables() {
+    for (let i = 0; i < this.mDebugRenderers.length; i++) {
+      let r = this.mDebugRenderers[i];
+
+      if (r.clipRect !== null) {
+        r.endPassRequired = true;
+        r.endPassRequiredAt = this.mRenderers.length + i;
+      }
+    }
+
+    this.mRenderers.push(...this.mDebugRenderers);
+    this.mDebugRenderers.splice(0, this.mDebugRenderers.length);
   }
 
   __collectParentRenderables(gameObject, parentRenderer) {
@@ -206,6 +221,10 @@ class VideoNullDriver {
     this.mRenderers.push(renderer);
 
     return renderer;
+  }
+
+  registerDebugRenderer(renderer) {
+    this.mDebugRenderers.push(renderer);
   }
 
   /**

@@ -9,12 +9,18 @@ class Renderer {
     this.pivotX = 0;
     this.pivotY = 0;
     this.dirty = DirtyFlag.DIRTY;
-
     this.clipRect = null;
-
+    
     this.endPassRequiredAt = -1;
     this.endPassRequired = false;
     //this.isBatchable = null;
+
+    // NOTE: this property is not yet finished. most likely this will be 
+    // some kind of render-layer in future
+    // this should be used only for custom overlays, debug draws etc
+    // game objects should never use this property
+    // ALSO: clipRect will not work 
+    this.debugLayer = false;
   }
 
   render(driver) { }

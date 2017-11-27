@@ -31,7 +31,7 @@ class Viewport extends MessageDispatcher {
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
     this.isTransperent = true;
-    this.backgroundColor = 0x000000;
+    this.backgroundColor = 0x222222;
 
     window.addEventListener('resize', x => this.__onResize());
   }

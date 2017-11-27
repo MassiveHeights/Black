@@ -37,6 +37,19 @@ class Debug {
   static error(...message) {
     console.info('%c%s', 'color: #d50000;', 'ERROR:', ...message);
   }
+
+  static drawText(text) {
+    let renderer = Black.instance.video.getRenderer('Text');
+    renderer.blendMode = BlendMode.DIFFERENCE;
+    renderer.lineHeight = 1;
+    renderer.layer = 'debug';
+    renderer.text = text;
+    renderer.style = new TextInfo();
+    renderer.style.color = 0xffffff;
+    renderer.transform = new Matrix();
+    renderer.lineBounds = TextMetricsEx.measure(text, renderer.style, 100);
+    Black.instance.video.registerDebugRenderer(renderer);
+  }
 }
 
 Debug.throwOnFail = false;
