@@ -75,6 +75,7 @@
     "src/particles/actions/ScaleOverLife.js",
     "src/particles/actions/RotationOverLife.js",
     "src/particles/actions/TextureOverLife.js",
+    "src/particles/actions/Oriented.js",    
     "src/particles/initializers/Initializer.js",
     "src/particles/initializers/Life.js",
     "src/particles/initializers/Mass.js",

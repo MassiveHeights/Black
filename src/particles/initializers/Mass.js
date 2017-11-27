@@ -10,16 +10,12 @@ class Mass extends Initializer {
   /**
    * Creates new Mass instance.
    *
-   * @param {number} mass The mass.
+   * @param {FloatScatter} floatScatter
    */
-  constructor(mass) {
+  constructor(floatScatter) {
     super();
 
-    /**
-     * The mass value.
-     * @type {number}
-     */
-    this.mass = mass;
+    this.scatter = floatScatter;
   }
 
   /**
@@ -29,6 +25,6 @@ class Mass extends Initializer {
    * @return {void}
    */
   initialize(particle) {
-    particle.mass = this.mass;
+    particle.mass = this.scatter.getValue();
   }
 }

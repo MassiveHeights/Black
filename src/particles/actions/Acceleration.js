@@ -33,11 +33,10 @@ class Acceleration extends Action {
    */
   update(emmiter, particle, dt) {
     let v = this.mScatter.getValue();
-
+    
     particle.ax += v.x;
     particle.ay += v.y;
   }
-
 
   /**
    * Returns VectorScatter object that defines acceleration direction.

@@ -86,7 +86,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {FloatScatter}
      */
-    this.mEmitDuration = new FloatScatter(1);
+    this.mEmitDuration = new FloatScatter(1 / 60);
 
     /**
      * @private
@@ -98,7 +98,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {FloatScatter}
      */
-    this.mEmitInterval = new FloatScatter(0.1);
+    this.mEmitInterval = new FloatScatter(1 / 60);
 
     /**
      * @private
@@ -258,10 +258,10 @@ class Emitter extends DisplayObject {
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
       renderer.sortOrder = this.mSortOrder;
-      
+
       this.mDirty ^= DirtyFlag.RENDER;
     }
-    
+
     return driver.registerRenderer(renderer);
   }
 
@@ -276,12 +276,12 @@ class Emitter extends DisplayObject {
     const alength = this.mActions.length;
     const plength = this.mParticles.length;
 
-    for (let i = 0; i < alength; i++)
-      this.mActions[i].preUpdate(dt);
+    for (let k = 0; k < alength; k++)
+      this.mActions[k].preUpdate(dt);
 
     let particle;
 
-    let i = this.mParticles.length;
+    let i = plength;
     while (i--) {
       particle = this.mParticles[i];
 
@@ -296,8 +296,8 @@ class Emitter extends DisplayObject {
       }
     }
 
-    for (let j = 0; j < alength; j++)
-      this.mActions[j].postUpdate(dt);
+    for (let k = 0; k < alength; k++)
+      this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
     this.setDirty(DirtyFlag.LOCAL, false);
