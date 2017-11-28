@@ -145,7 +145,8 @@ class TextField extends DisplayObject {
       renderer.bounds = this.mTextBounds;
       renderer.lineBounds = this.mLineBounds;
 
-      this.mDirty ^= DirtyFlag.RENDER_CACHE;
+      if (renderer.isRenderable === true)
+        this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
 
     renderer.dirty = oldDirty;
