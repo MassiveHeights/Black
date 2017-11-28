@@ -146,6 +146,7 @@ class CanvasDriver extends VideoNullDriver {
       this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
 
+    super.clear();
   }
 
   /**
