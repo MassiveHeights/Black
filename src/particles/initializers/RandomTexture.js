@@ -32,6 +32,6 @@ class RandomTexture extends Initializer {
    * @return {void}
    */
   initialize(particle) {
-    particle.textureIndex = ~~this.scatter.getValue();
+    particle.textureIndex = Math.round(this.scatter.getValue());
   }
 }
