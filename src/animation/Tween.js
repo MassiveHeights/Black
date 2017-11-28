@@ -394,6 +394,7 @@ class Tween extends Component {
     }
 
     this.mRemoveOnComplete = false;
+    tween.playOnAdded = false;
 
     this.on('complete', () => {
       tween.play();

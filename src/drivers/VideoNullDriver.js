@@ -44,7 +44,6 @@ class VideoNullDriver {
     this.mIdentityMatrix = new Matrix();
 
     this.mRenderers = [];
-    this.mDebugRenderers = [];
     this.mSkipChildren = false;
     this.mEndPassRenderer = null;
     this.mRendererIndex = 0;
@@ -66,6 +65,18 @@ class VideoNullDriver {
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
     this.mStageRenderer.blendMode = BlendMode.NORMAL;
+
+    // @ifdef DEBUG
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.id = 'debug-canvas';
+    cvs.style.position = 'absolute';
+    cvs.style.zIndex = 2;
+    cvs.width = this.mClientWidth;
+    cvs.height = this.mClientHeight;
+    this.mContainerElement.appendChild(cvs);
+
+    this.__debugContext = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
+    // @endif
 
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
@@ -96,7 +107,6 @@ class VideoNullDriver {
     this.mRendererIndex = 0;
 
     this.__collectRenderables(gameObject, this.mStageRenderer);
-    this.__collectDebugRenderables();
 
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
@@ -158,20 +168,6 @@ class VideoNullDriver {
       renderer.endPassRequiredAt = this.mRendererIndex - 1;
   }
 
-  __collectDebugRenderables() {
-    for (let i = 0; i < this.mDebugRenderers.length; i++) {
-      let r = this.mDebugRenderers[i];
-
-      if (r.clipRect !== null) {
-        r.endPassRequired = true;
-        r.endPassRequiredAt = this.mRenderers.length + i;
-      }
-    }
-
-    this.mRenderers.push(...this.mDebugRenderers);
-    this.mDebugRenderers.splice(0, this.mDebugRenderers.length);
-  }
-
   __collectParentRenderables(gameObject, parentRenderer) {
     let numClippedParents = 0;
 
@@ -223,10 +219,6 @@ class VideoNullDriver {
     return renderer;
   }
 
-  registerDebugRenderer(renderer) {
-    this.mDebugRenderers.push(renderer);
-  }
-
   /**
    * @protected
    * @ignore
@@ -241,6 +233,11 @@ class VideoNullDriver {
 
     this.mClientWidth = w;
     this.mClientHeight = h;
+
+    // @ifdef DEBUG
+    this.__debugContext.canvas.width = this.mClientWidth;
+    this.__debugContext.canvas.height = this.mClientHeight;
+    // @endif
   }
 
   /**
@@ -358,6 +355,12 @@ class VideoNullDriver {
    * @returns {void}
    */
   clear() {
+    // @ifdef DEBUG
+    if (this.__debugContext !== null) {
+      this.__debugContext.setTransform(1, 0, 0, 1, 0, 0);
+      this.__debugContext.clearRect(0, 0, this.__debugContext.canvas.width, this.__debugContext.canvas.height);
+    }
+    // @endif
   }
 
   /**
