@@ -165,8 +165,13 @@ class TextField extends DisplayObject {
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    if (this.mDirty & DirtyFlag.RENDER_CACHE)
-      this.mLineBounds = TextMetricsEx.measure(this.text, this.mStyle, this.mLineHeight, this.mTextBounds);
+    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
+      let text = this.text;
+      if (this.mMultiline === false)
+        text = text.replace(/\n/g, '');
+
+      this.mLineBounds = TextMetricsEx.measure(text, this.mStyle, this.mLineHeight, this.mTextBounds);
+    }
 
     if (this.mAutoSize === false) {
       outRect.width = this.mFieldWidth;
