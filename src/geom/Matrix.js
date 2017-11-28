@@ -18,7 +18,6 @@ class Matrix {
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     /** @type {Float32Array} */
     this._matrix = new Float32Array(6);
-
     this.set(a, b, c, d, tx, ty);
   }
 
@@ -159,6 +158,10 @@ class Matrix {
     return this.set(1, 0, 0, 1, 0, 0);
   }
 
+  get isIdentity() {
+    return this.exactEquals(Matrix.__identity);
+  }
+
   /**
    * Concatenates a given matrix with the current one.
    *
@@ -293,7 +296,7 @@ class Matrix {
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
-    
+
     let minX = Number.MAX_VALUE;
     let maxX = -Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
@@ -309,7 +312,7 @@ class Matrix {
     for (var i = 0; i < points.length; i += 2) {
       tmpVector.x = m[0] * points[i] + m[2] * points[i + 1] + m[4];
       tmpVector.y = m[1] * points[i] + m[3] * points[i + 1] + m[5];
-  
+
       if (minX > tmpVector.x)
         minX = tmpVector.x;
       if (maxX < tmpVector.x)
@@ -448,11 +451,11 @@ class Matrix {
 
   exactEquals(matrix) {
     if (!matrix)
-    return false;
+      return false;
 
     let a = this._matrix;
     let b = matrix._matrix;
-    
+
     return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
   }
 
@@ -468,7 +471,7 @@ class Matrix {
       return false;
 
     let a = this._matrix;
-    let b = matrix._matrix;    
+    let b = matrix._matrix;
 
     return (Math.abs(a[0] - b[0]) < epsilon) && (Math.abs(a[1] - b[1]) < epsilon) && (Math.abs(a[2] - b[2]) < epsilon) &&
       (Math.abs(a[3] - b[3]) < epsilon) && (Math.abs(a[4] - b[4]) < epsilon) && (Math.abs(a[5] - b[5]) < epsilon);
@@ -490,8 +493,7 @@ class Matrix {
    */
   toString(digits = 2) {
     return `        | ${this.value[0].toFixed(digits)} | ${this.value[1].toFixed(digits)} | ${this.value[4].toFixed(digits)} |
-Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |
-        | ${(0).toFixed(digits)} | ${(0).toFixed(digits)} | ${(1).toFixed(digits)} |`;
+Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |`;
   }
   // @endif
 }
@@ -501,3 +503,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
  * @nocollapse
  */
 Matrix.__cache = new Matrix();
+
+/**
+ * @type {Matrix}
+ * @nocollapse
+ */
+Matrix.__identity = new Matrix();
