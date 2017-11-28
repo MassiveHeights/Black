@@ -24,8 +24,68 @@ class MathEx {
    */
   static clamp(value, min, max) {
     return (value < min) ? min : (value > max) ? max : value;
-  };
+  }
 
+  /**
+   * distance between two points
+   * 
+   * @param  {number} x1
+   * @param  {number} y1
+   * @param  {number} x2
+   * @param  {number} y2
+   * 
+   * @return {number}
+   */
+  static distance(x1, y1, x2, y2) {
+    let x = x1 - x2;
+    let y = y1 - y2;
+
+    return Math.sqrt((x * x) + (y * y));
+  }
+
+  /**
+   * squared distance between two points
+   * 
+   * @param  {number} x1
+   * @param  {number} y1
+   * @param  {number} x2
+   * @param  {number} y2
+   * 
+   * @return {number}
+   */
+  static distanceSqr(x1, y1, x2, y2) {
+    let x = x1 - x2;
+    let y = y1 - y2;
+
+    return (x * x) + (y * y);
+  }
+
+  /**
+   * angle in radians between two points
+   * 
+   * @param  {number} x1
+   * @param  {number} y1
+   * @param  {number} x2
+   * @param  {number} y2
+   * 
+   * @return {number}
+   */
+  static angleBetween(x1, y1, x2, y2) {
+    return Math.atan2(y2 - y1, x2 - x1);
+  }
+
+  /**
+   * @param  {number} value
+   * @param  {number} fromA
+   * @param  {number} fromB
+   * @param  {number} toA
+   * @param  {number} toB
+   * 
+   * @return {number}
+   */
+  static mapRange(value, fromA, fromB, toA, toB) {
+    return toA + (toB - toA) * (value - fromA) / (fromB - fromA);
+  }
 
   /**
    * lerp
@@ -52,7 +112,7 @@ class MathEx {
    */
   static lerpp(a, b, t) {
     return (1 - t) * a + t * b;
-  };
+  }
 
   static equals(a, b, epsilon = Number.EPSILON) {
     return (a - epsilon < b) && (a + epsilon > b);
