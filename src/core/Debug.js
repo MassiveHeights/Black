@@ -93,19 +93,19 @@ class Debug {
       if (value !== undefined) {
         if (typeof value === 'number')
           value = Math.round(value) !== value ? value.toFixed(2) : value;
- 
+
         value = ': ' + value;
 
         definedProperty.push({ name, value });
 
         try {
-        let nameWidth = TextMetricsEx.measureBitmap(definedProperty[i].name, fontData, 1).width;
-        let valueWidth = TextMetricsEx.measureBitmap(definedProperty[i].value, fontData, 1).width;
+          let nameWidth = TextMetricsEx.measureBitmap(definedProperty[i].name, fontData, 1).width;
+          let valueWidth = TextMetricsEx.measureBitmap(definedProperty[i].value, fontData, 1).width;
 
-        columnNameWidth = nameWidth > columnNameWidth ? nameWidth : columnNameWidth;
-        columnValueWidth = valueWidth > columnValueWidth ? valueWidth : columnValueWidth;
+          columnNameWidth = nameWidth > columnNameWidth ? nameWidth : columnNameWidth;
+          columnValueWidth = valueWidth > columnValueWidth ? valueWidth : columnValueWidth;
         }
-        catch (err){
+        catch (err) {
           debugger;
         }
       }
@@ -159,7 +159,7 @@ class Debug {
     let rectWidth = bounds.width + 4;
     let rectHeight = bounds.height;
 
-    let rectX = x - (rectWidth  * alignX);
+    let rectX = x - (rectWidth * alignX);
     let rectY = y - (rectHeight * alignY);
 
     let textX = x - (rectWidth * alignX) + 2;
@@ -270,6 +270,54 @@ class Debug {
     Debug.drawText(bounds.x + bounds.width, bounds.y + bounds.height, stringSize, 1, 1);
   }
 
+  static print(...text) {
+    let str = '';
+    for (let i = 0; i < text.length; i++) {
+      str += text[i];
+
+      if (i < text.length - 1)
+        str += ' ';
+    }
+
+    Debug.__lines.push({ text: str, time: Time.time, dead: false });
+  }
+
+  static __render() {
+    let dt = Time.dt;
+    let ctx = Black.instance.video.__debugContext;
+    let oldAlpha = ctx.globalAlpha;
+    let diff = Debug.__printTime - Debug.__printAlphaTime;
+
+    let y = 0;
+    for (let i = 0; i < Debug.__lines.length; i++) {
+      let line = Debug.__lines[i];
+      let alpha = 1;
+
+      if (Time.time - line.time >= Debug.__printAlphaTime) {
+        alpha = 1 - (Time.time - line.time - Debug.__printAlphaTime);
+        console.log(alpha);
+        
+        if (alpha <= 0) {
+          alpha = 0;
+          line.dead = true;
+        }
+      }
+
+      ctx.globalAlpha = alpha;
+      Debug.drawText(0, y, line.text, 0, 0, alpha);
+      y += 14;
+    }
+
+    for (let i = Debug.__lines.length - 1; i >= 0; i--) {
+      let line = Debug.__lines[i];
+
+      if (line.dead === true)
+        Debug.__lines.splice(i, 1);
+    }
+
+    ctx.globalAlpha = oldAlpha;
+  }
+
   static __init() {
     if (Debug.__inited == true)
       return;
@@ -290,6 +338,9 @@ class Debug {
 Debug.throwOnFail = false;
 Debug.logOnFail = true;
 
+Debug.__printAlphaTime = 4;
+Debug.__printTime = 5;
+Debug.__lines = [];
 Debug.__textRenderer = null;
 Debug.__fontData = null;
 Debug.__inited = false;

@@ -144,6 +144,8 @@ class VideoNullDriver {
       this.mRenderers.splice(0, this.mRenderers.length);
       this.mSkipChildren = false;
     }
+
+    Debug.__render();
   }
 
   __collectRenderables(gameObject, parentRenderer) {
