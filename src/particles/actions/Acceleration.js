@@ -10,16 +10,16 @@ class Acceleration extends Action {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {VectorScatter} vectorScatter An VectorScatter which defines acceleration direction.
+   * @param {...(number)|VectorScatter} values An VectorScatter which defines acceleration direction.
    */
-  constructor(vectorScatter) {
+  constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {VectorScatter}
+     * @type {...(number)|VectorScatter}
      */
-    this.mScatter = vectorScatter;
+    this.mScatter = VectorScatter.fromObject(...values);
   }
 
   /**

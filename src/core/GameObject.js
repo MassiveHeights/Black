@@ -144,6 +144,28 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mDirtyFrameNum = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mSuspendDirty = false;
+  }
+
+  make(values) {
+    // can be helpfull if there are many children
+    this.mSuspendDirty = true;
+
+    for (var property in values) {
+      if (values.hasOwnProperty(property)) {
+        this[property] = values[property];
+      }
+    }
+
+    this.mSuspendDirty = false;
+    this.setTransformDirty();
+
+    return this;
   }
 
   /**
@@ -205,7 +227,7 @@ class GameObject extends MessageDispatcher {
         this.addComponent( /** @type {!Component} */(gooc));
     }
 
-    return gameObjectsAndOrComponents;
+    return this;
   }
 
   /**
@@ -946,6 +968,29 @@ class GameObject extends MessageDispatcher {
     this.setTransformDirty();
   }
 
+  get anchorX() {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+    return this.mPivotX / Rectangle.__cache.width;
+  }
+
+  set anchorX(value) {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+
+    this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
+    this.setTransformDirty();
+  }
+
+  get anchorY() {
+    return this.mPivotY / Rectangle.__cache.height;
+  }
+
+  set anchorY(value) {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+
+    this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
+    this.setTransformDirty();
+  }
+
   /**
    * Sets pivot point to given position.
    *
@@ -1301,11 +1346,17 @@ class GameObject extends MessageDispatcher {
    * @returns {void}
    */
   setTransformDirty() {
+    if (this.mSuspendDirty === true)
+      return;
+
     this.setDirty(DirtyFlag.LOCAL, false);
     this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER, true);
   }
 
   setRenderDirty() {
+    if (this.mSuspendDirty === true)
+      return;
+
     this.setDirty(DirtyFlag.RENDER, true);
   }
 
@@ -1447,7 +1498,7 @@ class GameObject extends MessageDispatcher {
     this.worldTransformationInversed.transformVector(point, tmpVector);
     return this.getBounds(this, false).containsXY(tmpVector.x, tmpVector.y);
   }
-  
+
   onHitTestMask(point) {
     return true;
   }

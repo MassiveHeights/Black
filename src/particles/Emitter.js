@@ -160,6 +160,20 @@ class Emitter extends DisplayObject {
     this.mState = EmitterState.PENDING;
   }
 
+  add(...actionsOrInitializers) {
+    for (let i = 0; i < actionsOrInitializers.length; i++) {
+      let ai = actionsOrInitializers[i];
+
+      if (ai instanceof Action)
+        this.addAction(ai);
+      else if (ai instanceof Initializer)
+        this.addInitializer(ai);
+      else
+        super.add(ai);
+    }
+    return this;
+  }
+
   /**
    * updateNextTick - Updates delay, duration, interval. Use this function each time you change one of those values.
    *

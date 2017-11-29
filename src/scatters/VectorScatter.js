@@ -53,4 +53,11 @@ class VectorScatter extends Scatter {
     outVector.y = this.minY + t * (this.maxY - this.minY);
     return outVector;
   }
+
+  static fromObject(...values) {
+    if (values[0] instanceof Scatter)
+      return values[0];
+
+    return new VectorScatter(...values);
+  }
 }

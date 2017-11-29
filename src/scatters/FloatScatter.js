@@ -53,4 +53,11 @@ class FloatScatter extends Scatter {
 
     return this.min + t * (this.max - this.min);
   }
+
+  static fromObject(...values) {
+    if (values[0] instanceof Scatter)
+      return values[0];
+    
+    return new FloatScatter(...values);
+  }
 }

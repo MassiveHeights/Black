@@ -10,16 +10,16 @@ class Velocity extends Initializer {
   /**
    * Creates new Velocity instance.
    *
-   * @param {VectorScatter} vectorScatter The min-max range for starting velocity.
+   * @param {...(number)|VectorScatter} values The min-max range for starting velocity.
    */
-  constructor(vectorScatter) {
+  constructor(...values) {
     super();
 
     /**
      * The min-max range for starting velocity.
-     * @type {VectorScatter}
+     * @type {...(number)|VectorScatter}
      */
-    this.scatter = vectorScatter;
+    this.scatter = VectorScatter.fromObject(...values);
   }
 
   /**

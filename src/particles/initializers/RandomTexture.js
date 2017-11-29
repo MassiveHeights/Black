@@ -10,19 +10,18 @@ class RandomTexture extends Initializer {
   /**
    * Creates new RandomTexture instance.
    *
-   * @param {FloatScatter} floatScatter
+   * @param {...(number)|FloatScatter} values The min/max range.
    */
-  constructor(floatScatter) {
+  constructor(...values) {
     super();
 
     /**
      * The float scatter defines the index of the texture. All values will be
      * rounded.
-     *
-     * @see {Particle.textureIndex}
-     * @type {FloatScatter}
+     * 
+     * @type {...(number)|FloatScatter}
      */
-    this.scatter = floatScatter;
+    this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**
