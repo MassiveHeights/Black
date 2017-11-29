@@ -50,11 +50,11 @@ class Asset extends MessageDispatcher {
      */
     this.mResponseType = '';
 
-    /**
-     * @private
-     * @type {string}
-     */
-    this.mExtension = this.getExtension(url);
+    // /**
+    //  * @private
+    //  * @type {string}
+    //  */
+    // this.mExtension = this.getExtension(url);
 
     /**
      * @private

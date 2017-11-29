@@ -20,7 +20,8 @@ class CanvasDriver extends VideoNullDriver {
       DisplayObject: DisplayObjectRendererCanvas,
       Sprite: SpriteRendererCanvas,
       Emitter: EmitterRendererCanvas,
-      Text: TextRendererCanvas
+      Text: TextRendererCanvas,
+      BitmapText: BitmapTextRendererCanvas
     };
   }
 

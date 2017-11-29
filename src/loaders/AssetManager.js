@@ -77,6 +77,13 @@ class AssetManager extends MessageDispatcher {
      * @member
      * @dict
      */
+    this.mXMLs = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mSounds = {};
 
     /**
@@ -85,6 +92,13 @@ class AssetManager extends MessageDispatcher {
      * @dict
      */
     this.mFonts = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mBitmapFonts = {};
   }
 
   /**
@@ -113,6 +127,31 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
+   * Adds bitmap font to the loading queue.
+   *
+   * @param {string} name     Name of the font.
+   * @param {string} imageUrl Image URL.
+   * @param {string} xmlUrl   URL to the .xml file which describes the font.
+   *
+   * @returns {void}
+   */
+  enqueueBitmapFont(name, imageUrl, xmlUrl) {
+    this.mQueue.push(new BitmapFontAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
+  }
+
+  /**
+   * Adds single xml file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   *
+   * @returns {void}
+   */
+  enqueueXML(name, url) {
+    this.mQueue.push(new XMLAsset(name, this.mDefaultPath + url));
+  }
+
+  /**
    * Adds single json file to the loading queue.
    *
    * @param {string} name Name of the asset.
@@ -120,7 +159,7 @@ class AssetManager extends MessageDispatcher {
    *
    * @returns {void}
    */
-  enqueueJson(name, url) {
+  enqueueJSON(name, url) {
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
@@ -198,9 +237,13 @@ class AssetManager extends MessageDispatcher {
       this.mJsons[item.name] = item.data;
     else if (item.constructor === SoundAsset)
       this.mSounds[item.name] = item.data;
-    else if (item.constructor === FontAsset) {
+    else if (item.constructor === FontAsset)
       this.mFonts[item.name] = item.data;
-    } else
+    else if (item.constructor === XMLAsset)
+      this.mXMLs[item.name] = item.data;
+    else if (item.constructor === BitmapFontAsset)
+      this.mBitmapFonts[item.name] = item.data;
+    else
       console.error('Unable to handle asset type.', item);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
@@ -211,6 +254,24 @@ class AssetManager extends MessageDispatcher {
       this.mIsAllLoaded = true;
       this.post(Message.COMPLETE);
     }
+  }
+
+  /**
+   * Returns BitmapFontData object by given name.
+   *
+   * @param {string} name The name of the Asset to search.
+   *
+   * @return {BitmapFontData|null} Returns a BitmapFontData if found or null.
+   */
+  getBitmapFont(name) {
+    /** @type {Texture} */
+    let t = this.mBitmapFonts[name];
+
+    if (t != null)
+      return t;
+
+    Debug.warn(`BitmapFontData '${name}' was not found`);
+    return null;
   }
 
   /**
