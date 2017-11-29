@@ -136,7 +136,7 @@ class Debug {
 
   static __drawText(text, ctx, x, y) {
     let r = Debug.__textRenderer;
-    r.bounds = new Rectangle(0, 0, 100, 100);
+    r.bounds = TextMetricsEx.measureBitmap(text, Debug.__fontData, 1);
     r.text = text;
     r.render(null); // may cause issues
 
