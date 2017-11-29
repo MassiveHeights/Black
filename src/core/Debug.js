@@ -295,7 +295,6 @@ class Debug {
 
       if (Time.time - line.time >= Debug.__printAlphaTime) {
         alpha = 1 - (Time.time - line.time - Debug.__printAlphaTime);
-        console.log(alpha);
         
         if (alpha <= 0) {
           alpha = 0;
