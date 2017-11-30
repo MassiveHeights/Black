@@ -34,11 +34,20 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
+    let scale = Device.getDevicePixelRatio();
+
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
     cvs.id = 'canvas';
-    cvs.width = this.mClientWidth;
-    cvs.height = this.mClientHeight;
+
+    cvs.width = this.mClientWidth * scale;
+    cvs.height = this.mClientHeight * scale;
+    cvs.style.width = this.mClientWidth + 'px';
+    cvs.style.height = this.mClientHeight + 'px';
+
+    let stage = Black.instance.stage;
+    stage.scaleX = stage.scaleY = scale;
+
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
@@ -57,8 +66,12 @@ class CanvasDriver extends VideoNullDriver {
     // canvas will reset state after changing size
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
-    this.mCtx.canvas.width = this.mClientWidth;
-    this.mCtx.canvas.height = this.mClientHeight;
+
+    let scale = Device.getDevicePixelRatio();
+    this.mCtx.canvas.width = this.mClientWidth * scale;
+    this.mCtx.canvas.height = this.mClientHeight * scale;
+    this.mCtx.canvas.style.width = this.mClientWidth + 'px';
+    this.mCtx.canvas.style.height = this.mClientHeight + 'px';
   }
 
   drawTexture(texture) {

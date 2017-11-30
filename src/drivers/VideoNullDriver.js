@@ -71,8 +71,12 @@ class VideoNullDriver {
     cvs.id = 'debug-canvas';
     cvs.style.position = 'absolute';
     cvs.style.zIndex = 2;
-    cvs.width = this.mClientWidth;
-    cvs.height = this.mClientHeight;
+
+    let scale = Device.getDevicePixelRatio();
+    cvs.width = this.mClientWidth * scale;
+    cvs.height = this.mClientHeight * scale;
+    cvs.style.width = this.mClientWidth + 'px';
+    cvs.style.height = this.mClientHeight + 'px';
     this.mContainerElement.appendChild(cvs);
 
     this.__debugContext = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
@@ -237,8 +241,11 @@ class VideoNullDriver {
     this.mClientHeight = h;
 
     // @ifdef DEBUG
-    this.__debugContext.canvas.width = this.mClientWidth;
-    this.__debugContext.canvas.height = this.mClientHeight;
+    let scale = Device.getDevicePixelRatio();
+    this.__debugContext.canvas.width = this.mClientWidth * scale;
+    this.__debugContext.canvas.height = this.mClientHeight * scale;
+    this.__debugContext.canvas.style.width = this.mClientWidth + 'px';
+    this.__debugContext.canvas.style.height = this.mClientHeight + 'px';
     // @endif
   }
 

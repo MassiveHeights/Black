@@ -51,7 +51,6 @@ class MRComponent extends Component {
     this.mCacheHeight = 0;
 
     this.mForceSet = false;
-    //Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
   forceSet() {
@@ -113,7 +112,7 @@ class MRComponent extends Component {
     this.mScale = Math.min(scaleX, scaleY);
     this.mInvScale = 1 / this.mScale;
 
-    this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
+    this.gameObject.scaleX = this.gameObject.scaleY = this.mScale; // * Device.getDevicePixelRatio();
     this.gameObject.x = (size.width / 2) - (width / 2) * this.mScale;
     this.gameObject.y = (size.height / 2) - (height / 2) * this.mScale;
   }

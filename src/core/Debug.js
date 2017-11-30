@@ -79,6 +79,8 @@ class Debug {
     const textOffset = 4;
 
     let ctx = Black.instance.video.__debugContext;
+    let scale = Device.getDevicePixelRatio();
+    ctx.scale(scale, scale);
     let bounds = gameObject.getBounds(gameObject.stage, true);
     let definedProperty = [];
     let columnNameWidth = 0;

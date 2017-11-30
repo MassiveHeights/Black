@@ -231,6 +231,8 @@ class Black extends MessageDispatcher {
      * @type {boolean}
      */
     this.mWasStopped = false;
+
+    this.__bootViewport();
   }
 
   /**
@@ -352,8 +354,7 @@ class Black extends MessageDispatcher {
     // TODO: show only when needed, eg required by any system
     if (this.mEnableFixedTimeStep === false)
       Debug.info('Fixed time-step is disabled, some systems may not work.');
-
-    this.__bootViewport();
+    
     this.__bootSystems();
     this.__bootVideo();
     this.__bootStage();
@@ -497,6 +498,8 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   __internalUpdate(dt) {
+    this.mViewport.__update(dt);
+
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onUpdate(dt, this.mUptime);
 
