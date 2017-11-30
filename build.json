@@ -1,6 +1,8 @@
 {
   "files":
   [
+    "vendors/spine-core.js",
+
     "src/math/MathEx.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
@@ -37,6 +39,7 @@
     "src/loaders/FontAsset.js",
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/SoundAsset.js",
+    "src/loaders/SpineAsset.js",
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
@@ -101,6 +104,8 @@
 
     "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
+
+    "src/animation/Spine.js",
 
     "src/Black.js"
   ]

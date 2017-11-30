@@ -85,6 +85,13 @@ class AssetManager extends MessageDispatcher {
      * @dict
      */
     this.mFonts = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
+    this.mSpineAnimations = {};
   }
 
   /**
@@ -160,6 +167,20 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
+   * Adds spine to the loading queue.
+   *
+   * @param {string} name          Name of the asset.
+   * @param {string} imageUrl      Atlas URL.
+   * @param {string} atlasDataUrl  URL to the .json file which describes the atlas.
+   * @param {string} dataUrl       URL to the .json file which describes the spine animation.
+   *
+   * @returns {void}
+   */
+  enqueueSpine(name, imageUrl, atlasDataUrl, dataUrl) {
+    this.mQueue.push(new SpineAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + atlasDataUrl, this.mDefaultPath + dataUrl));
+  }
+
+  /**
    * Starts preloading all enqueued assets.
    * @fires complete
    *
@@ -198,7 +219,10 @@ class AssetManager extends MessageDispatcher {
       this.mJsons[item.name] = item.data;
     else if (item.constructor === SoundAsset)
       this.mSounds[item.name] = item.data;
-    else if (item.constructor === FontAsset) {
+    else if (item.constructor === SpineAsset) {
+      this.mSpineAnimations[item.name] = item.data;
+      this.mAtlases[item.name] = item.atlas;
+    } else if (item.constructor === FontAsset) {
       this.mFonts[item.name] = item.data;
     } else
       console.error('Unable to handle asset type.', item);
@@ -303,6 +327,17 @@ class AssetManager extends MessageDispatcher {
    */
   getSound(name) {
     return this.mSounds[name];
+  }
+
+  /**
+   * Returns Spine by given name.
+   *
+   * @param {string} name The name of the sound.
+   *
+   * @return {*} Returns sound or null.
+   */
+  getSpine(name) {
+    return this.mSpineAnimations[name];
   }
 
   /**
