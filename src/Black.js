@@ -212,11 +212,9 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
-     * @type {GameObject}
+     * @type {Stage}
      */
-    this.mStage = new GameObject();
-    this.mStage.name = 'stage';
-    this.mStage.addComponent(new InputComponent());
+    this.mStage = new Stage();
 
     /**
      * @private
@@ -274,6 +272,8 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootStage() {
+    this.mStage.scaleMode = StageScaleMode.NORMAL;
+
     window.onblur = event => this.__onVisbilityChange(event);
     window.onfocus = event => this.__onVisbilityChange(event);
     window.onpagehide = event => this.__onVisbilityChange(event);
@@ -354,7 +354,7 @@ class Black extends MessageDispatcher {
     // TODO: show only when needed, eg required by any system
     if (this.mEnableFixedTimeStep === false)
       Debug.info('Fixed time-step is disabled, some systems may not work.');
-    
+
     this.__bootSystems();
     this.__bootVideo();
     this.__bootStage();
@@ -794,5 +794,9 @@ class Black extends MessageDispatcher {
 
   get frameNum() {
     return this.mFrameNum;
+  }
+
+  get gameObject() {
+    return this.mGameObject;
   }
 }

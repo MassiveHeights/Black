@@ -34,19 +34,17 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let scale = Device.getDevicePixelRatio();
+    let stage = Black.instance.stage;
+
+    let scale = stage.scaleFactor;
 
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
     cvs.id = 'canvas';
-
     cvs.width = this.mClientWidth * scale;
     cvs.height = this.mClientHeight * scale;
     cvs.style.width = this.mClientWidth + 'px';
     cvs.style.height = this.mClientHeight + 'px';
-
-    let stage = Black.instance.stage;
-    stage.scaleX = stage.scaleY = scale;
 
     this.mContainerElement.appendChild(cvs);
 
@@ -67,7 +65,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
 
-    let scale = Device.getDevicePixelRatio();
+    let scale = this.mStageScaleFactor;
     this.mCtx.canvas.width = this.mClientWidth * scale;
     this.mCtx.canvas.height = this.mClientHeight * scale;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
@@ -78,18 +76,20 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
+    let r = this.mStageScaleFactor;
     const w = texture.width;
     const h = texture.height;
     const ox = texture.untrimmedRect.x;
-    const oy = texture.untrimmedRect.y;
-
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
+    const oy = texture.untrimmedRect.y; 
+    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox * r, oy * r, w * r, h * r);
   }
 
   beginClip(clipRect, px, py) {
+    let r = this.mStageScaleFactor;
+
     this.mCtx.save();
     this.mCtx.beginPath();
-    this.mCtx.rect(clipRect.x + px, clipRect.y + py, clipRect.width, clipRect.height);
+    this.mCtx.rect((clipRect.x + px) * r, (clipRect.y + py) * r, clipRect.width * r, clipRect.height * r);
 
     this.mCtx.clip();
   }
@@ -107,8 +107,13 @@ class CanvasDriver extends VideoNullDriver {
   setTransform(m) {
     this.mTransform = m;
 
+    let r = this.mStageScaleFactor;
     const v = m.value;
-    this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
+
+    if (this.mSnapToPixels === true)
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * r) | 0, (v[5] * r) | 0);
+    else
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * r, v[5] * r);
   }
 
   /**

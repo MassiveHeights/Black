@@ -49,6 +49,7 @@ class Sprite extends DisplayObject {
       renderer.pivotX = this.mPivotX;
       renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;
+      renderer.snapToPixels = this.mSnapToPixels;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

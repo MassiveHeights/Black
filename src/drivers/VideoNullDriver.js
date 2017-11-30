@@ -12,7 +12,6 @@ class VideoNullDriver {
    * @param  {number} height
    */
   constructor(containerElement, width, height) {
-
     /**
      * @protected
      * @type {HTMLElement}
@@ -50,6 +49,9 @@ class VideoNullDriver {
     this.mLastRenderTexture = null;
     this.mCurrentRenderTexture = null;
 
+    this.mSnapToPixels = false;
+    this.mStageScaleFactor = Black.instance.stage.scaleFactor;
+
     /**
      * @private
      * @type {string}
@@ -72,7 +74,7 @@ class VideoNullDriver {
     cvs.style.position = 'absolute';
     cvs.style.zIndex = 2;
 
-    let scale = Device.getDevicePixelRatio();
+    let scale = this.mStageScaleFactor;
     cvs.width = this.mClientWidth * scale;
     cvs.height = this.mClientHeight * scale;
     cvs.style.width = this.mClientWidth + 'px';
@@ -98,6 +100,7 @@ class VideoNullDriver {
     if (renderTexture != null) {
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
+      //this.mCtx.scale(0.5, 0.5);
 
       // collect parents alpha, blending, clipping and masking
       this.mGlobalAlpha = -1;
@@ -115,7 +118,9 @@ class VideoNullDriver {
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
+      this.mSnapToPixels = renderer.snapToPixels;
       this.setTransform(renderer.getTransform());
+
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();
 
@@ -241,7 +246,7 @@ class VideoNullDriver {
     this.mClientHeight = h;
 
     // @ifdef DEBUG
-    let scale = Device.getDevicePixelRatio();
+    let scale = this.mStageScaleFactor;
     this.__debugContext.canvas.width = this.mClientWidth * scale;
     this.__debugContext.canvas.height = this.mClientHeight * scale;
     this.__debugContext.canvas.style.width = this.mClientWidth + 'px';

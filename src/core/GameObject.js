@@ -150,6 +150,16 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mSuspendDirty = false;
+
+    this.mSnapToPixels = false;
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
   }
 
   make(values) {
@@ -542,15 +552,15 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  set worldTransformation(matrix) {
+  set worldTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
-    let a = matrix.value[0];
-    let b = matrix.value[1];
-    let c = matrix.value[2];
-    let d = matrix.value[3];
-    let tx = matrix.value[4];
-    let ty = matrix.value[5];
+    let a = value._matrix[0];
+    let b = value._matrix[1];
+    let c = value._matrix[2];
+    let d = value._matrix[3];
+    let tx = value._matrix[4];
+    let ty = value._matrix[5];
 
     this.mPivotX = this.mPivotX = 0;
     this.mX = tx;

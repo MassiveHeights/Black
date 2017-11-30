@@ -27,6 +27,7 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
+    "src/core/Stage.js",
 
     "src/video/Texture.js",
     "src/video/AtlasTexture.js",

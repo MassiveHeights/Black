@@ -23,7 +23,7 @@ class RenderTargetCanvas extends RenderTarget {
     return this.mCanvas.width;
   }
 
-  set width(val) // eslint-disable-line require-jsdoc
+  set width(val)
   {
     this.mCanvas.width = val;
   }
