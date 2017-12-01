@@ -214,15 +214,13 @@ class Black extends MessageDispatcher {
      * @private
      * @type {Stage}
      */
-    this.mStage = new Stage();
+    this.mStage = null;
 
     /**
      * @private
      * @type {boolean}
      */
     this.mEnableFixedTimeStep = false;
-
-    this.mFrameNum = 0;
 
     /**
      * @private
@@ -272,7 +270,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootStage() {
-    this.mStage.scaleMode = StageScaleMode.NORMAL;
+    this.mStage = new Stage();
 
     window.onblur = event => this.__onVisbilityChange(event);
     window.onfocus = event => this.__onVisbilityChange(event);
@@ -356,8 +354,10 @@ class Black extends MessageDispatcher {
       Debug.info('Fixed time-step is disabled, some systems may not work.');
 
     this.__bootSystems();
-    this.__bootVideo();
     this.__bootStage();
+    this.__bootVideo();
+
+    this.mStage.__refresh();
 
     this.mGameObject = new this.mGameClass();
     this.mStage.addChild(this.mGameObject);
@@ -466,7 +466,7 @@ class Black extends MessageDispatcher {
       this.mVideo.render(this.mStage);
       this.mVideo.endFrame();
 
-      this.mFrameNum++;
+      Black.__frameNum++;
 
       // TODO: remove uptime
       this.mUptime += dt;
@@ -791,12 +791,19 @@ class Black extends MessageDispatcher {
   get magic() {
     return Math.random();
   }
-
-  get frameNum() {
-    return this.mFrameNum;
-  }
+  
 
   get gameObject() {
     return this.mGameObject;
   }
+
+  static get driver() {
+    return Black.instance.video;
+  }
+
+  static get frameNum() {
+    return Black.__frameNum;
+  }
 }
+
+Black.__frameNum = 0;

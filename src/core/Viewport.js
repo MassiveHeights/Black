@@ -21,7 +21,7 @@ class Viewport extends MessageDispatcher {
     let style = this.mContainerElement.style;
     style.userSelect = 'none';
     style.touchAction = 'none';
-    style.overflow = 'hidden';
+    //style.overflow = 'hidden';
     style.cursor = 'auto';
     style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
 

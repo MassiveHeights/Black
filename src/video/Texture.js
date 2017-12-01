@@ -39,9 +39,15 @@ class Texture {
 
     this.mValid = nativeTexture != null;
 
+    this.mNativeWidth = 0;
+    this.mNativeHeight = 0;
+
+    this.mRenderWidth = 0;
+    this.mRenderHeight = 0;
+
     if (region == null) {
       if (nativeTexture != null)
-        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth || nativeTexture.width, nativeTexture.naturalHeight || nativeTexture.height);
+        this.mRegion = new Rectangle(0, 0, nativeTexture.naturalWidth || nativeTexture.videoWidth || nativeTexture.width, nativeTexture.naturalHeight || nativeTexture.videoHeight || nativeTexture.height);
       else
         this.mRegion = new Rectangle();
     } else {
@@ -65,56 +71,32 @@ class Texture {
     this.mUntrimmedRect = /** @type {Rectangle} */ (untrimmedRect);
 
     if (nativeTexture != null) {
-      this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
-      this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+      this.mNativeWidth = nativeTexture.naturalWidth || nativeTexture.videoWidth || nativeTexture.width;
+      this.mNativeHeight = nativeTexture.naturalHeight || nativeTexture.videoHeight || nativeTexture.height;
     } else {
-      this.nativeWidth = 0;
-      this.nativeHeight = 0;
+      this.mNativeWidth = 0;
+      this.mNativeHeight = 0;
     }
 
-    // this.coord = new Uint32Array(4);
-    // this.refreshCoord();
-
-    // this._vSlotWebGL = -1;  // virtual slot for batch calculations
-    // this.premultiplyAlpha = true;
+    this.resolution = 1;
+    this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
+    this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
   }
 
   update(nativeTexture) {
-    // TODO: refactor dups
     this.mTexture = nativeTexture;
 
-    this.nativeWidth = nativeTexture.naturalWidth || nativeTexture.width;
-    this.nativeHeight = nativeTexture.naturalHeight || nativeTexture.height;
+    this.mNativeWidth = nativeTexture.naturalWidth || nativeTexture.videoWidth || nativeTexture.width;
+    this.mNativeHeight = nativeTexture.naturalHeight || nativeTexture.videoHeight || nativeTexture.height;
 
-    this.mRegion = new Rectangle(0, 0, this.nativeWidth, this.nativeHeight);
+    this.mRegion = new Rectangle(0, 0, this.mNativeWidth, this.mNativeHeight);
     this.mUntrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
-    this.mValid = true;
+
+    this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
+    this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
+
+    this.mValid = nativeTexture != null;
   }
-
-  refreshCoord() {
-    const coord = this.coord;
-    const region = this.mRegion;
-    const w = this.nativeWidth;
-    const h = this.nativeHeight;
-
-    const x0 = region.left / w;
-    const y0 = region.top / h;
-
-    const x1 = region.right / w;
-    const y1 = region.top / h;
-
-    const x2 = region.left / w;
-    const y2 = region.bottom / h;
-
-    const x3 = region.right / w;
-    const y3 = region.bottom / h;
-
-    coord[0] = (((y0 * 65535) & 0xffff) << 16) | ((x0 * 65535) & 0xffff);
-    coord[1] = (((y1 * 65535) & 0xffff) << 16) | ((x1 * 65535) & 0xffff);
-    coord[2] = (((y2 * 65535) & 0xffff) << 16) | ((x2 * 65535) & 0xffff);
-    coord[3] = (((y3 * 65535) & 0xffff) << 16) | ((x3 * 65535) & 0xffff);
-  }
-
 
   /**
    * Returns the unique id of this texture.
@@ -162,7 +144,7 @@ class Texture {
     if (this.mRegion != null)
       return this.mRegion.width;
 
-    return this.mTexture.naturalWidth;
+    return this.mNativeWidth;
   }
 
   /**
@@ -174,7 +156,23 @@ class Texture {
     if (this.mRegion != null)
       return this.mRegion.height;
 
-    return this.mTexture.naturalHeight;
+    return this.mNativeHeight;
+  }
+
+  get renderWidth() {
+    return this.mRenderWidth;
+  }
+
+  get renderHeight() {
+    return this.mRenderHeight;
+  }
+
+  get nativeWidth() {
+    return this.mNativeWidth;
+  }
+
+  get nativeHeight() {
+    return this.mNativeHeight;
   }
 
   /**
@@ -220,7 +218,6 @@ class Texture {
     imgElement.src = string;
     return new Texture(imgElement);
   }
-
 
   /**
    * @ignore

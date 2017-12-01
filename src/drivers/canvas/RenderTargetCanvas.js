@@ -23,8 +23,7 @@ class RenderTargetCanvas extends RenderTarget {
     return this.mCanvas.width;
   }
 
-  set width(val)
-  {
+  set width(val) {
     this.mCanvas.width = val;
   }
 

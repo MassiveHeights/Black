@@ -50,7 +50,9 @@ class VideoNullDriver {
     this.mCurrentRenderTexture = null;
 
     this.mSnapToPixels = false;
-    this.mStageScaleFactor = Black.instance.stage.scaleFactor;
+
+    this.mRenderResolution = 1;
+    this.mStageScaleFactor = Black.instance.stage.dpr * this.mRenderResolution;
 
     /**
      * @private
@@ -87,6 +89,20 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
+  get scaleFactor() {
+    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor;
+  } 
+
+  get renderResolution() {
+    return this.mRenderResolution;
+  }
+
+  set renderResolution(value) {
+    this.mRenderResolution = value;
+    this.mStageScaleFactor = Black.instance.stage.scaleFactor * this.mRenderResolution;
+    this.__onResize();
+  }
+
   getRenderer(type) {
     return new this.mRendererMap[type]();
   }
@@ -100,7 +116,6 @@ class VideoNullDriver {
     if (renderTexture != null) {
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
-      //this.mCtx.scale(0.5, 0.5);
 
       // collect parents alpha, blending, clipping and masking
       this.mGlobalAlpha = -1;

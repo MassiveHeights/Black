@@ -34,13 +34,12 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let stage = Black.instance.stage;
-
-    let scale = stage.scaleFactor;
+    let scale = this.mStageScaleFactor;
 
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
     cvs.id = 'canvas';
+
     cvs.width = this.mClientWidth * scale;
     cvs.height = this.mClientHeight * scale;
     cvs.style.width = this.mClientWidth + 'px';
@@ -66,6 +65,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalAlpha = -1;
 
     let scale = this.mStageScaleFactor;
+
     this.mCtx.canvas.width = this.mClientWidth * scale;
     this.mCtx.canvas.height = this.mClientHeight * scale;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
@@ -77,11 +77,13 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let r = this.mStageScaleFactor;
+    let tr = texture.resolution;
+
     const w = texture.width;
     const h = texture.height;
     const ox = texture.untrimmedRect.x;
-    const oy = texture.untrimmedRect.y; 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox * r, oy * r, w * r, h * r);
+    const oy = texture.untrimmedRect.y;
+    this.mCtx.drawImage(texture.native, texture.region.x * tr, texture.region.y * tr, w * tr, h * tr, ox * r, oy * r, w * r, h * r);
   }
 
   beginClip(clipRect, px, py) {

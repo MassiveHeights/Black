@@ -1341,11 +1341,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
-        x.mDirtyFrameNum = Black.instance.frameNum;
+        x.mDirtyFrameNum = Black.__frameNum;
       });
     } else {
       this.mDirty |= flag;
-      this.mDirtyFrameNum = Black.instance.frameNum;
+      this.mDirtyFrameNum = Black.__frameNum;
     }
   }
 
