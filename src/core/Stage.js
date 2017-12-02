@@ -65,13 +65,29 @@ class Stage extends GameObject {
       this.mStageHeight = ~~height;
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
-
-      Black.instance.video.__onResize();
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
       let size = Black.instance.viewport.size;
       this.mStageWidth = Black.instance.viewport.size.width;
       this.mStageHeight = Black.instance.viewport.size.height;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
+    } else if (this.mScaleMode === StageScaleMode.FIT) {
+      let size = Black.instance.viewport.size;
+      let windowWidth = size.width;
+      let windowHeight = size.height;
+      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
+      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
+      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
+      let width = windowWidth * scaleFactor;
+      let height = windowHeight * scaleFactor;
+
+      let two = 2 * scaleFactor;
+      this.mX = width / two - (this.mWidth / two);
+      this.mY = height / two - (this.mHeight / two);
+
+      this.mStageWidth = this.mWidth;
+      this.mStageHeight = this.mHeight;
+      this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     } else {
       let size = Black.instance.viewport.size;
 
@@ -177,8 +193,9 @@ class Stage extends GameObject {
 /* @echo EXPORT */
 var StageScaleMode = {
   NORMAL: 'normal', // the stage size will be the same no matter what DPI is
-  NO_SCALE: 'noScale', // the stage will be affected by dpi
-  FIXED: 'fixed'
+  NO_SCALE: 'noScale', // the stage size will be affected by dpi
+  FIXED: 'fixed', // the stage size tries to stay inside requested size. default is 960x640
+  FIT: 'fit' // the stage size will be equal to requested size, position will be centered
 };
 
 /**
