@@ -79,6 +79,7 @@ class Texture {
     }
 
     this.resolution = 1;
+
     this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
     this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
   }
@@ -94,6 +95,8 @@ class Texture {
 
     this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
     this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
+
+    //console.log('tex', this.mUntrimmedRect.width, this.mUntrimmedRect.height, this.mRenderWidth, this.mRenderHeight, this.resolution);
 
     this.mValid = nativeTexture != null;
   }

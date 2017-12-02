@@ -65,7 +65,6 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalAlpha = -1;
 
     let scale = this.mStageScaleFactor;
-
     this.mCtx.canvas.width = this.mClientWidth * scale;
     this.mCtx.canvas.height = this.mClientHeight * scale;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
@@ -76,14 +75,22 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let r = this.mStageScaleFactor;
+    //TODO: check if atlas resolution is correct
+    let scale = this.mStageScaleFactor;
     let tr = texture.resolution;
 
-    const w = texture.width;
-    const h = texture.height;
-    const ox = texture.untrimmedRect.x;
-    const oy = texture.untrimmedRect.y;
-    this.mCtx.drawImage(texture.native, texture.region.x * tr, texture.region.y * tr, w * tr, h * tr, ox * r, oy * r, w * r, h * r);
+    var sourceX = texture.region.x ;
+    var sourceY = texture.region.y;
+    var sourceWidth = texture.width;
+    var sourceHeight = texture.height;
+
+    var destX = texture.untrimmedRect.x * scale;
+    var destY = texture.untrimmedRect.y * scale;
+    var destWidth = (texture.width * scale) / tr;
+    var destHeight = (texture.height * scale) / tr;
+
+    //this.mCtx.imageSmoothingEnabled = false;
+    this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
 
   beginClip(clipRect, px, py) {
@@ -109,13 +116,13 @@ class CanvasDriver extends VideoNullDriver {
   setTransform(m) {
     this.mTransform = m;
 
-    let r = this.mStageScaleFactor;
+    let scale = this.mStageScaleFactor;
     const v = m.value;
 
     if (this.mSnapToPixels === true)
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * r) | 0, (v[5] * r) | 0);
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
     else
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * r, v[5] * r);
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * scale, v[5] * scale);
   }
 
   /**

@@ -3,18 +3,10 @@ class RenderTexture extends Texture {
   constructor(width, height) {
     super();
 
-    let rsf = Black.driver.scaleFactor;
+    let scaleFactor = Black.driver.scaleFactor;
 
-    this.renderTarget = Black.driver.getRenderTarget(width * rsf, height * rsf);
-    this.resolution = rsf;
+    this.renderTarget = Black.driver.getRenderTarget(width * scaleFactor, height * scaleFactor);
+    this.resolution = scaleFactor;
     this.update(this.renderTarget.native);
   }
-
-  // get renderWidth() {
-  //   return (this.mNativeWidth / this.resolution);
-  // }
-
-  // get renderHeight() {
-  //   return (this.mNativeHeight / this.resolution);
-  // }
 }

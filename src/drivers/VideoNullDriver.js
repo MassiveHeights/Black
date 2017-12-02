@@ -52,7 +52,9 @@ class VideoNullDriver {
     this.mSnapToPixels = false;
 
     this.mRenderResolution = 1;
-    this.mStageScaleFactor = Black.instance.stage.dpr * this.mRenderResolution;
+    this.mStageScaleFactor =  Device.getDevicePixelRatio() * this.mRenderResolution;
+
+    //this.mStageScaleFactor = Device.getDevicePixelRatio();
 
     /**
      * @private
@@ -90,8 +92,9 @@ class VideoNullDriver {
   }
 
   get scaleFactor() {
-    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor;
-  } 
+    //return this.mStageScaleFactor;
+    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor * this.mRenderResolution;
+  }
 
   get renderResolution() {
     return this.mRenderResolution;
@@ -99,7 +102,7 @@ class VideoNullDriver {
 
   set renderResolution(value) {
     this.mRenderResolution = value;
-    this.mStageScaleFactor = Black.instance.stage.scaleFactor * this.mRenderResolution;
+    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
     this.__onResize();
   }
 

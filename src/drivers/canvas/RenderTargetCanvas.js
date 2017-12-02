@@ -5,7 +5,6 @@ class RenderTargetCanvas extends RenderTarget {
 
     this.mCanvas = document.createElement('canvas');
     this.mCtx = this.mCanvas.getContext('2d');
-
     this.resize(width, height);
   }
 
