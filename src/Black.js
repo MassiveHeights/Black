@@ -519,7 +519,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns the root GameObject.
+   * Returns the Stage GameObject.
    * @return {GameObject}
    */
   get stage() {
@@ -527,6 +527,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * @deprecated
    * Returns current video driver instance.
    * @return {VideoNullDriver}
    */
@@ -799,6 +800,10 @@ class Black extends MessageDispatcher {
 
   static get driver() {
     return Black.instance.video;
+  }
+
+  static get stage() {
+    return Black.instance.stage;
   }
 
   static get frameNum() {
