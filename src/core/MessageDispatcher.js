@@ -191,7 +191,7 @@ class MessageDispatcher {
       this.__invokeComponents(this, message, ...params);
       this.__invokeOverheard(this, message, ...params);
     } else if (message.mDirection === 'down') {
-      message.mOrigin = ( /** @type {GameObject} */ (this)).root;
+      message.mOrigin = ( /** @type {GameObject} */ (this)).stage;
 
       if (message.mSibblings === true) {
         this.__sendGlobal(this, message, null, ...params);
@@ -218,7 +218,7 @@ class MessageDispatcher {
    * @return {void}
    */
   __sendBubbles(sender, message, toTop, ...params) {
-    message.mOrigin = toTop === true ? this : ( /** @type {GameObject} */ (this)).root;
+    message.mOrigin = toTop === true ? this : ( /** @type {GameObject} */ (this)).stage;
 
     let list = [this];
 
