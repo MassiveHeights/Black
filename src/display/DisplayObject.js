@@ -95,6 +95,7 @@ class DisplayObject extends GameObject {
       renderer.visible = this.mVisible;
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.mClipRect;
+      renderer.snapToPixels = this.mSnapToPixels;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

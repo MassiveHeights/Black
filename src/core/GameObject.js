@@ -150,6 +150,16 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mSuspendDirty = false;
+
+    this.mSnapToPixels = false;
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
   }
 
   make(values) {
@@ -182,11 +192,11 @@ class GameObject extends MessageDispatcher {
    */
   checkStatic(includeChildren = true) {
     if (includeChildren === false)
-      return this.mDirtyFrameNum < Black.instance.frameNum - 1;
+      return this.mDirtyFrameNum < Black.frameNum - 1;
 
     let isDynamic = false;
     GameObject.forEach(this, x => {
-      if (x.mDirtyFrameNum >= Black.instance.frameNum - 1) {
+      if (x.mDirtyFrameNum >= Black.frameNum - 1) {
         isDynamic = true;
         return true;
       }
@@ -262,7 +272,7 @@ class GameObject extends MessageDispatcher {
     child.removeFromParent();
     child.__setParent(this);
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onChildrenAdded(child);
 
     return child;
@@ -310,7 +320,7 @@ class GameObject extends MessageDispatcher {
     this.mChildren.splice(ix, 1);
     this.mChildren.splice(index, 0, child);
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onChildrenChanged(child);
 
     this.setTransformDirty();
@@ -374,7 +384,7 @@ class GameObject extends MessageDispatcher {
     if (index < 0 || index > this.numChildren)
       throw new Error('Child index is out of bounds.');
 
-    let hadRoot = this.root !== null;
+    let hadRoot = this.stage !== null;
 
     let child = this.mChildren[index];
     child.__setParent(null);
@@ -417,7 +427,7 @@ class GameObject extends MessageDispatcher {
     this.mComponents.push(instance);
     instance.mGameObject = this;
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onComponentAdded(this, instance);
 
     return instance;
@@ -441,7 +451,7 @@ class GameObject extends MessageDispatcher {
     // detach game object after or before?
     instance.mGameObject = null;
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onComponentRemoved(this, instance);
 
     this.mNumComponentsRemoved++;
@@ -542,15 +552,15 @@ class GameObject extends MessageDispatcher {
    *
    * @return {void}
    */
-  set worldTransformation(matrix) {
+  set worldTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
-    let a = matrix.value[0];
-    let b = matrix.value[1];
-    let c = matrix.value[2];
-    let d = matrix.value[3];
-    let tx = matrix.value[4];
-    let ty = matrix.value[5];
+    let a = value._matrix[0];
+    let b = value._matrix[1];
+    let c = value._matrix[2];
+    let d = value._matrix[3];
+    let tx = value._matrix[4];
+    let ty = value._matrix[5];
 
     this.mPivotX = this.mPivotX = 0;
     this.mX = tx;
@@ -1090,40 +1100,24 @@ class GameObject extends MessageDispatcher {
     return this.mParent;
   }
 
-  /**
-   * Returns topmost parent element of this GameObject or null if this
-   * GameObject is not a child.
-   *
-   * @readonly
-   *
-   * @return {GameObject|null}
-   */
-  get root() {
-    if (Black.instance == null)
-      return null;
-
+  get __root() {
     let current = this;
 
-    if (current === Black.instance.stage)
-      return current;
+    while (current.mParent != null)
+      current = current.mParent;
 
-    while (current.mParent) {
-      if (current === Black.instance.stage)
-        return current;
-      else if (current.mParent === Black.instance.stage)
-        return Black.instance.stage;
-      else
-        current = current.mParent;
-    }
-
-    return null;
+    return current;
   }
 
   /**
    * Returns the stage Game Object to which this game object belongs to. Shortcut for `Black.instance.stage`.
    */
   get stage() {
-    return Black.instance.stage;
+    let r = this.__root;
+    if (r instanceof Stage)
+      return r;
+
+    return null;
   }
 
   // /**
@@ -1331,11 +1325,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
-        x.mDirtyFrameNum = Black.instance.frameNum;
+        x.mDirtyFrameNum = Black.__frameNum;
       });
     } else {
       this.mDirty |= flag;
-      this.mDirtyFrameNum = Black.instance.frameNum;
+      this.mDirtyFrameNum = Black.__frameNum;
     }
   }
 

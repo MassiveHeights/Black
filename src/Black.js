@@ -212,11 +212,9 @@ class Black extends MessageDispatcher {
 
     /**
      * @private
-     * @type {GameObject}
+     * @type {Stage}
      */
-    this.mStage = new GameObject();
-    this.mStage.name = 'stage';
-    this.mStage.addComponent(new InputComponent());
+    this.mStage = null;
 
     /**
      * @private
@@ -224,13 +222,13 @@ class Black extends MessageDispatcher {
      */
     this.mEnableFixedTimeStep = false;
 
-    this.mFrameNum = 0;
-
     /**
      * @private
      * @type {boolean}
      */
     this.mWasStopped = false;
+
+    this.__bootViewport();
   }
 
   /**
@@ -272,6 +270,8 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootStage() {
+    this.mStage = new Stage();
+
     window.onblur = event => this.__onVisbilityChange(event);
     window.onfocus = event => this.__onVisbilityChange(event);
     window.onpagehide = event => this.__onVisbilityChange(event);
@@ -353,10 +353,11 @@ class Black extends MessageDispatcher {
     if (this.mEnableFixedTimeStep === false)
       Debug.info('Fixed time-step is disabled, some systems may not work.');
 
-    this.__bootViewport();
     this.__bootSystems();
-    this.__bootVideo();
     this.__bootStage();
+    this.__bootVideo();
+
+    this.mStage.__refresh();
 
     this.mGameObject = new this.mGameClass();
     this.mStage.addChild(this.mGameObject);
@@ -465,7 +466,7 @@ class Black extends MessageDispatcher {
       this.mVideo.render(this.mStage);
       this.mVideo.endFrame();
 
-      this.mFrameNum++;
+      Black.__frameNum++;
 
       // TODO: remove uptime
       this.mUptime += dt;
@@ -497,6 +498,8 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   __internalUpdate(dt) {
+    this.mViewport.__update(dt);
+
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onUpdate(dt, this.mUptime);
 
@@ -516,7 +519,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns the root GameObject.
+   * Returns the Stage GameObject.
    * @return {GameObject}
    */
   get stage() {
@@ -524,6 +527,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * @deprecated
    * Returns current video driver instance.
    * @return {VideoNullDriver}
    */
@@ -788,8 +792,23 @@ class Black extends MessageDispatcher {
   get magic() {
     return Math.random();
   }
+  
 
-  get frameNum() {
-    return this.mFrameNum;
+  get gameObject() {
+    return this.mGameObject;
+  }
+
+  static get driver() {
+    return Black.instance.video;
+  }
+
+  static get stage() {
+    return Black.instance.stage;
+  }
+
+  static get frameNum() {
+    return Black.__frameNum;
   }
 }
+
+Black.__frameNum = 0;

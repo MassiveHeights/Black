@@ -5,7 +5,6 @@ class RenderTargetCanvas extends RenderTarget {
 
     this.mCanvas = document.createElement('canvas');
     this.mCtx = this.mCanvas.getContext('2d');
-
     this.resize(width, height);
   }
 
@@ -23,8 +22,7 @@ class RenderTargetCanvas extends RenderTarget {
     return this.mCanvas.width;
   }
 
-  set width(val) // eslint-disable-line require-jsdoc
-  {
+  set width(val) {
     this.mCanvas.width = val;
   }
 

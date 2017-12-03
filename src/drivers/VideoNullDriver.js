@@ -12,7 +12,6 @@ class VideoNullDriver {
    * @param  {number} height
    */
   constructor(containerElement, width, height) {
-
     /**
      * @protected
      * @type {HTMLElement}
@@ -50,6 +49,13 @@ class VideoNullDriver {
     this.mLastRenderTexture = null;
     this.mCurrentRenderTexture = null;
 
+    this.mSnapToPixels = false;
+
+    this.mRenderResolution = 1;
+    this.mStageScaleFactor =  Device.getDevicePixelRatio() * this.mRenderResolution;
+
+    //this.mStageScaleFactor = Device.getDevicePixelRatio();
+
     /**
      * @private
      * @type {string}
@@ -64,21 +70,40 @@ class VideoNullDriver {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.NORMAL;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;    
 
     // @ifdef DEBUG
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.id = 'debug-canvas';
     cvs.style.position = 'absolute';
     cvs.style.zIndex = 2;
-    cvs.width = this.mClientWidth;
-    cvs.height = this.mClientHeight;
+
+    let scale = this.mStageScaleFactor;
+    cvs.width = this.mClientWidth * scale;
+    cvs.height = this.mClientHeight * scale;
+    cvs.style.width = this.mClientWidth + 'px';
+    cvs.style.height = this.mClientHeight + 'px';
     this.mContainerElement.appendChild(cvs);
 
     this.__debugContext = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
     // @endif
 
     Black.instance.viewport.on('resize', this.__onResize, this);
+  }
+
+  get scaleFactor() {
+    //return this.mStageScaleFactor;
+    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor * this.mRenderResolution;
+  }
+
+  get renderResolution() {
+    return this.mRenderResolution;
+  }
+
+  set renderResolution(value) {
+    this.mRenderResolution = value;
+    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
+    this.__onResize();
   }
 
   getRenderer(type) {
@@ -111,6 +136,9 @@ class VideoNullDriver {
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
+      this.mSnapToPixels = renderer.snapToPixels;
+
+      // RenderTexture needs full stage bounds and needs to be placed in the top left corner to render whole screen at once
       this.setTransform(renderer.getTransform());
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();
@@ -237,8 +265,11 @@ class VideoNullDriver {
     this.mClientHeight = h;
 
     // @ifdef DEBUG
-    this.__debugContext.canvas.width = this.mClientWidth;
-    this.__debugContext.canvas.height = this.mClientHeight;
+    let scale = this.mStageScaleFactor;
+    this.__debugContext.canvas.width = this.mClientWidth * scale;
+    this.__debugContext.canvas.height = this.mClientHeight * scale;
+    this.__debugContext.canvas.style.width = this.mClientWidth + 'px';
+    this.__debugContext.canvas.style.height = this.mClientHeight + 'px';
     // @endif
   }
 

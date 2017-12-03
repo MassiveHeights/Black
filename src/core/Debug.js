@@ -86,6 +86,8 @@ class Debug {
 
     Debug.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
+    let c = 0;
+
     for (let i = 0; i < properties.length; i++) {
       let name = properties[i];
       let value = gameObject[properties[i]];
@@ -95,12 +97,13 @@ class Debug {
           value = Math.round(value) !== value ? value.toFixed(2) : value;
 
         value = ': ' + value;
+        
 
         definedProperty.push({ name, value });
 
         try {
-          let nameWidth = TextMetricsEx.measureBitmap(definedProperty[i].name, fontData, 1).width;
-          let valueWidth = TextMetricsEx.measureBitmap(definedProperty[i].value, fontData, 1).width;
+          let nameWidth = TextMetricsEx.measureBitmap(definedProperty[c].name, fontData, 1).width;
+          let valueWidth = TextMetricsEx.measureBitmap(definedProperty[c].value, fontData, 1).width;
 
           columnNameWidth = nameWidth > columnNameWidth ? nameWidth : columnNameWidth;
           columnValueWidth = valueWidth > columnValueWidth ? valueWidth : columnValueWidth;
@@ -108,6 +111,8 @@ class Debug {
         catch (err) {
           debugger;
         }
+
+        c++;
       }
     }
 

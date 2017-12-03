@@ -49,6 +49,7 @@ class Sprite extends DisplayObject {
       renderer.pivotX = this.mPivotX;
       renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;
+      renderer.snapToPixels = this.mSnapToPixels;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -76,7 +77,7 @@ class Sprite extends DisplayObject {
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
     } else {
-      outRect.set(0, 0, this.mTexture.untrimmedRect.width, this.mTexture.untrimmedRect.height);
+      outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
     }
 
     return outRect;
@@ -120,5 +121,5 @@ class Sprite extends DisplayObject {
 
     this.mTextureName = value;
     this.texture = AssetManager.default.getTexture(value);
-  }  
+  }
 }
