@@ -75,24 +75,21 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    //TODO: check if atlas resolution is correct
     let scale = this.mStageScaleFactor;
     let tr = texture.resolution;
 
-    var sourceX = texture.region.x ;
+    var sourceX = texture.region.x;
     var sourceY = texture.region.y;
     var sourceWidth = texture.width;
     var sourceHeight = texture.height;
 
-    var destX = texture.untrimmedRect.x * scale;
-    var destY = texture.untrimmedRect.y * scale;
-    var destWidth = (texture.width * scale) / tr;
-    var destHeight = (texture.height * scale) / tr;
+    var destX = (texture.untrimmedRect.x / tr) * scale;
+    var destY = (texture.untrimmedRect.y / tr) * scale;
+    var destWidth = (texture.width / tr) * scale;
+    var destHeight = (texture.height / tr) * scale;
 
-    //this.mCtx.imageSmoothingEnabled = false;
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
-
   beginClip(clipRect, px, py) {
     let r = this.mStageScaleFactor;
 
@@ -123,6 +120,7 @@ class CanvasDriver extends VideoNullDriver {
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
     else
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * scale, v[5] * scale);
+
   }
 
   /**

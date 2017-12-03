@@ -70,7 +70,7 @@ class VideoNullDriver {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.NORMAL;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;    
 
     // @ifdef DEBUG
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
@@ -137,8 +137,9 @@ class VideoNullDriver {
       let renderer = this.mRenderers[i];
 
       this.mSnapToPixels = renderer.snapToPixels;
-      this.setTransform(renderer.getTransform());
 
+      // RenderTexture needs full stage bounds and needs to be placed in the top left corner to render whole screen at once
+      this.setTransform(renderer.getTransform());
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();
 
