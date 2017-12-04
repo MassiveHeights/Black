@@ -113,6 +113,7 @@ class Circle {
    * @return {boolean} True if circle contains point.
    */
   contains(vector) {
+    // TODO: remove new Vector init
     return new Vector(this.x, this.y).subtract(vector).length() <= this.r;
   }
 

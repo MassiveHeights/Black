@@ -152,6 +152,9 @@ class GameObject extends MessageDispatcher {
     this.mSuspendDirty = false;
 
     this.mSnapToPixels = false;
+
+    // cache all colliders for fast access
+    this.mCollidersCache = [];
   }
 
   get snapToPixels() {
@@ -427,6 +430,9 @@ class GameObject extends MessageDispatcher {
     this.mComponents.push(instance);
     instance.mGameObject = this;
 
+    if (instance instanceof Collider)
+      this.mCollidersCache.push(instance);
+
     if (this.stage !== null)
       Black.instance.onComponentAdded(this, instance);
 
@@ -450,6 +456,12 @@ class GameObject extends MessageDispatcher {
 
     // detach game object after or before?
     instance.mGameObject = null;
+
+    if (instance instanceof Collider) {
+      let index = this.mCollidersCache.indexOf(instance);
+      if (index > -1)
+        this.mCollidersCache.splice(index, 1);
+    }
 
     if (this.stage !== null)
       Black.instance.onComponentRemoved(this, instance);
@@ -1487,10 +1499,52 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
+  getBounds22(space = undefined, includeChildren = true, outRect = undefined) {
+    outRect = outRect || new Rectangle();
+
+    let matrix = this.worldTransformation;
+
+    // TODO: optimize, check if space == null, space == this, space == parent
+    // TODO: use wtInversed instead
+    if (space != null) {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
+    }
+
+    let bounds = new Rectangle();
+    this.onGetLocalBounds(bounds);
+
+    matrix.transformRect(bounds, bounds);
+    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    if (includeChildren)
+      for (let i = 0; i < this.numChildren; i++)
+        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+
+    return outRect;
+  }
+
   onHitTest(point) {
+    let contains = false;
+
     let tmpVector = new Vector();
     this.worldTransformationInversed.transformVector(point, tmpVector);
-    return this.getBounds(this, false).containsXY(tmpVector.x, tmpVector.y);
+
+    if (this.mCollidersCache.length > 0) {
+      for (let i = 0; i < this.mCollidersCache.length; i++) {
+        let collider = this.mCollidersCache[i];
+
+        let matrix = this.worldTransformation;
+        contains = collider.containsPoint(point);
+        if (contains === true)
+          return true;
+      }
+    } else {
+      let bounds = this.getBounds(this, false);
+      contains = bounds.containsXY(tmpVector.x, tmpVector.y);
+    }
+
+    return contains;
   }
 
   onHitTestMask(point) {

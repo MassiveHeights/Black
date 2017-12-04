@@ -374,6 +374,22 @@ class Vector {
     return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
   }
   // @endif
+
+  static pop(x = 0, y = 0) {
+    let v = null;
+    if (Vector.__recycled > 0) {
+      v = Vector.__recycled.pop();
+      v.set(x, y);
+    } else {
+      v = new Vector(x, y);
+    }
+
+    return v;
+  }
+
+  static free(vector) {
+    Vector.__recycled.push(vector);
+  }
 }
 
 /**
@@ -382,3 +398,5 @@ class Vector {
  * @nocollapse
  */
 Vector.__cache = new Vector();
+
+Vector.__recycled = [];

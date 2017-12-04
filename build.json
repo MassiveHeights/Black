@@ -29,6 +29,10 @@
     "src/core/GameObject.js",
     "src/core/Stage.js",
 
+    "src/colliders/Collider.js",
+    "src/colliders/BoxCollider.js",
+    "src/colliders/CircleCollider.js",
+
     "src/video/Texture.js",
     "src/video/AtlasTexture.js",
     "src/video/RenderTexture.js",

@@ -87,9 +87,6 @@ class Stage extends GameObject {
       this.mStageHeight = this.mHeight;
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
-
-      //console.log('SSF', this.mStageScaleFactor);
-      
     } else {
       let size = Black.instance.viewport.size;
 
@@ -160,31 +157,31 @@ class Stage extends GameObject {
   removeFromParent() { Debug.error('Not allowed.'); }
 
   set scaleX(value) { Debug.error('Not allowed.'); }
-  get scaleX() { return this.mScaleX; }
+  get scaleX() { return 1; }
 
   set scaleY(value) { Debug.error('Not allowed.'); }
-  get scaleY() { return this.mScaleY; }
+  get scaleY() { return 1; }
 
   set pivotX(value) { Debug.error('Not allowed.'); }
-  get pivotX() { return this.mPivotX; }
+  get pivotX() { return 0; }
 
   set pivotY(value) { Debug.error('Not allowed.'); }
-  get pivotY() { return this.mPivotY; }
+  get pivotY() { return 0; }
 
   set anchorX(value) { Debug.error('Not allowed.'); }
-  get anchorX() { return super.anchorX; }
+  get anchorX() { return 0; }
 
   set anchorY(value) { Debug.error('Not allowed.'); }
-  get anchorY() { return super.anchorY; }
+  get anchorY() { return 0; }
 
   set x(value) { Debug.error('Not allowed.'); }
-  get x() { return this.mX; } // GG ES6
+  get x() { return this.mX / this.mStageScaleFactor; } // GG ES6
 
   set y(value) { Debug.error('Not allowed.'); }
-  get y() { return this.mY; } // GG ES6
+  get y() { this.mY / this.mStageScaleFactor } // GG ES6
 
   set rotation(value) { Debug.error('Not allowed.'); }
-  get rotation() { return this.mRotation; } // GG ES6
+  get rotation() { return 0; } // GG ES6
 
   set width(value) { Debug.error('Not allowed.'); }
   get width() { return this.mStageWidth; }
