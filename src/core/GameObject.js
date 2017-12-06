@@ -549,13 +549,22 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent !== null)
+      if (this.mParent !== null && (this.mParent instanceof Stage) === false)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
 
     return this.mWorldTransform;
+  }
+
+  get finalTransformation() {
+    if (this.stage == null)
+      return this.worldTransformation;
+
+    let rt = this.worldTransformation;
+    let st = this.stage.stageTransformation.clone();
+    return st.append(rt);
   }
 
   /**
@@ -718,7 +727,6 @@ class GameObject extends MessageDispatcher {
     return false;
   }
 
-
   /**
    * Called at every fixed frame update.
    *
@@ -815,7 +823,7 @@ class GameObject extends MessageDispatcher {
   }
 
   get bounds() {
-    return this.getBounds(this, true);
+    return this.getBounds(this.mParent, true);
   }
 
   /**

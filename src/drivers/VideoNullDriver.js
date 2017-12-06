@@ -139,6 +139,11 @@ class VideoNullDriver {
       this.mSnapToPixels = renderer.snapToPixels;
 
       // RenderTexture needs full stage bounds and needs to be placed in the top left corner to render whole screen at once
+      //let rt = renderer.getTransform();
+      // //debugger
+      // let st = Black.stage.stageTransformation.clone();
+      // let t = st.append(rt);
+
       this.setTransform(renderer.getTransform());
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();

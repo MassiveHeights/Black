@@ -261,7 +261,7 @@ class Emitter extends DisplayObject {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
+      renderer.transform = this.finalTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode;
       renderer.visible = this.mVisible;

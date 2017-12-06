@@ -1,4 +1,5 @@
 // TODO: remove removeFromParent
+// TODO: hitTest
 /* @echo EXPORT */
 class Stage extends GameObject {
   constructor() {
@@ -83,6 +84,7 @@ class Stage extends GameObject {
       let two = 2 * scaleFactor;
       this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
       this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
+
       this.mStageWidth = this.LP(this.mWidth, this.mHeight);
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
@@ -147,13 +149,26 @@ class Stage extends GameObject {
     return this.mStageHeight * 0.5;
   }
 
+  get stageTransformation() {
+    return new Matrix(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+  }
+
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
     return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
   }
 
-  onGetLocalBounds() { Debug.error('Not allowed.'); }
+  onGetLocalBounds(outRect = undefined) {
+    outRect = outRect || new Rectangle();
+    return outRect.set(0, 0, this.mStageWidth, this.mStageHeight);
+  }
+
   removeFromParent() { Debug.error('Not allowed.'); }
+  get localTransformation() { 
+    // debugger
+    // Debug.error('Not allowed.'); 
+    return new Matrix();
+  }
 
   set scaleX(value) { Debug.error('Not allowed.'); }
   get scaleX() { return 1; }

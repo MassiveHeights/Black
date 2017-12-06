@@ -180,7 +180,7 @@ class Input extends System {
   __pushEvent(e) {
     let /** @type {Vector|null} */ p = null;
     if (e.type.indexOf('touch') === 0)
-      p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */ (e));
+      p = this.__getTouchPos(this.mDom, /** @type {TouchEvent} */(e));
     else
       p = this.__getPointerPos(this.mDom, e);
 
@@ -236,25 +236,30 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
+    let stage = Black.instance.stage;
+    // pointer in/out 
     // we had no actual events but still we need to know if something were moved
-    if (this.mPointerQueue.length === 0) {
-      this.__findTarget(Input.pointerPosition);
-      this.__processInOut(Input.pointerPosition);
-    }
+    // if (this.mPointerQueue.length === 0) {
+    //   this.__findTarget(Input.pointerPosition);
+    //   this.__processInOut(Input.pointerPosition);
+    // }
 
     for (var i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent =  this.mPointerQueue[i];
+      let nativeEvent = this.mPointerQueue[i];
 
       // update to the lattest position
       this.mPointerPosition.x = nativeEvent.x;
       this.mPointerPosition.y = nativeEvent.y;
 
-      let pointerPos = new Vector(nativeEvent.x, nativeEvent.y);
+      // TODO: optimize
+      let inv = stage.stageTransformation.clone().invert();
+      inv.transformVector(this.mPointerPosition, this.mPointerPosition);
+
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
-      this.__findTarget(pointerPos);
-      this.__processInOut(Input.pointerPosition);
-      this.__processNativeEvent(nativeEvent, pointerPos, eventType);
+      this.__findTarget(this.mPointerPosition);
+      //this.__processInOut(Input.pointerPosition);
+      this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
     }
 
     // Erase the pointer queue
@@ -444,9 +449,9 @@ class Input extends System {
 
 Input.POINTER_DOWN = 'pointerDown';
 Input.POINTER_MOVE = 'pointerMove';
-Input.POINTER_UP   = 'pointerUp';
-Input.POINTER_IN   = 'pointerIn';
-Input.POINTER_OUT  = 'pointerOut';
+Input.POINTER_UP = 'pointerUp';
+Input.POINTER_IN = 'pointerIn';
+Input.POINTER_OUT = 'pointerOut';
 
 /**
  * @type {Input}
