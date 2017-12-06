@@ -39,7 +39,6 @@
     "src/loaders/FontAsset.js",
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/SoundAsset.js",
-    "src/loaders/SpineAsset.js",
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
