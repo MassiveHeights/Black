@@ -81,10 +81,10 @@ class Stage extends GameObject {
       let height = windowHeight * scaleFactor;
 
       let two = 2 * scaleFactor;
-      this.mX = width / two - (this.mWidth / two);
-      this.mY = height / two - (this.mHeight / two);
-      this.mStageWidth = this.mWidth;
-      this.mStageHeight = this.mHeight;
+      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
+      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
+      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
+      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     } else {
@@ -149,8 +149,7 @@ class Stage extends GameObject {
 
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
-
-    return outRect.set(this.mX / this.mStageScaleFactor, this.mY / this.mStageScaleFactor, this.width, this.height);
+    return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
   }
 
   onGetLocalBounds() { Debug.error('Not allowed.'); }
