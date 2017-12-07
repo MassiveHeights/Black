@@ -251,6 +251,9 @@ class MessageDispatcher {
     if (message.canceled === true)
       return;
 
+    if (this.stage === null)
+      return;
+
     if (this.mListeners === null)
       return;
 
@@ -284,6 +287,9 @@ class MessageDispatcher {
 
     let isGameObject = this instanceof GameObject;
     if (isGameObject === false)
+      return;
+
+    if (this.stage === null)
       return;
 
     let go = /** @type {GameObject} */ (this);
@@ -321,6 +327,9 @@ class MessageDispatcher {
       let dispatcher = clone[i];
 
       if (!this.__checkPath(sender.path, dispatcher.pathMask))
+        continue;
+
+      if (dispatcher.owner.stage == null)
         continue;
 
       message.target = this;
