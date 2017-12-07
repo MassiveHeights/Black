@@ -15,8 +15,8 @@
 
     "src/core/Debug.js",
 
-    "src/core/Message.js",
-    "src/core/MessageDispatcher.js",
+    "src/messages/Message.js",
+    "src/messages/MessageDispatcher.js",
 
     "src/display/text/FontMetrics.js",
     "src/display/text/TextMetrics.js",
@@ -27,7 +27,7 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
-    "src/core/Stage.js",
+    "src/display/Stage.js",
 
     "src/colliders/Collider.js",
     "src/colliders/BoxCollider.js",

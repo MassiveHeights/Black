@@ -339,8 +339,8 @@ class Debug {
   }
 }
 
-Debug.throwOnFail = false;
-Debug.logOnFail = true;
+Debug.throwOnFail = true;
+Debug.logOnFail = false;
 
 Debug.__printAlphaTime = 4;
 Debug.__printTime = 5;

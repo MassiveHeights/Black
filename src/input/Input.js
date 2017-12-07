@@ -237,12 +237,6 @@ class Input extends System {
     this.__updateKeyboard();
 
     let stage = Black.instance.stage;
-    // pointer in/out 
-    // we had no actual events but still we need to know if something were moved
-    // if (this.mPointerQueue.length === 0) {
-    //   this.__findTarget(Input.pointerPosition);
-    //   this.__processInOut(Input.pointerPosition);
-    // }
 
     for (var i = 0; i < this.mPointerQueue.length; i++) {
       let nativeEvent = this.mPointerQueue[i];
@@ -258,7 +252,6 @@ class Input extends System {
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
       this.__findTarget(this.mPointerPosition);
-      //this.__processInOut(Input.pointerPosition);
       this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
     }
 
@@ -349,21 +342,6 @@ class Input extends System {
     this.mLastInTargetComponent = null;
   }
 
-  __processInOut(pos) {
-    if (this.mTargetComponent === null) {
-      if (this.mLastInTargetComponent !== null)
-        this.__postOutMessage();
-    } else {
-      if (this.mLastInTargetComponent !== null && this.mLastInTargetComponent !== this.mTargetComponent) {
-        this.__postOutMessage();
-        return;
-      }
-
-      if (this.mTargetComponent.mPointerInDispatched === false)
-        this.__postInMessage();
-    }
-  }
-
   /**
    * @private
    *
@@ -450,8 +428,6 @@ class Input extends System {
 Input.POINTER_DOWN = 'pointerDown';
 Input.POINTER_MOVE = 'pointerMove';
 Input.POINTER_UP = 'pointerUp';
-Input.POINTER_IN = 'pointerIn';
-Input.POINTER_OUT = 'pointerOut';
 
 /**
  * @type {Input}
