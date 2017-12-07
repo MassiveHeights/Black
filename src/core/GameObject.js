@@ -105,6 +105,12 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
+     * @type {Matrix}
+     */
+    this.mFinalTransform = new Matrix();
+
+    /**
+     * @private
      * @type {DirtyFlag}
      */
     this.mDirty = DirtyFlag.DIRTY;
@@ -562,9 +568,14 @@ class GameObject extends MessageDispatcher {
     if (this.stage == null)
       return this.worldTransformation;
 
-    let rt = this.worldTransformation;
-    let st = this.stage.stageTransformation.clone();
-    return st.append(rt);
+    if (this.mDirty & DirtyFlag.FINAL) {
+      this.mDirty ^= DirtyFlag.FINAL;
+
+      this.mFinalTransform = this.stage.stageTransformation.clone();
+      this.mFinalTransform.append(this.worldTransformation);
+    }
+
+    return this.mFinalTransform;
   }
 
   /**
@@ -1364,7 +1375,7 @@ class GameObject extends MessageDispatcher {
       return;
 
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER, true);
   }
 
   setRenderDirty() {
@@ -1736,8 +1747,9 @@ var DirtyFlag = {
   CLEAN: 0,
   LOCAL: 1,
   WORLD: 2,
-  WORLD_INV: 4,
-  RENDER: 8,
-  RENDER_CACHE: 16,
+  FINAL: 4,
+  WORLD_INV: 8,
+  RENDER: 16,
+  RENDER_CACHE: 32,
   DIRTY: 0xffffff
 };

@@ -19,19 +19,19 @@ class Stage extends GameObject {
     this.mCacheWidth = 0;
     this.mCacheHeight = 0;
 
-    //this.mOrientation = StageOrientation.UNIVERSAL;
+    this.mOrientation = StageOrientation.UNIVERSAL;
 
     this.addComponent(new InputComponent());
   }
 
-  // get orientation() {
-  //   return this.mOrientation;
-  // }
+  get orientation() {
+    return this.mOrientation;
+  }
 
-  // set orientation(value) {
-  //   this.mOrientation = value;
-  //   this.__refresh();
-  // }
+  set orientation(value) {
+    this.mOrientation = value;
+    this.__refresh();
+  }
 
   setSize(width, height) {
     this.mWidth = width;
@@ -104,6 +104,11 @@ class Stage extends GameObject {
   }
 
   LP(land, port) {
+    if (this.mOrientation == StageOrientation.LANDSCAPE)
+      return land;
+    else if (this.mOrientation == StageOrientation.PORTRAIT)
+      return port;
+
     return this.isLandscape ? land : port;
   }
 
@@ -164,7 +169,7 @@ class Stage extends GameObject {
   }
 
   removeFromParent() { Debug.error('Not allowed.'); }
-  get localTransformation() { 
+  get localTransformation() {
     // debugger
     // Debug.error('Not allowed.'); 
     return new Matrix();
