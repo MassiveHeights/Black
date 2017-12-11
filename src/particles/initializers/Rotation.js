@@ -9,16 +9,16 @@ class Rotation extends Initializer {
   /**
    * Creates new Rotation instance.
    *
-   * @param {FloatScatter} floatScatter The min-max range for starting rotation.
+   * @param {...(number)|FloatScatter} values The min/max range.
    */
-  constructor(floatScatter) {
+  constructor(...values) {
     super();
 
     /**
-     * The min-max range for starting rotation
-     * @type {FloatScatter}
+     * The min-max range.
+     * @type {...(number)|FloatScatter}
      */
-    this.scatter = floatScatter;
+    this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**

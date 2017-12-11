@@ -89,12 +89,13 @@ class DisplayObject extends GameObject {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
+      renderer.transform = this.finalTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.mClipRect;
+      renderer.snapToPixels = this.mSnapToPixels;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

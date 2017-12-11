@@ -49,7 +49,8 @@ gulp.task('build-es6-module', function () {
   return gulp.src(files)
     .pipe(preprocess({
       context: {
-        EXPORT: 'export'
+        EXPORT: 'export',
+        DEBUG: true
       }
     }))
     .pipe(sourcemaps.init())

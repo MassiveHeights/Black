@@ -122,7 +122,7 @@ class TextField extends DisplayObject {
     let oldDirty = this.mDirty;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
+      renderer.transform = this.finalTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
@@ -145,7 +145,8 @@ class TextField extends DisplayObject {
       renderer.bounds = this.mTextBounds;
       renderer.lineBounds = this.mLineBounds;
 
-      this.mDirty ^= DirtyFlag.RENDER_CACHE;
+      if (renderer.isRenderable === true)
+        this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
 
     renderer.dirty = oldDirty;
@@ -164,8 +165,13 @@ class TextField extends DisplayObject {
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    if (this.mDirty & DirtyFlag.RENDER_CACHE)
-      this.mLineBounds = TextMetricsEx.measure(this.text, this.mStyle, this.mLineHeight, this.mTextBounds);
+    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
+      let text = this.text;
+      if (this.mMultiline === false)
+        text = text.replace(/\n/g, '');
+
+      this.mLineBounds = TextMetricsEx.measure(text, this.mStyle, this.mLineHeight, this.mTextBounds);
+    }
 
     if (this.mAutoSize === false) {
       outRect.width = this.mFieldWidth;

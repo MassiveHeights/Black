@@ -20,7 +20,8 @@ class CanvasDriver extends VideoNullDriver {
       DisplayObject: DisplayObjectRendererCanvas,
       Sprite: SpriteRendererCanvas,
       Emitter: EmitterRendererCanvas,
-      Text: TextRendererCanvas
+      Text: TextRendererCanvas,
+      BitmapText: BitmapTextRendererCanvas
     };
   }
 
@@ -33,11 +34,17 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
+    let scale = this.mStageScaleFactor;
+
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
     cvs.id = 'canvas';
-    cvs.width = this.mClientWidth;
-    cvs.height = this.mClientHeight;
+
+    cvs.width = this.mClientWidth * scale;
+    cvs.height = this.mClientHeight * scale;
+    cvs.style.width = this.mClientWidth + 'px';
+    cvs.style.height = this.mClientHeight + 'px';
+
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
@@ -56,26 +63,39 @@ class CanvasDriver extends VideoNullDriver {
     // canvas will reset state after changing size
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
-    this.mCtx.canvas.width = this.mClientWidth;
-    this.mCtx.canvas.height = this.mClientHeight;
+
+    let scale = this.mStageScaleFactor;
+    this.mCtx.canvas.width = this.mClientWidth * scale;
+    this.mCtx.canvas.height = this.mClientHeight * scale;
+    this.mCtx.canvas.style.width = this.mClientWidth + 'px';
+    this.mCtx.canvas.style.height = this.mClientHeight + 'px';
   }
 
   drawTexture(texture) {
     if (texture.isValid === false)
       return;
 
-    const w = texture.width;
-    const h = texture.height;
-    const ox = texture.untrimmedRect.x;
-    const oy = texture.untrimmedRect.y;
+    let scale = this.mStageScaleFactor;
+    let tr = texture.resolution;
 
-    this.mCtx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ox, oy, w, h);
+    var sourceX = texture.region.x;
+    var sourceY = texture.region.y;
+    var sourceWidth = texture.width;
+    var sourceHeight = texture.height;
+
+    var destX = (texture.untrimmedRect.x / tr) * scale;
+    var destY = (texture.untrimmedRect.y / tr) * scale;
+    var destWidth = (texture.width / tr) * scale;
+    var destHeight = (texture.height / tr) * scale;
+
+    this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
-
   beginClip(clipRect, px, py) {
+    let r = this.mStageScaleFactor;
+
     this.mCtx.save();
     this.mCtx.beginPath();
-    this.mCtx.rect(clipRect.x + px, clipRect.y + py, clipRect.width, clipRect.height);
+    this.mCtx.rect((clipRect.x + px) * r, (clipRect.y + py) * r, clipRect.width * r, clipRect.height * r);
 
     this.mCtx.clip();
   }
@@ -93,8 +113,14 @@ class CanvasDriver extends VideoNullDriver {
   setTransform(m) {
     this.mTransform = m;
 
+    let scale = this.mStageScaleFactor;
     const v = m.value;
-    this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
+
+    if (this.mSnapToPixels === true)
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
+    else
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * scale, v[5] * scale);
+
   }
 
   /**
@@ -119,6 +145,8 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
+    blendMode = CanvasBlendMode[blendMode];
+
     if (this.mGlobalBlendMode === blendMode)
       return;
 
@@ -144,6 +172,7 @@ class CanvasDriver extends VideoNullDriver {
       this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
 
+    super.clear();
   }
 
   /**

@@ -7,14 +7,19 @@
  */
 /* @echo EXPORT */
 class TextureOverLife extends Action {
-  constructor(floatScatter) {
+  /**
+   * Creates new TextureOverLife instance.
+   *
+   * @param {...(number)|FloatScatter} values A starting and ending values of textureIndex property.
+   */
+  constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {FloatScatter}
+     * @type {...(number)|FloatScatter}
      */
-    this.mScatter = floatScatter;
+    this.mScatter = FloatScatter.fromObject(...values);
   }
 
   /**

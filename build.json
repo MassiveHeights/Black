@@ -17,8 +17,8 @@
 
     "src/core/Debug.js",
 
-    "src/core/Message.js",
-    "src/core/MessageDispatcher.js",
+    "src/messages/Message.js",
+    "src/messages/MessageDispatcher.js",
 
     "src/display/text/FontMetrics.js",
     "src/display/text/TextMetrics.js",
@@ -29,6 +29,11 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
+    "src/display/Stage.js",
+
+    "src/colliders/Collider.js",
+    "src/colliders/BoxCollider.js",
+    "src/colliders/CircleCollider.js",
 
     "src/video/Texture.js",
     "src/video/AtlasTexture.js",
@@ -36,17 +41,21 @@
     "src/loaders/Asset.js",
     "src/loaders/TextureAsset.js",
     "src/loaders/JSONAsset.js",
+    "src/loaders/XMLAsset.js",
     "src/loaders/FontAsset.js",
     "src/loaders/AtlasTextureAsset.js",
+    "src/loaders/BitmapFontAsset.js",
     "src/loaders/SoundAsset.js",
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
     "src/drivers/Renderer.js",
     "src/drivers/TextRenderer.js",
+    "src/drivers/BitmapTextRenderer.js",
     "src/drivers/RenderTarget.js",
 
     "src/drivers/canvas/TextRendererCanvas.js",
+    "src/drivers/canvas/BitmapTextRendererCanvas.js",
     "src/drivers/canvas/EmitterRendererCanvas.js",
     "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/SpriteRendererCanvas.js",
@@ -65,6 +74,7 @@
     "src/display/Sprite.js",
     "src/display/text/TextInfo.js",
     "src/display/text/TextField.js",
+    "src/display/text/BitmapTextField.js",
     "src/system/Device.js",
 
     "src/scatters/Scatter.js",
@@ -77,6 +87,7 @@
     "src/particles/actions/ScaleOverLife.js",
     "src/particles/actions/RotationOverLife.js",
     "src/particles/actions/TextureOverLife.js",
+    "src/particles/actions/Oriented.js",    
     "src/particles/initializers/Initializer.js",
     "src/particles/initializers/Life.js",
     "src/particles/initializers/Mass.js",

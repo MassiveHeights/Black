@@ -105,6 +105,12 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
+     * @type {Matrix}
+     */
+    this.mFinalTransform = new Matrix();
+
+    /**
+     * @private
      * @type {DirtyFlag}
      */
     this.mDirty = DirtyFlag.DIRTY;
@@ -144,6 +150,41 @@ class GameObject extends MessageDispatcher {
      * @type {number}
      */
     this.mDirtyFrameNum = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mSuspendDirty = false;
+
+    this.mSnapToPixels = false;
+
+    // cache all colliders for fast access
+    this.mCollidersCache = [];
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
+  }
+
+  make(values) {
+    // can be helpfull if there are many children
+    this.mSuspendDirty = true;
+
+    for (var property in values) {
+      if (values.hasOwnProperty(property)) {
+        this[property] = values[property];
+      }
+    }
+
+    this.mSuspendDirty = false;
+    this.setTransformDirty();
+
+    return this;
   }
 
   /**
@@ -160,11 +201,11 @@ class GameObject extends MessageDispatcher {
    */
   checkStatic(includeChildren = true) {
     if (includeChildren === false)
-      return this.mDirtyFrameNum < Black.instance.frameNum - 1;
+      return this.mDirtyFrameNum < Black.frameNum - 1;
 
     let isDynamic = false;
     GameObject.forEach(this, x => {
-      if (x.mDirtyFrameNum >= Black.instance.frameNum - 1) {
+      if (x.mDirtyFrameNum >= Black.frameNum - 1) {
         isDynamic = true;
         return true;
       }
@@ -205,7 +246,7 @@ class GameObject extends MessageDispatcher {
         this.addComponent( /** @type {!Component} */(gooc));
     }
 
-    return gameObjectsAndOrComponents;
+    return this;
   }
 
   /**
@@ -240,7 +281,7 @@ class GameObject extends MessageDispatcher {
     child.removeFromParent();
     child.__setParent(this);
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onChildrenAdded(child);
 
     return child;
@@ -288,7 +329,7 @@ class GameObject extends MessageDispatcher {
     this.mChildren.splice(ix, 1);
     this.mChildren.splice(index, 0, child);
 
-    if (this.root !== null)
+    if (this.stage !== null)
       Black.instance.onChildrenChanged(child);
 
     this.setTransformDirty();
@@ -352,7 +393,7 @@ class GameObject extends MessageDispatcher {
     if (index < 0 || index > this.numChildren)
       throw new Error('Child index is out of bounds.');
 
-    let hadRoot = this.root !== null;
+    let hadRoot = this.stage !== null;
 
     let child = this.mChildren[index];
     child.__setParent(null);
@@ -395,7 +436,10 @@ class GameObject extends MessageDispatcher {
     this.mComponents.push(instance);
     instance.mGameObject = this;
 
-    if (this.root !== null)
+    if (instance instanceof Collider)
+      this.mCollidersCache.push(instance);
+
+    if (this.stage !== null)
       Black.instance.onComponentAdded(this, instance);
 
     return instance;
@@ -419,7 +463,13 @@ class GameObject extends MessageDispatcher {
     // detach game object after or before?
     instance.mGameObject = null;
 
-    if (this.root !== null)
+    if (instance instanceof Collider) {
+      let index = this.mCollidersCache.indexOf(instance);
+      if (index > -1)
+        this.mCollidersCache.splice(index, 1);
+    }
+
+    if (this.stage !== null)
       Black.instance.onComponentRemoved(this, instance);
 
     this.mNumComponentsRemoved++;
@@ -505,7 +555,7 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent !== null)
+      if (this.mParent !== null && (this.mParent instanceof Stage) === false)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
@@ -514,21 +564,35 @@ class GameObject extends MessageDispatcher {
     return this.mWorldTransform;
   }
 
+  get finalTransformation() {
+    if (this.stage == null)
+      return this.worldTransformation;
+
+    if (this.mDirty & DirtyFlag.FINAL) {
+      this.mDirty ^= DirtyFlag.FINAL;
+
+      this.mFinalTransform = this.stage.stageTransformation.clone();
+      this.mFinalTransform.append(this.worldTransformation);
+    }
+
+    return this.mFinalTransform;
+  }
+
   /**
    * @ignore
    * @param {Matrix} value
    *
    * @return {void}
    */
-  set worldTransformation(matrix) {
+  set worldTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
-    let a = matrix.value[0];
-    let b = matrix.value[1];
-    let c = matrix.value[2];
-    let d = matrix.value[3];
-    let tx = matrix.value[4];
-    let ty = matrix.value[5];
+    let a = value._matrix[0];
+    let b = value._matrix[1];
+    let c = value._matrix[2];
+    let d = value._matrix[3];
+    let tx = value._matrix[4];
+    let ty = value._matrix[5];
 
     this.mPivotX = this.mPivotX = 0;
     this.mX = tx;
@@ -674,7 +738,6 @@ class GameObject extends MessageDispatcher {
     return false;
   }
 
-
   /**
    * Called at every fixed frame update.
    *
@@ -771,7 +834,7 @@ class GameObject extends MessageDispatcher {
   }
 
   get bounds() {
-    return this.getBounds(this, true);
+    return this.getBounds(this.mParent, true);
   }
 
   /**
@@ -946,6 +1009,29 @@ class GameObject extends MessageDispatcher {
     this.setTransformDirty();
   }
 
+  get anchorX() {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+    return this.mPivotX / Rectangle.__cache.width;
+  }
+
+  set anchorX(value) {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+
+    this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
+    this.setTransformDirty();
+  }
+
+  get anchorY() {
+    return this.mPivotY / Rectangle.__cache.height;
+  }
+
+  set anchorY(value) {
+    this.getBounds(this, true, Rectangle.__cache.zero());
+
+    this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
+    this.setTransformDirty();
+  }
+
   /**
    * Sets pivot point to given position.
    *
@@ -1045,40 +1131,24 @@ class GameObject extends MessageDispatcher {
     return this.mParent;
   }
 
-  /**
-   * Returns topmost parent element of this GameObject or null if this
-   * GameObject is not a child.
-   *
-   * @readonly
-   *
-   * @return {GameObject|null}
-   */
-  get root() {
-    if (Black.instance == null)
-      return null;
-
+  get __root() {
     let current = this;
 
-    if (current === Black.instance.stage)
-      return current;
+    while (current.mParent != null)
+      current = current.mParent;
 
-    while (current.mParent) {
-      if (current === Black.instance.stage)
-        return current;
-      else if (current.mParent === Black.instance.stage)
-        return Black.instance.stage;
-      else
-        current = current.mParent;
-    }
-
-    return null;
+    return current;
   }
 
   /**
    * Returns the stage Game Object to which this game object belongs to. Shortcut for `Black.instance.stage`.
    */
   get stage() {
-    return Black.instance.stage;
+    let r = this.__root;
+    if (r instanceof Stage)
+      return r;
+
+    return null;
   }
 
   // /**
@@ -1286,11 +1356,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
-        x.mDirtyFrameNum = Black.instance.frameNum;
+        x.mDirtyFrameNum = Black.__frameNum;
       });
     } else {
       this.mDirty |= flag;
-      this.mDirtyFrameNum = Black.instance.frameNum;
+      this.mDirtyFrameNum = Black.__frameNum;
     }
   }
 
@@ -1301,11 +1371,17 @@ class GameObject extends MessageDispatcher {
    * @returns {void}
    */
   setTransformDirty() {
+    if (this.mSuspendDirty === true)
+      return;
+
     this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER, true);
+    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER, true);
   }
 
   setRenderDirty() {
+    if (this.mSuspendDirty === true)
+      return;
+
     this.setDirty(DirtyFlag.RENDER, true);
   }
 
@@ -1442,12 +1518,54 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
+  getBounds22(space = undefined, includeChildren = true, outRect = undefined) {
+    outRect = outRect || new Rectangle();
+
+    let matrix = this.worldTransformation;
+
+    // TODO: optimize, check if space == null, space == this, space == parent
+    // TODO: use wtInversed instead
+    if (space != null) {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
+    }
+
+    let bounds = new Rectangle();
+    this.onGetLocalBounds(bounds);
+
+    matrix.transformRect(bounds, bounds);
+    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+
+    if (includeChildren)
+      for (let i = 0; i < this.numChildren; i++)
+        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+
+    return outRect;
+  }
+
   onHitTest(point) {
+    let contains = false;
+
     let tmpVector = new Vector();
     this.worldTransformationInversed.transformVector(point, tmpVector);
-    return this.getBounds(this, false).containsXY(tmpVector.x, tmpVector.y);
+
+    if (this.mCollidersCache.length > 0) {
+      for (let i = 0; i < this.mCollidersCache.length; i++) {
+        let collider = this.mCollidersCache[i];
+
+        let matrix = this.worldTransformation;
+        contains = collider.containsPoint(point);
+        if (contains === true)
+          return true;
+      }
+    } else {
+      let bounds = this.getBounds(this, false);
+      contains = bounds.containsXY(tmpVector.x, tmpVector.y);
+    }
+
+    return contains;
   }
-  
+
   onHitTestMask(point) {
     return true;
   }
@@ -1629,8 +1747,9 @@ var DirtyFlag = {
   CLEAN: 0,
   LOCAL: 1,
   WORLD: 2,
-  WORLD_INV: 4,
-  RENDER: 8,
-  RENDER_CACHE: 16,
+  FINAL: 4,
+  WORLD_INV: 8,
+  RENDER: 16,
+  RENDER_CACHE: 32,
   DIRTY: 0xffffff
 };

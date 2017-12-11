@@ -48,6 +48,45 @@ class TextMetricsEx {
 
     return lineBounds;
   }
+
+  static measureBitmap(text, data, lineHeight, outBounds) {
+    outBounds = outBounds || new Rectangle();
+
+    let prevCharCode = null;
+    let cx = 0;
+    let cy = 0;
+
+    let maxHeight = 0;
+    let maxWidth = 0;
+
+    for (let i = 0; i < text.length; i++) {
+      let charCode = text.charCodeAt(i);
+
+      if (/(?:\r\n|\r|\n)/.test(text.charAt(i))) {
+        cx = 0;
+        cy += data.lineHeight * lineHeight;
+        prevCharCode = null;
+        continue;
+      }
+
+      let charData = data.chars[charCode];
+
+      if (charData == null)
+        continue;
+
+      if (prevCharCode && charData.kerning[prevCharCode])
+        cx += charData.kerning[prevCharCode];
+
+      cx += charData.xAdvance;
+
+      maxWidth = Math.max(maxWidth, cx + charData.xOffset);
+      maxHeight = Math.max(maxHeight, cy + charData.height + charData.yOffset);
+
+      prevCharCode = charCode;
+    }
+
+    return outBounds.set(0, 0, maxWidth, maxHeight);
+  }
 }
 
 TextMetricsEx.__span = null;

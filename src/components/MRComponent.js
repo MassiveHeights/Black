@@ -51,7 +51,6 @@ class MRComponent extends Component {
     this.mCacheHeight = 0;
 
     this.mForceSet = false;
-    //Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
   forceSet() {
@@ -62,8 +61,7 @@ class MRComponent extends Component {
     // TODO: performance wise
     let size = Black.instance.viewport.size;
 
-    if (this.mForceSet || this.mCacheWidth !== size.width || this.mCacheHeight !== size.height)
-    {
+    if (this.mForceSet || this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
       this.mForceSet = false;
       this.mCacheWidth = size.width;
       this.mCacheHeight = size.height;
@@ -82,7 +80,7 @@ class MRComponent extends Component {
    * @param  {number} height = 640 The height.
    * @return {void}
    */
-  setSize(width = 960, height = 640){
+  setSize(width = 960, height = 640) {
     this.mWidth = width;
     this.mHeight = height;
 
@@ -99,23 +97,29 @@ class MRComponent extends Component {
     if (!this.gameObject)
       return;
 
+    let r = Device.getDevicePixelRatio();
+
     /** @type {Rectangle} */
     let size = Black.instance.viewport.size;
+
+    let vw = size.width * r;
+    let vh = size.height * r;
+
     let width = this.__viewportWidth;
     let height = this.__viewportHeight;
 
     /** @type {number} */
-    let scaleX = size.width / width;
+    let scaleX = vw / width;
 
     /** @type {number} */
-    let scaleY = size.height / height;
+    let scaleY = vh / height;
 
     this.mScale = Math.min(scaleX, scaleY);
     this.mInvScale = 1 / this.mScale;
 
     this.gameObject.scaleX = this.gameObject.scaleY = this.mScale;
-    this.gameObject.x = (size.width / 2) - (width / 2) * this.mScale;
-    this.gameObject.y = (size.height / 2) - (height / 2) * this.mScale;
+    this.gameObject.x = ~~((vw / 2) - (width / 2) * this.mScale);
+    this.gameObject.y = ~~((vh / 2) - (height / 2) * this.mScale);
   }
 
   get bounds() {
@@ -135,8 +139,8 @@ class MRComponent extends Component {
   }
 
   get __viewportHeight() {
-      let size = Black.instance.viewport.size;
-      return (size.width <= size.height) ? this.mWidth : this.mHeight;
+    let size = Black.instance.viewport.size;
+    return (size.width <= size.height) ? this.mWidth : this.mHeight;
   }
 
   get width() {

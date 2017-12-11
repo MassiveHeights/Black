@@ -10,16 +10,16 @@ class AlphaOverLife extends Action {
   /**
    * Creates new AlphaOverLife instance.
    *
-   * @param {FloatScatter} floatScatter A starting and ending values of alpha property.
+   * @param {...(number)|FloatScatter} values A starting and ending values of alpha property.
    */
-  constructor(floatScatter) {
+  constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {FloatScatter}
+     * @type {...(number)|FloatScatter}
      */
-    this.mScatter = floatScatter;
+    this.mScatter = FloatScatter.fromObject(...values);
   }
 
   /**

@@ -12,7 +12,6 @@ class VideoNullDriver {
    * @param  {number} height
    */
   constructor(containerElement, width, height) {
-
     /**
      * @protected
      * @type {HTMLElement}
@@ -50,6 +49,13 @@ class VideoNullDriver {
     this.mLastRenderTexture = null;
     this.mCurrentRenderTexture = null;
 
+    this.mSnapToPixels = false;
+
+    this.mRenderResolution = 1;
+    this.mStageScaleFactor =  Device.getDevicePixelRatio() * this.mRenderResolution;
+
+    //this.mStageScaleFactor = Device.getDevicePixelRatio();
+
     /**
      * @private
      * @type {string}
@@ -62,7 +68,42 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
+    this.mStageRenderer = new Renderer();
+    this.mStageRenderer.alpha = 1;
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;    
+
+    // @ifdef DEBUG
+    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    cvs.id = 'debug-canvas';
+    cvs.style.position = 'absolute';
+    cvs.style.zIndex = 2;
+
+    let scale = this.mStageScaleFactor;
+    cvs.width = this.mClientWidth * scale;
+    cvs.height = this.mClientHeight * scale;
+    cvs.style.width = this.mClientWidth + 'px';
+    cvs.style.height = this.mClientHeight + 'px';
+    this.mContainerElement.appendChild(cvs);
+
+    this.__debugContext = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
+    // @endif
+
     Black.instance.viewport.on('resize', this.__onResize, this);
+  }
+
+  get scaleFactor() {
+    //return this.mStageScaleFactor;
+    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor * this.mRenderResolution;
+  }
+
+  get renderResolution() {
+    return this.mRenderResolution;
+  }
+
+  set renderResolution(value) {
+    this.mRenderResolution = value;
+    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
+    this.__onResize();
   }
 
   getRenderer(type) {
@@ -73,34 +114,29 @@ class VideoNullDriver {
     throw new Error('Not Implemented Error');
   }
 
-  render(gameObject, parentRenderer, renderTexture) {
+  render(gameObject, renderTexture) {
     let numEndClipsRequired = 0;
     if (renderTexture != null) {
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
 
       // collect parents alpha, blending, clipping and masking
-      if (parentRenderer === null) {
-        parentRenderer = new Renderer();
-        parentRenderer.alpha = 1;
-        parentRenderer.blendMode = BlendMode.AUTO;
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+      this.mRenderers.splice(0, this.mRenderers.length);
+      this.mSkipChildren = false;
 
-        this.mGlobalAlpha = -1;
-        this.mGlobalBlendMode = null;
-        this.mRenderers.splice(0, this.mRenderers.length);
-        this.mSkipChildren = false;
-      }
-
-      numEndClipsRequired = this.__collectParentRenderables(gameObject, parentRenderer);
+      numEndClipsRequired = this.__collectParentRenderables(gameObject, this.mStageRenderer);
     }
 
     this.mRendererIndex = 0;
 
-    this.__collectRenderables(gameObject, parentRenderer);
+    this.__collectRenderables(gameObject, this.mStageRenderer);
 
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
+      this.mSnapToPixels = renderer.snapToPixels;
       this.setTransform(renderer.getTransform());
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();
@@ -111,9 +147,8 @@ class VideoNullDriver {
       renderer.render(this);
       renderer.dirty = 0;
 
-      if (renderer.endPassRequired === true) {
+      if (renderer.endPassRequired === true)
         this.mEndPassRenderer = renderer;
-      }
 
       if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
         this.endClip();
@@ -135,6 +170,8 @@ class VideoNullDriver {
       this.mRenderers.splice(0, this.mRenderers.length);
       this.mSkipChildren = false;
     }
+
+    Debug.__render();
   }
 
   __collectRenderables(gameObject, parentRenderer) {
@@ -224,6 +261,14 @@ class VideoNullDriver {
 
     this.mClientWidth = w;
     this.mClientHeight = h;
+
+    // @ifdef DEBUG
+    let scale = this.mStageScaleFactor;
+    this.__debugContext.canvas.width = this.mClientWidth * scale;
+    this.__debugContext.canvas.height = this.mClientHeight * scale;
+    this.__debugContext.canvas.style.width = this.mClientWidth + 'px';
+    this.__debugContext.canvas.style.height = this.mClientHeight + 'px';
+    // @endif
   }
 
   /**
@@ -341,6 +386,12 @@ class VideoNullDriver {
    * @returns {void}
    */
   clear() {
+    // @ifdef DEBUG
+    if (this.__debugContext !== null) {
+      this.__debugContext.setTransform(1, 0, 0, 1, 0, 0);
+      this.__debugContext.clearRect(0, 0, this.__debugContext.canvas.width, this.__debugContext.canvas.height);
+    }
+    // @endif
   }
 
   /**

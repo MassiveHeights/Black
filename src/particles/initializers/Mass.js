@@ -10,16 +10,16 @@ class Mass extends Initializer {
   /**
    * Creates new Mass instance.
    *
-   * @param {number} mass The mass.
+   * @param {...(number)|FloatScatter} values The min/max range.
    */
-  constructor(mass) {
+  constructor(...values) {
     super();
 
     /**
-     * The mass value.
-     * @type {number}
+     * The min-max range.
+     * @type {...(number)|FloatScatter}
      */
-    this.mass = mass;
+    this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**
@@ -29,6 +29,6 @@ class Mass extends Initializer {
    * @return {void}
    */
   initialize(particle) {
-    particle.mass = this.mass;
+    particle.mass = this.scatter.getValue();
   }
 }

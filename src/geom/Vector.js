@@ -84,6 +84,20 @@ class Vector {
   }
 
   /**
+   * Returns the squared distance between two vectors.
+   *
+   * @param {Vector} vector Second vector to check distance with.
+   *
+   * @return {number} The distance between two vectors.
+   */
+  distanceSqr(vector) {
+    let x = this.x - vector.x;
+    let y = this.y - vector.y;
+
+    return (x * x) + (y * y);
+  }
+
+  /**
    * Multiplies two vectors.
    *
    * @param {Vector} vector A second vector to multiply with.
@@ -128,10 +142,7 @@ class Vector {
    * @return {number} The length of the vector.
    */
   length() {
-    let x = this.x;
-    let y = this.y;
-
-    return Math.sqrt(x * x + y * y);
+    return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 
   /**
@@ -140,10 +151,7 @@ class Vector {
    * @return {number} Squared length.
    */
   lengthSqr() {
-    let x = this.x;
-    let y = this.y;
-
-    return x * x + y * y;
+    return this.x * this.x + this.y * this.y;
   }
 
   /**
@@ -178,6 +186,21 @@ class Vector {
     this.x = MathEx.clamp(this.x, min, max);
     this.y = MathEx.clamp(this.y, min, max);
 
+    return this;
+  }
+
+  /**
+   * Clamps vector length of this vector to given range.
+   *
+   * @param {number} min Min value.
+   * @param {number} max Max value.
+   *
+   * @return {Vector} This.
+   */
+  clampLength(min, max) {
+    let length = MathEx.clamp(this.length, min, max);
+    let normal = this.normalize();
+    this.multiplyScalar(length);
     return this;
   }
 
@@ -288,8 +311,17 @@ class Vector {
    *
    * @return {number} Angle in radians.
    */
-  theta(vector) {
-    return Math.acos(this.dot(vector) / this.length() / vector.length());
+  angleBetween(vector) {
+    return Math.atan2(vector.y - this.y, vector.x - this.x);
+  }
+
+  /**
+   * Calculates vector angle in radians.
+   *
+   * @return {number} Angle in radians.
+   */
+  angle(vector) {
+    return Math.atan2(this.y, this.x);
   }
 
   /**
@@ -342,6 +374,22 @@ class Vector {
     return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
   }
   // @endif
+
+  static pop(x = 0, y = 0) {
+    let v = null;
+    if (Vector.__recycled > 0) {
+      v = Vector.__recycled.pop();
+      v.set(x, y);
+    } else {
+      v = new Vector(x, y);
+    }
+
+    return v;
+  }
+
+  static free(vector) {
+    Vector.__recycled.push(vector);
+  }
 }
 
 /**
@@ -350,3 +398,5 @@ class Vector {
  * @nocollapse
  */
 Vector.__cache = new Vector();
+
+Vector.__recycled = [];

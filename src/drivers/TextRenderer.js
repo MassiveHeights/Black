@@ -11,7 +11,7 @@ class TextRenderer extends Renderer {
     this.lineBounds = null; // array
     this.align = null; // TextInfo.FontAlign
     this.drawBounds = false;
-    this.vAlign = null;
+    this.vAlign = 'top'
 
     this.__transformCache = new Matrix();
     this.__canvas = document.createElement('canvas');

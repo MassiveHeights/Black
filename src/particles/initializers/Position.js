@@ -10,16 +10,16 @@ class Position extends Initializer {
   /**
    * Creates new Position instance.
    *
-   * @param {VectorScatter} vectorScatter The min/max range.
+   * @param {...(number)|VectorScatter} values The min/max range.
    */
-  constructor(vectorScatter) {
+  constructor(...values) {
     super();
 
     /**
      * The min-max range for position distribution.
-     * @type {VectorScatter}
+     * @type {...(number)|VectorScatter}
      */
-    this.scatter = vectorScatter;
+    this.scatter = VectorScatter.fromObject(...values);
   }
 
   /**

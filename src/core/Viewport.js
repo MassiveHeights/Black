@@ -21,7 +21,7 @@ class Viewport extends MessageDispatcher {
     let style = this.mContainerElement.style;
     style.userSelect = 'none';
     style.touchAction = 'none';
-    style.overflow = 'hidden';
+    //style.overflow = 'hidden';
     style.cursor = 'auto';
     style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
 
@@ -30,10 +30,21 @@ class Viewport extends MessageDispatcher {
     /** @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    this.isTransperent = false;
-    this.backgroundColor = 0x000000;
+    this.isTransperent = true;
+    this.backgroundColor = 0x222222;
+
+    this.mChecksLeftSeconds = 0;
 
     window.addEventListener('resize', x => this.__onResize());
+  }
+
+  __update(dt) {
+    if (this.mChecksLeftSeconds <= 0)
+      return;
+
+    this.__onResize();
+
+    this.mChecksLeftSeconds -= dt;
   }
 
   __onResize() {
@@ -45,6 +56,8 @@ class Viewport extends MessageDispatcher {
 
     this.mSize = newSize;
     this.post('resize', this.mSize);
+
+    this.mChecksLeftSeconds = 1;
   }
 
   /**

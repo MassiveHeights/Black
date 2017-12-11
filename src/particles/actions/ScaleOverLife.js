@@ -7,14 +7,19 @@
  */
 /* @echo EXPORT */
 class ScaleOverLife extends Action {
-  constructor(floatScatter) {
+  /**
+   * Creates new ScaleOverTime instance.
+   *
+   * @param {...(number)|FloatScatter} values A starting and ending values of scale property.
+   */
+  constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {FloatScatter}
+     * @type {...(number)|FloatScatter}
      */
-    this.mScatter = floatScatter;
+    this.mScatter = FloatScatter.fromObject(...values);
   }
 
   /**

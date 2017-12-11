@@ -86,7 +86,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {FloatScatter}
      */
-    this.mEmitDuration = new FloatScatter(1);
+    this.mEmitDuration = new FloatScatter(1 / 60);
 
     /**
      * @private
@@ -98,7 +98,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {FloatScatter}
      */
-    this.mEmitInterval = new FloatScatter(0.1);
+    this.mEmitInterval = new FloatScatter(1 / 60);
 
     /**
      * @private
@@ -146,7 +146,7 @@ class Emitter extends DisplayObject {
      * @private
      * @type {EmitterSortOrder}
      */
-    this.__sortOrder = EmitterSortOrder.FRONT_TO_BACK;
+    this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
     // /** @type {function(a:Particle, b:Particle):number} */
     // this.mComparer = null;
@@ -158,6 +158,20 @@ class Emitter extends DisplayObject {
 
   resetState() {
     this.mState = EmitterState.PENDING;
+  }
+
+  add(...actionsOrInitializers) {
+    for (let i = 0; i < actionsOrInitializers.length; i++) {
+      let ai = actionsOrInitializers[i];
+
+      if (ai instanceof Action)
+        this.addAction(ai);
+      else if (ai instanceof Initializer)
+        this.addInitializer(ai);
+      else
+        super.add(ai);
+    }
+    return this;
   }
 
   /**
@@ -247,7 +261,7 @@ class Emitter extends DisplayObject {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
+      renderer.transform = this.finalTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode;
       renderer.visible = this.mVisible;
@@ -257,10 +271,11 @@ class Emitter extends DisplayObject {
       renderer.isLocal = this.mIsLocal;
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
-      
+      renderer.sortOrder = this.mSortOrder;
+
       this.mDirty ^= DirtyFlag.RENDER;
     }
-    
+
     return driver.registerRenderer(renderer);
   }
 
@@ -275,12 +290,12 @@ class Emitter extends DisplayObject {
     const alength = this.mActions.length;
     const plength = this.mParticles.length;
 
-    for (let i = 0; i < alength; i++)
-      this.mActions[i].preUpdate(dt);
+    for (let k = 0; k < alength; k++)
+      this.mActions[k].preUpdate(dt);
 
     let particle;
 
-    let i = this.mParticles.length;
+    let i = plength;
     while (i--) {
       particle = this.mParticles[i];
 
@@ -295,8 +310,8 @@ class Emitter extends DisplayObject {
       }
     }
 
-    for (let j = 0; j < alength; j++)
-      this.mActions[j].postUpdate(dt);
+    for (let k = 0; k < alength; k++)
+      this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
     this.setDirty(DirtyFlag.LOCAL, false);
@@ -530,7 +545,7 @@ class Emitter extends DisplayObject {
    * @return {EmitterSortOrder}
    */
   get sortOrder() {
-    return this.__sortOrder;
+    return this.mSortOrder;
   }
 
   /**
@@ -540,7 +555,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   set sortOrder(value) {
-    this.__sortOrder = value;
+    this.mSortOrder = value;
     this.setRenderDirty();
   }
 }
