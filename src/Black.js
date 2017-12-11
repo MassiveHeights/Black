@@ -799,11 +799,11 @@ class Black extends MessageDispatcher {
   }
 
   static get driver() {
-    return Black.instance.video;
+    return Black.instance.mVideo;
   }
 
   static get stage() {
-    return Black.instance.stage;
+    return Black.instance.mStage;
   }
 
   static get frameNum() {

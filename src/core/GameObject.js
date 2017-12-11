@@ -159,8 +159,19 @@ class GameObject extends MessageDispatcher {
 
     this.mSnapToPixels = false;
 
+    this.mBaked = false;
+
     // cache all colliders for fast access
     this.mCollidersCache = [];
+  }
+
+  get baked() {
+    return this.mBaked;
+  }
+
+  set baked(value) {
+    // set all children baked
+    this.mBaked = value;
   }
 
   get snapToPixels() {
@@ -587,12 +598,12 @@ class GameObject extends MessageDispatcher {
   set worldTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
-    let a = value._matrix[0];
-    let b = value._matrix[1];
-    let c = value._matrix[2];
-    let d = value._matrix[3];
-    let tx = value._matrix[4];
-    let ty = value._matrix[5];
+    let a = value.data[0];
+    let b = value.data[1];
+    let c = value.data[2];
+    let d = value.data[3];
+    let tx = value.data[4];
+    let ty = value.data[5];
 
     this.mPivotX = this.mPivotX = 0;
     this.mX = tx;
@@ -1518,31 +1529,6 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-  getBounds22(space = undefined, includeChildren = true, outRect = undefined) {
-    outRect = outRect || new Rectangle();
-
-    let matrix = this.worldTransformation;
-
-    // TODO: optimize, check if space == null, space == this, space == parent
-    // TODO: use wtInversed instead
-    if (space != null) {
-      matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformationInversed);
-    }
-
-    let bounds = new Rectangle();
-    this.onGetLocalBounds(bounds);
-
-    matrix.transformRect(bounds, bounds);
-    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
-
-    if (includeChildren)
-      for (let i = 0; i < this.numChildren; i++)
-        this.getChildAt(i).getBounds(space, includeChildren, outRect);
-
-    return outRect;
-  }
-
   onHitTest(point) {
     let contains = false;
 
@@ -1733,6 +1719,7 @@ class GameObject extends MessageDispatcher {
 GameObject.ID = 0;
 
 /**
+ * NOT USED
  * @private
  * @type {boolean}
  * @nocollapse
@@ -1744,12 +1731,13 @@ GameObject.IS_ANY_DIRTY = true;
  */
 /* @echo EXPORT */
 var DirtyFlag = {
-  CLEAN: 0,
-  LOCAL: 1,
-  WORLD: 2,
-  FINAL: 4,
-  WORLD_INV: 8,
-  RENDER: 16,
-  RENDER_CACHE: 32,
-  DIRTY: 0xffffff
+  CLEAN: 0,         // Object is 100% cached
+  LOCAL: 1,         // Local transformation is dirty 
+  WORLD: 2,         // World transformation is dirty 
+  FINAL: 4,         // Final/Render transformation is dirty 
+  WORLD_INV: 8,     // Final world inversed transformation is dirty 
+  RENDER: 16,       // Object needs to be rendered 
+  RENDER_CACHE: 32, // In case object renders to bitmap internally, bitmap needs to be updated
+  REBAKE: 64,       // NOT USED: Baked object changed, parents will be notified
+  DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
 };
