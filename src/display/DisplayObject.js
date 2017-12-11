@@ -61,22 +61,30 @@ class DisplayObject extends GameObject {
 
     let matrix = this.worldTransformation;
 
-    // TODO: optimize, check if space == null, space == this, space == parent
-    // TODO: use wtInversed instead
-    if (space != null) {
-      matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformationInversed);
-    }
-
     let bounds = new Rectangle();
     this.onGetLocalBounds(bounds);
 
-    matrix.transformRect(bounds, bounds);
+    if (space == null || (this.mParent != null && space === this.mParent)) {
+      if (this.mDirty & DirtyFlag.BOUNDS) {
+        matrix.transformRect(bounds, bounds);
+        this.mBounds.copyFrom(bounds);
+
+        this.mDirty ^= DirtyFlag.BOUNDS;
+      } else {
+        this.mBounds.copyTo(bounds);
+      }
+    } else if (space === this) {
+      // LOCAL!
+    } else {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
+      matrix.transformRect(bounds, bounds);
+    }
+
     outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
 
-    if (this.mClipRect !== null) {
+    if (this.mClipRect !== null)
       return outRect;
-    }
 
     if (includeChildren)
       for (let i = 0; i < this.numChildren; i++)

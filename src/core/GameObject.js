@@ -83,7 +83,7 @@ class GameObject extends MessageDispatcher {
      * @private
      * @type {Rectangle}
      */
-    this.mBounds = null;
+    this.mBounds = new Rectangle();
 
     /**
      * @private
@@ -804,33 +804,42 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns world bounds of this object and all children if specified (true by default).
    *
-   * object.getBounds() - relative to world.
+   * object.getBounds() - relative to parent (default).
    * object.getBounds(object) - local bounds.
    * object.getBounds(object.parent) - relative to parent.
    * object.getBounds(objectB) - relative to objectB space.
    *
-   * @param {GameObject} [space=undefined]
+   * @param {GameObject} [space=null]
    * @param {boolean} [includeChildren=true]
    * @param {Rectangle=} [outRect=null]
    *
    * @return {Rectangle} returns bounds of the object and all childrens
    */
-  getBounds(space = undefined, includeChildren = true, outRect = undefined) {
+  getBounds(space = null, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
     let matrix = this.worldTransformation;
 
-    // TODO: optimize, check if space == null, space == this, space == parent
-    // TODO: use wtInversed instead
-    if (space != null) {
-      matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformationInversed);
-    }
-
     let bounds = new Rectangle();
     this.onGetLocalBounds(bounds);
 
-    matrix.transformRect(bounds, bounds);
+    if (space == null || (this.mParent != null && space === this.mParent)) {
+      if (this.mDirty & DirtyFlag.BOUNDS) {
+        matrix.transformRect(bounds, bounds);
+        this.mBounds.copyFrom(bounds);
+
+        this.mDirty ^= DirtyFlag.BOUNDS;
+      } else {
+        this.mBounds.copyTo(bounds);
+      }
+    } else if (space === this) {
+      // LOCAL!
+    } else {
+      matrix = this.worldTransformation.clone();
+      matrix.prepend(space.worldTransformationInversed);
+      matrix.transformRect(bounds, bounds);
+    }
+
     outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
 
     if (includeChildren)
@@ -840,10 +849,16 @@ class GameObject extends MessageDispatcher {
     return outRect;
   }
 
+  /**
+   * Returns local bounds of this object (without children).
+   */
   get localBounds() {
     return this.getBounds(this, false);
   }
 
+  /**
+   * Returns parent-relative bounds (including children).
+   */
   get bounds() {
     return this.getBounds(this.mParent, true);
   }
@@ -869,7 +884,7 @@ class GameObject extends MessageDispatcher {
     this.mScaleX = scaleX;
     this.mScaleY = scaleY;
 
-    this.getBounds(this, includeChildren, Rectangle.__cache.zero());
+    this.getBounds(this.mParent, includeChildren, Rectangle.__cache.zero());
     this.mPivotX = Rectangle.__cache.width * anchorX;
     this.mPivotY = Rectangle.__cache.height * anchorY;
 
@@ -1028,18 +1043,19 @@ class GameObject extends MessageDispatcher {
   set anchorX(value) {
     this.getBounds(this, true, Rectangle.__cache.zero());
 
-    this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
+    this.mPivotX = (Rectangle.__cache.width * value);
     this.setTransformDirty();
   }
 
   get anchorY() {
-    return this.mPivotY / Rectangle.__cache.height;
+    this.getBounds(this, true, Rectangle.__cache.zero());
+    return this.mPivotX / Rectangle.__cache.width;
   }
 
   set anchorY(value) {
     this.getBounds(this, true, Rectangle.__cache.zero());
 
-    this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
+    this.mPivotY = (Rectangle.__cache.height * value);
     this.setTransformDirty();
   }
 
@@ -1056,8 +1072,8 @@ class GameObject extends MessageDispatcher {
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
-    this.mPivotY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
+    this.mPivotX = (Rectangle.__cache.width * ax);
+    this.mPivotY = (Rectangle.__cache.height * ay);
     this.setTransformDirty();
 
     return this;
@@ -1161,37 +1177,6 @@ class GameObject extends MessageDispatcher {
 
     return null;
   }
-
-  // /**
-  //  * Returns how deep this GameObject in the display tree.
-  //  *
-  //  * @readonly
-  //  *
-  //  * @return {number}
-  //  */
-  // get depth() {
-  //   if (this.mParent)
-  //     return this.mParent.depth + 1;
-  //   else
-  //     return 0;
-  // }
-
-  // TODO: review and make sure this func is required
-  // get displayDepth() {
-  //   // Many thanks to Roman Kopansky
-  //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
-  //   return flatten(this.root.mChildren).indexOf(this);
-  // }
-
-  // /**
-  //  * @ignore
-  //  * @return {number}
-  //  */
-  // get index() {
-  //   // TODO: this is only required by Input component and its pretty heavy.
-  //   // Try to workaround it.
-  //   return this.parent.mChildren.indexOf(this);
-  // }
 
   /**
    * Gets/sets the width of this object.
@@ -1385,8 +1370,8 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER, true);
+    this.setDirty(DirtyFlag.LOCAL | DirtyFlag.BOUNDS, false);
+    this.setDirty(GameObject.WIFRB, true);
   }
 
   setRenderDirty() {
@@ -1470,8 +1455,7 @@ class GameObject extends MessageDispatcher {
 
     inv.transformVector(point, tmpVector);
 
-    let rect = gameObject.getBounds(gameObject, false);
-    return rect.containsXY(tmpVector.x, tmpVector.y);
+    return gameObject.localBounds.containsXY(tmpVector.x, tmpVector.y);
   }
 
   /**
@@ -1492,8 +1476,7 @@ class GameObject extends MessageDispatcher {
 
     inv.transformVector(point, tmpVector);
 
-    let rect = gameObject.getBounds(gameObject, false);
-    let contains = rect.containsXY(tmpVector.x, tmpVector.y);
+    let contains = gameObject.localBounds.containsXY(tmpVector.x, tmpVector.y);
 
     if (!contains)
       return false;
@@ -1545,8 +1528,7 @@ class GameObject extends MessageDispatcher {
           return true;
       }
     } else {
-      let bounds = this.getBounds(this, false);
-      contains = bounds.containsXY(tmpVector.x, tmpVector.y);
+      contains = this.localBounds.containsXY(tmpVector.x, tmpVector.y);
     }
 
     return contains;
@@ -1739,5 +1721,8 @@ var DirtyFlag = {
   RENDER: 16,       // Object needs to be rendered 
   RENDER_CACHE: 32, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 64,       // NOT USED: Baked object changed, parents will be notified
+  BOUNDS: 128,      // Parent-relative bounds needs update
   DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
 };
+
+GameObject.WIFRB = DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER | DirtyFlag.BOUNDS;

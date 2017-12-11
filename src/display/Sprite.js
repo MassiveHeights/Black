@@ -30,6 +30,9 @@ class Sprite extends DisplayObject {
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    // Cache as bitmap
+    this.mCache = null;
   }
 
   getRenderer() {
@@ -43,10 +46,14 @@ class Sprite extends DisplayObject {
     if (this.mBaked === true && isBackBufferActive === true) {
       renderer.alpha = 1; // alpha of the render texture????
 
+      // TODO: cache
       let bounds = this.getBounds(this, true);
+
+      // TODO: cache
       let t = this.finalTransformation.clone();
       let m = new Matrix(1, 0, 0, 1, bounds.x, bounds.y);
       m.prepend(t);
+
       renderer.transform = m;
       renderer.skipChildren = true;
       renderer.texture = this.mCache;
@@ -83,7 +90,6 @@ class Sprite extends DisplayObject {
 
     if (value === true && this.mCache === null) {
       let bounds = this.getBounds(this, true);
-      this.mCachedBounds = bounds;
 
       let m = new Matrix();
       this.finalTransformation.copyTo(m);
@@ -94,8 +100,7 @@ class Sprite extends DisplayObject {
 
       this.mCache = new RenderTexture(bounds.width, bounds.height);
       Black.driver.render(this, this.mCache, m);
-    } else if (value === false && this.mCache !== null) {
-      // leave it for GC
+    } else if (value === false) {
       this.mCache = null;
     }
 
