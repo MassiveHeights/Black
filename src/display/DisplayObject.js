@@ -48,6 +48,7 @@ class DisplayObject extends GameObject {
 
     if (this.mClipRect !== null) {
       this.mClipRect.copyTo(outRect);
+
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
       return outRect;
@@ -59,30 +60,52 @@ class DisplayObject extends GameObject {
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    let matrix = Matrix.get();
-    matrix.copyFrom(this.worldTransformation);
+    this.onGetLocalBounds(outRect);
 
     if (space == null)
       space = this.mParent;
 
-    if (space != null)
+    if (space == this) {
+      // local
+    } else if (space == this.mParent) {
+      if (includeChildren === false || this.mClipRect !== null) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      }
+      else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      } else {
+        // Return cached
+        outRect.copyFrom(this.mBounds);
+        return outRect;
+      }
+    } else {
+      let matrix = Matrix.get();
+      matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
-
-    this.onGetLocalBounds(outRect);
-
-    matrix.transformRect(outRect, outRect);
-    Matrix.free(matrix); // recycle
+      matrix.transformRect(outRect, outRect);
+      Matrix.free(matrix);
+    }
 
     if (this.mClipRect !== null)
       return outRect;
 
     let childBounds = new Rectangle();
 
-    if (includeChildren) {
+    if (includeChildren === true) {
       for (let i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].getBounds(space, includeChildren, childBounds);
-        
         outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+      }
+
+      if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
+        this.mBounds.copyFrom(outRect);
+        this.mDirty ^= DirtyFlag.BOUNDS;
       }
     }
 

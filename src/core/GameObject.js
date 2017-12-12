@@ -818,26 +818,48 @@ class GameObject extends MessageDispatcher {
   getBounds(space = null, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    let matrix = Matrix.get();
-    matrix.copyFrom(this.worldTransformation);
+    this.onGetLocalBounds(outRect);
 
     if (space == null)
       space = this.mParent;
 
-    if (space != null)
+    if (space == this) {
+      // local
+    } else if (space == this.mParent) {
+      if (includeChildren === false) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      }
+      else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      } else {
+        outRect.copyFrom(this.mBounds);
+        return outRect;
+      }
+    } else {
+      let matrix = Matrix.get();
+      matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
-
-    this.onGetLocalBounds(outRect);
-
-    matrix.transformRect(outRect, outRect);
-    Matrix.free(matrix); // recycle
+      matrix.transformRect(outRect, outRect);
+      Matrix.free(matrix);
+    }
 
     let childBounds = new Rectangle();
 
-    if (includeChildren) {
+    if (includeChildren === true) {
       for (let i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].getBounds(space, includeChildren, childBounds);
         outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+      }
+
+      if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
+        this.mBounds.copyFrom(outRect);
+        this.mDirty ^= DirtyFlag.BOUNDS;
       }
     }
 
@@ -1038,7 +1060,7 @@ class GameObject extends MessageDispatcher {
   set anchorX(value) {
     this.getBounds(this, true, Rectangle.__cache.zero());
 
-    this.mPivotX = (Rectangle.__cache.width * value);
+    this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
     this.setTransformDirty();
   }
 
@@ -1050,7 +1072,7 @@ class GameObject extends MessageDispatcher {
   set anchorY(value) {
     this.getBounds(this, true, Rectangle.__cache.zero());
 
-    this.mPivotY = (Rectangle.__cache.height * value);
+    this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
     this.setTransformDirty();
   }
 
@@ -1067,8 +1089,8 @@ class GameObject extends MessageDispatcher {
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotX = (Rectangle.__cache.width * ax);
-    this.mPivotY = (Rectangle.__cache.height * ay);
+    this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
+    this.mPivotY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
     this.setTransformDirty();
 
     return this;
@@ -1355,6 +1377,20 @@ class GameObject extends MessageDispatcher {
     }
   }
 
+  setParentDirty(flag) {
+    let current = this;
+
+    current.mDirty |= flag;
+    current.mDirtyFrameNum = Black.__frameNum;
+
+    while (current.mParent != null) {
+      current = current.mParent;
+
+      current.mDirty |= flag;
+      current.mDirtyFrameNum = Black.__frameNum;
+    }
+  }
+
   /**
    * Marks this GameObject as Local dirty and all children elements as World
    * dirty.
@@ -1367,6 +1403,7 @@ class GameObject extends MessageDispatcher {
 
     this.setDirty(DirtyFlag.LOCAL | DirtyFlag.BOUNDS, false);
     this.setDirty(GameObject.WIFRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
   setRenderDirty() {
@@ -1711,8 +1748,8 @@ var DirtyFlag = {
   CLEAN: 0,         // Object is 100% cached
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
-  FINAL: 4,         // Final/Render transformation is dirty 
-  WORLD_INV: 8,     // Final world inversed transformation is dirty 
+  WORLD_INV: 4,     // Final world inversed transformation is dirty 
+  FINAL: 8,         // Final/Render transformation is dirty 
   RENDER: 16,       // Object needs to be rendered 
   RENDER_CACHE: 32, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 64,       // NOT USED: Baked object changed, parents will be notified
