@@ -501,7 +501,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     return Matrix.__recycled.length > 0 ? Matrix.__recycled.pop().set(a, b, c, d, tx, ty) : new Matrix(a, b, c, d, tx, ty);
   }
 
-  static free(matrx) {
+  static free(matrix) {
     Matrix.__recycled.push(matrix);
   }
 }

@@ -50,7 +50,8 @@ class Sprite extends DisplayObject {
       let bounds = this.getBounds(this, true);
 
       // TODO: cache
-      let t = this.finalTransformation.clone();
+      let t = this.worldTransformation.clone();
+      //let m = new Matrix();
       let m = new Matrix(1, 0, 0, 1, bounds.x, bounds.y);
       m.prepend(t);
 
@@ -90,7 +91,7 @@ class Sprite extends DisplayObject {
 
     if (value === true && this.mCache === null) {
       let bounds = this.getBounds(this, true);
-
+      
       let m = new Matrix();
       this.finalTransformation.copyTo(m);
       m.invert();

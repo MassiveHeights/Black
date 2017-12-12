@@ -59,36 +59,31 @@ class DisplayObject extends GameObject {
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    let matrix = this.worldTransformation;
+    let matrix = Matrix.get();
+    matrix.copyFrom(this.worldTransformation);
 
-    let bounds = new Rectangle();
-    this.onGetLocalBounds(bounds);
+    if (space == null)
+      space = this.mParent;
 
-    if (space == null || (this.mParent != null && space === this.mParent)) {
-      if (this.mDirty & DirtyFlag.BOUNDS) {
-        matrix.transformRect(bounds, bounds);
-        this.mBounds.copyFrom(bounds);
-
-        this.mDirty ^= DirtyFlag.BOUNDS;
-      } else {
-        this.mBounds.copyTo(bounds);
-      }
-    } else if (space === this) {
-      // LOCAL!
-    } else {
-      matrix = this.worldTransformation.clone();
+    if (space != null)
       matrix.prepend(space.worldTransformationInversed);
-      matrix.transformRect(bounds, bounds);
-    }
 
-    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+    this.onGetLocalBounds(outRect);
+
+    matrix.transformRect(outRect, outRect);
+    Matrix.free(matrix); // recycle
 
     if (this.mClipRect !== null)
       return outRect;
 
-    if (includeChildren)
-      for (let i = 0; i < this.numChildren; i++)
-        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+    let childBounds = new Rectangle();
+
+    if (includeChildren) {
+      for (let i = 0; i < this.mChildren.length; i++) {
+        this.mChildren[i].getBounds(space, includeChildren, childBounds);
+        outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+      }
+    }
 
     return outRect;
   }
