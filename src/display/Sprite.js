@@ -46,12 +46,9 @@ class Sprite extends DisplayObject {
     if (this.mBaked === true && isBackBufferActive === true) {
       renderer.alpha = 1; // alpha of the render texture????
 
-      // TODO: cache
       let bounds = this.getBounds(this, true);
 
-      // TODO: cache
-      let t = this.worldTransformation.clone();
-      //let m = new Matrix();
+      let t = this.finalTransformation.clone();
       let m = new Matrix(1, 0, 0, 1, bounds.x, bounds.y);
       m.prepend(t);
 
@@ -96,6 +93,8 @@ class Sprite extends DisplayObject {
       this.finalTransformation.copyTo(m);
       m.invert();
 
+      //console.log(bounds);
+      
       m.data[4] -= bounds.x;
       m.data[5] -= bounds.y;
 

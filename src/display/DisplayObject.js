@@ -81,6 +81,7 @@ class DisplayObject extends GameObject {
     if (includeChildren) {
       for (let i = 0; i < this.mChildren.length; i++) {
         this.mChildren[i].getBounds(space, includeChildren, childBounds);
+        
         outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
       }
     }
