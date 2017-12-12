@@ -47,17 +47,14 @@ class Spine extends GameObject {
   constructor(name) {
     super();
 
-    //debugger
     let json = AssetManager.default.getJSON(name);
-
 
     let fakeLoader = function (path, loaderFunction, callback) {
       console.log('FAKE LOADER', path);
     };
 
-    var spineAtlas = new spine.TextureAtlas('', fakeLoader);
+    let spineAtlas = new spine.TextureAtlas('', fakeLoader);
     spineAtlas.addTexture = addTexture;
-    var allTextures = {};
 
     let regions = {};
 
@@ -73,6 +70,9 @@ class Spine extends GameObject {
           if (attachment.type === 'point')
             continue;
 
+          if (attachment.type === 'path')
+            continue;
+
           if (regions[entryName])
             continue;
 
@@ -81,9 +81,9 @@ class Spine extends GameObject {
       }
     }
 
-    var attachmentParser = new spine.AtlasAttachmentLoader(spineAtlas);
-    var spineJsonParser = new spine.SkeletonJson(attachmentParser);
-    var skeletonData = spineJsonParser.readSkeletonData(json);
+    let attachmentParser = new spine.AtlasAttachmentLoader(spineAtlas);
+    let spineJsonParser = new spine.SkeletonJson(attachmentParser);
+    let skeletonData = spineJsonParser.readSkeletonData(json);
 
     this.mSkeleton = new spine.Skeleton(skeletonData);
     this.mSkeleton.updateWorldTransform();
@@ -117,6 +117,12 @@ class Spine extends GameObject {
         continue;
       }
     }
+
+    this.mState.addListener({ complete: x => this.post('animationComplete', x.animation.name) });
+  }
+
+  get skeleton() {
+    return this.mSkeleton;
   }
 
   play(name, loop = false) {
@@ -128,7 +134,6 @@ class Spine extends GameObject {
   }
 
   setTransition(from, to, loop, dur = 0, viseversaDur = 0) {
-
     let h = (t) => {
       if (t.animation.name !== from)
         this.play(to, loop);
@@ -223,6 +228,12 @@ class Spine extends GameObject {
 
         wrapper.scaleX = wsx * flipX;
         wrapper.scaleY = wsy * flipY;
+
+        wrapper.alpha = this.mSkeleton.color.a * slot.color.a * attachment.color.a;
+        
+      } else if (attachment instanceof spine.PointAttachment) {
+        wrapper.x = slot.bone.worldX + attachment.x;
+        wrapper.y = -slot.bone.worldY - attachment.y;
       }
     }
   }
@@ -257,5 +268,3 @@ class Spine extends GameObject {
     }
   }
 }
-
-
