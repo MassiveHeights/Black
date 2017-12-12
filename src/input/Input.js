@@ -112,7 +112,7 @@ class Input extends System {
     else
       this.mEventList = Input.mMouseEventList;
 
-    for (let i = 0; i < 6; i++)
+    for (let i = 0; i < 3; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
     document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
@@ -318,28 +318,6 @@ class Input extends System {
           this.mLockedTarget.mParent.post('~' + type, info);
       }
     }
-  }
-
-  __postInMessage() {
-    if (this.mLockedTarget !== null) {
-      if (this.mLockedTarget !== this.mTargetComponent.gameObject && this.mTargetComponent.gameObject !== null)
-        return;
-    }
-
-    this.mTargetComponent.mPointerInDispatched = true;
-    this.mTargetComponent.gameObject.post('~pointerIn');
-    this.mLastInTargetComponent = this.mTargetComponent;
-  }
-
-  __postOutMessage() {
-    if (this.mLockedTarget !== null && this.mTargetComponent !== null) {
-      if (this.mLockedTarget !== this.mTargetComponent.gameObject)
-        return;
-    }
-
-    this.mLastInTargetComponent.mPointerInDispatched = false;
-    this.mLastInTargetComponent.gameObject.post('~pointerOut');
-    this.mLastInTargetComponent = null;
   }
 
   /**

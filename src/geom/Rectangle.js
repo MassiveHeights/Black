@@ -486,6 +486,14 @@ class Rectangle {
     return `Rectangle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, width: ${this.width.toFixed(digits)}, height: ${this.height.toFixed(digits)} }`;
   }
   // @endif
+
+  static get(x = 0, y = 0, w = 0, h = 0) {
+    return Rectangle.__recycled.length > 0 ? Rectangle.__recycled.pop().set(a, b, w, h) : new Rectangle(x, y, w, h);
+  }
+
+  static free(rectangle) {
+    Rectangle.__recycled.push(rectangle);
+  }
 }
 
 /**
@@ -494,3 +502,4 @@ class Rectangle {
  * @nocollapse
  */
 Rectangle.__cache = new Rectangle();
+Rectangle.__recycled = [];

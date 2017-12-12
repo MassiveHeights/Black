@@ -42,6 +42,8 @@ class VideoNullDriver {
 
     this.mIdentityMatrix = new Matrix();
 
+    this.mRenderEntrances = 0;
+
     this.mRenderers = [];
     this.mSkipChildren = false;
     this.mEndPassRenderer = null;
@@ -52,9 +54,7 @@ class VideoNullDriver {
     this.mSnapToPixels = false;
 
     this.mRenderResolution = 1;
-    this.mStageScaleFactor =  Device.getDevicePixelRatio() * this.mRenderResolution;
-
-    //this.mStageScaleFactor = Device.getDevicePixelRatio();
+    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
 
     /**
      * @private
@@ -70,7 +70,7 @@ class VideoNullDriver {
 
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.NORMAL;    
+    this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
     // @ifdef DEBUG
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
@@ -111,10 +111,16 @@ class VideoNullDriver {
   }
 
   getRenderTarget(width, height) {
-    throw new Error('Not Implemented Error');
+    Debug.erorr('Abstract method');
   }
 
-  render(gameObject, renderTexture) {
+  // NOTE: Do not call this method from this method
+  render(gameObject, renderTexture = null, transform = null) {
+    Debug.assert(this.mRenderEntrances === 0, 'Recursion is not allowed.');
+    this.mRenderEntrances++;
+
+    let isBackBufferActive = renderTexture === null;
+
     let numEndClipsRequired = 0;
     if (renderTexture != null) {
       this.mLastRenderTexture = this.mCtx;
@@ -131,13 +137,22 @@ class VideoNullDriver {
 
     this.mRendererIndex = 0;
 
-    this.__collectRenderables(gameObject, this.mStageRenderer);
+    this.__collectRenderables(gameObject, this.mStageRenderer, isBackBufferActive);
 
     for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
       let renderer = this.mRenderers[i];
 
       this.mSnapToPixels = renderer.snapToPixels;
-      this.setTransform(renderer.getTransform());
+
+      if (transform) {
+        let t = renderer.getTransform().clone();
+        t.prepend(transform)
+        //transform.append(t);
+        this.setTransform(t);
+      } else {
+        this.setTransform(renderer.getTransform());
+      }
+
       this.globalAlpha = renderer.getAlpha();
       this.globalBlendMode = renderer.getBlendMode();
 
@@ -171,11 +186,11 @@ class VideoNullDriver {
       this.mSkipChildren = false;
     }
 
-    Debug.__render();
+    this.mRenderEntrances--;
   }
 
-  __collectRenderables(gameObject, parentRenderer) {
-    let renderer = gameObject.onRender(this, parentRenderer);
+  __collectRenderables(gameObject, parentRenderer, isBackBufferActive) {
+    let renderer = gameObject.onRender(this, parentRenderer, isBackBufferActive);
 
     if (renderer != null) {
       if (renderer.clipRect !== null)
@@ -185,12 +200,15 @@ class VideoNullDriver {
       this.mRendererIndex++;
     }
 
+    if (renderer != null && renderer.skipChildren)
+      return;
+
     if (this.mSkipChildren === true)
       return;
 
     const len = gameObject.numChildren;
     for (let i = 0; i < len; i++)
-      this.__collectRenderables(gameObject.mChildren[i], parentRenderer);
+      this.__collectRenderables(gameObject.mChildren[i], parentRenderer, isBackBufferActive);
 
     if (renderer != null && renderer.endPassRequired === true)
       renderer.endPassRequiredAt = this.mRendererIndex - 1;
@@ -241,9 +259,7 @@ class VideoNullDriver {
       return;
     }
 
-    this.mSkipChildren = false;
     this.mRenderers.push(renderer);
-
     return renderer;
   }
 
