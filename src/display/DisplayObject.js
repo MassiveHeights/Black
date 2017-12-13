@@ -142,6 +142,7 @@ class DisplayObject extends GameObject {
 
   /**
    * Gets/Sets the opacity of the object.
+   * Baked objects may change behaviour.
    *
    * @return {number}
    */

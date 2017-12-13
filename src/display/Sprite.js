@@ -42,15 +42,11 @@ class Sprite extends DisplayObject {
   onRender(driver, parentRenderer, isBackBufferActive) {
     let renderer = this.mRenderer;
 
-    renderer.name = this.name
     if (this.mBaked === true && isBackBufferActive === true) {
-      renderer.alpha = 1; // alpha of the render texture????
-
       let bounds = this.getBounds(this, true);
 
-      let t = this.finalTransformation.clone();
-      let m = new Matrix(1, 0, 0, 1, bounds.x, bounds.y);
-      m.prepend(t);
+      let m = this.finalTransformation.clone();
+      m.translate(bounds.x, bounds.y)
 
       renderer.transform = m;
       renderer.skipChildren = true;
@@ -92,8 +88,6 @@ class Sprite extends DisplayObject {
       let m = new Matrix();
       this.finalTransformation.copyTo(m);
       m.invert();
-
-      //console.log(bounds);
       
       m.data[4] -= bounds.x;
       m.data[5] -= bounds.y;

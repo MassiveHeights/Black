@@ -169,8 +169,9 @@ class Stage extends GameObject {
   }
 
   removeFromParent() { Debug.error('Not allowed.'); }
+
   get localTransformation() {
-    // debugger
+    // TODO: rework
     // Debug.error('Not allowed.'); 
     return new Matrix();
   }
