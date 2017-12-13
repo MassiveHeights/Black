@@ -16,10 +16,7 @@ class VideoNullDriver {
      * @protected
      * @type {HTMLElement}
      */
-    this.mContainerElement = /**
-     * @private
-     * @type {HTMLElement} */ (containerElement
-      );
+    this.mContainerElement = containerElement;
 
     /**
      * @private
@@ -42,17 +39,11 @@ class VideoNullDriver {
 
     this.mIdentityMatrix = new Matrix();
 
-    this.mRenderEntrances = 0;
+    this.mActiveSession = new RenderSession();
+    this.mSessions = [];
 
-    this.mRenderers = [];
-    this.mSkipChildren = false;
-    this.mEndPassRenderer = null;
-    this.mRendererIndex = 0;
     this.mLastRenderTexture = null;
-    this.mCurrentRenderTexture = null;
-
     this.mSnapToPixels = false;
-
     this.mRenderResolution = 1;
     this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
 
@@ -114,10 +105,28 @@ class VideoNullDriver {
     Debug.erorr('Abstract method');
   }
 
+  __popSession() {
+    let session = this.mSessions.pop();
+
+    if (session == null) {
+      session = new RenderSession();
+    } else {
+      session.skipChildren = false;
+      session.reset();
+    }
+
+    this.mActiveSession = session;
+    return session;
+  }
+
+  __pushSession(session) {
+    this.mSessions.push(session);
+    this.mActiveSession = null;
+  }
+
   // NOTE: Do not call this method from this method
   render(gameObject, renderTexture = null, transform = null) {
-    Debug.assert(this.mRenderEntrances === 0, 'Recursion is not allowed.');
-    this.mRenderEntrances++;
+    let session = this.__popSession();
 
     let isBackBufferActive = renderTexture === null;
 
@@ -129,25 +138,26 @@ class VideoNullDriver {
       // collect parents alpha, blending, clipping and masking
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
-      this.mRenderers.splice(0, this.mRenderers.length);
-      this.mSkipChildren = false;
 
-      numEndClipsRequired = this.__collectParentRenderables(gameObject, this.mStageRenderer);
+      session.clean();
+      session.skipChildren = false;
+
+      numEndClipsRequired = this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
     }
 
-    this.mRendererIndex = 0;
+    session.rendererIndex = 0;
 
-    this.__collectRenderables(gameObject, this.mStageRenderer, isBackBufferActive);
+    this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
 
-    for (let i = 0, len = this.mRenderers.length; i !== len; i++) {
-      let renderer = this.mRenderers[i];
+    for (let i = 0, len = session.renderers.length; i !== len; i++) {
+      let renderer = session.renderers[i];
 
       this.mSnapToPixels = renderer.snapToPixels;
 
       if (transform) {
         let t = renderer.getTransform().clone();
         t.prepend(transform)
-        //transform.append(t);
+
         this.setTransform(t);
       } else {
         this.setTransform(renderer.getTransform());
@@ -163,14 +173,14 @@ class VideoNullDriver {
       renderer.dirty = 0;
 
       if (renderer.endPassRequired === true)
-        this.mEndPassRenderer = renderer;
+        session.endPassRenderer = renderer;
 
-      if (this.mEndPassRenderer !== null && this.mEndPassRenderer.endPassRequiredAt === i) {
+      if (session.endPassRenderer !== null && session.endPassRenderer.endPassRequiredAt === i) {
         this.endClip();
 
-        this.mEndPassRenderer.endPassRequiredAt = -1;
-        this.mEndPassRenderer.endPassRequired = false;
-        this.mEndPassRenderer = null;
+        session.endPassRenderer.endPassRequiredAt = -1;
+        session.endPassRenderer.endPassRequired = false;
+        session.endPassRenderer = null;
       }
     }
 
@@ -182,14 +192,14 @@ class VideoNullDriver {
 
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
-      this.mRenderers.splice(0, this.mRenderers.length);
-      this.mSkipChildren = false;
+      session.clean();
+      session.skipChildren = false;
     }
 
-    this.mRenderEntrances--;
+    this.__pushSession(session);
   }
 
-  __collectRenderables(gameObject, parentRenderer, isBackBufferActive) {
+  __collectRenderables(session, gameObject, parentRenderer, isBackBufferActive) {
     let renderer = gameObject.onRender(this, parentRenderer, isBackBufferActive);
 
     if (renderer != null) {
@@ -197,24 +207,24 @@ class VideoNullDriver {
         renderer.endPassRequired = true;
 
       parentRenderer = renderer;
-      this.mRendererIndex++;
+      session.rendererIndex++;
     }
 
     if (renderer != null && renderer.skipChildren)
       return;
 
-    if (this.mSkipChildren === true)
+    if (session.skipChildren === true)
       return;
 
-    const len = gameObject.numChildren;
+    const len = gameObject.mChildren.length;
     for (let i = 0; i < len; i++)
-      this.__collectRenderables(gameObject.mChildren[i], parentRenderer, isBackBufferActive);
+      this.__collectRenderables(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
 
     if (renderer != null && renderer.endPassRequired === true)
-      renderer.endPassRequiredAt = this.mRendererIndex - 1;
+      renderer.endPassRequiredAt = session.rendererIndex - 1;
   }
 
-  __collectParentRenderables(gameObject, parentRenderer) {
+  __collectParentRenderables(session, gameObject, parentRenderer) {
     let numClippedParents = 0;
 
     let current = gameObject;
@@ -240,7 +250,7 @@ class VideoNullDriver {
         parentRenderer = renderer;
       }
 
-      if (this.mSkipChildren === true)
+      if (session.skipChildren === true)
         return numClippedParents;
     }
 
@@ -255,11 +265,11 @@ class VideoNullDriver {
 
   registerRenderer(renderer) {
     if (renderer.isRenderable === false) {
-      this.mSkipChildren = true;
+      this.mActiveSession.skipChildren = true;
       return;
     }
 
-    this.mRenderers.push(renderer);
+    this.mActiveSession.renderers.push(renderer);
     return renderer;
   }
 
@@ -306,7 +316,6 @@ class VideoNullDriver {
    */
   beginFrame() {
     this.clear();
-    this.mSkipChildren = false;
   }
 
   /**
@@ -316,7 +325,6 @@ class VideoNullDriver {
    * @returns {void}
    */
   endFrame() {
-    this.mRenderers.splice(0, this.mRenderers.length);
   }
 
   /**

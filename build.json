@@ -48,6 +48,7 @@
 
     "src/drivers/BlendMode.js",
     "src/drivers/Renderer.js",
+    "src/drivers/RenderSession.js",
     "src/drivers/TextRenderer.js",
     "src/drivers/BitmapTextRenderer.js",
     "src/drivers/RenderTarget.js",
