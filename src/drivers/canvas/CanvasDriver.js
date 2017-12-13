@@ -1,3 +1,6 @@
+/**
+ * @cat drivers
+ */
 /* @echo EXPORT */
 class CanvasDriver extends VideoNullDriver {
   /**
