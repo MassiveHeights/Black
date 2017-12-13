@@ -21,6 +21,8 @@ class Stage extends GameObject {
 
     this.mOrientation = StageOrientation.UNIVERSAL;
 
+    this.mStageTransformation = new Matrix();
+
     this.addComponent(new InputComponent());
   }
 
@@ -98,6 +100,8 @@ class Stage extends GameObject {
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     }
 
+    this.mStageTransformation.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+
     Black.instance.video.__onResize();
     this.setTransformDirty();
     this.post('resize');
@@ -155,7 +159,7 @@ class Stage extends GameObject {
   }
 
   get stageTransformation() {
-    return new Matrix(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+    return this.mStageTransformation;
   }
 
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
