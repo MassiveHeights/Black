@@ -105,7 +105,6 @@
     "src/input/InputComponent.js",
 
     "src/components/FPSComponent.js",
-    "src/components/MRComponent.js",
 
     "src/animation/Ease.js",
     "src/animation/Interpolation.js",
