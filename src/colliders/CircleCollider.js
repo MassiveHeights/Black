@@ -17,10 +17,6 @@ class CircleCollider extends Collider {
       let pos = matrix.transformXY(this.mX, this.mY);
       if (pos.distance(point) <= this.mRadius)
         return true;
-      // let transformed = this.mCircle.clone().transform(matrix);
-      // console.log(transformed.contains(point));
-      
-      // return transformed.contains(point);
     }
 
     return false;
