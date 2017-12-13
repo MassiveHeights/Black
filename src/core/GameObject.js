@@ -157,8 +157,16 @@ class GameObject extends MessageDispatcher {
      */
     this.mSuspendDirty = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSnapToPixels = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mBaked = false;
 
     // cache all colliders for fast access
@@ -415,7 +423,6 @@ class GameObject extends MessageDispatcher {
       Black.instance.onChildrenRemoved(child);
 
     this.setTransformDirty();
-
     this.mNumChildrenRemoved++;
 
     return child;
@@ -576,13 +583,15 @@ class GameObject extends MessageDispatcher {
   }
 
   get finalTransformation() {
-    if (this.stage == null)
+    let stage = this.stage;
+
+    if (stage == null) // in case we need to render this into RT without adding it onto stage
       return this.worldTransformation;
 
     if (this.mDirty & DirtyFlag.FINAL) {
       this.mDirty ^= DirtyFlag.FINAL;
 
-      this.mFinalTransform = this.stage.stageTransformation.clone();
+      this.mFinalTransform.copyFrom(stage.stageTransformation);
       this.mFinalTransform.append(this.worldTransformation);
     }
 
@@ -724,7 +733,7 @@ class GameObject extends MessageDispatcher {
   }
 
   __checkRemovedComponents(i) {
-    if (this.mComponents == 0)
+    if (this.mNumComponentsRemoved == 0)
       return false;
 
     i -= this.mNumComponentsRemoved;
@@ -1185,7 +1194,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns the stage Game Object to which this game object belongs to. Shortcut for `Black.instance.stage`.
+   * Returns the stage Game Object to which this game object belongs to or null if not added on stage.
+   * Shortcut for `Black.instance.stage`.
    */
   get stage() {
     let r = this.__root;
