@@ -124,7 +124,7 @@ class VideoNullDriver {
     this.mActiveSession = null;
   }
 
-  // NOTE: Do not call this method from this method
+  // NOTE: Do not call this method inside OnRender - stack overflow will happen
   render(gameObject, renderTexture = null, transform = null) {
     let session = this.__popSession();
 
@@ -213,8 +213,10 @@ class VideoNullDriver {
     if (renderer != null && renderer.skipChildren)
       return;
 
-    if (session.skipChildren === true)
+    if (session.skipChildren === true) {
+      session.skipChildren = false;
       return;
+    }
 
     const len = gameObject.mChildren.length;
     for (let i = 0; i < len; i++)
