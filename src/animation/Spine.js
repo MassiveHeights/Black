@@ -73,10 +73,15 @@ class Spine extends GameObject {
           if (attachment.type === 'path')
             continue;
 
-          if (regions[entryName])
+          let textureName = entryName;
+          
+          if (attachment.name)
+            textureName = attachment.name;
+
+          if (regions[textureName])
             continue;
 
-          regions[entryName] = spineAtlas.addTexture(entryName, AssetManager.default.getTexture(entryName));
+          regions[textureName] = spineAtlas.addTexture(textureName, AssetManager.default.getTexture(texturesPath + textureName));
         }
       }
     }
@@ -135,7 +140,7 @@ class Spine extends GameObject {
 
   setTransition(from, to, loop, dur = 0, viseversaDur = 0) {
     let h = (t) => {
-      if (t.animation.name !== from)
+      if (t.animation.name === from)
         this.play(to, loop);
     };
 
@@ -230,7 +235,7 @@ class Spine extends GameObject {
         wrapper.scaleY = wsy * flipY;
 
         wrapper.alpha = this.mSkeleton.color.a * slot.color.a * attachment.color.a;
-        
+
       } else if (attachment instanceof spine.PointAttachment) {
         wrapper.x = slot.bone.worldX + attachment.x;
         wrapper.y = -slot.bone.worldY - attachment.y;
