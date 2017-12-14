@@ -1,5 +1,4 @@
 function addTexture(name, texture) {
-
   if (!texture)
     return null;
 
@@ -44,7 +43,7 @@ class Spine extends GameObject {
   /**
    * Creates new instance of Spine.
    */
-  constructor(name) {
+  constructor(name, texturesPath = '') {
     super();
 
     let json = AssetManager.default.getJSON(name);
@@ -60,10 +59,10 @@ class Spine extends GameObject {
 
     for (let skinName in json.skins) {
       let skin = json.skins[skinName];
-      
+
       for (let slotName in skin) {
         let slot = skin[slotName];
-        
+
         for (let entryName in slot) {
           let attachment = slot[entryName];
 
@@ -74,7 +73,7 @@ class Spine extends GameObject {
             continue;
 
           let textureName = entryName;
-          
+
           if (attachment.name)
             textureName = attachment.name;
 
@@ -100,6 +99,7 @@ class Spine extends GameObject {
     console.log(json);
 
     this.mTempClipContainers = [];
+    this.mTexturesPath = texturesPath;
 
     for (let i = 0, len = this.mSkeleton.slots.length; i < len; i++) {
       let slot = this.mSkeleton.slots[i];
@@ -180,7 +180,7 @@ class Spine extends GameObject {
         let region = attachment.region;
 
         if (region) {
-          
+
           if (!slot.currentSpriteName || slot.currentSpriteName !== region.name) {
             let spriteName = region.name;
             if (slot.currentSprite) {
@@ -204,7 +204,7 @@ class Spine extends GameObject {
         let w = region.width;
         let h = region.height;
 
-        var regionHeight = region.rotate ? region.width : region.height;
+        let regionHeight = region.rotate ? region.width : region.height;
 
         sprite.scaleX = attachment.scaleX * (attachment.width / region.width);
         sprite.scaleY = attachment.scaleY * (attachment.height / region.height);
@@ -212,10 +212,10 @@ class Spine extends GameObject {
         var radians = -attachment.rotation * Math.PI / 180;
         sprite.rotation = radians;
 
-        var cos = Math.cos(radians);
-        var sin = Math.sin(radians);
-        var shiftX = -attachment.width / 2 * attachment.scaleX;
-        var shiftY = -attachment.height / 2 * attachment.scaleY;
+        let cos = Math.cos(radians);
+        let sin = Math.sin(radians);
+        let shiftX = -attachment.width / 2 * attachment.scaleX;
+        let shiftY = -attachment.height / 2 * attachment.scaleY;
         sprite.x = attachment.x + shiftX * cos - shiftY * sin;
         sprite.y = -attachment.y + shiftX * sin + shiftY * cos;
 
@@ -251,7 +251,7 @@ class Spine extends GameObject {
       slot.tempRegion = null;
     }
 
-    let sprite = new Sprite(name);
+    let sprite = new Sprite(this.mTexturesPath + name);
     sprite.alpha = attachment.color.a;
     sprite.region = attachment.region;
     this._setSpriteRegion(attachment, sprite, attachment.region);
