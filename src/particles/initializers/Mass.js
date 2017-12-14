@@ -10,14 +10,14 @@ class Mass extends Initializer {
   /**
    * Creates new Mass instance.
    *
-   * @param {...(number)|FloatScatter} values The min/max range.
+   * @param {...(number|FloatScatter)} values The min/max range.
    */
   constructor(...values) {
     super();
 
     /**
      * The min-max range.
-     * @type {...(number)|FloatScatter}
+     * @type {...(number|FloatScatter)}
      */
     this.scatter = FloatScatter.fromObject(...values);
   }

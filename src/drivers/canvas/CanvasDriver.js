@@ -1,3 +1,6 @@
+/**
+ * @cat drivers
+ */
 /* @echo EXPORT */
 class CanvasDriver extends VideoNullDriver {
   /**
@@ -90,6 +93,15 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
+
+  endFrame() {
+    super.endFrame();
+
+    if (this.data) {
+      this.mCtx.putImageData(this.data, 0, 100);
+    }
+  }
+
   beginClip(clipRect, px, py) {
     let r = this.mStageScaleFactor;
 

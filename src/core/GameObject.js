@@ -83,7 +83,7 @@ class GameObject extends MessageDispatcher {
      * @private
      * @type {Rectangle}
      */
-    this.mBounds = null;
+    this.mBounds = new Rectangle();
 
     /**
      * @private
@@ -157,10 +157,29 @@ class GameObject extends MessageDispatcher {
      */
     this.mSuspendDirty = false;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.mSnapToPixels = false;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mBaked = false;
 
     // cache all colliders for fast access
     this.mCollidersCache = [];
+  }
+
+  get baked() {
+    return this.mBaked;
+  }
+
+  set baked(value) {
+    // set all children baked
+    this.mBaked = value;
   }
 
   get snapToPixels() {
@@ -404,7 +423,6 @@ class GameObject extends MessageDispatcher {
       Black.instance.onChildrenRemoved(child);
 
     this.setTransformDirty();
-
     this.mNumChildrenRemoved++;
 
     return child;
@@ -565,13 +583,15 @@ class GameObject extends MessageDispatcher {
   }
 
   get finalTransformation() {
-    if (this.stage == null)
+    let stage = this.stage;
+
+    if (stage == null) // in case we need to render this into RT without adding it onto stage
       return this.worldTransformation;
 
     if (this.mDirty & DirtyFlag.FINAL) {
       this.mDirty ^= DirtyFlag.FINAL;
 
-      this.mFinalTransform = this.stage.stageTransformation.clone();
+      this.mFinalTransform.copyFrom(stage.stageTransformation);
       this.mFinalTransform.append(this.worldTransformation);
     }
 
@@ -587,12 +607,12 @@ class GameObject extends MessageDispatcher {
   set worldTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
-    let a = value._matrix[0];
-    let b = value._matrix[1];
-    let c = value._matrix[2];
-    let d = value._matrix[3];
-    let tx = value._matrix[4];
-    let ty = value._matrix[5];
+    let a = value.data[0];
+    let b = value.data[1];
+    let c = value.data[2];
+    let d = value.data[3];
+    let tx = value.data[4];
+    let ty = value.data[5];
 
     this.mPivotX = this.mPivotX = 0;
     this.mX = tx;
@@ -713,7 +733,7 @@ class GameObject extends MessageDispatcher {
   }
 
   __checkRemovedComponents(i) {
-    if (this.mComponents == 0)
+    if (this.mNumComponentsRemoved == 0)
       return false;
 
     i -= this.mNumComponentsRemoved;
@@ -793,46 +813,78 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns world bounds of this object and all children if specified (true by default).
    *
-   * object.getBounds() - relative to world.
+   * object.getBounds() - relative to parent (default).
    * object.getBounds(object) - local bounds.
    * object.getBounds(object.parent) - relative to parent.
    * object.getBounds(objectB) - relative to objectB space.
    *
-   * @param {GameObject} [space=undefined]
+   * @param {GameObject} [space=null]
    * @param {boolean} [includeChildren=true]
    * @param {Rectangle=} [outRect=null]
    *
    * @return {Rectangle} returns bounds of the object and all childrens
    */
-  getBounds(space = undefined, includeChildren = true, outRect = undefined) {
+  getBounds(space = null, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    let matrix = this.worldTransformation;
+    this.onGetLocalBounds(outRect);
 
-    // TODO: optimize, check if space == null, space == this, space == parent
-    // TODO: use wtInversed instead
-    if (space != null) {
-      matrix = this.worldTransformation.clone();
+    if (space == null)
+      space = this.mParent;
+
+    if (space == this) {
+      // local
+    } else if (space == this.mParent) {
+      if (includeChildren === false) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      }
+      else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
+        let matrix = Matrix.get();
+        matrix.copyFrom(this.localTransformation);
+        matrix.transformRect(outRect, outRect);
+        Matrix.free(matrix);
+      } else {
+        outRect.copyFrom(this.mBounds);
+        return outRect;
+      }
+    } else {
+      let matrix = Matrix.get();
+      matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
+      matrix.transformRect(outRect, outRect);
+      Matrix.free(matrix);
     }
 
-    let bounds = new Rectangle();
-    this.onGetLocalBounds(bounds);
+    let childBounds = new Rectangle();
 
-    matrix.transformRect(bounds, bounds);
-    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
+    if (includeChildren === true) {
+      for (let i = 0; i < this.mChildren.length; i++) {
+        this.mChildren[i].getBounds(space, includeChildren, childBounds);
+        outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+      }
 
-    if (includeChildren)
-      for (let i = 0; i < this.numChildren; i++)
-        this.getChildAt(i).getBounds(space, includeChildren, outRect);
+      if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
+        this.mBounds.copyFrom(outRect);
+        this.mDirty ^= DirtyFlag.BOUNDS;
+      }
+    }
 
     return outRect;
   }
 
+  /**
+   * Returns local bounds of this object (without children).
+   */
   get localBounds() {
     return this.getBounds(this, false);
   }
 
+  /**
+   * Returns parent-relative bounds (including children).
+   */
   get bounds() {
     return this.getBounds(this.mParent, true);
   }
@@ -858,7 +910,7 @@ class GameObject extends MessageDispatcher {
     this.mScaleX = scaleX;
     this.mScaleY = scaleY;
 
-    this.getBounds(this, includeChildren, Rectangle.__cache.zero());
+    this.getBounds(this.mParent, includeChildren, Rectangle.__cache.zero());
     this.mPivotX = Rectangle.__cache.width * anchorX;
     this.mPivotY = Rectangle.__cache.height * anchorY;
 
@@ -1022,7 +1074,8 @@ class GameObject extends MessageDispatcher {
   }
 
   get anchorY() {
-    return this.mPivotY / Rectangle.__cache.height;
+    this.getBounds(this, true, Rectangle.__cache.zero());
+    return this.mPivotX / Rectangle.__cache.width;
   }
 
   set anchorY(value) {
@@ -1141,7 +1194,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns the stage Game Object to which this game object belongs to. Shortcut for `Black.instance.stage`.
+   * Returns the stage Game Object to which this game object belongs to or null if not added on stage.
+   * Shortcut for `Black.instance.stage`.
    */
   get stage() {
     let r = this.__root;
@@ -1150,37 +1204,6 @@ class GameObject extends MessageDispatcher {
 
     return null;
   }
-
-  // /**
-  //  * Returns how deep this GameObject in the display tree.
-  //  *
-  //  * @readonly
-  //  *
-  //  * @return {number}
-  //  */
-  // get depth() {
-  //   if (this.mParent)
-  //     return this.mParent.depth + 1;
-  //   else
-  //     return 0;
-  // }
-
-  // TODO: review and make sure this func is required
-  // get displayDepth() {
-  //   // Many thanks to Roman Kopansky
-  //   const flatten = arr => arr.reduce((acc, val) => acc.concat(val.mChildren.length ? flatten(val.mChildren) : val), []);
-  //   return flatten(this.root.mChildren).indexOf(this);
-  // }
-
-  // /**
-  //  * @ignore
-  //  * @return {number}
-  //  */
-  // get index() {
-  //   // TODO: this is only required by Input component and its pretty heavy.
-  //   // Try to workaround it.
-  //   return this.parent.mChildren.indexOf(this);
-  // }
 
   /**
    * Gets/sets the width of this object.
@@ -1364,6 +1387,20 @@ class GameObject extends MessageDispatcher {
     }
   }
 
+  setParentDirty(flag) {
+    let current = this;
+
+    current.mDirty |= flag;
+    current.mDirtyFrameNum = Black.__frameNum;
+
+    while (current.mParent != null) {
+      current = current.mParent;
+
+      current.mDirty |= flag;
+      current.mDirtyFrameNum = Black.__frameNum;
+    }
+  }
+
   /**
    * Marks this GameObject as Local dirty and all children elements as World
    * dirty.
@@ -1374,8 +1411,9 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(DirtyFlag.LOCAL, false);
-    this.setDirty(DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER, true);
+    this.setDirty(DirtyFlag.LOCAL | DirtyFlag.BOUNDS, false);
+    this.setDirty(GameObject.WIFRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
   setRenderDirty() {
@@ -1459,8 +1497,7 @@ class GameObject extends MessageDispatcher {
 
     inv.transformVector(point, tmpVector);
 
-    let rect = gameObject.getBounds(gameObject, false);
-    return rect.containsXY(tmpVector.x, tmpVector.y);
+    return gameObject.localBounds.containsXY(tmpVector.x, tmpVector.y);
   }
 
   /**
@@ -1481,8 +1518,7 @@ class GameObject extends MessageDispatcher {
 
     inv.transformVector(point, tmpVector);
 
-    let rect = gameObject.getBounds(gameObject, false);
-    let contains = rect.containsXY(tmpVector.x, tmpVector.y);
+    let contains = gameObject.localBounds.containsXY(tmpVector.x, tmpVector.y);
 
     if (!contains)
       return false;
@@ -1518,31 +1554,6 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 
-  getBounds22(space = undefined, includeChildren = true, outRect = undefined) {
-    outRect = outRect || new Rectangle();
-
-    let matrix = this.worldTransformation;
-
-    // TODO: optimize, check if space == null, space == this, space == parent
-    // TODO: use wtInversed instead
-    if (space != null) {
-      matrix = this.worldTransformation.clone();
-      matrix.prepend(space.worldTransformationInversed);
-    }
-
-    let bounds = new Rectangle();
-    this.onGetLocalBounds(bounds);
-
-    matrix.transformRect(bounds, bounds);
-    outRect.expand(bounds.x, bounds.y, bounds.width, bounds.height);
-
-    if (includeChildren)
-      for (let i = 0; i < this.numChildren; i++)
-        this.getChildAt(i).getBounds(space, includeChildren, outRect);
-
-    return outRect;
-  }
-
   onHitTest(point) {
     let contains = false;
 
@@ -1559,8 +1570,7 @@ class GameObject extends MessageDispatcher {
           return true;
       }
     } else {
-      let bounds = this.getBounds(this, false);
-      contains = bounds.containsXY(tmpVector.x, tmpVector.y);
+      contains = this.localBounds.containsXY(tmpVector.x, tmpVector.y);
     }
 
     return contains;
@@ -1733,6 +1743,7 @@ class GameObject extends MessageDispatcher {
 GameObject.ID = 0;
 
 /**
+ * NOT USED
  * @private
  * @type {boolean}
  * @nocollapse
@@ -1744,12 +1755,16 @@ GameObject.IS_ANY_DIRTY = true;
  */
 /* @echo EXPORT */
 var DirtyFlag = {
-  CLEAN: 0,
-  LOCAL: 1,
-  WORLD: 2,
-  FINAL: 4,
-  WORLD_INV: 8,
-  RENDER: 16,
-  RENDER_CACHE: 32,
-  DIRTY: 0xffffff
+  CLEAN: 0,         // Object is 100% cached
+  LOCAL: 1,         // Local transformation is dirty 
+  WORLD: 2,         // World transformation is dirty 
+  WORLD_INV: 4,     // Final world inversed transformation is dirty 
+  FINAL: 8,         // Final/Render transformation is dirty 
+  RENDER: 16,       // Object needs to be rendered 
+  RENDER_CACHE: 32, // In case object renders to bitmap internally, bitmap needs to be updated
+  REBAKE: 64,       // NOT USED: Baked object changed, parents will be notified
+  BOUNDS: 128,      // Parent-relative bounds needs update
+  DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
 };
+
+GameObject.WIFRB = DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER | DirtyFlag.BOUNDS;

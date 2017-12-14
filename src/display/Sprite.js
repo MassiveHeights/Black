@@ -30,16 +30,33 @@ class Sprite extends DisplayObject {
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    // Cache as bitmap
+    this.mCache = null;
   }
 
   getRenderer() {
     return Black.instance.video.getRenderer('Sprite');
   }
 
-  onRender(driver, parentRenderer) {
+  onRender(driver, parentRenderer, isBackBufferActive) {
     let renderer = this.mRenderer;
 
+    if (this.mBaked === true && isBackBufferActive === true) {
+      let bounds = this.getBounds(this, true);
+
+      let m = this.finalTransformation.clone();
+      m.translate(bounds.x, bounds.y)
+
+      renderer.transform = m;
+      renderer.skipChildren = true;
+      renderer.texture = this.mCache;
+
+      return driver.registerRenderer(renderer);
+    }
+
     if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.skipChildren = false;
       renderer.transform = this.finalTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
@@ -55,6 +72,33 @@ class Sprite extends DisplayObject {
     }
 
     return driver.registerRenderer(renderer);
+  }
+
+  get baked() {
+    return this.mBaked;
+  }
+
+  set baked(value) {
+    if (value === this.mBaked)
+      return;
+
+    if (value === true && this.mCache === null) {
+      let bounds = this.getBounds(this, true);
+      
+      let m = new Matrix();
+      this.finalTransformation.copyTo(m);
+      m.invert();
+      
+      m.data[4] -= bounds.x;
+      m.data[5] -= bounds.y;
+
+      this.mCache = new RenderTexture(bounds.width, bounds.height);
+      Black.driver.render(this, this.mCache, m);
+    } else if (value === false) {
+      this.mCache = null;
+    }
+
+    this.mBaked = value;
   }
 
   /**

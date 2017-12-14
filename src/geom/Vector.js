@@ -375,16 +375,8 @@ class Vector {
   }
   // @endif
 
-  static pop(x = 0, y = 0) {
-    let v = null;
-    if (Vector.__recycled > 0) {
-      v = Vector.__recycled.pop();
-      v.set(x, y);
-    } else {
-      v = new Vector(x, y);
-    }
-
-    return v;
+  static get(x = 0, y = 0) {
+    return Vector.__recycled.length > 0 ? Vector.__recycled.pop().set(x, y) : new Vector(x, y);
   }
 
   static free(vector) {

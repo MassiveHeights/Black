@@ -10,14 +10,14 @@ class RotationOverLife extends Action {
   /**
    * Creates new RotationOverLife instance.
    *
-   * @param {...(number)|FloatScatter} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatter)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {...(number)|FloatScatter}
+     * @type {...(number|FloatScatter)}
      */
     this.mScatter = FloatScatter.fromObject(...values);
   }

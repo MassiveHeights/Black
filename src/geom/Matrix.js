@@ -17,7 +17,7 @@ class Matrix {
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     /** @type {Float32Array} */
-    this._matrix = new Float32Array(6);
+    this.data = new Float32Array(6);
     this.set(a, b, c, d, tx, ty);
   }
 
@@ -33,7 +33,7 @@ class Matrix {
    * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
-    let m = this._matrix;
+    let m = this.data;
 
     m[0] = a;
     m[1] = b;
@@ -54,7 +54,7 @@ class Matrix {
    * @return {Matrix} This.
    */
   translate(dx, dy) {
-    let a = this._matrix;
+    let a = this.data;
 
     let /** @type {number} */ a0 = a[0]; // a
     let /** @type {number} */ a1 = a[1]; // b
@@ -63,8 +63,8 @@ class Matrix {
     let /** @type {number} */ a4 = a[4]; // tx
     let /** @type {number} */ a5 = a[5]; // ty
 
-    this._matrix[4] = a0 * dx + a2 * dy + a4;
-    this._matrix[5] = a1 * dx + a3 * dy + a5;
+    this.data[4] = a0 * dx + a2 * dy + a4;
+    this.data[5] = a1 * dx + a3 * dy + a5;
 
     return this;
   }
@@ -78,8 +78,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   setTranslation(x, y) {
-    this._matrix[4] = x;
-    this._matrix[5] = y;
+    this.data[4] = x;
+    this.data[5] = y;
 
     return this;
   }
@@ -91,7 +91,7 @@ class Matrix {
    * @param  {number} scale = 1 Scale value.
    */
   setRotation(theta, scale = 1) {
-    let m = this._matrix;
+    let m = this.data;
     m[0] = Math.cos(theta) * scale;
     m[2] = Math.sin(theta) * scale;
     m[1] = -m[2];
@@ -107,7 +107,7 @@ class Matrix {
    * @return {Matrix} This.
    */
   rotate(angle) {
-    let a = this._matrix;
+    let a = this.data;
     let cos = Math.cos(angle);
     let sin = Math.sin(angle);
     let a0 = a[0];
@@ -133,7 +133,7 @@ class Matrix {
    * @return {Matrix} This.
    */
   scale(sx, sy) {
-    let a = this._matrix;
+    let a = this.data;
     let /** @type {number} */ a0 = a[0]; // a
     let /** @type {number} */ a1 = a[1]; // b
     let /** @type {number} */ a2 = a[2]; // c
@@ -141,10 +141,10 @@ class Matrix {
     let /** @type {number} */ a4 = a[4]; // tx
     let /** @type {number} */ a5 = a[5]; // ty
 
-    this._matrix[0] = a0 * sx;
-    this._matrix[1] = a1 * sx;
-    this._matrix[2] = a2 * sy;
-    this._matrix[3] = a3 * sy;
+    this.data[0] = a0 * sx;
+    this.data[1] = a1 * sx;
+    this.data[2] = a2 * sy;
+    this.data[3] = a3 * sy;
 
     return this;
   }
@@ -169,8 +169,8 @@ class Matrix {
    * @return {Matrix}   This.
    */
   prepend(b) {
-    let a = this._matrix;
-    let bv = b._matrix;
+    let a = this.data;
+    let bv = b.data;
 
     let /** @type {number} */ a0 = a[0]; // a
     let /** @type {number} */ a1 = a[1]; // b
@@ -207,8 +207,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   append(b) {
-    let a = this._matrix;
-    let bv = b._matrix;
+    let a = this.data;
+    let bv = b.data;
 
     let /** @type {number} */ a0 = a[0];
     let /** @type {number} */ a1 = a[1];
@@ -243,7 +243,7 @@ class Matrix {
    */
   transformXY(x, y, outVector) {
     outVector = outVector || new Vector();
-    let m = this._matrix;
+    let m = this.data;
 
     outVector.x = m[0] * x + m[2] * y + m[4];
     outVector.y = m[1] * x + m[3] * y + m[5];
@@ -261,7 +261,7 @@ class Matrix {
    * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
-    let m = this._matrix;
+    let m = this.data;
     outVector = outVector || new Vector();
 
     outVector.x = m[0] * x + m[2] * y;
@@ -279,7 +279,7 @@ class Matrix {
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
-    let m = this._matrix;
+    let m = this.data;
 
     outVector.x = m[0] * vector.x + m[2] * vector.y + m[4];
     outVector.y = m[1] * vector.x + m[3] * vector.y + m[5];
@@ -301,7 +301,7 @@ class Matrix {
     let maxX = -Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
     let maxY = -Number.MAX_VALUE;
-    let m = this._matrix;
+    let m = this.data;
     let xx = 0;
     let yy = 0;
     let tmpVector = new Vector();
@@ -332,7 +332,7 @@ class Matrix {
    * @return {Matrix} This.
    */
   invert() {
-    let a = this._matrix;
+    let a = this.data;
 
     let aa = a[0];
     let ab = a[1];
@@ -367,7 +367,7 @@ class Matrix {
    * @returns {Array<number>} Description
    */
   __decompose() {
-    let m = this._matrix;
+    let m = this.data;
     let a = m[0];
     let b = m[1];
     let c = m[2];
@@ -414,7 +414,7 @@ class Matrix {
    */
   clone() {
     let m = new Matrix();
-    let v = this._matrix;
+    let v = this.data;
     m.set(v[0], v[1], v[2], v[3], v[4], v[5]);
     return m;
   }
@@ -426,8 +426,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   copyTo(matrix) {
-    let a = this._matrix;
-    let b = matrix._matrix;
+    let a = this.data;
+    let b = matrix.data;
 
     b[0] = a[0];
     b[1] = a[1];
@@ -453,8 +453,8 @@ class Matrix {
     if (!matrix)
       return false;
 
-    let a = this._matrix;
-    let b = matrix._matrix;
+    let a = this.data;
+    let b = matrix.data;
 
     return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
   }
@@ -470,8 +470,8 @@ class Matrix {
     if (!matrix)
       return false;
 
-    let a = this._matrix;
-    let b = matrix._matrix;
+    let a = this.data;
+    let b = matrix.data;
 
     return (Math.abs(a[0] - b[0]) < epsilon) && (Math.abs(a[1] - b[1]) < epsilon) && (Math.abs(a[2] - b[2]) < epsilon) &&
       (Math.abs(a[3] - b[3]) < epsilon) && (Math.abs(a[4] - b[4]) < epsilon) && (Math.abs(a[5] - b[5]) < epsilon);
@@ -483,7 +483,7 @@ class Matrix {
    * @return {Float32Array}
    */
   get value() {
-    return this._matrix;
+    return this.data;
   }
 
   // @ifdef DEBUG
@@ -496,6 +496,14 @@ class Matrix {
 Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |`;
   }
   // @endif
+
+  static get(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
+    return Matrix.__recycled.length > 0 ? Matrix.__recycled.pop().set(a, b, c, d, tx, ty) : new Matrix(a, b, c, d, tx, ty);
+  }
+
+  static free(matrix) {
+    Matrix.__recycled.push(matrix);
+  }
 }
 
 /**
@@ -509,3 +517,4 @@ Matrix.__cache = new Matrix();
  * @nocollapse
  */
 Matrix.__identity = new Matrix();
+Matrix.__recycled = [];

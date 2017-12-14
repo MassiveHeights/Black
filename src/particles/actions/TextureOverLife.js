@@ -10,14 +10,14 @@ class TextureOverLife extends Action {
   /**
    * Creates new TextureOverLife instance.
    *
-   * @param {...(number)|FloatScatter} values A starting and ending values of textureIndex property.
+   * @param {...(number|FloatScatter)} values A starting and ending values of textureIndex property.
    */
   constructor(...values) {
     super();
 
     /**
      * @private
-     * @type {...(number)|FloatScatter}
+     * @type {...(number|FloatScatter)}
      */
     this.mScatter = FloatScatter.fromObject(...values);
   }
