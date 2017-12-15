@@ -1,6 +1,8 @@
 {
   "files":
   [
+    "vendors/spine-core.js",
+
     "src/math/MathEx.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
@@ -112,6 +114,8 @@
 
     "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
+
+    "src/animation/Spine.js",
 
     "src/Black.js"
   ]
