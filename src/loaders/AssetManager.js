@@ -366,6 +366,10 @@ class AssetManager extends MessageDispatcher {
     return this.mSounds[name];
   }
 
+  getJSON(name) {
+    return this.mJsons[name];
+  }
+
   /**
    * Gets/Sets default path for preloading. Usefull when url's getting too long.
    * The asset path will be concatenated with defaultPath.
