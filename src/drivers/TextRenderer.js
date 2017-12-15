@@ -11,6 +11,7 @@ class TextRenderer extends Renderer {
     this.lineBounds = null; // array
     this.align = null; // TextInfo.FontAlign
     this.drawBounds = false;
+    this.padding = new Rectangle(0, 0, 0, 0);
     this.vAlign = 'top'
 
     this.__transformCache = new Matrix();
@@ -47,6 +48,9 @@ class TextRenderer extends Renderer {
       else if (this.align === 'right')
         lx += width - lineBound.width;
 
+      lx += this.padding.x;
+      ly += this.padding.y;
+
       if (isStroke === true)
         ctx.strokeText(line, lx, ly);
       else
@@ -62,7 +66,7 @@ class TextRenderer extends Renderer {
     const cvs = this.__canvas;
     const ctx = this.__context;
 
-    let canvasBounds = this.bounds.clone().inflate(strokeThickness, strokeThickness);
+    let canvasBounds = this.bounds.clone().inflate(strokeThickness + this.padding.right, strokeThickness + this.padding.bottom);
 
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
       cvs.width = canvasBounds.width;

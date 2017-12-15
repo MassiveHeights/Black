@@ -110,6 +110,12 @@ class TextField extends DisplayObject {
      * @type {number}
      */
     this.mFieldHeight = 0;
+
+    /**
+     * @private
+     * @type {Rectangle}
+     */
+    this.mPadding = new Rectangle(0, 0, 0, 0);
   }
 
   getRenderer() {
@@ -133,6 +139,7 @@ class TextField extends DisplayObject {
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       this.onGetLocalBounds();
 
+      renderer.padding = this.mPadding;
       renderer.text = this.text;
       renderer.style = this.mStyle;
       renderer.multiline = this.mMultiline;
@@ -520,6 +527,26 @@ class TextField extends DisplayObject {
       return;
 
     this.mAutoSize = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * An extra padding. Also useful for bad prepared fonts.
+   *
+   * @return {Rectangle}
+   */
+  get padding() {
+    return this.mPadding;
+  }
+
+  /**
+   * @param {Rectangle} value
+   * @ignore
+   *
+   * @return {void}
+   */
+  set padding(value) {
+    this.mPadding = value;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 }
