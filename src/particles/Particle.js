@@ -23,10 +23,16 @@ class Particle {
     this.textureIndex = 0;
 
     /**
-     * The x/y scale of this particle.
+     * The x scale of this particle.
      * @type {number}
      */
-    this.scale = 1;
+    this.scaleX = 1;
+
+    /**
+     * The x scale of this particle.
+     * @type {number}
+     */
+    this.scaleY = 1;
 
     /**
      * Alpha value.

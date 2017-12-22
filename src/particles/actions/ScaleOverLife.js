@@ -25,14 +25,14 @@ class ScaleOverLife extends Action {
   /**
    * @inheritDoc
    * 
-   * @param {Emitter} emmiter
+   * @param {Emitter} emitter
    * @param {Particle} particle
    * @param {number} dt
    *
    * @return {void}
    */
-  update(emmiter, particle, dt) {
-    particle.scale = this.mScatter.getValueAt(particle.energy);
+  update(emitter, particle, dt) {
+    particle.scaleX = particle.scaleY = this.mScatter.getValueAt(particle.energy);
   }
 
   /**

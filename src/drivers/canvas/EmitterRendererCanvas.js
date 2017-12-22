@@ -34,16 +34,16 @@ class EmitterRendererCanvas extends Renderer {
     let th = texture.height * 0.5;
 
     if (particle.r === 0) {
-      let tx = particle.x - tw * particle.scale;
-      let ty = particle.y - th * particle.scale;
-      localTransform.set(particle.scale, 0, 0, particle.scale, tx, ty);
+      let tx = particle.x - tw * particle.scaleX;
+      let ty = particle.y - th * particle.scaleY;
+      localTransform.set(particle.scaleX, 0, 0, particle.scaleY, tx, ty);
     } else {
       let cos = Math.cos(particle.r);
       let sin = Math.sin(particle.r);
-      let a = particle.scale * cos;
-      let b = particle.scale * sin;
-      let c = particle.scale * -sin;
-      let d = particle.scale * cos;
+      let a = particle.scaleX * cos;
+      let b = particle.scaleX * sin;
+      let c = particle.scaleY * -sin;
+      let d = particle.scaleY * cos;
 
       let tx = particle.x - tw * a - th * c;
       let ty = particle.y - tw * b - th * d;

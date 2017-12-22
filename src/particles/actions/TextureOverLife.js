@@ -25,13 +25,13 @@ class TextureOverLife extends Action {
   /**
    * @inheritDoc
    *
-   * @param {Emitter} emmiter
+   * @param {Emitter} emitter
    * @param {Particle} particle
    * @param {number} dt
    *
    * @return {void}
    */
-  update(emmiter, particle, dt) {
+  update(emitter, particle, dt) {
     particle.textureIndex = ~~this.mScatter.getValueAt(particle.energy);
   }
 
