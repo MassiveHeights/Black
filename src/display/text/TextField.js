@@ -132,6 +132,7 @@ class TextField extends DisplayObject {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
+      renderer.clipRect = this.mClipRect;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -186,6 +187,15 @@ class TextField extends DisplayObject {
     } else {
       outRect.width = this.mTextBounds.width;
       outRect.height = this.mTextBounds.height;
+    }
+
+    outRect.width += this.mPadding.right;
+    outRect.height += this.mPadding.bottom;
+
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      outRect.x += this.mPivotX;
+      outRect.y += this.mPivotY;
     }
 
     return outRect;
@@ -547,7 +557,7 @@ class TextField extends DisplayObject {
    */
   set padding(value) {
     this.mPadding = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setDirty(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS, false);
   }
 }
 

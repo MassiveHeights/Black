@@ -10,7 +10,7 @@ class Renderer {
     this.pivotY = 0;
     this.dirty = DirtyFlag.DIRTY;
     this.clipRect = null;
-    
+
     this.endPassRequiredAt = -1;
     this.endPassRequired = false;
 
@@ -20,7 +20,7 @@ class Renderer {
   render(driver) { }
 
   get isRenderable() {
-    return this.alpha > 0 && this.visible === true;
+    return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);
   }
 
   getTransform() {
