@@ -15,9 +15,15 @@ class Renderer {
     this.endPassRequired = false;
 
     this.skipChildren = false;
+
+    this.filters = null;
   }
 
   render(driver) { }
+
+  renderFilters () {
+    //if (this.dirty & DirtyFlag.FILTER) 
+  }
 
   get isRenderable() {
     return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);

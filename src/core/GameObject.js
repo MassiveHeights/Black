@@ -83,7 +83,7 @@ class GameObject extends MessageDispatcher {
      * @private
      * @type {Rectangle}
      */
-    this.mBounds = new Rectangle();
+    this.mBoundsCache = new Rectangle();
 
     /**
      * @private
@@ -836,26 +836,26 @@ class GameObject extends MessageDispatcher {
       // local
     } else if (space == this.mParent) {
       if (includeChildren === false) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       }
       else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       } else {
-        outRect.copyFrom(this.mBounds);
+        outRect.copyFrom(this.mBoundsCache);
         return outRect;
       }
     } else {
-      let matrix = Matrix.get();
+      let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
       matrix.transformRect(outRect, outRect);
-      Matrix.free(matrix);
+      Matrix.pool.release(matrix);
     }
 
     let childBounds = new Rectangle();
@@ -867,7 +867,7 @@ class GameObject extends MessageDispatcher {
       }
 
       if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
-        this.mBounds.copyFrom(outRect);
+        this.mBoundsCache.copyFrom(outRect);
         this.mDirty ^= DirtyFlag.BOUNDS;
       }
     }

@@ -423,6 +423,7 @@ class VideoNullDriver {
   /**
    * Convers number color to hex string.
    *
+   * @deprecated
    * @param {number} color The color to convert.
    *
    * @returns {string} The resuling hex string.
@@ -430,5 +431,20 @@ class VideoNullDriver {
   hexColorToString(color) {
     let parsedColor = color.toString(16);
     return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
+  }
+
+  static hexColorToString(color) {
+    let parsedColor = color.toString(16);
+    return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
+  }
+
+  static intToRGBA(color) {
+    const r = (color >> 16) & 255;
+    const g = (color >> 8) & 255;
+    const b = color & 255;
+    const a = 0.5;
+
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
   }
 }

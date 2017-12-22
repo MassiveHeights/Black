@@ -24,7 +24,8 @@ class CanvasDriver extends VideoNullDriver {
       Sprite: SpriteRendererCanvas,
       Emitter: EmitterRendererCanvas,
       Text: TextRendererCanvas,
-      BitmapText: BitmapTextRendererCanvas
+      BitmapText: BitmapTextRendererCanvas,
+      Graphics: GraphicsRendererCanvas
     };
   }
 
@@ -86,20 +87,16 @@ class CanvasDriver extends VideoNullDriver {
     var sourceWidth = texture.width;
     var sourceHeight = texture.height;
 
-    var destX = (texture.untrimmedRect.x / tr) * scale;
-    var destY = (texture.untrimmedRect.y / tr) * scale;
-    var destWidth = (texture.width / tr) * scale;
-    var destHeight = (texture.height / tr) * scale;
+    var destX = (texture.untrimmedRect.x) * scale;
+    var destY = (texture.untrimmedRect.y) * scale;
+    var destWidth = (texture.width * tr) * scale;
+    var destHeight = (texture.height * tr) * scale;
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
 
   endFrame() {
     super.endFrame();
-
-    if (this.data) {
-      this.mCtx.putImageData(this.data, 0, 100);
-    }
   }
 
   beginClip(clipRect, px, py) {

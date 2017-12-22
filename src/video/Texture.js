@@ -80,8 +80,8 @@ class Texture {
 
     this.resolution = 1;
 
-    this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
-    this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
+    this.mRenderWidth = this.mUntrimmedRect.width * this.resolution;
+    this.mRenderHeight = this.mUntrimmedRect.height * this.resolution;
   }
 
   update(nativeTexture) {
@@ -93,8 +93,8 @@ class Texture {
     this.mRegion = new Rectangle(0, 0, this.mNativeWidth, this.mNativeHeight);
     this.mUntrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
 
-    this.mRenderWidth = this.mUntrimmedRect.width / this.resolution;
-    this.mRenderHeight = this.mUntrimmedRect.height / this.resolution;
+    this.mRenderWidth = this.mUntrimmedRect.width * this.resolution;
+    this.mRenderHeight = this.mUntrimmedRect.height * this.resolution;
 
     //console.log('tex', this.mUntrimmedRect.width, this.mUntrimmedRect.height, this.mRenderWidth, this.mRenderHeight, this.resolution);
 
@@ -263,3 +263,5 @@ Texture.__ID = 0;
  * @nocollapse
  */
 Texture.MISSING_IMAGE_CACHE = null;
+
+Texture.MAX_SIZE = 512;

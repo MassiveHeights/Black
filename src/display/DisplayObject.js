@@ -37,6 +37,12 @@ class DisplayObject extends GameObject {
      * @private
      * @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
+
+    this.mFilters = new List();
+  }
+
+  get filters() {
+    return this.mFilters;
   }
 
   getRenderer() {
@@ -69,27 +75,27 @@ class DisplayObject extends GameObject {
       // local
     } else if (space == this.mParent) {
       if (includeChildren === false || this.mClipRect !== null) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       }
       else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       } else {
         // Return cached
-        outRect.copyFrom(this.mBounds);
+        outRect.copyFrom(this.mBoundsCache);
         return outRect;
       }
     } else {
-      let matrix = Matrix.get();
+      let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
       matrix.transformRect(outRect, outRect);
-      Matrix.free(matrix);
+      Matrix.pool.release(matrix);
     }
 
     if (this.mClipRect !== null)
@@ -104,7 +110,7 @@ class DisplayObject extends GameObject {
       }
 
       if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
-        this.mBounds.copyFrom(outRect);
+        this.mBoundsCache.copyFrom(outRect);
         this.mDirty ^= DirtyFlag.BOUNDS;
       }
     }
@@ -208,4 +214,60 @@ class DisplayObject extends GameObject {
     this.mClipRect = value;
     this.setRenderDirty();
   }
+}
+
+class List {
+  constructor() {
+    this.mData = [];
+  }
+
+  add(item) {
+    this.mData.push(item);
+  }
+
+  remove(item) {
+    var index = this.mData.indexOf(item);
+    if (index > -1)
+      this.mData.splice(index, 1);
+  }
+
+  get(ix) {
+    return this.mData[ix];
+  }
+}
+
+class Filter {
+  constructor(name) {
+    this.mName = name;
+  }
+
+  get name() {
+    return this.mName;
+  }
+}
+
+class GrayscaleFilter extends Filter {
+  constructor() {
+    super('grayscale');
+
+    //Black.driver.getFilter('Grayscale');
+  }
+
+  apply(texture) {
+
+  }
+}
+
+class FilterRenderer {
+
+}
+
+class FilterStack {
+  constructor() {
+    this.mTextureCache = {};
+  }
+}
+
+class GrayscaleFilterRenderer extends FilterRenderer {
+
 }

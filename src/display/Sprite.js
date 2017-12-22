@@ -92,7 +92,7 @@ class Sprite extends DisplayObject {
       m.data[4] -= bounds.x;
       m.data[5] -= bounds.y;
 
-      this.mCache = new RenderTexture(bounds.width, bounds.height);
+      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
       Black.driver.render(this, this.mCache, m);
     } else if (value === false) {
       this.mCache = null;

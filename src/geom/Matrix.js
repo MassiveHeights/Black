@@ -496,14 +496,6 @@ class Matrix {
 Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | ${this.value[5].toFixed(digits)} |`;
   }
   // @endif
-
-  static get(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
-    return Matrix.__recycled.length > 0 ? Matrix.__recycled.pop().set(a, b, c, d, tx, ty) : new Matrix(a, b, c, d, tx, ty);
-  }
-
-  static free(matrix) {
-    Matrix.__recycled.push(matrix);
-  }
 }
 
 /**
@@ -517,4 +509,5 @@ Matrix.__cache = new Matrix();
  * @nocollapse
  */
 Matrix.__identity = new Matrix();
-Matrix.__recycled = [];
+
+Matrix.pool = new ObjectPool(Matrix);
