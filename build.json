@@ -6,6 +6,7 @@
     "src/math/MathEx.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
+    "src/utils/ObjectPool.js",
     "src/geom/Vector.js",
     "src/geom/Matrix.js",
     "src/geom/Rectangle.js",
@@ -54,6 +55,7 @@
     "src/drivers/TextRenderer.js",
     "src/drivers/BitmapTextRenderer.js",
     "src/drivers/RenderTarget.js",
+    "src/drivers/GraphicsRenderer.js",
 
     "src/drivers/canvas/TextRendererCanvas.js",
     "src/drivers/canvas/BitmapTextRendererCanvas.js",
@@ -61,6 +63,8 @@
     "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/SpriteRendererCanvas.js",
     "src/drivers/canvas/RenderTargetCanvas.js",
+    "src/drivers/canvas/GraphicsRendererCanvas.js",
+    "src/video/CanvasRenderTexture.js",
 
     "src/drivers/dom/TextRendererDOM.js",
     "src/drivers/dom/EmitterRendererDOM.js",
@@ -72,6 +76,11 @@
     "src/drivers/dom/DOMDriver.js",
 
     "src/display/DisplayObject.js",
+    "src/display/Graphics.js",
+    "src/display/GraphicsCommand.js",
+    "src/display/GraphicsCommandType.js",
+    "src/display/CapsStyle.js",
+    "src/display/JointStyle.js",
     "src/display/Sprite.js",
     "src/display/text/TextInfo.js",
     "src/display/text/TextField.js",
@@ -116,6 +125,8 @@
     "src/animation/AnimationController.js",
 
     "src/animation/Spine.js",
+
+    "src/physics/Arcade.js",
 
     "src/Black.js"
   ]
