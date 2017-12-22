@@ -36,10 +36,10 @@ function addTexture(name, texture) {
  *
  * @cat core
  * @unrestricted
- * @extends GameObject
+ * @extends DisplayObject
  */
 /* @echo EXPORT */
-class Spine extends GameObject {
+class Spine extends DisplayObject {
   /**
    * Creates new instance of Spine.
    */

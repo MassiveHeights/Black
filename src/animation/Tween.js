@@ -400,7 +400,7 @@ class Tween extends Component {
       tween.play();
     });
 
-    return this;
+    return tween;
   }
 
   /**
