@@ -29,6 +29,6 @@ class Scale extends Initializer {
    * @return {void}
    */
   initialize(particle) {
-    particle.scale = this.scatter.getValue();
+    particle.scaleX = particle.scaleY = this.scatter.getValue();
   }
 }

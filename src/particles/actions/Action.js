@@ -27,13 +27,13 @@ class Action {
   /**
    * Called for every particle.
    *
-   * @param {Emitter} emmiter   The owner of the particle.
+   * @param {Emitter} emitter   The owner of the particle.
    * @param {Particle} particle The particle to execute update on.
    * @param {number} dt         Amount of seconds since the last update.
    *
    * @return {void}
    */
-  update(emmiter, particle, dt) {}
+  update(emitter, particle, dt) {}
 
 
   /**
