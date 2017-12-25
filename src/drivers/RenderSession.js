@@ -7,7 +7,7 @@ class RenderSession {
     this.rendererIndex = 0;
   }
 
-  clean() {
+  clear() {
     this.renderers.splice(0, this.renderers.length);
   }
 

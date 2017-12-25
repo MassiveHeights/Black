@@ -1,23 +1,26 @@
 /* @echo EXPORT */
 class RenderTexture extends Texture {
-  constructor(width, height) {
+  constructor(width, height, resolution) {
     super();
 
-    let scaleFactor = Black.driver.scaleFactor;
-    
-    let w = width * scaleFactor;
-    let h = height * scaleFactor;
+    this.mOriginalWidth = width;
+    this.mOriginalHeight = height;
 
-    // if (w > Texture.MAX_SIZE || h > Texture.MAX_SIZE) {
-    //   let scale = Math.min(Texture.MAX_SIZE / w, Texture.MAX_SIZE / h);
+    let bbs = Black.driver.backBufferScale;
 
-    //   w *= scale;
-    //   h *= scale;
-    //   scaleFactor *= scale;
-    // }
+    let w = width * bbs;
+    let h = height * bbs;
 
-    this.renderTarget = Black.driver.getRenderTarget(w, h); 
-    this.resolution = 1 / scaleFactor;
+    this.renderTarget = Black.driver.getRenderTarget(w, h);
+    this.resolution = 1 / bbs;
     this.update(this.renderTarget.native);
+  }
+
+  get width() {
+    return this.mOriginalWidth;
+  }
+
+  get height() {
+    return this.mOriginalHeight;
   }
 }

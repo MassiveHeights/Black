@@ -21,8 +21,6 @@ class Stage extends GameObject {
 
     this.mOrientation = StageOrientation.UNIVERSAL;
 
-    this.mStageTransformation = new Matrix();
-
     this.addComponent(new InputComponent());
   }
 
@@ -100,8 +98,6 @@ class Stage extends GameObject {
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     }
 
-    this.mStageTransformation.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
-
     Black.instance.video.__onResize();
     this.setTransformDirty();
     this.post('resize');
@@ -158,10 +154,6 @@ class Stage extends GameObject {
     return this.mStageHeight * 0.5;
   }
 
-  get stageTransformation() {
-    return this.mStageTransformation;
-  }
-
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
     return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
@@ -175,9 +167,8 @@ class Stage extends GameObject {
   removeFromParent() { Debug.error('Not allowed.'); }
 
   get localTransformation() {
-    // TODO: rework
-    // Debug.error('Not allowed.'); 
-    return new Matrix();
+    // TODO: optimize
+    return new Matrix(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
   }
 
   set scaleX(value) { Debug.error('Not allowed.'); }

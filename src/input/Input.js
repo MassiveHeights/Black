@@ -246,8 +246,8 @@ class Input extends System {
       this.mPointerPosition.y = nativeEvent.y;
 
       // TODO: optimize
-      let inv = stage.stageTransformation.clone().invert();
-      inv.transformVector(this.mPointerPosition, this.mPointerPosition);
+      // let inv = stage.stageTransformation.clone().invert();
+      // inv.transformVector(this.mPointerPosition, this.mPointerPosition);
 
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 

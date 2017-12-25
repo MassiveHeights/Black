@@ -11,10 +11,12 @@ class Renderer {
     this.dirty = DirtyFlag.DIRTY;
     this.clipRect = null;
 
+    // internal
     this.endPassRequiredAt = -1;
     this.endPassRequired = false;
 
     this.skipChildren = false;
+    this.skip = false;
 
     this.filters = null;
   }

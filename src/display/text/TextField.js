@@ -128,7 +128,7 @@ class TextField extends DisplayObject {
     let oldDirty = this.mDirty;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;

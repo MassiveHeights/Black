@@ -573,29 +573,13 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
-      if (this.mParent !== null && (this.mParent instanceof Stage) === false)
+      if (this.mParent !== null)
         this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
 
     return this.mWorldTransform;
-  }
-
-  get finalTransformation() {
-    let stage = this.stage;
-
-    if (stage == null) // in case we need to render this into RT without adding it onto stage
-      return this.worldTransformation;
-
-    if (this.mDirty & DirtyFlag.FINAL) {
-      this.mDirty ^= DirtyFlag.FINAL;
-
-      this.mFinalTransform.copyFrom(stage.stageTransformation);
-      this.mFinalTransform.append(this.worldTransformation);
-    }
-
-    return this.mFinalTransform;
   }
 
   /**
@@ -1759,12 +1743,11 @@ var DirtyFlag = {
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
   WORLD_INV: 4,     // Final world inversed transformation is dirty 
-  FINAL: 8,         // Final/Render transformation is dirty 
-  RENDER: 16,       // Object needs to be rendered 
-  RENDER_CACHE: 32, // In case object renders to bitmap internally, bitmap needs to be updated
-  REBAKE: 64,       // NOT USED: Baked object changed, parents will be notified
-  BOUNDS: 128,      // Parent-relative bounds needs update
+  RENDER: 8,       // Object needs to be rendered 
+  RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
+  REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified
+  BOUNDS: 64,      // Parent-relative bounds needs update
   DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
 };
 
-GameObject.WIFRB = DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.FINAL | DirtyFlag.RENDER | DirtyFlag.BOUNDS;
+GameObject.WIFRB = DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER | DirtyFlag.BOUNDS;

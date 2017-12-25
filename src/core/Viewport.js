@@ -33,7 +33,7 @@ class Viewport extends MessageDispatcher {
     this.isTransperent = true;
     this.backgroundColor = 0x222222;
 
-    this.mChecksLeftSeconds = 0;
+    this.mChecksLeftSeconds = 0;    
 
     window.addEventListener('resize', x => this.__onResize());
   }

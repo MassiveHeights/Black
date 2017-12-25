@@ -59,32 +59,17 @@ class VideoNullDriver {
      */
     this.mGlobalAlpha = 1;
 
+    this.mDPR = Device.getDevicePixelRatio();
+
     this.mStageRenderer = new Renderer();
     this.mStageRenderer.alpha = 1;
     this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
-    // @ifdef DEBUG
-    let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    cvs.id = 'debug-canvas';
-    cvs.style.position = 'absolute';
-    cvs.style.zIndex = 2;
-
-    let scale = this.mStageScaleFactor;
-    cvs.width = this.mClientWidth * scale;
-    cvs.height = this.mClientHeight * scale;
-    cvs.style.width = this.mClientWidth + 'px';
-    cvs.style.height = this.mClientHeight + 'px';
-    this.mContainerElement.appendChild(cvs);
-
-    this.__debugContext = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
-    // @endif
-
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  get scaleFactor() {
-    //return this.mStageScaleFactor;
-    return Device.getDevicePixelRatio() * Black.instance.stage.scaleFactor * this.mRenderResolution;
+  get backBufferScale() {
+    return this.mDPR * Black.stage.scaleFactor * this.mRenderResolution;
   }
 
   get renderResolution() {
@@ -125,7 +110,7 @@ class VideoNullDriver {
   }
 
   // NOTE: Do not call this method inside OnRender - stack overflow will happen
-  render(gameObject, renderTexture = null, transform = null) {
+  render(gameObject, renderTexture = null, transform = null, ignoreParents = false) {
     let session = this.__popSession();
 
     let isBackBufferActive = renderTexture === null;
@@ -139,26 +124,49 @@ class VideoNullDriver {
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
 
-      session.clean();
-      session.skipChildren = false;
+      this.mStageRenderer.alpha = 1;
+      this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
+      // alpha, blendmode will be overwritten into this.mStageRenderer
       numEndClipsRequired = this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
+    } else {
+      this.mStageRenderer.alpha = 1;
+      this.mStageRenderer.blendMode = BlendMode.NORMAL;
     }
 
     session.rendererIndex = 0;
 
-    this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
+    if (session.skipChildren === false)
+      this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
 
     for (let i = 0, len = session.renderers.length; i !== len; i++) {
       let renderer = session.renderers[i];
 
       this.mSnapToPixels = renderer.snapToPixels;
 
-      if (transform) {
-        let t = renderer.getTransform().clone();
-        t.prepend(transform)
+      if (isBackBufferActive === false) {
+        if (transform === null) {
+          let t = renderer.getTransform().clone();
+          //t.invert();
 
-        this.setTransform(t);
+          //t.prepend(Black.stage.worldTransformationInversed);
+          t.data[4] -= Black.stage.mX;
+          t.data[5] -= Black.stage.mY;
+          //t.invert();
+
+          //t.prepend(Black.stage.localTransformation)
+
+          // transform = new Matrix();                   
+          // transform.data[4] -= Black.stage.mX;
+          // transform.data[5] -= Black.stage.mY;
+
+          this.setTransform(t);
+        } else {
+          let t = renderer.getTransform().clone();
+          t.prepend(transform);
+
+          this.setTransform(t);
+        }
       } else {
         this.setTransform(renderer.getTransform());
       }
@@ -169,8 +177,12 @@ class VideoNullDriver {
       if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
 
-      renderer.render(this);
-      renderer.dirty = 0;
+      if (renderer.skip === true) {
+        renderer.skip = false;
+      } else {
+        renderer.render(this);
+        renderer.dirty = 0;
+      }
 
       if (renderer.endPassRequired === true)
         session.endPassRenderer = renderer;
@@ -192,7 +204,7 @@ class VideoNullDriver {
 
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
-      session.clean();
+      session.clear();
       session.skipChildren = false;
     }
 
@@ -227,6 +239,8 @@ class VideoNullDriver {
   }
 
   __collectParentRenderables(session, gameObject, parentRenderer) {
+    // parents needed to make sure that game object is visible, world alpha > 0 etc
+    // but parents should not be rendered
     let numClippedParents = 0;
 
     let current = gameObject;
@@ -235,6 +249,7 @@ class VideoNullDriver {
 
     let parents = [];
 
+    // TODO: one line parent gathering 
     for (current = current.parent; current !== null; current = current.parent)
       parents.splice(0, 0, current);
 
@@ -246,10 +261,13 @@ class VideoNullDriver {
       parent.mDirty = oldDirty;
 
       if (renderer != null) {
+        renderer.skip = true;
+
         if (renderer.clipRect !== null)
           numClippedParents++;
 
-        parentRenderer = renderer;
+        parentRenderer.alpha = renderer.alpha;
+        parentRenderer.blendMode = renderer.blendMode;
       }
 
       if (session.skipChildren === true)
@@ -289,14 +307,6 @@ class VideoNullDriver {
 
     this.mClientWidth = w;
     this.mClientHeight = h;
-
-    // @ifdef DEBUG
-    let scale = this.mStageScaleFactor;
-    this.__debugContext.canvas.width = this.mClientWidth * scale;
-    this.__debugContext.canvas.height = this.mClientHeight * scale;
-    this.__debugContext.canvas.style.width = this.mClientWidth + 'px';
-    this.__debugContext.canvas.style.height = this.mClientHeight + 'px';
-    // @endif
   }
 
   /**
@@ -412,12 +422,6 @@ class VideoNullDriver {
    * @returns {void}
    */
   clear() {
-    // @ifdef DEBUG
-    if (this.__debugContext !== null) {
-      this.__debugContext.setTransform(1, 0, 0, 1, 0, 0);
-      this.__debugContext.clearRect(0, 0, this.__debugContext.canvas.width, this.__debugContext.canvas.height);
-    }
-    // @endif
   }
 
   /**

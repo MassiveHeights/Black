@@ -93,8 +93,8 @@ class Texture {
     this.mRegion = new Rectangle(0, 0, this.mNativeWidth, this.mNativeHeight);
     this.mUntrimmedRect = new Rectangle(0, 0, this.mRegion.width, this.mRegion.height);
 
-    this.mRenderWidth = this.mUntrimmedRect.width * this.resolution;
-    this.mRenderHeight = this.mUntrimmedRect.height * this.resolution;
+    this.mRenderWidth = Math.ceil(this.mUntrimmedRect.width * this.resolution);
+    this.mRenderHeight = Math.ceil(this.mUntrimmedRect.height * this.resolution);
 
     //console.log('tex', this.mUntrimmedRect.width, this.mUntrimmedRect.height, this.mRenderWidth, this.mRenderHeight, this.resolution);
 

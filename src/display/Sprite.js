@@ -45,7 +45,7 @@ class Sprite extends DisplayObject {
     if (this.mBaked === true && isBackBufferActive === true) {
       let bounds = this.getBounds(this, true);
 
-      let m = this.finalTransformation.clone();
+      let m = this.worldTransformation.clone();
       m.translate(bounds.x, bounds.y)
 
       renderer.transform = m;
@@ -57,7 +57,7 @@ class Sprite extends DisplayObject {
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
@@ -86,7 +86,7 @@ class Sprite extends DisplayObject {
       let bounds = this.getBounds(this, true);
       
       let m = new Matrix();
-      this.finalTransformation.copyTo(m);
+      this.worldTransformation.copyTo(m);
       m.invert();
       
       m.data[4] -= bounds.x;

@@ -55,7 +55,7 @@ class EmitterRendererCanvas extends Renderer {
       worldTransform.copyFrom(localTransform);
       worldTransform.prepend(this.transform);
     } else {
-      this.space.finalTransformation.copyTo(worldTransform);
+      this.space.worldTransformation.copyTo(worldTransform);
       worldTransform.append(localTransform);
     }
 

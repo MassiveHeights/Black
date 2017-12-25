@@ -1,8 +1,8 @@
 /* @echo EXPORT */
 class RenderTarget {
   constructor(width, height) {
-    this.mWidth = width;
-    this.mHeight = height;
+    this.mWidth = Math.ceil(width);
+    this.mHeight = Math.ceil(height);
   }
 
   resize(width, height) {

@@ -37,12 +37,6 @@ class DisplayObject extends GameObject {
      * @private
      * @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
-
-    this.mFilters = new List();
-  }
-
-  get filters() {
-    return this.mFilters;
   }
 
   getRenderer() {
@@ -122,7 +116,7 @@ class DisplayObject extends GameObject {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
@@ -216,58 +210,58 @@ class DisplayObject extends GameObject {
   }
 }
 
-class List {
-  constructor() {
-    this.mData = [];
-  }
+// class List {
+//   constructor() {
+//     this.mData = [];
+//   }
 
-  add(item) {
-    this.mData.push(item);
-  }
+//   add(item) {
+//     this.mData.push(item);
+//   }
 
-  remove(item) {
-    var index = this.mData.indexOf(item);
-    if (index > -1)
-      this.mData.splice(index, 1);
-  }
+//   remove(item) {
+//     var index = this.mData.indexOf(item);
+//     if (index > -1)
+//       this.mData.splice(index, 1);
+//   }
 
-  get(ix) {
-    return this.mData[ix];
-  }
-}
+//   get(ix) {
+//     return this.mData[ix];
+//   }
+// }
 
-class Filter {
-  constructor(name) {
-    this.mName = name;
-  }
+// class Filter {
+//   constructor(name) {
+//     this.mName = name;
+//   }
 
-  get name() {
-    return this.mName;
-  }
-}
+//   get name() {
+//     return this.mName;
+//   }
+// }
 
-class GrayscaleFilter extends Filter {
-  constructor() {
-    super('grayscale');
+// class GrayscaleFilter extends Filter {
+//   constructor() {
+//     super('grayscale');
 
-    //Black.driver.getFilter('Grayscale');
-  }
+//     //Black.driver.getFilter('Grayscale');
+//   }
 
-  apply(texture) {
+//   apply(texture) {
 
-  }
-}
+//   }
+// }
 
-class FilterRenderer {
+// class FilterRenderer {
 
-}
+// }
 
-class FilterStack {
-  constructor() {
-    this.mTextureCache = {};
-  }
-}
+// class FilterStack {
+//   constructor() {
+//     this.mTextureCache = {};
+//   }
+// }
 
-class GrayscaleFilterRenderer extends FilterRenderer {
+// class GrayscaleFilterRenderer extends FilterRenderer {
 
-}
+// }

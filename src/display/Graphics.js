@@ -31,7 +31,7 @@ class Graphics extends DisplayObject {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.commands = this.mCommandQueue;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;

@@ -510,4 +510,4 @@ Matrix.__cache = new Matrix();
  */
 Matrix.__identity = new Matrix();
 
-Matrix.pool = new ObjectPool(Matrix);
+Matrix.pool = new ObjectPool(Matrix, 1, 0, 0, 1, 0, 0);

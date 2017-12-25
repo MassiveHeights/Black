@@ -3,10 +3,24 @@ class CanvasRenderTexture extends Texture {
   constructor(width, height) {
     super();
 
-    let scaleFactor = Black.driver.scaleFactor;
+    this.mOriginalWidth = width;
+    this.mOriginalHeight = height;
 
-    this.renderTarget = new RenderTargetCanvas(width * scaleFactor, height * scaleFactor);
-    this.resolution = scaleFactor;
+    let bbs = Black.driver.backBufferScale;
+
+    let w = width * bbs;
+    let h = height * bbs;
+
+    this.renderTarget = new RenderTargetCanvas(w, h);
+    this.resolution = 1 / bbs;
     this.update(this.renderTarget.native);
+  }
+
+  get width() {
+    return this.mOriginalWidth;
+  }
+
+  get height() {
+    return this.mOriginalHeight;
   }
 }
