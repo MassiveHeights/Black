@@ -85,12 +85,6 @@ class TextField extends DisplayObject {
      * @private
      * @type {Rectangle}
      */
-    this.mBounds = new Rectangle();
-
-    /**
-     * @private
-     * @type {Rectangle}
-     */
     this.mTextBounds = new Rectangle();
 
     /**

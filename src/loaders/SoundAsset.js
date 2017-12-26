@@ -63,8 +63,11 @@ class SoundAsset extends Asset {
    */
   __enableOnMobile() {
     let unlock = () => {
-      this.mAudioElement.play();
-      this.mAudioElement.pause();
+      let isPlaying = this.mAudioElement.currentTime > 0 && !this.mAudioElement.paused && !this.mAudioElement.ended && this.mAudioElement.readyState > 2;
+      if (!isPlaying) {
+        this.mAudioElement.play();
+        this.mAudioElement.pause();
+      }
       document.removeEventListener('touchend', unlock, true);
     };
     document.addEventListener('touchend', unlock, true);

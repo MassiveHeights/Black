@@ -96,8 +96,6 @@ class Spine extends DisplayObject {
 
     this.mState = new spine.AnimationState(this.mStateData);
 
-    console.log(json);
-
     this.mTempClipContainers = [];
     this.mTexturesPath = texturesPath;
 
