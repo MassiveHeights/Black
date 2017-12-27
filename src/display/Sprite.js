@@ -121,7 +121,7 @@ class Sprite extends DisplayObject {
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
     } else {
-      outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
+      outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
     }
 
     return outRect;

@@ -96,7 +96,7 @@ class BitmapTextField extends DisplayObject {
       renderer.autoSize = this.mAutoSize;
       renderer.bounds = this.onGetLocalBounds();
 
-      if (renderer.isRenderable === true)
+      if (renderer.hasVisibleArea === true)
         this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
 

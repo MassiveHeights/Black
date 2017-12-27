@@ -31,7 +31,8 @@ class TextureAsset extends Asset {
    * @return {void}
    */
   onLoaded() {
-    this.mData = new Texture(this.mImageElement);
+    const scale = 1 / Texture.getScaleFactorFromName(this.mUrl);
+    this.mData = new Texture(this.mImageElement, null, null, scale);
 
     super.onLoaded();
   }

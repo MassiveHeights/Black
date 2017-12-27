@@ -6,52 +6,33 @@
  */
 /* @echo EXPORT */
 class AtlasTexture extends Texture {
-  /**
-   * Creates new AtlasTexture instance.
-   *
-   * @param {Texture}              texture A base texture object.
-   * @param {{meta: *, frames: *}} Black json object.
-   */
-  constructor(texture, jsonObject) {
-    super(texture.native);
-
-    /** @type {Object} */
-    this.mMeta = {};
+  constructor(nativeElement, jsonObject, scale = 1) {
+    super(nativeElement);
 
     /** @dict */
-    this.mSubTextures = {}; // dictionary
+    this.mSubTextures = {}; // dictionary    
 
-    this.__parseJson(jsonObject);
+    this.__parseJson(jsonObject, scale);
   }
 
   /**
    * @private
    *
-   * @param  {{meta: *, frames: *}} o
+   * @param {{meta: *, frames: *}} o
+   * @param {number} scale
    * @return {void}
    */
-  __parseJson(o) {
+  __parseJson(o, scale) {
     const NEGATIVE_HALF_PI = -(Math.PI / 2);
 
-    // if (o.meta.format)
-    //   this.mMeta.format = o.meta.format;
-    //
-    // if (o.meta.scale)
-    //   this.mMeta.scale = parseFloat(o.meta.scale);
-
     for (let key in o.frames) {
-      let data = /** @type {Array<number>} */ (o.frames[key]);
+      const data = /** @type {Array<number>} */ (o.frames[key]);
+      const region = new Rectangle(data[0], data[1], data[2], data[3]);
+      const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
 
-      let region = new Rectangle(data[0], data[1], data[2], data[3]);
-      let untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
-
-      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect);
+      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale);
     }
   }
-
-  // addRegion(name, region, frame) {}
-  //
-  // removeRegion() {}
 
   /**
    * Returns the texture by a given name.
@@ -115,7 +96,7 @@ class AtlasTexture extends Texture {
   }
 
   static __naturalComparer(field = null, useAbs = true) {
-    return function(a, b) {
+    return function (a, b) {
       const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
       let aa = String(field == null ? a : a[field]).split(NUMBER_GROUPS);
       let bb = String(field == null ? b : b[field]).split(NUMBER_GROUPS);
@@ -142,6 +123,4 @@ class AtlasTexture extends Texture {
       return 0;
     }
   }
-
-  //dispose() {}
 }

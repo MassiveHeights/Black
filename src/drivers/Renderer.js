@@ -23,12 +23,15 @@ class Renderer {
 
   render(driver) { }
 
-  renderFilters () {
-    //if (this.dirty & DirtyFlag.FILTER) 
+  renderFilters () {    
+  }
+
+  get hasVisibleArea() {
+    return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);
   }
 
   get isRenderable() {
-    return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);
+    return true;
   }
 
   getTransform() {

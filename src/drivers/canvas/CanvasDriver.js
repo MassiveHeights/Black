@@ -80,7 +80,27 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let scale = this.mStageScaleFactor;
-    let tr = texture.resolution;
+    let tr = texture.scale;
+
+    var sourceX = texture.region.x;
+    var sourceY = texture.region.y;
+    var sourceWidth = texture.region.width ;
+    var sourceHeight = texture.region.height;
+
+    var destX = texture.untrimmedRegion.x * scale;
+    var destY = texture.untrimmedRegion.y * scale;
+    var destWidth = texture.renderWidth * scale;
+    var destHeight = texture.renderHeight * scale;
+
+    this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+  }
+
+  drawTexture2(texture) {
+    if (texture.isValid === false)
+      return;
+
+    let scale = this.mStageScaleFactor;
+    let tr = texture.scale;
 
     var sourceX = texture.region.x;
     var sourceY = texture.region.y;
@@ -120,10 +140,18 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   setTransform(m) {
+    const v = m.value;
+
+    Debug.assert(!isNaN(v[0]), 'a-element cannot be NaN');
+    Debug.assert(!isNaN(v[1]), 'b-element cannot be NaN');
+    Debug.assert(!isNaN(v[2]), 'c-element cannot be NaN');
+    Debug.assert(!isNaN(v[3]), 'd-element cannot be NaN');
+    Debug.assert(!isNaN(v[4]), 'tx-element cannot be NaN');
+    Debug.assert(!isNaN(v[5]), 'ty-element cannot be NaN');
+
     this.mTransform = m;
 
     let scale = this.mStageScaleFactor;
-    const v = m.value;
 
     if (this.mSnapToPixels === true)
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
@@ -172,13 +200,14 @@ class CanvasDriver extends VideoNullDriver {
    */
   clear() {
     // TODO: clear only changed region
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
-    this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);    
 
     let viewport = Black.instance.viewport;
     if (viewport.isTransperent === false) {
       this.mCtx.fillStyle = this.hexColorToString(viewport.backgroundColor);
       this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+    } else {
+      this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
 
     super.clear();
