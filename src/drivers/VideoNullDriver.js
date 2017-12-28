@@ -110,7 +110,7 @@ class VideoNullDriver {
   }
 
   // NOTE: Do not call this method inside OnRender - stack overflow will happen
-  render(gameObject, renderTexture = null, transform = null, ignoreParents = false) {
+  render(gameObject, renderTexture = null, customTransform = null, ignoreParents = false) {
     let session = this.__popSession();
 
     let isBackBufferActive = renderTexture === null;
@@ -144,16 +144,15 @@ class VideoNullDriver {
       let transform = null;
 
       if (isBackBufferActive === false) {
-        if (transform === null) {
-          let t = renderer.getTransform().clone();
-          // t.data[4] -= Black.stage.mX;
-          // t.data[5] -= Black.stage.mY;
-          this.setTransform(t);
+        if (customTransform === null) {
+          transform = renderer.getTransform().clone();
+          // transform.invert();
+           transform.data[4] -= Black.stage.mX;
+           transform.data[5] -= Black.stage.mY;
+          //this.setTransform(t);
         } else {
-          let t = renderer.getTransform().clone();
-          t.prepend(transform);
-
-          this.setTransform(t);
+          transform = renderer.getTransform().clone();
+          transform.prepend(customTransform);
         }
       } else {
         transform = renderer.getTransform();

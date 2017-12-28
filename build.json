@@ -30,6 +30,8 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
+    "src/display/StageScaleMode.js",
+    "src/display/StageOrientation.js",
     "src/display/Stage.js",
 
     "src/colliders/Collider.js",
@@ -37,6 +39,8 @@
     "src/colliders/CircleCollider.js",
 
     "src/textures/Texture.js",
+    "src/textures/RenderTexture.js",
+    "src/textures/CanvasRenderTexture.js",
     "src/textures/AtlasTexture.js",
 
     "src/loaders/Asset.js",

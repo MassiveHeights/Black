@@ -62,8 +62,8 @@ class Stage extends GameObject {
       let height = windowHeight * scaleFactor;
 
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
-      this.mStageWidth = ~~width;
-      this.mStageHeight = ~~height;
+      this.mStageWidth = width;
+      this.mStageHeight = height;
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
@@ -71,7 +71,7 @@ class Stage extends GameObject {
       this.mStageWidth = Black.instance.viewport.size.width;
       this.mStageHeight = Black.instance.viewport.size.height;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
-    } else if (this.mScaleMode === StageScaleMode.FIT) {
+    } else if (this.mScaleMode === StageScaleMode.LETTERBOX) {
       let size = Black.instance.viewport.size;
       let windowWidth = size.width;
       let windowHeight = size.height;
@@ -89,16 +89,20 @@ class Stage extends GameObject {
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
-    } else {
+    } else {// NO SCALE      
       let size = Black.instance.viewport.size;
-
-      this.mStageWidth = ~~(size.width * this.dpr);
-      this.mStageHeight = ~~(size.height * this.dpr);
+      this.mStageWidth = (size.width * this.dpr);
+      this.mStageHeight = (size.height * this.dpr);
       this.mStageScaleFactor = 1 / this.dpr;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
     }
 
+    this.mStageWidth = Math.round(this.mStageWidth);
+    this.mStageHeight = Math.round(this.mStageHeight);
+
+    // TODO: i dont like this line
     Black.instance.video.__onResize();
+
     this.setTransformDirty();
     this.post('resize');
   }
@@ -207,28 +211,3 @@ class Stage extends GameObject {
   set name(value) { Debug.error('Not allowed.'); }
   get name() { return this.mName }
 }
-
-/**
- * A blend mode enum.
- * @cat drivers
- * @enum {string}
- */
-/* @echo EXPORT */
-var StageScaleMode = {
-  NORMAL: 'normal', // the stage size will be the same no matter what DPI is
-  NO_SCALE: 'noScale', // the stage size will be affected by dpi
-  FIXED: 'fixed', // the stage size tries to stay inside requested size. default is 960x640
-  FIT: 'fit' // the stage size will be equal to requested size, position will be centered
-};
-
-/**
- * StageOrientation
- * @cat stage
- * @enum {string}
- */
-/* @echo EXPORT */
-var StageOrientation = {
-  UNIVERSAL: 'universal',
-  LANDSCAPE: 'landscape',
-  PORTRAIT: 'portrait'
-};

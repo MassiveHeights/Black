@@ -45,11 +45,14 @@ class Sprite extends DisplayObject {
     if (this.mBaked === true && isBackBufferActive === true) {
       let bounds = this.getBounds(this, true);
 
+      // TODO: how to avoid this?
       let m = this.worldTransformation.clone();
-      m.translate(bounds.x, bounds.y)
+      m.translate(bounds.x, bounds.y);
 
       renderer.transform = m;
       renderer.skipChildren = true;
+      renderer.alpha = 1;
+      renderer.blendMode = BlendMode.NORMAL;
       renderer.texture = this.mCache;
 
       return driver.registerRenderer(renderer);
