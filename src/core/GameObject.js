@@ -105,12 +105,6 @@ class GameObject extends MessageDispatcher {
 
     /**
      * @private
-     * @type {Matrix}
-     */
-    this.mFinalTransform = new Matrix();
-
-    /**
-     * @private
      * @type {DirtyFlag}
      */
     this.mDirty = DirtyFlag.DIRTY;
@@ -972,6 +966,8 @@ class GameObject extends MessageDispatcher {
     if (this.mX == value)
       return;
 
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.mX = value;
     this.setTransformDirty();
   }
@@ -994,6 +990,8 @@ class GameObject extends MessageDispatcher {
   set y(value) {
     if (this.mY == value)
       return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mY = value;
     this.setTransformDirty();
@@ -1018,6 +1016,8 @@ class GameObject extends MessageDispatcher {
     if (this.mPivotX == value)
       return;
 
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.mPivotX = value;
     this.setTransformDirty();
   }
@@ -1041,6 +1041,8 @@ class GameObject extends MessageDispatcher {
     if (this.mPivotY == value)
       return;
 
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.mPivotY = value;
     this.setTransformDirty();
   }
@@ -1051,6 +1053,7 @@ class GameObject extends MessageDispatcher {
   }
 
   set anchorX(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
     this.getBounds(this, true, Rectangle.__cache.zero());
 
     this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
@@ -1063,6 +1066,7 @@ class GameObject extends MessageDispatcher {
   }
 
   set anchorY(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
     this.getBounds(this, true, Rectangle.__cache.zero());
 
     this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
@@ -1080,6 +1084,9 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
+    Debug.assert(!isNaN(ax), 'Value cannot be NaN');
+    Debug.assert(!isNaN(ay), 'Value cannot be NaN');
+
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
     this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
@@ -1108,6 +1115,8 @@ class GameObject extends MessageDispatcher {
     if (this.mScaleX == value)
       return;
 
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.mScaleX = value;
     this.setTransformDirty();
   }
@@ -1131,6 +1140,8 @@ class GameObject extends MessageDispatcher {
     if (this.mScaleY == value)
       return;
 
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.mScaleY = value;
     this.setTransformDirty();
   }
@@ -1153,6 +1164,8 @@ class GameObject extends MessageDispatcher {
   set rotation(value) {
     if (this.mRotation == value)
       return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mRotation = value;
     this.setTransformDirty();
@@ -1206,6 +1219,8 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   set width(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     this.scaleX = 1;
     const currentWidth = this.width;
 
@@ -1229,6 +1244,8 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   set height(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+    
     this.scaleY = 1;
     const currentHeight = this.height;
 
@@ -1742,11 +1759,11 @@ var DirtyFlag = {
   CLEAN: 0,         // Object is 100% cached
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
-  WORLD_INV: 4,     // Final world inversed transformation is dirty 
-  RENDER: 8,       // Object needs to be rendered 
+  WORLD_INV: 4,     // Inversed world transformation is dirty 
+  RENDER: 8,        // Object needs to be rendered 
   RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified
-  BOUNDS: 64,      // Parent-relative bounds needs update
+  BOUNDS: 64,       // Parent-relative bounds needs update
   DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
 };
 

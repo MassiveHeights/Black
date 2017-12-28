@@ -2,6 +2,8 @@
   "files":
   [
     "vendors/spine-core.js",
+    
+    "src/core/Debug.js",
 
     "src/math/MathEx.js",
     "src/math/FMath.js",
@@ -16,8 +18,6 @@
     "src/geom/Polygon.js",
     "src/geom/Curve.js",
 
-    "src/core/Debug.js",
-
     "src/messages/Message.js",
     "src/messages/MessageDispatcher.js",
 
@@ -30,15 +30,19 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
+    "src/display/StageScaleMode.js",
+    "src/display/StageOrientation.js",
     "src/display/Stage.js",
 
     "src/colliders/Collider.js",
     "src/colliders/BoxCollider.js",
     "src/colliders/CircleCollider.js",
 
-    "src/video/Texture.js",
-    "src/video/AtlasTexture.js",
-    "src/video/RenderTexture.js",
+    "src/textures/Texture.js",
+    "src/textures/RenderTexture.js",
+    "src/textures/CanvasRenderTexture.js",
+    "src/textures/AtlasTexture.js",
+
     "src/loaders/Asset.js",
     "src/loaders/TextureAsset.js",
     "src/loaders/JSONAsset.js",
@@ -63,8 +67,7 @@
     "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/SpriteRendererCanvas.js",
     "src/drivers/canvas/RenderTargetCanvas.js",
-    "src/drivers/canvas/GraphicsRendererCanvas.js",
-    "src/video/CanvasRenderTexture.js",
+    "src/drivers/canvas/GraphicsRendererCanvas.js",    
 
     "src/drivers/dom/TextRendererDOM.js",
     "src/drivers/dom/EmitterRendererDOM.js",

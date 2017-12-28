@@ -156,6 +156,8 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     if (this.mAlpha === MathEx.clamp(value, 0, 1))
       return;
 

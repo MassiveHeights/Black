@@ -68,7 +68,7 @@ class VideoNullDriver {
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
 
-  get backBufferScale() {
+  get finalScale() {
     return this.mDPR * Black.stage.scaleFactor * this.mRenderResolution;
   }
 
@@ -110,7 +110,7 @@ class VideoNullDriver {
   }
 
   // NOTE: Do not call this method inside OnRender - stack overflow will happen
-  render(gameObject, renderTexture = null, transform = null, ignoreParents = false) {
+  render(gameObject, renderTexture = null, customTransform = null, ignoreParents = false) {
     let session = this.__popSession();
 
     let isBackBufferActive = renderTexture === null;
@@ -141,38 +141,25 @@ class VideoNullDriver {
 
     for (let i = 0, len = session.renderers.length; i !== len; i++) {
       let renderer = session.renderers[i];
-
-      this.mSnapToPixels = renderer.snapToPixels;
+      let transform = null;
 
       if (isBackBufferActive === false) {
-        if (transform === null) {
-          let t = renderer.getTransform().clone();
-          //t.invert();
-
-          //t.prepend(Black.stage.worldTransformationInversed);
-          t.data[4] -= Black.stage.mX;
-          t.data[5] -= Black.stage.mY;
-          //t.invert();
-
-          //t.prepend(Black.stage.localTransformation)
-
-          // transform = new Matrix();                   
-          // transform.data[4] -= Black.stage.mX;
-          // transform.data[5] -= Black.stage.mY;
-
-          this.setTransform(t);
+        if (customTransform === null) {
+          transform = renderer.getTransform().clone();
+          // transform.invert();
+           transform.data[4] -= Black.stage.mX;
+           transform.data[5] -= Black.stage.mY;
+          //this.setTransform(t);
         } else {
-          let t = renderer.getTransform().clone();
-          t.prepend(transform);
-
-          this.setTransform(t);
+          transform = renderer.getTransform().clone();
+          transform.prepend(customTransform);
         }
       } else {
-        this.setTransform(renderer.getTransform());
+        transform = renderer.getTransform();
       }
 
-      this.globalAlpha = renderer.getAlpha();
-      this.globalBlendMode = renderer.getBlendMode();
+      if (renderer.isRenderable === true)
+        this.setTransform(transform);
 
       if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
@@ -180,8 +167,14 @@ class VideoNullDriver {
       if (renderer.skip === true) {
         renderer.skip = false;
       } else {
-        renderer.render(this);
-        renderer.dirty = 0;
+        if (renderer.isRenderable === true) {
+          this.globalAlpha = renderer.getAlpha();
+          this.globalBlendMode = renderer.getBlendMode();
+          this.mSnapToPixels = renderer.snapToPixels;
+
+          renderer.render(this);
+          renderer.dirty = 0;
+        }
       }
 
       if (renderer.endPassRequired === true)
@@ -284,7 +277,7 @@ class VideoNullDriver {
   }
 
   registerRenderer(renderer) {
-    if (renderer.isRenderable === false) {
+    if (renderer.hasVisibleArea === false) {
       this.mActiveSession.skipChildren = true;
       return;
     }

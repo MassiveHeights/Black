@@ -14,6 +14,11 @@ class Rectangle {
    * @param  {number=} h = 0 The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
+    Debug.assert(!isNaN(x), 'x cannot be NaN');
+    Debug.assert(!isNaN(y), 'y cannot be NaN');
+    Debug.assert(!isNaN(w), 'width cannot be NaN');
+    Debug.assert(!isNaN(h), 'height cannot be NaN');
+
     /**
      * The x coordinate of the rectangle.
      * @type {number}

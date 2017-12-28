@@ -30,8 +30,8 @@ class EmitterRendererCanvas extends Renderer {
 
   __renderParticle(particle, localTransform, worldTransform, driver) {
     let texture = this.textures[particle.textureIndex];
-    let tw = texture.width * 0.5;
-    let th = texture.height * 0.5;
+    let tw = texture.renderWidth * 0.5;
+    let th = texture.renderHeight * 0.5;
 
     if (particle.r === 0) {
       let tx = particle.x - tw * particle.scaleX;
@@ -69,7 +69,7 @@ class EmitterRendererCanvas extends Renderer {
     driver.endClip();
   }
 
-  get isRenderable() {
+  get hasVisibleArea() {
     return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
   }
 }

@@ -12,6 +12,9 @@ class Vector {
    * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
+    Debug.assert(!isNaN(x), 'x cannot be NaN');
+    Debug.assert(!isNaN(y), 'y cannot be NaN');
+    
     /**
      * X coordinate of a point in the space.
      *

@@ -71,7 +71,7 @@ class EmitterRendererDOM extends Renderer {
     driver.endClip();
   }
 
-  get isRenderable() {
+  get hasVisibleArea() {
     return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
   }
 }

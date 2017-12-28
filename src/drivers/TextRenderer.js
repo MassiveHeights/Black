@@ -105,7 +105,7 @@ class TextRenderer extends Renderer {
       if (this.texture === null)
         this.texture = new Texture(cvs);
       else
-        this.texture.update(cvs);
+        this.texture.set(cvs);
     }
   }
 

@@ -45,11 +45,14 @@ class Sprite extends DisplayObject {
     if (this.mBaked === true && isBackBufferActive === true) {
       let bounds = this.getBounds(this, true);
 
+      // TODO: how to avoid this?
       let m = this.worldTransformation.clone();
-      m.translate(bounds.x, bounds.y)
+      m.translate(bounds.x, bounds.y);
 
       renderer.transform = m;
       renderer.skipChildren = true;
+      renderer.alpha = 1;
+      renderer.blendMode = BlendMode.NORMAL;
       renderer.texture = this.mCache;
 
       return driver.registerRenderer(renderer);
@@ -121,7 +124,7 @@ class Sprite extends DisplayObject {
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
     } else {
-      outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
+      outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
     }
 
     return outRect;

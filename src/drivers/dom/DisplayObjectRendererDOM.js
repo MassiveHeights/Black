@@ -16,7 +16,7 @@ class DisplayObjectRendererDOM extends Renderer {
 
   }
 
-  get isRenderable() {
+  get hasVisibleArea() {
     return true;
   }
 }

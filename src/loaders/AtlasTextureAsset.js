@@ -50,7 +50,8 @@ class AtlasTextureAsset extends Asset {
    * @return {void}
    */
   onLoaded() {
-    this.mData = new AtlasTexture(new Texture(this.mImageElement), /** @type {{meta: *, frames: *}} */ (this.dataAsset.data));
+    const scale = 1 / Texture.getScaleFactorFromName(this.mUrl);
+    this.mData = new AtlasTexture(this.mImageElement, /** @type {{meta: *, frames: *}} */ (this.dataAsset.data), scale);
 
     super.onLoaded();
   }
