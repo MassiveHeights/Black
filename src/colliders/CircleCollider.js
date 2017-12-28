@@ -12,9 +12,8 @@ class CircleCollider extends Collider {
 
   containsPoint(point) {
     if (this.gameObject != null) { 
-      let matrix = this.gameObject.worldTransformation;
-
-      let pos = matrix.transformXY(this.mX, this.mY);
+      let pos = new Vector(this.mX, this.mY);
+      
       if (pos.distance(point) <= this.mRadius)
         return true;
     }
