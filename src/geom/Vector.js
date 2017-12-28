@@ -377,14 +377,6 @@ class Vector {
     return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
   }
   // @endif
-
-  static get(x = 0, y = 0) {
-    return Vector.__recycled.length > 0 ? Vector.__recycled.pop().set(x, y) : new Vector(x, y);
-  }
-
-  static free(vector) {
-    Vector.__recycled.push(vector);
-  }
 }
 
 /**
@@ -393,5 +385,4 @@ class Vector {
  * @nocollapse
  */
 Vector.__cache = new Vector();
-
-Vector.__recycled = [];
+Vector.pool = new ObjectPool(Vector, 0, 0);

@@ -130,14 +130,14 @@ class DisplayObject extends GameObject {
     return driver.registerRenderer(renderer);
   }
 
-  onHitTestMask(point) {
+  onHitTestMask(localPoint) {
     if (this.mClipRect === null)
       return true;
 
-    let tmpVector = new Vector();
-    this.worldTransformationInversed.transformVector(point, tmpVector);
+    // let tmpVector = new Vector();
+    // this.worldTransformationInversed.transformVector(point, tmpVector);
 
-    return this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
+    return this.mClipRect.containsXY(localPoint.x - this.mPivotX, localPoint.y - this.mPivotY);
   }
 
   /**

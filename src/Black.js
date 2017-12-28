@@ -285,7 +285,7 @@ class Black extends MessageDispatcher {
     window.onpageshow = event => this.__onVisbilityChange(event);
 
     if (document.hidden && this.mPauseOnHide === true)
-      this.__setPaused();
+      this.pause();
   }
 
   /**

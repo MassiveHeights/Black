@@ -1245,7 +1245,7 @@ class GameObject extends MessageDispatcher {
    */
   set height(value) {
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
-    
+
     this.scaleY = 1;
     const currentHeight = this.height;
 
@@ -1529,10 +1529,10 @@ class GameObject extends MessageDispatcher {
     return true;
   }
 
-  hitTest(point) {
+  hitTest(localPoint) {
     let c = this.getComponent(InputComponent);
     let touchable = c !== null && c.touchable;
-    let insideMask = this.onHitTestMask(point);
+    let insideMask = this.onHitTestMask(localPoint);
 
     if (this.visible === false || touchable === false || insideMask === false)
       return null;
@@ -1543,30 +1543,36 @@ class GameObject extends MessageDispatcher {
     for (var i = numChildren - 1; i >= 0; --i) {
       var child = this.mChildren[i];
 
-      target = child.hitTest(point);
+      target = child.hitTest(localPoint);
 
       if (target !== null)
         return target;
     }
 
-    if (this.onHitTest(point) === true)
+    if (this.onHitTest(localPoint) === true)
       return this;
 
     return null;
   }
 
-  onHitTest(point) {
+  onHitTest(localPoint) {
     let contains = false;
 
-    let tmpVector = new Vector();
-    this.worldTransformationInversed.transformVector(point, tmpVector);
+    // BEGINOF: WTF
+    let tmpVector = Vector.pool.get();
+    let matrix = Matrix.pool.get();
+
+    // ~35% slower
+    matrix.copyFrom(this.stage.localTransformation);
+    matrix.prepend(this.worldTransformationInversed);
+    matrix.transformVector(localPoint, tmpVector);
+    // ENDOF: WTF
 
     if (this.mCollidersCache.length > 0) {
       for (let i = 0; i < this.mCollidersCache.length; i++) {
         let collider = this.mCollidersCache[i];
 
-        let matrix = this.worldTransformation;
-        contains = collider.containsPoint(point);
+        contains = collider.containsPoint(tmpVector);
         if (contains === true)
           return true;
       }
@@ -1574,10 +1580,11 @@ class GameObject extends MessageDispatcher {
       contains = this.localBounds.containsXY(tmpVector.x, tmpVector.y);
     }
 
+    Vector.pool.release(tmpVector);
     return contains;
   }
 
-  onHitTestMask(point) {
+  onHitTestMask(localPoint) {
     return true;
   }
 
