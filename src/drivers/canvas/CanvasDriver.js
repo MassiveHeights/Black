@@ -1,4 +1,5 @@
 /**
+import { BlendMode } from './../../../dist/black-es6-module';
  * @cat drivers
  */
 /* @echo EXPORT */
@@ -84,33 +85,13 @@ class CanvasDriver extends VideoNullDriver {
 
     var sourceX = texture.region.x;
     var sourceY = texture.region.y;
-    var sourceWidth = texture.region.width ;
+    var sourceWidth = texture.region.width;
     var sourceHeight = texture.region.height;
 
     var destX = texture.untrimmedRegion.x * scale;
     var destY = texture.untrimmedRegion.y * scale;
     var destWidth = texture.renderWidth * scale;
     var destHeight = texture.renderHeight * scale;
-
-    this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-  }
-
-  drawTexture2(texture) {
-    if (texture.isValid === false)
-      return;
-
-    let scale = this.mStageScaleFactor;
-    let tr = texture.scale;
-
-    var sourceX = texture.region.x;
-    var sourceY = texture.region.y;
-    var sourceWidth = texture.width;
-    var sourceHeight = texture.height;
-
-    var destX = (texture.untrimmedRect.x) * scale;
-    var destY = (texture.untrimmedRect.y) * scale;
-    var destWidth = (texture.width * tr) * scale;
-    var destHeight = (texture.height * tr) * scale;
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
@@ -182,6 +163,9 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   set globalBlendMode(blendMode) {
+    if (blendMode === BlendMode.AUTO)
+      return;
+
     blendMode = CanvasBlendMode[blendMode];
 
     if (this.mGlobalBlendMode === blendMode)
@@ -200,7 +184,7 @@ class CanvasDriver extends VideoNullDriver {
    */
   clear() {
     // TODO: clear only changed region
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);    
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
     let viewport = Black.instance.viewport;
     if (viewport.isTransperent === false) {

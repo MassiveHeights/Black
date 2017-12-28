@@ -89,7 +89,6 @@ describe('MessageDispatcher', function () {
 
   //     head.on('sniff', x => {
   //       console.log('head sniff');
-  //       debugger;
   //       x.cancel();
   //     });
 

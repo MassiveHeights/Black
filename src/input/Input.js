@@ -103,7 +103,6 @@ class Input extends System {
    */
   __initListeners() {
     this.mKeyEventList = Input.mKeyEventList;
-    //debugger;
 
     if (window.PointerEvent)
       this.mEventList = Input.mPointerEventList;
@@ -236,7 +235,7 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
-    let stage = Black.instance.stage;
+    let stage = Black.stage;
 
     for (var i = 0; i < this.mPointerQueue.length; i++) {
       let nativeEvent = this.mPointerQueue[i];
@@ -246,8 +245,8 @@ class Input extends System {
       this.mPointerPosition.y = nativeEvent.y;
 
       // TODO: optimize
-      // let inv = stage.stageTransformation.clone().invert();
-      // inv.transformVector(this.mPointerPosition, this.mPointerPosition);
+      let inv = stage.localTransformation.clone().invert();
+      inv.transformVector(this.mPointerPosition, this.mPointerPosition);
 
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 

@@ -72,4 +72,8 @@ class EmitterRendererCanvas extends Renderer {
   get hasVisibleArea() {
     return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
   }
+
+  get isRenderable() {
+    return this.textures.length > 0 && this.particles.length > 0;
+  }
 }

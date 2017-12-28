@@ -29,7 +29,6 @@ class Arcade extends System {
   }
 
   onFixedUpdate(dt) {
-    //debugger
     this.__find();
     this.__forces();
 

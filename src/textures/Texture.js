@@ -62,7 +62,6 @@ class Texture {
     let ixStart = name.indexOf('@');
     if (ixStart === -1)
       return name;
-    debugger
 
     let ixEnd = name.indexOf('x', ixStart);
     return name.substring(0, ixStart) + name.substring(ixEnd + 1);
@@ -83,6 +82,14 @@ class Texture {
 
   static fromCanvas(canvas) {
     return Black.instance.video.getTextureFromCanvas(canvas);
+  }
+
+  get width() {
+    return this.mDisplayWidth;
+  }
+
+  get height() {
+    return this.mDisplayHeight;
   }
 
   get scale() {

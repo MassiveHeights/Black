@@ -23,7 +23,7 @@ class Renderer {
 
   render(driver) { }
 
-  renderFilters () {    
+  renderFilters() {
   }
 
   get hasVisibleArea() {
@@ -31,7 +31,7 @@ class Renderer {
   }
 
   get isRenderable() {
-    return true;
+    return this.texture !== null;
   }
 
   getTransform() {

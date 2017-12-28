@@ -12,7 +12,9 @@ class TextRenderer extends Renderer {
     this.align = null; // TextInfo.FontAlign
     this.drawBounds = false;
     this.padding = new Rectangle(0, 0, 0, 0);
-    this.vAlign = 'top'
+    this.vAlign = 'top';
+    this.fieldWidth = 0;
+    this.fieldHeight = 0;
 
     this.__transformCache = new Matrix();
     this.__canvas = document.createElement('canvas');
@@ -134,5 +136,9 @@ class TextRenderer extends Renderer {
     } else {
       return this.transform;
     }
+  }
+
+  get isRenderable() {
+    return this.text !== null;
   }
 }
