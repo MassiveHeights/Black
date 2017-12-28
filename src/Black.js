@@ -238,6 +238,7 @@ class Black extends MessageDispatcher {
    */
   pause() {
     this.mPaused = true;
+    this.post('paused');
   }
 
   /**
@@ -246,7 +247,13 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   resume() {
-    this.mUnpausing = true;
+    if (this.mPaused === true)
+      this.mUnpausing = true;
+  }
+
+  __setUnpaused() {
+    this.mPaused = false;
+    this.post('unpaused');
   }
 
   /**
@@ -278,7 +285,7 @@ class Black extends MessageDispatcher {
     window.onpageshow = event => this.__onVisbilityChange(event);
 
     if (document.hidden && this.mPauseOnHide === true)
-      this.mPaused = true;
+      this.__setPaused();
   }
 
   /**
@@ -287,14 +294,13 @@ class Black extends MessageDispatcher {
    */
   __onVisbilityChange(event) {
     let type = event.type;
-
     if (type === 'blur' && this.mPauseOnBlur === true)
-      this.mPaused = true;
+      this.pause();
     else if (type === 'pagehide' && this.mPauseOnHide === true)
-      this.mPaused = true;
+      this.pause();
     else if (type === 'focus' || type === 'pageshow') {
       if (document.hidden === false)
-        this.mUnpausing = true;
+        this.resume();
     }
   }
 
@@ -406,13 +412,15 @@ class Black extends MessageDispatcher {
     this.constructor.instance = this;
 
     if (this.mPaused === true && this.mUnpausing === true) {
-      this.mUnpausing = this.mPaused = false;
+      this.mUnpausing = false;
 
       this.mLastFrameTimeMs = 0;
       this.mLastFpsUpdate = timestamp;
       this.mLastFrameTimeMs = timestamp;
       this.mCurrentTime = 0; // same as first update
       this.mFrameAccum = 0;
+      
+      this.__setUnpaused();
     }
 
     if (timestamp < this.mLastFrameTimeMs + this.mMinFrameDelay) {
@@ -792,7 +800,7 @@ class Black extends MessageDispatcher {
   get magic() {
     return Math.random();
   }
-  
+
 
   get gameObject() {
     return this.mGameObject;

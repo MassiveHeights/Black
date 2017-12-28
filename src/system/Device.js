@@ -82,6 +82,15 @@ class Device {
   }
 
   /**
+   * Returns true if web audio is supported.
+   *
+   * @return {boolean}
+   */
+  static get webAudioSupported() {
+    return window['AudioContext'] || window['webkitAudioContext'];
+  }
+
+  /**
    * @private
    *
    * @suppress {missingProperties}
