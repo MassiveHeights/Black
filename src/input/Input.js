@@ -33,6 +33,12 @@ class Input extends System {
 
     /**
      * @private
+     * @type {Vector}
+     */
+    this.mStagePosition = new Vector();
+
+    /**
+     * @private
      * @type {Element}
      */
     this.mDom = Black.instance.containerElement;
@@ -244,9 +250,12 @@ class Input extends System {
       this.mPointerPosition.x = nativeEvent.x;
       this.mPointerPosition.y = nativeEvent.y;
 
+      this.mStagePosition.x = nativeEvent.x;
+      this.mStagePosition.y = nativeEvent.y;
+
       // TODO: optimize
       let inv = stage.localTransformation.clone().invert();
-      inv.transformVector(this.mPointerPosition, this.mPointerPosition);
+      inv.transformVector(this.mStagePosition, this.mStagePosition);
 
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
@@ -381,6 +390,23 @@ class Input extends System {
    */
   static get pointerY() {
     return Input.instance.mPointerPosition.y;
+  }
+
+  /**
+   * Returns mouse or touch pointer x-component relative to stage.
+   * @return {number}
+   */
+  static get stageX() {
+    return Input.instance.mStagePosition.x;
+  }
+
+  /**
+   * Returns mouse or touch pointer x-component  relative to stage.
+   *
+   * @return {number} Description
+   */
+  static get stageY() {
+    return Input.instance.mStagePosition.y;
   }
 
   /**

@@ -1560,12 +1560,7 @@ class GameObject extends MessageDispatcher {
 
     // BEGINOF: WTF
     let tmpVector = Vector.pool.get();
-    let matrix = Matrix.pool.get();
-
-    // ~35% slower
-    matrix.copyFrom(this.stage.localTransformation);
-    matrix.prepend(this.worldTransformationInversed);
-    matrix.transformVector(localPoint, tmpVector);
+    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
     // ENDOF: WTF
 
     if (this.mCollidersCache.length > 0) {

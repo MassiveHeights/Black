@@ -262,12 +262,12 @@ class Spine extends DisplayObject {
   _setSpriteRegion(attachment, sprite, region) {
     sprite.region = region;
     if (!region.size) {
-      sprite.scaleX = attachment.scaleX * attachment.width / region.originalWidth;
-      sprite.scaleY = -attachment.scaleY * attachment.height / region.originalHeight;
+      sprite.scaleX = attachment.scaleX * attachment.width / region.width;
+      sprite.scaleY = -attachment.scaleY * attachment.height / region.height;
     } else {
       //hacked!
-      sprite.scaleX = region.size.width / region.originalWidth;
-      sprite.scaleY = -region.size.height / region.originalHeight;
+      sprite.scaleX = region.size.width / region.width;
+      sprite.scaleY = -region.size.height / region.height;
     }
   }
 }

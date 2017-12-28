@@ -134,10 +134,13 @@ class DisplayObject extends GameObject {
     if (this.mClipRect === null)
       return true;
 
-    // let tmpVector = new Vector();
-    // this.worldTransformationInversed.transformVector(point, tmpVector);
+    let tmpVector = Vector.pool.get();
+    this.worldTransformationInversed.transformVector(point, tmpVector);
 
-    return this.mClipRect.containsXY(localPoint.x - this.mPivotX, localPoint.y - this.mPivotY);
+    let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
+    Vector.pool.release(tmpVector);
+    
+    return contains;
   }
 
   /**

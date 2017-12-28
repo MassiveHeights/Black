@@ -527,6 +527,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * @deprecated
    * Returns the Stage GameObject.
    * @return {GameObject}
    */
