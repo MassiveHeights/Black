@@ -36,7 +36,7 @@ class Emitter extends DisplayObject {
 
     /**
      * @private
-     * @type {Array<Initializer>}
+     * @type {Array<Modifier>}
      */
     this.mInitializers = [];
 
@@ -160,16 +160,18 @@ class Emitter extends DisplayObject {
     this.mState = EmitterState.PENDING;
   }
 
-  add(...actionsOrInitializers) {
-    for (let i = 0; i < actionsOrInitializers.length; i++) {
-      let ai = actionsOrInitializers[i];
+  add(...modifiers) {
+    for (let i = 0; i < modifiers.length; i++) {
+      let ai = modifiers[i];
 
-      if (ai instanceof Action)
-        this.addAction(ai);
-      else if (ai instanceof Initializer)
-        this.addInitializer(ai);
-      else
+      if (ai instanceof Modifier) {
+        if (ai.isInitializer)
+          this.addInitializer(ai);
+        else
+          this.addAction(ai);
+      } else {
         super.add(ai);
+      }
     }
     return this;
   }
@@ -236,9 +238,9 @@ class Emitter extends DisplayObject {
   /**
    * addInitializer - Adds Initializer to the end of the list.
    *
-   * @param {Initializer} initializer
+   * @param {Modifier} initializer
    *
-   * @return {Initializer}
+   * @return {Modifier}
    */
   addInitializer(initializer) {
     this.mInitializers.push(initializer);
@@ -340,10 +342,8 @@ class Emitter extends DisplayObject {
 
       p.reset();
 
-      for (let k = 0; k < this.mInitializers.length; k++) {
-        let initer = this.mInitializers[k];
-        initer.initialize(p);
-      }
+      for (let k = 0; k < this.mInitializers.length; k++)
+        this.mInitializers[k].update(this, p, 0);
 
       if (this.mIsLocal === false) {
         matrix.transformDirectionXY(p.ax, p.ay, Vector.__cache);

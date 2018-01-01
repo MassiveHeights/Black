@@ -26,17 +26,8 @@ class FloatScatter extends Scatter {
 
     /** @type {function(number):number} */
     this.ease = ease;
-  }
 
-  /**
-   * Returns random number withing defined range.
-   *
-   * @override
-   *
-   * @return {number} Random number.
-   */
-  getValue() {
-    return Math.random() * (this.max - this.min) + this.min;
+    this.value = 0;
   }
 
   /**
@@ -51,7 +42,8 @@ class FloatScatter extends Scatter {
     if (this.ease !== null)
       t = this.ease(t);
 
-    return this.min + t * (this.max - this.min);
+    this.value = this.min + t * (this.max - this.min);
+    return this.value;
   }
 
   static fromObject(...values) {

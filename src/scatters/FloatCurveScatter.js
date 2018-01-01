@@ -29,18 +29,6 @@ class FloatCurveScatter extends Scatter {
   }
 
   /**
-   * Returns a value on a curve at random position.
-   * @override
-   *
-   * @return {number} A random number value on a defined curve.
-   */
-  getValue() {
-    let t = Math.random();
-    this.mCurve.interpolate(t, this.mCache);
-    return this.mCache.y;
-  }
-
-  /**
    * Returns a number at given position on a curve.
    * @override
    *

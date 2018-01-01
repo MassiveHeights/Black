@@ -1,25 +1,24 @@
 /**
  * Adds acceleration to particles along given direction.
  *
- * @cat particles.actions
- * @extends Action
+ * @cat particles.modifiers
+ * @extends Modifier
  * @class
  */
 /* @echo EXPORT */
-class Acceleration extends Action {
+class Acceleration extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
    * @param {...(number|VectorScatter)} values An VectorScatter which defines acceleration direction.
    */
   constructor(...values) {
-    super();
+    super(false);
 
     /**
-     * @private
      * @type {...(number|VectorScatter)}
      */
-    this.mScatter = VectorScatter.fromObject(...values);
+    this.scatter = VectorScatter.fromObject(...values);
   }
 
   /**
@@ -32,18 +31,9 @@ class Acceleration extends Action {
    * @return {void}
    */
   update(emitter, particle, dt) {
-    let v = this.mScatter.getValue();
+    this.scatter.getValue();
     
-    particle.ax += v.x;
-    particle.ay += v.y;
-  }
-
-  /**
-   * Returns VectorScatter object that defines acceleration direction.
-   * @member {VectorScatter}
-   * @return {VectorScatter}
-   */
-  get scatter() {
-    return this.mScatter;
+    particle.ax += this.scatter.value.x;
+    particle.ay += this.scatter.value.y;
   }
 }
