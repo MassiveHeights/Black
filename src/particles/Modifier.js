@@ -66,8 +66,8 @@ class VectorField extends Modifier {
     if (v === null)
       return;
 
-    particle.ax = v.x;
-    particle.ay = v.y;
+    particle.vx = v.x;
+    particle.vy = v.y;
   }
 }
 

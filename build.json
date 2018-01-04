@@ -6,6 +6,7 @@
     "src/core/Debug.js",
 
     "src/math/MathEx.js",
+    "src/math/Perlin.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
     "src/utils/ObjectPool.js",

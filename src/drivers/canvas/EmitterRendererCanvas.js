@@ -55,12 +55,11 @@ class EmitterRendererCanvas extends Renderer {
       worldTransform.copyFrom(localTransform);
       worldTransform.prepend(this.transform);
     } else {
-      this.space.worldTransformation.copyTo(worldTransform);
+      worldTransform.copyFrom(this.space.worldTransformation);
       worldTransform.append(localTransform);
     }
 
     driver.globalAlpha = this.alpha * particle.alpha;
-
     driver.setTransform(worldTransform);
     driver.drawTexture(texture);
   }
