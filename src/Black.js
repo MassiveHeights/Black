@@ -10,9 +10,10 @@ class Black extends MessageDispatcher {
    * Creates a new Black instance.
    * @param {string}                          containerElementId The id of an DOM element.
    * @param {function(new: GameObject)}       gameClass          Type name of an GameObject to start execution from.
-   * @param {function(new: VideoNullDriver)}  [videoDriverClass] Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+   * @param {function(new: VideoNullDriver)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+   * @param {Array<function(new: System)>  }  systemClasses
    */
-  constructor(containerElementId, gameClass, videoDriverClass) {
+  constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
 
     // Dirty GCC workaround
@@ -41,6 +42,8 @@ class Black extends MessageDispatcher {
      * @type {function(new: VideoNullDriver)}
      */
     this.mVideoDriverClass = videoDriverClass;
+
+    this.mSystemClasses = systemClasses;
 
     /**
      * @private
@@ -269,7 +272,11 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootSystems() {
-    //this.addSystem(new Input());
+    if (this.mSystemClasses === null)
+      return;
+
+    for (let i = 0; i < this.mSystemClasses.length; i++)
+      this.addSystem(new this.mSystemClasses[i]());
   }
 
   /**
@@ -307,6 +314,7 @@ class Black extends MessageDispatcher {
   /**
    * Adds a given system to the execution list.
    *
+   * @deprecated
    * @param  {System} system The System object you want to add.
    * @return {System}
    */
@@ -318,6 +326,7 @@ class Black extends MessageDispatcher {
   /**
    * Removes the given system from execution list.
    *
+   * @deprecated
    * @param {System} system The System instance to remove.
    * @return {System|null}
    */
@@ -419,7 +428,7 @@ class Black extends MessageDispatcher {
       this.mLastFrameTimeMs = timestamp;
       this.mCurrentTime = 0; // same as first update
       this.mFrameAccum = 0;
-      
+
       this.__setUnpaused();
     }
 
