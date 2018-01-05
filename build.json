@@ -104,6 +104,7 @@
     "src/particles/mods/RotationOverLife.js",
     "src/particles/mods/TextureOverLife.js",
     "src/particles/mods/Oriented.js",    
+    "src/particles/mods/VectorField.js",   
 
     "src/particles/mods/InitialLife.js",
     "src/particles/mods/InitialMass.js",
