@@ -36,7 +36,7 @@ class Emitter extends DisplayObject {
 
     /**
      * @private
-     * @type {Array<Initializer>}
+     * @type {Array<Modifier>}
      */
     this.mInitializers = [];
 
@@ -160,18 +160,32 @@ class Emitter extends DisplayObject {
     this.mState = EmitterState.PENDING;
   }
 
-  add(...actionsOrInitializers) {
-    for (let i = 0; i < actionsOrInitializers.length; i++) {
-      let ai = actionsOrInitializers[i];
+  add(...modifiers) {
+    for (let i = 0; i < modifiers.length; i++) {
+      let ai = modifiers[i];
 
-      if (ai instanceof Action)
-        this.addAction(ai);
-      else if (ai instanceof Initializer)
-        this.addInitializer(ai);
+      if (ai instanceof Modifier)
+        this.addModifier(ai);
       else
         super.add(ai);
     }
     return this;
+  }
+
+  /**
+   * addModifier - Adds Modifier to the end of the list.
+   *
+   * @param {Modifier} modifier
+   *
+   * @return {Modifier}
+   */
+  addModifier(modifier) {
+    if (modifier.isInitializer)
+      this.mInitializers.push(modifier);
+    else
+      this.mActions.push(modifier);
+
+    return modifier;
   }
 
   /**
@@ -231,30 +245,6 @@ class Emitter extends DisplayObject {
 
       this.mEmitDurationLeft -= dt;
     }
-  }
-
-  /**
-   * addInitializer - Adds Initializer to the end of the list.
-   *
-   * @param {Initializer} initializer
-   *
-   * @return {Initializer}
-   */
-  addInitializer(initializer) {
-    this.mInitializers.push(initializer);
-    return initializer;
-  }
-
-  /**
-   * addAction - Adds action to the end of the list.
-   *
-   * @param {Action} action
-   *
-   * @return {Action}
-   */
-  addAction(action) {
-    this.mActions.push(action);
-    return action;
   }
 
   onRender(driver, parentRenderer) {
@@ -340,20 +330,10 @@ class Emitter extends DisplayObject {
 
       p.reset();
 
-      for (let k = 0; k < this.mInitializers.length; k++) {
-        let initer = this.mInitializers[k];
-        initer.initialize(p);
-      }
+      for (let k = 0; k < this.mInitializers.length; k++)
+        this.mInitializers[k].update(this, p, 0);
 
       if (this.mIsLocal === false) {
-        matrix.transformDirectionXY(p.ax, p.ay, Vector.__cache);
-        p.ax = Vector.__cache.x;
-        p.ay = Vector.__cache.y;
-
-        matrix.transformDirectionXY(p.vx, p.vy, Vector.__cache);
-        p.vx = Vector.__cache.x;
-        p.vy = Vector.__cache.y;
-
         matrix.transformXY(p.x, p.y, Vector.__cache);
         p.x = Vector.__cache.x;
         p.y = Vector.__cache.y;

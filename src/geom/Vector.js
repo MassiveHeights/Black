@@ -319,11 +319,11 @@ class Vector {
   }
 
   /**
-   * Calculates vector angle in radians.
+   * Calculates vector angle in radians. Same as heading.
    *
    * @return {number} Angle in radians.
    */
-  angle(vector) {
+  angle() {
     return Math.atan2(this.y, this.x);
   }
 
@@ -339,12 +339,13 @@ class Vector {
   /**
    * Creates new Vector from given angle in radians.
    *
-   * @param {number=} [angle=0] Angle.
+   * @param {number=} [angle] Angle.
    *
    * @return {Vector} New Vector object.
    */
-  static fromAngle(angle = 0) {
-    return new Vector(Math.cos(angle), Math.sin(angle));
+  static fromAngle(angle, outVector) {
+    outVector = outVector || new Vector();
+    return outVector.set(Math.cos(angle), Math.sin(angle));
   }
 
   /**

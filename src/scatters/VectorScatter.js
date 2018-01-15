@@ -14,28 +14,29 @@ class VectorScatter extends Scatter {
    * @param {number} maxX The max value along x-axis.
    * @param {number} maxY The max value along y-axis.
    */
-  constructor(minX, minY, maxX, maxY) {
+  constructor(minX, minY, maxX = null, maxY = null) {
     super();
 
     // NOTE: dont make us @private @member
     this.minX = minX;
     this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
+    this.maxX = maxX || minX;
+    this.maxY = maxY || minY;
+
+    this.value = new Vector();
   }
 
   /**
-   * Returns a random Vector object at given position within a range specified
-   * in the constructor.
-   * @override
-   *
-   * @return {Vector} Vector object with random values withing defined range.
-   */
+  * Returns a random Vector object at given position within a range specified
+  * in the constructor.
+  * @override
+  *
+  * @return {Vector} Vector object with random values withing defined range.
+  */
   getValue() {
-    let outVector = new Vector();
-    outVector.x = Math.random() * (this.maxX - this.minX) + this.minX;
-    outVector.y = Math.random() * (this.maxY - this.minY) + this.minY;
-    return outVector;
+    this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
+    this.value.y = Math.random() * (this.maxY - this.minY) + this.minY;
+    return this.value;
   }
 
   /**
@@ -48,10 +49,9 @@ class VectorScatter extends Scatter {
    * given position.
    */
   getValueAt(t) {
-    let outVector = new Vector();
-    outVector.x = this.minX + t * (this.maxX - this.minX);
-    outVector.y = this.minY + t * (this.maxY - this.minY);
-    return outVector;
+    this.value.x = this.minX + t * (this.maxX - this.minX);
+    this.value.y = this.minY + t * (this.maxY - this.minY);
+    return this.value;
   }
 
   static fromObject(...values) {
@@ -59,5 +59,33 @@ class VectorScatter extends Scatter {
       return values[0];
 
     return new VectorScatter(...values);
+  }
+}
+
+/* @echo EXPORT */
+class RadialVectorScatter extends VectorScatter {
+  constructor(x, y, minRadius, maxRadius = null) {
+    super(x, y, minRadius, maxRadius);
+
+    // minX = x,  minY = y, maxX = minRadius,  maxY = maxRadius
+  }
+
+  getValue() {
+    return this.getValueAt(Math.random());
+  }
+
+  getValueAt(t) {
+    // pick random radius
+    const r = this.maxX + t * (this.maxY - this.maxX);
+
+    const angle = Math.random() * 2 * Math.PI; // MathEx.PI2?
+    const rSq = r * r;
+    const rx = this.minX + (Math.sqrt(rSq) * Math.cos(angle));
+    const ry = this.minY + (Math.sqrt(rSq) * Math.sin(angle));
+
+    this.value.x = rx;
+    this.value.y = ry;
+
+    return this.value;
   }
 }

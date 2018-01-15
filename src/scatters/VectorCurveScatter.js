@@ -21,18 +21,6 @@ class VectorCurveScatter extends Scatter {
   }
 
   /**
-   * Returns a Vector value on a curve at random position.
-   * @override
-   *
-   * @return {Vector} Vector object with random values withing defined range.
-   */
-  getValue() {
-    let t = Math.random();
-    this.mCurve.interpolate(t, this.mCache);
-    return this.mCache;
-  }
-
-  /**
    * Returns a Vector at given position on a curve.
    * @override
    *

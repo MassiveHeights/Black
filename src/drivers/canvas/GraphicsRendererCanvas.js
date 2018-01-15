@@ -63,6 +63,10 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     driver.drawTexture(texture);
   }
 
+  get isRenderable() {
+    return this.commands.length > 0;
+  }
+
   __setLineStyle(cmd, ctx) {
     ctx.lineWidth = cmd.lineWidth;
     ctx.strokeStyle = VideoNullDriver.hexColorToString(cmd.lineColor);

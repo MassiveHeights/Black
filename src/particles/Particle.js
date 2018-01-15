@@ -7,15 +7,6 @@
 /* @echo EXPORT */
 class Particle {
   constructor() {
-    this.reset();
-  }
-
-  /**
-   * Resets particle to default state.
-   *
-   * @returns {void}
-   */
-  reset() {
     /**
      * The index of a texture.
      * @type {number}
@@ -105,6 +96,16 @@ class Particle {
      * @type {number}
      */
     this.ay = 0;
+  }
+
+  /**
+   * Resets particle to default state.
+   *
+   * @returns {void}
+   */
+  reset() {
+    this.scaleX = this.scaleY = this.alpha = this.life = 1;
+    this.textureIndex = this.age = this.energy = this.mass = this.x = this.y = this.r = this.vx = this.vy = this.ax = this.ay = 0;
   }
 
   /**

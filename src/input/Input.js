@@ -19,6 +19,8 @@ class Input extends System {
   constructor() {
     super();
 
+    Debug.assert(this.constructor.instance == null, 'Only single instance is allowed');
+
     /**
      * @private
      * @type {Input}

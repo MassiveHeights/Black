@@ -1,25 +1,24 @@
 /**
  * Sets particle's scale value according to its energy value.
  *
- * @cat particles.actions
- * @extends Action
+ * @cat particles.modifiers
+ * @extends Modifier
  * @class
  */
 /* @echo EXPORT */
-class ScaleOverLife extends Action {
+class ScaleOverLife extends Modifier {
   /**
    * Creates new ScaleOverTime instance.
    *
    * @param {...(number|FloatScatter)} values A starting and ending values of scale property.
    */
   constructor(...values) {
-    super();
+    super(false);
 
     /**
-     * @private
      * @type {...(number|FloatScatter)}
      */
-    this.mScatter = FloatScatter.fromObject(...values);
+    this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**
@@ -32,15 +31,6 @@ class ScaleOverLife extends Action {
    * @return {void}
    */
   update(emitter, particle, dt) {
-    particle.scaleX = particle.scaleY = this.mScatter.getValueAt(particle.energy);
-  }
-
-  /**
-   * Returns FloatScatter object that defines scale value over particle life.
-   * @member {FloatScatter}
-   * @return {FloatScatter}
-   */
-  get scatter() {
-    return this.mScatter;
+    particle.scaleX = particle.scaleY = this.scatter.getValueAt(particle.energy);
   }
 }

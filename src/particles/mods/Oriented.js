@@ -1,7 +1,7 @@
 /* @echo EXPORT */
-class Oriented extends Action {
+class Oriented extends Modifier {
   constructor() {
-    super();
+    super(false);
   }
 
   /**
@@ -15,14 +15,5 @@ class Oriented extends Action {
    */
   update(emitter, particle, dt) {
     particle.r = 1 * (Math.atan2(particle.vy, particle.vx) * MathEx.RAD2DEG - 90) * dt;
-  }
-
-  /**
-   * Returns VectorScatter object that defines acceleration direction.
-   * @member {VectorScatter}
-   * @return {VectorScatter}
-   */
-  get scatter() {
-    return this.mScatter;
   }
 }

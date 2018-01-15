@@ -1,25 +1,25 @@
 /**
  * Sets particle's texture according to its energy value.
  *
- * @cat particles.actions
- * @extends Action
+ * @cat particles.modifiers
+ * @extends Modifier
  * @class
  */
 /* @echo EXPORT */
-class TextureOverLife extends Action {
+class TextureOverLife extends Modifier {
   /**
    * Creates new TextureOverLife instance.
    *
    * @param {...(number|FloatScatter)} values A starting and ending values of textureIndex property.
    */
   constructor(...values) {
-    super();
+    super(false);
 
     /**
      * @private
      * @type {...(number|FloatScatter)}
      */
-    this.mScatter = FloatScatter.fromObject(...values);
+    this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**
@@ -32,15 +32,6 @@ class TextureOverLife extends Action {
    * @return {void}
    */
   update(emitter, particle, dt) {
-    particle.textureIndex = ~~this.mScatter.getValueAt(particle.energy);
-  }
-
-  /**
-   * Returns FloatScatter object that defines texture value over particle life.
-   * @member {FloatScatter}
-   * @return {FloatScatter}
-   */
-  get scatter() {
-    return this.mScatter;
+    particle.textureIndex = Math.round(this.scatter.getValueAt(particle.energy));
   }
 }
