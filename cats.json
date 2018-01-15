@@ -18,5 +18,6 @@
   "sound": "Sound",
   "system": "System",
   "utils": "Utils",
-  "video": "Video"
+  "video": "Video",
+  "audio": "Audio"
 }

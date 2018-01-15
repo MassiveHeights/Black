@@ -65,10 +65,11 @@ class MessageDispatcher {
    *
    * @param {string} message
    * @param {Function=} [callback=null]
+   * @param {*} [context=null]
    *
    * @return {void}
    */
-  off(message, callback = null) {
+  off(message, callback = null, context = null) {
     Debug.assert(message !== null, 'name cannot be null.');
 
     let filterIx = message.indexOf('@');
@@ -108,7 +109,7 @@ class MessageDispatcher {
         return;
       } else {
         for (let i = dispatchers.length; i--;) {
-          if (dispatchers[i].callback === callback) {
+          if (dispatchers[i].callback === callback && dispatchers[i].context === context) {
             dispatchers.splice(i, 1);
             return;
           }

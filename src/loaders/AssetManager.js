@@ -91,6 +91,13 @@ class AssetManager extends MessageDispatcher {
      * @member
      * @dict
      */
+    this.mSoundAtlases = {};
+
+    /**
+     * @private
+     * @member
+     * @dict
+     */
     this.mFonts = {};
 
     /**
@@ -175,6 +182,10 @@ class AssetManager extends MessageDispatcher {
     this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
   }
 
+  enqueueSoundAtlas(name, soundUrl, dataUrl) {
+    this.mQueue.push(new SoundAtlasAsset(name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
+  }
+
   /*
    * Adds local font to the loading queue.
    *
@@ -237,6 +248,8 @@ class AssetManager extends MessageDispatcher {
       this.mJsons[item.name] = item.data;
     else if (item.constructor === SoundAsset)
       this.mSounds[item.name] = item.data;
+    else if (item.constructor === SoundAtlasAsset)
+      this.mSoundAtlases[item.name] = item.data;
     else if (item.constructor === FontAsset)
       this.mFonts[item.name] = item.data;
     else if (item.constructor === XMLAsset)
@@ -301,7 +314,7 @@ class AssetManager extends MessageDispatcher {
 
   /**
    * Returns array of Texture by given name mask.
-   * Searches across all loaded images and atlasses.
+   * Searches across all loaded images and atlases.
    *
    * @param {string} nameMask
    *
@@ -363,9 +376,31 @@ class AssetManager extends MessageDispatcher {
    * @return {Audio} Returns sound or null.
    */
   getSound(name) {
-    return this.mSounds[name];
+    /** @type {Texture} */
+    let t = this.mSounds[name];
+
+    if (t != null)
+      return t;
+
+    for (let key in this.mSoundAtlases) {
+      t = this.mSoundAtlases[key].subSounds[name];
+      if (t != null)
+        return t;
+    }
+
+    Debug.warn(`Sound '${name}' was not found`);
+    return null;
   }
 
+  getSoundAtlas(name) {
+    return this.mSoundAtlases[name];
+  }
+
+  /**
+   * Returns Object parsed from JSON by given name.
+   * @param {string} name The name of the JSON asset.
+   * @return {Object} Returns object or null.
+   */
   getJSON(name) {
     return this.mJsons[name];
   }

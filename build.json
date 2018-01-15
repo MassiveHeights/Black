@@ -2,7 +2,7 @@
   "files":
   [
     "vendors/spine-core.js",
-    
+
     "src/core/Debug.js",
 
     "src/math/MathEx.js",
@@ -130,6 +130,20 @@
     "src/animation/Spine.js",
 
     "src/physics/Arcade.js",
+
+    "src/audio/Audio.js",
+
+    "src/audio/SoundEffect.js",
+    "src/audio/effects/DistortionEffect.js",
+    "src/audio/effects/StereoPanner.js",
+    "src/audio/effects/SimpleEQ.js",
+    "src/audio/effects/ReverbEffect.js",
+
+    "src/audio/SoundInstance.js",
+    "src/audio/SoundClip.js",
+    "src/audio/SoundAtlasClip.js",
+    "src/audio/SoundChannel.js",
+    "src/audio/SoundComponent.js",
 
     "src/Black.js"
   ]
