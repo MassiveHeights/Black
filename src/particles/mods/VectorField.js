@@ -1,5 +1,19 @@
+/**
+ * @ignore
+ * @cat particles.modifiers
+ * @extends Modifier
+ */
 /* @echo EXPORT */
 class VectorField extends Modifier {
+  /**
+   * Creates new instance of VectorField.
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number=} [resolution=0.1]
+   */
   constructor(x, y, width, height, resolution = 0.1) {
     super(false);
 
@@ -16,14 +30,25 @@ class VectorField extends Modifier {
     this.reset();
   }
 
+  /**
+   *
+   *
+   * @returns {void}
+   */
   reset() {    
     this.field.splice(0, this.field.length); // why?
 
-    for (var y = 0; y < this.heightScaled; y++)
-      for (var x = 0; x < this.widthScaled; x++)
+    for (let y = 0; y < this.heightScaled; y++)
+      for (let x = 0; x < this.widthScaled; x++)
         this.field.push(new Vector(0, 0));
   }
 
+  /**
+   *
+   *
+   * @param {Function} fn
+   * @returns {void}
+   */
   setData(fn) {
     for (let y = 0; y < this.heightScaled; y++) {
       for (let x = 0; x < this.widthScaled; x++) {
@@ -33,6 +58,13 @@ class VectorField extends Modifier {
     }
   }
 
+  /**
+   *
+   *
+   * @param {number} x
+   * @param {number} y
+   * @returns {Vector|null}
+   */
   getVectorAt(x, y) {
     x = Math.floor(x * this.resolution);
     y = Math.floor(y * this.resolution);
@@ -44,6 +76,9 @@ class VectorField extends Modifier {
     return this.field[ix];
   }
 
+  /**
+   * @inheritDoc
+   */
   update(emitter, particle, dt) {
     let v = this.getVectorAt(particle.x, particle.y);
 

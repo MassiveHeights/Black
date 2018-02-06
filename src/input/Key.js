@@ -6,7 +6,7 @@
  * @cat input
  */
 /* @echo EXPORT */
-var Key = {
+const Key = {
   /**
    * @type {number}
    */

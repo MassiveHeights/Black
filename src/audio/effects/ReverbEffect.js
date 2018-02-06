@@ -1,13 +1,36 @@
+/**
+ * Reverberation sound effect.
+ * 
+ * @cat audio.effects
+ * @extends {SoundEffect}
+ */
 /* @echo EXPORT */
 class ReverbEffect extends SoundEffect {
+
+  /**
+   * Creates instance of ReverbEffect.
+   * 
+   * @param {AudioBuffer} IRBuffer Impulse Response audio buffer.
+   */
   constructor(IRBuffer) {
     super();
-    this.mInputNode = Audio.__newGainNode();
-    this.mOutputNode = Audio.__newGainNode();
 
+    /** @inheritDoc */
+    this.mInputNode = Audio._newGainNode();
+
+    /** @inheritDoc */
+    this.mOutputNode = Audio._newGainNode();
+
+    /** @private @type {ConvolverNode} */
     this.mConvolver = Audio.context.createConvolver();
-    this.mDry = Audio.__newGainNode();
-    this.mWet = Audio.__newGainNode();
+
+    /** @private @type {GainNode} */
+    this.mDry = Audio._newGainNode();
+
+    /** @private @type {GainNode} */
+    this.mWet = Audio._newGainNode();
+
+    /** @private @type {BiquadFilterNode} */
     this.mTone = Audio.context.createBiquadFilter();
 
     this.mConvolver.buffer = IRBuffer;
@@ -27,29 +50,65 @@ class ReverbEffect extends SoundEffect {
     this.mTone.Q.setValueAtTime(Math.SQRT1_2, 0);
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {number} value
+   * @returns {void}
+   */
   set wet(value) {
     value = MathEx.clamp(value, 0, 1);
     this.mWet.gain.setValueAtTime(value, 0);
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {number} value
+   * @returns {void}
+   */
   set dry(value) {
     value = MathEx.clamp(value, 0, 1);
     this.mDry.gain.setValueAtTime(value, 0);
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {number} value
+   * @returns {void}
+   */
   set tone(value) {
     value = MathEx.clamp(value, 10, Audio.context.sampleRate / 2);
     this.mTone.frequency.setValueAtTime(value, 0);
   }
 
+  /**
+   * Gets/Sets level of convolved sound.
+   * 
+   * @public
+   * @returns {number}
+   */
   get wet() {
     return this.mWet.gain.value;
   }
 
+  /**
+   * Gets/Sets level of original sound with no effect.
+   * 
+   * @public
+   * @returns {number}
+   */
   get dry() {
     return this.mDry.gain.value;
   }
 
+  /**
+   * Gets/Sets frequency effect is applied on.
+   * 
+   * @public
+   * @returns {number}
+   */
   get tone() {
     return this.mTone.frequency.value;
   }

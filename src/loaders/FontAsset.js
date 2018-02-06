@@ -1,7 +1,7 @@
 /**
  * Font file asset class responsible for loading local font files.
  *
- * Note: this class need a body to work preoperly.
+ * Note: this class need a body to work properly.
  *
  * @cat loaders
  * @extends Asset
@@ -9,6 +9,8 @@
 /* @echo EXPORT */
 class FontAsset extends Asset {
   /**
+   * Creates new instance of FontAsset.
+   *
    * @param {string} name        The custom name of the font
    * @param {string|null} url    The path to the font
    * @param {boolean} local      Is this font local?
@@ -19,61 +21,38 @@ class FontAsset extends Asset {
 
     super(name, url);
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mTestingFontName = 'Courier New';
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mLocal = local;
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mTestingString = '~ GHBDTN,.#$Mlck';
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLoadingTimeout = 2500;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mCheckDelay = 50;
 
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
+    /** @private @type {HTMLElement} */
     this.mTestingElement = this.__getTestingElement();
 
     this.metrics = null;
 
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
+    /** @private @type {HTMLElement} */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
 
     this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
   }
 
   /**
+   * @ignore
    * @private
    * @return {HTMLElement}
    */
@@ -89,6 +68,7 @@ class FontAsset extends Asset {
   }
 
   /**
+   * @ignore
    * @private
    * @return {HTMLElement}
    */
@@ -106,8 +86,7 @@ class FontAsset extends Asset {
   }
 
   /**
-   * @override
-   * @return {void}
+   * @inheritDoc
    */
   load() {
     if (this.mLocal)
@@ -119,6 +98,7 @@ class FontAsset extends Asset {
   }
 
   /**
+   * @private
    * @return {void}
    */
   checkLoadingStatus() {
@@ -134,8 +114,11 @@ class FontAsset extends Asset {
     this.onLoaded();
   }
 
+  /**
+   * @inheritDoc
+   */
   onLoaded() {
-    var a = this.mLoaderElement;
+    let a = this.mLoaderElement;
 
     this.metrics = FontMetrics.get(this.mName);
 
@@ -144,6 +127,7 @@ class FontAsset extends Asset {
   }
 
   /**
+   * @private
    * @return {void}
    */
   onLoadingFail() {

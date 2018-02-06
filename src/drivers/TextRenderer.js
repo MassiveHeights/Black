@@ -1,43 +1,88 @@
+/**
+ * Responsible for rendering `TextField` objects by different drivers.
+ *
+ * @extends Renderer
+ * @cat drivers
+ */
 /* @echo EXPORT */
 class TextRenderer extends Renderer {
+  /**
+   * Creates new instance of TextRenderer.
+   */
   constructor() {
     super();
 
+    /** @type {string} @ignore */
     this.text = null;
+
+    /** @type {TextInfo} @ignore */
     this.style = null;
+
+    /** @type {boolean} @ignore */
     this.multiline = false;
+
+    /** @type {boolean} @ignore */
     this.autoSize = false;
+
+    /** @type {Rectangle} @ignore */
     this.bounds = new Rectangle(0, 0, 100, 100);
-    this.lineBounds = null; // array
-    this.align = null; // TextInfo.FontAlign
+
+    /** @type {Array} @ignore */
+    this.lineBounds = null;
+
+    /** @type {TextInfo.FontAlign} @ignore */
+    this.align = null;
+
+    /** @type {boolean} @ignore */
     this.drawBounds = false;
+
+    /** @type {Rectangle} @ignore */
     this.padding = new Rectangle(0, 0, 0, 0);
+
+    /** @type {string} @ignore */
     this.vAlign = 'top';
+
+    /** @type {number} @ignore */
     this.fieldWidth = 0;
+
+    /** @type {number} @ignore */
     this.fieldHeight = 0;
 
+    /** @private @type {Matrix} @ignore */
     this.__transformCache = new Matrix();
+
+    /** @private @type {HTMLCanvasElement} */
     this.__canvas = document.createElement('canvas');
+
+    /** @private @type {CanvasRenderingContext2D} */
     this.__context = this.__canvas.getContext('2d');
+
     this.__context.lineJoin = 'round';
     this.__context.miterLimit = 2;
   }
 
+  /**
+   * @ignore
+   * @private
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {VideoNullDriver} driver
+   * @param {Array<string>} lines
+   * @param {FontMetrics} fontMetrics
+   * @param {boolean} isStroke
+   */
   __renderLines(ctx, driver, lines, fontMetrics, isStroke = false) {
     let baseline = fontMetrics.baselineNormalized * this.style.size;
-    let bottomline = fontMetrics.bottomNormalized * this.style.size;
 
     const strokeThickness = this.style.strokeThickness;
 
     if (isStroke === true) {
       ctx.lineWidth = strokeThickness;
-      ctx.strokeStyle = driver.hexColorToString(this.style.strokeColor);
+      ctx.strokeStyle = VideoNullDriver.hexColorToString(this.style.strokeColor);
     } else {
-      ctx.fillStyle = driver.hexColorToString(this.style.color);
+      ctx.fillStyle = VideoNullDriver.hexColorToString(this.style.color);
     }
 
     let width = this.bounds.width;
-    let height = this.bounds.width;
 
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i];
@@ -60,6 +105,9 @@ class TextRenderer extends Renderer {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   render(driver) {
     if (this.text === null)
       return;
@@ -77,15 +125,15 @@ class TextRenderer extends Renderer {
       let fontMetrics = FontMetrics.get(this.style.name);
 
       if (this.drawBounds === true) {
-        ctx.strokeStyle = driver.hexColorToString(0xff0000);
+        ctx.strokeStyle = VideoNullDriver.hexColorToString(0xff0000);
         ctx.strokeRect(0, 0, cvs.width, cvs.height);
 
-        ctx.strokeStyle = driver.hexColorToString(0xff00ff);
+        ctx.strokeStyle = VideoNullDriver.hexColorToString(0xff00ff);
         ctx.strokeRect(0, 0, this.bounds.width, this.bounds.height);
       }
 
       ctx.font = `${this.style.size}px ${this.style.name}`;
-      ctx.textBaseline = 'alphabetic'; // alphabetic      
+      ctx.textBaseline = 'alphabetic'; // alphabetic
 
       const lines = this.multiline === true ? this.text.split('\n') : [this.text.replace(/\n/g, '')];
 
@@ -102,7 +150,7 @@ class TextRenderer extends Renderer {
         this.__renderLines(ctx, driver, lines, fontMetrics, true)
       }
 
-      this.__renderLines(ctx, driver, lines, fontMetrics, false)
+      this.__renderLines(ctx, driver, lines, fontMetrics, false);
 
       if (this.texture === null)
         this.texture = new Texture(cvs);
@@ -111,6 +159,9 @@ class TextRenderer extends Renderer {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   getTransform() {
     const strokeThickness = this.style.strokeThickness;
 
@@ -138,6 +189,9 @@ class TextRenderer extends Renderer {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   get isRenderable() {
     return this.text !== null;
   }

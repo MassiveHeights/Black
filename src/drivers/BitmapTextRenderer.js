@@ -1,19 +1,45 @@
+/**
+ * Responsible for rendering `BitmapTextField` objects by different drivers.
+ *
+ * @extends Renderer
+ * @cat drivers
+ */
 /* @echo EXPORT */
 class BitmapTextRenderer extends Renderer {
+  /**
+   * Creates new instance of BitmapTextRenderer.
+   */
   constructor() {
     super();
 
+    /** @ignore @type {string} */
     this.text = null;
+
+    /** @ignore @type {BitmapFontData} */
     this.data = null;
+
+    /** @ignore @type {boolean} */
     this.multiline = false;
+
+    /** @ignore @type {boolean} */
     this.autoSize = false;
+
+    /** @ignore @type {Rectangle} */
     this.bounds = new Rectangle(0, 0, 0, 0);
 
+    /** @ignore @private @type {Matrix} */
     this.__transformCache = new Matrix();
+
+    /** @ignore @private @type {HTMLCanvasElement} */
     this.__canvas = document.createElement('canvas');
+
+    /** @ignore @private @type {CanvasRenderingContext2D} */
     this.__context = this.__canvas.getContext('2d');
   }
 
+  /**
+   * @inheritDoc
+   */
   render(driver) {
     if (this.text === null)
       return;
@@ -53,8 +79,8 @@ class BitmapTextRenderer extends Renderer {
 
         const w = texture.width;
         const h = texture.height;
-        const ox = texture.untrimmedRect.x + charData.xOffset + cx;
-        const oy = texture.untrimmedRect.y + charData.yOffset + cy;
+        const ox = texture.untrimmedRegion.x + charData.xOffset + cx;
+        const oy = texture.untrimmedRegion.y + charData.yOffset + cy;
 
         ctx.drawImage(texture.native, texture.region.x, texture.region.y, w, h, ~~ox, ~~oy, w, h);
 
@@ -69,6 +95,9 @@ class BitmapTextRenderer extends Renderer {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   getTransform() {
     return this.transform;
   }

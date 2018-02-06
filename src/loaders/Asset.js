@@ -8,58 +8,34 @@
 class Asset extends MessageDispatcher {
   /**
    * Creates new Assets instance.
+   *
    * @param  {string} name Name of asset.
    * @param  {string} url  URL of the asset to load it from.
    */
   constructor(name, url) {
     super();
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @protected @type {string} */
     this.mName = name;
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @protected @type {string} */
     this.mUrl = url;
 
-    /**
-     * @private
-     * @type {*|null}
-     */
+    /** @protected @type {*|null} */
     this.mData = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsLoaded = false;
 
-    /**
-     * @private
-     * @type {string|undefined}
-     */
+    /** @private @type {string|undefined} */
     this.mMimeType = undefined;
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @protected @type {string} */
     this.mResponseType = '';
 
-    // /**
-    //  * @private
-    //  * @type {string}
-    //  */
     // this.mExtension = this.getExtension(url);
 
-    /**
-     * @private
-     * @type {XMLHttpRequest|null}
-     */
+    /** @protected @type {XMLHttpRequest|null} */
     this.mRequest = null;
   }
 
@@ -69,16 +45,17 @@ class Asset extends MessageDispatcher {
    * @return {void}
    */
   load() {
-    //console.log('Asset: loading asset \'%s\' from \'%s\'', this.mName, this.mUrl);
-
     this.mRequest = new XMLHttpRequest();
-    //this.mRequest.onprogress = (pe) => this.onProgressChanged(pe);
-
-    if (this.mRequest.overrideMimeType && this.mMimeType)
-      this.mRequest.overrideMimeType(this.mMimeType);
-
-    this.mRequest.responseType = this.mResponseType;
     this.mRequest.open("GET", this.mUrl, true);
+
+    if (this.mResponseType != '') {
+      this.mRequest.responseType = this.mResponseType;
+    }
+
+    if (this.mRequest.overrideMimeType != undefined && this.mMimeType) {
+      this.mRequest.overrideMimeType(this.mMimeType);
+    }
+
     this.mRequest.onreadystatechange = () => {
       if (this.mRequest.readyState === 4) {
         if ((this.mRequest.status === 200) || ((this.mRequest.status === 0) && this.mRequest.responseText))
@@ -96,7 +73,6 @@ class Asset extends MessageDispatcher {
    *
    * @protected
    * @fires complete
-   *
    * @return {void}
    */
   onLoaded() {
@@ -138,7 +114,6 @@ class Asset extends MessageDispatcher {
    * Helper function. Returns the file extension.
    *
    * @param {string} url Url to get extension from.
-   *
    * @return {string} Empty string if no extension were found or extension itself.
    */
   getExtension(url) {

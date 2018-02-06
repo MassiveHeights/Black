@@ -1,5 +1,5 @@
 /**
- * THE BLACK ENGINE ITSELF.
+ * THE BLACK ENGINE ITSELF!
  *
  * @extends MessageDispatcher
  */
@@ -11,7 +11,7 @@ class Black extends MessageDispatcher {
    * @param {string}                          containerElementId The id of an DOM element.
    * @param {function(new: GameObject)}       gameClass          Type name of an GameObject to start execution from.
    * @param {function(new: VideoNullDriver)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
-   * @param {Array<function(new: System)>  }  systemClasses
+   * @param {Array<function(new: System)>  }  systemClasses      The list of systems to be initialized with Black engine.
    */
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
@@ -22,213 +22,111 @@ class Black extends MessageDispatcher {
 
     console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mContainerElementId = containerElementId;
 
-    /**
-     * @private
-     * @type {HTMLElement}
-     */
+    /** @private @type {HTMLElement} */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /**
-     * @private
-     * @type {function(new: VideoNullDriver)}
-     */
+    /** @private @type {function(new: VideoNullDriver)} */
     this.mVideoDriverClass = videoDriverClass;
 
     this.mSystemClasses = systemClasses;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mSimulationTimestep = 1000 / 60;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mUptime = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFrameAccum = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLastFrameTimeMs = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mCurrentTime = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFPS = 60;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLastFpsUpdate = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFramesThisSecond = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mNumUpdateSteps = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mMinFrameDelay = 0;
 
-    /**
-     * @private
-     * @type {Array<System>}
-     */
+    /** @private @type {Array<System>} */
     this.mSystems = [];
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsRunning = false;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsStarted = false;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsPanic = false;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLastFrameUpdateTime = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLastFrameRenderTime = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mRAFHandle = -1; // not sure
 
-    /**
-     * @private
-     * @type {Viewport}
-     */
+    /** @private @type {Viewport} */
     this.mViewport = null;
 
-    /**
-     * @private
-     * @type {VideoNullDriver}
-     */
+    /** @private @type {VideoNullDriver} */
     this.mVideo = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mPaused = false;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mUnpausing = false;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mPauseOnHide = true;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mPauseOnBlur = true;
 
-    /**
-     * @private
-     * @type {Object<string, Array>}
-     */
+    /** @private @type {Object<string, Array>} */
     this.mTagCache = {};
 
-    /**
-     * @private
-     * @type {function(new: GameObject)|null}
-     */
+    /** @private @type {function(new: GameObject)|null} */
     this.mGameClass = gameClass;
 
-    /**
-     * @private
-     * @type {GameObject|null}
-     */
+    /** @private @type {GameObject|null} */
     this.mGame = null;
 
-    /**
-     * @private
-     * @type {Stage}
-     */
+    /** @private @type {Stage} */
     this.mStage = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mEnableFixedTimeStep = false;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mWasStopped = false;
 
     this.__bootViewport();
@@ -286,10 +184,10 @@ class Black extends MessageDispatcher {
   __bootStage() {
     this.mStage = new Stage();
 
-    window.onblur = event => this.__onVisbilityChange(event);
-    window.onfocus = event => this.__onVisbilityChange(event);
-    window.onpagehide = event => this.__onVisbilityChange(event);
-    window.onpageshow = event => this.__onVisbilityChange(event);
+    window.onblur = event => this.__onVisibilityChange(event);
+    window.onfocus = event => this.__onVisibilityChange(event);
+    window.onpagehide = event => this.__onVisibilityChange(event);
+    window.onpageshow = event => this.__onVisibilityChange(event);
 
     if (document.hidden && this.mPauseOnHide === true)
       this.pause();
@@ -299,7 +197,7 @@ class Black extends MessageDispatcher {
    * @private
    * @returns {void}
    */
-  __onVisbilityChange(event) {
+  __onVisibilityChange(event) {
     let type = event.type;
     if (type === 'blur' && this.mPauseOnBlur === true)
       this.pause();
@@ -332,7 +230,7 @@ class Black extends MessageDispatcher {
    */
   removeSystem(system) {
     // TODO: remove system on next frame
-    var ix = this.mSystems.indexOf(system);
+    let ix = this.mSystems.indexOf(system);
     if (ix === -1)
       return null;
 
@@ -413,7 +311,6 @@ class Black extends MessageDispatcher {
   /**
    * @private
    * @param {number} timestamp
-   *
    * @return {void}
    */
   __update(timestamp) {
@@ -536,25 +433,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @deprecated
-   * Returns the Stage GameObject.
-   * @return {GameObject}
-   */
-  get stage() {
-    return this.mStage;
-  }
-
-  /**
-   * @deprecated
-   * Returns current video driver instance.
-   * @return {VideoNullDriver}
-   */
-  get video() {
-    return this.mVideo;
-  }
-
-  /**
-   * If `enableFixedTimeStep` is set to `true` returns number of milliseconds fixed-time-step will run over.
+   * Gets/Sets the number of milliseconds fixed-time-step will run over.
+   *
    * @return {number}
    */
   get simulationTimestep() {
@@ -562,8 +442,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Sets the number of milliseconds for fixed-time-step to run over.
-   *
+   * @ignore
    * @param {number} timestep
    * @return {void}
    */
@@ -573,6 +452,7 @@ class Black extends MessageDispatcher {
 
   /**
    * Returns current frame rate
+   *
    * @return {number}
    */
   get FPS() {
@@ -580,7 +460,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns max number of updates engine must do in a second.
+   * Gets/Sets max number of updates engine must do in a second.
+   *
    * @return {number}
    */
   get maxAllowedFPS() {
@@ -588,7 +469,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * maxAllowedFPS - Sets the number of update engine must do per second.
+   * @ignore
    * @param {number} fps The max allowed FPS. If less then zero engine will be stopped.
    * @return {void}
    */
@@ -601,6 +482,7 @@ class Black extends MessageDispatcher {
 
   /**
    * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+   *
    * @return {Viewport}
    */
   get viewport() {
@@ -608,7 +490,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Retruns the DOM element the engine runs in.
+   * Returns the DOM element the engine runs in.
+   *
    * @return {Element}
    */
   get containerElement() {
@@ -617,6 +500,7 @@ class Black extends MessageDispatcher {
 
   /**
    * Returns amount of seconds since engine start.
+   *
    * @return {number}
    */
   get uptime() {
@@ -624,11 +508,12 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @protected
-   * @param {GameObject} child
-   * @param {string|null} oldTag
-   * @param {string|null} newTag
+   * Called when tag changed for specific `GameObject`.
    *
+   * @protected
+   * @param {GameObject} child   A game object fired the event.
+   * @param {string|null} oldTag Old tag.
+   * @param {string|null} newTag New tag.
    * @return {void}
    */
   onTagUpdated(child, oldTag, newTag) {
@@ -649,8 +534,10 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Called when specific game object is added to display list.
+   *
    * @protected
-   * @param  {GameObject} child
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenAdded(child) {
@@ -678,14 +565,23 @@ class Black extends MessageDispatcher {
     });
   }
 
+  /**
+   * Called when specific game object is changed its index in display list.
+   *
+   * @protected
+   * @param {GameObject} child Instance of GameObject.
+   * @return {void}
+   */
   onChildrenChanged(child) {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onChildrenChanged(child);
   }
 
   /**
+   * Called when specific game object is added to display list.
+   *
    * @protected
-   * @param  {GameObject} child
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenRemoved(child) {
@@ -713,9 +609,11 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Called when specific component is added to GameObject instance.
+   *
    * @protected
-   * @param  {GameObject} child
-   * @param  {Component} component
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component added to game object.
    * @return {void}
    */
   onComponentAdded(child, component) {
@@ -730,8 +628,11 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @param  {GameObject} child
-   * @param  {Component} component
+   * Called when specific component is removed from its owner.
+   *
+   * @protected
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) {
@@ -746,7 +647,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns if engine should be automatically paused when window is hidden.
+   * Gets/Sets if engine should be automatically paused when window is hidden.
+   *
    * @return {boolean}
    */
   get pauseOnHide() {
@@ -754,7 +656,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Sets if engine should be automatically paused when window is hidden.
+   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -763,7 +665,8 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns if engine should be automatically paused when container element is blured.
+   * Gets/Sets if engine should be automatically paused when container element is blured.
+   *
    * @return {boolean}
    */
   get pauseOnBlur() {
@@ -771,7 +674,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Sets if engine should be automatically paused when container element is blured.
+   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -779,18 +682,10 @@ class Black extends MessageDispatcher {
     this.mPauseOnBlur = value;
   }
 
-
-  /**
-   * Returns if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
-   * @return {boolean}
-   */
-  get enableFixedTimeStep() {
-    return this.mEnableFixedTimeStep;
-  }
-
   /**
    * Returns True if engine is paused.
    *
+   * @readonly
    * @returns {boolean}
    */
   get isPaused() {
@@ -798,8 +693,15 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
-   *
+   * Gets/Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
+   * @return {boolean}
+   */
+  get enableFixedTimeStep() {
+    return this.mEnableFixedTimeStep;
+  }
+
+  /**
+   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -807,26 +709,53 @@ class Black extends MessageDispatcher {
     this.mEnableFixedTimeStep = value;
   }
 
-  get magic() {
-    return Math.random();
-  }
-
-
   get gameObject() {
     return this.mGameObject;
   }
 
+  /**
+   * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
+   * @readonly
+   * @returns {number}
+   */
+  static get magic() {
+    return Math.random();
+  }
+
+  /**
+   * Returns current video driver.
+   *
+   * @readonly
+   * @returns {VideoNullDriver}
+   */
   static get driver() {
     return Black.instance.mVideo;
   }
 
+  /**
+   * Returns current stage.
+   *
+   * @readonly
+   * @returns {Stage}
+   */
   static get stage() {
     return Black.instance.mStage;
   }
 
+  /**
+   * Returns number of frame since engine start.
+   *
+   * @readonly
+   * @returns {number}
+   */
   static get frameNum() {
     return Black.__frameNum;
   }
 }
 
+/**
+ * @ignore
+ * @type {number}
+ * @private
+ */
 Black.__frameNum = 0;

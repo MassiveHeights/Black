@@ -1,5 +1,5 @@
 /**
- * Bitmap Font Asset responsible for loading font image file and coresponding xml file.
+ * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
  *
  * @cat loaders
  * @extends Asset
@@ -16,19 +16,18 @@ class BitmapFontAsset extends Asset {
   constructor(name, imageUrl, xmlUrl) {
     super(name);
 
+    /** @private @type {TextureAsset} */
     this.mTextureAsset = new TextureAsset(name, imageUrl);
     this.mTextureAsset.on(Message.COMPLETE, this.onImageLoaded, this);
 
-    /**
-     * @private
-     * @type {JSONAsset}
-     */
+    /** @private @type {XMLAsset} */
     this.mXMLAsset = new XMLAsset(name, xmlUrl);
     this.mXMLAsset.on(Message.COMPLETE, this.onXMLLoaded, this);
   }
 
   /**
    * @ignore
+   * @private
    * @returns {void}
    */
   onImageLoaded() {
@@ -37,6 +36,7 @@ class BitmapFontAsset extends Asset {
 
   /**
    * @ignore
+   * @private
    * @returns {void}
    */
   onXMLLoaded() {
@@ -44,9 +44,7 @@ class BitmapFontAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   * @return {void}
    */
   onLoaded() {
     let xml = this.mXMLAsset.data;
@@ -58,14 +56,17 @@ class BitmapFontAsset extends Asset {
 
   /**
    * @inheritDoc
-   * @override
-   *
-   * @return {void}
    */
   load() {
     this.mTextureAsset.load();
   }
 
+  /**
+   *
+   * @param {Document} xml
+   * @param {Texture} texture
+   * @returns {BitmapFontData}
+   */
   static parse(xml, texture) {
     let data = new BitmapFontData();
     data.texture = texture;
@@ -95,7 +96,7 @@ class BitmapFontAsset extends Asset {
       let textureRect = new Rectangle(x, y, w, h);
 
       let charData = new BitmapFontCharData();
-      charData.texture = new Texture(texture.native, textureRect)
+      charData.texture = new Texture(texture.native, textureRect);
       charData.xOffset = xo;
       charData.yOffset = yo;
       charData.width = w;

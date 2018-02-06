@@ -1,11 +1,15 @@
+/**
+ * Set of math helper functions.
+ *
+ * @cat core
+ */
 /* @echo EXPORT */
 class MathEx {
   /**
-   * randomBetween
+   * Generates a random number in given range.
    *
-   * @param {number} a
-   * @param {number} b
-   *
+   * @param {number} a A lower value.
+   * @param {number} b A greater value.
    * @return {number}
    */
   static randomBetween(a, b) {
@@ -14,12 +18,11 @@ class MathEx {
 
 
   /**
-   * clamp
+   * Clamps given value to min max range.
    *
-   * @param {number} value
-   * @param {number} min
-   * @param {number} max
-   *
+   * @param {number} value A value to clamp.
+   * @param {number} min A lower threshold.
+   * @param {number} max A greater threshold.
    * @return {number}
    */
   static clamp(value, min, max) {
@@ -27,13 +30,12 @@ class MathEx {
   }
 
   /**
-   * distance between two points
+   * Calculates distance between two points.
    * 
-   * @param  {number} x1
-   * @param  {number} y1
-   * @param  {number} x2
-   * @param  {number} y2
-   * 
+   * @param  {number} x1 First point x-coordinate.
+   * @param  {number} y1 First point y-coordinate.
+   * @param  {number} x2 Second point x-coordinate.
+   * @param  {number} y2 Second point y-coordinate.
    * @return {number}
    */
   static distance(x1, y1, x2, y2) {
@@ -44,13 +46,12 @@ class MathEx {
   }
 
   /**
-   * squared distance between two points
+   * Calculates squared distance between two points.
    * 
-   * @param  {number} x1
-   * @param  {number} y1
-   * @param  {number} x2
-   * @param  {number} y2
-   * 
+   * @param  {number} x1 First point x-coordinate.
+   * @param  {number} y1 First point y-coordinate.
+   * @param  {number} x2 Second point x-coordinate.
+   * @param  {number} y2 Second point y-coordinate.
    * @return {number}
    */
   static distanceSqr(x1, y1, x2, y2) {
@@ -61,13 +62,12 @@ class MathEx {
   }
 
   /**
-   * angle in radians between two points
+   * Calculates angle in radians between two points.
    * 
-   * @param  {number} x1
-   * @param  {number} y1
-   * @param  {number} x2
-   * @param  {number} y2
-   * 
+   * @param  {number} x1 First point x-coordinate.
+   * @param  {number} y1 First point y-coordinate.
+   * @param  {number} x2 Second point x-coordinate.
+   * @param  {number} y2 Second point y-coordinate.
    * @return {number}
    */
   static angleBetween(x1, y1, x2, y2) {
@@ -75,12 +75,13 @@ class MathEx {
   }
 
   /**
-   * @param  {number} value
-   * @param  {number} fromA
-   * @param  {number} fromB
-   * @param  {number} toA
-   * @param  {number} toB
-   * 
+   * Maps one range onto another.
+   *
+   * @param  {number} value A value to map.
+   * @param  {number} fromA Lower value from first range.
+   * @param  {number} fromB Greater value from first range.
+   * @param  {number} toA Lower value from second range.
+   * @param  {number} toB Greater value from second range.
    * @return {number}
    */
   static mapRange(value, fromA, fromB, toA, toB) {
@@ -88,12 +89,11 @@ class MathEx {
   }
 
   /**
-   * lerp
+   * Linearly interpolates a number.
    *
-   * @param {number} a
-   * @param {number} b
-   * @param {number} t
-   *
+   * @param {number} a First value.
+   * @param {number} b Second value.
+   * @param {number} t A value between 0 and 1.
    * @return {number}
    */
   static lerp(a, b, t) {
@@ -102,39 +102,50 @@ class MathEx {
 
 
   /**
-   * lerpp
-   *
+   * @ignore
    * @param {number} a
    * @param {number} b
    * @param {number} t
-   *
    * @return {number}
    */
   static lerpp(a, b, t) {
     return (1 - t) * a + t * b;
   }
 
+  /**
+   * Compares two numbers using given epsilon value.
+   *
+   * @param {number} a First value.
+   * @param {number} b Second value.
+   * @param {number} epsilon Comparison threshold.
+   * @returns {boolean}
+   */
   static equals(a, b, epsilon = Number.EPSILON) {
     return (a - epsilon < b) && (a + epsilon > b);
   }
 }
 
-/** @const
- *  @type {number}
+/**
+ * Pi divided by 4.
+ * @type {number}
  */
 MathEx.PI_Q = Math.PI / 4;
 
-/** @const
- *  @type {number}
+/**
+ * PI multiplied by 2.
+ * @type {number}
  */
 MathEx.PI2 = Math.PI * 2;
 
-/** @const
- *  @type {number}
+/**
+ * Degrees to radians constant.
+ * @const
+ * @type {number}
  */
 MathEx.DEG2RAD = 0.01745329251994329576923690768489;
 
-/** @const
- *  @type {number}
+/**
+ * Radians to degrees constant.
+ * @type {number}
  */
 MathEx.RAD2DEG = 57.295779513082320876798154814105;

@@ -43,7 +43,7 @@ class Arcade extends System {
 
     const length = this.mBodies.length;
 
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       const body = this.mBodies[i];
 
       body.gameObject.x = body.position.x;
@@ -77,7 +77,7 @@ class Arcade extends System {
   __forces() {
     const length = this.mBodies.length;
 
-    for (var i = 0; i < length; i++)
+    for (let i = 0; i < length; i++)
       this.mBodies[i].integrateForces(this.mGravity);
   }
 
@@ -90,7 +90,7 @@ class Arcade extends System {
   __integrateVelocities() {
     const length = this.mBodies.length;
 
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       const body = this.mBodies[i];
       body.integrateVelocity(this.mGravity);
       body.clearForces();
@@ -145,7 +145,7 @@ class Manifold {
       const aey = (a.aabb.maxY - a.aabb.minY) * 0.5;
       const bey = (b.aabb.maxY - b.aabb.minY) * 0.5;
 
-      var yoverlap = aey + bey - Math.abs(ny);
+      let yoverlap = aey + bey - Math.abs(ny);
       if (yoverlap) {
 
         if (xoverlap < yoverlap) {
@@ -215,7 +215,7 @@ class Manifold {
 
     const percent = 0.7;
     const slop = 0.05;
-    var m = Math.max(this.penetration - slop, 0.0) / (a.im + b.im);
+    let m = Math.max(this.penetration - slop, 0.0) / (a.im + b.im);
 
     const cx = m * this.normal.x * percent;
     const cy = m * this.normal.y * percent;
@@ -291,7 +291,7 @@ class RigidBody extends Component {
 }
 
 /* @echo EXPORT */
-var BodyType = {
+const BodyType = {
   STATIC: 'static',
   DYNAMIC: 'dynamic',
   KINEMATIC: 'kinematic'

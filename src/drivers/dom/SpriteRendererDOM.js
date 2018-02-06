@@ -33,14 +33,14 @@ class SpriteRendererDOM extends DisplayObjectRendererDOM {
       style.zIndex = this.zIndex;
 
     if (this.mTransformCache.exactEquals(this.transform) !== true) {
-      if (this.texture.untrimmedRect.x !== 0 || this.texture.untrimmedRect.y !== 0) {
-        Matrix.__cache.set(1, 0, 0, 1, this.texture.untrimmedRect.x, this.texture.untrimmedRect.y);
+      if (this.texture.untrimmedRegion.x !== 0 || this.texture.untrimmedRegion.y !== 0) {
+        Matrix.__cache.set(1, 0, 0, 1, this.texture.untrimmedRegion.x, this.texture.untrimmedRegion.y);
         this.transform = this.transform.clone().append(Matrix.__cache);
       }
 
       let v = this.transform.value;
 
-      style.transform = `matrix(${v[0].toFixed(6)}, ${v[1].toFixed(6)}, ${v[2].toFixed(6)}, ${v[3].toFixed(6)}, ${v[4].toFixed(6)}, ${v[5].toFixed(6)})`
+      style.transform = `matrix(${v[0].toFixed(6)}, ${v[1].toFixed(6)}, ${v[2].toFixed(6)}, ${v[3].toFixed(6)}, ${v[4].toFixed(6)}, ${v[5].toFixed(6)})`;
       this.transform.copyTo(this.mTransformCache);
     }
 

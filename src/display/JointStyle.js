@@ -1,5 +1,12 @@
+/**
+ * Joint style to use in drawing lines.
+ * @cat display
+ * @static
+ * @constant
+ * @enum {string}
+ */
 /* @echo EXPORT */
-var JointStyle = {
+const JointStyle = {
   BEVEL: 'bevel',
   MITER: 'miter',
   ROUND: 'round'

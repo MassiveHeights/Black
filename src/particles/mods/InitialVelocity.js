@@ -1,10 +1,26 @@
+/**
+ * Sets initial particle velocity vector.
+ *
+ * @cat particles.modifiers
+ * @extends Modifier
+ */
+/* @echo EXPORT */
 class InitialVelocity extends Modifier {
+  /**
+   * Creates new InitialVelocity instance.
+   *
+   * @param {...(number|VectorScatter)} values Min and max vectors.
+   */
   constructor(...values) {
     super();
 
+    /** @inheritDoc */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
+  /**
+   * @inheritDoc
+   */
   update(emitter, particle, dt) {
     this.scatter.getValue();
 

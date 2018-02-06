@@ -7,11 +7,10 @@
 class KeyInfo {
 
   /**
-   * constructor - Description
+   * Create new instance of KeyInfo
    *
-   * @param {Event} nativeEvent Description
-   *
-   * @return {void} Description
+   * @param {Event} nativeEvent Native touch event.
+   * @return {void}
    */
   constructor(nativeEvent) {
     this.keyCode = nativeEvent.keyCode;

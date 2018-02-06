@@ -1,13 +1,13 @@
 /*
 TODO:
-  1. propper error handling
+  1. proper error handling
   2. max parallel downloads
-  3. check for name dublicates
+  3. check for name duplicates
   4. load progress
 */
 
 /**
- * Reponsible for preloading assets and manages its in memory state.
+ * Responsible for preloading assets and manages its in memory state.
  *
  * @cat loaders
  * @extends MessageDispatcher
@@ -21,90 +21,43 @@ class AssetManager extends MessageDispatcher {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mDefaultPath = '';
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mTotalLoaded = 0;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsAllLoaded = false;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLoadingProgress = 0;
 
-    /**
-     * @private
-     * @type {Array<Asset>}
-     */
+    /** @private @type {Array<Asset>} */
     this.mQueue = [];
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, Asset>} */
     this.mTextures = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, AtlasTextureAsset>} */
     this.mAtlases = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, JSONAsset>} */
     this.mJsons = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, XMLAsset>} */
     this.mXMLs = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, SoundAsset>} */
     this.mSounds = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, SoundAtlasAsset>} */
     this.mSoundAtlases = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, FontAsset>} */
     this.mFonts = {};
 
-    /**
-     * @private
-     * @member
-     * @dict
-     */
+    /** @private @type {Object.<string, BitmapFontAsset>} */
     this.mBitmapFonts = {};
   }
 
@@ -113,7 +66,6 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the image.
-   *
    * @returns {void}
    */
   enqueueImage(name, url) {
@@ -126,7 +78,6 @@ class AssetManager extends MessageDispatcher {
    * @param {string} name     Name of the asset.
    * @param {string} imageUrl Atlas URL.
    * @param {string} dataUrl  URL to the .json file which describes the atlas.
-   *
    * @returns {void}
    */
   enqueueAtlas(name, imageUrl, dataUrl) {
@@ -139,7 +90,6 @@ class AssetManager extends MessageDispatcher {
    * @param {string} name     Name of the font.
    * @param {string} imageUrl Image URL.
    * @param {string} xmlUrl   URL to the .xml file which describes the font.
-   *
    * @returns {void}
    */
   enqueueBitmapFont(name, imageUrl, xmlUrl) {
@@ -151,7 +101,6 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the json.
-   *
    * @returns {void}
    */
   enqueueXML(name, url) {
@@ -163,7 +112,6 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the json.
-   *
    * @returns {void}
    */
   enqueueJSON(name, url) {
@@ -175,23 +123,29 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the sound.
    * @param {string} url  The URL of the sound.
-   *
    * @returns {void}
    */
   enqueueSound(name, url) {
     this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
   }
 
+  /**
+   * Adds sound atlas to the loading queue.
+   *
+   * @param {string} name Name of the sound.
+   * @param {string} soundUrl  The URL of the sound.
+   * @param {string} dataUrl  The URL of the data JSON.
+   * @returns {void}
+   */
   enqueueSoundAtlas(name, soundUrl, dataUrl) {
     this.mQueue.push(new SoundAtlasAsset(name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
   }
 
-  /*
+  /**
    * Adds local font to the loading queue.
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL to the font.
-   *
    * @returns {void}
    */
   enqueueFont(name, url) {
@@ -202,7 +156,6 @@ class AssetManager extends MessageDispatcher {
    * Adds Google Font to the loading queue.
    *
    * @param {string} name Name of the asset.
-   *
    * @returns {void}
    */
   enqueueGoogleFont(name) {
@@ -211,8 +164,8 @@ class AssetManager extends MessageDispatcher {
 
   /**
    * Starts preloading all enqueued assets.
-   * @fires complete
    *
+   * @fires complete
    * @return {void}
    */
   loadQueue() {
@@ -227,9 +180,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * @protected
    * @ignore
-   *
    * @param {Message} msg
-   *
    * @return {void}
    */
   onAssetLoaded(msg) {
@@ -273,11 +224,10 @@ class AssetManager extends MessageDispatcher {
    * Returns BitmapFontData object by given name.
    *
    * @param {string} name The name of the Asset to search.
-   *
    * @return {BitmapFontData|null} Returns a BitmapFontData if found or null.
    */
   getBitmapFont(name) {
-    /** @type {Texture} */
+    /** @type {BitmapFontData} */
     let t = this.mBitmapFonts[name];
 
     if (t != null)
@@ -291,7 +241,6 @@ class AssetManager extends MessageDispatcher {
    * Returns Texture object by given name.
    *
    * @param {string} name The name of the Asset.
-   *
    * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
@@ -316,8 +265,7 @@ class AssetManager extends MessageDispatcher {
    * Returns array of Texture by given name mask.
    * Searches across all loaded images and atlases.
    *
-   * @param {string} nameMask
-   *
+   * @param {string} nameMask The name mask.
    * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
@@ -361,7 +309,6 @@ class AssetManager extends MessageDispatcher {
    * Returns AtlasTexture by given name.
    *
    * @param {string} name The name of the Asset.
-   *
    * @return {AtlasTexture} Returns atlas or null.
    */
   getAtlas(name) {
@@ -369,14 +316,13 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * Returns Sound by given name.
+   * Returns `SoundClip` by given name.
    *
    * @param {string} name The name of the sound.
-   *
-   * @return {Audio} Returns sound or null.
+   * @return {SoundClip} Returns sound or null.
    */
   getSound(name) {
-    /** @type {Texture} */
+    /** @type {SoundClip} */
     let t = this.mSounds[name];
 
     if (t != null)
@@ -392,12 +338,19 @@ class AssetManager extends MessageDispatcher {
     return null;
   }
 
+  /**
+   * Returns `SoundAtlasClip` by given name.
+   *
+   * @param {string} name The name of the sound.
+   * @return {SoundClip} Returns sound or null.
+   */
   getSoundAtlas(name) {
     return this.mSoundAtlases[name];
   }
 
   /**
    * Returns Object parsed from JSON by given name.
+   *
    * @param {string} name The name of the JSON asset.
    * @return {Object} Returns object or null.
    */
@@ -418,7 +371,6 @@ class AssetManager extends MessageDispatcher {
   /**
    * @ignore
    * @param {string} value
-   *
    * @return {void}
    */
   set defaultPath(value) {

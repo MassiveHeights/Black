@@ -8,7 +8,8 @@
 class Ease {
   /**
    * linear
-   * @param {number} k
+   * 
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static linear(k) {
@@ -18,8 +19,7 @@ class Ease {
   /**
    * quadraticIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quadraticIn(k) {
@@ -29,8 +29,7 @@ class Ease {
   /**
    * quadraticOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quadraticOut(k) {
@@ -40,8 +39,7 @@ class Ease {
   /**
    * quadraticInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quadraticInOut(k) {
@@ -54,8 +52,7 @@ class Ease {
   /**
    * cubicIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static cubicIn(k) {
@@ -65,8 +62,7 @@ class Ease {
   /**
    * cubicOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static cubicOut(k) {
@@ -76,8 +72,7 @@ class Ease {
   /**
    * cubicInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static cubicInOut(k) {
@@ -90,8 +85,7 @@ class Ease {
   /**
    * quarticIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quarticIn(k) {
@@ -100,9 +94,8 @@ class Ease {
 
   /**
    * quarticOut
-   *
-   * @param {number} k
-   *
+   * 
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quarticOut(k) {
@@ -112,8 +105,7 @@ class Ease {
   /**
    * quarticInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quarticInOut(k) {
@@ -126,8 +118,7 @@ class Ease {
   /**
    * quinticIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quinticIn(k) {
@@ -137,8 +128,7 @@ class Ease {
   /**
    * quinticOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quinticOut(k) {
@@ -148,8 +138,7 @@ class Ease {
   /**
    * quinticInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static quinticInOut(k) {
@@ -162,8 +151,7 @@ class Ease {
   /**
    * sinusoidalIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static sinusoidalIn(k) {
@@ -173,8 +161,7 @@ class Ease {
   /**
    * sinusoidalOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static sinusoidalOut(k) {
@@ -184,8 +171,7 @@ class Ease {
   /**
    * sinusoidalInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static sinusoidalInOut(k) {
@@ -195,8 +181,7 @@ class Ease {
   /**
    * exponentialIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static exponentialIn(k) {
@@ -206,8 +191,7 @@ class Ease {
   /**
    * exponentialOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static exponentialOut(k) {
@@ -217,8 +201,7 @@ class Ease {
   /**
    * exponentialInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static exponentialInOut(k) {
@@ -237,8 +220,7 @@ class Ease {
   /**
    * circularIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static circularIn(k) {
@@ -248,8 +230,7 @@ class Ease {
   /**
    * circularOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static circularOut(k) {
@@ -259,8 +240,7 @@ class Ease {
   /**
    * circularInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static circularInOut(k) {
@@ -273,8 +253,7 @@ class Ease {
   /**
    * elasticIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static elasticIn(k) {
@@ -290,8 +269,7 @@ class Ease {
   /**
    * elasticOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static elasticOut(k) {
@@ -307,8 +285,7 @@ class Ease {
   /**
    * elasticInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static elasticInOut(k) {
@@ -330,8 +307,7 @@ class Ease {
   /**
    * backIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static backIn(k) {
@@ -342,8 +318,7 @@ class Ease {
   /**
    * backOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static backOut(k) {
@@ -354,8 +329,7 @@ class Ease {
   /**
    * backInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static backInOut(k) {
@@ -370,8 +344,7 @@ class Ease {
   /**
    * bounceIn
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static bounceIn(k) {
@@ -381,8 +354,7 @@ class Ease {
   /**
    * bounceOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static bounceOut(k) {
@@ -399,8 +371,7 @@ class Ease {
   /**
    * bounceInOut
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static bounceInOut(k) {
@@ -413,8 +384,7 @@ class Ease {
   /**
    * smoothstep
    *
-   * @param {number} k
-   *
+   * @param {number} k Value between 0 and 1
    * @return {number}
    */
   static smootherStep(k) {

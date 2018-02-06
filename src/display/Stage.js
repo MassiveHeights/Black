@@ -1,38 +1,69 @@
-// TODO: remove removeFromParent
-// TODO: hitTest
+/**
+ * The root container for all renderable objects
+ *
+ * @cat display
+ * @extends GameObject
+ */
 /* @echo EXPORT */
 class Stage extends GameObject {
   constructor() {
     super();
 
+    /** @private @type {string} */
     this.mName = 'stage';
 
+    /** @private @type {StageScaleMode} */
     this.mScaleMode = StageScaleMode.NORMAL;
 
+    /** @private @type {number} */
     this.mWidth = 960;
+    /** @private @type {number} */
     this.mHeight = 640;
 
+    /** @private @type {number} */
     this.mStageWidth = 0;
+    /** @private @type {number} */
     this.mStageHeight = 0;
+    /** @private @type {number} */
     this.mStageScaleFactor = 0;
 
+    /** @private @type {number} */
     this.mCacheWidth = 0;
+    /** @private @type {number} */
     this.mCacheHeight = 0;
 
+    /** @private @type {StageOrientation} */
     this.mOrientation = StageOrientation.UNIVERSAL;
 
     this.addComponent(new InputComponent());
   }
 
+  /**
+   * Gets/Sets stage orientation
+   * 
+   * @returns {StageOrientation}
+   */
   get orientation() {
     return this.mOrientation;
   }
 
+  /**
+   * @ignore
+   * @param {StageOrientation} value
+   * @returns {void}
+   */
   set orientation(value) {
     this.mOrientation = value;
     this.__refresh();
   }
 
+  /**
+   * Sets stage size by given width and height
+   * 
+   * @param {number} width New stage width.
+   * @param {number} height New stage height.
+   * @returns {void}
+   */
   setSize(width, height) {
     this.mWidth = width;
     this.mHeight = height;
@@ -40,6 +71,10 @@ class Stage extends GameObject {
     this.__refresh();
   }
 
+  /**
+   * @override
+   * @inheritDoc
+   */
   onUpdate(dt) {
     let size = Black.instance.viewport.size;
 
@@ -50,6 +85,11 @@ class Stage extends GameObject {
     }
   }
 
+  /**
+   * @private
+   * @ignore
+   * @returns {void}
+   */
   __refresh() {
     if (this.mScaleMode === StageScaleMode.FIXED) {
       let size = Black.instance.viewport.size;
@@ -100,13 +140,22 @@ class Stage extends GameObject {
     this.mStageWidth = Math.round(this.mStageWidth);
     this.mStageHeight = Math.round(this.mStageHeight);
 
-    // TODO: i dont like this line
-    Black.instance.video.__onResize();
+    // TODO: i don't like this line
+    // TODO: me neither
+    Black.driver.__onResize();
 
     this.setTransformDirty();
     this.post('resize');
   }
 
+  /**
+   * Determines which of two numbers suits to stage orientation
+   * 
+   * @public
+   * @param {number} land Landscape mode value.
+   * @param {number} port Portrait mode value.
+   * @returns {number}
+   */
   LP(land, port) {
     if (this.mOrientation == StageOrientation.LANDSCAPE)
       return land;
@@ -116,53 +165,127 @@ class Stage extends GameObject {
     return this.isLandscape ? land : port;
   }
 
+  /**
+   * Gets/Sets stage scale mode
+   * 
+   * @return {StageScaleMode}
+   */
   get scaleMode() {
     return this.mScaleMode;
   }
 
+  /**
+   * @ignore
+   * @param {StageScaleMode} value
+   * @returns {void}
+   */
   set scaleMode(value) {
     this.mScaleMode = value;
     this.__refresh();
   }
 
+  /**
+   * Device Pixel Ratio
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get dpr() {
     return Device.getDevicePixelRatio();
   }
 
+  /**
+   * Stage scale factor
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get scaleFactor() {
     return this.mStageScaleFactor;
   }
 
+  /**
+   * Original stage width multiplied by device pixel ratio and stage scale factor.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get renderWidth() {
     return this.mStageWidth * this.dpr * this.mStageScaleFactor;
   }
 
+  /**
+   * Original stage height multiplied by device pixel ratio and stage scale factor.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get renderHeight() {
     return this.mStageHeight * this.dpr * this.mStageScaleFactor;
   }
 
+  /**
+   * Specifies whether the stage is in landscape orientation
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
   get isLandscape() {
     let size = Black.instance.viewport.size;
     return size.width >= size.height;
   }
 
+  /**
+   * Specifies whether the stage is in portrait orientation
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
   get isPortrait() {
     return !this.isLandscape;
   }
 
+  /**
+   * Gets stage center coordinate along X-axis
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get centerX() {
     return this.mStageWidth * 0.5;
   }
 
+  /**
+   * Gets stage center coordinate along Y-axis
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
   get centerY() {
     return this.mStageHeight * 0.5;
   }
 
+  /**
+   * @override
+   * @inheritDoc
+   */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
     return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
   }
 
+  /**
+   * @override
+   * @inheritDoc
+   */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
     return outRect.set(0, 0, this.mStageWidth, this.mStageHeight);
@@ -170,6 +293,10 @@ class Stage extends GameObject {
 
   removeFromParent() { Debug.error('Not allowed.'); }
 
+  /**
+   * @override
+   * @inheritDoc
+   */
   get localTransformation() {
     // TODO: optimize
     return new Matrix(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
@@ -197,7 +324,7 @@ class Stage extends GameObject {
   get x() { return this.mX / this.mStageScaleFactor; } // GG ES6
 
   set y(value) { Debug.error('Not allowed.'); }
-  get y() { this.mY / this.mStageScaleFactor } // GG ES6
+  get y() { return this.mY / this.mStageScaleFactor } // GG ES6
 
   set rotation(value) { Debug.error('Not allowed.'); }
   get rotation() { return 0; } // GG ES6

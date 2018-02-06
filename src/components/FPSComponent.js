@@ -16,17 +16,20 @@ class FPSComponent extends Component  {
     this.txtFPS = null;
   }
 
-  onAdded(){
+  /**
+   * @inheritDoc
+   */
+  onAdded() {
     this.txtFPS = new TextField('FPS: 0');
     this.txtFPS.x = 0;
     this.txtFPS.y = 0;
     this.gameObject.addChild(this.txtFPS);
   }
 
-  onRemoved(){
-  }
-
-  onUpdate(){
+  /**
+   * @inheritDoc
+   */
+  onUpdate() {
     this.txtFPS.text = 'FPS: ' + Black.instance.FPS;
   }
 }

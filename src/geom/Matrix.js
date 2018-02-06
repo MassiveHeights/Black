@@ -8,15 +8,15 @@ class Matrix {
   /**
    * Creates new Matrix instance.
    *
-   * @param  {number} a = 1  A-component.
-   * @param  {number} b = 0  B-component.
-   * @param  {number} c = 0  C-component.
-   * @param  {number} d = 1  D-component.
-   * @param  {number} tx = 0 TX-component.
-   * @param  {number} ty = 0 TY-component.
+   * @param  {number} [a=1]  A-component.
+   * @param  {number} [b=0]  B-component.
+   * @param  {number} [c=0]  C-component.
+   * @param  {number} [d=1]  D-component.
+   * @param  {number} [tx=0] TX-component.
+   * @param  {number} [ty=0] TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
-    /** @type {Float32Array} */
+    /** @private @type {Float32Array} */
     this.data = new Float32Array(6);
     this.set(a, b, c, d, tx, ty);
   }
@@ -50,7 +50,6 @@ class Matrix {
    *
    * @param {number} dx Amount along x-axis.
    * @param {number} dy Amount along y-axis.
-   *
    * @return {Matrix} This.
    */
   translate(dx, dy) {
@@ -74,7 +73,6 @@ class Matrix {
    *
    * @param {number} x The tx component to update.
    * @param {number} y The ty component to update.
-   *
    * @return {Matrix} This.
    */
   setTranslation(x, y) {
@@ -89,6 +87,7 @@ class Matrix {
    *
    * @param  {number} theta     Theta value.
    * @param  {number} scale = 1 Scale value.
+   * @return {Matrix} This.
    */
   setRotation(theta, scale = 1) {
     let m = this.data;
@@ -129,7 +128,6 @@ class Matrix {
    *
    * @param {number} sx Abscissa of the scaling vector.
    * @param {number} sy Ordinate of the scaling vector.
-   *
    * @return {Matrix} This.
    */
   scale(sx, sy) {
@@ -158,6 +156,11 @@ class Matrix {
     return this.set(1, 0, 0, 1, 0, 0);
   }
 
+  /**
+   * Specifies if current matrix is identity.
+   *
+   * @returns {boolean}
+   */
   get isIdentity() {
     return this.exactEquals(Matrix.__identity);
   }
@@ -233,8 +236,7 @@ class Matrix {
   }
 
   /**
-   * Transforms given and x- and y- components of a point from a local space to
-   * world space.
+   * Transforms given and x- and y- components of a point from a local space to world space.
    *
    * @param  {number} x          The x- component of a point.
    * @param  {number} y          The y- component of a point.
@@ -252,8 +254,7 @@ class Matrix {
   }
 
   /**
-   * Transforms given point from a local space to world space without applying
-   * scalling.
+   * Transforms given point from a local space to world space without applying scaling.
    *
    * @param  {number} x          The x- component.
    * @param  {number} y          The y- component.
@@ -292,7 +293,7 @@ class Matrix {
    *
    * @param  {Rectangle} rect         Rectangle to apply transformation on.
    * @param  {Rectangle|null} outRect When given stores results in it.
-   * @return {Rectangle} Tranformed Rectangle object.
+   * @return {Rectangle} Transformed  Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -309,7 +310,7 @@ class Matrix {
     /** @type {Array<number>} */
     let points = [rect.x, rect.y, rect.x + rect.width, rect.y, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height];
 
-    for (var i = 0; i < points.length; i += 2) {
+    for (let i = 0; i < points.length; i += 2) {
       tmpVector.x = m[0] * points[i] + m[2] * points[i + 1] + m[4];
       tmpVector.y = m[1] * points[i] + m[3] * points[i + 1] + m[5];
 
@@ -363,7 +364,6 @@ class Matrix {
   /**
    * TODO: remove or finish
    * @ignore
-   *
    * @returns {Array<number>} Description
    */
   __decompose() {
@@ -380,7 +380,7 @@ class Matrix {
 
     let delta = Math.abs(skewX + skewY);
 
-    let r_rotation = 0
+    let r_rotation = 0;
     let r_skewX = 0;
     let r_skewY = 0;
     let r_scaleX = 0;
@@ -449,6 +449,12 @@ class Matrix {
     return matrix.copyTo(this);
   }
 
+  /**
+   * Compares this matrix values with given matrix and checks if they are the same.
+   *
+   * @param {Matrix} matrix Matrix object to compare with.
+   * @returns {boolean}
+   */
   exactEquals(matrix) {
     if (!matrix)
       return false;
@@ -488,6 +494,7 @@ class Matrix {
 
   // @ifdef DEBUG
   /**
+   * @ignore
    * @param  {number=} digits = 2
    * @return {string}
    */
@@ -499,15 +506,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 }
 
 /**
+ * @ignore
+ * @internal
  * @type {Matrix}
  * @nocollapse
  */
 Matrix.__cache = new Matrix();
 
 /**
+ * @ignore
+ * @internal
  * @type {Matrix}
  * @nocollapse
  */
 Matrix.__identity = new Matrix();
 
+/**
+ * Recycled matrices pool.
+ *
+ * @type {ObjectPool}
+ * @nocollapse
+ */
 Matrix.pool = new ObjectPool(Matrix, 1, 0, 0, 1, 0, 0);

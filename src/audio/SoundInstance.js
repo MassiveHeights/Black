@@ -1,52 +1,108 @@
-let count = 0;
-
+/**
+ * The sound
+ * 
+ * @cat audio
+ * @extends {MessageDispatcher}
+ */
 /* @echo EXPORT */
 class SoundInstance extends MessageDispatcher {
+  /**
+   * Creates instance
+   * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
+   */
   constructor(sound) {
     super();
 
-    this.mId = ++count;
+    /** @private @type {number} */
+    this.mId = ++SoundInstance.ID;
 
+    /** @private @type {Sound} */
     this.mSound = sound;
-    this.mIsPlaying = false;
 
-    this.mChannel = null;
+    /** @private @type {SoundState} */
+    this.mState = SoundState.NEWBORN;
+
+    /** @private @type {string} */
+    this.mChannel = 'master';
+
+    /** @private @type {number} */
     this.mVolume = 1;
+
+    /** @private @type {boolean} */
     this.mLoop = false;
 
+    /** @private @type {number} */
+    this.mStartTime = 0;
+
+    /** @private @type {number} */
+    this.mPausePosition = 0;
+
+    /** @private @type {AudioBufferSourceNode} */
     this.mSrc = null;
 
-    this.mGainNode = Audio.__newGainNode();
-    // node to connect audio source
+    /** @private @type {GainNode} */
+    this.mGainNode = Audio._newGainNode();
+
+    /** @private @type {AudioNode} The node to connect audio source */
     this.mFirstNode = this.mGainNode;
-    // node the source is connected to
+    
+    /** @private @type {AudioNode} The node the source is connected to */
     this.mPlayNode = null;
   }
 
+  /**
+   * Enables spatial effect if not enabled previously.
+   * 
+   * @public
+   * @returns {PannerNode}
+   */
   enableSpacePan() {
-    this.mSpatialPanner = Audio.context.createPanner();
-    this.mSpatialPanner.connect(this.mFirstNode);
-    this.mFirstNode = this.mSpatialPanner;
-    this.__reconnectSource();
+    if (this.mSpatialPanner == null) {
+      this.mSpatialPanner = Audio.context.createPanner();
+      this.mSpatialPanner.connect(this.mFirstNode);
+      this.mFirstNode = this.mSpatialPanner;
+      this.__reconnectSource();
+    }
     return this.mSpatialPanner;
   }
 
+  /**
+   * Enables stereo panning effect if not enabled previously.
+   * 
+   * @public
+   * @returns {StereoPanner}
+   */
   enableStereoPan() {
-    this.mStereoPanner = new StereoPanner();
-    this.mStereoPanner._outputNode.connect(this.mFirstNode);
-    this.mFirstNode = this.mStereoPanner._inputNode;
-    this.__reconnectSource();
+    if (this.mStereoPanner == null) {
+      this.mStereoPanner = new StereoPanner();
+      this.mStereoPanner._outputNode.connect(this.mFirstNode);
+      this.mFirstNode = this.mStereoPanner._inputNode;
+      this.__reconnectSource();
+    }
     return this.mStereoPanner;
   }
 
+  /**
+   * Enables analyser node if not enabled previously.
+   * 
+   * @public
+   * @returns {AnalyserNode}
+   */
   enableAnalyser() {
-    this.mAnalyser = Audio.context.createAnalyser();
-    this.mAnalyser.connect(this.mFirstNode);
-    this.mFirstNode = this.mAnalyser;
-    this.__reconnectSource();
+    if (this.mAnalyser == null) {
+      this.mAnalyser = Audio.context.createAnalyser();
+      this.mAnalyser.connect(this.mFirstNode);
+      this.mFirstNode = this.mAnalyser;
+      this.__reconnectSource();
+    }
     return this.mAnalyser;
   }
 
+  /**
+   * @ignore
+   * @private
+   * @returns {void}
+   */
   __reconnectSource() {
     if (this.mSrc) {
       this.mSrc.disconnect(this.mPlayNode);
@@ -55,17 +111,18 @@ class SoundInstance extends MessageDispatcher {
     }
   }
 
+  /**
+   * @ignore
+   * @internal
+   * @returns {SoundInstance}
+   */
   _play() {
+    if (this.mState === SoundState.PLAYING)
+      return this;
 
-    if (this.mIsPlaying)
-      return;
+    this.mState = SoundState.PLAYING;
 
-    // todo
-    let delay = 0;
-    let duration = undefined;
-
-    this.mIsPlaying = true;
-
+    let duration = this.mSound.isSubClip && !this.mLoop ? this.mSound.duration - this.mPausePosition : undefined;
     this.mGainNode.gain.setValueAtTime(this.mVolume, 0);
 
     let src = Audio.context.createBufferSource();
@@ -74,38 +131,68 @@ class SoundInstance extends MessageDispatcher {
     src.onended = () => this.__onComplete();
     src.connect(this.mFirstNode);
     this.mPlayNode = this.mFirstNode;
+    this.mStartTime = Audio.context.currentTime - this.mPausePosition;
 
     if (this.mLoop && this.mSound.isSubClip) {
       src.loopStart = this.mSound.offset;
       src.loopEnd = this.mSound.offset + this.mSound.duration;
-      duration = this.mSound.duration;
     }
 
-    src.start(Audio.context.currentTime + delay, this.mSound.offset, duration);
+    src.start(Audio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
     Audio._resolveChannel(this);
     this.mSrc = src;
 
     return this;
   }
 
+  /**
+   * Stops playing.
+   * 
+   * @public
+   * @param {number=} [duration=0] Time offset in seconds specifying when the sound will completely stop.
+   * @returns {void}
+   */
   stop(duration = 0) {
-    if (this.mIsPlaying === true) {
+    if (this.mState === SoundState.PLAYING) {
       this.mGainNode.gain.cancelScheduledValues(0);
       this.mSrc.stop(Audio.context.currentTime + duration);
     }
   }
 
-  _connectToOutput(node) {
-    this.mConnectedOutput = node;
-    this._outputNode.connect(node);
+  /**
+   * Pauses current sound.
+   * 
+   * @public
+   * @returns {void}
+   */
+  pause() {
+    if (this.mState === SoundState.PLAYING) {
+      this.stop();
+      this.mPausePosition = this.currentPosition;
+      this.mState = SoundState.PAUSED;
+    }
   }
 
-  _disconnectFromOutput() {
-    if (this.mConnectedOutput)
-      this._outputNode.disconnect(this.mConnectedOutput);
-    this.mConnectedOutput = null;
+  /**
+   * Resumes current sound, if it has been paused.
+   * 
+   * @public
+   * @returns {void}
+   */
+  resume() {
+    if (this.mState === SoundState.PAUSED) {
+      this._play();
+    }
   }
 
+  /**
+   * Changes the volume of sound in given time.
+   * 
+   * @param {number} from            Initial volume level.
+   * @param {number} to              Target volume level.
+   * @param {number=} [duration=0]   In seconds. If '0' changes the volume instantly.
+   * @param {string} [type='linear'] Possible types: 'linear', 'exp'.
+   */
   fade(from, to, duration = 0, type = 'linear') {
     if (duration <= 0) {
       this.mGainNode.gain.setValueAtTime(to, 0);
@@ -118,58 +205,166 @@ class SoundInstance extends MessageDispatcher {
     }
   }
 
+  /**
+   * @ignore
+   * @private
+   * @returns {void}
+   */
   __onComplete() {
-    this.mIsPlaying = false;
     this.mSrc = null;
-    console.log('complete');
-    this.post('complete');
+    if (this.mState !== SoundState.PAUSED) {
+      this.mStartTime = 0;
+      this.mState = SoundState.COMPLETED;
+      console.log(`ID #${this.mId} sound complete`);
+      this.post('complete');
+    }
   }
 
+  /**
+   * Gets current position of sound in seconds.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
+  get currentPosition() {
+    switch (this.mState) {
+      case SoundState.PLAYING:
+        return (Audio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
+      case SoundState.PAUSED:
+        return this.mPausePosition;
+      case SoundState.COMPLETED:
+        return this.mSound.duration;
+    }
+    return 0;
+  }
+
+  /**
+   * @ignore
+   * @internal
+   * @readonly
+   * @returns {AudioNode}
+   */
   get _outputNode() {
     return this.mGainNode;
   }
 
+  /**
+   * Gets/Sets current channel to play by name.
+   * 
+   * @public
+   * @returns {string}
+   */
   get channel() {
     return this.mChannel;
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {string} value
+   * @returns {void}
+   */
   set channel(value) {
+    if (this.mChannel === value)
+      return;
     this.mChannel = value;
-    if (this.mIsPlaying) {
+    if (this.mState === SoundState.PLAYING) {
       Audio._resolveChannel(this);
     }
   }
 
+  /**
+   * Gets/Sets sound volume. Ranging from 0 to 1.
+   * 
+   * @public
+   * @returns {number}
+   */
   get volume() {
     return this.mVolume;
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {number} value
+   * @returns {void}
+   */
   set volume(value) {
     this.mVolume = value;
     this.mGainNode.gain.setValueAtTime(this.mVolume, 0);
   }
 
+  /**
+   * Gets/Sets whether the sound will be looped.
+   * 
+   * @public
+   * @returns {boolean}
+   */
   get loop() {
     return this.mLoop;
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {boolean} value
+   * @returns {void}
+   */
   set loop(value) {
     this.mLoop = value;
   }
 
+  /**
+   * Gets/Sets pan stereo effect. Ranging from -1 (left) to 1 (right).
+   * 
+   * @public
+   * @returns {number}
+   */
   get pan() {
     return this.mStereoPanner.pan;
   }
 
+  /**
+   * @ignore
+   * @public
+   * @param {number} value
+   * @returns {void}
+   */
   set pan(value) {
-    if (value !== 0 && !this.mStereoPanner) 
+    if (value !== 0 && this.mStereoPanner == null) 
       this.enableStereoPan();
     
     if (this.mStereoPanner)
       this.mStereoPanner.pan = value;
   }
 
+  /**
+   * Gets whether sound is playing.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
   get isPlaying() {
-    return this.mIsPlaying;
+    return this.mState === SoundState.PLAYING;
+  }
+
+  /**
+   * Gets total duration of sound clip.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
+  get duration() {
+    return this.mSound.duration;
   }
 }
+
+/**
+ * @ignore
+ * @private
+ * @static
+ */
+SoundInstance.ID = 0;

@@ -1,5 +1,5 @@
 /**
- * Texture Atlas asset responsible for loading Image file and coresponding Json
+ * Texture Atlas asset responsible for loading Image file and corresponding Json
  * file.
  *
  * @cat loaders
@@ -17,17 +17,11 @@ class AtlasTextureAsset extends Asset {
   constructor(name, imageUrl, dataUrl) {
     super(name, imageUrl);
 
-    /**
-     * @private
-     * @type {Image}
-     */
+    /** @private @type {Image} */
     this.mImageElement = new Image();
     this.mImageElement.crossOrigin = true;
 
-    /**
-     * @private
-     * @type {JSONAsset}
-     */
+    /** @private @type {JSONAsset} */
     this.dataAsset = new JSONAsset(name, dataUrl);
     this.dataAsset.on('complete', this.onJsonLoaded, this);
   }
@@ -35,6 +29,7 @@ class AtlasTextureAsset extends Asset {
 
   /**
    * @ignore
+   * @private
    * @returns {void}
    */
   onJsonLoaded() {
@@ -45,9 +40,7 @@ class AtlasTextureAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   * @return {void}
    */
   onLoaded() {
     const scale = 1 / Texture.getScaleFactorFromName(this.mUrl);
@@ -58,9 +51,6 @@ class AtlasTextureAsset extends Asset {
 
   /**
    * @inheritDoc
-   * @override
-   *
-   * @return {void}
    */
   load() {
     this.dataAsset.load();

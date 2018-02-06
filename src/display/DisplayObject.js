@@ -9,40 +9,34 @@ class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @protected @type {number} */
     this.mAlpha = 1;
 
-    /**
-     * @public
-     * @type {string}
-     */
+    /** @protected @type {string} */
     this.mBlendMode = BlendMode.AUTO;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @protected @type {boolean} */
     this.mVisible = true;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @protected @type {Rectangle} */
     this.mClipRect = null;
 
-    /**
-     * @private
-     * @type {Renderer|null} */
+    /** @protected @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
   }
 
+  /**
+   * Factory method returns concrete renderer for this Game Object.
+   * 
+   * @returns {Renderer}
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('DisplayObject');
+    return Black.driver.getRenderer('DisplayObject');
   }
 
+  /**
+   * @inheritDoc
+   */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
@@ -57,6 +51,9 @@ class DisplayObject extends GameObject {
     return outRect.set(0, 0, 0, 0);
   }
 
+  /**
+   * @inheritDoc
+   */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
@@ -112,7 +109,10 @@ class DisplayObject extends GameObject {
     return outRect;
   }
 
-  onRender(driver, parentRenderer) {
+  /**
+  * @inheritDoc
+  */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
@@ -130,16 +130,19 @@ class DisplayObject extends GameObject {
     return driver.registerRenderer(renderer);
   }
 
+  /**
+  * @inheritDoc
+  */
   onHitTestMask(localPoint) {
     if (this.mClipRect === null)
       return true;
 
     let tmpVector = Vector.pool.get();
-    this.worldTransformationInversed.transformVector(point, tmpVector);
+    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
 
     let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
     Vector.pool.release(tmpVector);
-    
+
     return contains;
   }
 
@@ -190,10 +193,20 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Gets/Sets blend mode for the object.
+   *
+   * @return {BlendMode}
+   */
   get blendMode() {
     return this.mBlendMode;
   }
 
+  /**
+   * @ignore
+   * @param {BlendMode} value
+   * @return {void}
+   */
   set blendMode(value) {
     if (this.mBlendMode === value)
       return;
@@ -202,10 +215,20 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Gets/Sets clipping area for the object.
+   *
+   * @return {Rectangle}
+   */
   get clipRect() {
     return this.mClipRect;
   }
 
+  /**
+   * @ignore
+   * @param {Rectangle} value
+   * @return {void}
+   */
   set clipRect(value) {
     if (this.mClipRect === value)
       return;
@@ -214,59 +237,3 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 }
-
-// class List {
-//   constructor() {
-//     this.mData = [];
-//   }
-
-//   add(item) {
-//     this.mData.push(item);
-//   }
-
-//   remove(item) {
-//     var index = this.mData.indexOf(item);
-//     if (index > -1)
-//       this.mData.splice(index, 1);
-//   }
-
-//   get(ix) {
-//     return this.mData[ix];
-//   }
-// }
-
-// class Filter {
-//   constructor(name) {
-//     this.mName = name;
-//   }
-
-//   get name() {
-//     return this.mName;
-//   }
-// }
-
-// class GrayscaleFilter extends Filter {
-//   constructor() {
-//     super('grayscale');
-
-//     //Black.driver.getFilter('Grayscale');
-//   }
-
-//   apply(texture) {
-
-//   }
-// }
-
-// class FilterRenderer {
-
-// }
-
-// class FilterStack {
-//   constructor() {
-//     this.mTextureCache = {};
-//   }
-// }
-
-// class GrayscaleFilterRenderer extends FilterRenderer {
-
-// }

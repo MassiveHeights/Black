@@ -6,14 +6,16 @@
 /* @echo EXPORT */
 class TextInfo {
   /**
+   * Creates instance of TextInfo.
+   *
    * @param  {string=} name Font name
-   * @param  {number=} color = Text color as hexadecimal number eg 0xff0000 (total red)
-   * @param  {number=} size = Text size
-   * @param  {TextInfo.FontStyle=} style = Text style eg italic
-   * @param  {TextInfo.FontWeight=} weight = font thick. The value is set from 100 to 900 in increments of 100.
-   * @param  {TextInfo.FontAlign=} align = horizontal alignment left | center | right
-   * @param  {number=} strokeThickness = thickness of the stroke. 0 means that no stroke
-   * @param  {number=} strokeColor = stroke color as hexadecimal number eg 0x00ff00 (total green)
+   * @param  {number=} [color=0x0] Text color as hexadecimal number eg 0xff0000 (total red)
+   * @param  {number=} [size=14] Text size
+   * @param  {TextInfo.FontStyle=} [style=TextInfo.FontStyle.NORMAL] Text style eg italic
+   * @param  {TextInfo.FontWeight=} [weight=TextInfo.FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {TextInfo.FontAlign=} [align=TextInfo.FontAlign.LEFT] Horizontal alignment left | center | right
+   * @param  {number=} [strokeThickness=0] Thickness of the stroke. 0 means that no stroke
+   * @param  {number=} [strokeColor=0xffffff] Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
   constructor(name = 'sans-serif', color = 0x000000, size = 14, style = TextInfo.FontStyle.NORMAL, weight = TextInfo.FontWeight.NORMAL, align = TextInfo.FontAlign.LEFT, strokeThickness = 0, strokeColor = 0xffffff) {
 
@@ -41,6 +43,9 @@ class TextInfo {
 }
 
 /**
+ * @cat display.text
+ * @static
+ * @constant
  * @enum {string}
  */
 TextInfo.FontStyle = {
@@ -49,6 +54,9 @@ TextInfo.FontStyle = {
 };
 
 /**
+ * @cat display.text
+ * @static
+ * @constant
  * @enum {string}
  */
 TextInfo.FontWeight = {
@@ -58,6 +66,9 @@ TextInfo.FontWeight = {
 };
 
 /**
+ * @cat display.text
+ * @static
+ * @constant
  * @enum {string}
  */
 TextInfo.FontAlign = {
@@ -67,6 +78,9 @@ TextInfo.FontAlign = {
 };
 
 /**
+ * @cat display.text
+ * @static
+ * @constant
  * @enum {string}
  */
 TextInfo.FontVerticalAlign = {

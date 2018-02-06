@@ -1,19 +1,22 @@
+/**
+ * Rotates particle along velocity vector.
+ *
+ * @cat particles.modifiers
+ * @extends Modifier
+ */
 /* @echo EXPORT */
 class Oriented extends Modifier {
+  /**
+   * Creates new instance of oriented modifier.
+   */
   constructor() {
     super(false);
   }
 
   /**
    * @inheritDoc
-   *
-   * @param {Emitter} emitter
-   * @param {Particle} particle
-   * @param {number} dt
-   *
-   * @return {void}
    */
   update(emitter, particle, dt) {
-    particle.r = 1 * (Math.atan2(particle.vy, particle.vx) * MathEx.RAD2DEG - 90) * dt;
+    particle.r = (Math.atan2(particle.vy, particle.vx) * MathEx.RAD2DEG - 90) * dt;
   }
 }

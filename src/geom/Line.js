@@ -11,10 +11,10 @@ class Line {
    * @param  {Vector} end End point.
    */
   constructor(start, end) {
-    /** @type {Vector} */
+    /** @type {Vector} The start point coordinates */
     this.start = start;
 
-    /** @type {Vector} */
+    /** @type {Vector} The end point coordinates */
     this.end = end;
   }
 
@@ -146,10 +146,10 @@ class Line {
    *
    * @return {Line} This line.
    */
-  scale(multyplier) {
+  scale(multiplier) {
     this.end
       .subtract(this.start)
-      .multiplyScalar(multyplier)
+      .multiplyScalar(multiplier)
       .add(this.start);
 
     return this;
@@ -308,7 +308,10 @@ class Line {
   // @endif
 }
 
-/** @type {Line}
+/**
+ * @type {Line}
  * @nocollapse
+ * @ignore
+ * @internal
  */
 Line.__cache = new Line(new Vector(), new Vector());

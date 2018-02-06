@@ -1,5 +1,12 @@
+/**
+ * Caps style to use in drawing lines.
+ * @cat display
+ * @static
+ * @constant
+ * @enum {string}
+ */
 /* @echo EXPORT */
-var CapsStyle = {
+const CapsStyle = {
   NONE: 'none',
   ROUND: 'round',
   SQAURE: 'square'

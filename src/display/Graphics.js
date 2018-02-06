@@ -1,33 +1,70 @@
+/**
+ * A basic utility class for drawing simple shapes.
+ *
+ * @cat display
+ * @extends DisplayObject
+ */
 /* @echo EXPORT */
 class Graphics extends DisplayObject {
+  /**
+   * Creates new Graphics instance.
+   */
   constructor() {
     super();
-
+    
+    /** @type {number} Color parameter for line style */
     this.lineColor = 0;
+
+    /** @type {number} Alpha parameter for line style */
     this.lineAlpha = 1.0;
+
+    /** @type {number} Width parameter for line style */
     this.lineWidth = 0;
 
+    /** @type {number} Color parameter for fill style */
     this.fillColor = 0;
+
+    /** @type {number} Alpha parameter for fill style */
     this.fillAlpha = 1.0;
 
+    /** @private @type {CapsStyle} */
     this.mCaps = CapsStyle.NONE;
+
+    /** @private @type {JointStyle} */
     this.mJoints = JointStyle.MITER;
+
+    /** @private @type {number} */
     this.mMiterLimit = 3;
 
+    /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
+    /** @private @type {JointStyle} */
     this.mCommandQueue = [];
   }
 
+  /**
+   * @private
+   * @ignore
+   * @readonly
+   */
   get halfLineWidth() {
     return this.lineWidth / 2;
   }
 
+  /**
+   * @inheritDoc
+   * @override
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('Graphics');
+    return Black.driver.getRenderer('Graphics');
   }
 
-  onRender(driver, parentRenderer, isBackBufferActive) {
+  /**
+   * @inheritDoc
+   * @override
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
@@ -50,6 +87,10 @@ class Graphics extends DisplayObject {
   }
 
   // TODO: what about correct bounds? Shape-perfect instead of aabb?
+  /**
+   * @inheritDoc
+   * @override
+   */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
@@ -58,7 +99,7 @@ class Graphics extends DisplayObject {
 
     if (this.mClipRect !== null) {
       this.mClipRect.copyTo(outRect);
-      outRect.y += this.mPivotX;
+      outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
     } else {
       outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
@@ -67,6 +108,18 @@ class Graphics extends DisplayObject {
     return outRect;
   }
 
+  /**
+   * Sets line style
+   * 
+   * @public
+   * @param {number} lineWidth Line width.
+   * @param {number=} [color=0] Line color.
+   * @param {number=} [alpha=1] Line alpha.
+   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {number=} [miterLimit=3] Mite limit.
+   * @returns {void}
+   */
   lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
     this.lineWidth = lineWidth;
     this.lineColor = color;
@@ -76,11 +129,25 @@ class Graphics extends DisplayObject {
     this.miterLimit = 3;
   }
 
+  /**
+   * Sets fill style
+   * 
+   * @public
+   * @param {number} [color=0] Fill color.
+   * @param {number=} [alpha=1] Fill alpha.
+   * @returns {void}
+   */
   fillStyle(color = 0, alpha = 1) {
     this.fillColor = color;
     this.fillAlpha = alpha;
   }
 
+  /**
+   * Clears the graphics that were drawn and resets fill and line styles
+   * 
+   * @public
+   * @returns {void}
+   */
   clear() {
     this.lineColor = 0;
     this.lineAlpha = 1.0;
@@ -95,6 +162,16 @@ class Graphics extends DisplayObject {
     this.setTransformDirty();
   }
 
+  /**
+   * Draws line with given coordinates for two points
+   * 
+   * @public
+   * @param {number} x1 First point x-coordinate.
+   * @param {number} y1 First point y-coordinate.
+   * @param {number} x2 Second point x-coordinate.
+   * @param {number} y2 Second point y-coordinate.
+   * @returns {void}
+   */
   drawLine(x1, y1, x2, y2) {
     this.__inflateBounds(x1 - this.halfLineWidth, y1 - this.halfLineWidth);
     this.__inflateBounds(x1 + this.halfLineWidth, y1 + this.halfLineWidth);
@@ -106,6 +183,16 @@ class Graphics extends DisplayObject {
     this.setTransformDirty();
   }
 
+  /**
+   * Draws rectangle with given coordinates of top left point and its width and height
+   * 
+   * @public
+   * @param {number} x Left-Top coordinate along X-axis.
+   * @param {number} y Left-Top coordinate along Y-axis.
+   * @param {number} width Width of rectangle.
+   * @param {number} height Height of rectangle.
+   * @returns {void}
+   */
   drawRect(x, y, width, height) {
     this.__inflateBounds(x - this.halfLineWidth, y - this.halfLineWidth);
     this.__inflateBounds(x + width + this.halfLineWidth, y + height + this.halfLineWidth);
@@ -113,6 +200,15 @@ class Graphics extends DisplayObject {
     this.setTransformDirty();
   }
 
+  /**
+   * Draws a circle with given center coordinates and radius
+   * 
+   * @public
+   * @param {number} x Center coordinate along X-axis.
+   * @param {number} y Center coordinate along Y-axis.
+   * @param {number} radius Radius of circle.
+   * @returns {void}
+   */
   drawCircle(x, y, radius) {
     this.__inflateBounds(x - radius - this.halfLineWidth, y - radius - this.halfLineWidth);
     this.__inflateBounds(x + radius + this.halfLineWidth, y + radius + this.halfLineWidth);
@@ -121,6 +217,12 @@ class Graphics extends DisplayObject {
     this.setTransformDirty();
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {number} x 
+   * @param {number} y 
+   */
   __inflateBounds(x, y) {
     if (x < this.mBounds.x) {
       this.mBounds.width += this.mBounds.x - x;
@@ -139,6 +241,12 @@ class Graphics extends DisplayObject {
       this.mBounds.height = y - this.mBounds.y;
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {string} type 
+   * @param {...number} points 
+   */
   __pushCommand(type, ...points) {
     let cmd = new GraphicsCommand(type, points, this.lineColor, this.lineAlpha, this.lineWidth, this.fillColor, this.fillAlpha, this.mCaps, this.mJoints, this.mMiterLimit);
     this.mCommandQueue.push(cmd);

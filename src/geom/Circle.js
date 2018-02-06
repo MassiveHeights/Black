@@ -8,27 +8,19 @@ class Circle {
   /**
    * Creates new Circle instance.
    * 
-   * @param  {number=} x = 0 Position x.
-   * @param  {number=} y = 0 Position y.
-   * @param  {number=} r = 1 Radius.
+   * @param  {number=} [x = 0] Position x.
+   * @param  {number=} [y = 0] Position y.
+   * @param  {number=} [r = 1] Radius.
    */
   constructor(x = 0, y = 0, r = 1) {
-    /**
-     * @private
-     * @type {number}
-     */
+
+    /** @private @type {number} */
     this.x = x;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.y = y;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.r = r;
   }
 
@@ -38,7 +30,6 @@ class Circle {
    * @param {number} x Position x.
    * @param {number} y Position y.
    * @param {number} r Radius.
-   *
    * @return {Circle} This circle.
    */
   set(x, y, r) {
@@ -62,7 +53,6 @@ class Circle {
    * Copy this properties to another circle.
    *
    * @param {Circle} circle Object to copy to.
-   *
    * @return {Circle} Passed circle.
    */
   copyTo(circle) {
@@ -73,7 +63,6 @@ class Circle {
    * Copy another circle properties to this.
    *
    * @param {Circle} circle Object to copy from.
-   *
    * @return {Circle} This circle.
    */
   copyFrom(circle) {
@@ -85,7 +74,6 @@ class Circle {
    *
    * @param {Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
-   *
    * @return {boolean} True if circles are identical.
    */
   equals(circle, epsilon = Number.EPSILON) {
@@ -98,7 +86,6 @@ class Circle {
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
-   *
    * @return {boolean} True if circle contains point.
    */
   containsXY(x, y) {
@@ -109,7 +96,6 @@ class Circle {
    * Shows whether point is in circle.
    *
    * @param {Vector} vector Point to check.
-   *
    * @return {boolean} True if circle contains point.
    */
   contains(vector) {
@@ -184,7 +170,6 @@ class Circle {
    * Shows whether this circle intersects another.
    *
    * @param {Circle} circle Circle to check.
-   *
    * @return {boolean} True if intersects.
    */
   intersects(circle) {
@@ -196,7 +181,6 @@ class Circle {
    * Shows whether this circle collide with another.
    *
    * @param {Circle} circle Circle to check.
-   *
    * @return {boolean} True if collide.
    */
   collide(circle) {
@@ -205,10 +189,9 @@ class Circle {
   }
 
   /**
-   * overlap - Shows whether this circle overlap another.
+   * Shows whether this circle overlap another.
    *
    * @param {Circle} circle Circle to check.
-   *
    * @return {boolean} True if overlap.
    */
   overlap(circle) {
@@ -242,7 +225,6 @@ class Circle {
    * Represents center as vector.
    *
    * @param {Vector=} outVector Object for result.
-   *
    * @return {Vector} Center point.
    */
   center(outVector = undefined) {
@@ -254,8 +236,8 @@ class Circle {
   /**
    * String representation of this circle.
    *
+   * @ignore
    * @param {number=} [digits=2] Number of digits after float point.
-   *
    * @return {string} Returns string representation of this circle.
    */
   toString(digits = 2) {
@@ -264,7 +246,10 @@ class Circle {
   // @endif
 }
 
-/** @type {Circle}
+/**
+ * @internal
+ * @ignore
+ * @type {Circle}
  * @nocollapse
  */
 Circle.__cache = new Circle();

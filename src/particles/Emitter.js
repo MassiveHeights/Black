@@ -6,7 +6,6 @@
  *
  * @cat particles
  * @extends DisplayObject
- * @class
  */
 /* @echo EXPORT */
 class Emitter extends DisplayObject {
@@ -16,150 +15,95 @@ class Emitter extends DisplayObject {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {Array<Texture>}
-     */
+    /** @private @type {Array<Texture>} */
     this.mTextures = null;
 
-    /**
-     * @private
-     * @type {Array<Particle>}
-     */
+    /** @private @type {Array<Particle>} */
     this.mParticles = [];
 
-    /**
-     * @private
-     * @type {Array<Particle>}
-     */
+    /** @private @type {Array<Particle>} */
     this.mRecycled = [];
 
-    /**
-     * @private
-     * @type {Array<Modifier>}
-     */
+    /** @private @type {Array<Modifier>} */
     this.mInitializers = [];
 
-    /**
-     * @private
-     * @type {Array<Action>}
-     */
+    /** @private @type {Array<Modifier>} */
     this.mActions = [];
 
-    /**
-     * @private
-     * @type {GameObject}
-     */
+    /** @private @type {GameObject} */
     this.mSpace = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mIsLocal = true;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mMaxParticles = 10000;
 
-    /**
-     * @private
-     * @type {FloatScatter}
-     */
+    /** @private @type {FloatScatter} */
     this.mEmitCount = new FloatScatter(10);
 
-    /**
-     * @private
-     * @type {FloatScatter}
-     */
+    /** @private @type {FloatScatter} */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /**
-     * @private
-     * @type {FloatScatter}
-     */
+    /** @private @type {FloatScatter} */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /**
-     * @private
-     * @type {FloatScatter}
-     */
+    /** @private @type {FloatScatter} */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /**
-     * @private
-     * @type {FloatScatter}
-     */
+    /** @private @type {FloatScatter} */
     this.mEmitDelay = new FloatScatter(1);
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mNextUpdateAt = 0;
 
-    /**
-     * @private
-     * @type {EmitterState}
-     */
+    /** @private @type {EmitterState} */
     this.mState = EmitterState.PENDING;
 
-    /**
-     * @private
-     * @type {Matrix}
-     */
+    /** @private @type {Matrix} */
     this.__tmpLocal = new Matrix();
 
-    /**
-     * @private
-     * @type {Matrix}
-     */
+    /** @private @type {Matrix} */
     this.__tmpWorld = new Matrix();
 
-    /**
-     * @private
-     * @type {EmitterSortOrder}
-     */
+    /** @private @type {EmitterSortOrder} */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
-
-    // /** @type {function(a:Particle, b:Particle):number} */
-    // this.mComparer = null;
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('Emitter');
+    return Black.driver.getRenderer('Emitter');
   }
 
+  /**
+   * Sets the internal state to `EmitterState.PENDING`. Use this when you need to restart emitting.
+   *
+   * @returns {void}
+   */
   resetState() {
     this.mState = EmitterState.PENDING;
   }
 
+  /**
+   * A helper method for quick adding modifiers.
+   *
+   * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
+   * @returns {Emitter}
+   */
   add(...modifiers) {
     for (let i = 0; i < modifiers.length; i++) {
       let ai = modifiers[i];
@@ -173,10 +117,9 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * addModifier - Adds Modifier to the end of the list.
+   * Adds Modifier to the end of the list.
    *
-   * @param {Modifier} modifier
-   *
+   * @param {Modifier} modifier Modifier to add.
    * @return {Modifier}
    */
   addModifier(modifier) {
@@ -189,10 +132,10 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * updateNextTick - Updates delay, duration, interval. Use this function each time you change one of those values.
+   * Updates delay, duration, interval. Use this function each time you change one of those values.
    *
+   * @private
    * @param {number} [dt=0]
-   *
    * @return {void}
    */
   updateNextTick(dt = 0) {
@@ -229,7 +172,7 @@ class Emitter extends DisplayObject {
         // we are getting value here each update to make sure we are up to date!
         if (firstEmit) {
           // for a first emit we do not want to add an extra delay. emit now!
-          this.mNextUpdateAt = t
+          this.mNextUpdateAt = t;
           this.mEmitIntervalLeft = this.mEmitInterval.getValue();
         }
         else {
@@ -247,7 +190,10 @@ class Emitter extends DisplayObject {
     }
   }
 
-  onRender(driver, parentRenderer) {
+  /**
+   * @inheritDoc
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
@@ -269,6 +215,9 @@ class Emitter extends DisplayObject {
     return driver.registerRenderer(renderer);
   }
 
+  /**
+   * @inheritDoc
+   */
   onUpdate(dt) {
     // rate logic
     this.updateNextTick(dt);
@@ -307,6 +256,10 @@ class Emitter extends DisplayObject {
     this.setDirty(DirtyFlag.LOCAL, false);
   }
 
+  /**
+   * @ignore
+   * @private
+   */
   __create(amount) {
     let matrix = this.worldTransformation.clone();
     let minv = null;
@@ -344,7 +297,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * maxParticles
+   * Gets/Sets The maximum number of particles can be created.
    *
    * @return {number}
    */
@@ -353,10 +306,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * maxParticles
-   *
+   * @ignore
    * @param {number} value
-   *
    * @return {void}
    */
   set maxParticles(value) {
@@ -367,7 +318,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitCount
+   * Gets/Sets the number of particles to be emitted per {@link Emitter#emitInterval}
    *
    * @return {FloatScatter}
    */
@@ -376,10 +327,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitCount
-   *
+   * @ignore
    * @param {FloatScatter} value
-   *
    * @return {void}
    */
   set emitCount(value) {
@@ -387,7 +336,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitNumRepeats
+   * Gets/Sets the number of "durations" to to repeat. Use `Infinity` to emit particles endlessly.
    *
    * @return {FloatScatter}
    */
@@ -396,10 +345,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitNumRepeats
-   *
+   * @ignore
    * @param {FloatScatter} value
-   *
    * @return {void}
    */
   set emitNumRepeats(value) {
@@ -408,7 +355,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitDuration
+   * Gets/Sets
    *
    * @return {FloatScatter}
    */
@@ -417,10 +364,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitDuration
-   *
+   * @ignore
    * @param {FloatScatter} value
-   *
    * @return {void}
    */
   set emitDuration(value) {
@@ -430,7 +375,7 @@ class Emitter extends DisplayObject {
 
 
   /**
-   * emitInterval
+   * Gets/Sets
    *
    * @return {FloatScatter}
    */
@@ -439,10 +384,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitInterval
-   *
+   * @ignore
    * @param {FloatScatter} value
-   *
    * @return {void}
    */
   set emitInterval(value) {
@@ -452,7 +395,7 @@ class Emitter extends DisplayObject {
 
 
   /**
-   * emitDelay
+   * Gets/Sets
    *
    * @return {FloatScatter}
    */
@@ -461,10 +404,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * emitDelay
-   *
+   * @ignore
    * @param {FloatScatter} value
-   *
    * @return {void}
    */
   set emitDelay(value) {
@@ -474,7 +415,7 @@ class Emitter extends DisplayObject {
 
 
   /**
-   * space
+   * Gets/Sets the space where emitting simulation will happen, ignoring space transformation, so all forces are relative to global.
    *
    * @return {GameObject}
    */
@@ -483,10 +424,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * space
-   *
+   * @ignore
    * @param {GameObject} gameObject
-   *
    * @return {void}
    */
   set space(gameObject) {
@@ -497,7 +436,7 @@ class Emitter extends DisplayObject {
 
 
   /**
-   * textures
+   * Gets/Sets a list of textures to use.
    *
    * @return {Array<Texture>}
    */
@@ -505,12 +444,9 @@ class Emitter extends DisplayObject {
     return this.mTextures;
   }
 
-
   /**
-   * textures
-   *
+   * @ignore
    * @param {Array<Texture>} value
-   *
    * @return {void}
    */
   set textures(value) {
@@ -522,6 +458,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
+   * Gets/Sets the order in which particles will be sorted when rendering.
+   *
    * @return {EmitterSortOrder}
    */
   get sortOrder() {
@@ -529,9 +467,8 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   *
-   * @param {EmitterSortOrder} value The order in which particles will be sorted when rendering.
-   *
+   * @ignore
+   * @param {EmitterSortOrder} value
    * @return {void}
    */
   set sortOrder(value) {
@@ -539,14 +476,3 @@ class Emitter extends DisplayObject {
     this.setRenderDirty();
   }
 }
-
-/**
- * A blend mode enum.
- * @cat particles
- * @enum {string}
- */
-/* @echo EXPORT */
-var EmitterSortOrder = {
-  FRONT_TO_BACK: 'frontToBack',
-  BACK_TO_FRONT: 'backToFront'
-};

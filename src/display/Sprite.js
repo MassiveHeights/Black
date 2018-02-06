@@ -14,14 +14,10 @@ class Sprite extends DisplayObject {
   constructor(texture = null) {
     super();
 
-    /**
-     * @private
-     * @type {Texture|null} */
+    /** @private @type {Texture|null} */
     this.mTexture = null;
 
-    /**
-     * @private
-     * @type {string|null} */
+    /** @private @type {string} */
     this.mTextureName = null;
 
     if (texture !== null && texture.constructor === String) {
@@ -32,14 +28,21 @@ class Sprite extends DisplayObject {
     }
 
     // Cache as bitmap
+    /** @private @type {CanvasRenderTexture|null} */
     this.mCache = null;
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('Sprite');
+    return Black.driver.getRenderer('Sprite');
   }
 
-  onRender(driver, parentRenderer, isBackBufferActive) {
+  /**
+   * @inheritDoc
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mBaked === true && isBackBufferActive === true) {
@@ -77,10 +80,20 @@ class Sprite extends DisplayObject {
     return driver.registerRenderer(renderer);
   }
 
+  /**
+   * Gets/Sets whether the Sprite should be baked on not
+   *
+   * @return {boolean} 
+   */
   get baked() {
     return this.mBaked;
   }
 
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
   set baked(value) {
     if (value === this.mBaked)
       return;
@@ -105,12 +118,10 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
+   * Returns a rectangle that completely encloses the object in local coordinate system.
    *
-   * @override
    * @protected
-   * @param {Rectangle=} outRect Description
-   *
+   * @param {Rectangle=} outRect Rectangle to be returned.
    * @return {Rectangle} The new Rectangle or outRect with .
    */
   onGetLocalBounds(outRect = undefined) {
@@ -131,7 +142,7 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Returns the current Texture on this sprite.
+   * Returns the current Texture on this sprite.
    *
    * @return {Texture|null} The current texture set on this Sprite or null.
    */
@@ -140,11 +151,10 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Sets the Texture on this sprite by name.
+   * Sets the Texture on this sprite by name.
    * Only AssetManager.default is used.
    *
    * @param {Texture|null} texture Texture to apply on.
-   *
    * @return {void}
    */
   set texture(texture) {
@@ -155,12 +165,20 @@ class Sprite extends DisplayObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Returns the current texture name.
+   *
+   * @return {string}
+   */
   get textureName() {
     return this.mTextureName;
   }
 
   /**
+   * Sets the current texture by its name
+   * 
    * @editor {TextureEditor}
+   * @param {string} value
    */
   set textureName(value) {
     if (this.mTextureName === value)

@@ -1,28 +1,40 @@
+/**
+ * The sound effect interface. Implementations can be attached to sound channel.
+ * 
+ * @cat audio
+ */
 /* @echo EXPORT */
 class SoundEffect {
-  constructor() {
-    this.mInputNode = null;
-    this.mOutputNode = null;
 
-    this.mConnectedOutput = null;
+  /**
+   * Creates new instance of SoundEffect.
+   */
+  constructor() {
+
+    /** @ignore @protected @type {AudioNode} */
+    this.mInputNode = null;
+
+    /** @ignore @protected @type {AudioNode} */
+    this.mOutputNode = null;
   }
 
+  /**
+   * @ignore
+   * @internal
+   * @return {AudioNode}
+   */
   get _inputNode() {
+    Debug.assert(this.mInputNode != null, 'Input node must be specified in descendant class');
     return this.mInputNode;
   }
 
+  /**
+   * @ignore
+   * @internal
+   * @return {AudioNode}
+   */
   get _outputNode() {
+    Debug.assert(this.mOutputNode != null, 'Output node must be specified in descendant class');
     return this.mOutputNode;
-  }
-
-  _connectToOutput(node) {
-    this.mConnectedOutput = node;
-    this._outputNode.connect(node);
-  }
-
-  _disconnectFromOutput() {
-    if (this.mConnectedOutput)
-      this._outputNode.disconnect(this.mConnectedOutput);
-    this.mConnectedOutput = null;
   }
 }

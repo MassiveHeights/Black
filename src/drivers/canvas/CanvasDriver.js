@@ -1,25 +1,27 @@
 /**
-import { BlendMode } from './../../../dist/black-es6-module';
- * @cat drivers
+ * Video driver responsible for rendering game objects onto HTML canvas element.
+ *
+ * @extends VideoNullDriver
+ * @cat drivers.canvas
  */
 /* @echo EXPORT */
 class CanvasDriver extends VideoNullDriver {
   /**
-   * @param  {HTMLElement} containerElement The DOM element to draw into.
-   * @param  {number} width                 The width of the viewport.
-   * @param  {number} height                The height of the viewport.
+   * Creates new instance of CanvasDriver
+   *
+   * @param {HTMLElement} containerElement The DOM element to draw into.
+   * @param {number} width                 The width of the viewport.
+   * @param {number} height                The height of the viewport.
    */
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /**
-     * @private
-     * @type {CanvasRenderingContext2D|null}
-     */
+    /** @private @type {CanvasRenderingContext2D} */
     this.mCtx = null;
 
     this.__createCanvas();
 
+    /** @inheritDoc */
     this.mRendererMap = {
       DisplayObject: DisplayObjectRendererCanvas,
       Sprite: SpriteRendererCanvas,
@@ -30,11 +32,15 @@ class CanvasDriver extends VideoNullDriver {
     };
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderTarget(width, height) {
     return new RenderTargetCanvas(width, height);
   }
 
   /**
+   * @ignore
    * @private
    * @return {void}
    */
@@ -56,10 +62,10 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
+   * @ignore
    * @private
    * @param {Message} msg
    * @param {Rectangle} rect
-   *
    * @returns {void}
    */
   __onResize(msg, rect) {
@@ -76,30 +82,53 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.canvas.style.height = this.mClientHeight + 'px';
   }
 
+  /**
+   * @inheritDoc
+   */
   drawTexture(texture) {
     if (texture.isValid === false)
       return;
 
     let scale = this.mStageScaleFactor;
-    let tr = texture.scale;
 
-    var sourceX = texture.region.x;
-    var sourceY = texture.region.y;
-    var sourceWidth = texture.region.width;
-    var sourceHeight = texture.region.height;
+    let sourceX = texture.region.x;
+    let sourceY = texture.region.y;
+    let sourceWidth = texture.region.width;
+    let sourceHeight = texture.region.height;
 
-    var destX = texture.untrimmedRegion.x * scale;
-    var destY = texture.untrimmedRegion.y * scale;
-    var destWidth = texture.renderWidth * scale;
-    var destHeight = texture.renderHeight * scale;
+    let destX = texture.untrimmedRegion.x * scale;
+    let destY = texture.untrimmedRegion.y * scale;
+    let destWidth = texture.renderWidth * scale;
+    let destHeight = texture.renderHeight * scale;
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
 
-  endFrame() {
-    super.endFrame();
+  /**
+   * @inheritDoc
+   */
+  drawTextureWithOffset(texture, ox, oy) {
+    if (texture.isValid === false)
+      return;
+
+    let scale = this.mStageScaleFactor;
+
+    let sourceX = texture.region.x;
+    let sourceY = texture.region.y;
+    let sourceWidth = texture.region.width;
+    let sourceHeight = texture.region.height;
+
+    let destX = (ox + texture.untrimmedRegion.x) * scale;
+    let destY = (oy + texture.untrimmedRegion.y) * scale;
+    let destWidth = texture.renderWidth * scale;
+    let destHeight = texture.renderHeight * scale;
+
+    this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
 
+  /**
+   * @inheritDoc
+   */
   beginClip(clipRect, px, py) {
     let r = this.mStageScaleFactor;
 
@@ -110,15 +139,15 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.clip();
   }
 
+  /**
+   * @inheritDoc
+   */
   endClip() {
     this.mCtx.restore();
   }
 
   /**
-   * @ignore
-   * @param {Matrix} m
-   *
-   * @return {void}
+   * @inheritDoc
    */
   setTransform(m) {
     const v = m.value;
@@ -142,9 +171,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @param {number} value
-   *
-   * @return {void}
+   * @inheritDoc
    */
   set globalAlpha(value) {
     if (value == this.mGlobalAlpha)
@@ -156,11 +183,6 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * @inheritDoc
-   * @override
-   *
-   * @param {string} blendMode
-   *
-   * @return {void}
    */
   set globalBlendMode(blendMode) {
     if (blendMode === BlendMode.AUTO)
@@ -176,11 +198,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * clear
    * @inheritDoc
-   * @override
-   *
-   * @return {void}
    */
   clear() {
     // TODO: clear only changed region
@@ -188,7 +206,7 @@ class CanvasDriver extends VideoNullDriver {
 
     let viewport = Black.instance.viewport;
     if (viewport.isTransperent === false) {
-      this.mCtx.fillStyle = this.hexColorToString(viewport.backgroundColor);
+      this.mCtx.fillStyle = VideoNullDriver.hexColorToString(viewport.backgroundColor);
       this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     } else {
       this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
@@ -198,10 +216,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @ignore
-   * @param {HTMLElement} canvas
-   *
-   * @return {Texture|null}
+   * @inheritDoc
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);

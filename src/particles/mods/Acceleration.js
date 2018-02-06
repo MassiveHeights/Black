@@ -3,7 +3,6 @@
  *
  * @cat particles.modifiers
  * @extends Modifier
- * @class
  */
 /* @echo EXPORT */
 class Acceleration extends Modifier {
@@ -15,20 +14,12 @@ class Acceleration extends Modifier {
   constructor(...values) {
     super(false);
 
-    /**
-     * @type {...(number|VectorScatter)}
-     */
+    /** @inheritDoc */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
   /**
    * @inheritDoc
-   *
-   * @param {Emitter} emitter
-   * @param {Particle} particle
-   * @param {number} dt
-   *
-   * @return {void}
    */
   update(emitter, particle, dt) {
     this.scatter.getValue();

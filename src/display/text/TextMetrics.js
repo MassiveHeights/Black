@@ -1,9 +1,25 @@
+/**
+ * Provides native text measurement tools
+ * 
+ * @cat display.text
+ * @static
+ */
 /* @echo EXPORT */
 class TextMetricsEx {
   constructor() {
     throw new Error('Singlton');
   }
 
+  /**
+   * Measures the area of provided text.
+   * 
+   * @static
+   * @param {string} text         The text to measure.
+   * @param {TextInfo} info       The TextInfo object representing text properties and formatting.
+   * @param {number} lineHeight   The height of the line.
+   * @param {Rectangle} outBounds The sum of all lines.
+   * @returns {Array<Rectangle>} Array of rectangles representing bounds of each line.
+   */
   static measure(text, info, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();
 
@@ -49,6 +65,16 @@ class TextMetricsEx {
     return lineBounds;
   }
 
+  /**
+   * Measures the area of provided text
+   * 
+   * @static
+   * @param {string} text 
+   * @param {string|BitmapFontData} data 
+   * @param {number} lineHeight 
+   * @param {Rectangle} outBounds 
+   * @returns {Rectangle}
+   */
   static measureBitmap(text, data, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();
 
@@ -89,4 +115,9 @@ class TextMetricsEx {
   }
 }
 
+/**
+ * @ignore
+ * @private
+ * @static
+ */
 TextMetricsEx.__span = null;

@@ -19,10 +19,7 @@ class SoundAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   onLoaded() {
     let undecodedAudio = this.mRequest.response;
@@ -33,48 +30,13 @@ class SoundAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   load() {
-    if (Device.webAudioSupported === false || Audio.context == null)
-      return;
-    super.load();
-  }
-}
-
-
-
-
-/* @echo EXPORT */
-class SoundAtlasAsset extends Asset {
-  constructor(name, soundUrl, dataUrl) {
-    super(name, soundUrl);
-
-    this.dataAsset = new JSONAsset(name, dataUrl);
-    this.dataAsset.on('complete', this.onJsonLoaded, this);
-
-    this.soundAsset = new Asset(name, soundUrl);
-    this.soundAsset.on('complete', this.onSoundLoaded, this);
-    this.soundAsset.mResponseType = 'arraybuffer';
-  }
-
-  onJsonLoaded() {
-    this.soundAsset.load();
-  }
-
-  load() {
-    this.dataAsset.load();
-  }
-
-  onSoundLoaded() {
-    let undecodedAudio = this.soundAsset.mRequest.response;
-
-    Audio.context.decodeAudioData(undecodedAudio, (buffer) => {
-      this.mData = new SoundAtlasClip(buffer, this.dataAsset.data);
+    if (Device.webAudioSupported === false || Audio.context == null) {
       super.onLoaded();
-    });
+      return;
+    }
+    super.load();
   }
 }

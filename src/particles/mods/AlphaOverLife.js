@@ -3,7 +3,6 @@
  *
  * @cat particles.modifiers
  * @extends Modifier
- * @class
  */
 /* @echo EXPORT */
 class AlphaOverLife extends Modifier {
@@ -15,18 +14,12 @@ class AlphaOverLife extends Modifier {
   constructor(...values) {
     super(false);
 
-    /** @type {...(number|FloatScatter)} */
+    /** @inheritDoc */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
   /**
    * @inheritDoc
-   *
-   * @param {Emitter} emitter
-   * @param {Particle} particle
-   * @param {number} dt
-   *
-   * @return {void}
    */
   update(emitter, particle, dt) {
     particle.alpha = this.scatter.getValueAt(particle.energy);

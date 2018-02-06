@@ -13,20 +13,32 @@ class FloatScatter extends Scatter {
    * @param {number}      [max=undefined] The max value along x-axis.
    * @param {function(number):number} [ease=null]     Easing function.
    */
-  constructor(min, max = undefined, ease = null) {
+  constructor(min, max = NaN, ease = null) {
     super();
 
-    // NOTE: dont make us @private @member
-
-    /** @type {number} */
+    /**
+     * A min value.
+     * @type {number}
+     */
     this.min = min;
 
-    /** @type {number} */
-    this.max = max == null ? min : max;
+    /**
+     * A max value.
+     * @type {number}
+     */
+    this.max = max || min;
 
-    /** @type {function(number):number} */
+    /**
+     * Optional easing function.
+     * @type {function(number):number}
+     */
     this.ease = ease;
 
+    /**
+     * Cached last value of `getValueAt` result.
+     * @readonly
+     * @type {number}
+     */
     this.value = 0;
   }
 
@@ -35,7 +47,6 @@ class FloatScatter extends Scatter {
    *
    * @override
    * @param {number} t The position.
-   *
    * @return {number} Number at given position.
    */
   getValueAt(t) {
@@ -46,6 +57,12 @@ class FloatScatter extends Scatter {
     return this.value;
   }
 
+  /**
+   * Creates new FloatScatter from a set of numbers.
+   *
+   * @param {...number|FloatScatter} values Set of values.
+   * @returns {FloatScatter}
+   */
   static fromObject(...values) {
     if (values[0] instanceof Scatter)
       return values[0];

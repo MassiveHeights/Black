@@ -40,7 +40,6 @@
     "src/colliders/CircleCollider.js",
 
     "src/textures/Texture.js",
-    "src/textures/RenderTexture.js",
     "src/textures/CanvasRenderTexture.js",
     "src/textures/AtlasTexture.js",
 
@@ -52,6 +51,7 @@
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/BitmapFontAsset.js",
     "src/loaders/SoundAsset.js",
+    "src/loaders/SoundAtlasAsset.js",
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
@@ -94,6 +94,8 @@
     "src/scatters/Scatter.js",
     "src/scatters/FloatScatter.js",
     "src/scatters/VectorScatter.js",
+    "src/scatters/VectorCurveScatter.js",
+    "src/scatters/RadialScatter.js",
     "src/scatters/FloatCurveScatter.js",
 
     "src/particles/Modifier.js",
@@ -115,6 +117,7 @@
     "src/particles/mods/InitialTexture.js",
 
     "src/particles/EmitterState.js",
+    "src/particles/EmitterSortOrder.js",
     "src/particles/Particle.js",
     "src/particles/Emitter.js",
 
@@ -144,11 +147,13 @@
     "src/audio/effects/SimpleEQ.js",
     "src/audio/effects/ReverbEffect.js",
 
+    "src/audio/SoundState.js",
     "src/audio/SoundInstance.js",
     "src/audio/SoundClip.js",
     "src/audio/SoundAtlasClip.js",
     "src/audio/SoundChannel.js",
     "src/audio/SoundComponent.js",
+    "src/audio/SoundListener.js",
 
     "src/Black.js"
   ]

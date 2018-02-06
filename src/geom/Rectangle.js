@@ -19,28 +19,16 @@ class Rectangle {
     Debug.assert(!isNaN(w), 'width cannot be NaN');
     Debug.assert(!isNaN(h), 'height cannot be NaN');
 
-    /**
-     * The x coordinate of the rectangle.
-     * @type {number}
-     */
+    /** @type {number} The x coordinate of the rectangle. */
     this.x = x;
 
-    /**
-     * The y coordinate of the rectangle.
-     * @type {number}
-     */
+    /** @type {number} The y coordinate of the rectangle. */
     this.y = y;
 
-    /**
-     * The width of the rectangle.
-     * @type {number}
-     */
+    /** @type {number} The width of the rectangle. */
     this.width = w;
 
-    /**
-     * The height of the rectangle.
-     * @type {number}
-     */
+    /** @type {number} The height of the rectangle. */
     this.height = h;
   }
 
@@ -51,7 +39,6 @@ class Rectangle {
    * @param {number} y Y-component.
    * @param {number} w The width.
    * @param {number} h The height.
-   *
    * @return {Rectangle} This.
    */
   set(x, y, w, h) {
@@ -67,7 +54,6 @@ class Rectangle {
    * Copies values from given rectangle into this one.
    *
    * @param {Rectangle} rect The Rectangle to copy values from.
-   *
    * @return {Rectangle} This.
    */
   copyFrom(rect) {
@@ -83,7 +69,6 @@ class Rectangle {
    * Copies values from this rectangle into given rectangle.
    *
    * @param {Rectangle} rect The destination rect.
-   *
    * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
@@ -106,7 +91,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {number} left
    */
   set left(left) {
@@ -124,7 +108,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {number} right
    */
   set right(right) {
@@ -142,7 +125,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {number} top
    */
   set top(top) {
@@ -152,7 +134,7 @@ class Rectangle {
   /**
    * Get/Sets the bottommost point of this rectangle.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get bottom() {
     return this.y + this.height;
@@ -160,7 +142,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {number} bottom
    */
   set bottom(bottom) {
@@ -178,7 +159,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {Vector} vector
    */
   set topLeft(vector) {
@@ -189,7 +169,7 @@ class Rectangle {
   /**
    * Get/Sets the top right point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get topRight() {
     return new Vector(this.right, this.y);
@@ -197,7 +177,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {Vector} vector
    */
   set topRight(vector) {
@@ -208,7 +187,7 @@ class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get bottomRight() {
     return new Vector(this.right, this.bottom);
@@ -216,7 +195,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {Vector} vector
    */
   set bottomRight(vector) {
@@ -227,7 +205,7 @@ class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {Vector} Description
+   * @return {Vector}
    */
   get bottomLeft() {
     return new Vector(this.x, this.bottom);
@@ -235,7 +213,6 @@ class Rectangle {
 
   /**
    * @ignore
-   *
    * @param {Vector} vector
    */
   set bottomLeft(vector) {
@@ -244,11 +221,9 @@ class Rectangle {
   }
 
   /**
-   * Creates a new Rectangle instance with width and height equal to current
-   * instance.
+   * Creates a new Rectangle instance with width and height equal to current instance.
    *
    * @param {Vector=} outVector Resulting rect to save values in.
-   *
    * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
@@ -269,10 +244,9 @@ class Rectangle {
   /**
    * Compares this Rectangle with a given one.
    *
-   * @param {Rectangle} rect                  Rect to compare values with.
-   * @param {number} epsilon = Number.EPSILON
-   *
-   * @return {boolean} True if rects are equal.
+   * @param {Rectangle} rect Rect to compare values with.
+   * @param {number} [epsilon=Number.EPSILON] Comparison threshold.
+   * @return {boolean} True if rectangles are equal.
    */
   equals(rect, epsilon = Number.EPSILON) {
     return rect !== null && (Math.abs(this.x - rect.x) < epsilon) && (Math.abs(this.y - rect.y) < epsilon) &&
@@ -285,7 +259,6 @@ class Rectangle {
    *
    * @param {number} x The x-component of a point.
    * @param {number} y The y-component of a point.
-   *
    * @return {boolean} True if point is inside.
    */
   containsXY(x, y) {
@@ -297,7 +270,6 @@ class Rectangle {
    * Checks if a given rectangle is inside this rect.
    *
    * @param {Rectangle} rect Rectangle to check with.
-   *
    * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
@@ -308,7 +280,6 @@ class Rectangle {
    * Checks if this rect intersects with a given rectangle.
    *
    * @param {Rectangle} rect The rect to check intersection with.
-   *
    * @return {boolean} True if intersects.
    */
   intersects(rect) {
@@ -316,17 +287,24 @@ class Rectangle {
       rect.x < this.right && rect.y < this.bottom;
   }
 
+  /**
+   * Makes rectangle, which represents intersection between this and passed rectangles.
+   *
+   * @param {Rectangle} toIntersect Rectangle to intersect with.
+   * @param {Rectangle=} outRect Rectangle to be returned.
+   * @returns {Rectangle}
+   */
   intersection(toIntersect, outRect) {
     outRect = outRect || new Rectangle();
 
-    var x0 = this.x < toIntersect.x ? toIntersect.x : this.x;
-    var x1 = this.right > toIntersect.right ? toIntersect.right : this.right;
+    let x0 = this.x < toIntersect.x ? toIntersect.x : this.x;
+    let x1 = this.right > toIntersect.right ? toIntersect.right : this.right;
 
     if (x1 <= x0)
       return new Rectangle();
 
-    var y0 = this.y < toIntersect.y ? toIntersect.y : this.y;
-    var y1 = this.bottom > toIntersect.bottom ? toIntersect.bottom : this.bottom;
+    let y0 = this.y < toIntersect.y ? toIntersect.y : this.y;
+    let y1 = this.bottom > toIntersect.bottom ? toIntersect.bottom : this.bottom;
 
     if (y1 <= y0)
       return new Rectangle();
@@ -340,7 +318,6 @@ class Rectangle {
    * Adds given rectangle into this.
    *
    * @param {Rectangle} toUnion A rectangle object to add to this rect.
-   *
    * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
@@ -369,7 +346,6 @@ class Rectangle {
    * @param {number} y      Y-component
    * @param {number} width  The width.
    * @param {number} height The height.
-   *
    * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
@@ -403,7 +379,6 @@ class Rectangle {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] Y-component.
-   *
    * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
@@ -425,9 +400,9 @@ class Rectangle {
   }
 
   /**
-   * perimeter - Description
+   * Gets rectangle perimeter.
    *
-   * @return {number} Description
+   * @return {number}
    */
   get perimeter() {
     return 2 * (this.width + this.height);
@@ -438,7 +413,6 @@ class Rectangle {
    * Returns the center point of this rectangle.
    *
    * @param {Vector=} outVector The out-Vector to store values in.
-   *
    * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
@@ -451,7 +425,6 @@ class Rectangle {
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
-   *
    * @return {Rectangle} This rectangle.
    */
   scale(x, y) {
@@ -470,7 +443,12 @@ class Rectangle {
     return this.width <= 0 || this.height <= 0;
   }
 
-  get lines() { // todo
+  /**
+   * Gets a list of lines, which make up this rectangle.
+   *
+   * @returns {Array<Line>}
+   */
+  get lines() {
     return [
       new Line(this.topLeft, this.topRight),
       new Line(this.topRight, this.bottomRight),
@@ -481,30 +459,28 @@ class Rectangle {
 
   // @ifdef DEBUG
   /**
-   * toString - Description
-   *
+   * @ignore
    * @param {number=} [digits=2] Description
-   *
    * @return {string} Description
    */
   toString(digits = 2) {
     return `Rectangle { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)}, width: ${this.width.toFixed(digits)}, height: ${this.height.toFixed(digits)} }`;
   }
   // @endif
-
-  static get(x = 0, y = 0, w = 0, h = 0) {
-    return Rectangle.__recycled.length > 0 ? Rectangle.__recycled.pop().set(a, b, w, h) : new Rectangle(x, y, w, h);
-  }
-
-  static free(rectangle) {
-    Rectangle.__recycled.push(rectangle);
-  }
 }
 
 /**
  * @ignore
  * @type {Rectangle}
+ * @internal
  * @nocollapse
  */
 Rectangle.__cache = new Rectangle();
-Rectangle.__recycled = [];
+
+/**
+ * Recycled rectangles pool.
+ *
+ * @type {ObjectPool}
+ * @nocollapse
+ */
+Rectangle.pool = new ObjectPool(Rectangle, 0, 0, 0, 0);

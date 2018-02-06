@@ -7,116 +7,79 @@
 /* @echo EXPORT */
 class TextField extends DisplayObject {
   /**
-   * @param  {string=} text Text to be displayed inside this text field
+   * Creates new instance of TextField
+   * 
+   * @param  {string=} [text=''] Text to be displayed inside this text field
    * @param  {number=} size text size
    * @param  {string=} name font name
-   * @param {TextInfo=} style TextInfo object
+   * @param {TextInfo=} [style=undefined] TextInfo object
    */
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mText = text;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mCacheBounds = new Rectangle();
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mTextWidth = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mTextHeight = 0;
 
-    /**
-     * @private
-     * @type {TextInfo}
-     */
+    /** @private @type {TextInfo} */
     this.mStyle = style || new TextInfo();
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mStyle.name = name || style.name;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mStyle.size = size || style.size;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mAutoSize = true;
 
-    /** @type {TextInfo.FontAlign} */
+    /** @private @type {TextInfo.FontAlign} */
     this.mAlign = TextInfo.FontAlign.LEFT;
 
-    /** @type {TextInfo.FontVerticalAlign} */
+    /** @private @type {TextInfo.FontVerticalAlign} */
     this.mVerticalAlign = TextInfo.FontVerticalAlign.MIDDLE;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mMultiline = false;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLineHeight = 1.2;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mTextBounds = new Rectangle();
 
-    /**
-     * @private
-     * @type {Array<Rectangle>|null}
-     */
+    /** @private @type {Array<Rectangle>|null} */
     this.mLineBounds = null;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFieldWidth = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFieldHeight = 0;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mPadding = new Rectangle(0, 0, 0, 0);
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('Text');
+    return Black.driver.getRenderer('Text');
   }
 
-  onRender(driver, parentRenderer) {
+  /**
+   * @inheritDoc
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     let oldDirty = this.mDirty;
@@ -157,12 +120,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @protected
-   * @override
-   * @ignore
-   * @param {Rectangle=} outRect
-   *
-   * @return {Rectangle}
+   * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -196,9 +154,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {boolean} value
    * @ignore
-   *
+   * @param {boolean} value
    * @return {void}
    */
   set multiline(value) {
@@ -216,9 +173,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set lineHeight(value) {
@@ -245,9 +201,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set size(value) {
@@ -268,9 +223,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {string} value
    * @ignore
-   *
+   * @param {string} value
    * @return {void}
    */
   set font(value) {
@@ -291,9 +245,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set color(value) {
@@ -314,10 +267,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   *
-   * @param {TextInfo.FontStyle} value
    * @ignore
-   *
+   * @param {TextInfo.FontStyle} value
    * @return {void}
    */
   set style(value) {
@@ -338,9 +289,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {TextInfo.FontWeight} value
    * @ignore
-   *
+   * @param {TextInfo.FontWeight} value
    * @return {void}
    */
   set weight(value) {
@@ -361,9 +311,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {TextInfo.FontAlign} value
    * @ignore
-   *
+   * @param {TextInfo.FontAlign} value
    * @return {void}
    */
   set align(value) {
@@ -384,9 +333,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {TextInfo.FontAlign} value
    * @ignore
-   *
+   * @param {TextInfo.FontAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -406,9 +354,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set strokeColor(value) {
@@ -430,9 +377,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set strokeThickness(value) {
@@ -453,9 +399,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set fieldWidth(value) {
@@ -476,9 +421,8 @@ class TextField extends DisplayObject {
 
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set fieldHeight(value) {
@@ -498,9 +442,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {string} value
    * @ignore
-   *
+   * @param {string} value
    * @return {void}
    */
   set text(value) {
@@ -521,9 +464,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {boolean} value
    * @ignore
-   *
+   * @param {boolean} value
    * @return {void}
    */
   set autoSize(value) {
@@ -544,9 +486,8 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @param {Rectangle} value
    * @ignore
-   *
+   * @param {Rectangle} value
    * @return {void}
    */
   set padding(value) {
@@ -555,4 +496,9 @@ class TextField extends DisplayObject {
   }
 }
 
+/**
+ * @ignore
+ * @private
+ * @static
+ */
 TextField.__cache = null;

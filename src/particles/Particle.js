@@ -2,99 +2,54 @@
  * The particle!
  *
  * @cat particles
- * @class
  */
 /* @echo EXPORT */
 class Particle {
   constructor() {
-    /**
-     * The index of a texture.
-     * @type {number}
-     */
+
+    /** @type {number} The index of a texture. */
     this.textureIndex = 0;
 
-    /**
-     * The x scale of this particle.
-     * @type {number}
-     */
+    /** @type {number} The x scale of this particle. */
     this.scaleX = 1;
 
-    /**
-     * The x scale of this particle.
-     * @type {number}
-     */
+    /** @type {number} The x scale of this particle. */
     this.scaleY = 1;
 
-    /**
-     * Alpha value.
-     * @type {number}
-     */
+    /** @type {number} An alpha value. */
     this.alpha = 1;
 
-    /**
-     * The life of this particle.
-     * @type {number}
-     */
+    /** @type {number} The life of this particle. */
     this.life = 1;
 
-    /**
-     * The age of this particle.
-     * @type {number}
-     */
+    /** @type {number} The age of this particle. */
     this.age = 0;
 
-    /**
-     * Relation of life to age.
-     * @type {number}
-     */
+    /** @type {number} Relation of life to age. */
     this.energy = this.age / this.life;
 
-    /**
-     * The mass.
-     * @type {number}
-     */
+    /** @type {number} The mass. */
     this.mass = 0;
 
-    /**
-     * X-component.
-     * @type {number}
-     */
+    /** @type {number} X-component. */
     this.x = 0;
 
-    /**
-     * Y-component.
-     * @type {number}
-     */
+    /** @type {number} Y-component. */
     this.y = 0;
 
-    /**
-     * Rotation of this particle.
-     * @type {number}
-     */
-    this.r = 0
+    /** @type {number} Rotation of this particle. */
+    this.r = 0;
 
-    /**
-     * Velocity by x.
-     * @type {number}
-     */
+    /** @type {number} Velocity by x. */
     this.vx = 0;
 
-    /**
-     * Velocity by y.
-     * @type {number}
-     */
+    /** @type {number} Velocity by y. */
     this.vy = 0;
 
-    /**
-     * Particle x-acceleration.
-     * @type {number}
-     */
+    /** @type {number} Particle x-acceleration. */
     this.ax = 0;
 
-    /**
-     * Particle y-acceleration.
-     * @type {number}
-     */
+    /** @type {number} Particle y-acceleration. */
     this.ay = 0;
   }
 
@@ -111,8 +66,8 @@ class Particle {
   /**
    * Internal update method.
    *
+   * @internal
    * @param {number} dt Time since last update.
-   *
    * @return {void}
    */
   update(dt) {

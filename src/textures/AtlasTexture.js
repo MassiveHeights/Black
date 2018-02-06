@@ -1,7 +1,7 @@
 /**
- * A number scatter for defining a range in 2D space.
+ * A texture atlas.
  *
- * @cat video
+ * @cat textures
  * @extends Texture
  */
 /* @echo EXPORT */
@@ -9,15 +9,15 @@ class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
     super(nativeElement);
 
-    /** @dict */
-    this.mSubTextures = {}; // dictionary    
+    /** @private @type {Object.<string, Texture>} */
+    this.mSubTextures = {};
 
     this.__parseJson(jsonObject, scale);
   }
 
   /**
+   * @ignore
    * @private
-   *
    * @param {{meta: *, frames: *}} o
    * @param {number} scale
    * @return {void}
@@ -38,7 +38,6 @@ class AtlasTexture extends Texture {
    * Returns the texture by a given name.
    *
    * @param {string} name The name of the texture to find.
-   *
    * @return {Texture} The Texture or null if not found.
    */
   getTexture(name) {
@@ -56,10 +55,8 @@ class AtlasTexture extends Texture {
    * This method sorts all resulting textures using neurural sort algorith.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
-   * @param {Array<Texture>|null}         outTextures If passed will be
-   * overwritten by result object.
-   *
-   * @return {Array<Texture>} The list of found textures.
+   * @param {Array<Texture>|null}         outTextures If passed will be overwritten by result object.
+   * @return {Array<Texture>}             The list of found textures.
    */
   getTextures(nameMask = null, outTextures = null) {
     let out = outTextures || [];
@@ -87,14 +84,34 @@ class AtlasTexture extends Texture {
     return out;
   }
 
+  /**
+   * Gets dictionary of sub textures.
+   *
+   * @returns {Object} The list of sub textures.
+   */
   get subTextures() {
     return this.mSubTextures;
   }
 
+  /**
+   * Sorts set of data in natural order
+   *
+   * @ignore
+   * @param {*} dataset
+   * @param {*} field
+   */
   static naturalSort(dataset, field = null) {
     dataset.sort(AtlasTexture.__naturalComparer(field));
   }
 
+  /**
+   * @ignore
+   * @private
+   * @param {*} field
+   * @param {boolean} useAbs
+   * @returns {Function}
+   * @private
+   */
   static __naturalComparer(field = null, useAbs = true) {
     return function (a, b) {
       const NUMBER_GROUPS = /(-?\d*\.?\d+)/g;
