@@ -33,13 +33,13 @@ class VectorScatter extends Scatter {
      * A max value along x-axis.
      * @type {number}
      */
-    this.maxX = maxX || minX;
+    this.maxX = isNaN(maxX) ? minX : maxX;
 
     /**
      * A max value along y-axis.
      * @type {number}
      */
-    this.maxY = maxY || minY;
+    this.maxY = isNaN(maxY) ? minY : maxY;
 
     /**
      * Cached last value of `getValueAt` result.

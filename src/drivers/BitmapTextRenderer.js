@@ -110,4 +110,11 @@ class BitmapTextRenderer extends Renderer {
   getTransform() {
     return this.transform;
   }
+
+  /**
+   * @inheritDoc
+   */
+  get isRenderable() {
+    return this.text !== null;
+  }
 }

@@ -26,7 +26,7 @@ class FloatScatter extends Scatter {
      * A max value.
      * @type {number}
      */
-    this.max = max || min;
+    this.max = isNaN(max) ? min : max;
 
     /**
      * Optional easing function.

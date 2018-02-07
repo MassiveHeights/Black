@@ -51,7 +51,7 @@ class BitmapTextField extends DisplayObject {
   getRenderer() {
     return Black.driver.getRenderer('BitmapText');
   }
-
+  
   /**
    * @inheritDoc
    */
