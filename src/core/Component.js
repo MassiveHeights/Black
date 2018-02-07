@@ -13,30 +13,17 @@ class Component extends MessageDispatcher {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {number} 
-     */
-    this.mId = ++GameObject.ID;
-
-    /**
-     * @private
-     * @type {GameObject|null}
-     */
+    /** @private @type {GameObject|null} */
     this.mGameObject = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mAdded = false;
   }
 
   /**
    * Called when attached to GameObject.
    *
-   * @public
-   *
+   * @protected
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -45,8 +32,7 @@ class Component extends MessageDispatcher {
   /**
    * Called when detached from GameObject.
    *
-   * @public
-   *
+   * @protected
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
@@ -54,8 +40,8 @@ class Component extends MessageDispatcher {
 
   /**
    * Called at every fixed frame update.
-   * @public
    *
+   * @protected
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -63,8 +49,8 @@ class Component extends MessageDispatcher {
 
   /**
    * Called at every engine update.
-   * @public
    *
+   * @protected
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -72,8 +58,8 @@ class Component extends MessageDispatcher {
 
   /**
    * Called after all updates have been executed.
-   * @public
    *
+   * @protected
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
@@ -86,6 +72,7 @@ class Component extends MessageDispatcher {
 
   /**
    * Detaches this Component from its parent GameObject.
+   *
    * @returns {void}
    */
   removeFromParent() {
@@ -98,6 +85,7 @@ class Component extends MessageDispatcher {
   /**
    * Returns owner of this component.
    *
+   * @readonly
    * @returns {GameObject}
    */
   get gameObject() {
@@ -105,11 +93,9 @@ class Component extends MessageDispatcher {
   }
 
   /**
-   * Returns string representing a url like path to this object in the display
-   * tree.
+   * Returns string representing a url like path to this object in the display tree.
    *
    * @readonly
-   *
    * @return {string|null}
    */
   get path() {

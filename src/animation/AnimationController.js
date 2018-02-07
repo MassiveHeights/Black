@@ -26,12 +26,12 @@ class AnimationController extends Component {
   }
 
   /**
-   * Returns the Animation object that exists with the specified name.
+   * Returns the AnimationInfo object that exists with the specified name.
    *
-   * @param {string} name The name of the child to return.
-   * @returns {AnimationInfo} Returns the Animation object that exists with the specified name.
+   * @param {string} name     The name of the child to return.
+   * @returns {AnimationInfo} Animation object that exists with the specified name.
    */
-  getByName(name){
+  getByName(name) {
     Debug.assert(name !== null, 'Animation must be set first.');
     Debug.assert(this.mAnimations.hasOwnProperty(name), 'Animation must be set first.');
 
@@ -65,13 +65,12 @@ class AnimationController extends Component {
    * @param {Array<Texture>}  textures    Array of Textures
    * @param {number}          [fps=14]    Frames Per Second
    * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
-   *
    * @return {AnimationInfo} The newly created Animation Object.
    */
   add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
     Debug.assert(fps > 0, 'FPS must be greater than 0.');
-    Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animatation with same name alredy exists');
+    Debug.assert(this.mAnimations.hasOwnProperty(name) == false, 'Animation with same name already exists');
 
     let anim = new AnimationInfo(this, name, textures, fps, loop);
     this.mAnimations[name] = anim;
@@ -90,7 +89,7 @@ class AnimationController extends Component {
 
     this.mCurrentAnim = this.mAnimations[name];
 
-    let texture = this.mCurrentAnim.play();
+    let texture = this.mCurrentAnim.__play();
 
     let sprite = /** @type {Sprite} */ (this.gameObject);
     if (sprite === null)
@@ -109,25 +108,23 @@ class AnimationController extends Component {
     if (this.mCurrentAnim === null)
       return;
 
-    this.mCurrentAnim.stop();
+    this.mCurrentAnim.__stop();
   }
 
   /**
    * Pauses active animation.
+   * 
    * @return {void}
    */
   pause() {
     if (this.mCurrentAnim === null)
       return;
 
-    this.mCurrentAnim.pause();
+    this.mCurrentAnim.__pause();
   }
 
   /**
    * @inheritDoc
-   * 
-   * @param  {number} dt
-   * @return {void}
    */
   onPostUpdate(dt) {
     if (this.mCurrentAnim === null)

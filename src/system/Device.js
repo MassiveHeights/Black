@@ -30,10 +30,11 @@ class Device {
 
   /**
    * Returns current OS name.
+   * 
    * @return {string}
    */
   static get os() {
-    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    let userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
     if (/windows phone/i.test(userAgent))
       return 'Windows Phone';
@@ -82,10 +83,19 @@ class Device {
   }
 
   /**
-   * @private
+   * Returns true if web audio is supported.
    *
+   * @return {boolean}
+   */
+  static get webAudioSupported() {
+    return window['AudioContext'] || window['webkitAudioContext'];
+  }
+
+  /**
+   * Returns device pixel ratio.
+   *
+   * @static
    * @suppress {missingProperties}
-   *
    * @return {number} Description
    */
   static getDevicePixelRatio() {

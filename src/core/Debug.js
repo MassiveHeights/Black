@@ -26,7 +26,7 @@ class Debug {
   /**
    * Outputs a message to the console
    * 
-   * @param  {...string} ...message
+   * @param  {...string} message
    */
   static log(...message) {
     console.info('%c%s', 'color: #000000', 'LOG:', ...message);
@@ -35,7 +35,7 @@ class Debug {
   /**
    * Outputs a info message to the console
    * 
-   * @param  {...string} ...message
+   * @param  {...string} message
    */
   static info(...message) {
     console.info('%c%s', 'color: #003bd2', 'INFO:', ...message);
@@ -44,7 +44,7 @@ class Debug {
   /**
    * Outputs a warning message to the console
    * 
-   * @param  {...string} ...message
+   * @param  {...string} message
    */
   static warn(...message) {
     console.info('%c%s', 'color: #f67400', ...message);
@@ -53,7 +53,7 @@ class Debug {
   /**
    * Outputs a error message to the console
    * 
-   * @param  {...string} ...message
+   * @param  {...string} message
    */
   static error(...message) {
     console.info('%c%s', 'color: #d50000', 'ERROR:', ...message);

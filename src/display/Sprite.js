@@ -14,14 +14,10 @@ class Sprite extends DisplayObject {
   constructor(texture = null) {
     super();
 
-    /**
-     * @private
-     * @type {Texture|null} */
+    /** @private @type {Texture|null} */
     this.mTexture = null;
 
-    /**
-     * @private
-     * @type {string|null} */
+    /** @private @type {string|null} */
     this.mTextureName = null;
 
     if (texture !== null && texture.constructor === String) {
@@ -32,24 +28,34 @@ class Sprite extends DisplayObject {
     }
 
     // Cache as bitmap
+    /** @private @type {CanvasRenderTexture|null} */
     this.mCache = null;
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('Sprite');
+    return Black.driver.getRenderer('Sprite');
   }
 
-  onRender(driver, parentRenderer, isBackBufferActive) {
+  /**
+   * @inheritDoc
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mBaked === true && isBackBufferActive === true) {
       let bounds = this.getBounds(this, true);
 
-      let m = this.finalTransformation.clone();
-      m.translate(bounds.x, bounds.y)
+      // TODO: how to avoid this?
+      let m = this.worldTransformation.clone();
+      m.translate(bounds.x, bounds.y);
 
       renderer.transform = m;
       renderer.skipChildren = true;
+      renderer.alpha = 1;
+      renderer.blendMode = BlendMode.NORMAL;
       renderer.texture = this.mCache;
 
       return driver.registerRenderer(renderer);
@@ -57,7 +63,7 @@ class Sprite extends DisplayObject {
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
@@ -74,10 +80,20 @@ class Sprite extends DisplayObject {
     return driver.registerRenderer(renderer);
   }
 
+  /**
+   * Gets/Sets whether the Sprite should be baked on not
+   *
+   * @return {boolean} 
+   */
   get baked() {
     return this.mBaked;
   }
 
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
   set baked(value) {
     if (value === this.mBaked)
       return;
@@ -86,13 +102,13 @@ class Sprite extends DisplayObject {
       let bounds = this.getBounds(this, true);
       
       let m = new Matrix();
-      this.finalTransformation.copyTo(m);
+      this.worldTransformation.copyTo(m);
       m.invert();
       
       m.data[4] -= bounds.x;
       m.data[5] -= bounds.y;
 
-      this.mCache = new RenderTexture(bounds.width, bounds.height);
+      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
       Black.driver.render(this, this.mCache, m);
     } else if (value === false) {
       this.mCache = null;
@@ -102,12 +118,10 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * onGetLocalBounds - Returns a rectangle that completely encloses the object in local coordinate system.
+   * Returns a rectangle that completely encloses the object in local coordinate system.
    *
-   * @override
    * @protected
-   * @param {Rectangle=} outRect Description
-   *
+   * @param {Rectangle=} outRect Rectangle to be returned.
    * @return {Rectangle} The new Rectangle or outRect with .
    */
   onGetLocalBounds(outRect = undefined) {
@@ -121,14 +135,14 @@ class Sprite extends DisplayObject {
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
     } else {
-      outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
+      outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
     }
 
     return outRect;
   }
 
   /**
-   * texture - Returns the current Texture on this sprite.
+   * Returns the current Texture on this sprite.
    *
    * @return {Texture|null} The current texture set on this Sprite or null.
    */
@@ -137,11 +151,10 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * texture - Sets the Texture on this sprite by name.
+   * Sets the Texture on this sprite by name.
    * Only AssetManager.default is used.
    *
    * @param {Texture|null} texture Texture to apply on.
-   *
    * @return {void}
    */
   set texture(texture) {
@@ -152,18 +165,26 @@ class Sprite extends DisplayObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Returns the current texture name.
+   *
+   * @return {?string}
+   */
   get textureName() {
     return this.mTextureName;
   }
 
   /**
+   * Sets the current texture by its name
+   * 
    * @editor {TextureEditor}
+   * @param {?string} value
    */
   set textureName(value) {
     if (this.mTextureName === value)
       return;
 
     this.mTextureName = value;
-    this.texture = AssetManager.default.getTexture(value);
+    this.texture = AssetManager.default.getTexture(/** @type {string} */ (value));
   }
 }

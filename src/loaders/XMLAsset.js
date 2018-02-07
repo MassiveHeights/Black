@@ -11,7 +11,6 @@ class XMLAsset extends Asset {
    *
    * @param {string} name The name of asset.
    * @param {string} url  URL to the json file.
-   *
    * @return {void}
    */
   constructor(name, url) {
@@ -21,10 +20,7 @@ class XMLAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   onLoaded() {
     this.mData = new DOMParser().parseFromString(this.mRequest.responseText, 'text/xml');

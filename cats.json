@@ -5,6 +5,7 @@
   "display.text": "Text",
   "animation": "Animation",
   "drivers": "Drivers",
+  "drivers.canvas": "Canvas Driver",
   "geom": "Geometry",
   "input": "Input",
   "loaders": "Loaders",
@@ -13,10 +14,13 @@
   "particles": "Particles",
   "particles.actions": "Actions",
   "particles.initializers": "Initializers",
+  "particles.modifiers": "Modifiers",
   "scatters": "Scatters",
   "physics": "Physics",
-  "sound": "Sound",
   "system": "System",
   "utils": "Utils",
-  "video": "Video"
+  "video": "Video",
+  "audio": "Audio",
+  "audio.effects": "Effects",
+  "colliders" : "Colliders"
 }

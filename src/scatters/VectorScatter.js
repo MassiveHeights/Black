@@ -11,52 +11,78 @@ class VectorScatter extends Scatter {
    *
    * @param {number} minX The min value along x-axis.
    * @param {number} minY The min value along y-axis.
-   * @param {number} maxX The max value along x-axis.
-   * @param {number} maxY The max value along y-axis.
+   * @param {number=} [maxX=NaN] The max value along x-axis.
+   * @param {number=} [maxY=NaN] The max value along y-axis.
    */
-  constructor(minX, minY, maxX, maxY) {
+  constructor(minX, minY, maxX = NaN, maxY = NaN) {
     super();
 
-    // NOTE: dont make us @private @member
+    /**
+     * A min value along x-axis.
+     * @type {number}
+     */
     this.minX = minX;
+
+    /**
+     * A min value along y-axis.
+     * @type {number}
+     */
     this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
+
+    /**
+     * A max value along x-axis.
+     * @type {number}
+     */
+    this.maxX = isNaN(maxX) ? minX : maxX;
+
+    /**
+     * A max value along y-axis.
+     * @type {number}
+     */
+    this.maxY = isNaN(maxY) ? minY : maxY;
+
+    /**
+     * Cached last value of `getValueAt` result.
+     * @readonly
+     * @type {Vector}
+     */
+    this.value = new Vector();
   }
 
   /**
-   * Returns a random Vector object at given position within a range specified
-   * in the constructor.
-   * @override
+  * Returns a random Vector object at given position within a range specified in the constructor.
    *
-   * @return {Vector} Vector object with random values withing defined range.
-   */
+  * @override
+  * @return {Vector} Vector object with random values withing defined range.
+  */
   getValue() {
-    let outVector = new Vector();
-    outVector.x = Math.random() * (this.maxX - this.minX) + this.minX;
-    outVector.y = Math.random() * (this.maxY - this.minY) + this.minY;
-    return outVector;
+    this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
+    this.value.y = Math.random() * (this.maxY - this.minY) + this.minY;
+    return this.value;
   }
 
   /**
    * Returns a Vector object at given position.
+   *
    * @override
-   *
    * @param {number} t The position.
-   *
-   * @return {Vector} Vector object representing values in a range at
-   * given position.
+   * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
-    let outVector = new Vector();
-    outVector.x = this.minX + t * (this.maxX - this.minX);
-    outVector.y = this.minY + t * (this.maxY - this.minY);
-    return outVector;
+    this.value.x = this.minX + t * (this.maxX - this.minX);
+    this.value.y = this.minY + t * (this.maxY - this.minY);
+    return this.value;
   }
 
+  /**
+   * Creates new FloatScatter from a set of numbers.
+   *
+   * @param {...number|VectorScatter} values Set of values.
+   * @returns {VectorScatter}
+   */
   static fromObject(...values) {
     if (values[0] instanceof Scatter)
-      return values[0];
+      return /** @type {VectorScatter} */ (values[0]);
 
     return new VectorScatter(...values);
   }

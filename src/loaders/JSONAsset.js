@@ -11,7 +11,6 @@ class JSONAsset extends Asset {
    *
    * @param {string} name The name of asset.
    * @param {string} url  URL to the json file.
-   *
    * @return {void}
    */
   constructor(name, url) {
@@ -21,10 +20,7 @@ class JSONAsset extends Asset {
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   onLoaded(){
     this.mData = JSON.parse(/** @type {string} */ (this.mRequest.responseText) );

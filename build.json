@@ -1,11 +1,15 @@
 {
   "files":
   [
-    "vendors/spine-core.js",
+
+
+    "src/core/Debug.js",
 
     "src/math/MathEx.js",
+    "src/math/Perlin.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
+    "src/utils/ObjectPool.js",
     "src/geom/Vector.js",
     "src/geom/Matrix.js",
     "src/geom/Rectangle.js",
@@ -14,8 +18,6 @@
     "src/geom/Line.js",
     "src/geom/Polygon.js",
     "src/geom/Curve.js",
-
-    "src/core/Debug.js",
 
     "src/messages/Message.js",
     "src/messages/MessageDispatcher.js",
@@ -29,15 +31,18 @@
 
     "src/core/Component.js",
     "src/core/GameObject.js",
+    "src/display/StageScaleMode.js",
+    "src/display/StageOrientation.js",
     "src/display/Stage.js",
 
     "src/colliders/Collider.js",
     "src/colliders/BoxCollider.js",
     "src/colliders/CircleCollider.js",
 
-    "src/video/Texture.js",
-    "src/video/AtlasTexture.js",
-    "src/video/RenderTexture.js",
+    "src/textures/Texture.js",
+    "src/textures/CanvasRenderTexture.js",
+    "src/textures/AtlasTexture.js",
+
     "src/loaders/Asset.js",
     "src/loaders/TextureAsset.js",
     "src/loaders/JSONAsset.js",
@@ -46,6 +51,7 @@
     "src/loaders/AtlasTextureAsset.js",
     "src/loaders/BitmapFontAsset.js",
     "src/loaders/SoundAsset.js",
+    "src/loaders/SoundAtlasAsset.js",
     "src/loaders/AssetManager.js",
 
     "src/drivers/BlendMode.js",
@@ -54,6 +60,7 @@
     "src/drivers/TextRenderer.js",
     "src/drivers/BitmapTextRenderer.js",
     "src/drivers/RenderTarget.js",
+    "src/drivers/GraphicsRenderer.js",
 
     "src/drivers/canvas/TextRendererCanvas.js",
     "src/drivers/canvas/BitmapTextRendererCanvas.js",
@@ -61,17 +68,18 @@
     "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/SpriteRendererCanvas.js",
     "src/drivers/canvas/RenderTargetCanvas.js",
+    "src/drivers/canvas/GraphicsRendererCanvas.js",    
 
-    "src/drivers/dom/TextRendererDOM.js",
-    "src/drivers/dom/EmitterRendererDOM.js",
-    "src/drivers/dom/DisplayObjectRendererDOM.js",
-    "src/drivers/dom/SpriteRendererDOM.js",
 
     "src/drivers/VideoNullDriver.js",
     "src/drivers/canvas/CanvasDriver.js",
-    "src/drivers/dom/DOMDriver.js",
 
     "src/display/DisplayObject.js",
+    "src/display/Graphics.js",
+    "src/display/GraphicsCommand.js",
+    "src/display/GraphicsCommandType.js",
+    "src/display/CapsStyle.js",
+    "src/display/JointStyle.js",
     "src/display/Sprite.js",
     "src/display/text/TextInfo.js",
     "src/display/text/TextField.js",
@@ -81,23 +89,30 @@
     "src/scatters/Scatter.js",
     "src/scatters/FloatScatter.js",
     "src/scatters/VectorScatter.js",
+    "src/scatters/VectorCurveScatter.js",
+    "src/scatters/RadialScatter.js",
     "src/scatters/FloatCurveScatter.js",
-    "src/particles/actions/Action.js",
-    "src/particles/actions/Acceleration.js",
-    "src/particles/actions/AlphaOverLife.js",
-    "src/particles/actions/ScaleOverLife.js",
-    "src/particles/actions/RotationOverLife.js",
-    "src/particles/actions/TextureOverLife.js",
-    "src/particles/actions/Oriented.js",    
-    "src/particles/initializers/Initializer.js",
-    "src/particles/initializers/Life.js",
-    "src/particles/initializers/Mass.js",
-    "src/particles/initializers/Scale.js",
-    "src/particles/initializers/Velocity.js",
-    "src/particles/initializers/Position.js",
-    "src/particles/initializers/Rotation.js",
-    "src/particles/initializers/RandomTexture.js",
+
+    "src/particles/Modifier.js",
+
+    "src/particles/mods/Acceleration.js",
+    "src/particles/mods/AlphaOverLife.js",
+    "src/particles/mods/ScaleOverLife.js",
+    "src/particles/mods/RotationOverLife.js",
+    "src/particles/mods/TextureOverLife.js",
+    "src/particles/mods/Oriented.js",    
+    "src/particles/mods/VectorField.js",   
+
+    "src/particles/mods/InitialLife.js",
+    "src/particles/mods/InitialMass.js",
+    "src/particles/mods/InitialScale.js",
+    "src/particles/mods/InitialVelocity.js",
+    "src/particles/mods/InitialPosition.js",
+    "src/particles/mods/InitialRotation.js",
+    "src/particles/mods/InitialTexture.js",
+
     "src/particles/EmitterState.js",
+    "src/particles/EmitterSortOrder.js",
     "src/particles/Particle.js",
     "src/particles/Emitter.js",
 
@@ -115,7 +130,25 @@
     "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
 
-    "src/animation/Spine.js",
+    
+
+    "src/physics/Arcade.js",
+
+    "src/audio/MasterAudio.js",
+
+    "src/audio/SoundEffect.js",
+    "src/audio/effects/DistortionEffect.js",
+    "src/audio/effects/StereoPanner.js",
+    "src/audio/effects/SimpleEQ.js",
+    "src/audio/effects/ReverbEffect.js",
+
+    "src/audio/SoundState.js",
+    "src/audio/SoundInstance.js",
+    "src/audio/SoundClip.js",
+    "src/audio/SoundAtlasClip.js",
+    "src/audio/SoundChannel.js",
+    "src/audio/Sound.js",
+    "src/audio/SoundListener.js",
 
     "src/Black.js"
   ]

@@ -18,7 +18,7 @@ class EmitterRendererDOM extends Renderer {
       this.endPassRequired = true;
 
       driver.setTransform(this.transform);
-      driver.beginClip(this.clipRect);
+      driver.beginClip(this.clipRect, 0, 0);
     }
 
     const plength = this.particles.length;
@@ -71,7 +71,7 @@ class EmitterRendererDOM extends Renderer {
     driver.endClip();
   }
 
-  get isRenderable() {
+  get hasVisibleArea() {
     return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
   }
 }

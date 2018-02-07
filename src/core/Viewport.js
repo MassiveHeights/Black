@@ -9,13 +9,13 @@
 class Viewport extends MessageDispatcher {
   /**
    * constructor
-   * @param {HTMLElement} containerElement
+   * @param {HTMLElement} containerElement The native HTML element.
    * @return {void}
    */
   constructor(containerElement) {
     super();
 
-    /** @type {HTMLElement} */
+    /** @private @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
     let style = this.mContainerElement.style;
@@ -27,17 +27,22 @@ class Viewport extends MessageDispatcher {
 
     let size = this.mContainerElement.getBoundingClientRect();
 
-    /** @type {Rectangle} */
+    /** @private @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
     this.isTransperent = true;
     this.backgroundColor = 0x222222;
 
-    this.mChecksLeftSeconds = 0;
+    this.mChecksLeftSeconds = 0;    
 
     window.addEventListener('resize', x => this.__onResize());
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {number} dt 
+   */
   __update(dt) {
     if (this.mChecksLeftSeconds <= 0)
       return;
@@ -47,6 +52,10 @@ class Viewport extends MessageDispatcher {
     this.mChecksLeftSeconds -= dt;
   }
 
+  /**
+   * @private
+   * @ignore
+   */
   __onResize() {
     let size = this.mContainerElement.getBoundingClientRect();
     let newSize = new Rectangle(size.left, size.top, size.width, size.height);
@@ -61,7 +70,8 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * size - Returns the size of a viewport.
+   * Returns the size of a viewport.
+   *
    * @return {Rectangle}
    */
   get size() {
@@ -69,7 +79,8 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * nativeDOM - Retruns the HTML container element the engine runs in.
+   * nativeDOM - Returns the HTML container element the engine runs in.
+   * 
    * @return {Element}
    */
   get nativeDOM() {

@@ -1,6 +1,6 @@
 /**
  * An video driver that draw everything into DOM elements itself.
- *
+ * @ignore
  * @cat drivers
  * @extends VideoNullDriver
  */

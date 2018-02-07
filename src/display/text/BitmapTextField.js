@@ -7,9 +7,10 @@
 /* @echo EXPORT */
 class BitmapTextField extends DisplayObject {
   /**
+   * Create new instance of BitmapTextField.
+   *
    * @param {string|BitmapFontData} font     The name of the bitmap font
    * @param {string=} text                   Text to be displayed inside this text field
-   * @param {TextInfo=} style TextInfo object
    */
   constructor(font, text = '') {
     super();
@@ -19,66 +20,48 @@ class BitmapTextField extends DisplayObject {
     else
       this.mData = /** @type {BitmapFontData} */ (font);
 
-    /**
-     * @private
-     * @type {string}
-     */
+    /** @private @type {string} */
     this.mText = text;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mAutoSize = true;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mMultiline = false;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mLineHeight = 1.2;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mTextBounds = new Rectangle();
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFieldWidth = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mFieldHeight = 0;
   }
 
+  /**
+   * @inheritDoc
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('BitmapText');
+    return Black.driver.getRenderer('BitmapText');
   }
-
-  onRender(driver, parentRenderer) {
-    let renderer = this.mRenderer;
+  
+  /**
+   * @inheritDoc
+   */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
+    let renderer = /** @type {BitmapTextRenderer} */ (this.mRenderer);
 
     let oldDirty = this.mDirty;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
@@ -96,7 +79,7 @@ class BitmapTextField extends DisplayObject {
       renderer.autoSize = this.mAutoSize;
       renderer.bounds = this.onGetLocalBounds();
 
-      if (renderer.isRenderable === true)
+      if (renderer.hasVisibleArea === true)
         this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
 
@@ -106,12 +89,7 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @protected
-   * @override
-   * @ignore
-   * @param {Rectangle=} outRect
-   *
-   * @return {Rectangle}
+   * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -136,9 +114,8 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @param {boolean} value
    * @ignore
-   *
+   * @param {boolean} value
    * @return {void}
    */
   set multiline(value) {
@@ -156,9 +133,8 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set lineHeight(value) {
@@ -185,9 +161,8 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set fieldWidth(value) {
@@ -208,9 +183,8 @@ class BitmapTextField extends DisplayObject {
 
 
   /**
-   * @param {number} value
    * @ignore
-   *
+   * @param {number} value
    * @return {void}
    */
   set fieldHeight(value) {
@@ -230,9 +204,8 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @param {string} value
    * @ignore
-   *
+   * @param {string} value
    * @return {void}
    */
   set text(value) {
@@ -253,9 +226,8 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @param {boolean} value
    * @ignore
-   *
+   * @param {boolean} value
    * @return {void}
    */
   set autoSize(value) {
@@ -267,4 +239,9 @@ class BitmapTextField extends DisplayObject {
   }
 }
 
+/**
+ * @ignore
+ * @static
+ * @private
+ */
 TextField.__cache = null;

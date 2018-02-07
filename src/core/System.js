@@ -13,8 +13,8 @@ class System extends MessageDispatcher {
   /**
    * onFixedUpdate
    *
-   * @param {number} dt
-   *
+   * @protected
+   * @param {number} dt Delta time.
    * @return {void}
    */
   onFixedUpdate(dt) { }
@@ -22,9 +22,9 @@ class System extends MessageDispatcher {
   /**
    * onUpdate
    *
-   * @param {number} dt
-   * @param {number} t
-   *
+   * @protected
+   * @param {number} dt Delta time.
+   * @param {number} t Time since engine start.
    * @return {void} 
    */
   onUpdate(dt, t) { }
@@ -32,9 +32,9 @@ class System extends MessageDispatcher {
   /**
    * onPostUpdate
    *
-   * @param {number} dt
-   * @param {number} t
-   *
+   * @protected
+   * @param {number} dt Delta time.
+   * @param {number} t Time since engine start.
    * @return {void}
    */
   onPostUpdate(dt, t) { }
@@ -42,8 +42,8 @@ class System extends MessageDispatcher {
   /**
    * onChildrenAdded
    *
-   * @param {GameObject} gameObject
-   *
+   * @protected
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenAdded(gameObject) { }
@@ -51,8 +51,8 @@ class System extends MessageDispatcher {
   /**
    * onChildrenRemoved
    *
-   * @param {GameObject} child
-   *
+   * @protected
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenRemoved(gameObject) { }
@@ -60,8 +60,8 @@ class System extends MessageDispatcher {
   /**
    * onChildrenRemoved
    *
-   * @param {GameObject} gameObject
-   *
+   * @protected
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenChanged(gameObject) { }
@@ -69,9 +69,9 @@ class System extends MessageDispatcher {
   /**
    * onComponentAdded
    *
-   * @param {GameObject} gameObject
-   * @param {Component} component
-   *
+   * @protected
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance added to game object.
    * @return {void} 
    */
   onComponentAdded(child, component) { }
@@ -79,9 +79,9 @@ class System extends MessageDispatcher {
   /**
    * onComponentRemoved
    *
-   * @param {GameObject} child
-   * @param {Component} component
-   *
+   * @protected
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) { }

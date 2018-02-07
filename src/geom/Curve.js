@@ -9,34 +9,19 @@ class Curve {
    * Creates new Curve instance.
    */
   constructor() {
-    /**
-     * @private
-     * @type {Array<number>}
-     */
+    /** @private @type {Array<number>} */
     this.mPoints = [];
 
-    /**
-     * @private
-     * @type {Array<Vector>}
-     */
+    /** @private @type {Array<Vector>} */
     this.mLookup = null;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @private @type {boolean} */
     this.mBaked = false;
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @private @type {number} */
     this.mStep = 1 / 60;
 
-    /**
-     * @private
-     * @type {Array<number>}
-     */
+    /** @private @type {Array<number>} */
     this.mEachT = [];
   }
 
@@ -44,7 +29,6 @@ class Curve {
    * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-   *
    * @return {Curve} This curve.
    */
   set(...points) {
@@ -82,9 +66,10 @@ class Curve {
 
   /**
    * Wides points array. Sets first point for next bezier same as last of previous.
+   *
+   * @ignore
    * @private
    * @param  {Array<number>} points Array of points coordinates.
-   *
    * @return {Array<number>} Points coordinates array.
    */
   __initPoints(points) {
@@ -100,8 +85,8 @@ class Curve {
   /**
    * Refresh cache (lookup) for fast interpolations.
    *
+   * @ignore
    * @private
-   *
    * @return {Curve} This curve.
    */
   __refreshCache() {
@@ -124,6 +109,8 @@ class Curve {
 
   /**
    * Refresh local interpolation kof for each bezier in curve.
+   *
+   * @ignore
    * @private
    * @return {Curve} This curve.
    */
@@ -159,7 +146,6 @@ class Curve {
    * @param  {number} endX
    * @param  {number} endY
    * @param  {Vector=} outVector
-   *
    * @return {Vector} Position on bezier.
    */
   static lerp(t, startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY, outVector) {
@@ -193,8 +179,7 @@ class Curve {
    * Interpolates across whole curve.
    *
    * @param  {number} t Interpolation position (0...1).
-   * @param  {Vector=} outVector
-   *
+   * @param  {Vector=} outVector Vector to be returned.
    * @return {Vector} Position on curve.
    */
   interpolate(t, outVector) {
@@ -227,7 +212,6 @@ class Curve {
    * Returns single bezier length.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY
-   *
    * @return {number} Length.
    */
   static getLength(...points) {
@@ -257,7 +241,8 @@ class Curve {
 }
 
 /**
- * @private
+ * @ignore
+ * @internal
  * @type {Curve}
  * @nocollapse
  */

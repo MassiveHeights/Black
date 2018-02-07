@@ -11,21 +11,40 @@ class Time {
 
   /**
    * Time since start in seconds.
+   * 
+   * @static
+   * @ignore
    * @returns {number}
+   * @deprecated Use Time.now() instead.
    */
-  static get time(){
+  static get time() {
     return Time.mTime;
   }
 
   /**
-   * @ignore
+   * Time since start in seconds.
+   * 
+   * @static
+   * @returns {number}
+   */
+  static get now() {
+    return Time.mTime;
+  }
+
+  /**
+   * Time since last frame
+   * 
+   * @static
+   * @returns {number}
    */
   static get dt() {
     return Time.mDeltaTime;
   }
 
   /**
-   * @ignore
+   * Gets/Sets timescale for engine
+   * 
+   * @returns {number}
    */
   static get scale() {
     return Time.mScale;
@@ -33,6 +52,7 @@ class Time {
 
   /**
    * @ignore
+   * @param {number} value
    */
   static set scale(value) {
     Debug.assert(value >= 0, 'Time.scale must be >= 0.');

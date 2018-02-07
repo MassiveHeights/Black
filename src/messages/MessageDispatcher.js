@@ -8,6 +8,9 @@
  */
 /* @echo EXPORT */
 class MessageDispatcher {
+  /**
+   * Creates new instance of MessageDispatcher.
+   */
   constructor() {
     /**
      * @private
@@ -16,6 +19,15 @@ class MessageDispatcher {
     this.mListeners = null;
   }
 
+  /**
+   * Adds listener by given name and callback.
+   *
+   * @public
+   * @param {string} message Message name.
+   * @param {Function} callback Function to be called on message send.
+   * @param {*} [context=null] Object to be used as `this` in callback function.
+   * @return {void}
+   */
   on(message, callback, context = null) {
     this.__on(message, callback, false, this, context);
   }
@@ -27,8 +39,8 @@ class MessageDispatcher {
   /**
   * Returns true if this object is subscribed for any messages with a given name.
   *
+  * @public
   * @param {string} message Message name to check.
-  *
   * @returns {boolean} True if found.
   */
   hasOn(message) {
@@ -60,15 +72,16 @@ class MessageDispatcher {
   }
 
   /**
-   * Remove listener by given name and callback.
+   * Removes listener by given name and callback.
    * If callback is null then all callbacks will be removed.
    *
-   * @param {string} message
-   * @param {Function=} [callback=null]
-   *
+   * @public
+   * @param {string} message Message name.
+   * @param {Function=} [callback=null] Function to be removed from listeners.
+   * @param {*} [context=null] Object, which corresponds to callback function.
    * @return {void}
    */
-  off(message, callback = null) {
+  off(message, callback = null, context = null) {
     Debug.assert(message !== null, 'name cannot be null.');
 
     let filterIx = message.indexOf('@');
@@ -108,7 +121,7 @@ class MessageDispatcher {
         return;
       } else {
         for (let i = dispatchers.length; i--;) {
-          if (dispatchers[i].callback === callback) {
+          if (dispatchers[i].callback === callback && dispatchers[i].context === context) {
             dispatchers.splice(i, 1);
             return;
           }
@@ -120,9 +133,9 @@ class MessageDispatcher {
   /**
    * Sends message with given pattern and params
    *
+   * @public
    * @param {string} message  The name of a message
-   * @param {...*}   params   A list of params to send
-   *
+   * @param {...*} payload A list of params to send
    * @return {void}
    */
   post(message, ...payload) {
@@ -131,7 +144,7 @@ class MessageDispatcher {
     let msg = this.__parseMessage(this, message);
 
     let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
-    if (message.mBubbling === true && isGameObjectOrComponent === false)
+    if (msg.type === MessageType.BUBBLE && isGameObjectOrComponent === false)
       throw new Error('Posting not direct messages are not allowed on non Game Objects.');
 
     if (msg.type === MessageType.NONE) {
@@ -152,7 +165,7 @@ class MessageDispatcher {
 
       if (msg.canceled === false)
         msg.origin.__invokeOverheard(this, msg, ...payload);
-      return
+      return;
     }
 
     if (msg.type === MessageType.BUBBLE) {
@@ -172,6 +185,13 @@ class MessageDispatcher {
     }
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {MessageDispatcher} sender 
+   * @param {string} message 
+   * @return {Message}
+   */
   __parseMessage(sender, message) {
     const result = new Message();
     const hasTilda = message.charAt(0) === '~';
@@ -215,8 +235,20 @@ class MessageDispatcher {
       result.componentMask = message.substring(ixHash + 1);
       return result;
     }
+
+    return result;
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {string} message
+   * @param {Function} callback
+   * @param {boolean} [isOnce=false]
+   * @param {MessageDispatcher} [owner=null]
+   * @param {*} [context=null]
+   * @return {void}
+   */
   __on(message, callback, isOnce = false, owner = null, context = null) {
     Debug.assert(message !== null, 'message cannot be null.');
     Debug.assert(message.trim().length > 0, 'message cannot be null.');
@@ -247,6 +279,14 @@ class MessageDispatcher {
     dispatchers.push(new MessageBinding(message, callback, isOnce, owner, context));
   }
 
+  /**
+   * @private
+   * @ignore
+   * @param {MessageDispatcher} sender 
+   * @param {Message} message 
+   * @param {...*} params 
+   * @return {void}
+   */
   __invoke(sender, message, ...params) {
     if (message.canceled === true)
       return;
@@ -281,7 +321,15 @@ class MessageDispatcher {
     }
   }
 
-  __invokeComponents(sender, message, toTop, ...params) {
+  /**
+   * @private
+   * @ignore
+   * @param {MessageDispatcher} sender 
+   * @param {Message} message 
+   * @param {...*} params 
+   * @return {void}
+   */
+  __invokeComponents(sender, message, ...params) {
     if (message.canceled === true)
       return;
 
@@ -306,10 +354,10 @@ class MessageDispatcher {
 
   /**
    * @private
-   * @param {*}  sender
+   * @ignore
+   * @param {MessageDispatcher}  sender
    * @param {Message}  message
    * @param {...*} params
-   *
    * @return {void}
    */
   __invokeOverheard(sender, message, ...params) {
@@ -342,11 +390,11 @@ class MessageDispatcher {
 
   /**
  * @private
+ * @ignore
  * @param {*}  sender
  * @param {Message}  message
  * @param {GameObject=}  origin
  * @param {...*} params
- *
  * @return {void}
  */
   __postGlobal(sender, message, origin, ...params) {
@@ -364,11 +412,11 @@ class MessageDispatcher {
 
   /**
    * @private
+   * @ignore
    * @param {*}  sender
    * @param {Message}  message
    * @param {boolean}  toTop
    * @param {...*} params
-   *
    * @return {void}
    */
   __postBubbles(sender, message, toTop, ...params) {
@@ -406,9 +454,9 @@ class MessageDispatcher {
 
   /**
    * @private
+   * @ignore
    * @param {string} path
    * @param {string} pathMask
-   *
    * @return {boolean}
    */
   __checkPath(path, pathMask) {
@@ -426,25 +474,52 @@ class MessageDispatcher {
 
 }
 
+/**
+ * @cat core
+ * @ignore
+ */
 class MessageBinding {
+  /**
+   * @ignore
+   * @param {string} name 
+   * @param {Function} callback 
+   * @param {boolean} isOnce 
+   * @param {MessageDispatcher} owner 
+   * @param {*=} [context=null]
+   * @param {?string} [pathMask=null]
+   */
   constructor(name, callback, isOnce, owner, context = null, pathMask = null) {
+    /** @type {string} */
     this.name = name;
+
+    /** @type {Function} */
     this.callback = callback;
+
+    /** @type {boolean} */
     this.isOnce = isOnce;
+
+    /** @type {MessageDispatcher} */
     this.owner = owner;
+
+    /** @type {*} */
     this.context = context;
 
     // for overhearing
+    /** @type {string|null} */
     this.pathMask = pathMask;
   }
 
+  /**
+   * @param {MessageBinding} binding 
+   * @returns {boolean}
+   */
   equals(binding) {
-    return this.name === binding.name && this.owner === owner.name;
+    return this.name === binding.name && this.owner === binding.owner;
   }
 }
 
 /**
  * @private
- * @dict
+ * @type {Object.<string, Array>}
  */
 MessageDispatcher.mOverheardHandlers = {};

@@ -16,31 +16,23 @@ class TextureAsset extends Asset {
   constructor(name, url) {
     super(name, url);
 
-    /**
-     * @private
-     * @type {Image}
-     */
+    /** @private @type {Image} */
     this.mImageElement = new Image();
-    this.mImageElement.crossOrigin = true;
+    this.mImageElement.crossOrigin = 'anonymous';
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   onLoaded() {
-    this.mData = new Texture(this.mImageElement);
+    const scale = 1 / Texture.getScaleFactorFromName(this.mUrl);
+    this.mData = new Texture(this.mImageElement, null, null, scale);
 
     super.onLoaded();
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   load() {
     this.mImageElement.src = this.mUrl;

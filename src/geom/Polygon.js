@@ -10,38 +10,25 @@ class Polygon {
    */
   constructor(vertices = []) {
 
-    /**
-     * @private
-     * @type {Array<Vector>}
-     */
+    /** @private @type {Array<Vector>} */
     this.mVertices = vertices;
 
-    /**
-     * @private
-     * @type {Array<Line>}
-     */
+    /** @private @type {Array<Line>} */
     this.mLines = [];
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
-    /**
-     * @private
-     * @type {Vector}
-     */
+    /** @private @type {Vector} */
     this.mCenter = new Vector();
 
     this.refresh();
   }
 
   /**
-   * set - Sets new vertices.
+   * Sets new vertices.
    *
    * @param {Array<Vector>} vertices New points.
-   *
    * @return {Polygon} This polygon.
    */
   set(vertices) {
@@ -51,10 +38,9 @@ class Polygon {
   }
 
   /**
-   * copyTo - Copy this properties to another polygon.
+   * Copies this properties to another polygon.
    *
    * @param {Polygon} polygon Object to copy to.
-   *
    * @return {Polygon} Passed polygon.
    */
   copyTo(polygon) {
@@ -69,10 +55,9 @@ class Polygon {
   }
 
   /**
-   * copyFrom - Copy another polygon properties to this.
+   * Copies another polygon properties to this.
    *
    * @param {Polygon} polygon Object to copy from.
-   *
    * @return {Polygon} This polygon.
    */
   copyFrom(polygon) {
@@ -88,7 +73,7 @@ class Polygon {
   }
 
   /**
-   * clone - Clones this polygon.
+   * Clones this polygon.
    *
    * @return {Polygon} Created polygon.
    */
@@ -104,20 +89,31 @@ class Polygon {
     return new Polygon(vertices);
   }
 
+  /**
+   * Gets the width of this polygon.
+   *
+   * @readonly
+   * @returns {number}
+   */
   get width() {
     return this.mBounds.width;
   }
 
+  /**
+   * Gets the height of this polygon.
+   *
+   * @readonly
+   * @returns {number}
+   */
   get height() {
     return this.mBounds.height;
   }
 
   /**
-   * containsXY - Shows whether point is in polygon.
+   * Shows whether point is within polygon area.
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
-   *
    * @return {boolean} True if polygon contains point.
    */
   containsXY(x, y) {
@@ -125,10 +121,9 @@ class Polygon {
   }
 
   /**
-   * contains - Shows whether point is in polygon.
+   * Shows whether point is within polygon area.
    *
    * @param {Vector} vector Point to check.
-   *
    * @return {boolean} True if polygon contains point.
    */
   contains(vector) {
@@ -152,7 +147,7 @@ class Polygon {
   }
 
   /**
-   * perimeter - Perimeter of this polygon.
+   * Perimeter of this polygon.
    *
    * @return {number} perimeter.
    */
@@ -169,10 +164,9 @@ class Polygon {
   }
 
   /**
-   * collide - Checks collides between two polygons.
+   * Checks collision between two polygons.
    *
    * @param {Polygon} polygon Object to check.
-   *
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
@@ -197,10 +191,9 @@ class Polygon {
   }
 
   /**
-   * collideCircle - Checks collides between this polygon and circle.
+   * Checks collision between this polygon and circle.
    *
    * @param {Circle} circle Object to check.
-   *
    * @return {boolean} True if polygon collides with circle.
    */
   collideCircle(circle) {
@@ -222,10 +215,9 @@ class Polygon {
   }
 
   /**
-   * collideRectangle - Checks collides between this polygon and rectangle.
+   * Checks collision between this polygon and rectangle.
    *
    * @param {Rectangle} rectangle Object to check.
-   *
    * @return {boolean} True if polygon collides with rectangle.
    */
   collideRectangle(rectangle) {
@@ -250,10 +242,9 @@ class Polygon {
   }
 
   /**
-   * overlap - Checks overlaps between this polygon and another.
+   * Checks if this polygon overlaps another.
    *
    * @param {Polygon} polygon Object to check.
-   *
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
@@ -282,10 +273,9 @@ class Polygon {
   }
 
   /**
-   * overlapCircle - Checks overlaps between this polygon and circle.
+   * Checks if this polygon overlaps passed circle.
    *
    * @param {Circle} circle Object to check.
-   *
    * @return {boolean} True if polygon overlaps circle.
    */
   overlapCircle(circle) {
@@ -306,10 +296,9 @@ class Polygon {
   }
 
   /**
-   * overlapRectangle - Checks overlaps between this polygon and rectangle.
+   * Checks if this polygon overlaps given rectangle.
    *
    * @param {Rectangle} rectangle Object to check.
-   *
    * @return {boolean} True if polygon overlaps rectangle.
    */
   overlapRectangle(rectangle) {
@@ -334,7 +323,7 @@ class Polygon {
   }
 
   /**
-   * refresh - ReCalc center, bounds, and edges of this polygon.
+   * Calculates center, bounds, and edges of this polygon.
    *
    * @return {Polygon} This polygon.
    */
@@ -375,7 +364,7 @@ class Polygon {
   }
 
   /**
-   * refreshCenter - ReCalc center of this polygon.
+   * Calculates center of this polygon.
    *
    * @return {Polygon} This polygon.
    */
@@ -395,7 +384,7 @@ class Polygon {
   }
 
   /**
-   * refreshBounds - ReCalc bounds of this polygon.
+   * Calculates bounds of this polygon.
    *
    * @return {Polygon} This polygon.
    */
@@ -425,7 +414,7 @@ class Polygon {
   }
 
   /**
-   * refreshLines - ReCalc edges of this polygon.
+   * Calculates edges of this polygon.
    *
    * @return {Polygon} This polygon.
    */
@@ -441,10 +430,9 @@ class Polygon {
   }
 
   /**
-   * fromPath - Creates instance of Polygon.
+   * Creates instance of Polygon.
    *
    * @param {string} path Numbers x y divided with space.
-   *
    * @return {Polygon} Created polygon.
    */
   static fromPath(path) {
@@ -459,10 +447,9 @@ class Polygon {
   }
 
   /**
-   * setRotation - Sets rotation. Rotate this polygon around it center.
+   * Sets rotation. Rotates this polygon around it center.
    *
    * @param {number} rotation Angle in radians.
-   *
    * @return {Polygon} This polygon.
    */
   setRotation(rotation) {
@@ -483,10 +470,9 @@ class Polygon {
   }
 
   /**
-   * setTranslation - Translates this polygon to specified position.
+   * Translates this polygon to specified position.
    *
    * @param {Vector} point Translation vector.
-   *
    * @return {Polygon} This vertices.
    */
   setTranslation(point) {
@@ -504,10 +490,10 @@ class Polygon {
 
   // @ifdef DEBUG
   /**
-   * toString - String representation of this polygon.
+   * String representation of this polygon.
    *
+   * @ignore
    * @param {number=} [digits=2] Number of digits after float point.
-   *
    * @return {string} Description.
    */
   toString(digits = 2) {
@@ -532,7 +518,10 @@ class Polygon {
   // @endif
 }
 
-/** @type {Polygon}
+/**
+ * @ignore
+ * @internal
+ * @type {Polygon}
  * @nocollapse
  */
 Polygon.__cache = new Polygon();

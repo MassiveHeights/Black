@@ -15,58 +15,28 @@ class SoundAsset extends Asset {
   constructor(name, url) {
     super(name, url);
 
-    /**
-     * @private
-     * @type {Audio}
-     */
-    this.mAudioElement = new Audio();
+    this.mResponseType = 'arraybuffer';
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   onLoaded() {
-    this.mData = this.mAudioElement;
-
-    if (Device.isMobile) {
-      this.__enableOnMobile();
-    }
-
-    super.onLoaded();
+    let undecodedAudio = /** @type {!ArrayBuffer} */ (this.mRequest.response);
+    MasterAudio.context.decodeAudioData(undecodedAudio, (buffer) => {
+      this.mData = new SoundClip(buffer);
+      super.onLoaded();
+    });
   }
 
   /**
-   * @override
    * @inheritDoc
-   *
-   * @return {void}
    */
   load() {
-    this.mAudioElement.autoplay = false;
-    this.mAudioElement.src = this.mUrl;
-    this.mAudioElement.preload = 'auto';
-    this.mAudioElement.load();
-    this.mAudioElement.oncanplaythrough = () => {
-      if (!this.mData) {
-        this.onLoaded();
-      }
-    };
-  }
-
-  /**
-   * @private
-   *
-   * @return {void}
-   */
-  __enableOnMobile() {
-    let unlock = () => {
-      this.mAudioElement.play();
-      this.mAudioElement.pause();
-      document.removeEventListener('touchend', unlock, true);
-    };
-    document.addEventListener('touchend', unlock, true);
+    if (Device.webAudioSupported === false || MasterAudio.context == null) {
+      super.onLoaded();
+      return;
+    }
+    super.load();
   }
 }

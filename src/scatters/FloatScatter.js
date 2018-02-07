@@ -11,32 +11,35 @@ class FloatScatter extends Scatter {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(number):number} [ease=null]     Easing function.
+   * @param {?function(number):number} [ease=null]     Easing function.
    */
-  constructor(min, max = undefined, ease = null) {
+  constructor(min, max = NaN, ease = null) {
     super();
 
-    // NOTE: dont make us @private @member
-
-    /** @type {number} */
+    /**
+     * A min value.
+     * @type {number}
+     */
     this.min = min;
 
-    /** @type {number} */
-    this.max = max == null ? min : max;
+    /**
+     * A max value.
+     * @type {number}
+     */
+    this.max = isNaN(max) ? min : max;
 
-    /** @type {function(number):number} */
+    /**
+     * Optional easing function.
+     * @type {?function(number):number}
+     */
     this.ease = ease;
-  }
 
-  /**
-   * Returns random number withing defined range.
-   *
-   * @override
-   *
-   * @return {number} Random number.
-   */
-  getValue() {
-    return Math.random() * (this.max - this.min) + this.min;
+    /**
+     * Cached last value of `getValueAt` result.
+     * @readonly
+     * @type {number}
+     */
+    this.value = 0;
   }
 
   /**
@@ -44,19 +47,25 @@ class FloatScatter extends Scatter {
    *
    * @override
    * @param {number} t The position.
-   *
    * @return {number} Number at given position.
    */
   getValueAt(t) {
     if (this.ease !== null)
       t = this.ease(t);
 
-    return this.min + t * (this.max - this.min);
+    this.value = this.min + t * (this.max - this.min);
+    return this.value;
   }
 
+  /**
+   * Creates new FloatScatter from a set of numbers.
+   *
+   * @param {...number|FloatScatter} values Set of values.
+   * @returns {FloatScatter}
+   */
   static fromObject(...values) {
-    if (values[0] instanceof Scatter)
-      return values[0];
+    if (values[0] instanceof FloatScatter)
+      return /** @type {FloatScatter} */ (values[0]);
     
     return new FloatScatter(...values);
   }

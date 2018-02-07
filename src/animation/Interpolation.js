@@ -6,13 +6,9 @@
  */
 /* @echo EXPORT */
 class Interpolation {
-  /**
-   * Singleton.
-   */
-  constructor() {}
 
   /**
-   * linear
+   * Linear interpolation.
    *
    * @param {Array}  v The input array of values to interpolate between.
    * @param {number} k The percentage of interpolation, between 0 and 1.
@@ -37,7 +33,7 @@ class Interpolation {
   }
 
   /**
-   * bezier
+   * Cubic bezier interpolation.
    *
    * @param {Array}  v The input array of values to interpolate between.
    * @param {number} k The percentage of interpolation, between 0 and 1.
@@ -60,7 +56,7 @@ class Interpolation {
   }
 
   /**
-   * catmullRom
+   * Catmull Rom interpolation.
    *
    * @param {Array}  v The input array of values to interpolate between.
    * @param {number} k The percentage of interpolation, between 0 and 1.
@@ -99,7 +95,6 @@ class Interpolation {
 /**
  * @private
  * @param {number} n
- *
  * @return {number}
  */
 Interpolation.__factorial = (function() {

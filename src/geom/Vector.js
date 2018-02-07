@@ -12,17 +12,13 @@ class Vector {
    * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
-    /**
-     * X coordinate of a point in the space.
-     *
-     * @type {number}
-     */
+    Debug.assert(!isNaN(x), 'x cannot be NaN');
+    Debug.assert(!isNaN(y), 'y cannot be NaN');
+    
+    /** @type {number} X coordinate of a point in the space. */
     this.x = x;
 
-    /**
-     * Y coordinate of a point in the space.
-     * @type {number}
-     */
+    /** @type {number} Y coordinate of a point in the space. */
     this.y = y;
   }
 
@@ -31,7 +27,6 @@ class Vector {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] y-component
-   *
    * @return {Vector} This.
    */
   set(x = 0, y = 0) {
@@ -45,7 +40,6 @@ class Vector {
    * Adds two vectors.
    *
    * @param {Vector} vector The vector object to be added to this.
-   *
    * @return {Vector} This.
    */
   add(vector) {
@@ -59,7 +53,6 @@ class Vector {
    * Subtract two vectors.
    *
    * @param {Vector} vector The vector object to be subtracted.
-   *
    * @return {Vector} This.
    */
   subtract(vector) {
@@ -73,7 +66,6 @@ class Vector {
    * Returns distance between two vectors.
    *
    * @param {Vector} vector Second vector to check distance with.
-   *
    * @return {number} The distance between two vectors.
    */
   distance(vector) {
@@ -87,7 +79,6 @@ class Vector {
    * Returns the squared distance between two vectors.
    *
    * @param {Vector} vector Second vector to check distance with.
-   *
    * @return {number} The distance between two vectors.
    */
   distanceSqr(vector) {
@@ -101,7 +92,6 @@ class Vector {
    * Multiplies two vectors.
    *
    * @param {Vector} vector A second vector to multiply with.
-   *
    * @return {Vector} This.
    */
   multiply(vector) {
@@ -115,7 +105,6 @@ class Vector {
    * Multiplies this vector by scalar value.
    *
    * @param {number} scalar The values to mul by.
-   *
    * @return {Vector} This.
    */
   multiplyScalar(scalar) {
@@ -129,7 +118,6 @@ class Vector {
    * Find dot product between two vectors.
    *
    * @param {Vector} vector Second vector to find angle with.
-   *
    * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
@@ -179,7 +167,6 @@ class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   *
    * @return {Vector} This.
    */
   clamp(min, max) {
@@ -194,12 +181,11 @@ class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   *
    * @return {Vector} This.
    */
   clampLength(min, max) {
-    let length = MathEx.clamp(this.length, min, max);
-    let normal = this.normalize();
+    let length = MathEx.clamp(this.length(), min, max);
+    this.normalize();
     this.multiplyScalar(length);
     return this;
   }
@@ -209,7 +195,6 @@ class Vector {
    *
    * @param {Vector} vector The second vector to interpolate values between.
    * @param {number} t      Interpolant.
-   *
    * @return {Vector} This.
    */
   lerp(vector, t) {
@@ -223,7 +208,6 @@ class Vector {
    * Copies this vector values into given vector.
    *
    * @param {Vector} vector The vector to store values in.
-   *
    * @return {Vector} Given vector.
    */
   copyTo(vector) {
@@ -237,7 +221,6 @@ class Vector {
    * Copies values from given vector into this.
    *
    * @param {Vector} vector The vector to copy values from.
-   *
    * @return {Vector} This.
    */
   copyFrom(vector) {
@@ -261,7 +244,6 @@ class Vector {
    *
    * @param {Vector} vector Second vector to compare with.
    * @param {number=} epsilon Threshold.
-   *
    * @return {boolean} True if equal.
    */
   equals(vector, epsilon = Number.EPSILON) {
@@ -271,7 +253,7 @@ class Vector {
   /**
    * Checks if this vector is empty.
    *
-   * @return {boolean} True if both components equal to zero,
+   * @return {boolean} True if both components equal to zero.
    */
   isEmpty() {
     return this.x === 0 && this.y === 0;
@@ -282,7 +264,6 @@ class Vector {
    *
    * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
-   *
    * @return {Vector} This rotated vector.
    */
   setRotationFrom(vector, rotation) {
@@ -295,8 +276,7 @@ class Vector {
   /**
    *  Rotates this vector around zero vector.
    *
-   * @param {number} rotation Angle in radians
-   *
+   * @param {number} rotation Angle in radians.
    * @return {Vector} This rotated vector.
    */
   setRotation(rotation) {
@@ -309,6 +289,7 @@ class Vector {
   /**
    * Calculates angle in radians within this and specified vectors.
    *
+   * @param {Vector} vector Second vector.
    * @return {number} Angle in radians.
    */
   angleBetween(vector) {
@@ -316,11 +297,11 @@ class Vector {
   }
 
   /**
-   * Calculates vector angle in radians.
+   * Calculates vector angle in radians. Same as heading.
    *
    * @return {number} Angle in radians.
    */
-  angle(vector) {
+  angle() {
     return Math.atan2(this.y, this.x);
   }
 
@@ -336,21 +317,20 @@ class Vector {
   /**
    * Creates new Vector from given angle in radians.
    *
-   * @param {number=} [angle=0] Angle.
-   *
+   * @param {number} angle Angle.
+   * @param {Vector} outVector Vector to be returned.
    * @return {Vector} New Vector object.
    */
-  static fromAngle(angle = 0) {
-    return new Vector(Math.cos(angle), Math.sin(angle));
+  static fromAngle(angle, outVector) {
+    outVector = outVector || new Vector();
+    return outVector.set(Math.cos(angle), Math.sin(angle));
   }
 
   /**
    * @ignore
-   *
    * @param {Vector} vectorMin
    * @param {Vector} vectorMax
    * @param {Vector=} outVector
-   *
    * @return {Vector}
    */
   static randomRange(vectorMin, vectorMax, outVector = undefined) {
@@ -364,31 +344,28 @@ class Vector {
 
   // @ifdef DEBUG
   /**
-   * toString - Description
-   *
+   * @ignore
    * @param {number=} [digits=2] Description
-   *
    * @return {string} Description
    */
   toString(digits = 2) {
     return `Vector: { x: ${this.x.toFixed(digits)}, y: ${this.y.toFixed(digits)} }`;
   }
   // @endif
-
-  static get(x = 0, y = 0) {
-    return Vector.__recycled.length > 0 ? Vector.__recycled.pop().set(x, y) : new Vector(x, y);
-  }
-
-  static free(vector) {
-    Vector.__recycled.push(vector);
-  }
 }
 
 /**
  * @ignore
  * @type {Vector}
  * @nocollapse
+ * @internal
  */
 Vector.__cache = new Vector();
 
-Vector.__recycled = [];
+/**
+ * Recycled vectors pool.
+ *
+ * @type {ObjectPool}
+ * @nocollapse
+ */
+Vector.pool = new ObjectPool(Vector, 0, 0);

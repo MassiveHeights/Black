@@ -12,11 +12,11 @@ class InputComponent extends Component {
   constructor() {
     super();
 
-    /** @type {boolean} */
+    /** @type {boolean} Specifies whether the component is active. */
     this.touchable = true;
 
     /* INTERNAL */
-    /** @type {boolean} */
+    /** @ignore @type {boolean} */
     this.mPointerInDispatched = false;
   }
 }

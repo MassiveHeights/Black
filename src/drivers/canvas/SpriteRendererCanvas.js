@@ -1,9 +1,16 @@
+/**
+ * Renders `Sprite` objects on canvas.
+ *
+ * @extends DisplayObjectRendererCanvas
+ * @cat drivers.canvas
+ */
 /* @echo EXPORT */
 class SpriteRendererCanvas extends DisplayObjectRendererCanvas {
-  render(driver) {
-    if (this.texture === null)
-      return;
 
+  /**
+   * @inheritDoc
+   */
+  render(driver) {
     driver.drawTexture(this.texture);
   }
 }

@@ -1,10 +1,13 @@
 /**
  * A blend mode enum.
  * @cat drivers
+ * @static
+ * @constant
  * @enum {string}
  */
 /* @echo EXPORT */
-var BlendMode = {
+const BlendMode = {
+  /** Inherits blend mode from parent display object */
   AUTO       : 'auto',
   NORMAL     : 'normal',
   ADD        : 'add',
@@ -25,7 +28,8 @@ var BlendMode = {
   LUMINOSITY : 'luminosity'
 };
 
-var CanvasBlendMode = {
+/** @ignore @static @constant */
+const CanvasBlendMode = {
   'auto'       : 'auto',
   'normal'     : 'source-over',
   'add'        : 'lighter',

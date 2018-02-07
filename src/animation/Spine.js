@@ -5,7 +5,7 @@ function addTexture(name, texture) {
   let pages = this.pages;
 
   let page = null;
-  for (var i = 0; i < pages.length; i++) {
+  for (let i = 0; i < pages.length; i++) {
     if (pages[i].baseTexture === texture.baseTexture) {
       page = pages[i];
       break;
@@ -15,12 +15,11 @@ function addTexture(name, texture) {
   if (page === null) {
     page = new spine.TextureAtlasPage();
     page.name = 'texturePage';
-    var baseTexture = texture.native;
-    page.baseTexture = baseTexture;
+    page.baseTexture = texture.native;
     pages.push(page);
   }
 
-  var region = new spine.TextureAtlasRegion();
+  let region = new spine.TextureAtlasRegion();
   region.name = name;
   region.page = page;
   region.texture = texture;
@@ -34,8 +33,9 @@ function addTexture(name, texture) {
 /**
  * Esoteric Software SPINE wrapper for Black Engine
  *
- * @cat core
+ * @cat animation
  * @unrestricted
+ * @nocompile
  * @extends DisplayObject
  */
 /* @echo EXPORT */
@@ -96,8 +96,6 @@ class Spine extends DisplayObject {
 
     this.mState = new spine.AnimationState(this.mStateData);
 
-    console.log(json);
-
     this.mTempClipContainers = [];
     this.mTexturesPath = texturesPath;
 
@@ -118,8 +116,6 @@ class Spine extends DisplayObject {
         slot.currentSprite = sprite;
         slot.currentSpriteName = spriteName;
         slotContainer.addChild(sprite);
-      } else {
-        continue;
       }
     }
 
@@ -209,7 +205,7 @@ class Spine extends DisplayObject {
         sprite.scaleX = attachment.scaleX * (attachment.width / region.width);
         sprite.scaleY = attachment.scaleY * (attachment.height / region.height);
 
-        var radians = -attachment.rotation * Math.PI / 180;
+        let radians = -attachment.rotation * Math.PI / 180;
         sprite.rotation = radians;
 
         let cos = Math.cos(radians);
@@ -222,8 +218,7 @@ class Spine extends DisplayObject {
         wrapper.x = bone.worldX;
         wrapper.y = -bone.worldY;
 
-        let wrx = Math.atan2(-bone.c, bone.a);
-        wrapper.rotation = wrx;
+        wrapper.rotation = Math.atan2(-bone.c, bone.a);
 
         let flipX = 1;
         let flipY = 1;
@@ -264,12 +259,12 @@ class Spine extends DisplayObject {
   _setSpriteRegion(attachment, sprite, region) {
     sprite.region = region;
     if (!region.size) {
-      sprite.scaleX = attachment.scaleX * attachment.width / region.originalWidth;
-      sprite.scaleY = -attachment.scaleY * attachment.height / region.originalHeight;
+      sprite.scaleX = attachment.scaleX * attachment.width / region.width;
+      sprite.scaleY = -attachment.scaleY * attachment.height / region.height;
     } else {
       //hacked!
-      sprite.scaleX = region.size.width / region.originalWidth;
-      sprite.scaleY = -region.size.height / region.originalHeight;
+      sprite.scaleX = region.size.width / region.width;
+      sprite.scaleY = -region.size.height / region.height;
     }
   }
 }

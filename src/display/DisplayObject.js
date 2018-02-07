@@ -9,40 +9,34 @@ class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /**
-     * @private
-     * @type {number}
-     */
+    /** @protected @type {number} */
     this.mAlpha = 1;
 
-    /**
-     * @public
-     * @type {string}
-     */
+    /** @protected @type {BlendMode<string>} */
     this.mBlendMode = BlendMode.AUTO;
 
-    /**
-     * @private
-     * @type {boolean}
-     */
+    /** @protected @type {boolean} */
     this.mVisible = true;
 
-    /**
-     * @private
-     * @type {Rectangle}
-     */
+    /** @protected @type {Rectangle} */
     this.mClipRect = null;
 
-    /**
-     * @private
-     * @type {Renderer|null} */
+    /** @protected @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
   }
 
+  /**
+   * Factory method returns concrete renderer for this Game Object.
+   * 
+   * @returns {Renderer}
+   */
   getRenderer() {
-    return Black.instance.video.getRenderer('DisplayObject');
+    return Black.driver.getRenderer('DisplayObject');
   }
 
+  /**
+   * @inheritDoc
+   */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
@@ -57,6 +51,9 @@ class DisplayObject extends GameObject {
     return outRect.set(0, 0, 0, 0);
   }
 
+  /**
+   * @inheritDoc
+   */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
@@ -69,27 +66,27 @@ class DisplayObject extends GameObject {
       // local
     } else if (space == this.mParent) {
       if (includeChildren === false || this.mClipRect !== null) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       }
       else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
-        let matrix = Matrix.get();
+        let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
         matrix.transformRect(outRect, outRect);
-        Matrix.free(matrix);
+        Matrix.pool.release(matrix);
       } else {
         // Return cached
-        outRect.copyFrom(this.mBounds);
+        outRect.copyFrom(this.mBoundsCache);
         return outRect;
       }
     } else {
-      let matrix = Matrix.get();
+      let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
       matrix.transformRect(outRect, outRect);
-      Matrix.free(matrix);
+      Matrix.pool.release(matrix);
     }
 
     if (this.mClipRect !== null)
@@ -104,7 +101,7 @@ class DisplayObject extends GameObject {
       }
 
       if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
-        this.mBounds.copyFrom(outRect);
+        this.mBoundsCache.copyFrom(outRect);
         this.mDirty ^= DirtyFlag.BOUNDS;
       }
     }
@@ -112,11 +109,14 @@ class DisplayObject extends GameObject {
     return outRect;
   }
 
-  onRender(driver, parentRenderer) {
+  /**
+  * @inheritDoc
+  */
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.finalTransformation;
+      renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
@@ -130,14 +130,20 @@ class DisplayObject extends GameObject {
     return driver.registerRenderer(renderer);
   }
 
-  onHitTestMask(point) {
+  /**
+  * @inheritDoc
+  */
+  onHitTestMask(localPoint) {
     if (this.mClipRect === null)
       return true;
 
-    let tmpVector = new Vector();
-    this.worldTransformationInversed.transformVector(point, tmpVector);
+    let tmpVector = Vector.pool.get();
+    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
 
-    return this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
+    let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
+    Vector.pool.release(tmpVector);
+
+    return contains;
   }
 
   /**
@@ -156,6 +162,8 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set alpha(value) {
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
     if (this.mAlpha === MathEx.clamp(value, 0, 1))
       return;
 
@@ -185,10 +193,20 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Gets/Sets blend mode for the object.
+   *
+   * @return {BlendMode<string>}
+   */
   get blendMode() {
     return this.mBlendMode;
   }
 
+  /**
+   * @ignore
+   * @param {BlendMode<string>} value
+   * @return {void}
+   */
   set blendMode(value) {
     if (this.mBlendMode === value)
       return;
@@ -197,10 +215,20 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Gets/Sets clipping area for the object.
+   *
+   * @return {Rectangle}
+   */
   get clipRect() {
     return this.mClipRect;
   }
 
+  /**
+   * @ignore
+   * @param {Rectangle} value
+   * @return {void}
+   */
   set clipRect(value) {
     if (this.mClipRect === value)
       return;

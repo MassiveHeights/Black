@@ -92,10 +92,11 @@ class AnimationInfo {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
-   *
+   * @ignore
+   * @internal
    * @return {Texture} Returns the current frame Texture.
    */
-  play() {
+  __play() {
     if (this.mCompleted === true) {
       this.mCurrentFrame = 0;
       this.mElapsed = 0;
@@ -114,9 +115,11 @@ class AnimationInfo {
   /**
    * Stops animation and resets the value of current frame.
    *
+   * @ignore
+   * @internal
    * @return {void}
    */
-  stop() {
+  __stop() {
     this.mStopped = true;
     this.mCurrentFrame = 0;
   }
@@ -124,18 +127,20 @@ class AnimationInfo {
   /**
    * Pauses animation.
    *
+   * @ignore
+   * @internal
    * @return {void}
    */
-  pause() {
+  __pause() {
     this.mPaused = true;
     this.mElapsed = this.mNextFrameAt - Black.instance.uptime;
   }
 
   /**
-   * @private
+   * @ignore
+   * @internal
    * @param {number} dt
    * @param {number} t
-   *
    * @return {Texture|null}
    */
   __update(dt, t) {
@@ -156,8 +161,7 @@ class AnimationInfo {
     }
 
     this.mNextFrameAt = Black.instance.uptime + this.mFrameDuration;
-    let texture = this.mFrames[this.mCurrentFrame];
-    return texture;
+    return this.mFrames[this.mCurrentFrame];
   }
 
   /**
@@ -181,8 +185,7 @@ class AnimationInfo {
     this.mFrameDuration = 1 / this.mFPS;
 
     // update next frame start time
-    let diff = this.mNextFrameAt - Black.instance.uptime;
-    this.mNextFrameAt += diff;
+    this.mNextFrameAt += this.mNextFrameAt - Black.instance.uptime;
   }
 
   /**
