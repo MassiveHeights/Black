@@ -10,8 +10,8 @@ const outputDir = __dirname;
 //const BASE_URL = 'http://blacksmith2d.io/Docs/API/';
 const BASE_URL = '/Docs/API/';
 
-//const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/') + '/';
-const OUTPUT_PATH_PREFIX = 'D:\\Projects\\Massive Heights\\blacksmith2d.io.web\\Blacksmith.Homepage\\App_Data\\tmp-docs-repo\\src\\API\\';
+const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/') + '/';
+//const OUTPUT_PATH_PREFIX = 'D:\\Projects\\Massive Heights\\blacksmith2d.io.web\\Blacksmith.Homepage\\App_Data\\tmp-docs-repo\\src\\API\\';
 
 String.prototype.replaceAll = function (search, replacement) {
   var target = this;
