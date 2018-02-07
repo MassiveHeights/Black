@@ -35,6 +35,7 @@ function addTexture(name, texture) {
  *
  * @cat animation
  * @unrestricted
+ * @nocompile
  * @extends DisplayObject
  */
 /* @echo EXPORT */

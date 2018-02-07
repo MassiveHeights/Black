@@ -21,7 +21,7 @@ class Asset extends MessageDispatcher {
     /** @protected @type {string} */
     this.mUrl = url;
 
-    /** @protected @type {*|null} */
+    /** @protected @type {?|null} */
     this.mData = null;
 
     /** @private @type {boolean} */
@@ -92,7 +92,7 @@ class Asset extends MessageDispatcher {
   /**
    * Returns loaded data object associated with this asset.
    *
-   * @return {*}
+   * @return {?}
    */
   get data() {
     return this.mData;

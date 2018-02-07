@@ -19,7 +19,7 @@ class AtlasTextureAsset extends Asset {
 
     /** @private @type {Image} */
     this.mImageElement = new Image();
-    this.mImageElement.crossOrigin = true;
+    this.mImageElement.crossOrigin = 'anonymous';
 
     /** @private @type {JSONAsset} */
     this.dataAsset = new JSONAsset(name, dataUrl);

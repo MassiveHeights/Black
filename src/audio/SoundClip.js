@@ -109,7 +109,7 @@ class SoundClip {
    * 
    * @public
    * @readonly
-   * @returns {boolean}
+   * @returns {number}
    */
   get offset() {
     return this.mStartOffset;

@@ -14,7 +14,7 @@ class ScaleOverLife extends Modifier {
   constructor(...values) {
     super(false);
 
-    /** @inheritDoc */
+    /** @type {FloatScatter} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

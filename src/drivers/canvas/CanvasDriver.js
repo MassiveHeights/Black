@@ -35,6 +35,103 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
+  render(gameObject, renderTexture = null, customTransform = null) {
+    let session = this.__popSession();
+
+    let isBackBufferActive = renderTexture === null;
+
+    let numEndClipsRequired = 0;
+    if (renderTexture != null) {
+      this.mLastRenderTexture = this.mCtx;
+      this.mCtx = renderTexture.renderTarget.context;
+
+      // collect parents alpha, blending, clipping and masking
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+
+      this.mStageRenderer.alpha = 1;
+      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+
+      // alpha, blendmode will be overwritten into this.mStageRenderer
+      numEndClipsRequired = this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
+    } else {
+      this.mStageRenderer.alpha = 1;
+      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+    }
+
+    session.rendererIndex = 0;
+
+    if (session.skipChildren === false)
+      this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
+
+    for (let i = 0, len = session.renderers.length; i !== len; i++) {
+      let renderer = session.renderers[i];
+      let transform = null;
+
+      if (isBackBufferActive === false) {
+        if (customTransform === null) {
+          transform = renderer.getTransform().clone();
+          // transform.invert();
+          transform.data[4] -= Black.stage.mX;
+          transform.data[5] -= Black.stage.mY;
+          //this.setTransform(t);
+        } else {
+          transform = renderer.getTransform().clone();
+          transform.prepend(customTransform);
+        }
+      } else {
+        transform = renderer.getTransform();
+      }
+
+      if (renderer.isRenderable === true)
+        this.setTransform(transform);
+
+      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
+        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
+
+      if (renderer.skip === true) {
+        renderer.skip = false;
+      } else {
+        if (renderer.isRenderable === true) {
+          this.globalAlpha = renderer.getAlpha();
+          this.globalBlendMode = renderer.getBlendMode();
+          this.mSnapToPixels = renderer.snapToPixels;
+
+          renderer.render(this);
+          renderer.dirty = 0;
+        }
+      }
+
+      if (renderer.endPassRequired === true)
+        session.endPassRenderer = renderer;
+
+      if (session.endPassRenderer !== null && session.endPassRenderer.endPassRequiredAt === i) {
+        this.endClip();
+
+        session.endPassRenderer.endPassRequiredAt = -1;
+        session.endPassRenderer.endPassRequired = false;
+        session.endPassRenderer = null;
+      }
+    }
+
+    if (renderTexture != null) {
+      for (let i = 0; i < numEndClipsRequired; i++)
+        this.endClip();
+
+      this.mCtx = this.mLastRenderTexture;
+
+      this.mGlobalAlpha = -1;
+      this.mGlobalBlendMode = null;
+      session.clear();
+      session.skipChildren = false;
+    }
+
+    this.__pushSession(session);
+  }
+
+  /**
+   * @inheritDoc
+   */
   getRenderTarget(width, height) {
     return new RenderTargetCanvas(width, height);
   }
@@ -63,7 +160,7 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * @ignore
-   * @private
+   * @protected
    * @param {Message} msg
    * @param {Rectangle} rect
    * @returns {void}

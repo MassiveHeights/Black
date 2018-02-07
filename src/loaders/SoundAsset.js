@@ -22,8 +22,8 @@ class SoundAsset extends Asset {
    * @inheritDoc
    */
   onLoaded() {
-    let undecodedAudio = this.mRequest.response;
-    Audio.context.decodeAudioData(undecodedAudio, (buffer) => {
+    let undecodedAudio = /** @type {!ArrayBuffer} */ (this.mRequest.response);
+    MasterAudio.context.decodeAudioData(undecodedAudio, (buffer) => {
       this.mData = new SoundClip(buffer);
       super.onLoaded();
     });
@@ -33,7 +33,7 @@ class SoundAsset extends Asset {
    * @inheritDoc
    */
   load() {
-    if (Device.webAudioSupported === false || Audio.context == null) {
+    if (Device.webAudioSupported === false || MasterAudio.context == null) {
       super.onLoaded();
       return;
     }

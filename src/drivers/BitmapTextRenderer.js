@@ -12,7 +12,7 @@ class BitmapTextRenderer extends Renderer {
   constructor() {
     super();
 
-    /** @ignore @type {string} */
+    /** @ignore @type {string|null} */
     this.text = null;
 
     /** @ignore @type {BitmapFontData} */
@@ -24,17 +24,26 @@ class BitmapTextRenderer extends Renderer {
     /** @ignore @type {boolean} */
     this.autoSize = false;
 
+    /** @type {number} @ignore */
+    this.fieldWidth = 0;
+
+    /** @type {number} @ignore */
+    this.fieldHeight = 0;
+
     /** @ignore @type {Rectangle} */
     this.bounds = new Rectangle(0, 0, 0, 0);
+
+    /** @type {number} @ignore */
+    this.lineHeight = 0;
 
     /** @ignore @private @type {Matrix} */
     this.__transformCache = new Matrix();
 
     /** @ignore @private @type {HTMLCanvasElement} */
-    this.__canvas = document.createElement('canvas');
+    this.__canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
     /** @ignore @private @type {CanvasRenderingContext2D} */
-    this.__context = this.__canvas.getContext('2d');
+    this.__context = /** @type {CanvasRenderingContext2D} */ (this.__canvas.getContext('2d'));
   }
 
   /**
@@ -91,7 +100,7 @@ class BitmapTextRenderer extends Renderer {
       if (this.texture === null)
         this.texture = new Texture(cvs);
       else
-        this.texture.update(cvs);
+        this.texture.set(cvs);
     }
   }
 

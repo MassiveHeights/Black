@@ -15,8 +15,13 @@ class RenderTargetCanvas extends RenderTarget {
   constructor(width, height) {
     super(width, height);
 
-    this.mCanvas = document.createElement('canvas');
-    this.mCtx = this.mCanvas.getContext('2d');
+
+    /** @ignore @private @type {HTMLCanvasElement} */
+    this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+
+    /** @ignore @private @type {CanvasRenderingContext2D} */
+    this.mCtx = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
+
     this.resize(width, height);
   }
 

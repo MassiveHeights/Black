@@ -17,7 +17,7 @@ class Sprite extends DisplayObject {
     /** @private @type {Texture|null} */
     this.mTexture = null;
 
-    /** @private @type {string} */
+    /** @private @type {string|null} */
     this.mTextureName = null;
 
     if (texture !== null && texture.constructor === String) {
@@ -168,7 +168,7 @@ class Sprite extends DisplayObject {
   /**
    * Returns the current texture name.
    *
-   * @return {string}
+   * @return {?string}
    */
   get textureName() {
     return this.mTextureName;
@@ -178,13 +178,13 @@ class Sprite extends DisplayObject {
    * Sets the current texture by its name
    * 
    * @editor {TextureEditor}
-   * @param {string} value
+   * @param {?string} value
    */
   set textureName(value) {
     if (this.mTextureName === value)
       return;
 
     this.mTextureName = value;
-    this.texture = AssetManager.default.getTexture(value);
+    this.texture = AssetManager.default.getTexture(/** @type {string} */ (value));
   }
 }

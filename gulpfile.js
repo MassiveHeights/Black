@@ -59,14 +59,24 @@ gulp.task('build-es6-module', function () {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-examples', ['build-es6', 'build-es6-module'], function () {
+// gulp.task('copy-examples', ['build-es5', 'build-es6', 'build-es6-module'], function () {
+//   return gulp.src('./dist/black-es6*.*')
+//     .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));
+// });
+
+// gulp.task('examples', ['build-es5', 'build-es6', 'build-es6-module'], function () {
+//   gulp.watch(['./src/**/*.js'], ['copy-examples']);
+// });
+
+gulp.task('copy-examples', ['build-es6'], function () {
   return gulp.src('./dist/black-es6*.*')
     .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));
 });
 
-gulp.task('examples', ['build-es6', 'build-es6-module'], function () {
+gulp.task('examples', ['build-es6'], function () {
   gulp.watch(['./src/**/*.js'], ['copy-examples']);
 });
+
 
 gulp.task('watch-es5', ['build-es5'], function () {
   gulp.watch(['./src/**/*.js'], ['build-es5']);

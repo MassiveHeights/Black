@@ -16,7 +16,7 @@ class Texture {
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1) {
     this.mId = ++Texture.__ID;
 
-    /** @private */
+    /** @private @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
     this.mNative = nativeElement;
 
     /** @private @type {boolean} */
@@ -138,7 +138,7 @@ class Texture {
 
   /**
    * @ignore
-   * @param {Element} canvas
+   * @param {HTMLCanvasElement} canvas
    * @returns {Texture|null}
    */
   static fromCanvas(canvas) {

@@ -26,20 +26,26 @@ class EmitterRendererCanvas extends Renderer {
 
     /**
      * @ignore
-     * @type {Array<EmitterSortOrder>}
+     * @type {EmitterSortOrder}
      */
     this.sortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
     /**
      * @ignore
-     * @type {Array<GameObject>}
+     * @type {GameObject}
      */
     this.space = null;
 
-    /** @private @type {Array<Matrix>} */
+    /**
+     * @ignore
+     * @type {boolean}
+     */
+    this.isLocal = false;
+
+    /** @private @type {Matrix} */
     this.__tmpLocal = new Matrix();
 
-    /** @private @type {Array<Matrix>} */
+    /** @private @type {Matrix} */
     this.__tmpWorld = new Matrix();
   }
 

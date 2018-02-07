@@ -15,8 +15,8 @@ class SoundChannel {
     /** @private @type {string} */
     this.mName = name;
 
-    /** @private @type {GainNode} */
-    this.mGain = Audio._newGainNode();
+    /** @private @type {!GainNode} */
+    this.mGain = MasterAudio._newGainNode();
 
     /** @private @type {Array<SoundInstance>} */
     this.mSounds = [];
@@ -154,17 +154,17 @@ class SoundChannel {
    * @ignore
    * @internal
    * @readonly
-   * @returns {AudioNode}
+   * @returns {!AudioNode}
    */
   get _inputNode() {
-    return this.mEffects.length ? this.mEffects[0]._inputNode : this.mGain;
+    return this.mEffects.length ? /** @type {!AudioNode} */ (this.mEffects[0]._inputNode) : this.mGain;
   }
 
   /**
    * @ignore
    * @internal
    * @readonly
-   * @returns {AudioNode}
+   * @returns {!AudioNode}
    */
   get _outputNode() {
     return this.mGain;

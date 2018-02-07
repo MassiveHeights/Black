@@ -16,7 +16,7 @@ class SoundInstance extends MessageDispatcher {
     /** @private @type {number} */
     this.mId = ++SoundInstance.ID;
 
-    /** @private @type {Sound} */
+    /** @private @type {SoundClip} */
     this.mSound = sound;
 
     /** @private @type {SoundState} */
@@ -41,13 +41,22 @@ class SoundInstance extends MessageDispatcher {
     this.mSrc = null;
 
     /** @private @type {GainNode} */
-    this.mGainNode = Audio._newGainNode();
+    this.mGainNode = MasterAudio._newGainNode();
 
     /** @private @type {AudioNode} The node to connect audio source */
     this.mFirstNode = this.mGainNode;
     
     /** @private @type {AudioNode} The node the source is connected to */
     this.mPlayNode = null;
+
+    /** @private @type {PannerNode} */
+    this.mSpatialPanner = null;
+
+    /** @private @type {StereoPanner} */
+    this.mStereoPanner = null;
+
+    /** @private @type {AnalyserNode} */
+    this.mAnalyser = null;
   }
 
   /**
@@ -58,9 +67,11 @@ class SoundInstance extends MessageDispatcher {
    */
   enableSpacePan() {
     if (this.mSpatialPanner == null) {
-      this.mSpatialPanner = Audio.context.createPanner();
-      this.mSpatialPanner.connect(this.mFirstNode);
-      this.mFirstNode = this.mSpatialPanner;
+      this.mSpatialPanner = MasterAudio.context.createPanner();
+      if (this.mFirstNode) {
+        this.mSpatialPanner.connect(this.mFirstNode);
+        this.mFirstNode = this.mSpatialPanner;
+      }
       this.__reconnectSource();
     }
     return this.mSpatialPanner;
@@ -75,8 +86,10 @@ class SoundInstance extends MessageDispatcher {
   enableStereoPan() {
     if (this.mStereoPanner == null) {
       this.mStereoPanner = new StereoPanner();
-      this.mStereoPanner._outputNode.connect(this.mFirstNode);
-      this.mFirstNode = this.mStereoPanner._inputNode;
+      if (this.mFirstNode) {
+        this.mStereoPanner._outputNode.connect(this.mFirstNode);
+        this.mFirstNode = this.mStereoPanner._inputNode;
+      }
       this.__reconnectSource();
     }
     return this.mStereoPanner;
@@ -90,9 +103,11 @@ class SoundInstance extends MessageDispatcher {
    */
   enableAnalyser() {
     if (this.mAnalyser == null) {
-      this.mAnalyser = Audio.context.createAnalyser();
-      this.mAnalyser.connect(this.mFirstNode);
-      this.mFirstNode = this.mAnalyser;
+      this.mAnalyser = MasterAudio.context.createAnalyser();
+      if (this.mFirstNode) {
+        this.mAnalyser.connect(this.mFirstNode);
+        this.mFirstNode = this.mAnalyser;
+      }
       this.__reconnectSource();
     }
     return this.mAnalyser;
@@ -104,7 +119,7 @@ class SoundInstance extends MessageDispatcher {
    * @returns {void}
    */
   __reconnectSource() {
-    if (this.mSrc) {
+    if (this.mSrc != null && this.mPlayNode != null && this.mFirstNode != null) {
       this.mSrc.disconnect(this.mPlayNode);
       this.mSrc.connect(this.mFirstNode);
       this.mPlayNode = this.mFirstNode;
@@ -125,21 +140,21 @@ class SoundInstance extends MessageDispatcher {
     let duration = this.mSound.isSubClip && !this.mLoop ? this.mSound.duration - this.mPausePosition : undefined;
     this.mGainNode.gain.setValueAtTime(this.mVolume, 0);
 
-    let src = Audio.context.createBufferSource();
+    let src = MasterAudio.context.createBufferSource();
     src.buffer = this.mSound.native;
     src.loop = this.mLoop;
     src.onended = () => this.__onComplete();
-    src.connect(this.mFirstNode);
+    this.mFirstNode && src.connect(this.mFirstNode);
     this.mPlayNode = this.mFirstNode;
-    this.mStartTime = Audio.context.currentTime - this.mPausePosition;
+    this.mStartTime = MasterAudio.context.currentTime - this.mPausePosition;
 
     if (this.mLoop && this.mSound.isSubClip) {
       src.loopStart = this.mSound.offset;
       src.loopEnd = this.mSound.offset + this.mSound.duration;
     }
 
-    src.start(Audio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
-    Audio._resolveChannel(this);
+    src.start(MasterAudio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
+    MasterAudio._resolveChannel(this);
     this.mSrc = src;
 
     return this;
@@ -155,7 +170,7 @@ class SoundInstance extends MessageDispatcher {
   stop(duration = 0) {
     if (this.mState === SoundState.PLAYING) {
       this.mGainNode.gain.cancelScheduledValues(0);
-      this.mSrc.stop(Audio.context.currentTime + duration);
+      this.mSrc.stop(MasterAudio.context.currentTime + duration);
     }
   }
 
@@ -199,9 +214,9 @@ class SoundInstance extends MessageDispatcher {
     } else {
       this.mGainNode.gain.setValueAtTime(from, 0);
       if (type === 'exp')
-        this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), Audio.context.currentTime + duration);
+        this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), MasterAudio.context.currentTime + duration);
       else
-        this.mGainNode.gain.linearRampToValueAtTime(to, Audio.context.currentTime + duration);
+        this.mGainNode.gain.linearRampToValueAtTime(to, MasterAudio.context.currentTime + duration);
     }
   }
 
@@ -230,7 +245,7 @@ class SoundInstance extends MessageDispatcher {
   get currentPosition() {
     switch (this.mState) {
       case SoundState.PLAYING:
-        return (Audio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
+        return (MasterAudio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
       case SoundState.PAUSED:
         return this.mPausePosition;
       case SoundState.COMPLETED:
@@ -270,7 +285,7 @@ class SoundInstance extends MessageDispatcher {
       return;
     this.mChannel = value;
     if (this.mState === SoundState.PLAYING) {
-      Audio._resolveChannel(this);
+      MasterAudio._resolveChannel(this);
     }
   }
 

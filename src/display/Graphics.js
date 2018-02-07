@@ -39,7 +39,7 @@ class Graphics extends DisplayObject {
     /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
-    /** @private @type {JointStyle} */
+    /** @private @type {Array<GraphicsCommand>} */
     this.mCommandQueue = [];
   }
 
@@ -54,7 +54,6 @@ class Graphics extends DisplayObject {
 
   /**
    * @inheritDoc
-   * @override
    */
   getRenderer() {
     return Black.driver.getRenderer('Graphics');
@@ -62,10 +61,9 @@ class Graphics extends DisplayObject {
 
   /**
    * @inheritDoc
-   * @override
    */
   onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = this.mRenderer;
+    let renderer = /** @type {GraphicsRenderer} */ (this.mRenderer);
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
@@ -89,20 +87,16 @@ class Graphics extends DisplayObject {
   // TODO: what about correct bounds? Shape-perfect instead of aabb?
   /**
    * @inheritDoc
-   * @override
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    if (!this.mTexture)
-      return outRect;
+    this.mBounds.copyTo(outRect);
 
     if (this.mClipRect !== null) {
       this.mClipRect.copyTo(outRect);
       outRect.x += this.mPivotX;
       outRect.y += this.mPivotY;
-    } else {
-      outRect.set(0, 0, this.mTexture.renderWidth, this.mTexture.renderHeight);
     }
 
     return outRect;
@@ -124,9 +118,9 @@ class Graphics extends DisplayObject {
     this.lineWidth = lineWidth;
     this.lineColor = color;
     this.lineAlpha = alpha;
-    this.caps = caps;
-    this.joints = joints;
-    this.miterLimit = 3;
+    this.mCaps = caps;
+    this.mJoints = joints;
+    this.mMiterLimit = 3;
   }
 
   /**
@@ -244,7 +238,7 @@ class Graphics extends DisplayObject {
   /**
    * @private
    * @ignore
-   * @param {string} type 
+   * @param {GraphicsCommandType<string>} type
    * @param {...number} points 
    */
   __pushCommand(type, ...points) {

@@ -46,9 +46,8 @@ class SoundAtlasAsset extends Asset {
    * @private
    */
   onSoundLoaded() {
-    let undecodedAudio = this.soundAsset.mRequest.response;
-
-    Audio.context.decodeAudioData(undecodedAudio, (buffer) => {
+    let undecodedAudio = /** @type {!ArrayBuffer} */ (this.soundAsset.mRequest.response);
+    MasterAudio.context.decodeAudioData(undecodedAudio, (buffer) => {
       this.mData = new SoundAtlasClip(buffer, this.dataAsset.data);
       super.onLoaded();
     });

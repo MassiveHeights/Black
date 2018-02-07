@@ -275,8 +275,6 @@ class Tween extends Component {
 
   /**
    * @inheritDoc
-   * @override
-   * @return {void}
    */
   removeFromParent() {
     if (this.mIsPlaying)
@@ -337,9 +335,6 @@ class Tween extends Component {
 
   /**
    * @inheritDoc
-   * @override
-   * @param  {GameObject} gameObject
-   * @return {void}
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
@@ -371,9 +366,6 @@ class Tween extends Component {
 
   /**
    * @inheritDoc
-   * @override
-   * @param {number} dt
-   * @returns {void}
    */
   onPostUpdate(dt){
     let t = Time.now;
@@ -450,7 +442,7 @@ class Tween extends Component {
  * Ease to be used in all tweens, if another ease is not specified. `Ease.smootherStep`.
  *
  * @public
- * @type {Ease}
+ * @type {function(number):number}
  * @nocollapse
  */
 Tween.DEFAULT_EASE = Ease.smootherStep;

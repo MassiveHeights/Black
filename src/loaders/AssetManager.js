@@ -36,10 +36,10 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {Array<Asset>} */
     this.mQueue = [];
 
-    /** @private @type {Object.<string, Asset>} */
+    /** @private @type {Object.<string, Texture>} */
     this.mTextures = {};
 
-    /** @private @type {Object.<string, AtlasTextureAsset>} */
+    /** @private @type {Object.<string, AtlasTexture>} */
     this.mAtlases = {};
 
     /** @private @type {Object.<string, JSONAsset>} */
@@ -48,16 +48,16 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {Object.<string, XMLAsset>} */
     this.mXMLs = {};
 
-    /** @private @type {Object.<string, SoundAsset>} */
+    /** @private @type {Object.<string, SoundClip>} */
     this.mSounds = {};
 
-    /** @private @type {Object.<string, SoundAtlasAsset>} */
+    /** @private @type {Object.<string, SoundAtlasClip>} */
     this.mSoundAtlases = {};
 
     /** @private @type {Object.<string, FontAsset>} */
     this.mFonts = {};
 
-    /** @private @type {Object.<string, BitmapFontAsset>} */
+    /** @private @type {Object.<string, BitmapFontData>} */
     this.mBitmapFonts = {};
   }
 
@@ -159,7 +159,7 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueGoogleFont(name) {
-    this.mQueue.push(new FontAsset(name, null, false));
+    this.mQueue.push(new FontAsset(name, '', false));
   }
 
   /**
@@ -283,7 +283,7 @@ class AssetManager extends MessageDispatcher {
     for (let key in this.mAtlases) {
       let atlas = this.mAtlases[key];
 
-      for (let key2 in atlas.mSubTextures)
+      for (let key2 in atlas.subTextures)
         if (re.test(key2))
           names.push({ name: key2, atlas: atlas });
     }

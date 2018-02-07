@@ -20,7 +20,6 @@ class Sound extends Component {
 
     /** @private @type {SoundClip} */
     this.mSoundClip = AssetManager.default.getSound(name);
-    this.mSoundClip.channel = channel;
 
     /** @private @type {number} */
     this.mRolloff = rolloff;

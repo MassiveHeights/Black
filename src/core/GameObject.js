@@ -58,7 +58,7 @@ class GameObject extends MessageDispatcher {
     /** @private @type {Matrix} */
     this.mWorldTransformInversed = new Matrix();
 
-    /** @private @type {DirtyFlag} */
+    /** @private @type {DirtyFlag<number>} */
     this.mDirty = DirtyFlag.DIRTY;
 
     /** @protected @type {GameObject} */
@@ -79,7 +79,7 @@ class GameObject extends MessageDispatcher {
     /** @private @type {number} */
     this.mDirtyFrameNum = 0;
 
-    /** @private @type {number} */
+    /** @private @type {boolean} */
     this.mSuspendDirty = false;
 
     /** @protected @type {boolean} */
@@ -701,7 +701,9 @@ class GameObject extends MessageDispatcher {
    * @param {boolean=} [isBackBufferActive=false] Specifies if render to backBuffer.
    * @return {Renderer}
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) { }
+  onRender(driver, parentRenderer, isBackBufferActive = false) {
+    return null;
+  }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -1307,7 +1309,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {DirtyFlag} flag The flag or flag bit mask.
+   * @param {DirtyFlag<number>} flag The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Specifies if the flag needed for all children.
    * @return {void}
    */
@@ -1326,7 +1328,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Marks the GameObject's parent as dirty.
    *
-   * @param {DirtyFlag} flag The flag or flag bit mask.
+   * @param {DirtyFlag<number>} flag The flag or flag bit mask.
    * @return {void}
    */
   setParentDirty(flag) {
@@ -1352,8 +1354,8 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(DirtyFlag.LOCAL | DirtyFlag.BOUNDS, false);
-    this.setDirty(GameObject.WIFRB, true);
+    this.setDirty(/** @type {DirtyFlag<number>} */ (DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIFRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
@@ -1728,7 +1730,6 @@ const DirtyFlag = {
   RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified
   BOUNDS: 64,       // Parent-relative bounds needs update
-  DIRTY: 0xffffff   // Everything is dirty, you, me, everything!
+  DIRTY: 0xffffff,  // Everything is dirty, you, me, everything!
+  WIFRB: 78
 };
-
-GameObject.WIFRB = DirtyFlag.WORLD | DirtyFlag.WORLD_INV | DirtyFlag.RENDER | DirtyFlag.BOUNDS;

@@ -80,7 +80,7 @@ class TextField extends DisplayObject {
    * @inheritDoc
    */
   onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = this.mRenderer;
+    let renderer = /** @type {TextRenderer} */ (this.mRenderer);
 
     let oldDirty = this.mDirty;
 
@@ -326,7 +326,7 @@ class TextField extends DisplayObject {
   /**
    * Specifies the vertical alignment of the text (top | middle | bottom).
    *
-   * @return {TextInfo.FontAlign}
+   * @return {TextInfo.FontVerticalAlign}
    */
   get vAlign() {
     return this.mVerticalAlign;
@@ -334,7 +334,7 @@ class TextField extends DisplayObject {
 
   /**
    * @ignore
-   * @param {TextInfo.FontAlign} value
+   * @param {TextInfo.FontVerticalAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -492,7 +492,7 @@ class TextField extends DisplayObject {
    */
   set padding(value) {
     this.mPadding = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS, false);
+    this.setDirty(/** @type {DirtyFlag<number>} */ (DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 }
 

@@ -16,7 +16,6 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
   /**
    * Called when this renderer needs to be rendered.
    *
-   * @abstract
    * @param {VideoNullDriver} driver Active video driver.
    * @returns {void}
    */

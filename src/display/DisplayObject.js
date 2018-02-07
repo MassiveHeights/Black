@@ -12,7 +12,7 @@ class DisplayObject extends GameObject {
     /** @protected @type {number} */
     this.mAlpha = 1;
 
-    /** @protected @type {string} */
+    /** @protected @type {BlendMode<string>} */
     this.mBlendMode = BlendMode.AUTO;
 
     /** @protected @type {boolean} */
@@ -196,7 +196,7 @@ class DisplayObject extends GameObject {
   /**
    * Gets/Sets blend mode for the object.
    *
-   * @return {BlendMode}
+   * @return {BlendMode<string>}
    */
   get blendMode() {
     return this.mBlendMode;
@@ -204,7 +204,7 @@ class DisplayObject extends GameObject {
 
   /**
    * @ignore
-   * @param {BlendMode} value
+   * @param {BlendMode<string>} value
    * @return {void}
    */
   set blendMode(value) {

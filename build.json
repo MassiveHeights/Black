@@ -1,7 +1,7 @@
 {
   "files":
   [
-    "vendors/spine-core.js",
+
 
     "src/core/Debug.js",
 
@@ -70,14 +70,9 @@
     "src/drivers/canvas/RenderTargetCanvas.js",
     "src/drivers/canvas/GraphicsRendererCanvas.js",    
 
-    "src/drivers/dom/TextRendererDOM.js",
-    "src/drivers/dom/EmitterRendererDOM.js",
-    "src/drivers/dom/DisplayObjectRendererDOM.js",
-    "src/drivers/dom/SpriteRendererDOM.js",
 
     "src/drivers/VideoNullDriver.js",
     "src/drivers/canvas/CanvasDriver.js",
-    "src/drivers/dom/DOMDriver.js",
 
     "src/display/DisplayObject.js",
     "src/display/Graphics.js",
@@ -135,11 +130,11 @@
     "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
 
-    "src/animation/Spine.js",
+    
 
     "src/physics/Arcade.js",
 
-    "src/audio/Audio.js",
+    "src/audio/MasterAudio.js",
 
     "src/audio/SoundEffect.js",
     "src/audio/effects/DistortionEffect.js",
@@ -152,7 +147,7 @@
     "src/audio/SoundClip.js",
     "src/audio/SoundAtlasClip.js",
     "src/audio/SoundChannel.js",
-    "src/audio/SoundComponent.js",
+    "src/audio/Sound.js",
     "src/audio/SoundListener.js",
 
     "src/Black.js"

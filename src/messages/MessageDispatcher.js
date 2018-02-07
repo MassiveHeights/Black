@@ -24,7 +24,7 @@ class MessageDispatcher {
    *
    * @public
    * @param {string} message Message name.
-   * @param {Function} [callback] Function to be called on message send.
+   * @param {Function} callback Function to be called on message send.
    * @param {*} [context=null] Object to be used as `this` in callback function.
    * @return {void}
    */
@@ -135,7 +135,7 @@ class MessageDispatcher {
    *
    * @public
    * @param {string} message  The name of a message
-   * @param {...*=} payload A list of params to send
+   * @param {...*} payload A list of params to send
    * @return {void}
    */
   post(message, ...payload) {
@@ -235,13 +235,15 @@ class MessageDispatcher {
       result.componentMask = message.substring(ixHash + 1);
       return result;
     }
+
+    return result;
   }
 
   /**
    * @private
    * @ignore
    * @param {string} message
-   * @param {Function=} callback 
+   * @param {Function} callback
    * @param {boolean} [isOnce=false]
    * @param {MessageDispatcher} [owner=null]
    * @param {*} [context=null]
@@ -484,7 +486,7 @@ class MessageBinding {
    * @param {boolean} isOnce 
    * @param {MessageDispatcher} owner 
    * @param {*=} [context=null]
-   * @param {string=} [pathMask=null]
+   * @param {?string} [pathMask=null]
    */
   constructor(name, callback, isOnce, owner, context = null, pathMask = null) {
     /** @type {string} */
@@ -503,7 +505,7 @@ class MessageBinding {
     this.context = context;
 
     // for overhearing
-    /** @type {string} */
+    /** @type {string|null} */
     this.pathMask = pathMask;
   }
 
@@ -518,6 +520,6 @@ class MessageBinding {
 
 /**
  * @private
- * @dict
+ * @type {Object.<string, Array>}
  */
 MessageDispatcher.mOverheardHandlers = {};

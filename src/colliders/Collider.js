@@ -16,12 +16,14 @@ class Collider extends Component {
   }
 
   /**
-   * Checks if given global coordinates are located within collider's area. Must be overridden.
+   * Checks if given global coordinates are located within collider's area.
    *
-   * @abstract
+   * @public
    * @param {Vector} point Global coordinates.
+   * @returns {boolean}
    */
   containsPoint(point) {
     Debug.error('Abstract method.');
+    return false;
   }
 }

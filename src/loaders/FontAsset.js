@@ -12,7 +12,7 @@ class FontAsset extends Asset {
    * Creates new instance of FontAsset.
    *
    * @param {string} name        The custom name of the font
-   * @param {string|null} url    The path to the font
+   * @param {string} url    The path to the font
    * @param {boolean} local      Is this font local?
    */
   constructor(name, url, local) {
@@ -36,12 +36,12 @@ class FontAsset extends Asset {
     /** @private @type {number} */
     this.mCheckDelay = 50;
 
-    /** @private @type {HTMLElement} */
+    /** @private @type {Element} */
     this.mTestingElement = this.__getTestingElement();
 
     this.metrics = null;
 
-    /** @private @type {HTMLElement} */
+    /** @private @type {Element} */
     this.mLoaderElement = this.__getLoaderElement(this.mLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
 
@@ -54,7 +54,7 @@ class FontAsset extends Asset {
   /**
    * @ignore
    * @private
-   * @return {HTMLElement}
+   * @return {Element}
    */
   __getLoaderElement(local) {
     let loaderElement = document.createElement(local ? 'style' : 'link');
@@ -70,7 +70,7 @@ class FontAsset extends Asset {
   /**
    * @ignore
    * @private
-   * @return {HTMLElement}
+   * @return {Element}
    */
   __getTestingElement() {
     let testingElement = document.createElement('span');

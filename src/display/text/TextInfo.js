@@ -72,6 +72,7 @@ TextInfo.FontWeight = {
  * @enum {string}
  */
 TextInfo.FontAlign = {
+  NONE: 'none',
   LEFT: 'left',
   RIGHT: 'right',
   CENTER: 'center'

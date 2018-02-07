@@ -8,10 +8,10 @@ class Black extends MessageDispatcher {
 
   /**
    * Creates a new Black instance.
-   * @param {string}                          containerElementId The id of an DOM element.
-   * @param {function(new: GameObject)}       gameClass          Type name of an GameObject to start execution from.
-   * @param {function(new: VideoNullDriver)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
-   * @param {Array<function(new: System)>  }  systemClasses      The list of systems to be initialized with Black engine.
+   * @param {string}                                                       containerElementId The id of an DOM element.
+   * @param {function(new: GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+   * @param {Array<function(new: System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
    */
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
@@ -31,9 +31,10 @@ class Black extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @private @type {function(new: VideoNullDriver)} */
+    /** @private @type {function(new: VideoNullDriver, HTMLElement, number, number)} */
     this.mVideoDriverClass = videoDriverClass;
 
+    /** @private @type {Array<function(new: System)>} */
     this.mSystemClasses = systemClasses;
 
     /** @private @type {number} */
@@ -75,6 +76,9 @@ class Black extends MessageDispatcher {
     /** @private @type {Array<System>} */
     this.mSystems = [];
 
+    /** @private @type {GameObject|null} */
+    this.mGameObject = null;
+
     /** @private @type {boolean} */
     this.mIsRunning = false;
 
@@ -114,7 +118,10 @@ class Black extends MessageDispatcher {
     /** @private @type {Object<string, Array>} */
     this.mTagCache = {};
 
-    /** @private @type {function(new: GameObject)|null} */
+    /**
+     * @private
+     * @type {function(new: GameObject)}
+     */
     this.mGameClass = gameClass;
 
     /** @private @type {GameObject|null} */
@@ -707,10 +714,6 @@ class Black extends MessageDispatcher {
    */
   set enableFixedTimeStep(value) {
     this.mEnableFixedTimeStep = value;
-  }
-
-  get gameObject() {
-    return this.mGameObject;
   }
 
   /**

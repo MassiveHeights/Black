@@ -110,7 +110,6 @@ class AtlasTexture extends Texture {
    * @param {*} field
    * @param {boolean} useAbs
    * @returns {Function}
-   * @private
    */
   static __naturalComparer(field = null, useAbs = true) {
     return function (a, b) {

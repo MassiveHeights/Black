@@ -37,7 +37,7 @@ class SimpleEQ extends SoundEffect {
     /** @private @type {number} */
     this.mMaxGainLevel = 16; // 18
 
-    /** @private @dict */
+    /** @private @type {Object.<string, Array<number>>} */
     this.mPresets = {};
   }
 
@@ -48,7 +48,7 @@ class SimpleEQ extends SoundEffect {
    * @returns {BiquadFilterNode}
    */
   __createFilter(freq) {
-    let f = Audio.context.createBiquadFilter();
+    let f = MasterAudio.context.createBiquadFilter();
     f.type = 'peaking';
     f.frequency.setValueAtTime(freq, 0);
     f.Q.setValueAtTime(1, 0);
@@ -111,7 +111,7 @@ class SimpleEQ extends SoundEffect {
    */
   savePreset(name) {
     this.mPresets[name] = [];
-    this.mFilters.forEach(x => this.mPresets[name].push(x.frequency.value));
+    this.mFilters.forEach(x => this.mPresets[name].push(x.frequency.value / this.mMaxGainLevel));
   }
 
   /**
@@ -123,8 +123,8 @@ class SimpleEQ extends SoundEffect {
    */
   applyPreset(name) {
     if (this.mPresets[name] !== null) {
-      for (let i in this.mPresets[name]) {
-        this.setValue(i, this.mPresets[name][i]);
+      for (let i = 0; i < this.mPresets[name].length; i++) {
+        this.setLevelByIndex(i, this.mPresets[name][i]);
       }
     }
   }

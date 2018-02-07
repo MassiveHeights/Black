@@ -72,7 +72,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @override
    * @inheritDoc
    */
   onUpdate(dt) {
@@ -142,7 +141,7 @@ class Stage extends GameObject {
 
     // TODO: i don't like this line
     // TODO: me neither
-    Black.driver.__onResize();
+    Black.driver.__onResize(null, null);
 
     this.setTransformDirty();
     this.post('resize');
@@ -274,7 +273,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @override
    * @inheritDoc
    */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
@@ -283,7 +281,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @override
    * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
@@ -294,7 +291,6 @@ class Stage extends GameObject {
   removeFromParent() { Debug.error('Not allowed.'); }
 
   /**
-   * @override
    * @inheritDoc
    */
   get localTransformation() {

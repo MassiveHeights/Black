@@ -18,7 +18,7 @@ class TextureAsset extends Asset {
 
     /** @private @type {Image} */
     this.mImageElement = new Image();
-    this.mImageElement.crossOrigin = true;
+    this.mImageElement.crossOrigin = 'anonymous';
   }
 
   /**

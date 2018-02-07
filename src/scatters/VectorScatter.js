@@ -82,7 +82,7 @@ class VectorScatter extends Scatter {
    */
   static fromObject(...values) {
     if (values[0] instanceof Scatter)
-      return values[0];
+      return /** @type {VectorScatter} */ (values[0]);
 
     return new VectorScatter(...values);
   }

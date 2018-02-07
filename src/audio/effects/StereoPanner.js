@@ -14,16 +14,16 @@ class StereoPanner extends SoundEffect {
     super();
 
     /** @private @type {GainNode} */
-    this.mGainL = Audio._newGainNode();
+    this.mGainL = MasterAudio._newGainNode();
 
     /** @private @type {GainNode} */
-    this.mGainR = Audio._newGainNode();
+    this.mGainR = MasterAudio._newGainNode();
 
     /** @private @type {ChannelSplitterNode} */
-    this.mSplitter = Audio.context.createChannelSplitter(2);
+    this.mSplitter = MasterAudio.context.createChannelSplitter(2);
     
     /** @private @type {ChannelMergerNode} */
-    this.mMerger = Audio.context.createChannelMerger(2);
+    this.mMerger = MasterAudio.context.createChannelMerger(2);
 
     this.mSplitter.connect(this.mGainL, 0);
     this.mSplitter.connect(this.mGainR, 1);

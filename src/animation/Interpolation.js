@@ -94,7 +94,8 @@ class Interpolation {
 
 /**
  * @private
- * @return {function():number}
+ * @param {number} n
+ * @return {number}
  */
 Interpolation.__factorial = (function() {
   let a = [1];

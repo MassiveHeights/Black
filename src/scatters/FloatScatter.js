@@ -11,7 +11,7 @@ class FloatScatter extends Scatter {
    *
    * @param {number}      min             The min value along x-axis.
    * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {function(number):number} [ease=null]     Easing function.
+   * @param {?function(number):number} [ease=null]     Easing function.
    */
   constructor(min, max = NaN, ease = null) {
     super();
@@ -30,7 +30,7 @@ class FloatScatter extends Scatter {
 
     /**
      * Optional easing function.
-     * @type {function(number):number}
+     * @type {?function(number):number}
      */
     this.ease = ease;
 
@@ -64,8 +64,8 @@ class FloatScatter extends Scatter {
    * @returns {FloatScatter}
    */
   static fromObject(...values) {
-    if (values[0] instanceof Scatter)
-      return values[0];
+    if (values[0] instanceof FloatScatter)
+      return /** @type {FloatScatter} */ (values[0]);
     
     return new FloatScatter(...values);
   }

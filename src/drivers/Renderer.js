@@ -53,7 +53,7 @@ class Renderer {
 
     /**
      * Dirty flag.
-     * @type {DirtyFlag}
+     * @type {DirtyFlag<number>}
      */
     this.dirty = DirtyFlag.DIRTY;
 
@@ -68,6 +68,12 @@ class Renderer {
      * @type {Rectangle}
      */
     this.clipRect = null;
+
+    /**
+     * Round `x` and `y` values to `int`.
+     * @type {boolean}
+     */
+    this.snapToPixels = false;
 
     /** @ignore @type {number} */
     this.endPassRequiredAt = -1;
@@ -84,7 +90,6 @@ class Renderer {
   /**
    * Called when this renderer needs to be rendered.
    *
-   * @abstract
    * @param {VideoNullDriver} driver Active video driver.
    * @returns {void}
    */

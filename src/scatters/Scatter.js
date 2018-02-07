@@ -13,7 +13,7 @@ class Scatter {
   /**
    * Returns random value.
    *
-   * @return {*} Any object.
+   * @return {?} Any object.
    */
   getValue() {
     return this.getValueAt(Math.random());
@@ -23,7 +23,7 @@ class Scatter {
    * Returns value at given position.
    *
    * @param {number} t Position to get value at.
-   * @return {*} Any object.
+   * @return {?} Any object.
    */
   getValueAt(t) {}
 }

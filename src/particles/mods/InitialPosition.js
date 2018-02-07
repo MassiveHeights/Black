@@ -14,7 +14,7 @@ class InitialPosition extends Modifier {
   constructor(...values) {
     super();
 
-    /** @inheritDoc */
+    /** @type {VectorScatter} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

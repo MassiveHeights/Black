@@ -14,7 +14,7 @@ class InitialScale extends Modifier {
   constructor(...values) {
     super();
 
-    /** @inheritDoc */
+    /** @type {FloatScatter} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

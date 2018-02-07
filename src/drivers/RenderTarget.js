@@ -51,7 +51,7 @@ class RenderTarget {
    * @returns {void}
    */
   set width(value) {
-    this.mWidth = width;
+    this.mWidth = value;
   }
 
   /**
@@ -69,6 +69,6 @@ class RenderTarget {
    * @returns {void}
    */
   set height(value) {
-    this.mHeight = height;
+    this.mHeight = value;
   }
 }

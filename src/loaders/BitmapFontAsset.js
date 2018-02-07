@@ -14,7 +14,7 @@ class BitmapFontAsset extends Asset {
    * @param {string} xmlUrl   XML URL.
    */
   constructor(name, imageUrl, xmlUrl) {
-    super(name);
+    super(name, imageUrl);
 
     /** @private @type {TextureAsset} */
     this.mTextureAsset = new TextureAsset(name, imageUrl);
@@ -125,10 +125,25 @@ class BitmapFontAsset extends Asset {
 /* @echo EXPORT */
 class BitmapFontData {
   constructor() {
+    /** @type {Texture} */
+    this.texture = null;
+
+    /** @type {Document} */
+    this.xml = null;
+
+    /** @type {string} */
     this.name = '';
+
+    /** @type {number} */
     this.size = 0;
+
+    /** @type {number} */
     this.lineHeight = 0;
+
+    /** @type {Object.<number, BitmapFontCharData>} */
     this.chars = {};
+
+    /** @type {number} */
     this.baseline = 0;
   }
 }
@@ -136,10 +151,25 @@ class BitmapFontData {
 /* @echo EXPORT */
 class BitmapFontCharData {
   constructor() {
+    /** @type {Texture} */
     this.texture = null;
+
+    /** @type {number} */
     this.xOffset = 0;
+
+    /** @type {number} */
     this.yOffset = 0;
+
+    /** @type {number} */
+    this.width = 0;
+
+    /** @type {number} */
+    this.height = 0;
+
+    /** @type {number} */
     this.xAdvance = 0;
+
+    /** @type {Object.<number, number>} */
     this.kerning = {};
   }
 }

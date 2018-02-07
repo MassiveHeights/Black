@@ -12,7 +12,7 @@ class TextRenderer extends Renderer {
   constructor() {
     super();
 
-    /** @type {string} @ignore */
+    /** @type {string|null} @ignore */
     this.text = null;
 
     /** @type {TextInfo} @ignore */
@@ -31,7 +31,7 @@ class TextRenderer extends Renderer {
     this.lineBounds = null;
 
     /** @type {TextInfo.FontAlign} @ignore */
-    this.align = null;
+    this.align = TextInfo.FontAlign.NONE;
 
     /** @type {boolean} @ignore */
     this.drawBounds = false;
@@ -48,14 +48,17 @@ class TextRenderer extends Renderer {
     /** @type {number} @ignore */
     this.fieldHeight = 0;
 
+    /** @type {number} @ignore */
+    this.lineHeight = 0;
+
     /** @private @type {Matrix} @ignore */
     this.__transformCache = new Matrix();
 
     /** @private @type {HTMLCanvasElement} */
-    this.__canvas = document.createElement('canvas');
+    this.__canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
     /** @private @type {CanvasRenderingContext2D} */
-    this.__context = this.__canvas.getContext('2d');
+    this.__context = /** @type {CanvasRenderingContext2D} */ (this.__canvas.getContext('2d'));
 
     this.__context.lineJoin = 'round';
     this.__context.miterLimit = 2;

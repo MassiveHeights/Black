@@ -16,22 +16,22 @@ class ReverbEffect extends SoundEffect {
     super();
 
     /** @inheritDoc */
-    this.mInputNode = Audio._newGainNode();
+    this.mInputNode = MasterAudio._newGainNode();
 
     /** @inheritDoc */
-    this.mOutputNode = Audio._newGainNode();
+    this.mOutputNode = MasterAudio._newGainNode();
 
     /** @private @type {ConvolverNode} */
-    this.mConvolver = Audio.context.createConvolver();
+    this.mConvolver = MasterAudio.context.createConvolver();
 
-    /** @private @type {GainNode} */
-    this.mDry = Audio._newGainNode();
+    /** @private @type {AudioNode} */
+    this.mDry = MasterAudio._newGainNode();
 
-    /** @private @type {GainNode} */
-    this.mWet = Audio._newGainNode();
+    /** @private @type {AudioNode} */
+    this.mWet = MasterAudio._newGainNode();
 
     /** @private @type {BiquadFilterNode} */
-    this.mTone = Audio.context.createBiquadFilter();
+    this.mTone = MasterAudio.context.createBiquadFilter();
 
     this.mConvolver.buffer = IRBuffer;
 
@@ -79,7 +79,7 @@ class ReverbEffect extends SoundEffect {
    * @returns {void}
    */
   set tone(value) {
-    value = MathEx.clamp(value, 10, Audio.context.sampleRate / 2);
+    value = MathEx.clamp(value, 10, MasterAudio.context.sampleRate / 2);
     this.mTone.frequency.setValueAtTime(value, 0);
   }
 

@@ -5,7 +5,7 @@
  * @extends {System}
  */
 /* @echo EXPORT */
-class Audio extends System {
+class MasterAudio extends System {
   /**
    * Singleton
    */
@@ -72,12 +72,12 @@ class Audio extends System {
    * @returns {SoundChannel}
    */
   static createChannel(name) {
-    if (Audio.instance.mChannels[name] == null) {
+    if (MasterAudio.instance.mChannels[name] == null) {
       let ch = new SoundChannel(name);
-      ch._outputNode.connect(Audio.instance.mMasterChannel._inputNode);
-      Audio.instance.mChannels[name] = ch;
+      ch._outputNode.connect(MasterAudio.instance.mMasterChannel._inputNode);
+      MasterAudio.instance.mChannels[name] = ch;
     }
-    return Audio.instance.mChannels[name];
+    return MasterAudio.instance.mChannels[name];
   }
 
   /**
@@ -87,7 +87,7 @@ class Audio extends System {
    * @returns {SoundChannel|null}
    */
   static getChannel(name) {
-    return Audio.instance.mChannels[name];
+    return MasterAudio.instance.mChannels[name];
   }
 
   /**
@@ -97,10 +97,10 @@ class Audio extends System {
    * @returns {SoundChannel}
    */
   static _resolveChannel(snd) {
-    for (let chName in Audio.instance.mChannels)
-      Audio.instance.mChannels[chName].detachSound(snd);
+    for (let chName in MasterAudio.instance.mChannels)
+      MasterAudio.instance.mChannels[chName].detachSound(snd);
     let chName = snd.channel == '' ? 'master' : snd.channel;
-    let ch = Audio.instance.mChannels[chName];
+    let ch = MasterAudio.instance.mChannels[chName];
     ch.attachSound(snd);
     return ch;
   }
@@ -119,27 +119,28 @@ class Audio extends System {
   static play(nameOrSound, channel = 'master', volume = 1, loop = false, pan = 0) {
     Debug.assert(nameOrSound != null, `Param 'nameOrSound' cannot be null.`);
 
+    let sound = null;
     if (nameOrSound.constructor === String) {
-      nameOrSound = /** @type {SoundClip} */ AssetManager.default.getSound(nameOrSound);
+      sound = (AssetManager.default.getSound( /** @type {string} */ (nameOrSound)));
     }
 
-    return nameOrSound._play(channel, volume, loop, pan);
+    return sound.play(channel, volume, loop, pan);
   }
 
   /**
    * Stops all sound on specific channel.
    * 
    * @public
-   * @param {string|null} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
+   * @param {string} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
    * @returns {void} 
    */
   static stopAll(channelName = '') {
     if (channelName === '') {
-      for (let chName in Audio.instance.mChannels) {
-        Audio.instance.mChannels[chName].stopAll();
+      for (let chName in MasterAudio.instance.mChannels) {
+        MasterAudio.instance.mChannels[chName].stopAll();
       }
     } else {
-      Audio.getChannel(channelName).stopAll();
+      MasterAudio.getChannel(channelName).stopAll();
     }
   }
 
@@ -149,7 +150,7 @@ class Audio extends System {
    * @returns {void}
    */
   static set masterVolume(value) {
-    Audio.instance.mMasterChannel.volume = value;
+    MasterAudio.instance.mMasterChannel.volume = value;
   }
 
   /**
@@ -159,7 +160,7 @@ class Audio extends System {
    * @returns {number}
    */
   static get masterVolume() {
-    return Audio.instance.mMasterChannel.volume;
+    return MasterAudio.instance.mMasterChannel.volume;
   }
 
   /**
@@ -169,7 +170,7 @@ class Audio extends System {
    * @returns {AudioContext}
    */
   static get context() {
-    return Audio.instance.mContext;
+    return MasterAudio.instance.mContext;
   }
 
   /**
@@ -179,7 +180,7 @@ class Audio extends System {
    * @returns {SoundChannel}
    */
   static get masterChannel() {
-    return Audio.instance.mMasterChannel;
+    return MasterAudio.instance.mMasterChannel;
   }
 
   /**
@@ -188,7 +189,7 @@ class Audio extends System {
    * @returns {void}
    */
   static set currentListener(value) {
-    Audio.instance.mCurrentListener = value;
+    MasterAudio.instance.mCurrentListener = value;
   }
 
   /**
@@ -198,7 +199,7 @@ class Audio extends System {
    * @returns {SoundListener}
    */
   static get currentListener() {
-    return Audio.instance.mCurrentListener;
+    return MasterAudio.instance.mCurrentListener;
   }
 
   /**
@@ -208,19 +209,19 @@ class Audio extends System {
    * @returns {void}
    */
   static looseListener() {
-    Audio.context.listener.setPosition(0, 0, 1);
-    Audio.currentListener = null;
+    MasterAudio.context.listener.setPosition(0, 0, 1);
+    MasterAudio.currentListener = null;
   }
 
   /**
    * @ignore
    * @internal
-   * @returns {GainNode}
+   * @returns {!GainNode}
    */
   static _newGainNode() {
-    if (Audio.context.createGain === undefined)
-      return Audio.context.createGainNode();
+    if (MasterAudio.context.createGain === undefined)
+      return MasterAudio.context.createGainNode();
 
-    return Audio.context.createGain();
+    return MasterAudio.context.createGain();
   }
 }

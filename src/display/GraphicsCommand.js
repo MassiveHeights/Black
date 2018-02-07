@@ -9,8 +9,8 @@ class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
    * 
-   * @param {GraphicsCommandType} type 
-   * @param {Array<*>} data 
+   * @param {GraphicsCommandType<string>} type
+   * @param {Array<number>} data
    * @param {number} lineColor 
    * @param {number} lineAlpha 
    * @param {number} lineWidth 
@@ -22,10 +22,10 @@ class GraphicsCommand {
    */
   constructor(type, data, lineColor = 0, lineAlpha = 1, lineWidth = 0, fillColor = 0, fillAlpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
 
-    /** @public @type {Array<*>} */
+    /** @public @type {Array<number>} */
     this.data = data;
 
-    /** @public @type {GraphicsCommandType} */
+    /** @public @type {GraphicsCommandType<string>} */
     this.type = type;
 
     // stroke

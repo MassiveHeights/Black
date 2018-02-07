@@ -14,7 +14,7 @@ class Acceleration extends Modifier {
   constructor(...values) {
     super(false);
 
-    /** @inheritDoc */
+    /** @type {VectorScatter} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

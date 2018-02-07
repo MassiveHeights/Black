@@ -194,7 +194,7 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = this.mRenderer;
+    let renderer = /** @type {EmitterRendererCanvas} */ (this.mRenderer);
 
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;

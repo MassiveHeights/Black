@@ -26,26 +26,26 @@ class SoundListener extends Component {
    * Starts controlling only instance of AudioContext.listener.
    */
   listen() {
-    Audio.currentListener = this;
+    MasterAudio.currentListener = this;
   }
 
   /**
    * Stops controlling AudioContext.listener.
    */
   loose() {
-    Audio.looseListener();
+    MasterAudio.looseListener();
   }
 
   /**
    * @inheritDoc
    */
   onPostUpdate(dt) {
-    if (Audio.currentListener === this) {
+    if (MasterAudio.currentListener === this) {
       let stage = Black.stage;
       let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
       let px = (pos.x - stage.centerX) / stage.width * 2;
       let py = (pos.y - stage.centerY) / stage.height * 2;
-      Audio.context.listener.setPosition(px, py, 1);
+      MasterAudio.context.listener.setPosition(px, py, 1);
     }
   }
 }

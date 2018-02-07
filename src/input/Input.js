@@ -60,7 +60,7 @@ class Input extends System {
     /** @private @type {Map} */
     this.mInputListeners = new Map();
 
-    /** @private @type {MessageDispatcher} */
+    /** @private @type {GameObject} */
     this.mTarget = null;
 
     /** @private @type {Component} */
@@ -257,7 +257,7 @@ class Input extends System {
   /**
    * @ignore
    * @private
-   * @param {Event} nativeEvent
+   * @param {Object} nativeEvent
    * @param {Vector} pos
    * @param {string} type
    */

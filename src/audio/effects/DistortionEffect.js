@@ -16,7 +16,7 @@ class DistortionEffect extends SoundEffect {
     super();
 
     /** @private @type {WaveShaperNode} */
-    this.mWaveShaperNode = Audio.context.createWaveShaper();
+    this.mWaveShaperNode = MasterAudio.context.createWaveShaper();
 
     /** @inheritDoc */
     this.mInputNode = this.mWaveShaperNode;
@@ -29,6 +29,9 @@ class DistortionEffect extends SoundEffect {
 
     /** @private @type {Float32Array} */
     this.mCurve = new Float32Array(this.mSamples);
+
+    /** @private @type {number}*/
+    this.mValue = value;
 
     this.distortion = value;
   }

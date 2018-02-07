@@ -184,7 +184,7 @@ class Vector {
    * @return {Vector} This.
    */
   clampLength(min, max) {
-    let length = MathEx.clamp(this.length, min, max);
+    let length = MathEx.clamp(this.length(), min, max);
     this.normalize();
     this.multiplyScalar(length);
     return this;
