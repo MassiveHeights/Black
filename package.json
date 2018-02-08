@@ -11,7 +11,8 @@
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",
-    "watch-test": "gulp watch-test"
+    "watch-test": "gulp watch-test",
+	"postinstall": "gulp"	
   },
   "repository": {
     "type": "git",
