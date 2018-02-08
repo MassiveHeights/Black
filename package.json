@@ -2,7 +2,7 @@
   "name": "black",
   "version": "0.3.4",
   "description": "",
-  "main": "src/Black.js",
+  "main": "dist/black-es6-module.js",
   "directories": {},
   "scripts": {
     "start": "gulp",
