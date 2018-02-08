@@ -11,14 +11,15 @@
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",
-    "watch-test": "gulp watch-test"
+    "watch-test": "gulp watch-test",
+	"postinstall": "gulp"	
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MassiveHeights/Black.git"
   },
   "author": "Massive Heights",
-  "license": "EULA",
+  "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-concat": "^1.0.3",
