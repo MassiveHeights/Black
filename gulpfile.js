@@ -19,7 +19,8 @@ gulp.task('build-es5', function () {
   return gulp.src(files)
     .pipe(preprocess({
       context: {
-        EXPORT: ''
+        EXPORT: '',
+		DEBUG: true
       }
     }))
     .pipe(sourcemaps.init())
