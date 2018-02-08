@@ -128,7 +128,8 @@ class Stage extends GameObject {
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
       this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
       this.mScaleX = this.mScaleY = this.mStageScaleFactor;
-    } else {// NO SCALE      
+    } else {
+      // NO SCALE
       let size = Black.instance.viewport.size;
       this.mStageWidth = (size.width * this.dpr);
       this.mStageHeight = (size.height * this.dpr);
