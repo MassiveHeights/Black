@@ -717,6 +717,16 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Returns current stage.
+   *
+   * @readonly
+   * @returns {Stage}
+   */
+  get stage() {
+    return this.mStage;
+  }
+
+  /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
    * @readonly
    * @returns {number}
