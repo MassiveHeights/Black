@@ -118,10 +118,7 @@ class Black extends MessageDispatcher {
     /** @private @type {Object<string, Array>} */
     this.mTagCache = {};
 
-    /**
-     * @private
-     * @type {function(new: GameObject)}
-     */
+    /** @private @type {function(new: GameObject)} */
     this.mGameClass = gameClass;
 
     /** @private @type {GameObject|null} */
