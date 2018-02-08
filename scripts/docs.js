@@ -516,10 +516,12 @@ class Generator {
 
   getDesc(item, isEnum = false) {
     if (!item || !item.description || item.description == 'undefined' || item.description == 'Description') {
-      if (isEnum)
+      /*if (isEnum)
         return '-';
 
       return `<span class="no-description">NO DESCRIPTION</span>`;
+	  */
+	  return '';
     }
 
     return this.parseCodeTag(this.parseLinks(item.description));
