@@ -22,6 +22,7 @@ class TextMetricsEx {
    */
   static measure(text, info, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();
+    outBounds.zero();
 
     let lineBounds = [];
 
