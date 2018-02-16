@@ -45,7 +45,7 @@ class VideoNullDriver {
     this.mRenderResolution = 1;
 
     /** @protected @type {number} */
-    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
+    this.mRenderScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
 
     /** @protected @type {BlendMode<string>|null} */
     this.mGlobalBlendMode = BlendMode.AUTO;
@@ -108,7 +108,7 @@ class VideoNullDriver {
    */
   set renderResolution(value) {
     this.mRenderResolution = value;
-    this.mStageScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
+    this.mRenderScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
     this.__onResize(null, null);
   }
 

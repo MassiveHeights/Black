@@ -30,6 +30,9 @@ class Sprite extends DisplayObject {
     // Cache as bitmap
     /** @private @type {CanvasRenderTexture|null} */
     this.mCache = null;
+
+    /** @private @type {Rectangle|null} */
+    this.mCacheBounds = null;
   }
 
   /**
@@ -46,11 +49,11 @@ class Sprite extends DisplayObject {
     let renderer = this.mRenderer;
 
     if (this.mBaked === true && isBackBufferActive === true) {
-      let bounds = this.getBounds(this, true);
+      const sf = this.stage.scaleFactor;
 
-      // TODO: how to avoid this?
-      let m = this.worldTransformation.clone();
-      m.translate(bounds.x, bounds.y);
+      let m = new Matrix();
+      m.scale(sf, sf)
+      m.translate(this.mCacheBounds.x + this.stage.x, this.mCacheBounds.y + this.stage.y);
 
       renderer.transform = m;
       renderer.skipChildren = true;
@@ -99,22 +102,29 @@ class Sprite extends DisplayObject {
       return;
 
     if (value === true && this.mCache === null) {
-      let bounds = this.getBounds(this, true);
-      
-      let m = new Matrix();
-      this.worldTransformation.copyTo(m);
-      m.invert();
-      
-      m.data[4] -= bounds.x;
-      m.data[5] -= bounds.y;
+      let bounds = this.getBounds(this.parent, true);
+
+      if (this.mCacheBounds === null)
+        this.mCacheBounds = new Rectangle();
+
+      bounds.copyTo(this.mCacheBounds);
 
       this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
+
+      const sf = this.stage.scaleFactor;
+      const m = Matrix.pool.get().identity();
+
+      m.data[4] -= (bounds.x + this.stage.x) * sf;
+      m.data[5] -= (bounds.y + this.stage.y) * sf;
+
       Black.driver.render(this, this.mCache, m);
+      //this.mCache.__dumpToDocument();
     } else if (value === false) {
       this.mCache = null;
     }
 
     this.mBaked = value;
+    this.setTransformDirty();
   }
 
   /**
@@ -185,6 +195,6 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTextureName = value;
-    this.texture = AssetManager.default.getTexture(/** @type {string} */ (value));
+    this.texture = AssetManager.default.getTexture(/** @type {string} */(value));
   }
 }

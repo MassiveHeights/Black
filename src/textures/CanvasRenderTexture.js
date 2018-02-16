@@ -13,15 +13,28 @@ class CanvasRenderTexture extends Texture {
    */
   constructor(width, height) {
     let bbs = Black.driver.finalScale;
-    
+
     let w = width * bbs;
     let h = height * bbs;
-    
+
     let renderTarget = new RenderTargetCanvas(w, h);
 
     super(renderTarget.native);
     this.set(renderTarget.native, null, null, 1 / bbs);
 
     this.renderTarget = renderTarget;
+  }
+
+  __dumpToDocument() {
+    let img = new Image();
+    img.style.position = 'fixed';
+    img.style.top = '0px';
+    img.style.left = '0px';
+    img.style.background = '#333';
+    img.style.width = '256px';
+    img.style.height = 'auto';
+    img.style.border = '1px solid crimson';
+    img.src = this.mNative.toDataURL("image/png");
+    document.body.appendChild(img);
   }
 }

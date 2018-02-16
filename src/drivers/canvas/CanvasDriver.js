@@ -71,10 +71,8 @@ class CanvasDriver extends VideoNullDriver {
       if (isBackBufferActive === false) {
         if (customTransform === null) {
           transform = renderer.getTransform().clone();
-          // transform.invert();
           transform.data[4] -= Black.stage.mX;
           transform.data[5] -= Black.stage.mY;
-          //this.setTransform(t);
         } else {
           transform = renderer.getTransform().clone();
           transform.prepend(customTransform);
@@ -142,7 +140,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let scale = this.mStageScaleFactor;
+    let scale = this.mRenderScaleFactor;
 
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
@@ -172,7 +170,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
 
-    let scale = this.mStageScaleFactor;
+    let scale = this.mRenderScaleFactor;
     this.mCtx.canvas.width = this.mClientWidth * scale;
     this.mCtx.canvas.height = this.mClientHeight * scale;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
@@ -186,7 +184,7 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let scale = this.mStageScaleFactor;
+    let scale = this.mRenderScaleFactor;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
@@ -208,7 +206,7 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let scale = this.mStageScaleFactor;
+    let scale = this.mRenderScaleFactor;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
@@ -227,7 +225,7 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   beginClip(clipRect, px, py) {
-    let r = this.mStageScaleFactor;
+    let r = this.mRenderScaleFactor;
 
     this.mCtx.save();
     this.mCtx.beginPath();
@@ -258,7 +256,7 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mTransform = m;
 
-    let scale = this.mStageScaleFactor;
+    let scale = this.mRenderScaleFactor;
 
     if (this.mSnapToPixels === true)
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);

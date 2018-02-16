@@ -100,15 +100,15 @@ class Stage extends GameObject {
       let width = windowWidth * scaleFactor;
       let height = windowHeight * scaleFactor;
 
-      this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
       this.mStageWidth = width;
       this.mStageHeight = height;
 
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor;
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
       let size = Black.instance.viewport.size;
       this.mStageWidth = Black.instance.viewport.size.width;
       this.mStageHeight = Black.instance.viewport.size.height;
+
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
     } else if (this.mScaleMode === StageScaleMode.LETTERBOX) {
       let size = Black.instance.viewport.size;
@@ -126,15 +126,15 @@ class Stage extends GameObject {
 
       this.mStageWidth = this.LP(this.mWidth, this.mHeight);
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-      this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor;
+      
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else {
       // NO SCALE
       let size = Black.instance.viewport.size;
       this.mStageWidth = (size.width * this.dpr);
       this.mStageHeight = (size.height * this.dpr);
-      this.mStageScaleFactor = 1 / this.dpr;
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor;
+      
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.dpr;
     }
 
     this.mStageWidth = Math.round(this.mStageWidth);
