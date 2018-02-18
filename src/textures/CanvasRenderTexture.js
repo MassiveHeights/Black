@@ -12,12 +12,12 @@ class CanvasRenderTexture extends Texture {
    * @param {number} height The height of the texture in stage space.
    */
   constructor(width, height) {
-    let bbs = Black.driver.finalScale;
+    const bbs = Black.driver.finalScale;
 
-    let w = width * bbs;
-    let h = height * bbs;
+    const w = width * bbs;
+    const h = height * bbs;
 
-    let renderTarget = new RenderTargetCanvas(w, h);
+    const renderTarget = new RenderTargetCanvas(w, h);
 
     super(renderTarget.native);
     this.set(renderTarget.native, null, null, 1 / bbs);
