@@ -78,8 +78,8 @@ class EmitterRendererCanvas extends Renderer {
    */
   __renderParticle(particle, localTransform, worldTransform, driver) {
     let texture = this.textures[particle.textureIndex];
-    let tw = texture.renderWidth * 0.5;
-    let th = texture.renderHeight * 0.5;
+    let tw = texture.displayWidth * 0.5;
+    let th = texture.displayHeight * 0.5;
 
     if (particle.r === 0) {
       let tx = particle.x - tw * particle.scaleX;
