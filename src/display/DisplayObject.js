@@ -230,9 +230,6 @@ class DisplayObject extends GameObject {
    * @return {void}
    */
   set clipRect(value) {
-    if (this.mClipRect === value)
-      return;
-
     this.mClipRect = value;
     this.setRenderDirty();
   }
