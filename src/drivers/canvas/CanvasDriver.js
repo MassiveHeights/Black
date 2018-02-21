@@ -81,8 +81,11 @@ class CanvasDriver extends VideoNullDriver {
         transform = renderer.getTransform();
       }
 
-      if (renderer.isRenderable === true)
+      if (renderer.isRenderable === true) {
         this.setTransform(transform);
+        this.globalBlendMode = renderer.getBlendMode(); // not perfect 
+      }
+
 
       if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
@@ -92,7 +95,6 @@ class CanvasDriver extends VideoNullDriver {
       } else {
         if (renderer.isRenderable === true) {
           this.globalAlpha = renderer.getAlpha();
-          this.globalBlendMode = renderer.getBlendMode();
           this.mSnapToPixels = renderer.snapToPixels;
 
           renderer.render(this);
