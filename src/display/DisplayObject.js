@@ -23,6 +23,9 @@ class DisplayObject extends GameObject {
 
     /** @protected @type {Renderer|null} */
     this.mRenderer = this.getRenderer();
+
+    /** @private @type {boolean} */
+    this.mCacheAsBitmap = false;
   }
 
   /**

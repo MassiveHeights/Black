@@ -48,12 +48,13 @@ class Sprite extends DisplayObject {
   onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
-    if (this.mBaked === true && isBackBufferActive === true) {
+    if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
       const sf = this.stage.scaleFactor;
 
-      let m = new Matrix();
-      m.scale(sf, sf)
-      m.translate(this.mCacheBounds.x + this.stage.x, this.mCacheBounds.y + this.stage.y);
+      const m = new Matrix();
+      m.copyFrom(this.worldTransformation);
+      m.translate(this.mCacheBounds.x, this.mCacheBounds.y);
+      m.scale(sf, sf);
 
       renderer.transform = m;
       renderer.skipChildren = true;
@@ -84,12 +85,12 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * Gets/Sets whether the Sprite should be baked on not
+   * Gets/Sets whether the Sprite and all it's childen should be baked into bitmap.
    *
    * @return {boolean} 
    */
-  get baked() {
-    return this.mBaked;
+  get cacheAsBitmap() {
+    return this.mCacheAsBitmap;
   }
 
   /**
@@ -97,33 +98,33 @@ class Sprite extends DisplayObject {
    * @param {boolean} value
    * @return {void}
    */
-  set baked(value) {
-    if (value === this.mBaked)
+  set cacheAsBitmap(value) {
+    if (value === this.mCacheAsBitmap)
       return;
 
     if (value === true && this.mCache === null) {
-      let bounds = this.getBounds(this.parent, true);
+      const bounds = this.getBounds(this, true);
+      const sf = this.stage.scaleFactor;
+      const m = this.worldTransformationInversed; // do we need to clone?
+      m.data[4] -= bounds.x;
+      m.data[5] -= bounds.y;
 
       if (this.mCacheBounds === null)
         this.mCacheBounds = new Rectangle();
 
       bounds.copyTo(this.mCacheBounds);
+      bounds.width *= 1 / sf;
+      bounds.height *= 1 / sf;
 
       this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
 
-      const sf = this.stage.scaleFactor;
-      const m = Matrix.pool.get().identity();
-
-      m.data[4] -= (bounds.x + this.stage.x) * sf;
-      m.data[5] -= (bounds.y + this.stage.y) * sf;
-
       Black.driver.render(this, this.mCache, m);
-      //this.mCache.__dumpToDocument();
+      this.mCache.__dumpToDocument();
     } else if (value === false) {
       this.mCache = null;
     }
 
-    this.mBaked = value;
+    this.mCacheAsBitmap = value;
     this.setTransformDirty();
   }
 

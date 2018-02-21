@@ -85,21 +85,9 @@ class GameObject extends MessageDispatcher {
     /** @protected @type {boolean} */
     this.mSnapToPixels = false;
 
-    /** @private @type {boolean} */
-    this.mBaked = false;
-
     // cache all colliders for fast access
     /** @private @type {Array<Collider>} */
     this.mCollidersCache = [];
-  }
-
-  get baked() {
-    return this.mBaked;
-  }
-
-  set baked(value) {
-    // set all children baked
-    this.mBaked = value;
   }
 
   get snapToPixels() {
