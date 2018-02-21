@@ -125,7 +125,7 @@ class DisplayObject extends GameObject {
     let renderer = this.mRenderer;
     
     if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
-      const sf = this.stage.scaleFactor;
+      const sf = Black.stage.scaleFactor;
 
       const m = new Matrix();
       m.copyFrom(this.worldTransformation);
@@ -191,7 +191,7 @@ class DisplayObject extends GameObject {
 
     if (value === true && this.mCache === null) {
       const bounds = this.getBounds(this, true);
-      const sf = this.stage.scaleFactor;
+      const sf = Black.stage.scaleFactor;
       const m = this.worldTransformationInversed; // do we need to clone?
       m.data[4] -= bounds.x;
       m.data[5] -= bounds.y;
