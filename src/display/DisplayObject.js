@@ -26,6 +26,12 @@ class DisplayObject extends GameObject {
 
     /** @private @type {boolean} */
     this.mCacheAsBitmap = false;
+
+    /** @private @type {CanvasRenderTexture|null} */
+    this.mCache = null;
+
+    /** @private @type {Rectangle|null} */
+    this.mCacheBounds = null;
   }
 
   /**
@@ -117,8 +123,22 @@ class DisplayObject extends GameObject {
   */
   onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
+    
+    if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
+      const sf = this.stage.scaleFactor;
 
-    if (this.mDirty & DirtyFlag.RENDER) {
+      const m = new Matrix();
+      m.copyFrom(this.worldTransformation);
+      m.translate(this.mCacheBounds.x, this.mCacheBounds.y);
+      m.scale(sf, sf);
+
+      renderer.transform = m;
+      renderer.skipChildren = true;
+      renderer.alpha = 1;
+      renderer.blendMode = BlendMode.NORMAL;
+      renderer.texture = this.mCache;
+    } else if (this.mDirty & DirtyFlag.RENDER) {
+      renderer.skipChildren = false;
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
@@ -126,6 +146,7 @@ class DisplayObject extends GameObject {
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.mClipRect;
       renderer.snapToPixels = this.mSnapToPixels;
+      renderer.texture = null;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
@@ -147,6 +168,51 @@ class DisplayObject extends GameObject {
     Vector.pool.release(tmpVector);
 
     return contains;
+  }
+
+
+  /**
+   * Gets/Sets whether the Sprite and all it's childen should be baked into bitmap.
+   *
+   * @return {boolean} 
+   */
+  get cacheAsBitmap() {
+    return this.mCacheAsBitmap;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set cacheAsBitmap(value) {
+    if (value === this.mCacheAsBitmap)
+      return;
+
+    if (value === true && this.mCache === null) {
+      const bounds = this.getBounds(this, true);
+      const sf = this.stage.scaleFactor;
+      const m = this.worldTransformationInversed; // do we need to clone?
+      m.data[4] -= bounds.x;
+      m.data[5] -= bounds.y;
+
+      if (this.mCacheBounds === null)
+        this.mCacheBounds = new Rectangle();
+
+      bounds.copyTo(this.mCacheBounds);
+      bounds.width *= 1 / sf;
+      bounds.height *= 1 / sf;
+
+      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
+
+      Black.driver.render(this, this.mCache, m);
+      //this.mCache.__dumpToDocument();
+    } else if (value === false) {
+      this.mCache = null;
+    }
+
+    this.mCacheAsBitmap = value;
+    this.setTransformDirty();
   }
 
   /**

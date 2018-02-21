@@ -6,7 +6,6 @@
  */
 /* @echo EXPORT */
 class SpriteRendererCanvas extends DisplayObjectRendererCanvas {
-
   /**
    * @inheritDoc
    */

@@ -25,14 +25,7 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
-    }
-
-    // Cache as bitmap
-    /** @private @type {CanvasRenderTexture|null} */
-    this.mCache = null;
-
-    /** @private @type {Rectangle|null} */
-    this.mCacheBounds = null;
+    }    
   }
 
   /**
@@ -61,11 +54,7 @@ class Sprite extends DisplayObject {
       renderer.alpha = 1;
       renderer.blendMode = BlendMode.NORMAL;
       renderer.texture = this.mCache;
-
-      return driver.registerRenderer(renderer);
-    }
-
-    if (this.mDirty & DirtyFlag.RENDER) {
+    } else if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
       renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;
@@ -82,50 +71,6 @@ class Sprite extends DisplayObject {
     }
 
     return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * Gets/Sets whether the Sprite and all it's childen should be baked into bitmap.
-   *
-   * @return {boolean} 
-   */
-  get cacheAsBitmap() {
-    return this.mCacheAsBitmap;
-  }
-
-  /**
-   * @ignore
-   * @param {boolean} value
-   * @return {void}
-   */
-  set cacheAsBitmap(value) {
-    if (value === this.mCacheAsBitmap)
-      return;
-
-    if (value === true && this.mCache === null) {
-      const bounds = this.getBounds(this, true);
-      const sf = this.stage.scaleFactor;
-      const m = this.worldTransformationInversed; // do we need to clone?
-      m.data[4] -= bounds.x;
-      m.data[5] -= bounds.y;
-
-      if (this.mCacheBounds === null)
-        this.mCacheBounds = new Rectangle();
-
-      bounds.copyTo(this.mCacheBounds);
-      bounds.width *= 1 / sf;
-      bounds.height *= 1 / sf;
-
-      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
-
-      Black.driver.render(this, this.mCache, m);
-      this.mCache.__dumpToDocument();
-    } else if (value === false) {
-      this.mCache = null;
-    }
-
-    this.mCacheAsBitmap = value;
-    this.setTransformDirty();
   }
 
   /**
