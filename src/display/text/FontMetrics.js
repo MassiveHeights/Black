@@ -11,9 +11,9 @@ class FontMetrics {
    *
    * @ignore
    * @private
-   * @param {TextInfo} info Default text info with 24 font size.
+   * @param {TextStyle} style Default text info with 24 font size.
    */
-  constructor(info) {
+  constructor(style) {
     if (FontMetrics.__CONTEXT === null) {
       FontMetrics.__CANVAS = document.createElement('canvas');
       FontMetrics.__CONTEXT = FontMetrics.__CANVAS.getContext('2d');
@@ -25,20 +25,20 @@ class FontMetrics {
     /** @private */
     this.mCtx = FontMetrics.__CONTEXT;
 
-    /** @private @type {TextInfo} */
-    this.mInfo = info;
+    /** @private @type {TextStyle} */
+    this.mStyle = style;
 
     /** @private @type {number} */
-    this.mPadding = info.size * 0.5;
+    this.mPadding = style.size * 0.5;
 
     /** @private @type {number} */
-    this.mCanvasWidth = this.mCanvas.width = info.size * 2;
+    this.mCanvasWidth = this.mCanvas.width = style.size * 2;
 
     /** @private @type {number} */
-    this.mCanvasHeight = this.mCanvas.height = info.size * 2 + this.mPadding;
+    this.mCanvasHeight = this.mCanvas.height = style.size * 2 + this.mPadding;
 
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
-    this.mCtx.font = `${info.weight} ${info.size}px ${info.name}`;
+    this.mCtx.font = `${style.weight} ${style.size}px ${style.family}`;
     this.mCtx.textBaseline = 'top';
     this.mCtx.textAlign = 'center';
 
@@ -100,7 +100,7 @@ class FontMetrics {
    * @returns {number}
    */
   get capHeightNormalized() {
-    return (this.capHeight - this.top) / this.mInfo.size;
+    return (this.capHeight - this.top) / this.mStyle.size;
   }
 
   /**
@@ -111,7 +111,7 @@ class FontMetrics {
    * @returns {number}
    */
   get xHeightNormalized() {
-    return (this.xHeight - this.top) / this.mInfo.size;
+    return (this.xHeight - this.top) / this.mStyle.size;
   }
 
   /**
@@ -122,7 +122,7 @@ class FontMetrics {
    * @returns {number}
    */
   get ascentNormalized() {
-    return (this.ascent - this.top) / this.mInfo.size;
+    return (this.ascent - this.top) / this.mStyle.size;
   }
 
   /**
@@ -133,7 +133,7 @@ class FontMetrics {
    * @returns {number}
    */
   get descentNormalized() {
-    return (this.descent - this.top) / this.mInfo.size;
+    return (this.descent - this.top) / this.mStyle.size;
   }
 
   /**
@@ -144,7 +144,7 @@ class FontMetrics {
    * @returns {number}
    */
   get baselineNormalized() {
-    return (this.baseline - this.top) / this.mInfo.size;
+    return (this.baseline - this.top) / this.mStyle.size;
   }
 
   /**
@@ -155,7 +155,7 @@ class FontMetrics {
    * @returns {number}
    */
   get bottomNormalized() {
-    return (this.bottom - this.top) / this.mInfo.size;
+    return (this.bottom - this.top) / this.mStyle.size;
   }
 
   /**
@@ -255,8 +255,8 @@ class FontMetrics {
     let cache = FontMetrics.CACHE[fontName];
 
     if (cache == null) {
-      let info = new TextInfo(fontName, 0, 24);
-      cache = new FontMetrics(info);
+      let style = new TextStyle(fontName, 0, 24);
+      cache = new FontMetrics(style);
       FontMetrics.CACHE[fontName] = cache;
     }
 

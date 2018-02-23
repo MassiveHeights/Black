@@ -15,7 +15,7 @@ class TextRenderer extends Renderer {
     /** @type {string|null} @ignore */
     this.text = null;
 
-    /** @type {TextInfo} @ignore */
+    /** @type {TextStyle} @ignore */
     this.style = null;
 
     /** @type {boolean} @ignore */
@@ -24,14 +24,11 @@ class TextRenderer extends Renderer {
     /** @type {boolean} @ignore */
     this.autoSize = false;
 
-    /** @type {Rectangle} @ignore */
-    this.bounds = new Rectangle(0, 0, 100, 100);
+    /** @type {TextMetricsData} @ignore */
+    this.metrics = null;
 
-    /** @type {Array} @ignore */
-    this.lineBounds = null;
-
-    /** @type {TextInfo.FontAlign} @ignore */
-    this.align = TextInfo.FontAlign.NONE;
+    /** @type {TextStyle.FontAlign} @ignore */
+    this.align = TextStyle.FontAlign.NONE;
 
     /** @type {boolean} @ignore */
     this.drawBounds = false;
@@ -60,100 +57,77 @@ class TextRenderer extends Renderer {
     /** @private @type {CanvasRenderingContext2D} */
     this.__context = /** @type {CanvasRenderingContext2D} */ (this.__canvas.getContext('2d'));
 
+    /** */
     this.__context.lineJoin = 'round';
+
+    /** */
     this.__context.miterLimit = 2;
   }
 
   /**
    * @ignore
    * @private
+   * @param {TextSegmentMetricsData} segment
    * @param {CanvasRenderingContext2D} ctx
    * @param {VideoNullDriver} driver
-   * @param {Array<string>} lines
    * @param {FontMetrics} fontMetrics
    * @param {boolean} isStroke
    */
-  __renderLines(ctx, driver, lines, fontMetrics, isStroke = false) {
-    let baseline = fontMetrics.baselineNormalized * this.style.size;
-
-    const strokeThickness = this.style.strokeThickness;
+  renderSegment(metrics, segment, ctx, driver, fontMetrics, isStroke) {
+    let baseline = fontMetrics.baselineNormalized * segment.style.size;
 
     if (isStroke === true) {
-      ctx.lineWidth = strokeThickness;
-      ctx.strokeStyle = VideoNullDriver.hexColorToString(this.style.strokeColor);
+      ctx.lineWidth = segment.style.strokeThickness;
+      ctx.strokeStyle = VideoNullDriver.hexColorToString(segment.style.strokeColor);
     } else {
-      ctx.fillStyle = VideoNullDriver.hexColorToString(this.style.color);
+      ctx.fillStyle = VideoNullDriver.hexColorToString(segment.style.color);
     }
 
-    let width = this.bounds.width;
+    ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
 
-    for (let i = 0; i < lines.length; i++) {
-      let line = lines[i];
-      let lineBound = this.lineBounds[i];
-      let lx = strokeThickness;
-      let ly = (baseline + (baseline * i * this.lineHeight)) + strokeThickness;
+    let lx = segment.bounds.x - metrics.strokeBounds.x;
+    let ly = baseline + segment.bounds.y - metrics.strokeBounds.y;
+    
+    if (this.align === 'center')
+      lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
+    else if (this.align === 'right')
+      lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
-      if (this.align === 'center')
-        lx += (width - lineBound.width) * 0.5;
-      else if (this.align === 'right')
-        lx += width - lineBound.width;
-
-      lx += this.padding.x;
-      ly += this.padding.y;
-
-      if (isStroke === true)
-        ctx.strokeText(line, lx, ly);
-      else
-        ctx.fillText(line, lx, ly);
-    }
+    if (isStroke === true)
+      ctx.strokeText(segment.text, lx, ly);
+    else
+      ctx.fillText(segment.text, lx, ly);
   }
 
-  /**
-   * @inheritDoc
-   */
   render(driver) {
     if (this.text === null)
       return;
 
-    const strokeThickness = this.style.strokeThickness;
     const cvs = this.__canvas;
     const ctx = this.__context;
+    ctx.textBaseline = 'alphabetic';
 
-    let canvasBounds = this.bounds.clone().inflate(strokeThickness + this.padding.right, strokeThickness + this.padding.bottom);
+    // find canvas bounds
+    let canvasBounds = this.metrics.strokeBounds.clone();
 
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
 
-      let fontMetrics = FontMetrics.get(this.style.name);
+      let fontMetrics = FontMetrics.get(this.style.family);
+      let segments = this.metrics.segments;
 
-      if (this.drawBounds === true) {
-        ctx.strokeStyle = VideoNullDriver.hexColorToString(0xff0000);
-        ctx.strokeRect(0, 0, cvs.width, cvs.height);
-
-        ctx.strokeStyle = VideoNullDriver.hexColorToString(0xff00ff);
-        ctx.strokeRect(0, 0, this.bounds.width, this.bounds.height);
-      }
-
-      ctx.font = `${this.style.size}px ${this.style.name}`;
-      ctx.textBaseline = 'alphabetic'; // alphabetic
-
-      const lines = this.multiline === true ? this.text.split('\n') : [this.text.replace(/\n/g, '')];
-
-      if (this.drawBounds === true) {
-        for (let i = 0; i < lines.length; i++) {
-          let line = this.lineBounds[i];
-          ctx.strokeRect(line.x, line.y, line.width, line.height);
+      for (let i = 0; i < segments.length; i++) {
+        let segment = segments[i];
+        if (segment.style.strokeThickness > 0) {
+          ctx.lineJoin = 'round';
+          ctx.miterLimit = 2;
+          this.renderSegment(this.metrics, segment, ctx, driver, fontMetrics, true);
         }
       }
 
-      if (strokeThickness > 0) {
-        ctx.lineJoin = 'round';
-        ctx.miterLimit = 2;
-        this.__renderLines(ctx, driver, lines, fontMetrics, true)
-      }
-
-      this.__renderLines(ctx, driver, lines, fontMetrics, false);
+      for (let i = 0; i < segments.length; i++)
+        this.renderSegment(this.metrics, segments[i], ctx, driver, fontMetrics, false);
 
       if (this.texture === null)
         this.texture = new Texture(cvs);
@@ -166,26 +140,26 @@ class TextRenderer extends Renderer {
    * @inheritDoc
    */
   getTransform() {
-    const strokeThickness = this.style.strokeThickness;
+    const hasStroke = this.metrics.strokeBounds.x !== 0 || this.metrics.strokeBounds.y !== 0;
 
     let fieldXOffset = 0;
     let fieldYOffset = 0;
 
     if (this.autoSize === false) {
       if (this.align === 'center')
-        fieldXOffset = (this.fieldWidth - this.bounds.width) * 0.5;
+        fieldXOffset = (this.fieldWidth - this.metrics.bounds.width) * 0.5;
       else if (this.align === 'right')
-        fieldXOffset = this.fieldWidth - this.bounds.width;
+        fieldXOffset = this.fieldWidth - this.metrics.bounds.width;
 
       if (this.vAlign === 'middle')
-        fieldYOffset = (this.fieldHeight - this.bounds.height) * 0.5;
+        fieldYOffset = (this.fieldHeight - this.metrics.bounds.height) * 0.5;
       else if (this.vAlign === 'bottom')
-        fieldYOffset = this.fieldHeight - this.bounds.height;
+        fieldYOffset = this.fieldHeight - this.metrics.bounds.height;
     }
 
-    if (strokeThickness !== 0 || this.autoSize === false) {
+    if (hasStroke === true || this.autoSize === false) {
       this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate(-strokeThickness + fieldXOffset, -strokeThickness + fieldYOffset);
+      this.__transformCache.translate(this.metrics.strokeBounds.x + fieldXOffset, this.metrics.strokeBounds.y + fieldYOffset);
       return this.__transformCache;
     } else {
       return this.transform;

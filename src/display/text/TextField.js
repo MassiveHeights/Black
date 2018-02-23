@@ -9,10 +9,10 @@ class TextField extends DisplayObject {
   /**
    * Creates new instance of TextField
    * 
-   * @param  {string=} [text=''] Text to be displayed inside this text field
-   * @param  {number=} size text size
-   * @param  {string=} name font name
-   * @param {TextInfo=} [style=undefined] TextInfo object
+   * @param {string=} [text=''] Text to be displayed inside this text field
+   * @param {number=} size      The size of the text
+   * @param {string=} name      Name of the font
+   * @param {TextStyle=} [style=undefined] TextStyle object
    */
   constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
     super();
@@ -29,23 +29,26 @@ class TextField extends DisplayObject {
     /** @private @type {number} */
     this.mTextHeight = 0;
 
-    /** @private @type {TextInfo} */
-    this.mStyle = style || new TextInfo();
+    /** @private @type {TextStyle} */
+    this.mDefaultStyle = style || new TextStyle('sans-serif', 0x0, 14, TextStyle.FontStyle.NORMAL, TextStyle.FontWeight.NORMAL, 0, 0x0);
 
-    /** @private @type {string} */
-    this.mStyle.name = name || style.name;
+    /** */
+    this.mDefaultStyle.family = name || style.family;
 
-    /** @private @type {number} */
-    this.mStyle.size = size || style.size;
+    /** */
+    this.mDefaultStyle.size = size || style.size;
+
+    /** @private @type {Array<TextStyle>} */
+    this.mStyles = [];
 
     /** @private @type {boolean} */
     this.mAutoSize = true;
 
-    /** @private @type {TextInfo.FontAlign} */
-    this.mAlign = TextInfo.FontAlign.LEFT;
+    /** @private @type {TextStyle.FontAlign} */
+    this.mAlign = TextStyle.FontAlign.LEFT;
 
-    /** @private @type {TextInfo.FontVerticalAlign} */
-    this.mVerticalAlign = TextInfo.FontVerticalAlign.MIDDLE;
+    /** @private @type {TextStyle.FontVerticalAlign} */
+    this.mVerticalAlign = TextStyle.FontVerticalAlign.MIDDLE;
 
     /** @private @type {boolean} */
     this.mMultiline = false;
@@ -67,6 +70,9 @@ class TextField extends DisplayObject {
 
     /** @private @type {Rectangle} */
     this.mPadding = new Rectangle(0, 0, 0, 0);
+
+    /** @private @type {TextMetricsData|null} */
+    this.mMetrics = null;
   }
 
   /**
@@ -99,7 +105,7 @@ class TextField extends DisplayObject {
 
       renderer.padding = this.mPadding;
       renderer.text = this.text;
-      renderer.style = this.mStyle;
+      renderer.style = this.mDefaultStyle;
       renderer.multiline = this.mMultiline;
       renderer.lineHeight = this.mLineHeight;
       renderer.align = this.mAlign;
@@ -107,8 +113,7 @@ class TextField extends DisplayObject {
       renderer.fieldWidth = this.mFieldWidth;
       renderer.fieldHeight = this.mFieldHeight;
       renderer.autoSize = this.mAutoSize;
-      renderer.bounds = this.mTextBounds;
-      renderer.lineBounds = this.mLineBounds;
+      renderer.metrics = this.mMetrics;
 
       if (renderer.hasVisibleArea === true)
         this.mDirty ^= DirtyFlag.RENDER_CACHE;
@@ -130,7 +135,11 @@ class TextField extends DisplayObject {
       if (this.mMultiline === false)
         text = text.replace(/\n/g, '');
 
-      this.mLineBounds = TextMetricsEx.measure(text, this.mStyle, this.mLineHeight, this.mTextBounds);
+      let styles = [this.mDefaultStyle];
+      styles.push(...Object.values(this.mStyles));
+
+      this.mMetrics = TextMetricsEx.measure(text, this.mLineHeight, ...styles);
+      this.mTextBounds.copyFrom(this.mMetrics.bounds);
     }
 
     if (this.mAutoSize === false) {
@@ -151,6 +160,28 @@ class TextField extends DisplayObject {
     }
 
     return outRect;
+  }
+
+  setStyle(name, style) {
+    Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`)
+    style.name = name;
+
+    this.mStyles[name] = style;
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+  }
+
+  setDefaultStyle(name, style) {
+    style.copyTo(this.mDefaultStyle);
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+  }
+
+  removeStyle(name) {
+    delete this.mStyles[name];
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+  }
+
+  getStyle(name) {
+    return this.mStyles[name];
   }
 
   /**
@@ -197,7 +228,7 @@ class TextField extends DisplayObject {
    * @return {number}
    */
   get size() {
-    return this.mStyle.size;
+    return this.mDefaultStyle.size;
   }
 
   /**
@@ -206,10 +237,10 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set size(value) {
-    if (this.mStyle.size === value)
+    if (this.mDefaultStyle.size === value)
       return;
 
-    this.mStyle.size = value;
+    this.mDefaultStyle.size = value;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
@@ -219,7 +250,7 @@ class TextField extends DisplayObject {
    * @return {string}
    */
   get font() {
-    return this.mStyle.name;
+    return this.mDefaultStyle.family;
   }
 
   /**
@@ -228,10 +259,10 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set font(value) {
-    if (this.mStyle.name === value)
+    if (this.mDefaultStyle.family === value)
       return;
 
-    this.mStyle.name = value;
+    this.mDefaultStyle.family = value;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
@@ -241,7 +272,7 @@ class TextField extends DisplayObject {
    * @return {number}
    */
   get color() {
-    return this.mStyle.color;
+    return this.mDefaultStyle.color;
   }
 
   /**
@@ -250,61 +281,61 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set color(value) {
-    if (this.mStyle.color === value)
+    if (this.mDefaultStyle.color === value)
       return;
 
-    this.mStyle.color = value;
+    this.mDefaultStyle.color = value;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
   /**
    * Get/Set text style.
    *
-   * @return {TextInfo.FontStyle}
+   * @return {TextStyle.FontStyle}
    */
-  get style() {
-    return this.mStyle.style;
+  get fontStyle() {
+    return this.mDefaultStyle.style;
   }
 
   /**
    * @ignore
-   * @param {TextInfo.FontStyle} value
+   * @param {TextStyle.FontStyle} value
    * @return {void}
    */
-  set style(value) {
-    if (this.mStyle.style === value)
+  set fontStyle(value) {
+    if (this.mDefaultStyle.style === value)
       return;
 
-    this.mStyle.style = value;
+    this.mDefaultStyle.style = value;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
    * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @return {TextInfo.FontWeight}
+   * @return {TextStyle.FontWeight}
    */
   get weight() {
-    return this.mStyle.weight;
+    return this.mDefaultStyle.weight;
   }
 
   /**
    * @ignore
-   * @param {TextInfo.FontWeight} value
+   * @param {TextStyle.FontWeight} value
    * @return {void}
    */
   set weight(value) {
-    if (this.mStyle.weight === value)
+    if (this.mDefaultStyle.weight === value)
       return;
 
-    this.mStyle.weight = value;
+    this.mDefaultStyle.weight = value;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
    * Specifies the horizontal alignment of the text (left | center | right).
    *
-   * @return {TextInfo.FontAlign}
+   * @return {TextStyle.FontAlign}
    */
   get align() {
     return this.mAlign;
@@ -312,7 +343,7 @@ class TextField extends DisplayObject {
 
   /**
    * @ignore
-   * @param {TextInfo.FontAlign} value
+   * @param {TextStyle.FontAlign} value
    * @return {void}
    */
   set align(value) {
@@ -326,7 +357,7 @@ class TextField extends DisplayObject {
   /**
    * Specifies the vertical alignment of the text (top | middle | bottom).
    *
-   * @return {TextInfo.FontVerticalAlign}
+   * @return {TextStyle.FontVerticalAlign}
    */
   get vAlign() {
     return this.mVerticalAlign;
@@ -334,7 +365,7 @@ class TextField extends DisplayObject {
 
   /**
    * @ignore
-   * @param {TextInfo.FontVerticalAlign} value
+   * @param {TextStyle.FontVerticalAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -350,7 +381,7 @@ class TextField extends DisplayObject {
    * @return {number}
    */
   get strokeColor() {
-    return this.mStyle.strokeColor;
+    return this.mDefaultStyle.strokeColor;
   }
 
   /**
@@ -359,10 +390,10 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeColor(value) {
-    if (this.mStyle.strokeColor === value)
+    if (this.mDefaultStyle.strokeColor === value)
       return;
 
-    this.mStyle.strokeColor = value;
+    this.mDefaultStyle.strokeColor = value;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 
@@ -373,7 +404,7 @@ class TextField extends DisplayObject {
    * @return {number} 
    */
   get strokeThickness() {
-    return this.mStyle.strokeThickness;
+    return this.mDefaultStyle.strokeThickness;
   }
 
   /**
@@ -382,10 +413,10 @@ class TextField extends DisplayObject {
    * @return {void}
    */
   set strokeThickness(value) {
-    if (value === this.mStyle.strokeThickness)
+    if (value === this.mDefaultStyle.strokeThickness)
       return;
 
-    this.mStyle.strokeThickness = value;
+    this.mDefaultStyle.strokeThickness = value;
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 

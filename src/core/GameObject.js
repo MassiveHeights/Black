@@ -175,7 +175,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other children in this GameObject instance.
+   * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
+   * children in this GameObject instance.
    *
    * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
    * @return {GameObject}
@@ -185,7 +186,8 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other children in this GameObject instance.
+   * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
+   * children in this GameObject instance.
    *
    * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
    * @param  {number=} [index=0] The index position to which the child is added.

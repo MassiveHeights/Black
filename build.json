@@ -81,7 +81,7 @@
     "src/display/CapsStyle.js",
     "src/display/JointStyle.js",
     "src/display/Sprite.js",
-    "src/display/text/TextInfo.js",
+    "src/display/text/TextStyle.js",
     "src/display/text/TextField.js",
     "src/display/text/BitmapTextField.js",
     "src/system/Device.js",

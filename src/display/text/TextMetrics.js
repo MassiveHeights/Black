@@ -1,3 +1,21 @@
+class TextMetricsData {
+  constructor() {
+    this.segments = []; // TextPartMetricsData
+    this.bounds = new Rectangle();
+    this.strokeBounds = null;
+    this.lineWidth = [];
+  }
+}
+
+class TextSegmentMetricsData {
+  constructor(text, style, lineIndex, bounds) {
+    this.text = text;
+    this.style = style;
+    this.lineIndex = lineIndex;
+    this.bounds = bounds;
+  }
+}
+
 /**
  * Provides native text measurement tools
  * 
@@ -12,19 +30,98 @@ class TextMetricsEx {
 
   /**
    * Measures the area of provided text.
+   * In case style is not defined the default style will be used.
+   * 
+   * @static
+   * @param {string} text                            The text to measure.
+   * @param {number} lineHeight                      The height of the line.
+   * @param {...TextStyle} styles The TextStyle object representing text properties and formatting.
+   * 
+   * @returns {TextMetricsData} Object representing bounds for each rich text part.
+   */
+  static measure(text, lineHeight, ...styles) {
+    let parts = [];
+
+    const regex = /(~{([^}]+)}|^)(.+?(?=~{.+}|$|^))|(\n)/gm;
+
+    let m;
+    let currTag = 'def';
+    let lineIx = 0;
+
+    while ((m = regex.exec(text)) !== null) {
+      if (m[4])
+        lineIx++;
+
+      if (m[2])
+        currTag = m[2];
+
+      if (m[3])
+        parts.push({ tag: currTag, text: m[3], style: styles.find(x => x.name === currTag), lineIndex: lineIx });
+    }
+
+    let data = new TextMetricsData();
+    let defaultStyle = styles.find(x => x.name === 'def') || TextStyle.default;
+    let lineHeightPx = defaultStyle.size * lineHeight;
+    let sumBounds = new Rectangle();
+    let sumStrokeBounds = new Rectangle();
+
+    let lastLineIndex = -1;
+    let currentX = 0;
+    let currentY = 0;
+    let lastBounds = null;
+    
+    let defaultFontMetrics = FontMetrics.get(defaultStyle.family);
+    let defaultBaseline = defaultFontMetrics.baselineNormalized * defaultStyle.size;    
+
+    for (let i = 0; i < parts.length; i++) {
+      let part = parts[i];
+      let bounds = TextMetricsEx.__measure(part.text, part.style);
+      let baseline = FontMetrics.get(part.style.family).baselineNormalized * part.style.size;
+
+      if (lastLineIndex !== part.lineIndex){
+        data.lineWidth.push(0);
+        currentX = 0;
+      }
+      
+      currentY = (lineHeightPx * part.lineIndex) + defaultBaseline - baseline;
+      
+      bounds.x = currentX;
+      bounds.y = currentY;
+      
+      currentX += bounds.width;
+      
+      lastLineIndex = part.lineIndex;
+      
+      part.bounds = bounds;
+      data.lineWidth[part.lineIndex] += bounds.width;
+      
+      sumBounds.union(bounds);
+      sumStrokeBounds.union(bounds.clone().inflate(part.style.strokeThickness, part.style.strokeThickness));
+
+      data.segments.push(new TextSegmentMetricsData(part.text, part.style, part.lineIndex, part.bounds));
+    }
+    
+
+    data.bounds = sumBounds;
+    data.strokeBounds = sumStrokeBounds;
+
+    return data;
+  }
+
+  /**
+   * Measures the area of provided text. Multiline is not supported.
    * 
    * @static
    * @param {string} text         The text to measure.
-   * @param {TextInfo} info       The TextInfo object representing text properties and formatting.
-   * @param {number} lineHeight   The height of the line.
-   * @param {Rectangle} outBounds The sum of all lines.
-   * @returns {Array<Rectangle>} Array of rectangles representing bounds of each line.
+   * @param {TextStyle} style     The TextStyle object representing text properties and formatting.
+   * @param {Rectangle} outBounds Out param into which bounds of the text will be stored.
+   * @returns {Rectangle} Bounds of the text;
    */
-  static measure(text, info, lineHeight, outBounds) {
+  static __measure(text, style, outBounds) {
+    Debug.assert(style != null, 'Style cannot be null');
+
     outBounds = outBounds || new Rectangle();
     outBounds.zero();
-
-    let lineBounds = [];
 
     let span = TextMetricsEx.__span;
 
@@ -47,23 +144,16 @@ class TextMetricsEx {
       document.body.appendChild(span);
     }
 
-    span.style.fontFamily = info.name;
-    span.style.fontSize = `${info.size}px`;
+    span.style.fontFamily = style.family;
+    span.style.fontSize = `${style.size}px`;
+    span.style.fontWeight = style.weight;
+    span.style.fontStyle = style.style;
 
-    let fontMetrics = FontMetrics.get(info.name);
+    let fontMetrics = FontMetrics.get(style.family);
+    span.innerHTML = text.replace(/ /g, '&nbsp');
 
-    let lines = text.split('\n');
-
-    for (let i = 0; i < lines.length; i++) {
-      span.innerHTML = lines[i].replace(/ /g, '&nbsp');
-
-      const bounds = new Rectangle(0, (fontMetrics.baselineNormalized * info.size) * i * lineHeight, span.offsetWidth, fontMetrics.bottomNormalized * info.size);
-      lineBounds.push(bounds);
-
-      outBounds.union(bounds);
-    }
-
-    return lineBounds;
+    outBounds.set(0, (fontMetrics.baselineNormalized * style.size), span.offsetWidth, fontMetrics.bottomNormalized * style.size);
+    return outBounds;
   }
 
   /**
@@ -122,3 +212,4 @@ class TextMetricsEx {
  * @static
  */
 TextMetricsEx.__span = null;
+TextMetricsEx.NEWLINE_REGEX = /\r?\n/;
