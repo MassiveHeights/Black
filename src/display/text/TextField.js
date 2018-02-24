@@ -160,6 +160,12 @@ class TextField extends DisplayObject {
     return outRect;
   }
 
+  /**
+   * Adds or updates given text style by given tag name.
+   * 
+   * @param {string} name 
+   * @param {TextStyle} style 
+   */
   setStyle(name, style) {
     Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`)
     style.name = name;
@@ -168,18 +174,31 @@ class TextField extends DisplayObject {
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
-  setDefaultStyle(name, style) {
+  /**
+   * Updates default text style with a given one.
+   * 
+   * @param {TextStyle} style 
+   */
+  setDefaultStyle(style) {
     style.copyTo(this.mDefaultStyle);
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
+  /**
+   * Removes style by given name.
+   * @param {string} name 
+   */
   removeStyle(name) {
     delete this.mStyles[name];
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
+  /**
+   * Returns text style by given name or null if not found.
+   * @param {string} name 
+   */
   getStyle(name) {
-    return this.mStyles[name];
+    return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
   }
 
   /**
