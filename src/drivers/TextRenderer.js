@@ -87,7 +87,10 @@ class TextRenderer extends Renderer {
 
     let lx = segment.bounds.x - metrics.strokeBounds.x;
     let ly = baseline + segment.bounds.y - metrics.strokeBounds.y;
-    
+
+    lx += this.padding.x;
+    ly += this.padding.y;
+
     if (this.align === 'center')
       lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
     else if (this.align === 'right')
@@ -108,7 +111,7 @@ class TextRenderer extends Renderer {
     ctx.textBaseline = 'alphabetic';
 
     // find canvas bounds
-    let canvasBounds = this.metrics.strokeBounds.clone();
+    let canvasBounds = this.metrics.strokeBounds.clone().inflate(this.padding.right, this.padding.bottom);
 
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
       cvs.width = canvasBounds.width;
@@ -159,7 +162,11 @@ class TextRenderer extends Renderer {
 
     if (hasStroke === true || this.autoSize === false) {
       this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate(this.metrics.strokeBounds.x + fieldXOffset, this.metrics.strokeBounds.y + fieldYOffset);
+      this.__transformCache.translate((this.metrics.strokeBounds.x + fieldXOffset) - this.padding.x, (this.metrics.strokeBounds.y + fieldYOffset) - this.padding.y);
+      return this.__transformCache;
+    } else if (this.padding.isEmpty === false) {
+      this.transform.copyTo(this.__transformCache);
+      this.__transformCache.translate(-this.padding.x, -this.padding.y);
       return this.__transformCache;
     } else {
       return this.transform;
