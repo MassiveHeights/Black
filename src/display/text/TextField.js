@@ -10,11 +10,15 @@ class TextField extends DisplayObject {
    * Creates new instance of TextField
    * 
    * @param {string=} [text=''] Text to be displayed inside this text field
-   * @param {number=} size      The size of the text
-   * @param {string=} name      Name of the font
-   * @param {TextStyle=} [style=undefined] TextStyle object
+   * @param  {string=} family                                             Font name
+   * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
+   * @param  {number=} [size=14]                                          Text size
+   * @param  {TextStyle.FontStyle=} [style=TextStyle.FontStyle.NORMAL]    Text style eg italic
+   * @param  {TextStyle.FontWeight=} [weight=TextStyle.FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
+   * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
-  constructor(text = '', size = 14, name = 'sans-serif', style = undefined) {
+  constructor(text = '', family = 'sans-serif', color = 0x000000, size = 14, style = TextStyle.FontStyle.NORMAL, weight = TextStyle.FontWeight.NORMAL, strokeThickness = 0, strokeColor = 0xffffff) {
     super();
 
     /** @private @type {string} */
@@ -30,13 +34,7 @@ class TextField extends DisplayObject {
     this.mTextHeight = 0;
 
     /** @private @type {TextStyle} */
-    this.mDefaultStyle = style || new TextStyle('sans-serif', 0x0, 14, TextStyle.FontStyle.NORMAL, TextStyle.FontWeight.NORMAL, 0, 0x0);
-
-    /** */
-    this.mDefaultStyle.family = name || style.family;
-
-    /** */
-    this.mDefaultStyle.size = size || style.size;
+    this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
     /** @private @type {Array<TextStyle>} */
     this.mStyles = [];
