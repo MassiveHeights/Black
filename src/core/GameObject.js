@@ -351,7 +351,7 @@ class GameObject extends MessageDispatcher {
   addComponent(component) {
     let instance = component;
 
-    if (instance.gameObject)
+    if (instance.gameObject && instance.gameObject != this)
       throw new Error('Component cannot be added to two game objects at the same time.');
 
     this.mComponents.push(instance);

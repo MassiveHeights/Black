@@ -36,8 +36,8 @@ class TextField extends DisplayObject {
     /** @private @type {TextStyle} */
     this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
-    /** @private @type {Array<TextStyle>} */
-    this.mStyles = [];
+    /** @private @type {Object.<string,TextStyle>} */
+    this.mStyles = {};
 
     /** @private @type {boolean} */
     this.mAutoSize = true;
@@ -134,7 +134,7 @@ class TextField extends DisplayObject {
         text = text.replace(/\n/g, '');
 
       let styles = [this.mDefaultStyle];
-      styles.push(...Object.values(this.mStyles));
+      styles.push(...Object.keys(this.mStyles).map(n => this.mStyles[n]));
 
       this.mMetrics = TextMetricsEx.measure(text, this.mLineHeight, ...styles);
       this.mTextBounds.copyFrom(this.mMetrics.bounds);
@@ -180,7 +180,7 @@ class TextField extends DisplayObject {
    * @param {TextStyle} style 
    */
   setDefaultStyle(style) {
-    style.copyTo(this.mDefaultStyle);
+    this.mDefaultStyle = style;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
@@ -199,6 +199,13 @@ class TextField extends DisplayObject {
    */
   getStyle(name) {
     return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
+  }
+
+  /**
+   * Returns default text style.
+   */
+  getDefaultStyle(name) {
+    return this.mDefaultStyle;
   }
 
   /**

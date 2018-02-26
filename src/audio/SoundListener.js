@@ -45,7 +45,13 @@ class SoundListener extends Component {
       let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
       let px = (pos.x - stage.centerX) / stage.width * 2;
       let py = (pos.y - stage.centerY) / stage.height * 2;
-      MasterAudio.context.listener.setPosition(px, py, 1);
+      if (MasterAudio.context.listener.positionX) {
+        MasterAudio.context.listener.positionX.value = px;
+        MasterAudio.context.listener.positionY.value = py;
+        MasterAudio.context.listener.positionZ.value = 1;
+      } else {
+        MasterAudio.context.listener.setPosition(px ,py, 1);
+      }
     }
   }
 }
