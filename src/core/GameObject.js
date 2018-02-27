@@ -1304,6 +1304,9 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   setDirty(flag, includeChildren = true) {
+    if (this.mSuspendDirty === true)
+      return;
+      
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
@@ -1322,6 +1325,9 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   setParentDirty(flag) {
+    if (this.mSuspendDirty === true)
+      return;
+
     let current = this;
 
     current.mDirty |= flag;
@@ -1344,7 +1350,7 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */ (DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIFRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
@@ -1360,8 +1366,6 @@ class GameObject extends MessageDispatcher {
 
     this.setDirty(DirtyFlag.RENDER, true);
   }
-
-
 
   /**
    * @ignore
