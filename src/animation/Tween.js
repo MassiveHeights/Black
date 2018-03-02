@@ -143,6 +143,60 @@ class Tween extends Component {
   }
 
   /**
+   * Gets/Sets the number of times the tween will be repeated after first execution.
+   *
+   * @return {number}
+   */
+  get repeat() {
+    return this.mRepeatTimes;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value Number of times.
+   * @return {void}
+   */
+  set repeat(value) {
+    this.mRepeatTimes = value;
+  }
+
+  /**
+   * Gets/Sets if tween should be looped over.
+   *
+   * @return {boolean}
+   */
+  get loop() {
+    return this.mRepeatTimes === Infinity;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set loop(value) {
+    this.mRepeatTimes = value ? Infinity : 0;
+  }
+
+  /**
+   * Enables/disables reversing of tween values.
+   *
+   * @return {boolean}
+   */
+  get reverse() {
+    return this.mReverse;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set reverse(value) {
+    this.mReverse = value;
+  }
+
+  /**
    * Sets/Gets whether the Tween Component should be automatically detached from owner GameObject after completion.
    *
    * @return {boolean}
@@ -281,36 +335,6 @@ class Tween extends Component {
       this.stop();
 
     super.removeFromParent();
-  }
-
-  /**
-   * Sets the number of times the tween will be repeated after first execution.
-   *
-   * @return {Tween} Returns this.
-   */
-  repeat(times) {
-    this.mRepeatTimes = times;
-    return this;
-  }
-
-  /**
-   * Sets if tween should be looped over.
-   *
-   * @return {Tween} Return this.
-   */
-  loop(value = true) {
-    this.mRepeatTimes = value ? Infinity : 0;
-    return this;
-  }
-
-   /**
-   * Enables/disables reversing of tween values.
-   *
-   * @return {Tween} Returns this.
-   */
-  reverse(value = true) {
-    this.mReverse = value;
-    return this;
   }
 
   /**

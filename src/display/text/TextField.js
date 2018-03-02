@@ -549,6 +549,138 @@ class TextField extends DisplayObject {
     this.mPadding = value;
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
+
+  /**
+   * 
+   * 
+   * @return {boolean} 
+   */
+  get dropShadow() {
+    return this.mDefaultStyle.dropShadow;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set dropShadow(value) {
+    if (value === this.mDefaultStyle.dropShadow)
+      return;
+
+    this.mDefaultStyle.dropShadow = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * 
+   * 
+   * @return {number} 
+   */
+  get shadowColor() {
+    return this.mDefaultStyle.shadowColor;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set shadowColor(value) {
+    if (value === this.mDefaultStyle.shadowColor)
+      return;
+
+    this.mDefaultStyle.shadowColor = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * 
+   * 
+   * @return {number} 
+   */
+  get shadowAlpha() {
+    return this.mDefaultStyle.shadowAlpha;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set shadowAlpha(value) {
+    if (value === this.mDefaultStyle.shadowAlpha)
+      return;
+
+    this.mDefaultStyle.shadowAlpha = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * 
+   * 
+   * @return {number} 
+   */
+  get shadowBlur() {
+    return this.mDefaultStyle.shadowBlur;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set shadowBlur(value) {
+    if (value === this.mDefaultStyle.shadowBlur)
+      return;
+
+    this.mDefaultStyle.shadowBlur = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * 
+   * 
+   * @return {number} 
+   */
+  get shadowDistanceX() {
+    return this.mDefaultStyle.shadowDistanceX;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set shadowDistanceX(value) {
+    if (value === this.mDefaultStyle.shadowDistanceX)
+      return;
+
+    this.mDefaultStyle.shadowDistanceX = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * 
+   * 
+   * @return {number} 
+   */
+  get shadowDistanceY() {
+    return this.mDefaultStyle.shadowDistanceY;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set shadowDistanceY(value) {
+    if (value === this.mDefaultStyle.shadowDistanceY)
+      return;
+
+    this.mDefaultStyle.shadowDistanceY = value;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
 }
 
 /**

@@ -427,12 +427,11 @@ class VideoNullDriver {
    * @param {number} color The color to convert.
    * @returns {string} The resulting string.
    */
-  static intToRGBA(color) {
+  static intToRGBA(color, alpha = 1) {
     const r = (color >> 16) & 255;
     const g = (color >> 8) & 255;
     const b = color & 255;
-    const a = 0.5;
 
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 }

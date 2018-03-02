@@ -39,6 +39,24 @@ class TextStyle {
 
     /** @type {number} */
     this.strokeColor = strokeColor;
+
+    /** @type {boolean} */
+    this.dropShadow = false;
+
+    /** @type {number} */
+    this.shadowDistanceX = 0;
+
+    /** @type {number} */
+    this.shadowDistanceY = 0;
+
+    /** @type {number} */
+    this.shadowColor = 0x0;
+
+    /** @type {number} */
+    this.shadowAlpha = 1;
+
+    /** @type {number} */
+    this.shadowBlur = 0;
   }
 
   clone(family = null, color = NaN, size = NaN, style = null, weight = null, strokeThickness = NaN, strokeColor = NaN) {
@@ -50,6 +68,14 @@ class TextStyle {
     ret.weight = weight === null ? this.weight : weight;
     ret.strokeThickness = isNaN(strokeThickness) ? this.strokeThickness : strokeThickness;
     ret.strokeColor = isNaN(strokeColor) ? this.strokeColor : strokeColor;
+
+    ret.dropShadow = this.dropShadow;
+    ret.shadowAlpha = this.shadowAlpha;
+    ret.shadowBlur = this.shadowBlur;
+    ret.shadowColor = this.shadowColor;
+    ret.shadowDistanceX = this.shadowDistanceX;
+    ret.shadowDistanceY = this.shadowDistanceY;
+
     return ret;
   }
 }
