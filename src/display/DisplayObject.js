@@ -101,13 +101,17 @@ class DisplayObject extends GameObject {
     if (this.mClipRect !== null)
       return outRect;
 
-    let childBounds = new Rectangle();
-
     if (includeChildren === true) {
+      let childBounds = Rectangle.pool.get();
+
       for (let i = 0; i < this.mChildren.length; i++) {
+        childBounds.zero();
+
         this.mChildren[i].getBounds(space, includeChildren, childBounds);
-        outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+        outRect.union(childBounds);
       }
+
+      Rectangle.pool.release(childBounds);
 
       if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
         this.mBoundsCache.copyFrom(outRect);
@@ -123,7 +127,7 @@ class DisplayObject extends GameObject {
   */
   onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
-    
+
     if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
       const sf = Black.stage.scaleFactor;
 
