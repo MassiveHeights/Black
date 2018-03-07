@@ -20,14 +20,14 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @returns {void}
    */
   render(driver) {
-    if (this.dirty === DirtyFlag.CLEAN) {
-      driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
-      return;
-    }
+    // if (this.dirty === DirtyFlag.CLEAN) {
+    //   driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
+    //   return;
+    // }
 
-    let texture = new CanvasRenderTexture(this.bounds.width, this.bounds.height);
-    const ctx = texture.renderTarget.context;
+    const ctx = driver.context;
     const len = this.commands.length;
+    const s = Black.driver.finalScale;
 
     for (let i = 0; i < len; i++) {
       const cmd = this.commands[i];
@@ -36,26 +36,26 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         case GraphicsCommandType.LINE: {
           this.__setLineStyle(cmd, ctx);
           ctx.beginPath();
-          ctx.moveTo(cmd.data[0] - this.bounds.x, cmd.data[1] - this.bounds.y);
-          ctx.lineTo(cmd.data[2] - this.bounds.x, cmd.data[3] - this.bounds.y);
+          ctx.moveTo(cmd.data[0] * s, cmd.data[1] * s);
+          ctx.lineTo(cmd.data[2] * s, cmd.data[3] * s);
           ctx.stroke();
           break;
         }
         case GraphicsCommandType.RECTANGLE: {
           ctx.beginPath();
-          ctx.rect(cmd.data[0] - this.bounds.x, cmd.data[1] - this.bounds.y, cmd.data[2], cmd.data[3]);
+          ctx.rect(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * s, cmd.data[3] * s);
 
           this.__setFillStyle(cmd, ctx);
           ctx.fill();
 
           this.__setLineStyle(cmd, ctx);
           ctx.stroke();
-          
+
           break;
         }
         case GraphicsCommandType.CIRCLE: {
           ctx.beginPath();
-          ctx.arc(cmd.data[0] - this.bounds.x, cmd.data[1] - this.bounds.y, cmd.data[2], 0, 2 * Math.PI);
+          ctx.arc(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * s, 0, 2 * Math.PI);
 
           this.__setFillStyle(cmd, ctx);
           ctx.fill();
@@ -71,8 +71,8 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       }
     }
 
-    this.texture = texture;
-    driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
+    // this.texture = texture;
+    // driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
   }
 
   /**

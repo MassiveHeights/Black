@@ -410,6 +410,14 @@ class VideoNullDriver {
   clear() {
   }
 
+  /** 
+   * Returns current rendering context or null.
+   * @returns {?}
+   */
+  get context() {
+    return null;
+  }
+
   /**
    * Converts number color to hex string.
    *
