@@ -121,6 +121,18 @@ class TextRenderer extends Renderer {
       let segments = this.metrics.segments;
 
       for (let i = 0; i < segments.length; i++) {
+        if (segments[i].style.dropShadow) {
+          ctx.save();
+          ctx.shadowColor = VideoNullDriver.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
+          ctx.shadowBlur = segments[i].style.shadowBlur;
+          ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
+          ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
+          this.renderSegment(this.metrics, segments[i], ctx, driver, fontMetrics, false);
+          ctx.restore();
+        }
+      }
+
+      for (let i = 0; i < segments.length; i++) {
         let segment = segments[i];
         if (segment.style.strokeThickness > 0) {
           ctx.lineJoin = 'round';
