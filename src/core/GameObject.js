@@ -351,7 +351,7 @@ class GameObject extends MessageDispatcher {
   addComponent(component) {
     let instance = component;
 
-    if (instance.gameObject && instance.gameObject != this)
+    if (instance.gameObject)
       throw new Error('Component cannot be added to two game objects at the same time.');
 
     this.mComponents.push(instance);
@@ -754,13 +754,17 @@ class GameObject extends MessageDispatcher {
       Matrix.pool.release(matrix);
     }
 
-    let childBounds = new Rectangle();
-
     if (includeChildren === true) {
+      let childBounds = Rectangle.pool.get();
+
       for (let i = 0; i < this.mChildren.length; i++) {
+        childBounds.zero();
+
         this.mChildren[i].getBounds(space, includeChildren, childBounds);
-        outRect.expand(childBounds.x, childBounds.y, childBounds.width, childBounds.height);
+        outRect.union(childBounds);
       }
+
+      Rectangle.pool.release(childBounds);
 
       if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
         this.mBoundsCache.copyFrom(outRect);
@@ -955,52 +959,6 @@ class GameObject extends MessageDispatcher {
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mPivotY = value;
-    this.setTransformDirty();
-  }
-
-  /**
-   * Gets/Sets the object's origin in its local space relatively to its width, ranging from 0 to 1
-   *
-   * @return {number}
-   */
-  get anchorX() {
-    this.getBounds(this, true, Rectangle.__cache.zero());
-    return this.mPivotX / Rectangle.__cache.width;
-  }
-
-  /**
-   * @ignore
-   * @param {number} value
-   * @return {void}
-   */
-  set anchorX(value) {
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
-    this.getBounds(this, true, Rectangle.__cache.zero());
-
-    this.mPivotX = (Rectangle.__cache.width * value) + Rectangle.__cache.x;
-    this.setTransformDirty();
-  }
-
-  /**
-   * Gets/Sets the object's origin in its local space relatively to its height, ranging from 0 to 1
-   *
-   * @return {number}
-   */
-  get anchorY() {
-    this.getBounds(this, true, Rectangle.__cache.zero());
-    return this.mPivotX / Rectangle.__cache.width;
-  }
-
-  /**
-   * @ignore
-   * @param {number} value
-   * @return {void}
-   */
-  set anchorY(value) {
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
-    this.getBounds(this, true, Rectangle.__cache.zero());
-
-    this.mPivotY = (Rectangle.__cache.height * value) + Rectangle.__cache.y;
     this.setTransformDirty();
   }
 
@@ -1345,7 +1303,7 @@ class GameObject extends MessageDispatcher {
       return;
 
     this.setDirty(/** @type {DirtyFlag<number>} */ (DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIFRB, true);
+    this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
@@ -1721,5 +1679,5 @@ const DirtyFlag = {
   REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified
   BOUNDS: 64,       // Parent-relative bounds needs update
   DIRTY: 0xffffff,  // Everything is dirty, you, me, everything!
-  WIFRB: 78
+  WIRB: 78
 };
