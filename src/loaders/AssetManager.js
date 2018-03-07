@@ -62,6 +62,15 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
+   * Adds or changes texture to the internal list for future reuse by given name.
+   * @param {string} name 
+   * @param {Texture} texture 
+   */
+  addTexture(name, texture) {
+    this.mTextures[name] = texture;
+  }
+
+  /**
    * Adds single image to the loading queue.
    *
    * @param {string} name Name of the asset.
