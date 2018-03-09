@@ -318,4 +318,12 @@ class CanvasDriver extends VideoNullDriver {
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);
   }
+
+  /** 
+   * Returns current rendering context or null.
+   * @returns {CanvasRenderingContext2D}
+   */
+  get context() {
+    return this.mCtx;
+  }
 }

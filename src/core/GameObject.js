@@ -56,7 +56,7 @@ class GameObject extends MessageDispatcher {
     this.mPivotOffsetY = 0;
 
     /** @protected @type {boolean} */
-    this.mPivotChanged = false;
+    this.mAnchorChanged = false;
 
     /** @private @type {number} */
     this.mRotation = 0;
@@ -947,8 +947,9 @@ class GameObject extends MessageDispatcher {
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
+    this.getBounds(this, true, Rectangle.__cache.zero());
     this.mPivotOffsetX = value;
-    this.mPivotChanged = true;
+    this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
 
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
@@ -975,8 +976,9 @@ class GameObject extends MessageDispatcher {
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
+    this.getBounds(this, true, Rectangle.__cache.zero());
     this.mPivotOffsetY = value;
-    this.mPivotChanged = true;
+    this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
@@ -995,7 +997,7 @@ class GameObject extends MessageDispatcher {
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorX = value;
-    this.mPivotChanged = true;
+    this.mAnchorChanged = true;
 
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
@@ -1014,7 +1016,7 @@ class GameObject extends MessageDispatcher {
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorY = value;
-    this.mPivotChanged = true;
+    this.mAnchorChanged = true;
 
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
@@ -1100,7 +1102,9 @@ class GameObject extends MessageDispatcher {
 
     this.mPivotOffsetX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
     this.mPivotOffsetY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
-    this.mPivotChanged = true;
+
+    this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
+    this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
     this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
@@ -1407,15 +1411,15 @@ class GameObject extends MessageDispatcher {
     this.mDirty |= flag;
     this.mDirtyFrameNum = Black.frameNum;
     
-    if (this.mPivotChanged === true || this.mDirty & DirtyFlag.LOCAL || this.mDirty & DirtyFlag.BOUNDS) {
-      if (this.mAnchorX !== 0 || this.mAnchorY !== 0 || this.mPivotOffsetX !== 0 || this.mPivotOffsetY !== 0) {
+    if (this.mAnchorChanged === true || this.mDirty & DirtyFlag.LOCAL || this.mDirty & DirtyFlag.BOUNDS) {
+      if (this.mAnchorX !== 0 || this.mAnchorY !== 0) {
         this.getBounds(this, true, Rectangle.__cache.zero());
         this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
         this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
         this.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
       }
       
-      this.mPivotChanged = false;
+      this.mAnchorChanged = false;
     }
     
     let current = this;
@@ -1425,8 +1429,8 @@ class GameObject extends MessageDispatcher {
       current.mDirty |= flag;
       current.mDirtyFrameNum = Black.frameNum;
 
-      if (this.mPivotChanged === true || current.mDirty & DirtyFlag.BOUNDS || current.mDirty & DirtyFlag.LOCAL) {
-        if (current.mAnchorX !== 0 || current.mAnchorY !== 0 || current.mPivotOffsetX !== 0 || current.mPivotOffsetY !== 0) {
+      if (this.mAnchorChanged === true || current.mDirty & DirtyFlag.BOUNDS || current.mDirty & DirtyFlag.LOCAL) {
+        if (current.mAnchorX !== 0 || current.mAnchorY !== 0) {
           current.getBounds(current, true, Rectangle.__cache.zero());
           current.mPivotX = current.mPivotOffsetX + (Rectangle.__cache.width * current.mAnchorX) + Rectangle.__cache.x;
           current.mPivotY = current.mPivotOffsetY + (Rectangle.__cache.height * current.mAnchorY) + Rectangle.__cache.y;
