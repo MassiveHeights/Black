@@ -23,12 +23,12 @@ class CanvasDriver extends VideoNullDriver {
 
     /** @inheritDoc */
     this.mRendererMap = {
-      DisplayObject: DisplayObjectRendererCanvas,
-      Sprite: SpriteRendererCanvas,
-      Emitter: EmitterRendererCanvas,
-      Text: TextRendererCanvas,
-      BitmapText: BitmapTextRendererCanvas,
-      Graphics: GraphicsRendererCanvas
+      'DisplayObject': DisplayObjectRendererCanvas,
+      'Sprite': SpriteRendererCanvas,
+      'Emitter': EmitterRendererCanvas,
+      'Text': TextRendererCanvas,
+      'BitmapText': BitmapTextRendererCanvas,
+      'Graphics': GraphicsRendererCanvas
     };
   }
 
