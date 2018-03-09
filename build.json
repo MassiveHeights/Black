@@ -130,10 +130,6 @@
     "src/animation/AnimationInfo.js",
     "src/animation/AnimationController.js",
 
-    
-
-    "src/physics/Arcade.js",
-
     "src/audio/MasterAudio.js",
 
     "src/audio/SoundEffect.js",

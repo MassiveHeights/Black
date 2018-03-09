@@ -23,12 +23,12 @@ class CanvasDriver extends VideoNullDriver {
 
     /** @inheritDoc */
     this.mRendererMap = {
-      DisplayObject: DisplayObjectRendererCanvas,
-      Sprite: SpriteRendererCanvas,
-      Emitter: EmitterRendererCanvas,
-      Text: TextRendererCanvas,
-      BitmapText: BitmapTextRendererCanvas,
-      Graphics: GraphicsRendererCanvas
+      'DisplayObject': DisplayObjectRendererCanvas,
+      'Sprite': SpriteRendererCanvas,
+      'Emitter': EmitterRendererCanvas,
+      'Text': TextRendererCanvas,
+      'BitmapText': BitmapTextRendererCanvas,
+      'Graphics': GraphicsRendererCanvas
     };
   }
 
@@ -264,31 +264,7 @@ class CanvasDriver extends VideoNullDriver {
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
     else
       this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * scale, v[5] * scale);
-  }
 
-  /**
-   * @inheritDoc
-   */
-  clear() {
-    // TODO: clear only changed region
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
-
-    let viewport = Black.instance.viewport;
-    if (viewport.isTransperent === false) {
-      this.mCtx.fillStyle = VideoNullDriver.hexColorToString(viewport.backgroundColor);
-      this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
-    } else {
-      this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
-    }
-
-    super.clear();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getTextureFromCanvas(canvas) {
-    return new Texture(canvas);
   }
 
   /**
@@ -316,13 +292,30 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mGlobalBlendMode = blendMode;
     this.mCtx.globalCompositeOperation = blendMode;
-  }  
+  }
 
-  /** 
-   * Returns current rendering context or null.
-   * @returns {CanvasRenderingContext2D}
+  /**
+   * @inheritDoc
    */
-  get context() {
-    return this.mCtx;
+  clear() {
+    // TODO: clear only changed region
+    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
+
+    let viewport = Black.instance.viewport;
+    if (viewport.isTransperent === false) {
+      this.mCtx.fillStyle = VideoNullDriver.hexColorToString(viewport.backgroundColor);
+      this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+    } else {
+      this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+    }
+
+    super.clear();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getTextureFromCanvas(canvas) {
+    return new Texture(canvas);
   }
 }
