@@ -43,6 +43,21 @@ class GameObject extends MessageDispatcher {
     /** @protected @type {number} */
     this.mPivotY = 0;
 
+    /** @protected @type {number} */
+    this.mAnchorX = 0;
+
+    /** @protected @type {number} */
+    this.mAnchorY = 0;
+
+    /** @protected @type {number} */
+    this.mPivotOffsetX = 0;
+
+    /** @protected @type {number} */
+    this.mPivotOffsetY = 0;
+
+    /** @protected @type {boolean} */
+    this.mPivotChanged = false;
+
     /** @private @type {number} */
     this.mRotation = 0;
 
@@ -795,8 +810,8 @@ class GameObject extends MessageDispatcher {
    * @param {number} [x=0]       Cord X.
    * @param {number} [y=0]       Cord Y.
    * @param {number} [r=0]       Rotation.
-   * @param {number} [scaleX=1]  scale X.
-   * @param {number} [scaleY=1]  scale Y.
+   * @param {number} [scaleX=1]  Scale X.
+   * @param {number} [scaleY=1]  Scale Y.
    * @param {number} [anchorX=0] Anchor X.
    * @param {number} [anchorY=0] Anchor Y.
    * @param {boolean} [includeChildren=true] Include children when adjusting pivot?
@@ -809,10 +824,8 @@ class GameObject extends MessageDispatcher {
     this.mRotation = r;
     this.mScaleX = scaleX;
     this.mScaleY = scaleY;
-
-    this.getBounds(this.mParent, includeChildren, Rectangle.__cache.zero());
-    this.mPivotX = Rectangle.__cache.width * anchorX;
-    this.mPivotY = Rectangle.__cache.height * anchorY;
+    this.mAnchorX = anchorX;
+    this.mAnchorY = anchorY;
 
     this.setTransformDirty();
     return this;
@@ -915,72 +928,183 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets the x coordinate of the object's origin in its local space.
+   * Gets/Sets the x coordinate of the object's origin in its local space in pixels.
    *
    * @return {number}
+   */
+  get pivotOffsetX() {
+    return this.mPivotOffsetX;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set pivotOffsetX(value) {
+    if (this.mPivotOffsetX === value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mPivotOffsetX = value;
+    this.mPivotChanged = true;
+
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
+  }
+
+  /**
+   * Gets/Sets the y coordinate of the object's origin in its local space in pixels.
+   *
+   * @return {number}
+   */
+  get pivotOffsetY() {
+    return this.mPivotOffsetY;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set pivotOffsetY(value) {
+    if (this.mPivotOffsetY === value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mPivotOffsetY = value;
+    this.mPivotChanged = true;
+
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set anchorX(value) {
+    if (this.mAnchorX === value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mAnchorX = value;
+    this.mPivotChanged = true;
+
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set anchorY(value) {
+    if (this.mAnchorY === value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mAnchorY = value;
+    this.mPivotChanged = true;
+
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
+  }
+
+  /**
+   * Returns current anchor-x value in range from 0 to 1.
+   * @returns {number}
+   */
+  get anchorX() {
+    return this.mAnchorX;
+  }
+
+  /**
+   * Returns current anchor-y value in range from 0 to 1.
+   * @returns {number}
+   */
+  get anchorY() {
+    return this.mAnchorY;
+  }
+
+  /**
+   * Returns current pivot-x value in range from 0 to 1.
+   * @returns {number}
    */
   get pivotX() {
     return this.mPivotX;
   }
 
   /**
-   * @ignore
-   * @param {number} value
-   * @return {void}
-   */
-  set pivotX(value) {
-    if (this.mPivotX == value)
-      return;
-
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
-
-    this.mPivotX = value;
-    this.setTransformDirty();
-  }
-
-  /**
-   * Gets/Sets the y coordinate of the object's origin in its local space.
-   *
-   * @return {number}
+   * Returns current pivot-y value in range from 0 to 1.
+   * @returns {number}
    */
   get pivotY() {
     return this.mPivotY;
   }
 
   /**
-   * @ignore
-   * @param {number} value
-   * @return {void}
-   */
-  set pivotY(value) {
-    if (this.mPivotY == value)
-      return;
-
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
-
-    this.mPivotY = value;
-    this.setTransformDirty();
-  }
-
-  /**
-   * Sets pivot point to given position.
+   * Sets the origin point relatively to its bounds. For example, setting x and y value to 0.5 will set origin to the 
+   * center of the object.
    *
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
-   * @param {boolean} [includeChildren=true] Include children elements when
-   * calculating bounds?
    *
    * @return {GameObject} This.
    */
-  alignPivot(ax = 0.5, ay = 0.5, includeChildren = true) {
-    Debug.assert(!isNaN(ax), 'Value cannot be NaN');
-    Debug.assert(!isNaN(ay), 'Value cannot be NaN');
+  alignAnchor(ax = 0.5, ay = 0.5) {
+    Debug.isNumber(ax, ay);
+
+    this.mAnchorX = ax;
+    this.anchorY = ay;
+
+    return this;
+  }
+
+  /**
+   * Sets anchor point to given position. 
+   *
+   * @param {number}  [ax=0.5]               Align along x-axis.
+   * @param {number}  [ay=0.5]               Align along y-axis.
+   * @deprecated
+   * @return {GameObject} This.
+   */
+  alignPivot(ax = 0.5, ay = 0.5) {
+    return this.alignPivotOffset(ax, ay);
+  }
+
+  /**
+   * Sets the origin point offset from current anchor value. For example, setting anchor-x value to 0.5 and pivotOffsetX
+   * to 10 will center object by x-axis and will shift object to the left by 10 pixels from half of the width.
+   *
+   * @param {number}  [ax=0.5]               Align along x-axis.
+   * @param {number}  [ay=0.5]               Align along y-axis.
+   * @param {boolean} [includeChildren=true] Include children elements when calculating bounds?
+   *
+   * @return {GameObject} This.
+   */
+  alignPivotOffset(ax = 0.5, ay = 0.5, includeChildren = true) {
+    Debug.isNumber(ax, ay);
 
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
-    this.mPivotY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
-    this.setTransformDirty();
+    this.mPivotOffsetX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
+    this.mPivotOffsetY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
+    this.mPivotChanged = true;
+
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(DirtyFlag.WIRB, true);
+    this.setParentDirty(DirtyFlag.BOUNDS);
 
     return this;
   }
@@ -1279,17 +1403,36 @@ class GameObject extends MessageDispatcher {
    * @param {DirtyFlag<number>} flag The flag or flag bit mask.
    * @return {void}
    */
-  setParentDirty(flag) {
+  setParentDirty(flag) {    
+    this.mDirty |= flag;
+    this.mDirtyFrameNum = Black.frameNum;
+    
+    if (this.mPivotChanged === true || this.mDirty & DirtyFlag.LOCAL || this.mDirty & DirtyFlag.BOUNDS) {
+      if (this.mAnchorX !== 0 || this.mAnchorY !== 0 || this.mPivotOffsetX !== 0 || this.mPivotOffsetY !== 0) {
+        this.getBounds(this, true, Rectangle.__cache.zero());
+        this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
+        this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
+        this.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
+      }
+      
+      this.mPivotChanged = false;
+    }
+    
     let current = this;
-
-    current.mDirty |= flag;
-    current.mDirtyFrameNum = Black.frameNum;
 
     while (current.mParent != null) {
       current = current.mParent;
-
       current.mDirty |= flag;
       current.mDirtyFrameNum = Black.frameNum;
+
+      if (this.mPivotChanged === true || current.mDirty & DirtyFlag.BOUNDS || current.mDirty & DirtyFlag.LOCAL) {
+        if (current.mAnchorX !== 0 || current.mAnchorY !== 0 || current.mPivotOffsetX !== 0 || current.mPivotOffsetY !== 0) {
+          current.getBounds(current, true, Rectangle.__cache.zero());
+          current.mPivotX = current.mPivotOffsetX + (Rectangle.__cache.width * current.mAnchorX) + Rectangle.__cache.x;
+          current.mPivotY = current.mPivotOffsetY + (Rectangle.__cache.height * current.mAnchorY) + Rectangle.__cache.y;
+          current.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
+        }
+      }
     }
   }
 
@@ -1302,7 +1445,7 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */ (DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
@@ -1318,8 +1461,6 @@ class GameObject extends MessageDispatcher {
 
     this.setDirty(DirtyFlag.RENDER, true);
   }
-
-
 
   /**
    * @ignore

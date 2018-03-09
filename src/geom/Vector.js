@@ -12,8 +12,7 @@ class Vector {
    * @param  {number=} y = 0 y-component.
    */
   constructor(x = 0, y = 0) {
-    Debug.assert(!isNaN(x), 'x cannot be NaN');
-    Debug.assert(!isNaN(y), 'y cannot be NaN');
+    Debug.isNumber(x, y);
     
     /** @type {number} X coordinate of a point in the space. */
     this.x = x;
@@ -30,6 +29,8 @@ class Vector {
    * @return {Vector} This.
    */
   set(x = 0, y = 0) {
+    Debug.isNumber(x, y);
+
     this.x = x;
     this.y = y;
 
@@ -108,6 +109,8 @@ class Vector {
    * @return {Vector} This.
    */
   multiplyScalar(scalar) {
+    Debug.isNumber(scalar);
+
     this.x *= scalar;
     this.y *= scalar;
 
@@ -170,6 +173,8 @@ class Vector {
    * @return {Vector} This.
    */
   clamp(min, max) {
+    Debug.isNumber(min, max);
+
     this.x = MathEx.clamp(this.x, min, max);
     this.y = MathEx.clamp(this.y, min, max);
 
@@ -184,6 +189,8 @@ class Vector {
    * @return {Vector} This.
    */
   clampLength(min, max) {
+    Debug.isNumber(min, max);
+
     let length = MathEx.clamp(this.length(), min, max);
     this.normalize();
     this.multiplyScalar(length);
@@ -198,6 +205,8 @@ class Vector {
    * @return {Vector} This.
    */
   lerp(vector, t) {
+    Debug.isNumber(t);
+
     this.x = MathEx.lerp(this.x, vector.x, t);
     this.y = MathEx.lerp(this.y, vector.y, t);
 
@@ -267,6 +276,8 @@ class Vector {
    * @return {Vector} This rotated vector.
    */
   setRotationFrom(vector, rotation) {
+    Debug.isNumber(rotation);
+
     return this
       .subtract(vector)
       .setRotation(rotation)
@@ -280,6 +291,8 @@ class Vector {
    * @return {Vector} This rotated vector.
    */
   setRotation(rotation) {
+    Debug.isNumber(rotation);
+
     let cos = Math.cos(rotation).toFixed(15);
     let sin = Math.sin(rotation).toFixed(15);
 
@@ -322,6 +335,8 @@ class Vector {
    * @return {Vector} New Vector object.
    */
   static fromAngle(angle, outVector) {
+    Debug.isNumber(angle);
+
     outVector = outVector || new Vector();
     return outVector.set(Math.cos(angle), Math.sin(angle));
   }

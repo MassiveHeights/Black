@@ -14,10 +14,7 @@ class Rectangle {
    * @param  {number=} h = 0 The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
-    Debug.assert(!isNaN(x), 'x cannot be NaN');
-    Debug.assert(!isNaN(y), 'y cannot be NaN');
-    Debug.assert(!isNaN(w), 'width cannot be NaN');
-    Debug.assert(!isNaN(h), 'height cannot be NaN');
+    Debug.isNumber(x, y, w, h);
 
     /** @type {number} The x coordinate of the rectangle. */
     this.x = x;
@@ -42,6 +39,8 @@ class Rectangle {
    * @return {Rectangle} This.
    */
   set(x, y, w, h) {
+    Debug.isNumber(x, y, w, h);
+
     this.x = x;
     this.y = y;
     this.width = w;
@@ -94,6 +93,7 @@ class Rectangle {
    * @param {number} left
    */
   set left(left) {
+    Debug.isNumber(left);
     this.x = left;
   }
 
@@ -111,6 +111,7 @@ class Rectangle {
    * @param {number} right
    */
   set right(right) {
+    Debug.isNumber(right);
     this.x = right - this.width;
   }
 
@@ -128,6 +129,7 @@ class Rectangle {
    * @param {number} top
    */
   set top(top) {
+    Debug.isNumber(top);
     this.y = top;
   }
 
@@ -145,6 +147,8 @@ class Rectangle {
    * @param {number} bottom
    */
   set bottom(bottom) {
+    Debug.isNumber(bottom);
+
     this.y = bottom - this.height;
   }
 
@@ -239,7 +243,6 @@ class Rectangle {
   zero() {
     return this.set(0, 0, 0, 0);
   }
-
 
   /**
    * Compares this Rectangle with a given one.
@@ -338,7 +341,6 @@ class Rectangle {
     return this.width * this.height;
   }
 
-
   /**
    * Expands this rectangle object by given values.
    *
@@ -349,6 +351,8 @@ class Rectangle {
    * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
+    Debug.isNumber(x, y, width, height);
+
     if (this.volume === 0)
       return this.set(x, y, width, height);
 
@@ -382,6 +386,8 @@ class Rectangle {
    * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
+    Debug.isNumber(x, y);
+
     this.x -= x;
     this.y -= y;
     this.width += 2 * x;

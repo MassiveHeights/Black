@@ -10,6 +10,21 @@ class Debug {
     Debug.assert(false, 'Static class.');
   }
 
+  static isNumber(...values) {
+    values.forEach(x => {
+      if (typeof x === 'number' && isNaN(parseFloat(x)) === false && isFinite(x) === true)
+        return;
+
+      let message = 'Not a number.';
+
+      if (Debug.logOnFail)
+        console.error('[ASSERT]', message);
+
+      if (Debug.throwOnFail)
+        throw new Error(message);
+    });
+  }
+
   static assert(value, message) {
     if (value === true)
       return;

@@ -22,7 +22,8 @@ class Polygon {
     /** @private @type {Vector} */
     this.mCenter = new Vector();
 
-    this.refresh();
+    if (vertices.length > 2)
+      this.refresh();
   }
 
   /**

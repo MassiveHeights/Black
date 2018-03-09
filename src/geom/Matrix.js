@@ -33,6 +33,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
+    Debug.isNumber(a, b, c, d, tx, ty);
+
     let m = this.data;
 
     m[0] = a;
@@ -53,6 +55,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   translate(dx, dy) {
+    Debug.isNumber(dx, dy);
+
     let a = this.data;
 
     let /** @type {number} */ a0 = a[0]; // a
@@ -76,6 +80,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   setTranslation(x, y) {
+    Debug.isNumber(x, y);
+
     this.data[4] = x;
     this.data[5] = y;
 
@@ -90,6 +96,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   setRotation(theta, scale = 1) {
+    Debug.isNumber(theta, scale);
+
     let m = this.data;
     m[0] = Math.cos(theta) * scale;
     m[2] = Math.sin(theta) * scale;
@@ -106,6 +114,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   rotate(angle) {
+    Debug.isNumber(angle);
+
     let a = this.data;
     let cos = Math.cos(angle);
     let sin = Math.sin(angle);
@@ -131,6 +141,8 @@ class Matrix {
    * @return {Matrix} This.
    */
   scale(sx, sy) {
+    Debug.isNumber(sx, sy);
+
     let a = this.data;
     let /** @type {number} */ a0 = a[0]; // a
     let /** @type {number} */ a1 = a[1]; // b
@@ -244,6 +256,8 @@ class Matrix {
    * @return {Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
+    Debug.isNumber(x, y);
+
     outVector = outVector || new Vector();
     let m = this.data;
 
@@ -262,6 +276,8 @@ class Matrix {
    * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
+    Debug.isNumber(x, y);
+
     let m = this.data;
     outVector = outVector || new Vector();
 

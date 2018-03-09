@@ -114,10 +114,10 @@ class TextMetricsEx {
    * @static
    * @param {string} text         The text to measure.
    * @param {TextStyle} style     The TextStyle object representing text properties and formatting.
-   * @param {Rectangle} outBounds Out param into which bounds of the text will be stored.
+   * @param {?Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
    * @returns {Rectangle} Bounds of the text;
    */
-  static __measure(text, style, outBounds) {
+  static __measure(text, style, outBounds = null) {
     Debug.assert(style != null, 'Style cannot be null');
 
     outBounds = outBounds || new Rectangle();

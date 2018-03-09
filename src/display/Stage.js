@@ -305,11 +305,11 @@ class Stage extends GameObject {
   set scaleY(value) { Debug.error('Not allowed.'); }
   get scaleY() { return 1; }
 
-  set pivotX(value) { Debug.error('Not allowed.'); }
-  get pivotX() { return 0; }
+  set pivotOffsetX(value) { Debug.error('Not allowed.'); }
+  get pivotOffsetX() { return 0; }
 
-  set pivotY(value) { Debug.error('Not allowed.'); }
-  get pivotY() { return 0; }
+  set pivotOffsetY(value) { Debug.error('Not allowed.'); }
+  get pivotOffsetY() { return 0; }
 
   set anchorX(value) { Debug.error('Not allowed.'); }
   get anchorX() { return 0; }
