@@ -1,6 +1,31 @@
 Black Engine: Changelog
 =======================
 
+v0.3.4
+- Added BitmapTextField
+- Added Audio support (spatial, audio atlas, sound effects)
+- Added Stage, stage scale modes and orientations
+- Added `ObjectPool` class
+- Added Spine support
+- Added rich feature to the TextField
+- Added `DisplayObject#cacheAsBitmap` property
+- Added anchorX/anchorY and now they updates automatically
+- Added pivotOffsetX/pivotOffsetY
+- Added `AssetManager#addTexture` method
+- Added basic Graphics class
+- Added `RadialScatter`
+- Added render to texture support
+- Added Font and Text metrics classes
+- Added Colliders support (box and circle)
+- Fixed incorrect blending for clipped sprites
+- Fixed incorrect bounds calculations
+- Improved Emitter and modifiers API and perforamnce
+- Improved `getBounds` performance by caching results
+- Improved performance for some classes that using math
+- Reworked drivers, now only required calls will be made to drawing context (~50% less requests are made)
+- Removed pivotX/pivotY, use pivotOffsetX/pivotOffsetY instead
+- Typed 95% for GCC
+
 v0.0.12a
 --------
 - Fixed TextField align issues caused by new pivot logic
