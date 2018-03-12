@@ -1100,8 +1100,8 @@ class GameObject extends MessageDispatcher {
 
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotOffsetX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
-    this.mPivotOffsetY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
+    this.mPivotOffsetX = (Rectangle.__cache.width * ax);
+    this.mPivotOffsetY = (Rectangle.__cache.height * ay);
 
     this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
     this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
