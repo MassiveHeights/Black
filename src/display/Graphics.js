@@ -11,7 +11,7 @@ class Graphics extends DisplayObject {
    */
   constructor() {
     super();
-    
+
     /** @type {number} Color parameter for line style */
     this.lineColor = 0;
 
@@ -153,6 +153,12 @@ class Graphics extends DisplayObject {
     this.mBounds.zero();
 
     this.mCommandQueue.splice(0, this.mCommandQueue.length);
+    this.setTransformDirty();
+  }
+
+  setTransform(matrix) {
+    let d = matrix.data;
+    this.__pushCommand(GraphicsCommandType.TRANSFORM, d[0], d[1], d[2], d[3], d[4], d[5]);
     this.setTransformDirty();
   }
 
