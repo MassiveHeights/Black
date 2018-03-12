@@ -20,19 +20,20 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @returns {void}
    */
   render(driver) {
-    // if (this.dirty === DirtyFlag.CLEAN) {
-    //   driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
-    //   return;
-    // }
-
     const ctx = driver.context;
     const len = this.commands.length;
-    const s = Black.driver.finalScale;
+    const s = driver.finalScale;
+    const r = driver.renderScaleFactor;
+    ctx.save();
 
     for (let i = 0; i < len; i++) {
       const cmd = this.commands[i];
 
       switch (cmd.type) {
+        case GraphicsCommandType.TRANSFORM: {
+          ctx.setTransform(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+          break;
+        }
         case GraphicsCommandType.LINE: {
           this.__setLineStyle(cmd, ctx);
           ctx.beginPath();
@@ -43,7 +44,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
         case GraphicsCommandType.RECTANGLE: {
           ctx.beginPath();
-          ctx.rect(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * s, cmd.data[3] * s);
+          ctx.rect(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * r, cmd.data[3] * r);
 
           this.__setFillStyle(cmd, ctx);
           ctx.fill();
@@ -55,7 +56,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
         case GraphicsCommandType.CIRCLE: {
           ctx.beginPath();
-          ctx.arc(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * s, 0, 2 * Math.PI);
+          ctx.arc(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * r, 0, 2 * Math.PI);
 
           this.__setFillStyle(cmd, ctx);
           ctx.fill();
@@ -71,8 +72,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       }
     }
 
-    // this.texture = texture;
-    // driver.drawTextureWithOffset(this.texture, this.bounds.x, this.bounds.y);
+    ctx.restore();
   }
 
   /**

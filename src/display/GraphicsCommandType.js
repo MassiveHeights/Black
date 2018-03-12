@@ -10,4 +10,5 @@ const GraphicsCommandType = {
   LINE: 'line',
   RECTANGLE: 'rectangle',
   CIRCLE: 'circle',
+  TRANSFORM: 'transform'
 };
