@@ -112,6 +112,10 @@ class VideoNullDriver {
     this.__onResize(null, null);
   }
 
+  get renderScaleFactor() {
+    return this.mRenderScaleFactor;
+  }
+
   /**
    * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
    *
