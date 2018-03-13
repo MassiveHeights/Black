@@ -220,8 +220,7 @@ class Input extends System {
       this.mStagePosition.x = nativeEvent.x;
       this.mStagePosition.y = nativeEvent.y;
 
-      // TODO: optimize
-      let inv = stage.localTransformation.clone().invert();
+      let inv = stage.worldTransformationInversed;
       inv.transformVector(this.mStagePosition, this.mStagePosition);
 
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
@@ -241,7 +240,6 @@ class Input extends System {
    * @param {Vector} pos
    */
   __findTarget(pos) {
-    //debugger
     let obj = Black.stage.hitTest(pos);
 
     if (obj === null) {
@@ -289,18 +287,12 @@ class Input extends System {
     let sameTarget = this.mTarget === this.mLockedTarget;
 
     if (this.mLockedTarget === null) {
-      if (this.mTarget !== null) {
-        // regular non locked post
-        //console.log('regular');
+      if (this.mTarget !== null)
         this.mTarget.post('~' + type, info);
-      }
     } else {
-      if (sameTarget === true) {
-        // just bubble the event
+      if (sameTarget === true)
         this.mLockedTarget.post('~' + type, info);
-      }
       else {
-        // send skipping this gameObject
         if (this.mLockedTarget.mParent !== null && this.mTarget !== null)
           this.mLockedTarget.mParent.post('~' + type, info);
       }
