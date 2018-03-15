@@ -25,7 +25,7 @@ class Sprite extends DisplayObject {
       this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
-    }    
+    }
   }
 
   /**
@@ -66,6 +66,7 @@ class Sprite extends DisplayObject {
       renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;
       renderer.snapToPixels = this.mSnapToPixels;
+      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

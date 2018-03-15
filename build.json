@@ -9,7 +9,9 @@
     "src/math/Perlin.js",
     "src/math/FMath.js",
     "src/utils/Helpers.js",
+    "src/utils/MapMap.js",
     "src/utils/ObjectPool.js",
+    "src/utils/ColorHelper.js",
     "src/geom/Vector.js",
     "src/geom/Matrix.js",
     "src/geom/Rectangle.js",
@@ -62,13 +64,13 @@
     "src/drivers/RenderTarget.js",
     "src/drivers/GraphicsRenderer.js",
 
+    "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/TextRendererCanvas.js",
     "src/drivers/canvas/BitmapTextRendererCanvas.js",
     "src/drivers/canvas/EmitterRendererCanvas.js",
-    "src/drivers/canvas/DisplayObjectRendererCanvas.js",
     "src/drivers/canvas/SpriteRendererCanvas.js",
     "src/drivers/canvas/RenderTargetCanvas.js",
-    "src/drivers/canvas/GraphicsRendererCanvas.js",    
+    "src/drivers/canvas/GraphicsRendererCanvas.js",
 
 
     "src/drivers/VideoNullDriver.js",
@@ -88,6 +90,7 @@
 
     "src/scatters/Scatter.js",
     "src/scatters/FloatScatter.js",
+    "src/scatters/ColorScatter.js",
     "src/scatters/VectorScatter.js",
     "src/scatters/VectorCurveScatter.js",
     "src/scatters/RadialScatter.js",
@@ -97,11 +100,12 @@
 
     "src/particles/mods/Acceleration.js",
     "src/particles/mods/AlphaOverLife.js",
+    "src/particles/mods/ColorOverLife.js",
     "src/particles/mods/ScaleOverLife.js",
     "src/particles/mods/RotationOverLife.js",
     "src/particles/mods/TextureOverLife.js",
-    "src/particles/mods/Oriented.js",    
-    "src/particles/mods/VectorField.js",   
+    "src/particles/mods/Oriented.js",
+    "src/particles/mods/VectorField.js",
 
     "src/particles/mods/InitialLife.js",
     "src/particles/mods/InitialMass.js",
@@ -110,6 +114,7 @@
     "src/particles/mods/InitialPosition.js",
     "src/particles/mods/InitialRotation.js",
     "src/particles/mods/InitialTexture.js",
+    "src/particles/mods/InitialColor.js",
 
     "src/particles/EmitterState.js",
     "src/particles/EmitterSortOrder.js",

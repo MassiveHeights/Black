@@ -78,15 +78,15 @@ class TextRenderer extends Renderer {
 
     if (isStroke === true) {
       ctx.lineWidth = segment.style.strokeThickness;
-      ctx.strokeStyle = VideoNullDriver.hexColorToString(segment.style.strokeColor);
+      ctx.strokeStyle = ColorHelper.hexColorToString(segment.style.strokeColor);
     } else {
-      ctx.fillStyle = VideoNullDriver.hexColorToString(segment.style.color);
+      ctx.fillStyle = ColorHelper.hexColorToString(segment.style.color);
     }
 
     ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
 
-    let lx = segment.bounds.x - metrics.strokeBounds.x;
-    let ly = baseline + segment.bounds.y - metrics.strokeBounds.y;
+    let lx = segment.bounds.x - Math.min(metrics.strokeBounds.x, metrics.shadowBounds.x);
+    let ly = baseline + segment.bounds.y - Math.min(metrics.strokeBounds.y, metrics.shadowBounds.y);
 
     lx += this.padding.x;
     ly += this.padding.y;
@@ -106,14 +106,18 @@ class TextRenderer extends Renderer {
     if (this.text === null)
       return;
 
-    const cvs = this.__canvas;
-    const ctx = this.__context;
-    ctx.textBaseline = 'alphabetic';
-
-    // find canvas bounds
-    let canvasBounds = this.metrics.strokeBounds.clone().inflate(this.padding.right, this.padding.bottom);
-
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
+      const cvs = this.__canvas;
+      const ctx = this.__context;
+      ctx.textBaseline = 'alphabetic';
+
+      // find canvas bounds    
+      // let canvasBounds = this.metrics.strokeBounds.clone().inflate(this.padding.right, this.padding.bottom);
+
+      let canvasBounds = this.metrics.strokeBounds.clone();
+      canvasBounds.union(this.metrics.shadowBounds);
+      canvasBounds.inflate(this.padding.right, this.padding.bottom);
+
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
 
@@ -123,7 +127,7 @@ class TextRenderer extends Renderer {
       for (let i = 0; i < segments.length; i++) {
         if (segments[i].style.dropShadow) {
           ctx.save();
-          ctx.shadowColor = VideoNullDriver.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
+          ctx.shadowColor = ColorHelper.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
           ctx.shadowBlur = segments[i].style.shadowBlur;
           ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
           ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
@@ -155,10 +159,15 @@ class TextRenderer extends Renderer {
    * @inheritDoc
    */
   getTransform() {
-    const hasStroke = this.metrics.strokeBounds.x !== 0 || this.metrics.strokeBounds.y !== 0;
-
+    
+    
     let fieldXOffset = 0;
     let fieldYOffset = 0;
+    
+    let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
+    let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
+    
+    const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
 
     if (this.autoSize === false) {
       if (this.align === 'center')
@@ -172,9 +181,9 @@ class TextRenderer extends Renderer {
         fieldYOffset = this.fieldHeight - this.metrics.bounds.height;
     }
 
-    if (hasStroke === true || this.autoSize === false) {
+    if (hasFilter === true || this.autoSize === false) {
       this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate((this.metrics.strokeBounds.x + fieldXOffset) - this.padding.x, (this.metrics.strokeBounds.y + fieldYOffset) - this.padding.y);
+      this.__transformCache.translate((filterOffsetX + fieldXOffset) - this.padding.x, (filterOffsetY + fieldYOffset) - this.padding.y);
       return this.__transformCache;
     } else if (this.padding.isEmpty === false) {
       this.transform.copyTo(this.__transformCache);

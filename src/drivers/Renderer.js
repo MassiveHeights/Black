@@ -34,6 +34,11 @@ class Renderer {
     this.transform = null;
 
     /**
+     * Desired color to apply onto drawing object.
+     */
+    this.color = null;
+
+    /**
      * Indicates visibility of this renderable.
      * @type {boolean}
      */
@@ -139,4 +144,47 @@ class Renderer {
   getBlendMode() {
     return this.blendMode;
   }
+
+  getColor() {
+    return this.color;
+  }
+
+  
+  static getColoredTexture(texture, color) {
+    if (color === 0xFFFFFF || color === null)
+      return texture;
+
+    if (Renderer.COLOR_CACHE.has(texture.id, color)) {
+      return Renderer.COLOR_CACHE.get(texture.id, color);
+    }
+
+    let region = texture.region;
+    let w = region.width;
+    let h = region.height;
+
+    let rt = new RenderTargetCanvas(w, h);
+    let ctx = rt.context;
+
+    ctx.fillStyle = ColorHelper.hexColorToString(color);
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+
+    ctx.globalCompositeOperation = 'destination-atop';
+    ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
+
+    let t = new Texture(rt.native, null, null, texture.scale);
+    Renderer.COLOR_CACHE.set(texture.id, color, t);
+
+    return t;
+  }
 }
+
+/**
+ * @ignore
+ * @private
+ * @static
+ */
+Renderer.COLOR_CACHE = new MapMap();
+//Renderer.COLOR_CACHE.capacity = 1024;

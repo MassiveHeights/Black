@@ -14,22 +14,20 @@ class Interpolation {
    * @param {number} k The percentage of interpolation, between 0 and 1.
    * @return {number}  The interpolated value
    */
-  static linear(v, k) {
+  static linear(v, k, lerpFunction = null) {
     let m = v.length - 1;
     let f = m * k;
     let i = Math.floor(f);
 
-    let fn = (p0, p1, t) => {
-      return (p1 - p0) * t + p0;
-    };
+    lerpFunction = lerpFunction || MathEx.lerp;
 
     if (k < 0)
-      return fn(v[0], v[1], f);
+      return lerpFunction(v[0], v[1], f);
 
     if (k > 1)
-      return fn(v[m], v[m - 1], m - f);
+      return lerpFunction(v[m], v[m - 1], m - f);
 
-    return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+    return lerpFunction(v[i], v[i + 1 > m ? m : i + 1], f - i);
   }
 
   /**

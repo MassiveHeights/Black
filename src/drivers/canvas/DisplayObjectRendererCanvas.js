@@ -10,8 +10,7 @@ class DisplayObjectRendererCanvas extends Renderer {
    * @inheritDoc
    */
   render(driver) {
-    // cache as bitmap
     if (this.texture !== null)
       driver.drawTexture(this.texture);
-  }
+  }  
 }

@@ -32,8 +32,30 @@ class DisplayObject extends GameObject {
 
     /** @private @type {Rectangle|null} */
     this.mCacheBounds = null;
+
+    /** @protected @type {?number} */
+    this.mColor = null;
   }
 
+  /**
+   * Gets/Sets tinting color of the object. Pass `null` to disable tinting. Tinting color will be applied to all children
+   * objects. You can override tint color for children by setting custom value or `null` to inherit color from parent.
+   * @returns {?number}
+   */
+  get color() {
+    return this.mColor;
+  }
+  
+  /**
+   * @ignore
+   * @param {?number} value
+   * @return {void}
+   */
+  set color(value) {
+    this.mColor = value;
+    this.setRenderDirty();
+  }
+  
   /**
    * Factory method returns concrete renderer for this Game Object.
    * 
@@ -151,6 +173,7 @@ class DisplayObject extends GameObject {
       renderer.clipRect = this.mClipRect;
       renderer.snapToPixels = this.mSnapToPixels;
       renderer.texture = null;
+      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }

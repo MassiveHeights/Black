@@ -208,6 +208,7 @@ class Emitter extends DisplayObject {
       renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
       renderer.sortOrder = this.mSortOrder;
+      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
 
       this.mDirty ^= DirtyFlag.RENDER;
     }
