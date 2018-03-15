@@ -13,7 +13,7 @@ class Tween extends Component {
    * @param {number}        [duration=0.25]   Duraction in seconds.
    * @param {Object|null}   [properties=null] Tween properties Object.
    */
-  constructor(values, duration = 0.250, properties = null) {
+  constructor(values, duration = 0.250, properties = null, plugins = null) {
     super();
 
     /** @private @dict */
@@ -24,6 +24,9 @@ class Tween extends Component {
 
     /** @private @dict */
     this.mProperties = properties;
+
+    /** @private @dict */
+    this.mPlugins = plugins;
 
     /** @private @type {boolean} */
     this.mIsPlaying = false;
@@ -233,6 +236,24 @@ class Tween extends Component {
   }
 
   /**
+   * Sets/Gets optional object with custom interpolation handler function for specific target properties.
+   * 
+   * @return {Object}
+   */
+  get plugins() {
+    return this.mPlugins;
+  }
+
+  /**
+   * @ignore
+   * @param {Object} value
+   * @return {void}
+   */
+  set plugins(value) {
+    this.mPlugins = value;
+  }
+
+  /**
    * @private
    * @param {number} t
    * @return {void}
@@ -418,16 +439,19 @@ class Tween extends Component {
     if (this.mElapsed > 1)
       this.mElapsed = 1;
 
-    let value = this.mEase(this.mElapsed);
+    let tt = this.mEase(this.mElapsed);
 
     for (let f in this.mValues) {
       let start = /** @type {number} */ (this.mValuesStart[f]);
       let end = /** @type {number|Array} */ (this.mValues[f]);
 
-      if (Array.isArray(end)) {
-        this.gameObject[f] = this.mInterpolation(end, value);
+      if (this.mPlugins !== null && this.mPlugins.hasOwnProperty(f)) {
+        let toLerp = Array.isArray(end) ? end : [start, end];
+        this.gameObject[f] = Interpolation.linear(toLerp, tt, this.mPlugins[f]);
+      } else if (Array.isArray(end)) {
+        this.gameObject[f] = this.mInterpolation(end, tt);
       } else {
-        this.gameObject[f] = /** @type {number} */ (start + (end - start) * value);
+        this.gameObject[f] = /** @type {number} */ (start + (end - start) * tt);
       }
     }
 

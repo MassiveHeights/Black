@@ -13,6 +13,6 @@ class BitmapTextRendererCanvas extends BitmapTextRenderer {
   render(driver) {
     super.render(driver);
 
-    driver.drawTexture(this.texture);
+    driver.drawTexture(Renderer.getColoredTexture(this.texture, this.color));
   }
 }

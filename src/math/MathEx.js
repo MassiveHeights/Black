@@ -108,7 +108,7 @@ class MathEx {
    * @param {number} t
    * @return {number}
    */
-  static lerpp(a, b, t) {
+  static lerpInverted(a, b, t) {
     return (1 - t) * a + t * b;
   }
 

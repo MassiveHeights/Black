@@ -274,6 +274,10 @@ class Texture {
   get native() {
     return this.mNative;
   }
+
+  get id() {
+    return this.mId;
+  }
 }
 
 /**

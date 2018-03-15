@@ -112,6 +112,10 @@ class VideoNullDriver {
     this.__onResize(null, null);
   }
 
+  get renderScaleFactor() {
+    return this.mRenderScaleFactor;
+  }
+
   /**
    * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
    *
@@ -416,30 +420,5 @@ class VideoNullDriver {
    */
   get context() {
     return null;
-  }
-
-  /**
-   * Converts number color to hex string.
-   *
-   * @param {number} color The color to convert.
-   * @returns {string} The resulting hex string.
-   */
-  static hexColorToString(color) {
-    let parsedColor = color.toString(16);
-    return '#000000'.substring(0, 7 - parsedColor.length) + parsedColor;
-  }
-
-  /**
-   * Converts number color to RGBA string.
-   *
-   * @param {number} color The color to convert.
-   * @returns {string} The resulting string.
-   */
-  static intToRGBA(color, alpha = 1) {
-    const r = (color >> 16) & 255;
-    const g = (color >> 8) & 255;
-    const b = color & 255;
-
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 }

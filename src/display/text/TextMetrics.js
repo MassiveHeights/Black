@@ -1,17 +1,75 @@
+/**
+ * Object representing text measurement result.
+ * 
+ * @cat display.text
+ */
+/* @echo EXPORT */
 class TextMetricsData {
   constructor() {
+
+    /**
+     * Array of TextSegmentMetricsData objects containing style, bounds and other metrics information for each segment,
+     * @type {Array<TextSegmentMetricsData>}
+     */
     this.segments = []; // TextPartMetricsData
+
+    /**
+     * The sum bounds, including all segments.
+     * @type {Rectangle}
+     */
     this.bounds = new Rectangle();
+
+    /**
+     * Bounds plus stroke size.
+     * @type {Rectangle}
+     */
     this.strokeBounds = null;
+
+    /**
+     * Bounds of text shodow.
+     * @type {Rectangle}
+     */
+    this.shadowBounds = null;
+
+    /**
+     * Array if widths for each line.
+     * @type {Array<number>}
+     */
     this.lineWidth = [];
   }
 }
 
+/**
+ * Object representing text segment measurement result.
+ * 
+ * @cat display.text
+ */
+/* @echo EXPORT */
 class TextSegmentMetricsData {
   constructor(text, style, lineIndex, bounds) {
+
+    /**
+     * Text value for this segment.
+     * @type {string}
+     */
     this.text = text;
+
+    /**
+     * The style of this segment.
+     * @type {TextStyle}
+     */
     this.style = style;
+
+    /**
+     * The line index for this segment.
+     * @type {number}
+     */
     this.lineIndex = lineIndex;
+
+    /**
+     * The bounds of this segment.
+     * @type {Rectangle}
+     */
     this.bounds = bounds;
   }
 }
@@ -29,8 +87,8 @@ class TextMetricsEx {
   }
 
   /**
-   * Measures the area of provided text.
-   * In case style is not defined the default style will be used.
+   * Measures the area of provided text. In case style is not defined the default style will be used. Text is vertically
+   * aligned by its baseline. 
    * 
    * @static
    * @param {string} text                            The text to measure.
@@ -64,46 +122,57 @@ class TextMetricsEx {
     let lineHeightPx = defaultStyle.size * lineHeight;
     let sumBounds = new Rectangle();
     let sumStrokeBounds = new Rectangle();
+    let sumShadowBounds;
 
     let lastLineIndex = -1;
     let currentX = 0;
     let currentY = 0;
     let lastBounds = null;
-    
+
     let defaultFontMetrics = FontMetrics.get(defaultStyle.family);
-    let defaultBaseline = defaultFontMetrics.baselineNormalized * defaultStyle.size;    
+    let defaultBaseline = defaultFontMetrics.baselineNormalized * defaultStyle.size;
 
     for (let i = 0; i < parts.length; i++) {
       let part = parts[i];
-      let bounds = TextMetricsEx.__measure(part.text, part.style);
-      let baseline = FontMetrics.get(part.style.family).baselineNormalized * part.style.size;
+      let style = part.style;
+      let bounds = TextMetricsEx.__measure(part.text, style);
+      let baseline = FontMetrics.get(style.family).baselineNormalized * style.size;
 
-      if (lastLineIndex !== part.lineIndex){
-        data.lineWidth.push(0);
+      if (lastLineIndex !== part.lineIndex) {
+        data.lineWidth[part.lineIndex] = 0;
         currentX = 0;
       }
-      
+
       currentY = (lineHeightPx * part.lineIndex) + defaultBaseline - baseline;
-      
+
       bounds.x = currentX;
       bounds.y = currentY;
-      
+
       currentX += bounds.width;
-      
+
       lastLineIndex = part.lineIndex;
-      
+
       part.bounds = bounds;
       data.lineWidth[part.lineIndex] += bounds.width;
-      
-      sumBounds.union(bounds);
-      sumStrokeBounds.union(bounds.clone().inflate(part.style.strokeThickness, part.style.strokeThickness));
 
-      data.segments.push(new TextSegmentMetricsData(part.text, part.style, part.lineIndex, part.bounds));
+      sumBounds.union(bounds);
+      sumStrokeBounds.union(bounds.clone().inflate(style.strokeThickness, style.strokeThickness));
+
+      if (style.dropShadow === true) {
+        let shadowBounds = bounds.clone();
+        shadowBounds.inflate(style.shadowBlur, style.shadowBlur);
+        shadowBounds.x += style.shadowDistanceX;
+        shadowBounds.y += style.shadowDistanceY;
+        sumShadowBounds = sumShadowBounds || shadowBounds;
+        sumShadowBounds.union(shadowBounds);
+      }
+
+      data.segments.push(new TextSegmentMetricsData(part.text, style, part.lineIndex, part.bounds));
     }
-    
 
     data.bounds = sumBounds;
     data.strokeBounds = sumStrokeBounds;
+    data.shadowBounds = sumShadowBounds || new Rectangle();
 
     return data;
   }
@@ -212,4 +281,10 @@ class TextMetricsEx {
  * @static
  */
 TextMetricsEx.__span = null;
+
+/**
+ * @ignore
+ * @private
+ * @static
+ */
 TextMetricsEx.NEWLINE_REGEX = /\r?\n/;

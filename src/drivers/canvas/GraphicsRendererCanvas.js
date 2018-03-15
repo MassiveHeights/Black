@@ -20,6 +20,15 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @returns {void}
    */
   render(driver) {
+    this.__drawCommandBuffer(driver);
+    
+    if (this.color !== null && this.color !== 0xFFFFFF) {
+      driver.context.globalCompositeOperation = 'multiply';
+      this.__drawCommandBuffer(driver, this.color);
+    }
+  }
+
+  __drawCommandBuffer(driver, color = null) {
     const ctx = driver.context;
     const len = this.commands.length;
     const s = driver.finalScale;
@@ -58,7 +67,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.beginPath();
           ctx.arc(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * r, 0, 2 * Math.PI);
 
-          this.__setFillStyle(cmd, ctx);
+          this.__setFillStyle(cmd, ctx, color);
           ctx.fill();
 
           this.__setLineStyle(cmd, ctx);
@@ -92,7 +101,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    */
   __setLineStyle(cmd, ctx) {
     ctx.lineWidth = cmd.lineWidth;
-    ctx.strokeStyle = VideoNullDriver.hexColorToString(cmd.lineColor);
+    ctx.strokeStyle = ColorHelper.hexColorToString(cmd.lineColor);
     ctx.globalAlpha = cmd.lineAlpha * this.alpha;
   }
 
@@ -102,8 +111,10 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @param {GraphicsCommand} cmd
    * @param {CanvasRenderingContext2D} ctx
    */
-  __setFillStyle(cmd, ctx) {
+  __setFillStyle(cmd, ctx, color = null) {
+    color = color === null ? cmd.fillColor : color;
+
     ctx.globalAlpha = cmd.fillAlpha * this.alpha;
-    ctx.fillStyle = VideoNullDriver.hexColorToString(cmd.fillColor);
+    ctx.fillStyle = ColorHelper.hexColorToString(color);
   }
 }
