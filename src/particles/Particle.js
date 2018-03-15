@@ -51,6 +51,9 @@ class Particle {
 
     /** @type {number} Particle y-acceleration. */
     this.ay = 0;
+
+    /** @type {number|null} Particle tinting color. */
+    this.color = null;
   }
 
   /**

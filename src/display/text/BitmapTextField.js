@@ -64,6 +64,7 @@ class BitmapTextField extends DisplayObject {
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
+      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
       renderer.visible = this.mVisible;
 
       this.mDirty ^= DirtyFlag.RENDER;

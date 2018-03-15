@@ -5,7 +5,7 @@
  * @cat drivers.canvas
  */
 /* @echo EXPORT */
-class EmitterRendererCanvas extends Renderer {
+class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
   /**
    * Creates new instance of EmitterRendererCanvas.
    */
@@ -109,7 +109,7 @@ class EmitterRendererCanvas extends Renderer {
 
     driver.globalAlpha = this.alpha * particle.alpha;
     driver.setTransform(worldTransform);
-    driver.drawTexture(texture);
+    driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? this.color : particle.color));
   }
 
   /**
