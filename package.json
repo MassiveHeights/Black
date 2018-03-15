@@ -12,7 +12,9 @@
     "watch-es6": "gulp watch-es6",
     "watch-es6-module": "gulp watch-es6-module",
     "watch-test": "gulp watch-test",
-	"postinstall": "gulp"	
+    "postinstall": "gulp",
+    "test": "jest --verbose",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -37,6 +39,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-template": "^4.0.0",
     "gulp-watch": "^4.3.5",
+    "jest": "^22.4.2",
     "jsdoc": "^3.4.3",
     "jsdoc-to-markdown": "^3.0.0"
   },

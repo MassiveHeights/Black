@@ -60,3 +60,4 @@ dist/**/*.*
 dist
 /package-lock.json
 .idea
+/coverage
