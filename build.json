@@ -104,6 +104,7 @@
     "src/particles/mods/ScaleOverLife.js",
     "src/particles/mods/RotationOverLife.js",
     "src/particles/mods/TextureOverLife.js",
+    "src/particles/mods/AnchorOverLife.js",
     "src/particles/mods/Oriented.js",
     "src/particles/mods/VectorField.js",
 
@@ -115,6 +116,7 @@
     "src/particles/mods/InitialRotation.js",
     "src/particles/mods/InitialTexture.js",
     "src/particles/mods/InitialColor.js",
+    "src/particles/mods/InitialAnchor.js",
 
     "src/particles/EmitterState.js",
     "src/particles/EmitterSortOrder.js",

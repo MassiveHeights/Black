@@ -54,6 +54,12 @@ class Particle {
 
     /** @type {number|null} Particle tinting color. */
     this.color = null;
+
+    /** @type {number} Particle origin point along x-axis. */
+    this.anchorX = 0.5;
+
+    /** @type {number} Particle origin point along y-axis. */
+    this.anchorY = 0.5;
   }
 
   /**
@@ -64,6 +70,7 @@ class Particle {
   reset() {
     this.scaleX = this.scaleY = this.alpha = this.life = 1;
     this.textureIndex = this.age = this.energy = this.mass = this.x = this.y = this.r = this.vx = this.vy = this.ax = this.ay = 0;
+    this.anchorX = this.anchorY = 0.5;
   }
 
   /**
