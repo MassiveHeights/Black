@@ -254,6 +254,15 @@ class Tween extends Component {
   }
 
   /**
+   * Gets this tween duration.
+   * 
+   * @return {number}
+   */
+  get duration() {
+    return this.mDuration;
+  }
+
+  /**
    * @private
    * @param {number} t
    * @return {void}
