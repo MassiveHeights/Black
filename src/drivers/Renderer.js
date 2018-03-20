@@ -149,14 +149,12 @@ class Renderer {
     return this.color;
   }
 
-  
   static getColoredTexture(texture, color) {
     if (color === 0xFFFFFF || color === null)
       return texture;
 
-    if (Renderer.COLOR_CACHE.has(texture.id, color)) {
+    if (Renderer.COLOR_CACHE.has(texture.id, color))
       return Renderer.COLOR_CACHE.get(texture.id, color);
-    }
 
     let region = texture.region;
     let w = region.width;
@@ -174,7 +172,7 @@ class Renderer {
     ctx.globalCompositeOperation = 'destination-atop';
     ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
 
-    let t = new Texture(rt.native, null, null, texture.scale);
+    let t = new Texture(rt.native, null, texture.untrimmedRegion.clone(), texture.scale);
     Renderer.COLOR_CACHE.set(texture.id, color, t);
 
     return t;
@@ -187,4 +185,3 @@ class Renderer {
  * @static
  */
 Renderer.COLOR_CACHE = new MapMap();
-//Renderer.COLOR_CACHE.capacity = 1024;
