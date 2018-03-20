@@ -159,6 +159,7 @@ class Renderer {
     }
 
     let region = texture.region;
+    let untrimmed = texture.untrimmedRegion;
     let w = region.width;
     let h = region.height;
 
@@ -174,7 +175,7 @@ class Renderer {
     ctx.globalCompositeOperation = 'destination-atop';
     ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
 
-    let t = new Texture(rt.native, null, null, texture.scale);
+    let t = new Texture(rt.native, null, untrimmed, texture.scale);
     Renderer.COLOR_CACHE.set(texture.id, color, t);
 
     return t;
