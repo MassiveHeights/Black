@@ -18,7 +18,7 @@ class AtlasTexture extends Texture {
   /**
    * @ignore
    * @private
-   * @param {{meta: *, frames: *}} o
+   * @param {{meta: *, frames: Object}} o
    * @param {number} scale
    * @return {void}
    */
@@ -97,8 +97,8 @@ class AtlasTexture extends Texture {
    * Sorts set of data in natural order
    *
    * @ignore
-   * @param {*} dataset
-   * @param {*} field
+   * @param {Array<Object>} dataset
+   * @param {string|null} [field=null]
    */
   static naturalSort(dataset, field = null) {
     dataset.sort(AtlasTexture.__naturalComparer(field));
@@ -107,9 +107,9 @@ class AtlasTexture extends Texture {
   /**
    * @ignore
    * @private
-   * @param {*} field
+   * @param {string|null} field
    * @param {boolean} useAbs
-   * @returns {Function}
+   * @returns {function(?, ?):number}
    */
   static __naturalComparer(field = null, useAbs = true) {
     return function (a, b) {

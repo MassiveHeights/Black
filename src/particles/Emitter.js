@@ -142,6 +142,10 @@ class Emitter extends DisplayObject {
     let t = Black.instance.uptime;
     let firstEmit = false;
 
+    if (dt > 0.1)
+      console.log(dt);
+    
+
     if (this.mState === EmitterState.PENDING) {
       this.mNextUpdateAt = t + this.mEmitDelayLeft;
       this.mEmitDelayLeft -= dt;

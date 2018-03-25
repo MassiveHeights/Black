@@ -169,7 +169,7 @@ class TextField extends DisplayObject {
     style.name = name;
 
     this.mStyles[name] = style;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -179,7 +179,7 @@ class TextField extends DisplayObject {
    */
   setDefaultStyle(style) {
     this.mDefaultStyle = style;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -188,7 +188,7 @@ class TextField extends DisplayObject {
    */
   removeStyle(name) {
     delete this.mStyles[name];
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -213,7 +213,7 @@ class TextField extends DisplayObject {
    */
   set multiline(value) {
     this.mMultiline = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -232,7 +232,7 @@ class TextField extends DisplayObject {
    */
   set lineHeight(value) {
     this.mLineHeight = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -263,7 +263,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.size = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -285,7 +285,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.family = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -329,7 +329,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.style = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -351,7 +351,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.weight = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -373,7 +373,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mAlign = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -395,7 +395,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mVerticalAlign = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -461,7 +461,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mFieldWidth = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /** Specifies the height of the text field, if autoSize set as false
@@ -483,7 +483,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mFieldHeight = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**Text to be displayed inside this text field.
@@ -504,7 +504,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -526,7 +526,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mAutoSize = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -545,7 +545,7 @@ class TextField extends DisplayObject {
    */
   set padding(value) {
     this.mPadding = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -567,7 +567,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.dropShadow = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -633,7 +633,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowBlur = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -655,7 +655,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowDistanceX = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -677,7 +677,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowDistanceY = value;
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 }
 

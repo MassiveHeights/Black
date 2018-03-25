@@ -9,7 +9,7 @@ class KeyInfo {
   /**
    * Create new instance of KeyInfo
    *
-   * @param {Event} nativeEvent Native touch event.
+   * @param {KeyboardEvent} nativeEvent Native touch event.
    * @return {void}
    */
   constructor(nativeEvent) {

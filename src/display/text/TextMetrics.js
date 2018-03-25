@@ -195,7 +195,8 @@ class TextMetricsEx {
     let span = TextMetricsEx.__span;
 
     if (TextMetricsEx.__span === null) {
-      span = TextMetricsEx.__span = document.createElement('span');
+      TextMetricsEx.__span = /** @type {HTMLElement} */ (document.createElement('span'));
+      span = /** @type {HTMLElement} */ (TextMetricsEx.__span);
       span.id = 'font';
       span.style.position = 'absolute';
       span.style.width = 'auto';
@@ -230,7 +231,7 @@ class TextMetricsEx {
    * 
    * @static
    * @param {string} text 
-   * @param {string|BitmapFontData} data 
+   * @param {BitmapFontData} data 
    * @param {number} lineHeight 
    * @param {Rectangle} outBounds 
    * @returns {Rectangle}
@@ -238,7 +239,7 @@ class TextMetricsEx {
   static measureBitmap(text, data, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();
 
-    let prevCharCode = null;
+    let prevCharCode = -1;
     let cx = 0;
     let cy = 0;
 
@@ -251,7 +252,7 @@ class TextMetricsEx {
       if (/(?:\r\n|\r|\n)/.test(text.charAt(i))) {
         cx = 0;
         cy += data.lineHeight * lineHeight;
-        prevCharCode = null;
+        prevCharCode = -1;
         continue;
       }
 
@@ -260,7 +261,7 @@ class TextMetricsEx {
       if (charData == null)
         continue;
 
-      if (prevCharCode && charData.kerning[prevCharCode])
+      if (prevCharCode >= 0 && charData.kerning[prevCharCode])
         cx += charData.kerning[prevCharCode];
 
       cx += charData.xAdvance;
@@ -279,6 +280,7 @@ class TextMetricsEx {
  * @ignore
  * @private
  * @static
+ * @type {HTMLElement|null}
  */
 TextMetricsEx.__span = null;
 

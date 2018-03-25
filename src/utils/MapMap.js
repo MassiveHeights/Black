@@ -1,6 +1,6 @@
 /* @echo EXPORT */
 class MapMap {
-  constructor(capacity) {
+  constructor() {
     this.mMap = new Map();
 
     // TODO implement maximum map capacity

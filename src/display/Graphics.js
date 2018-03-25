@@ -157,7 +157,11 @@ class Graphics extends DisplayObject {
     this.setTransformDirty();
   }
 
-  setTransform(matrix) {
+  /**
+   * Sets custom tranformation for futher objects
+   * @param {Matrix} matrix 
+   */
+  setCustomTransform(matrix) {
     let d = matrix.data;
     this.__pushCommand(GraphicsCommandType.TRANSFORM, d[0], d[1], d[2], d[3], d[4], d[5]);
     this.setTransformDirty();
@@ -245,7 +249,7 @@ class Graphics extends DisplayObject {
   /**
    * @private
    * @ignore
-   * @param {GraphicsCommandType<string>} type
+   * @param {GraphicsCommandType} type
    * @param {...number} points 
    */
   __pushCommand(type, ...points) {
