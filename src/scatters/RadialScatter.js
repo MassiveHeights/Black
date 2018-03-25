@@ -12,7 +12,7 @@ class RadialScatter extends VectorScatter {
    * @param {number} x The center of a circle along x-axis.
    * @param {number} y The center of a circle along y-axis.
    * @param {number} minRadius The min radius value.
-   * @param {number} maxRadius The max radius value.
+   * @param {number} [maxRadius=NaN] The max radius value.
    */
   constructor(x, y, minRadius, maxRadius = NaN) {
     super(x, y, minRadius, maxRadius);
