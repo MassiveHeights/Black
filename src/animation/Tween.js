@@ -254,6 +254,24 @@ class Tween extends Component {
   }
 
   /**
+   * Gets this tween duration.
+   * 
+   * @return {number}
+   */
+  get duration() {
+    return this.mDuration;
+  }
+
+  /**
+   * Indicated whether the tween is playing and not paused.
+   * 
+   * @return {number}
+   */
+  get isPlaying() {
+    return this.mIsPlaying && !this.mIsPaused;
+  }
+
+  /**
    * @private
    * @param {number} t
    * @return {void}

@@ -60,8 +60,6 @@ gulp.task('build-es6-module', function () {
     .pipe(gulp.dest('dist'));
 });
 
-
-
 gulp.task('watch-es5', ['build-es5'], function () {
   gulp.watch(['./src/**/*.js'], ['build-es5']);
 });
@@ -90,7 +88,7 @@ gulp.task('watch-test', ['build-es6'], function () {
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
 
 
-// DEBUG
+// INTERNAL TASKS
 gulp.task('copy-examples', ['build-es6',], function () {
   return gulp.src('./dist/black-es6*.*')
     .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));

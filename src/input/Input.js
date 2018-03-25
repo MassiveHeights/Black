@@ -7,6 +7,8 @@
  * objects will not receive `pointerMove` or `pointerUp` messages. Target locked
  * object will receive `pointerUp` message even if pointer is outside of its
  * bounds.
+ * 
+ * Every object in the display list should be `touchable` in order to receive input messages.
  *
  * @cat input
  * @extends System
