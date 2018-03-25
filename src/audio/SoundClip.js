@@ -84,7 +84,7 @@ class SoundClip {
   /**
    * @ignore
    * @private
-   * @param {*} channels 
+   * @param {Array<Float32Array>} channels 
    * @param {number} ix 
    */
   __averagePeak(channels, ix) {

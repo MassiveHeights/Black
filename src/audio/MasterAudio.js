@@ -12,7 +12,7 @@ class MasterAudio extends System {
   constructor() {
     super();
 
-    this.constructor.instance = this;
+    MasterAudio.instance = this;
 
     this.__unlock();
 
@@ -225,3 +225,9 @@ class MasterAudio extends System {
     return MasterAudio.context.createGain();
   }
 }
+
+/**
+ * @static
+ * @type {MasterAudio}
+ */
+MasterAudio.instance = null;

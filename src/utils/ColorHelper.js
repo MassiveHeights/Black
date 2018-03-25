@@ -1,3 +1,44 @@
+/* @echo EXPORT */
+class RGB {
+  /**
+   * 
+   * @param {number} r 
+   * @param {number} g 
+   * @param {number} b 
+   */
+  constructor(r = 0, g = 0, b = 0) {
+    /** @type {number} */
+    this.r = r;
+
+    /** @type {number} */
+    this.g = g;
+
+    /** @type {number} */
+    this.b = b;
+  }
+}
+
+
+/* @echo EXPORT */
+class HSV {
+  /**
+   * 
+   * @param {number} h
+   * @param {number} s 
+   * @param {number} v 
+   */
+  constructor(h = 0, s = 0, v = 0) {
+    /** @type {number} */
+    this.h = h;
+
+    /** @type {number} */
+    this.s = s;
+
+    /** @type {number} */
+    this.v = v;
+  }
+}
+
 /** 
  * Set of methods related to color transformations.
  * 
@@ -10,21 +51,17 @@ class ColorHelper {
   /**
    * Converts number color to RGB object.
    *
-   * @param {number} color The color to convert.
-   * @returns {Object} The resulting string.
+   * @param {number} hex The color to convert.
+   * @returns {RGB} The resulting string.
    */
   static hex2rgb(hex) {
-    return {
-      r: hex >> 16 & 255,
-      g: hex >> 8 & 255,
-      b: hex & 255
-    };
+    return new RGB(hex >> 16 & 255, hex >> 8 & 255, hex & 255);
   }
 
   /**
    * Converts RGB object into number color.
    *
-   * @param {Object} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
    * @returns {number} The resulting uint.
    */
   static rgb2hex(rgb) {
@@ -34,12 +71,14 @@ class ColorHelper {
   /**
    * Converts HSV object into RGB object.
    *
-   * @param {Object} hsv The object, which contains 'h', 's' and 'v' properties.
-   * @returns {Object} The resulting RGB object.
+   * @param {HSV} hsv The object, which contains 'h', 's' and 'v' properties.
+   * @returns {RGB} The resulting RGB object.
    */
   static hsv2rgb(hsv) {
-    let {h, s, v} = hsv;
-    let r, g, b;
+    let { h, s, v } = hsv;
+    let r = 0;
+    let g = 0;
+    let b = 0;
 
     let i = Math.floor(h * 6);
     let f = h * 6 - i;
@@ -60,27 +99,32 @@ class ColorHelper {
     g *= 255;
     b *= 255;
 
-    return {r, g, b};
+    return new RGB(r, g, b);
   }
 
   /**
    * Converts RGB object into HSV object.
    *
-   * @param {Object} rgb The object, which contains 'r', 'g' and 'b' properties.
-   * @returns {Object} The resulting HSV object.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @returns {HSV} The resulting HSV object.
    */
   static rgb2hsv(rgb) {
     let { r, g, b } = rgb;
-    
-    r /= 255, g /= 255, b /= 255;
+    r /= 255;
+    g /= 255;
+    b /= 255;
 
-    let max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h, s, v = max;
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+
+    let h = 0;
+    let s = 0;
+    let v = max;
 
     let d = max - min;
-    s = max == 0 ? 0 : d / max;
+    s = max === 0 ? 0 : d / max;
 
-    if (max == min) {
+    if (max === min) {
       h = 0;
     } else {
       switch (max) {
@@ -90,9 +134,9 @@ class ColorHelper {
       }
 
       h /= 6;
-  }
+    }
 
-    return {h, s, v};
+    return new HSV(h, s, v);
   }
 
   /**
@@ -105,7 +149,7 @@ class ColorHelper {
   static lerpHSV(hex1, hex2, factor = 0.5) {
     let c1 = ColorHelper.rgb2hsv(ColorHelper.hex2rgb(hex1));
     let c2 = ColorHelper.rgb2hsv(ColorHelper.hex2rgb(hex2));
-    
+
     let h = 0;
     let d = c2.h - c1.h;
 
@@ -116,7 +160,7 @@ class ColorHelper {
       d = -d;
       factor = 1 - factor;
     }
-    
+
     if (d > 0.5) {
       c1.h = c1.h + 1;
       h = (c1.h + factor * (c2.h - c1.h)) % 1;
@@ -124,11 +168,11 @@ class ColorHelper {
 
     if (d <= 0.5)
       h = c1.h + factor * d;
-    
+
     let s = c1.s + factor * (c2.s - c1.s);
     let v = c1.v + factor * (c2.v - c1.v);
 
-    return ColorHelper.rgb2hex(ColorHelper.hsv2rgb({ h, s, v }));
+    return ColorHelper.rgb2hex(ColorHelper.hsv2rgb(new HSV(h, s, v)));
   }
 
   /**

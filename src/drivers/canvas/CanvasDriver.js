@@ -16,7 +16,7 @@ class CanvasDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @private @type {CanvasRenderingContext2D} */
+    /** @private @type {CanvasRenderingContext2D|null} */
     this.mCtx = null;
 
     this.__createCanvas();

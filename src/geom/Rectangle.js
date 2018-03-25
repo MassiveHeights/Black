@@ -16,16 +16,16 @@ class Rectangle {
   constructor(x = 0, y = 0, w = 0, h = 0) {
     Debug.isNumber(x, y, w, h);
 
-    /** @type {number} The x coordinate of the rectangle. */
+    /** @export @type {number} The x coordinate of the rectangle. */
     this.x = x;
 
-    /** @type {number} The y coordinate of the rectangle. */
+    /** @export @type {number} The y coordinate of the rectangle. */
     this.y = y;
 
-    /** @type {number} The width of the rectangle. */
+    /** @export @type {number} The width of the rectangle. */
     this.width = w;
 
-    /** @type {number} The height of the rectangle. */
+    /** @export @type {number} The height of the rectangle. */
     this.height = h;
   }
 

@@ -62,7 +62,13 @@ class Message {
    * @return {string}
    */
   toString() {
-    return `MESSAGE: { name: '${this.name}', sender: '${this.sender.name}', target: '${this.target.name}', path: '${this.path}' }`;
+    let name = '';
+
+    let isGameObject = this.sender instanceof GameObject;
+    if (isGameObject === true)
+      name = /** @type {GameObject}*/ (this.sender).name;
+
+    return `MESSAGE: { name: '${this.name}', sender: '${name}', target: '${this.target.name}', path: '${this.path}' }`;
   }
 
   /**
@@ -84,8 +90,8 @@ class Message {
  */
 /* @echo EXPORT */
 const MessageType = {
-  NONE:    'none',
-  BUBBLE:  'bubble',
+  NONE: 'none',
+  BUBBLE: 'bubble',
   CAPTURE: 'capture',
-  GLOBAL:  'global'
+  GLOBAL: 'global'
 };

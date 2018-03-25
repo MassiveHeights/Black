@@ -47,7 +47,7 @@ class VideoNullDriver {
     /** @protected @type {number} */
     this.mRenderScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
 
-    /** @protected @type {BlendMode<string>|null} */
+    /** @protected @type {BlendMode|null} */
     this.mGlobalBlendMode = BlendMode.AUTO;
 
     /** @protected @type {number} */
@@ -58,11 +58,7 @@ class VideoNullDriver {
 
     /** @protected @type {Renderer} */
     this.mStageRenderer = new Renderer();
-
-    /** @protected @type {number} */
     this.mStageRenderer.alpha = 1;
-
-    /** @protected @type {BlendMode} */
     this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
     /** @protected @type {Object.<string, function(new: Renderer)>} */

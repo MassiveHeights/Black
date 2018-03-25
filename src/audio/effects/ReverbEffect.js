@@ -24,10 +24,10 @@ class ReverbEffect extends SoundEffect {
     /** @private @type {ConvolverNode} */
     this.mConvolver = MasterAudio.context.createConvolver();
 
-    /** @private @type {AudioNode} */
+    /** @private @type {GainNode} */
     this.mDry = MasterAudio._newGainNode();
 
-    /** @private @type {AudioNode} */
+    /** @private @type {GainNode} */
     this.mWet = MasterAudio._newGainNode();
 
     /** @private @type {BiquadFilterNode} */

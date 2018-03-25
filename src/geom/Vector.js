@@ -14,10 +14,10 @@ class Vector {
   constructor(x = 0, y = 0) {
     Debug.isNumber(x, y);
     
-    /** @type {number} X coordinate of a point in the space. */
+    /** @export @type {number} X coordinate of a point in the space. */
     this.x = x;
 
-    /** @type {number} Y coordinate of a point in the space. */
+    /** @export @type {number} Y coordinate of a point in the space. */
     this.y = y;
   }
 
@@ -293,8 +293,8 @@ class Vector {
   setRotation(rotation) {
     Debug.isNumber(rotation);
 
-    let cos = Math.cos(rotation).toFixed(15);
-    let sin = Math.sin(rotation).toFixed(15);
+    let cos = Math.cos(rotation);
+    let sin = Math.sin(rotation);
 
     return this.set(this.x * cos - this.y * sin, this.x * sin + this.y * cos);
   }
