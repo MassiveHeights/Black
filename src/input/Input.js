@@ -23,8 +23,7 @@ class Input extends System {
 
     Debug.assert(this.constructor.instance == null, 'Only single instance is allowed');
 
-    /** @private @type {Input} */
-    this.constructor.instance = this;
+    Input.instance = this;
 
     /** @private @type {Vector} */
     this.mPointerPosition = new Vector();
@@ -46,7 +45,7 @@ class Input extends System {
     /** @private @type {Array<{e: Event, x: number, y:number}>} */
     this.mPointerQueue = [];
 
-    /** @private @type {Array<Event>} */
+    /** @private @type {Array<KeyboardEvent>} */
     this.mKeyQueue = [];
 
     /** @private @type {Array<number>} */
@@ -68,7 +67,7 @@ class Input extends System {
     /** @private @type {Component} */
     this.mTargetComponent = null;
 
-    /** @private @type {MessageDispatcher} */
+    /** @private @type {GameObject} */
     this.mLockedTarget = null;
 
     /** @private @type {Component} */
@@ -96,13 +95,13 @@ class Input extends System {
     document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++)
-      document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(e), false);
+      document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e)), false);
   }
 
   /**
    * @ignore
    * @private
-   * @param {Event} e
+   * @param {KeyboardEvent} e
    * @return {boolean}
    */
   __onKeyEvent(e) {
@@ -124,7 +123,7 @@ class Input extends System {
       return;
 
     // dirty check
-    let over = e.target == this.mDom || e.target.parentElement == this.mDom;
+    let over = e.target == this.mDom || /** @type {Node})*/ (e.target).parentElement == this.mDom;
 
     if (over === false && this.mNeedUpEvent === true) {
       this.mNeedUpEvent = false;
@@ -427,6 +426,7 @@ Input.POINTER_UP = 'pointerUp';
  * Only instance of Input.
  *
  * @type {Input}
+ * @static
  * @nocollapse
  */
 Input.instance = null;
@@ -564,3 +564,4 @@ class PointerInfo {
     return this.mY;
   }
 }
+

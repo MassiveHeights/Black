@@ -12,7 +12,7 @@ class DisplayObject extends GameObject {
     /** @protected @type {number} */
     this.mAlpha = 1;
 
-    /** @protected @type {BlendMode<string>} */
+    /** @protected @type {BlendMode} */
     this.mBlendMode = BlendMode.AUTO;
 
     /** @protected @type {boolean} */
@@ -182,6 +182,35 @@ class DisplayObject extends GameObject {
   }
 
   /**
+   * @inheritDoc
+   */
+  hitTest(localPoint) {
+    let c = this.getComponent(InputComponent);
+    let touchable = c !== null && c.touchable;
+    let insideMask = this.onHitTestMask(localPoint);
+
+    if (this.visible === false || touchable === false || insideMask === false)
+      return null;
+
+    let target = null;
+    let numChildren = this.mChildren.length;
+
+    for (let i = numChildren - 1; i >= 0; --i) {
+      let child = this.mChildren[i];
+
+      target = child.hitTest(localPoint);
+
+      if (target !== null)
+        return target;
+    }
+
+    if (this.onHitTest(localPoint) === true)
+      return this;
+
+    return null;
+  }
+
+  /**
   * @inheritDoc
   */
   onHitTestMask(localPoint) {
@@ -292,7 +321,7 @@ class DisplayObject extends GameObject {
   /**
    * Gets/Sets blend mode for the object.
    *
-   * @return {BlendMode<string>}
+   * @return {BlendMode}
    */
   get blendMode() {
     return this.mBlendMode;
@@ -300,7 +329,7 @@ class DisplayObject extends GameObject {
 
   /**
    * @ignore
-   * @param {BlendMode<string>} value
+   * @param {BlendMode} value
    * @return {void}
    */
   set blendMode(value) {

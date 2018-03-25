@@ -3,6 +3,7 @@
  *
  * @cat core
  * @unrestricted
+ * @export
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -73,7 +74,7 @@ class GameObject extends MessageDispatcher {
     /** @private @type {Matrix} */
     this.mWorldTransformInversed = new Matrix();
 
-    /** @private @type {DirtyFlag<number>} */
+    /** @private @type {DirtyFlag} */
     this.mDirty = DirtyFlag.DIRTY;
 
     /** @protected @type {GameObject} */
@@ -415,7 +416,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Get component by type.
    *
-   * @param {Object} typeName The component type.
+   * @param {Function} typeName The component type.
    * @return {Component|null} The `Component` instance or null if not found.
    */
   getComponent(typeName) {
@@ -864,6 +865,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the name of this GameObject instance.
    *
+   * @export
    * @return {string|null}
    */
   get name() {
@@ -871,6 +873,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {string|null} value
    * @return {void}
@@ -881,7 +884,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/Sets the x coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
-   *
+   * @export
    * @return {number}
    */
   get x() {
@@ -889,6 +892,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -906,6 +910,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
    *
+   * @export
    * @return {number}
    */
   get y() {
@@ -913,6 +918,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -930,6 +936,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x coordinate of the object's origin in its local space in pixels.
    *
+   * @export
    * @return {number}
    */
   get pivotOffsetX() {
@@ -937,6 +944,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -951,7 +959,7 @@ class GameObject extends MessageDispatcher {
     this.mPivotOffsetX = value;
     this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
@@ -959,6 +967,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the object's origin in its local space in pixels.
    *
+   * @export
    * @return {number}
    */
   get pivotOffsetY() {
@@ -966,6 +975,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -980,12 +990,13 @@ class GameObject extends MessageDispatcher {
     this.mPivotOffsetY = value;
     this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -999,12 +1010,13 @@ class GameObject extends MessageDispatcher {
     this.mAnchorX = value;
     this.mAnchorChanged = true;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -1018,13 +1030,15 @@ class GameObject extends MessageDispatcher {
     this.mAnchorY = value;
     this.mAnchorChanged = true;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
 
   /**
    * Returns current anchor-x value in range from 0 to 1.
+   * 
+   * @export
    * @returns {number}
    */
   get anchorX() {
@@ -1033,6 +1047,8 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns current anchor-y value in range from 0 to 1.
+   * 
+   * @export
    * @returns {number}
    */
   get anchorY() {
@@ -1041,6 +1057,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns current pivot-x value in range from 0 to 1.
+   * 
    * @returns {number}
    */
   get pivotX() {
@@ -1049,6 +1066,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns current pivot-y value in range from 0 to 1.
+   * 
    * @returns {number}
    */
   get pivotY() {
@@ -1106,7 +1124,7 @@ class GameObject extends MessageDispatcher {
     this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
     this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
 
@@ -1116,6 +1134,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along x-axis.
    *
+   * @export
    * @return {number}
    */
   get scaleX() {
@@ -1123,6 +1142,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    *
@@ -1141,6 +1161,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along y-axis.
    *
+   * @export
+   * 
    * @return {number}
    */
   get scaleY() {
@@ -1148,6 +1170,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -1165,6 +1188,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets rotation in radians.
    *
+   * @export
+   * 
    * @return {number}
    */
   get rotation() {
@@ -1172,6 +1197,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @export
    * @ignore
    * @param {number} value
    * @return {void}
@@ -1338,54 +1364,54 @@ class GameObject extends MessageDispatcher {
       Black.instance.onTagUpdated(this, old, value);
   }
 
-  /**
-   * Starts coroutine.
-   *
-   * @param {Function} gen  Generator function.
-   * @param {*=} [ctx=null] Context for Generator function.
-   * @return {Generator}
-   */
-  spawn(gen, ctx = null) {
-    let iter = gen.apply(ctx == null ? this : ctx);
+  // /**
+  //  * Starts coroutine.
+  //  *
+  //  * @param {Function} gen  Generator function.
+  //  * @param {*=} [ctx=null] Context for Generator function.
+  //  * @return {*}
+  //  */
+  // spawn(gen, ctx = null) {
+  //   let iter = gen.apply(ctx == null ? this : ctx);
 
-    function step(it) {
-      if (it.done)
-        return;
+  //   function step(it) {
+  //     if (it.done)
+  //       return;
 
-      if (typeof it.value === 'function')
-        it.value(x => step(iter.next(x)));
-      else
-        step(iter.next(it.value));
-    }
+  //     if (typeof it.value === 'function')
+  //       it.value(x => step(iter.next(x)));
+  //     else
+  //       step(iter.next(it.value));
+  //   }
 
-    step(iter.next());
-    return iter;
-  }
+  //   step(iter.next());
+  //   return iter;
+  // }
 
-  /**
-   * Waits for given amount of seconds before processing.
-   *
-   * @param {number} seconds Duration
-   * @return {function(*):*}
-   */
-  wait(seconds = 1) {
-    return cb => setTimeout(cb.bind(this, seconds * 1000), seconds * 1000);
-  }
+  // /**
+  //  * Waits for given amount of seconds before processing.
+  //  *
+  //  * @param {number} [seconds=1] Duration
+  //  * @return {function(*):*}
+  //  */
+  // wait(seconds = 1) {
+  //   return cb => setTimeout(cb.bind(this, /** @type {!number} */(seconds * 1000)), /** @type {!number} */(seconds * 1000));
+  // }
 
-  /**
-   * Waits for a specific message.
-   *
-   * @param {string} message The name of the message to wait for.
-   * @return {function(*):*}
-   */
-  waitMessage(message) {
-    return cb => this.on(message, cb.bind(this));
-  }
+  // /**
+  //  * Waits for a specific message.
+  //  *
+  //  * @param {string} message The name of the message to wait for.
+  //  * @return {function(*):*}
+  //  */
+  // waitMessage(message) {
+  //   return cb => this.on(message, cb.bind(this));
+  // }
 
   /**
    * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {DirtyFlag<number>} flag The flag or flag bit mask.
+   * @param {DirtyFlag} flag The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Specifies if the flag needed for all children.
    * @return {void}
    */
@@ -1404,13 +1430,13 @@ class GameObject extends MessageDispatcher {
   /**
    * Marks the GameObject's parent as dirty.
    *
-   * @param {DirtyFlag<number>} flag The flag or flag bit mask.
+   * @param {DirtyFlag} flag The flag or flag bit mask.
    * @return {void}
    */
-  setParentDirty(flag) {    
+  setParentDirty(flag) {
     this.mDirty |= flag;
     this.mDirtyFrameNum = Black.frameNum;
-    
+
     if (this.mAnchorChanged === true || this.mDirty & DirtyFlag.LOCAL || this.mDirty & DirtyFlag.BOUNDS) {
       if (this.mAnchorX !== 0 || this.mAnchorY !== 0) {
         this.getBounds(this, true, Rectangle.__cache.zero());
@@ -1418,10 +1444,10 @@ class GameObject extends MessageDispatcher {
         this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
         this.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
       }
-      
+
       this.mAnchorChanged = false;
     }
-    
+
     let current = this;
 
     while (current.mParent != null) {
@@ -1449,7 +1475,7 @@ class GameObject extends MessageDispatcher {
     if (this.mSuspendDirty === true)
       return;
 
-    this.setDirty(/** @type {DirtyFlag<number>} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
     this.setParentDirty(DirtyFlag.BOUNDS);
   }
@@ -1491,7 +1517,7 @@ class GameObject extends MessageDispatcher {
    * @return {boolean}
    */
   get touchable() {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent} */ (this.getComponent(InputComponent));
     return c !== null && c.touchable === true;
   }
 
@@ -1586,7 +1612,7 @@ class GameObject extends MessageDispatcher {
     let touchable = c !== null && c.touchable;
     let insideMask = this.onHitTestMask(localPoint);
 
-    if (this.visible === false || touchable === false || insideMask === false)
+    if (touchable === false || insideMask === false)
       return null;
 
     let target = null;
@@ -1617,7 +1643,7 @@ class GameObject extends MessageDispatcher {
     let contains = false;
 
     // BEGINOF: WTF
-    let tmpVector = Vector.pool.get();
+    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
     this.worldTransformationInversed.transformVector(localPoint, tmpVector);
     // ENDOF: WTF
 
@@ -1732,12 +1758,12 @@ class GameObject extends MessageDispatcher {
       gameObject = Black.stage;
 
     let r = action(gameObject);
-    if (r === true)
+    if (r == true)
       return;
 
     for (let i = 0; i < gameObject.mChildren.length; i++) {
       r = GameObject.forEach(gameObject.mChildren[i], action);
-      if (r === true)
+      if (r == true)
         return;
     }
   }

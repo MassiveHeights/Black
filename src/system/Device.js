@@ -21,10 +21,6 @@ class Device {
      */
     this.mPixelRatio = 0;
 
-    /**
-     * @private
-     * @type {number}
-     */
     Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
   }
 
@@ -88,7 +84,7 @@ class Device {
    * @return {boolean}
    */
   static get webAudioSupported() {
-    return window['AudioContext'] || window['webkitAudioContext'];
+    return window['AudioContext'] != null || window['webkitAudioContext'] != null;
   }
 
   /**

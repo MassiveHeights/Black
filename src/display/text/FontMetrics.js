@@ -15,7 +15,7 @@ class FontMetrics {
    */
   constructor(style) {
     if (FontMetrics.__CONTEXT === null) {
-      FontMetrics.__CANVAS = document.createElement('canvas');
+      FontMetrics.__CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
       FontMetrics.__CONTEXT = FontMetrics.__CANVAS.getContext('2d');
     }
 
@@ -270,7 +270,7 @@ FontMetrics.CACHE = {};
 /** @ignore @static @private */
 FontMetrics.__CONTEXT = null;
 
-/** @ignore @static @private */
+/** @ignore @static @private @type {HTMLCanvasElement}*/
 FontMetrics.__CANVAS = null;
 
 /** @ignore @static @private */

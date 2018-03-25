@@ -456,8 +456,8 @@ class Polygon {
   setRotation(rotation) {
     let center = this.mCenter;
     let vertices = this.mVertices;
-    let cos = Math.cos(rotation).toFixed(15);
-    let sin = Math.sin(rotation).toFixed(15);
+    let cos = Math.cos(rotation);
+    let sin = Math.sin(rotation);
 
     for (let i = 0, len = vertices.length; i < len; i++) {
       let vector = vertices[i];

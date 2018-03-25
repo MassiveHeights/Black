@@ -6,7 +6,6 @@
   "directories": {},
   "scripts": {
     "start": "gulp",
-    "examples": "gulp examples",
     "docs": "node scripts/docs.js",
     "watch-es5": "gulp watch-es5",
     "watch-es6": "gulp watch-es6",
@@ -14,7 +13,9 @@
     "watch-test": "gulp watch-test",
     "postinstall": "gulp",
     "test": "jest --verbose",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "examples": "gulp examples",
+    "template": "gulp template"
   },
   "repository": {
     "type": "git",

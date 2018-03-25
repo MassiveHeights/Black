@@ -58,7 +58,7 @@ class BitmapTextRenderer extends Renderer {
 
     let canvasBounds = this.bounds.clone();
 
-    let prevCharCode = null;
+    let prevCharCode = -1;
     let cx = 0;
     let cy = 0;
 
@@ -72,7 +72,7 @@ class BitmapTextRenderer extends Renderer {
         if (/(?:\r\n|\r|\n)/.test(this.text.charAt(i))) {
           cx = 0;
           cy += this.data.lineHeight * this.lineHeight;
-          prevCharCode = null;
+          prevCharCode = -1;
           continue;
         }
 
@@ -83,7 +83,7 @@ class BitmapTextRenderer extends Renderer {
 
         let texture = charData.texture;
 
-        if (prevCharCode && charData.kerning[prevCharCode])
+        if (prevCharCode >= 0 && charData.kerning[prevCharCode])
           cx += charData.kerning[prevCharCode];
 
         const w = texture.width;
