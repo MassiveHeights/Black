@@ -12,6 +12,7 @@
     "src/utils/MapMap.js",
     "src/utils/ObjectPool.js",
     "src/utils/ColorHelper.js",
+    "src/utils/LinkedList.js",
     "src/geom/Vector.js",
     "src/geom/Matrix.js",
     "src/geom/Rectangle.js",
@@ -152,6 +153,11 @@
     "src/audio/SoundChannel.js",
     "src/audio/Sound.js",
     "src/audio/SoundListener.js",
+
+    "src/animation/sequencer/SequencerKey.js",
+    "src/animation/sequencer/SequencerTrack.js",
+    "src/animation/sequencer/Sequence.js",
+    "src/animation/sequencer/Sequencer.js",
 
     "src/Black.js"
   ]

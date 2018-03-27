@@ -73,6 +73,15 @@ class Debug {
   static error(...message) {
     console.info('%c%s', 'color: #d50000', 'ERROR:', ...message);
   }
+
+  /**
+   * Throws an error with a given message
+   * 
+   * @param  {string} message
+   */
+  static throw(message) {
+    throw new Error(message);
+  }
 }
 
 Debug.throwOnFail = true;
