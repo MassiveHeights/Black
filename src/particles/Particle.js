@@ -76,7 +76,6 @@ class Particle {
   /**
    * Internal update method.
    *
-   * @internal
    * @param {number} dt Time since last update.
    * @return {void}
    */

@@ -373,7 +373,6 @@ class Vector {
  * @ignore
  * @type {Vector}
  * @nocollapse
- * @internal
  */
 Vector.__cache = new Vector();
 

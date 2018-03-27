@@ -312,6 +312,5 @@ class Line {
  * @type {Line}
  * @nocollapse
  * @ignore
- * @internal
  */
 Line.__cache = new Line(new Vector(), new Vector());

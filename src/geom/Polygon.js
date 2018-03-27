@@ -521,7 +521,6 @@ class Polygon {
 
 /**
  * @ignore
- * @internal
  * @type {Polygon}
  * @nocollapse
  */

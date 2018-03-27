@@ -134,7 +134,6 @@ class Sprite extends DisplayObject {
   /**
    * Sets the current texture by its name
    * 
-   * @editor {TextureEditor}
    * @param {?string} value
    */
   set textureName(value) {

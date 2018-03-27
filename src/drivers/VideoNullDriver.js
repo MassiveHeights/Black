@@ -2,8 +2,8 @@
  * Base class for custom video drivers. VideoDriver is used to render things onto the screen.
  *
  * @cat drivers
- * @echo EXPORT
  */
+/* @echo EXPORT */
 class VideoNullDriver {
   /**
    * Creates new instance of VideoNullDriver.
@@ -348,7 +348,7 @@ class VideoNullDriver {
    * @protected
    * @return {number}
    */
-  get globalAlpha() {
+  getGlobalAlpha() {
     return this.mGlobalAlpha;
   }
 
@@ -357,7 +357,7 @@ class VideoNullDriver {
    * @param {number} value
    * @return {void}
    */
-  set globalAlpha(value) {
+  setGlobalAlpha(value) {
     this.mGlobalAlpha = value;
   }
 
@@ -366,7 +366,7 @@ class VideoNullDriver {
    *
    * @return {?BlendMode}
    */
-  get globalBlendMode() {
+  getGlobalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
@@ -375,7 +375,7 @@ class VideoNullDriver {
    * @param {?BlendMode} value
    * @return {void}
    */
-  set globalBlendMode(value) {
+  setGlobalBlendMode(value) {
     this.mGlobalBlendMode = value;
   }
 

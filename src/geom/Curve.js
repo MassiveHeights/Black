@@ -242,7 +242,6 @@ class Curve {
 
 /**
  * @ignore
- * @internal
  * @type {Curve}
  * @nocollapse
  */

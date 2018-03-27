@@ -478,7 +478,6 @@ class Rectangle {
 /**
  * @ignore
  * @type {Rectangle}
- * @internal
  * @nocollapse
  */
 Rectangle.__cache = new Rectangle();

@@ -509,7 +509,6 @@ Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
 /**
  * Stores additional information about pointer events.
  *
- * @internal
  * @ignore
  * @cat input
  */

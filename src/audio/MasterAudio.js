@@ -92,7 +92,6 @@ class MasterAudio extends System {
 
   /**
    * @ignore
-   * @internal
    * @param {SoundInstance} snd 
    * @returns {SoundChannel}
    */
@@ -215,7 +214,6 @@ class MasterAudio extends System {
 
   /**
    * @ignore
-   * @internal
    * @returns {!GainNode}
    */
   static _newGainNode() {
