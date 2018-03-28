@@ -25,12 +25,19 @@ class AtlasTexture extends Texture {
   __parseJson(o, scale) {
     const NEGATIVE_HALF_PI = -(Math.PI / 2);
 
-    for (let key in o.frames) {
-      const data = /** @type {Array<number>} */ (o.frames[key]);
-      const region = new Rectangle(data[0], data[1], data[2], data[3]);
-      const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
+    try {
+      for (let key in o.frames) {
+        const data = /** @type {Array<number>} */ (o.frames[key]);
+        Debug.isNumber(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
-      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale);
+        const region = new Rectangle(data[0], data[1], data[2], data[3]);
+        const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
+
+        this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale);
+      }
+    }
+    catch (err) {
+      Debug.throw('Badly formatter atlas.');
     }
   }
 
