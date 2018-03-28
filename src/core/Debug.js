@@ -80,7 +80,11 @@ class Debug {
    * @param  {string} message
    */
   static throw(message) {
-    throw new Error(message);
+    if (Debug.logOnFail)
+      console.error('[ERROR]', message);
+
+    if (Debug.throwOnFail === true)
+      throw new Error(message);    
   }
 }
 
