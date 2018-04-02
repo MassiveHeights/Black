@@ -265,10 +265,10 @@ class Tween extends Component {
   /**
    * Indicated whether the tween is playing and not paused.
    * 
-   * @return {number}
+   * @return {boolean}
    */
   get isPlaying() {
-    return this.mIsPlaying && !this.mIsPaused;
+    return this.mIsPlaying === true && this.mIsPaused === false;
   }
 
   /**
@@ -469,7 +469,7 @@ class Tween extends Component {
       } else if (Array.isArray(end)) {
         this.gameObject[f] = this.mInterpolation(end, tt);
       } else {
-        this.gameObject[f] = /** @type {number} */ (start + (end - start) * tt);
+        this.gameObject[f] = /** @type {number} */ (start + (/** @type {number} */(end) - start) * tt);
       }
     }
 

@@ -35,6 +35,7 @@ class Renderer {
 
     /**
      * Desired color to apply onto drawing object.
+     * @type {number|null}
      */
     this.color = null;
 
@@ -58,7 +59,7 @@ class Renderer {
 
     /**
      * Dirty flag.
-     * @type {DirtyFlag<number>}
+     * @type {DirtyFlag}
      */
     this.dirty = DirtyFlag.DIRTY;
 

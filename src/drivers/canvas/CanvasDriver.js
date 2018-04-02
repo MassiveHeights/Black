@@ -16,7 +16,7 @@ class CanvasDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @private @type {CanvasRenderingContext2D} */
+    /** @private @type {CanvasRenderingContext2D|null} */
     this.mCtx = null;
 
     this.__createCanvas();
@@ -65,7 +65,10 @@ class CanvasDriver extends VideoNullDriver {
       this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
 
     for (let i = 0, len = session.renderers.length; i !== len; i++) {
+      /** @type {Renderer} */
       let renderer = session.renderers[i];
+
+      /** @type {Matrix|null} */
       let transform = null;
 
       if (isBackBufferActive === false) {
@@ -83,9 +86,8 @@ class CanvasDriver extends VideoNullDriver {
 
       if (renderer.isRenderable === true) {
         this.setTransform(transform);
-        this.globalBlendMode = renderer.getBlendMode(); // not perfect 
+        this.setGlobalBlendMode(renderer.getBlendMode()); // not perfect 
       }
-
 
       if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
@@ -94,11 +96,11 @@ class CanvasDriver extends VideoNullDriver {
         renderer.skip = false;
       } else {
         if (renderer.isRenderable === true) {
-          this.globalAlpha = renderer.getAlpha();
+          this.setGlobalAlpha(renderer.getAlpha());
           this.mSnapToPixels = renderer.snapToPixels;
-
+          
           renderer.render(this);
-          renderer.dirty = 0;
+          renderer.dirty = DirtyFlag.CLEAN;
         }
       }
 
@@ -156,6 +158,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
+    this.mCtx.globalCompositeOperation = 'lighter';
   }
 
   /**
@@ -270,7 +273,7 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
-  set globalAlpha(value) {
+  setGlobalAlpha(value) {
     if (value == this.mGlobalAlpha)
       return;
 
@@ -281,7 +284,7 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
-  set globalBlendMode(blendMode) {
+  setGlobalBlendMode(blendMode) {
     if (blendMode === BlendMode.AUTO)
       return;
 

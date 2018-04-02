@@ -196,7 +196,7 @@ class AssetManager extends MessageDispatcher {
     this.mTotalLoaded++;
     this.mLoadingProgress = this.mTotalLoaded / this.mQueue.length;
 
-    let item = msg.sender;
+    let item = /** @type {Asset}*/ (msg.sender);
 
     // TODO: rework this
     // TODO: check for dups

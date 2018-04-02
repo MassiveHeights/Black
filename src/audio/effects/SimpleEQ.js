@@ -24,7 +24,7 @@ class SimpleEQ extends SoundEffect {
     for (let i = 0; i < frequencies.length; i++) {
       this.mFilters.push(this.__createFilter(frequencies[i]));
       if (i > 0)
-        this.mFilters[i - 1].connect(this.mFilters[i]);
+        this.mFilters[i - 1].connect(/** @type {!AudioNode} */ (this.mFilters[i]));
     }
 
     /** @inheritDoc */

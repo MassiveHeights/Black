@@ -131,7 +131,7 @@ class Texture {
    */
   static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
     let imgElement = new Image();
-    imgElement.src = canvas.toDataURL(type, quality);
+    imgElement.src = /** @type {HTMLCanvasElement} */(canvas).toDataURL(type, quality);
 
     return new Texture(imgElement);
   }

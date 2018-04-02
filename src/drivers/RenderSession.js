@@ -9,9 +9,16 @@ class RenderSession {
    * Creates new instance of RenderSession.
    */
   constructor() {
+    /** @type {Array<Renderer>} */
     this.renderers = [];
+
+    /** @type {boolean} */
     this.skipChildren = false;
+
+    /** @type {Renderer|null} */
     this.endPassRenderer = null;
+
+    /** @type {number} */
     this.rendererIndex = 0;
   }
 

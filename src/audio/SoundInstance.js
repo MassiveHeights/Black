@@ -128,7 +128,6 @@ class SoundInstance extends MessageDispatcher {
 
   /**
    * @ignore
-   * @internal
    * @returns {SoundInstance}
    */
   _play() {
@@ -255,7 +254,6 @@ class SoundInstance extends MessageDispatcher {
 
   /**
    * @ignore
-   * @internal
    * @readonly
    * @returns {AudioNode}
    */

@@ -20,7 +20,6 @@ class SoundEffect {
 
   /**
    * @ignore
-   * @internal
    * @return {AudioNode}
    */
   get _inputNode() {
@@ -30,7 +29,6 @@ class SoundEffect {
 
   /**
    * @ignore
-   * @internal
    * @return {AudioNode}
    */
   get _outputNode() {

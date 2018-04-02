@@ -60,15 +60,6 @@ gulp.task('build-es6-module', function () {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('copy-examples', [/*'build-es5',*/ 'build-es6', /*'build-es6-module'*/], function () {
-  return gulp.src('./dist/black-es6*.*')
-    .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));
-});
-
-gulp.task('examples', [/*'build-es5',*/ 'build-es6', /*'build-es6-module', */ 'copy-examples'], function () {
-  gulp.watch(['./src/**/*.js'], ['copy-examples']);
-});
-
 gulp.task('watch-es5', ['build-es5'], function () {
   gulp.watch(['./src/**/*.js'], ['build-es5']);
 });
@@ -95,3 +86,23 @@ gulp.task('watch-test', ['build-es6'], function () {
 });
 
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
+
+
+// INTERNAL TASKS
+gulp.task('copy-examples', ['build-es6',], function () {
+  return gulp.src('./dist/black-es6*.*')
+    .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));
+});
+
+gulp.task('examples', ['build-es6', 'copy-examples'], function () {
+  gulp.watch(['./src/**/*.js'], ['copy-examples']);
+});
+
+gulp.task('copy-template', ['build-es6-module',], function () {
+  return gulp.src('./dist/black-es6-module.js')
+    .pipe(gulp.dest('../Black-Template/node_modules/black/dist/'));
+});
+
+gulp.task('template', ['build-es6-module', 'copy-template'], function () {
+  gulp.watch(['./src/**/*.js'], ['copy-template']);
+});

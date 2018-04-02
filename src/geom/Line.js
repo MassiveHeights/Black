@@ -274,10 +274,10 @@ class Line {
     if (nearestDistance < circle.r) {
       let dt = Math.sqrt(Math.pow(circle.r, 2) - Math.pow(nearestDistance, 2));
 
-      let x1 = ((t - dt) * directionX + start.x).toFixed(15);
-      let y1 = ((t - dt) * directionY + start.y).toFixed(15);
-      let x2 = ((t + dt) * directionX + start.x).toFixed(15);
-      let y2 = ((t + dt) * directionY + start.y).toFixed(15);
+      let x1 = ((t - dt) * directionX + start.x);
+      let y1 = ((t - dt) * directionY + start.y);
+      let x2 = ((t + dt) * directionX + start.x);
+      let y2 = ((t + dt) * directionY + start.y);
 
       return this.__isInBoundsXY(x1, y1) || this.__isInBoundsXY(x2, y2);
     }
@@ -312,6 +312,5 @@ class Line {
  * @type {Line}
  * @nocollapse
  * @ignore
- * @internal
  */
 Line.__cache = new Line(new Vector(), new Vector());

@@ -152,7 +152,6 @@ class SoundChannel {
 
   /**
    * @ignore
-   * @internal
    * @readonly
    * @returns {!AudioNode}
    */
@@ -162,7 +161,6 @@ class SoundChannel {
 
   /**
    * @ignore
-   * @internal
    * @readonly
    * @returns {!AudioNode}
    */

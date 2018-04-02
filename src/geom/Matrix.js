@@ -523,7 +523,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
 /**
  * @ignore
- * @internal
  * @type {Matrix}
  * @nocollapse
  */
@@ -531,7 +530,6 @@ Matrix.__cache = new Matrix();
 
 /**
  * @ignore
- * @internal
  * @type {Matrix}
  * @nocollapse
  */

@@ -1,6 +1,7 @@
 /**
  * THE BLACK ENGINE ITSELF!
  *
+ * @export
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -16,9 +17,7 @@ class Black extends MessageDispatcher {
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
 
-    // Dirty GCC workaround
-    window['Black'] = {};
-    window['Black']['instance'] = this;
+    Black.instance = this;
 
     console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
@@ -319,7 +318,7 @@ class Black extends MessageDispatcher {
    */
   __update(timestamp) {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
-    this.constructor.instance = this;
+    Black.instance = this;
 
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = false;
@@ -769,3 +768,10 @@ class Black extends MessageDispatcher {
  * @private
  */
 Black.__frameNum = 0;
+
+/**
+ * Reference to the current Black instance.
+ * @type {Black}
+ * @static
+ */
+Black.instance = null;

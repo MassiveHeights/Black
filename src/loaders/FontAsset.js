@@ -36,7 +36,7 @@ class FontAsset extends Asset {
     /** @private @type {number} */
     this.mCheckDelay = 50;
 
-    /** @private @type {Element} */
+    /** @private @type {HTMLElement} */
     this.mTestingElement = this.__getTestingElement();
 
     this.metrics = null;
@@ -70,10 +70,10 @@ class FontAsset extends Asset {
   /**
    * @ignore
    * @private
-   * @return {Element}
+   * @return {HTMLElement}
    */
   __getTestingElement() {
-    let testingElement = document.createElement('span');
+    let testingElement = /** @type {HTMLElement}*/ (document.createElement('span'));
     testingElement.style.position = 'absolute';
     testingElement.style.top = '-9999px';
     testingElement.style.left = '-9999px';

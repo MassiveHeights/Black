@@ -93,7 +93,6 @@ class AnimationInfo {
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
    * @ignore
-   * @internal
    * @return {Texture} Returns the current frame Texture.
    */
   __play() {
@@ -116,7 +115,6 @@ class AnimationInfo {
    * Stops animation and resets the value of current frame.
    *
    * @ignore
-   * @internal
    * @return {void}
    */
   __stop() {
@@ -128,7 +126,6 @@ class AnimationInfo {
    * Pauses animation.
    *
    * @ignore
-   * @internal
    * @return {void}
    */
   __pause() {
@@ -138,7 +135,6 @@ class AnimationInfo {
 
   /**
    * @ignore
-   * @internal
    * @param {number} dt
    * @param {number} t
    * @return {Texture|null}

@@ -5,11 +5,10 @@
  */
 /* @echo EXPORT */
 class GraphicsCommand {
-
   /**
    * Creates new instance of GraphicsCommand
    * 
-   * @param {GraphicsCommandType<string>} type
+   * @param {GraphicsCommandType} type
    * @param {Array<number>} data
    * @param {number} lineColor 
    * @param {number} lineAlpha 
@@ -25,7 +24,7 @@ class GraphicsCommand {
     /** @public @type {Array<number>} */
     this.data = data;
 
-    /** @public @type {GraphicsCommandType<string>} */
+    /** @public @type {GraphicsCommandType} */
     this.type = type;
 
     // stroke

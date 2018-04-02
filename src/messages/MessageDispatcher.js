@@ -159,7 +159,11 @@ class MessageDispatcher {
     }
 
     if (msg.type === MessageType.GLOBAL) {
-      msg.origin = this.stage;
+      let isGameObject = this instanceof GameObject;
+      if (isGameObject === true)
+        msg.origin = /** @type {GameObject}*/ (this).stage;
+      else
+        msg.origin = null;
 
       this.__postGlobal(this, msg, null, ...payload);
 
@@ -291,8 +295,10 @@ class MessageDispatcher {
     if (message.canceled === true)
       return;
 
-    if (this.stage === null)
-      return;
+    if (this.__isGameObject === true) {
+      if (/** @type {GameObject} */ (this).stage === null)
+        return;
+    }
 
     if (this.mListeners === null)
       return;
@@ -303,9 +309,12 @@ class MessageDispatcher {
       return;
 
     if (message.path !== null) {
-      let inPath = this.__checkPath(this.path, message.path);
-      if (!inPath)
-        return;
+      let isGameObject = this instanceof GameObject;
+      if (isGameObject === true) {
+        let inPath = this.__checkPath(/** @type {GameObject} */(this).path, message.path);
+        if (!inPath)
+          return;
+      }
     }
 
     // no path filter found - just invoke it
@@ -337,8 +346,10 @@ class MessageDispatcher {
     if (isGameObject === false)
       return;
 
-    if (this.stage === null)
-      return;
+    if (this.__isGameObject === true) {
+      if (/** @type {GameObject} */ (this).stage === null)
+        return;
+    }
 
     let go = /** @type {GameObject} */ (this);
 
@@ -374,10 +385,10 @@ class MessageDispatcher {
     for (let i = 0; i < clone.length; i++) {
       let dispatcher = clone[i];
 
-      if (!this.__checkPath(sender.path, dispatcher.pathMask))
+      if (!this.__checkPath(/** @type {GameObject} */(sender).path, dispatcher.pathMask))
         continue;
 
-      if (dispatcher.owner.stage == null)
+      if (/** @type {GameObject} */(dispatcher.owner).stage == null)
         continue;
 
       message.target = this;
@@ -420,21 +431,21 @@ class MessageDispatcher {
    * @return {void}
    */
   __postBubbles(sender, message, toTop, ...params) {
-    message.origin = toTop === true ? this : this.stage;
+    message.origin = toTop === true ? this : /** @type {GameObject}*/ (this).stage;
 
-    let list = [this];
+    let list = [/** @type {GameObject|Component} */(this)];
 
     let current = /** @type {GameObject|Component} */ (this);
     if (this instanceof Component) {
-      if (current.gameObject !== null) {
-        list.push(current.gameObject);
-        current = current.gameObject;
+      if (/** @type {Component} */ (current).gameObject !== null) {
+        list.push(/** @type {Component} */(current).gameObject);
+        current = /** @type {Component} */(current).gameObject;
       }
     }
 
-    while (current.parent !== null) {
-      list.push(current.parent);
-      current = current.parent;
+    while (/** @type {GameObject} */ (current).parent !== null) {
+      list.push(/** @type {GameObject} */ (current).parent);
+      current = /** @type {GameObject} */(current).parent;
     }
 
     if (toTop) {
@@ -455,8 +466,8 @@ class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {string} path
-   * @param {string} pathMask
+   * @param {string|null} path
+   * @param {string|null} pathMask
    * @return {boolean}
    */
   __checkPath(path, pathMask) {
@@ -470,6 +481,14 @@ class MessageDispatcher {
       return path === pathMask;
     else
       return new RegExp("^" + pathMask.split("*").join(".*") + "$").test(path);
+  }
+
+  /**
+   * @ignore
+   * @returns `true` whenever this is type of GameObject.
+   */
+  get __isGameObject() {
+    return this.sender instanceof GameObject;
   }
 
 }

@@ -28,7 +28,13 @@ const BlendMode = {
   LUMINOSITY : 'luminosity'
 };
 
-/** @ignore @static @constant */
+/** 
+ * @export
+ * @ignore 
+ * @static 
+ * @constant 
+ * @dict
+ */
 const CanvasBlendMode = {
   'auto'       : 'auto',
   'normal'     : 'source-over',

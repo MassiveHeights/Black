@@ -247,7 +247,6 @@ class Circle {
 }
 
 /**
- * @internal
  * @ignore
  * @type {Circle}
  * @nocollapse
