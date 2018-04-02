@@ -1364,49 +1364,49 @@ class GameObject extends MessageDispatcher {
       Black.instance.onTagUpdated(this, old, value);
   }
 
-  // /**
-  //  * Starts coroutine.
-  //  *
-  //  * @param {Function} gen  Generator function.
-  //  * @param {*=} [ctx=null] Context for Generator function.
-  //  * @return {*}
-  //  */
-  // spawn(gen, ctx = null) {
-  //   let iter = gen.apply(ctx == null ? this : ctx);
+  /**
+   * Starts coroutine.
+   *
+   * @param {Function} gen  Generator function.
+   * @param {*=} [ctx=null] Context for Generator function.
+   * @return {*}
+   */
+  spawn(gen, ctx = null) {
+    let iter = gen.apply(ctx == null ? this : ctx);
 
-  //   function step(it) {
-  //     if (it.done)
-  //       return;
+    function step(it) {
+      if (it.done)
+        return;
 
-  //     if (typeof it.value === 'function')
-  //       it.value(x => step(iter.next(x)));
-  //     else
-  //       step(iter.next(it.value));
-  //   }
+      if (typeof it.value === 'function')
+        it.value(x => step(iter.next(x)));
+      else
+        step(iter.next(it.value));
+    }
 
-  //   step(iter.next());
-  //   return iter;
-  // }
+    step(iter.next());
+    return iter;
+  }
 
-  // /**
-  //  * Waits for given amount of seconds before processing.
-  //  *
-  //  * @param {number} [seconds=1] Duration
-  //  * @return {function(*):*}
-  //  */
-  // wait(seconds = 1) {
-  //   return cb => setTimeout(cb.bind(this, /** @type {!number} */(seconds * 1000)), /** @type {!number} */(seconds * 1000));
-  // }
+  /**
+   * Waits for given amount of seconds before processing.
+   *
+   * @param {number} [seconds=1] Duration
+   * @return {function(*):*}
+   */
+  wait(seconds = 1) {
+    return cb => setTimeout(cb.bind(this, (/** @type {number} */(seconds) * 1000)), (/** @type {number} */(seconds) * 1000));
+  }
 
-  // /**
-  //  * Waits for a specific message.
-  //  *
-  //  * @param {string} message The name of the message to wait for.
-  //  * @return {function(*):*}
-  //  */
-  // waitMessage(message) {
-  //   return cb => this.on(message, cb.bind(this));
-  // }
+  /**
+   * Waits for a specific message.
+   *
+   * @param {string} message The name of the message to wait for.
+   * @return {function(*):*}
+   */
+  waitMessage(message) {
+    return cb => this.on(message, cb.bind(this));
+  }
 
   /**
    * Marks this GameObject and/or its children elements as dirty.
