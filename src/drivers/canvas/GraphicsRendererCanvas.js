@@ -31,7 +31,6 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
   __drawCommandBuffer(driver, color = null) {
     const ctx = driver.context;
     const len = this.commands.length;
-    const s = driver.finalScale;
     const r = driver.renderScaleFactor;
     ctx.save();
 
@@ -46,14 +45,14 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         case GraphicsCommandType.LINE: {
           this.__setLineStyle(cmd, ctx);
           ctx.beginPath();
-          ctx.moveTo(cmd.data[0] * s, cmd.data[1] * s);
-          ctx.lineTo(cmd.data[2] * s, cmd.data[3] * s);
+          ctx.moveTo(cmd.data[0] * r, cmd.data[1] * r);
+          ctx.lineTo(cmd.data[2] * r, cmd.data[3] * r);
           ctx.stroke();
           break;
         }
         case GraphicsCommandType.RECTANGLE: {
           ctx.beginPath();
-          ctx.rect(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * r, cmd.data[3] * r);
+          ctx.rect(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3] * r);
 
           this.__setFillStyle(cmd, ctx);
           ctx.fill();
@@ -65,7 +64,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
         case GraphicsCommandType.CIRCLE: {
           ctx.beginPath();
-          ctx.arc(cmd.data[0] * s, cmd.data[1] * s, cmd.data[2] * r, 0, 2 * Math.PI);
+          ctx.arc(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, 0, 2 * Math.PI);
 
           this.__setFillStyle(cmd, ctx, color);
           ctx.fill();
