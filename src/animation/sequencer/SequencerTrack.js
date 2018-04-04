@@ -10,6 +10,7 @@ class SequencerTrack {
 
   addKey(key) {
     this.mKeys.insert(key);
+    return key;
   }
 
   removeKey(key) {
@@ -18,7 +19,7 @@ class SequencerTrack {
   getKeyAt(index) {
   }
 
-  update(dt, position, dirty) {
+  update(dt, gameObject, position, dirty) {
     // TODO: cache keys
     let node = this.findKey(position);
 
@@ -35,15 +36,14 @@ class SequencerTrack {
     let endKey = endNode.data;
 
     let t = MathEx.mapRange(position, startKey.time, endKey.time, 0, 1);
-    if (t + dt > 1){
-      console.log(t, dt);
-      
+    if ((position + dt) - endKey.time > 0)
       t = 1;
-    }
+
+    if (startKey.ease)
+      t = startKey.ease(t);
 
     let value = MathEx.lerp(startKey.value, endKey.value, t);
-    console.log(value);
-    
+    gameObject[this.mName] = value;
   }
 
   findKey(position) {

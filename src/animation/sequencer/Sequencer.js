@@ -1,3 +1,36 @@
+class SequencerSugar {
+  constructor(property) {
+
+  }
+
+  key() {
+    return this;
+  }
+
+  at(time, value) {
+    return this;
+  }
+
+  then(property) {
+    return this;
+  }
+
+  script() {
+
+  }
+
+  post() {
+
+  }
+
+
+}
+
+/**
+ * Sequncer (BETA).
+ * 
+ * A timeline based component allowing to animate object properties, post message and listen for callbacks.
+ */
 /* @echo EXPORT */
 class Sequencer extends Component {
   constructor() {
@@ -6,6 +39,8 @@ class Sequencer extends Component {
     this.mSequences = {};
 
     this.mActiveSequence = null;
+    this.mActiveProperty = null;
+    this.mActiveKey = null;
 
     this.mPosition = 0;
     this.mLoop = false;
@@ -39,26 +74,42 @@ class Sequencer extends Component {
    * track they will be created automatically.
    * 
    * @param {string} property 
-   * @param {number} absoluteTime 
    * @param {number} value 
-   * @param {...number} timeOffsetValuePairs A pair of time-value values. Time is relative to absolute time.
+   * @param {function(t:number):number} ease Easing function to use.
    * @returns {Sequencer}
    */
-  addKey(property, absoluteTime, value, ...timeOffsetValuePairs) {
-    Debug.isNumber(absoluteTime);
+  addKey(property, value, ease = Ease.smootherStep) {
+    return this.__addKey(property, this.mPosition, value, ease);
+  }
+
+  __addKey(property, absoluteTime, value, ease) {
     Debug.isNumber(value);
-    Debug.assert(absoluteTime >= 0, 'timeOffset cannot be less then zero.');
-    Debug.assert(timeOffsetValuePairs.length === 0 || timeOffsetValuePairs.length > 1);
+
+    if (property.indexOf('.') !== -1) {
+
+    } else {
+
+    }
 
     this.__checkCreateDefaultSequnenceTrack(property);
 
-    this.mActiveSequence.addKey(property, new NumberSequencerKey(absoluteTime, value));
-
+    this.mActiveKey = this.mActiveSequence.addKey(property, new NumberSequencerKey(absoluteTime, value, ease));
+    this.mActiveProperty = property;
     return this;
   }
 
-  appendKey(property, timeOffset, value, ...timeOffsetValuePairs) {
-    this.addKey(property, this.mPosition + timeOffset, value, ...timeOffsetValuePairs);
+  appendKey(timeOffset, value, ease = Ease.smootherStep) {
+    Debug.assert(this.mActiveProperty !== null, 'Use addKey first.');
+    Debug.assert(this.mActiveKey !== null, 'Use addKey first.');
+
+    return this.__addKey(this.mActiveProperty, this.mActiveKey.time + timeOffset, value, ease);
+  }
+
+  appendEmpty(timeOffset) {
+    Debug.assert(this.mActiveProperty !== null, 'Use addKey first.');
+    Debug.assert(this.mActiveKey !== null, 'Use addKey first.');
+
+    return this.__addKey(this.mActiveProperty, this.mActiveKey.time + timeOffset, this.mActiveKey.value, Ease.linear);
   }
 
   // adds script to the script track
@@ -69,22 +120,26 @@ class Sequencer extends Component {
     return this;
   }
 
-  addMessage(absoluteTime, message, ...payload) {
+  addMessage(timeOffset, message, ...payload) {
     let track = this.__checkCreateDefaultSequnenceTrack('message');
 
-    this.mActiveSequence.addKey(property, new MessageSequencerKey(absoluteTime, message, ...payload));
+    track.addKey(new MessageSequencerKey(this.mActiveKey.time + timeOffset, message, ...payload));
     return this;
   }
 
   seek(absoluteTime) {
     Debug.isNumber(absoluteTime);
-    Debug.assert(absoluteTime > 0, 'Time cannot be negative.');
+    Debug.assert(absoluteTime >= 0, 'Time cannot be negative.');
 
     // TODO: recalc
 
-    this.mPostion = absoluteTime;
+    this.mPosition = absoluteTime;
     this.mDirty = true;
     return this;
+  }
+
+  for(property) {
+    return new SequencerSugar(property);
   }
 
   __checkCreateDefaultSequnenceTrack(trackName) {
@@ -99,15 +154,22 @@ class Sequencer extends Component {
       this.mActiveSequence = defaultSequence;
     }
 
-    if (this.mActiveSequence.getTrack(trackName) === null) {
-      let t = new SequencerTrack(trackName);
-      this.mActiveSequence.addTrack(t);
+    let track = this.mActiveSequence.getTrack(trackName);
+    if (track === null) {
+      track = new SequencerTrack(trackName);
+      this.mActiveSequence.addTrack(track);
     }
+
+    return track;
+  }
+
+  onAdded() {
+    this.mPosition = 0;
   }
 
   onUpdate(dt) {
     for (var k in this.mSequences)
-      this.mSequences[k].update(dt, this.mPosition, this.mDirty);
+      this.mSequences[k].update(dt, this.gameObject, this.mPosition, this.mDirty);
 
     this.mPosition += dt;
     this.mDirty = false;

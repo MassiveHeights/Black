@@ -22,12 +22,12 @@ class Sequence {
   }
 
   addKey(trackName, key) {
-    this.mTracks[trackName].addKey(key);
+    return this.mTracks[trackName].addKey(key);
   }
 
-  update(dt, position, dirty) {
+  update(dt, gameObject, position, dirty) {
     for (var k in this.mTracks)
-      this.mTracks[k].update(dt, position, dirty);
+      this.mTracks[k].update(dt, gameObject, position, dirty);
   }
 
   get name() {

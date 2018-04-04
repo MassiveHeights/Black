@@ -11,14 +11,11 @@ class SequencerKey {
 
 /* @echo EXPORT */
 class NumberSequencerKey extends SequencerKey {
-  constructor(time, value) {
+  constructor(time, value, ease) {
     super(time);
 
-    this.mValue = value;
-  }
-
-  get value() {
-    return this.mValue;
+    this.value = value;
+    this.ease = ease;
   }
 }
 
@@ -27,12 +24,8 @@ class MessageSequencerKey extends SequencerKey {
   constructor(time, message, ...payload) {
     super(time);
 
-    this.mMessage = message;
-    this.mPayload = payload;
-  }
-
-  get message() {
-    return this.mMessage;
+    this.message = message;
+    this.payload = payload;
   }
 }
 
@@ -41,7 +34,7 @@ class ScriptSequencerKey extends SequencerKey {
   constructor(time, fn, ...payload) {
     super(time);
 
-    this.mFn = fn;
-    this.mPayload = payload;
+    this.fn = fn;
+    this.payload = payload;
   }
 }
