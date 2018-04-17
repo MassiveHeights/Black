@@ -9,9 +9,31 @@ class SequencerKey {
   }
 }
 
+SequencerKey.comparer = (a, b) => { return a.time - b.time; };
+
 /* @echo EXPORT */
-class NumberSequencerKey extends SequencerKey {
-  constructor(time, value, ease) {
+class SequencerClipKey extends SequencerKey {
+  constructor(time, clip, userDuration, repeats = Infinity, endBehavior = 'loop') {
+    super(time);
+
+    this.clip = clip;
+    this.userDuration = userDuration;
+    this.repeats = repeats;
+    this.endBehavior = endBehavior;
+  }
+
+  get duration() {
+    return this.userDuration != undefined ? this.userDuration : this.clip.duration;
+  }
+
+  isActiveOn(position) {
+    return position >= this.time && position <= this.time + this.duration;
+  }
+}
+
+/* @echo EXPORT */
+class SequencerNumberKey extends SequencerKey {
+  constructor(time, value, ease = null) {
     super(time);
 
     this.value = value;
@@ -20,7 +42,7 @@ class NumberSequencerKey extends SequencerKey {
 }
 
 /* @echo EXPORT */
-class MessageSequencerKey extends SequencerKey {
+class SequencerMessageKey extends SequencerKey {
   constructor(time, message, ...payload) {
     super(time);
 
@@ -30,7 +52,7 @@ class MessageSequencerKey extends SequencerKey {
 }
 
 /* @echo EXPORT */
-class ScriptSequencerKey extends SequencerKey {
+class SequencerScriptKey extends SequencerKey {
   constructor(time, fn, ...payload) {
     super(time);
 

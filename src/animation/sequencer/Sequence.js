@@ -2,35 +2,35 @@
 class Sequence {
   constructor(name) {
     this.mName = name;
-    this.mTracks = {};
+    this.mClips = {};
+    this.mClipsData = {};
   }
 
-  addTrack(track) {
-    Debug.assert(this.mTracks.hasOwnProperty(track.name) === false, 'Track with such name already exists.');
+  addClip(clip, data) {
+    Debug.assert(this.mClips.hasOwnProperty(clip.name) === false, 'Clip with such name already exists.');
 
-    this.mTracks[track.name] = track;
+    this.mClips[clip.name] = clip;
+    this.mClipsData[clip.name] = data;
+    return clip;
   }
 
-  removeTrack(track) {
+  removeClip(clip) {
+    delete this.mClips[clip.name];
+    delete this.mClipsData[clip.name];
+    return clip;
   }
 
-  getTrack(name) {
-    if (this.mTracks.hasOwnProperty(name))
-      return this.mTracks;
+  getClip(name) {
+    if (name in this.mClips)
+      return this.mClips[name];
 
     return null;
   }
 
-  addKey(trackName, key) {
-    return this.mTracks[trackName].addKey(key);
-  }
+  getClipData(name) {
+    if (name in this.mClipsData)
+      return this.mClipsData[name];
 
-  update(dt, gameObject, position, dirty) {
-    for (var k in this.mTracks)
-      this.mTracks[k].update(dt, gameObject, position, dirty);
-  }
-
-  get name() {
-    return this.mName;
+    return null;
   }
 }

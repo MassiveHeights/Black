@@ -156,6 +156,10 @@
 
     "src/animation/sequencer/SequencerKey.js",
     "src/animation/sequencer/SequencerTrack.js",
+    "src/animation/sequencer/SequencerKeyTrack.js",
+    "src/animation/sequencer/SequencerClipTrack.js",
+    "src/animation/sequencer/SequencerActionTrack.js",
+    "src/animation/sequencer/SequencerClip.js",
     "src/animation/sequencer/Sequence.js",
     "src/animation/sequencer/Sequencer.js",
 
