@@ -36,9 +36,12 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   render(gameObject, renderTexture = null, customTransform = null) {
-    let session = this.__popSession();
-
     let isBackBufferActive = renderTexture === null;
+
+    if (Renderer.SKIP_UNCHANGED_FRAMES === true && isBackBufferActive === true && Renderer.DIRTY === false)
+      return;
+
+    let session = this.__saveSession();
 
     let numEndClipsRequired = 0;
     if (renderTexture != null) {
@@ -73,11 +76,13 @@ class CanvasDriver extends VideoNullDriver {
 
       if (isBackBufferActive === false) {
         if (customTransform === null) {
+          // TODO: too much allocations
           transform = renderer.getTransform().clone();
           transform.data[4] -= Black.stage.mX;
           transform.data[5] -= Black.stage.mY;
         } else {
-          transform = renderer.getTransform().clone();
+          // TODO: too much allocations
+          transform = renderer.getTransform().clone();          
           transform.prepend(customTransform);
         }
       } else {
@@ -98,7 +103,7 @@ class CanvasDriver extends VideoNullDriver {
         if (renderer.isRenderable === true) {
           this.setGlobalAlpha(renderer.getAlpha());
           this.mSnapToPixels = renderer.snapToPixels;
-          
+
           renderer.render(this);
           renderer.dirty = DirtyFlag.CLEAN;
         }
@@ -128,7 +133,7 @@ class CanvasDriver extends VideoNullDriver {
       session.skipChildren = false;
     }
 
-    this.__pushSession(session);
+    this.__restoreSession();
   }
 
   /**
@@ -144,14 +149,14 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let scale = this.mRenderScaleFactor;
+    let dpr = this.mDevicePixelRatio;
 
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
     cvs.id = 'canvas';
 
-    cvs.width = this.mClientWidth * scale;
-    cvs.height = this.mClientHeight * scale;
+    cvs.width = this.mClientWidth * dpr;
+    cvs.height = this.mClientHeight * dpr;
     cvs.style.width = this.mClientWidth + 'px';
     cvs.style.height = this.mClientHeight + 'px';
 
@@ -175,9 +180,9 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
 
-    let scale = this.mRenderScaleFactor;
-    this.mCtx.canvas.width = this.mClientWidth * scale;
-    this.mCtx.canvas.height = this.mClientHeight * scale;
+    let dpr = this.mDevicePixelRatio;
+    this.mCtx.canvas.width = this.mClientWidth * dpr;
+    this.mCtx.canvas.height = this.mClientHeight * dpr;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
     this.mCtx.canvas.style.height = this.mClientHeight + 'px';
   }
@@ -189,17 +194,17 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let scale = this.mRenderScaleFactor;
+    let dpr = this.mDevicePixelRatio;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
     let sourceWidth = texture.region.width;
     let sourceHeight = texture.region.height;
 
-    let destX = texture.untrimmedRegion.x * scale;
-    let destY = texture.untrimmedRegion.y * scale;
-    let destWidth = texture.renderWidth * scale;
-    let destHeight = texture.renderHeight * scale;
+    let destX = texture.untrimmedRegion.x * dpr;
+    let destY = texture.untrimmedRegion.y * dpr;
+    let destWidth = texture.renderWidth * dpr;
+    let destHeight = texture.renderHeight * dpr;
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
@@ -211,17 +216,17 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let scale = this.mRenderScaleFactor;
+    let dpr = this.mDevicePixelRatio;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
     let sourceWidth = texture.region.width;
     let sourceHeight = texture.region.height;
 
-    let destX = (ox + texture.untrimmedRegion.x) * scale;
-    let destY = (oy + texture.untrimmedRegion.y) * scale;
-    let destWidth = texture.renderWidth * scale;
-    let destHeight = texture.renderHeight * scale;
+    let destX = (ox + texture.untrimmedRegion.x) * dpr;
+    let destY = (oy + texture.untrimmedRegion.y) * dpr;
+    let destWidth = texture.renderWidth * dpr;
+    let destHeight = texture.renderHeight * dpr;
 
     this.mCtx.drawImage(texture.native, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
   }
@@ -230,11 +235,11 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   beginClip(clipRect, px, py) {
-    let r = this.mRenderScaleFactor;
+    let dpr = this.mDevicePixelRatio;
 
     this.mCtx.save();
     this.mCtx.beginPath();
-    this.mCtx.rect((clipRect.x + px) * r, (clipRect.y + py) * r, clipRect.width * r, clipRect.height * r);
+    this.mCtx.rect((clipRect.x + px) * dpr, (clipRect.y + py) * dpr, clipRect.width * dpr, clipRect.height * dpr);
 
     this.mCtx.clip();
   }
@@ -261,13 +266,12 @@ class CanvasDriver extends VideoNullDriver {
 
     this.mTransform = m;
 
-    let scale = this.mRenderScaleFactor;
+    let dpr = this.mDevicePixelRatio;
 
     if (this.mSnapToPixels === true)
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * scale) | 0, (v[5] * scale) | 0);
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * dpr) | 0, (v[5] * dpr) | 0);
     else
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * scale, v[5] * scale);
-
+      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * dpr, v[5] * dpr);
   }
 
   /**
@@ -301,6 +305,9 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   clear() {
+    if (Renderer.SKIP_UNCHANGED_FRAMES === true && Renderer.DIRTY === false)
+      return;
+
     // TODO: clear only changed region
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -311,8 +318,6 @@ class CanvasDriver extends VideoNullDriver {
     } else {
       this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
     }
-
-    super.clear();
   }
 
   /**

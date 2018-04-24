@@ -382,4 +382,4 @@ Vector.__cache = new Vector();
  * @type {ObjectPool}
  * @nocollapse
  */
-Vector.pool = new ObjectPool(Vector, 0, 0);
+Vector.pool = new ObjectPool(Vector);

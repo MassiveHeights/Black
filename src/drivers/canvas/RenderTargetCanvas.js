@@ -29,8 +29,8 @@ class RenderTargetCanvas extends RenderTarget {
    * @inheritDoc
    */
   resize(width, height) {
-    this.mCanvas.width = width;
-    this.mCanvas.height = height;
+    this.mCanvas.width = Math.ceil(width);
+    this.mCanvas.height = Math.ceil(height);
   }
 
   /**

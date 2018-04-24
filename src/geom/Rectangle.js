@@ -488,4 +488,4 @@ Rectangle.__cache = new Rectangle();
  * @type {ObjectPool}
  * @nocollapse
  */
-Rectangle.pool = new ObjectPool(Rectangle, 0, 0, 0, 0);
+Rectangle.pool = new ObjectPool(Rectangle);

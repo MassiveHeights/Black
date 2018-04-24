@@ -201,13 +201,16 @@ class Matrix {
     let /** @type {number} */ b4 = bv[4]; // tx
     let /** @type {number} */ b5 = bv[5]; // ty
 
-    let a11 = (a0 * b0 + a1 * b2);
-    a[1] = a0 * b1 + a1 * b3;
-    a[0] = a11;
+    if (b0 !== 1 || b1 !== 0 || b2 !== 0 || b3 !== 1) {
+      let a11 = (a0 * b0 + a1 * b2);
+      a[1] = a0 * b1 + a1 * b3;
+      a[0] = a11;
 
-    let c11 = (a2 * b0 + a3 * b2);
-    a[3] = a2 * b1 + a3 * b3;
-    a[2] = c11;
+      let c11 = (a2 * b0 + a3 * b2);
+      a[3] = a2 * b1 + a3 * b3;
+      a[2] = c11;
+    }
+
 
     let tx11 = (a4 * b0 + a5 * b2 + b4);
     a[5] = a4 * b1 + a5 * b3 + b5;
@@ -319,9 +322,7 @@ class Matrix {
     let minY = Number.MAX_VALUE;
     let maxY = -Number.MAX_VALUE;
     let m = this.data;
-    let xx = 0;
-    let yy = 0;
-    let tmpVector = new Vector();
+    let tmpVector = Vector.pool.get();
 
     /** @type {Array<number>} */
     let points = [rect.x, rect.y, rect.x + rect.width, rect.y, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height];
@@ -339,6 +340,8 @@ class Matrix {
       if (maxY < tmpVector.y)
         maxY = tmpVector.y;
     }
+
+    Vector.pool.release(tmpVector);
 
     return outRect.set(minX, minY, maxX - minX, maxY - minY);
   }
@@ -541,4 +544,4 @@ Matrix.__identity = new Matrix();
  * @type {ObjectPool}
  * @nocollapse
  */
-Matrix.pool = new ObjectPool(Matrix, 1, 0, 0, 1, 0, 0);
+Matrix.pool = new ObjectPool(Matrix);

@@ -186,3 +186,13 @@ class Renderer {
  * @static
  */
 Renderer.COLOR_CACHE = new MapMap();
+
+/**
+ * Used to optimize battery-life on static scenes.
+ * @private
+ * @type {boolean}
+ * @nocollapse
+ */
+Renderer.DIRTY = true;
+
+Renderer.SKIP_UNCHANGED_FRAMES = false;

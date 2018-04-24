@@ -6,23 +6,31 @@
 /* @echo EXPORT */
 class CanvasRenderTexture extends Texture {
   /**
-   * Creates new CanvasRenderTexture instance with given size.
+   * Creates new CanvasRenderTexture instance with given size and scale.
    *
    * @param {number} width  The width of the texture in stage space.
    * @param {number} height The height of the texture in stage space.
+   * @param {number} scale  The scale factor of the internal texture
    */
-  constructor(width, height) {
-    const bbs = Black.driver.finalScale;
-
-    const w = width * bbs;
-    const h = height * bbs;
-
-    const renderTarget = new RenderTargetCanvas(w, h);
+  constructor(width, height, scale) {
+    const renderTarget = new RenderTargetCanvas(width * scale, height * scale);
 
     super(renderTarget.native);
-    this.set(renderTarget.native, null, null, 1 / bbs);
+    this.set(renderTarget.native, null, null, 1 / scale);
 
     this.renderTarget = renderTarget;
+  }
+
+  /**
+   * Updates this instance with given size and scale.
+   *
+   * @param {number} width  The width of the texture in stage space.
+   * @param {number} height The height of the texture in stage space.
+   * @param {number} scale  The scale factor of the internal texture
+   */
+  resize(width, height, scale) {
+    this.renderTarget.resize(width * scale, height * scale);
+    this.set(this.renderTarget.native, null, null, 1 / scale);
   }
 
   __dumpToDocument() {
