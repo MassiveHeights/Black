@@ -14,15 +14,11 @@ const mocha = require('gulp-mocha');
 const info = JSON.parse(fs.readFileSync('./build.json'));
 const files = info.files;
 const bs = require('browser-sync').create();
+const replace = require('gulp-replace');
 
 gulp.task('build-es5', function () {
   return gulp.src(files)
-    .pipe(preprocess({
-      context: {
-        EXPORT: '',
-        DEBUG: true
-      }
-    }))
+    .pipe(replace('/* @echo EXPORT */\r\n', ''))
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
@@ -34,12 +30,7 @@ gulp.task('build-es5', function () {
 
 gulp.task('build-es6', function () {
   return gulp.src(files)
-    .pipe(preprocess({
-      context: {
-        EXPORT: '',
-        DEBUG: true
-      }
-    }))
+    .pipe(replace('/* @echo EXPORT */\r\n', ''))
     .pipe(sourcemaps.init())
     .pipe(concat('black-es6.js'))
     .pipe(sourcemaps.write('.'))
@@ -48,12 +39,7 @@ gulp.task('build-es6', function () {
 
 gulp.task('build-es6-module', function () {
   return gulp.src(files)
-    .pipe(preprocess({
-      context: {
-        EXPORT: 'export',
-        DEBUG: true
-      }
-    }))
+    .pipe(replace('/* @echo EXPORT */', 'export '))
     .pipe(sourcemaps.init())
     .pipe(concat('black-es6-module.js'))
     .pipe(sourcemaps.write('.'))
@@ -89,7 +75,7 @@ gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
 
 
 // INTERNAL TASKS
-gulp.task('copy-examples', ['build-es6',], function () {
+gulp.task('copy-examples', ['build-es6'], function () {
   return gulp.src('./dist/black-es6*.*')
     .pipe(gulp.dest('../Blacksmith-Docs/node_modules/black/dist/'));
 });
