@@ -698,8 +698,9 @@ class GameObject extends MessageDispatcher {
   onFixedUpdate(dt) { }
 
   /**
-   * Called at every engine update.
-   *
+   * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
+   * going from top to bottom of the display list.
+   * 
    * @protected
    * @param {number} dt Time since the last frame.
    * @return {void}
