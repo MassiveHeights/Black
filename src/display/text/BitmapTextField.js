@@ -84,7 +84,7 @@ class BitmapTextField extends DisplayObject {
         this.mDirty ^= DirtyFlag.RENDER_CACHE;
     }
 
-    renderer.dirty = oldDirty;
+    Renderer.__dirty = oldDirty;
 
     return driver.registerRenderer(renderer);
   }

@@ -259,7 +259,7 @@ class VideoNullDriver {
    * @returns {void}
    */
   __onResize(msg, rect) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     let w = this.mContainerElement.clientWidth;
     let h = this.mContainerElement.clientHeight;

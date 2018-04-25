@@ -105,7 +105,14 @@ class GameObject extends MessageDispatcher {
     /** @private @type {Array<Collider>} */
     this.mCollidersCache = [];
 
+    /** @private @type {boolean} */
     this.mChildOrComponentBeenAdded = false;
+
+    /** @private @type {Array<GameObject>} */
+    this.mChildrenClone = null;
+
+    /** @private @type {Array<Component>} */
+    this.mComponentClone = null;
   }
 
   make(values) {
@@ -570,21 +577,34 @@ class GameObject extends MessageDispatcher {
     if (this.mChildOrComponentBeenAdded === false)
       return;
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onFixedUpdate(dt);
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
 
-      if (this.__checkRemovedComponents(k))
-        break;
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onFixedUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__fixedUpdate(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__fixedUpdate(dt);
+      }
     }
+    
   }
 
   /**
@@ -599,20 +619,32 @@ class GameObject extends MessageDispatcher {
     if (this.mChildOrComponentBeenAdded === false)
       return;
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onUpdate(dt);
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
 
-      if (this.__checkRemovedComponents(k))
-        break;
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__update(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__update(dt);
+      }
     }
   }
 
@@ -627,59 +659,33 @@ class GameObject extends MessageDispatcher {
     if (this.mChildOrComponentBeenAdded === false)
       return;
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onPostUpdate(dt);
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
 
-      if (this.__checkRemovedComponents(k))
-        break;
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onPostUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__postUpdate(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__postUpdate(dt);
+      }
     }
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {number} i
-   * @return {boolean}
-   */
-  __checkRemovedComponents(i) {
-    if (this.mNumComponentsRemoved == 0)
-      return false;
-
-    i -= this.mNumComponentsRemoved;
-    this.mNumComponentsRemoved = 0;
-
-    if (i < 0)
-      return true;
-
-    return false;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {number} i 
-   * @return {boolean}
-   */
-  __checkRemovedChildren(i) {
-    if (this.mNumChildrenRemoved == 0)
-      return false;
-
-    i -= this.mNumChildrenRemoved;
-    this.mNumChildrenRemoved = 0;
-
-    if (i < 0)
-      return true;
-
-    return false;
   }
 
   /**
@@ -1558,7 +1564,7 @@ class GameObject extends MessageDispatcher {
       this.mDirtyFrameNum = Black.frameNum;
     }
 
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
   }
 
   /**
@@ -1599,7 +1605,7 @@ class GameObject extends MessageDispatcher {
       }
     }
 
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
   }
 
   /**

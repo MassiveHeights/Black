@@ -42,7 +42,7 @@ class DOMDriver extends VideoNullDriver {
   //     let renderer = this.mRenderers[i];
 
   //     renderer.render(driver);
-  //     renderer.dirty = 0;
+  //     Renderer.__dirty = 0;
 
   //     if (renderer.endPassRequired === true) {
   //       this.mEndPassStack.push(renderer);

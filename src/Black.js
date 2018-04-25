@@ -405,7 +405,7 @@ class Black extends MessageDispatcher {
       Time.mTime = this.mUptime;
 
       this.mIsPanic = false;
-      Renderer.DIRTY = false;
+      Renderer.__dirty = false;
     }
 
     this.mRAFHandle = window.requestAnimationFrame(x => {
@@ -560,7 +560,7 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   onChildrenAdded(child) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onChildrenAdded(child);
@@ -594,7 +594,7 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   onChildrenChanged(child) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onChildrenChanged(child);
@@ -608,7 +608,7 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   onChildrenRemoved(child) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onChildrenRemoved(child);
@@ -642,7 +642,7 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   onComponentAdded(child, component) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onComponentAdded(child, component);
@@ -663,7 +663,7 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   onComponentRemoved(child, component) {
-    Renderer.DIRTY = true;
+    Renderer.__dirty = true;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onComponentRemoved(child, component);

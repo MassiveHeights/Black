@@ -205,7 +205,7 @@ class Emitter extends DisplayObject {
       renderer.textures = this.mTextures;
       renderer.space = this.mSpace;
       renderer.isLocal = this.mIsLocal;
-      renderer.dirty = this.mDirty;
+      Renderer.__dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
       renderer.sortOrder = this.mSortOrder;
       renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;

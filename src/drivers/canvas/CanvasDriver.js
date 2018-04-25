@@ -38,7 +38,7 @@ class CanvasDriver extends VideoNullDriver {
   render(gameObject, renderTexture = null, customTransform = null) {
     let isBackBufferActive = renderTexture === null;
 
-    if (Renderer.SKIP_UNCHANGED_FRAMES === true && isBackBufferActive === true && Renderer.DIRTY === false)
+    if (Renderer.skipUnchangedFrames === true && isBackBufferActive === true && Renderer.__dirty === false)
       return;
 
     let session = this.__saveSession();
@@ -105,7 +105,7 @@ class CanvasDriver extends VideoNullDriver {
           this.mSnapToPixels = renderer.snapToPixels;
 
           renderer.render(this);
-          renderer.dirty = DirtyFlag.CLEAN;
+          Renderer.__dirty = DirtyFlag.CLEAN;
         }
       }
 
@@ -305,7 +305,7 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   clear() {
-    if (Renderer.SKIP_UNCHANGED_FRAMES === true && Renderer.DIRTY === false)
+    if (Renderer.skipUnchangedFrames === true && Renderer.__dirty === false)
       return;
 
     // TODO: clear only changed region
