@@ -15,8 +15,8 @@ class RenderSession {
     /** @type {boolean} */
     this.skipChildren = false;
 
-    /** @type {Renderer|null} */
-    this.endPassRenderer = null;
+    /** @type {Array<Renderer>} */
+    this.endPassRenderers = [];
 
     /** @type {number} */
     this.rendererIndex = 0;
@@ -27,6 +27,7 @@ class RenderSession {
    */
   clear() {
     this.renderers.splice(0, this.renderers.length);
+    this.endPassRenderers.splice(0, this.endPassRenderers.length);
   }
 
   /**
@@ -34,7 +35,7 @@ class RenderSession {
    */
   reset() {
     this.renderers.splice(0, this.renderers.length);
-    this.endPassRenderer = null;
+    this.endPassRenderers.splice(0, this.endPassRenderers.length);
     this.rendererIndex = 0;
     this.skipChildren = false;
   }

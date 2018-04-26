@@ -48,7 +48,7 @@ class Sprite extends DisplayObject {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
-      Renderer.__dirty = this.mDirty;
+      renderer.dirty = this.mDirty;
       renderer.pivotX = this.mPivotX;
       renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;

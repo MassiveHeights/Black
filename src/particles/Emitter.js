@@ -199,13 +199,13 @@ class Emitter extends DisplayObject {
     if (this.mDirty & DirtyFlag.RENDER) {
       renderer.transform = this.worldTransformation;
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode;
+      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
       renderer.particles = this.mParticles;
       renderer.textures = this.mTextures;
       renderer.space = this.mSpace;
       renderer.isLocal = this.mIsLocal;
-      Renderer.__dirty = this.mDirty;
+      renderer.dirty = this.mDirty;
       renderer.clipRect = this.clipRect;
       renderer.sortOrder = this.mSortOrder;
       renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
@@ -254,7 +254,8 @@ class Emitter extends DisplayObject {
       this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
-    this.setDirty(DirtyFlag.LOCAL, false);
+    if (this.mVisible === true && this.mAlpha > 0)
+      this.setDirty(DirtyFlag.LOCAL, false);
   }
 
   /**

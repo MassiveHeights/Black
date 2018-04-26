@@ -62,7 +62,7 @@ class CanvasDriver extends VideoNullDriver {
       this.mStageRenderer.blendMode = BlendMode.NORMAL;
     }
 
-    session.rendererIndex = 0;
+    session.rendererIndex = session.renderers.length;
 
     if (session.skipChildren === false)
       this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
@@ -82,20 +82,22 @@ class CanvasDriver extends VideoNullDriver {
           transform.data[5] -= Black.stage.mY;
         } else {
           // TODO: too much allocations
-          transform = renderer.getTransform().clone();          
+          transform = renderer.getTransform().clone();
           transform.prepend(customTransform);
         }
       } else {
         transform = renderer.getTransform();
       }
 
-      if (renderer.isRenderable === true) {
+      if (renderer.isRenderable === true || renderer.hasVisibleArea) {
         this.setTransform(transform);
         this.setGlobalBlendMode(renderer.getBlendMode()); // not perfect 
       }
 
-      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false)
+      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false) {
+        //this.setGlobalAlpha(renderer.getAlpha());
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
+      }
 
       if (renderer.skip === true) {
         renderer.skip = false;
@@ -105,19 +107,20 @@ class CanvasDriver extends VideoNullDriver {
           this.mSnapToPixels = renderer.snapToPixels;
 
           renderer.render(this);
-          Renderer.__dirty = DirtyFlag.CLEAN;
+          renderer.dirty = DirtyFlag.CLEAN;
         }
       }
 
       if (renderer.endPassRequired === true)
-        session.endPassRenderer = renderer;
+        session.endPassRenderers.push(renderer);
 
-      if (session.endPassRenderer !== null && session.endPassRenderer.endPassRequiredAt === i) {
+      if (session.endPassRenderers.length > 0 && session.endPassRenderers[session.endPassRenderers.length - 1].endPassRequiredAt === i) {
+
+        const r = session.endPassRenderers.pop();
         this.endClip();
 
-        session.endPassRenderer.endPassRequiredAt = -1;
-        session.endPassRenderer.endPassRequired = false;
-        session.endPassRenderer = null;
+        r.endPassRequiredAt = -1;
+        r.endPassRequired = false;
       }
     }
 
@@ -249,6 +252,9 @@ class CanvasDriver extends VideoNullDriver {
    */
   endClip() {
     this.mCtx.restore();
+
+    this.mGlobalAlpha = -1;
+    this.mGlobalBlendMode = null;
   }
 
   /**

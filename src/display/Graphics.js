@@ -72,7 +72,7 @@ class Graphics extends DisplayObject {
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
       renderer.visible = this.mVisible;
-      Renderer.__dirty = this.mDirty;
+      renderer.dirty = this.mDirty;
       renderer.pivotX = this.mPivotX;
       renderer.pivotY = this.mPivotY;
       renderer.clipRect = this.mClipRect;

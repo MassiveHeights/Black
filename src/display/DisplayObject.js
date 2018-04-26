@@ -145,6 +145,7 @@ class DisplayObject extends GameObject {
         this.mCacheAsBitmapDirty = false;
       } else if (isStatic === false) {
         this.mCacheAsBitmapDirty = true;
+        this.mDirty |= DirtyFlag.RENDER;
       }
     }
 
@@ -153,6 +154,8 @@ class DisplayObject extends GameObject {
       renderer.skipChildren = true;
       renderer.alpha = 1;
       renderer.blendMode = BlendMode.NORMAL;
+      renderer.snapToPixels = this.mSnapToPixels;
+      renderer.clipRect = null;
       renderer.texture = this.mCache;
     } else if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
@@ -160,8 +163,8 @@ class DisplayObject extends GameObject {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
-      Renderer.__dirty = this.mDirty;
       renderer.clipRect = this.mClipRect;
+      renderer.dirty = this.mDirty;
       renderer.snapToPixels = this.mSnapToPixels;
       renderer.texture = null;
       renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
@@ -224,6 +227,11 @@ class DisplayObject extends GameObject {
     const fs = Black.driver.finalScale;
 
     let m = Matrix.pool.get().set(1, 0, 0, 1, ~~(-bounds.x * sf - this.stage.mX), ~~(-bounds.y * sf - this.stage.mY));
+
+    if (this.mClipRect !== null && this.mClipRect.isEmpty === false) {
+      m.data[4] += this.pivotX * sf;
+      m.data[5] += this.pivotY * sf;
+    }
 
     if (this.mCacheBounds === null)
       this.mCacheBounds = new Rectangle();
