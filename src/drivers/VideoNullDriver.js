@@ -42,10 +42,7 @@ class VideoNullDriver {
     this.mSnapToPixels = false;
 
     /** @protected @type {number} */
-    this.mRenderResolution = 1;
-
-    /** @protected @type {number} */
-    this.mRenderScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
+    this.mDevicePixelRatio = Device.getDevicePixelRatio();
 
     /** @protected @type {BlendMode|null} */
     this.mGlobalBlendMode = BlendMode.AUTO;
@@ -85,31 +82,11 @@ class VideoNullDriver {
    * @returns {number}
    */
   get finalScale() {
-    return this.mDPR * Black.stage.scaleFactor * this.mRenderResolution;
-  }
-
-  /**
-   * The resolution of render area from 0 to 1, where 1 means 100% quality.
-   *
-   * @returns {number}
-   */
-  get renderResolution() {
-    return this.mRenderResolution;
-  }
-
-  /**
-   * @ignore
-   * @param {number} value
-   * @returns {void}
-   */
-  set renderResolution(value) {
-    this.mRenderResolution = value;
-    this.mRenderScaleFactor = Device.getDevicePixelRatio() * this.mRenderResolution;
-    this.__onResize(null, null);
+    return this.mDPR * Black.stage.scaleFactor;
   }
 
   get renderScaleFactor() {
-    return this.mRenderScaleFactor;
+    return this.mDevicePixelRatio;
   }
 
   /**
@@ -139,15 +116,11 @@ class VideoNullDriver {
    * @private
    * @returns {RenderSession}
    */
-  __popSession() {
-    let session = this.mSessions.pop();
+  __saveSession() {
+    let session = VideoNullDriver.sessionPool.get();
+    session.reset();
 
-    if (session == null) {
-      session = new RenderSession();
-    } else {
-      session.skipChildren = false;
-      session.reset();
-    }
+    this.mSessions.push(session);
 
     this.mActiveSession = session;
     return session;
@@ -156,11 +129,10 @@ class VideoNullDriver {
   /**
    * @ignore
    * @private
-   * @param {RenderSession} session
    */
-  __pushSession(session) {
-    this.mSessions.push(session);
-    this.mActiveSession = null;
+  __restoreSession() {
+    this.mSessions.pop();
+    this.mActiveSession = this.mSessions[this.mSessions.length - 1] || null;
   }
 
   /**
@@ -182,7 +154,7 @@ class VideoNullDriver {
       session.rendererIndex++;
     }
 
-    if (renderer != null && renderer.skipChildren)
+    if (renderer !== null && renderer.skipChildren === true)
       return;
 
     if (session.skipChildren === true) {
@@ -192,7 +164,7 @@ class VideoNullDriver {
 
     const len = gameObject.numChildren;
     for (let i = 0; i < len; i++)
-      this.__collectRenderables(session, gameObject.getChildAt(i), parentRenderer, isBackBufferActive);
+      this.__collectRenderables(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
 
     if (renderer != null && renderer.endPassRequired === true)
       renderer.endPassRequiredAt = session.rendererIndex - 1;
@@ -287,6 +259,8 @@ class VideoNullDriver {
    * @returns {void}
    */
   __onResize(msg, rect) {
+    Renderer.__dirty = true;
+
     let w = this.mContainerElement.clientWidth;
     let h = this.mContainerElement.clientHeight;
 
@@ -418,3 +392,11 @@ class VideoNullDriver {
     return null;
   }
 }
+
+/**
+ * Recyclable session pool. Do not recycle manually.
+ *
+ * @type {ObjectPool}
+ * @nocollapse
+ */
+VideoNullDriver.sessionPool = new ObjectPool(RenderSession);

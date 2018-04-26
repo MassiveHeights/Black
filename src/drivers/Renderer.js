@@ -154,8 +154,8 @@ class Renderer {
     if (color === 0xFFFFFF || color === null)
       return texture;
 
-    if (Renderer.COLOR_CACHE.has(texture.id, color))
-      return Renderer.COLOR_CACHE.get(texture.id, color);
+    if (Renderer.__colorCache.has(texture.id, color))
+      return Renderer.__colorCache.get(texture.id, color);
 
     let region = texture.region;
     let w = region.width;
@@ -174,7 +174,7 @@ class Renderer {
     ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
 
     let t = new Texture(rt.native, null, texture.untrimmedRegion.clone(), texture.scale);
-    Renderer.COLOR_CACHE.set(texture.id, color, t);
+    Renderer.__colorCache.set(texture.id, color, t);
 
     return t;
   }
@@ -185,4 +185,17 @@ class Renderer {
  * @private
  * @static
  */
-Renderer.COLOR_CACHE = new MapMap();
+Renderer.__colorCache = new MapMap();
+
+/**
+ * Used to optimize battery-life on static scenes.
+ * @private
+ * @type {boolean}
+ * @nocollapse
+ */
+Renderer.__dirty = true;
+
+/**
+ * Indicates whenever engine should render the stage if nothing were changed in this frame. Default is false.
+ */
+Renderer.skipUnchangedFrames = false;

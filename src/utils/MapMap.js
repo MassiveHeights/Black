@@ -2,9 +2,6 @@
 class MapMap {
   constructor() {
     this.mMap = new Map();
-
-    // TODO implement maximum map capacity
-    // this.mCapacity = capacity;
   }
 
   has(key1, key2) {
@@ -12,7 +9,6 @@ class MapMap {
   }
 
   set(key1, key2, value) {
-
     let map = this.mMap.get(key1);
 
     if (map == null) {

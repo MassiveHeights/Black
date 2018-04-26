@@ -35,7 +35,8 @@ class Stage extends GameObject {
     /** @private @type {StageOrientation} */
     this.mOrientation = StageOrientation.UNIVERSAL;
 
-    this.addComponent(new InputComponent());
+    if (Black.instance.hasSystem(Input))
+      this.addComponent(new InputComponent());
   }
 
   /**
@@ -126,22 +127,25 @@ class Stage extends GameObject {
 
       this.mStageWidth = this.LP(this.mWidth, this.mHeight);
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-      
+
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else {
       // NO SCALE
       let size = Black.instance.viewport.size;
       this.mStageWidth = (size.width * this.dpr);
       this.mStageHeight = (size.height * this.dpr);
-      
+
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.dpr;
     }
-
+    
     this.mStageWidth = Math.round(this.mStageWidth);
     this.mStageHeight = Math.round(this.mStageHeight);
+    this.mX = Math.round(this.mX);
+    this.mY = Math.round(this.mY);
 
     // TODO: i don't like this line
     // TODO: me neither
+    // TODO: but its setting Renderer.__dirty which is good
     Black.driver.__onResize(null, null);
 
     this.setTransformDirty();
@@ -289,15 +293,14 @@ class Stage extends GameObject {
     return outRect.set(0, 0, this.mStageWidth, this.mStageHeight);
   }
 
-  removeFromParent() { Debug.error('Not allowed.'); }
-
   /**
    * @inheritDoc
    */
   get localTransformation() {
-    // TODO: optimize
-    return new Matrix(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+    return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY)
   }
+
+  removeFromParent() { Debug.error('Not allowed.'); }
 
   set scaleX(value) { Debug.error('Not allowed.'); }
   get scaleX() { return 1; }

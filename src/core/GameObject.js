@@ -104,14 +104,15 @@ class GameObject extends MessageDispatcher {
     // cache all colliders for fast access
     /** @private @type {Array<Collider>} */
     this.mCollidersCache = [];
-  }
 
-  get snapToPixels() {
-    return this.mSnapToPixels;
-  }
+    /** @private @type {boolean} */
+    this.mChildOrComponentBeenAdded = false;
 
-  set snapToPixels(value) {
-    this.mSnapToPixels = value;
+    /** @private @type {Array<GameObject>} */
+    this.mChildrenClone = null;
+
+    /** @private @type {Array<Component>} */
+    this.mComponentClone = null;
   }
 
   make(values) {
@@ -140,15 +141,20 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Returns true if object was clean for at least 1 update.
+   * 
    * Note: Make sure to apply all changes to this game object before checking for static.
+   * 
+   * @param {boolean} [includeChildren=true]
+   * @returns {boolean}
    */
   checkStatic(includeChildren = true) {
     if (includeChildren === false)
-      return this.mDirtyFrameNum < Black.frameNum - 1;
+      return this.mDirtyFrameNum < Black.frameNum;
 
     let isDynamic = false;
     GameObject.forEach(this, x => {
-      if (x.mDirtyFrameNum >= Black.frameNum - 1) {
+      if (x.mDirtyFrameNum >= Black.frameNum) {
         isDynamic = true;
         return true;
       }
@@ -226,6 +232,8 @@ class GameObject extends MessageDispatcher {
 
     if (this.stage !== null)
       Black.instance.onChildrenAdded(child);
+
+    this.mChildOrComponentBeenAdded = true;
 
     return child;
   }
@@ -379,6 +387,8 @@ class GameObject extends MessageDispatcher {
     if (this.stage !== null)
       Black.instance.onComponentAdded(this, instance);
 
+    this.mChildOrComponentBeenAdded = true;
+
     return instance;
   }
 
@@ -495,7 +505,6 @@ class GameObject extends MessageDispatcher {
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
-
     return this.mWorldTransform;
   }
 
@@ -564,21 +573,37 @@ class GameObject extends MessageDispatcher {
   __fixedUpdate(dt) {
     this.onFixedUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onFixedUpdate(dt);
+    if (this.mChildOrComponentBeenAdded === false)
+      return;
 
-      if (this.__checkRemovedComponents(k))
-        break;
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
+
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onFixedUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__fixedUpdate(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__fixedUpdate(dt);
+      }
     }
+    
   }
 
   /**
@@ -590,20 +615,35 @@ class GameObject extends MessageDispatcher {
   __update(dt) {
     this.onUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onUpdate(dt);
+    if (this.mChildOrComponentBeenAdded === false)
+      return;
 
-      if (this.__checkRemovedComponents(k))
-        break;
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
+
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__update(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__update(dt);
+      }
     }
   }
 
@@ -615,59 +655,36 @@ class GameObject extends MessageDispatcher {
   __postUpdate(dt) {
     this.onPostUpdate(dt);
 
-    for (let k = 0; k < this.mComponents.length; k++) {
-      let c = this.mComponents[k];
-      c.mGameObject = this;
-      c.onPostUpdate(dt);
+    if (this.mChildOrComponentBeenAdded === false)
+      return;
 
-      if (this.__checkRemovedComponents(k))
-        break;
+    if (this.mComponents.length > 0) {
+      this.mComponentClone = this.mComponents.slice();
+
+      for (let k = 0; k < this.mComponentClone.length; k++) {
+        if (this.mAdded === false)
+          break;
+
+        let c = this.mComponentClone[k];
+
+        if (c.mAdded === false)
+          break;
+
+        c.mGameObject = this;
+        c.onPostUpdate(dt);
+      }
     }
 
-    for (let i = 0; i < this.mChildren.length; i++) {
-      this.mChildren[i].__postUpdate(dt);
+    if (this.mChildren.length > 0) {
+      this.mChildrenClone = this.mChildren.slice();
 
-      if (this.__checkRemovedChildren(i))
-        break;
+      for (let i = 0; i < this.mChildrenClone.length; i++) {
+        let child = this.mChildrenClone[i];
+
+        if (child.mAdded === true)
+          child.__postUpdate(dt);
+      }
     }
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {number} i
-   * @return {boolean}
-   */
-  __checkRemovedComponents(i) {
-    if (this.mNumComponentsRemoved == 0)
-      return false;
-
-    i -= this.mNumComponentsRemoved;
-    this.mNumComponentsRemoved = 0;
-
-    if (i < 0)
-      return true;
-
-    return false;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {number} i 
-   * @return {boolean}
-   */
-  __checkRemovedChildren(i) {
-    if (this.mNumChildrenRemoved == 0)
-      return false;
-
-    i -= this.mNumChildrenRemoved;
-    this.mNumChildrenRemoved = 0;
-
-    if (i < 0)
-      return true;
-
-    return false;
   }
 
   /**
@@ -680,8 +697,9 @@ class GameObject extends MessageDispatcher {
   onFixedUpdate(dt) { }
 
   /**
-   * Called at every engine update.
-   *
+   * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
+   * going from top to bottom of the display list.
+   * 
    * @protected
    * @param {number} dt Time since the last frame.
    * @return {void}
@@ -789,6 +807,100 @@ class GameObject extends MessageDispatcher {
     }
 
     return outRect;
+  }
+
+  /**
+   * Returns stage relative bounds of this object exluding it's children;
+   * 
+   * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
+   * @returns {Rectangle} 
+   */
+  getStageBounds(outRect = undefined) {
+    outRect = outRect || new Rectangle();
+
+    this.onGetLocalBounds(outRect);
+
+    let stage = Black.stage;
+
+    let matrix = Matrix.pool.get();
+    matrix.copyFrom(this.worldTransformation);
+    matrix.prepend(stage.worldTransformationInversed); // 120ms
+    matrix.transformRect(outRect, outRect); // 250ms
+    Matrix.pool.release(matrix);
+
+    return outRect;
+  }
+
+  /**
+   * Evaluates whether the game object or one of its children intersects with the given point
+   *
+   * @param {Vector} localPoint Coordinates vector.
+   * @return {GameObject|null}
+   */
+  hitTest(localPoint) {
+    let c = this.getComponent(InputComponent);
+    let touchable = c !== null && c.touchable;
+    let insideMask = this.onHitTestMask(localPoint);
+
+    if (touchable === false || insideMask === false)
+      return null;
+
+    let target = null;
+    let numChildren = this.mChildren.length;
+
+    for (let i = numChildren - 1; i >= 0; --i) {
+      let child = this.mChildren[i];
+
+      target = child.hitTest(localPoint);
+
+      if (target !== null)
+        return target;
+    }
+
+    if (this.onHitTest(localPoint) === true)
+      return this;
+
+    return null;
+  }
+
+  /**
+   * @ignore
+   * @protected
+   * @param {Vector} localPoint 
+   * @return {boolean}
+   */
+  onHitTest(localPoint) {
+    let contains = false;
+
+    // BEGINOF: WTF
+    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
+    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
+    // ENDOF: WTF
+
+    if (this.mCollidersCache.length > 0) {
+      for (let i = 0; i < this.mCollidersCache.length; i++) {
+        let collider = this.mCollidersCache[i];
+
+        contains = collider.containsPoint(tmpVector);
+        if (contains === true)
+          return true;
+      }
+    } else {
+      contains = this.localBounds.containsXY(tmpVector.x, tmpVector.y);
+    }
+
+    Vector.pool.release(tmpVector);
+    return contains;
+  }
+
+  /**
+   * @ignore
+   * @protected
+   * @param {Vector} localPoint 
+   * @return {boolean}
+   */
+  onHitTestMask(localPoint) {
+    return true;
   }
 
   /**
@@ -1159,6 +1271,32 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
+   * @export
+   * @returns {number}
+   */
+  get scale() {
+    return this.scaleX;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {number} value
+   * 
+   * @returns {void}
+   */
+  set scale(value) {
+    if (this.mScaleX == value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mScaleX = this.mScaleY = value;
+    this.setTransformDirty();
+  }
+
+  /**
    * Gets/Sets the scale factor of this object along y-axis.
    *
    * @export
@@ -1425,6 +1563,8 @@ class GameObject extends MessageDispatcher {
       this.mDirty |= flag;
       this.mDirtyFrameNum = Black.frameNum;
     }
+
+    Renderer.__dirty = true;
   }
 
   /**
@@ -1464,6 +1604,8 @@ class GameObject extends MessageDispatcher {
         }
       }
     }
+
+    Renderer.__dirty = true;
   }
 
   /**
@@ -1519,6 +1661,14 @@ class GameObject extends MessageDispatcher {
   get touchable() {
     let c = /** @type {InputComponent} */ (this.getComponent(InputComponent));
     return c !== null && c.touchable === true;
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
   }
 
   // TODO: rename method
@@ -1598,78 +1748,6 @@ class GameObject extends MessageDispatcher {
 
     outVector.x = Vector.__cache.x - gameObject.localBounds.x;
     outVector.y = Vector.__cache.y - gameObject.localBounds.y;
-    return true;
-  }
-
-  /**
-   * Evaluates whether the game object or one of its children intersects with the given point
-   *
-   * @param {Vector} localPoint Coordinates vector.
-   * @return {GameObject|null}
-   */
-  hitTest(localPoint) {
-    let c = this.getComponent(InputComponent);
-    let touchable = c !== null && c.touchable;
-    let insideMask = this.onHitTestMask(localPoint);
-
-    if (touchable === false || insideMask === false)
-      return null;
-
-    let target = null;
-    let numChildren = this.mChildren.length;
-
-    for (let i = numChildren - 1; i >= 0; --i) {
-      let child = this.mChildren[i];
-
-      target = child.hitTest(localPoint);
-
-      if (target !== null)
-        return target;
-    }
-
-    if (this.onHitTest(localPoint) === true)
-      return this;
-
-    return null;
-  }
-
-  /**
-   * @ignore
-   * @protected
-   * @param {Vector} localPoint 
-   * @return {boolean}
-   */
-  onHitTest(localPoint) {
-    let contains = false;
-
-    // BEGINOF: WTF
-    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
-    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
-    // ENDOF: WTF
-
-    if (this.mCollidersCache.length > 0) {
-      for (let i = 0; i < this.mCollidersCache.length; i++) {
-        let collider = this.mCollidersCache[i];
-
-        contains = collider.containsPoint(tmpVector);
-        if (contains === true)
-          return true;
-      }
-    } else {
-      contains = this.localBounds.containsXY(tmpVector.x, tmpVector.y);
-    }
-
-    Vector.pool.release(tmpVector);
-    return contains;
-  }
-
-  /**
-   * @ignore
-   * @protected
-   * @param {Vector} localPoint 
-   * @return {boolean}
-   */
-  onHitTestMask(localPoint) {
     return true;
   }
 
@@ -1826,14 +1904,6 @@ class GameObject extends MessageDispatcher {
  * @nocollapse
  */
 GameObject.ID = 0;
-
-/**
- * NOT USED
- * @private
- * @type {boolean}
- * @nocollapse
- */
-GameObject.IS_ANY_DIRTY = true;
 
 /**
  * @cat core

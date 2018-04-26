@@ -1,10 +1,9 @@
 /* @echo EXPORT */
 class ObjectPool {
-  constructor(type, ...defaultValues) {
+  constructor(type, capacity = 100) {
     this.mReleased = [];
-    this.mCapacity = 10;
+    this.mCapacity = capacity;
     this.mType = type;
-    this.mDefault = defaultValues;
   }
 
   get capacity() {
@@ -25,11 +24,8 @@ class ObjectPool {
     this.mReleased.splice(0, this.mReleased.length);
   }
 
-  get(...params) {
-    if (params.length === 0 && this.mDefault.length !== 0)
-      params = this.mDefault.slice();
-
-    return this.mReleased.length > 0 ? this.mReleased.pop() : new this.mType(...params);
+  get() {
+    return this.mReleased.length > 0 ? this.mReleased.pop() : new this.mType();
   }
 
   release(object) {

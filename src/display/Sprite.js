@@ -41,20 +41,7 @@ class Sprite extends DisplayObject {
   onRender(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
-    if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
-      const sf = this.stage.scaleFactor;
-
-      const m = new Matrix();
-      m.copyFrom(this.worldTransformation);
-      m.translate(this.mCacheBounds.x, this.mCacheBounds.y);
-      m.scale(sf, sf);
-
-      renderer.transform = m;
-      renderer.skipChildren = true;
-      renderer.alpha = 1;
-      renderer.blendMode = BlendMode.NORMAL;
-      renderer.texture = this.mCache;
-    } else if (this.mDirty & DirtyFlag.RENDER) {
+    if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
       renderer.transform = this.worldTransformation;
       renderer.texture = this.mTexture;

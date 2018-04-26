@@ -27,6 +27,12 @@ class DisplayObject extends GameObject {
     /** @private @type {boolean} */
     this.mCacheAsBitmap = false;
 
+    /** @private @type {boolean} */
+    this.mCacheAsBitmapDirty = true;
+
+    /** @private @type {Matrix|null} */
+    this.mCacheAsBitmapMatrixCache = null;
+
     /** @private @type {CanvasRenderTexture|null} */
     this.mCache = null;
 
@@ -37,25 +43,6 @@ class DisplayObject extends GameObject {
     this.mColor = null;
   }
 
-  /**
-   * Gets/Sets tinting color of the object. Pass `null` to disable tinting. Tinting color will be applied to all children
-   * objects. You can override tint color for children by setting custom value or `null` to inherit color from parent.
-   * @returns {?number}
-   */
-  get color() {
-    return this.mColor;
-  }
-  
-  /**
-   * @ignore
-   * @param {?number} value
-   * @return {void}
-   */
-  set color(value) {
-    this.mColor = value;
-    this.setRenderDirty();
-  }
-  
   /**
    * Factory method returns concrete renderer for this Game Object.
    * 
@@ -151,17 +138,24 @@ class DisplayObject extends GameObject {
     let renderer = this.mRenderer;
 
     if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
-      const sf = Black.stage.scaleFactor;
+      let isStatic = this.checkStatic(true);
+      if (isStatic === true && this.mCacheAsBitmapDirty === true) {
+        this.setTransformDirty();
+        this.__refreshBitmapCache();
+        this.mCacheAsBitmapDirty = false;
+      } else if (isStatic === false) {
+        this.mCacheAsBitmapDirty = true;
+        this.mDirty |= DirtyFlag.RENDER;
+      }
+    }
 
-      const m = new Matrix();
-      m.copyFrom(this.worldTransformation);
-      m.translate(this.mCacheBounds.x, this.mCacheBounds.y);
-      m.scale(sf, sf);
-
-      renderer.transform = m;
+    if (this.mCacheAsBitmap === true && isBackBufferActive === true && this.mCacheAsBitmapDirty === false) {
+      renderer.transform = this.mCacheAsBitmapMatrixCache;
       renderer.skipChildren = true;
       renderer.alpha = 1;
       renderer.blendMode = BlendMode.NORMAL;
+      renderer.snapToPixels = this.mSnapToPixels;
+      renderer.clipRect = null;
       renderer.texture = this.mCache;
     } else if (this.mDirty & DirtyFlag.RENDER) {
       renderer.skipChildren = false;
@@ -169,12 +163,13 @@ class DisplayObject extends GameObject {
       renderer.alpha = this.mAlpha * parentRenderer.alpha;
       renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
       renderer.visible = this.mVisible;
-      renderer.dirty = this.mDirty;
       renderer.clipRect = this.mClipRect;
+      renderer.dirty = this.mDirty;
       renderer.snapToPixels = this.mSnapToPixels;
       renderer.texture = null;
       renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
 
+      this.mCacheAsBitmapDirty = true;
       this.mDirty ^= DirtyFlag.RENDER;
     }
 
@@ -226,9 +221,69 @@ class DisplayObject extends GameObject {
     return contains;
   }
 
+  __refreshBitmapCache() {
+    const bounds = this.getBounds(this.stage, true);
+    const sf = Black.stage.scaleFactor;
+    const fs = Black.driver.finalScale;
+
+    let m = Matrix.pool.get().set(1, 0, 0, 1, ~~(-bounds.x * sf - this.stage.mX), ~~(-bounds.y * sf - this.stage.mY));
+
+    if (this.mClipRect !== null && this.mClipRect.isEmpty === false) {
+      m.data[4] += this.pivotX * sf;
+      m.data[5] += this.pivotY * sf;
+    }
+
+    if (this.mCacheBounds === null)
+      this.mCacheBounds = new Rectangle();
+
+    bounds.copyTo(this.mCacheBounds);
+    bounds.width *= fs;
+    bounds.height *= fs;
+
+    if (this.mCache === null)
+      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height, 1);
+    else
+      this.mCache.resize(bounds.width, bounds.height, 1);
+
+    Black.driver.render(this, this.mCache, m);
+    Matrix.pool.release(m);
+
+    if (this.mCacheAsBitmapMatrixCache === null)
+      this.mCacheAsBitmapMatrixCache = new Matrix();
+
+    this.mCacheAsBitmapMatrixCache.copyFrom(m);
+    this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
+    this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
+    this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
+
+    //this.mCache.__dumpToDocument();
+  }
 
   /**
-   * Gets/Sets whether the Sprite and all it's childen should be baked into bitmap.
+   * Gets/Sets tinting color of the object. Pass `null` to disable tinting. Tinting color will be applied to all children
+   * objects. You can override tint color for children by setting custom value or `null` to inherit color from parent.
+   * @returns {?number}
+   */
+  get color() {
+    return this.mColor;
+  }
+
+  /**
+   * @ignore
+   * @param {?number} value
+   * @return {void}
+   */
+  set color(value) {
+    if (this.mColor === value)
+      return;
+
+    this.mColor = value;
+    this.setRenderDirty();
+  }
+
+  /**
+   * Gets/Sets whether this container and all it's childen should be baked into bitmap. Setting `cacheAsBitmap` onto
+   *  Sprites, TextField's and other inhireted classes will give zero effect.
    *
    * @return {boolean} 
    */
@@ -245,30 +300,10 @@ class DisplayObject extends GameObject {
     if (value === this.mCacheAsBitmap)
       return;
 
-    if (value === true && this.mCache === null) {
-      const bounds = this.getBounds(this, true);
-      const sf = Black.stage.scaleFactor;
-      const m = this.worldTransformationInversed; // do we need to clone?
-      m.data[4] -= bounds.x;
-      m.data[5] -= bounds.y;
-
-      if (this.mCacheBounds === null)
-        this.mCacheBounds = new Rectangle();
-
-      bounds.copyTo(this.mCacheBounds);
-      bounds.width *= 1 / sf;
-      bounds.height *= 1 / sf;
-
-      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height);
-
-      Black.driver.render(this, this.mCache, m);
-      //this.mCache.__dumpToDocument();
-    } else if (value === false) {
-      this.mCache = null;
-    }
-
     this.mCacheAsBitmap = value;
-    this.setTransformDirty();
+
+    if (value === false)
+      this.setTransformDirty();
   }
 
   /**
