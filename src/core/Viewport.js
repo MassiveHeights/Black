@@ -1,6 +1,7 @@
 /**
  * Manages viewport, handles DOM container resize events and updates internal data.
- *
+ * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
+ * 
  * @cat core
  * @fires resize
  * @extends MessageDispatcher
