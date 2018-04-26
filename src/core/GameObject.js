@@ -505,7 +505,6 @@ class GameObject extends MessageDispatcher {
       else
         this.localTransformation.copyTo(this.mWorldTransform);
     }
-
     return this.mWorldTransform;
   }
 
@@ -1277,7 +1276,7 @@ class GameObject extends MessageDispatcher {
    * @returns {number}
    */
   get scale() {
-    return scaleX;
+    return this.scaleX;
   }
 
   /**
