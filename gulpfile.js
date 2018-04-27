@@ -14,7 +14,7 @@ const mocha = require('gulp-mocha');
 const info = JSON.parse(fs.readFileSync('./build.json'));
 const files = info.files;
 const bs = require('browser-sync').create();
-const replace = require('gulp-replace');
+const replace = require('gulp-string-replace');
 
 gulp.task('build-es5', function () {
   return gulp.src(files)
