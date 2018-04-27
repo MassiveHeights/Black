@@ -24,6 +24,7 @@
   "author": "Massive Heights",
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
+    "gulp": "^3.9.1",
     "babel-cli": "^6.24.1",
     "babel-concat": "^1.0.3",
     "babel-core": "^6.5.2",
@@ -44,8 +45,5 @@
     "jest": "^22.4.2",
     "jsdoc": "^3.4.3",
     "jsdoc-to-markdown": "^3.0.0"
-  },
-  "dependencies": {
-    "gulp": "^3.9.1"
   }
 }
