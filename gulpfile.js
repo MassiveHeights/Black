@@ -14,11 +14,11 @@ const mocha = require('gulp-mocha');
 const info = JSON.parse(fs.readFileSync('./build.json'));
 const files = info.files;
 const bs = require('browser-sync').create();
-const replace = require('gulp-string-replace');
+const replace = require('gulp-replace');
 
 gulp.task('build-es5', function () {
   return gulp.src(files)
-    .pipe(replace('/* @echo EXPORT */\r\n', ''))
+    .pipe(replace('/* @echo EXPORT */', ''))
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['es2015']
@@ -30,7 +30,7 @@ gulp.task('build-es5', function () {
 
 gulp.task('build-es6', function () {
   return gulp.src(files)
-    .pipe(replace('/* @echo EXPORT */\r\n', ''))
+    .pipe(replace('/* @echo EXPORT */', ''))
     .pipe(sourcemaps.init())
     .pipe(concat('black-es6.js'))
     .pipe(sourcemaps.write('.'))
