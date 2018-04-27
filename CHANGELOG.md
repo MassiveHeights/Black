@@ -3,7 +3,7 @@ Black Engine: Changelog
 
 v0.3.42
 -------
-- Added 'Black#hasSystem` method
+- Added `Black#hasSystem` method
 - Added `GameObject.scale` property
 - Added `GameObject.getStageBounds` helper method
 - Added `scale` param to `CanvasRenderTexture` ctor.
