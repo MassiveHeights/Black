@@ -1,7 +1,38 @@
 Black Engine: Changelog
 =======================
 
+v0.3.42
+-------
+- Added 'Black#hasSystem` method
+- Added `GameObject.scale` property
+- Added `GameObject.getStageBounds` helper method
+- Added `scale` param to `CanvasRenderTexture` ctor.
+- Added ability to not render stage in case it was not changed since last frame (Renderer.skipUnchangedFrames), false by default
+- Fixed incorrect behavior when calling render from inside render method
+- Fixed fixed/update/post loops to support removing of children element while in update
+- Fixed clipping for nested elements
+- Fixed clipping for cached elements
+- Fixed incorrect blending/alpha after clipping
+- Improved GameObject's children iteration
+- Improved cacheAsBitmap by allowing DisplayObject to be changed while cached, cache will update itself automatically next time object will become static.
+- Improved `stage.localTransformation` performance
+- Improved `Matrix.prepend` method
+- Improved emitter to not be dirty while not visible
+- Improved documentation
+- Changed debug defines to be visible in final builds
+- Changed cacheAsBitmap to not work on DisplayObject's descendants
+- Changed stage to not have InputComponent when there is no Input system
+- Changed RenderTargetCanvas size to be rounded
+- Changed `ObjectPool.get` method is no longer receive params
+- Removed `VideoNullDriver.renderResolution`
+- Minor refactoring
+
+v0.3.41
+-------
+- Fixed incorrect alignPivot and alignPivotOffset
+
 v0.3.4
+------
 - Added BitmapTextField
 - Added Audio support (spatial, audio atlas, sound effects)
 - Added Stage, stage scale modes and orientations
@@ -37,9 +68,9 @@ v0.0.12a
 v0.0.11a
 --------
 - Reworked `Input`
-  - Now `Input` is single target system
-  - Added `pointerIn` and `pointerOut` messages
-  - Added `PointerInfo` classes, posted as second argument
+- Now `Input` is single target system
+- Added `pointerIn` and `pointerOut` messages
+- Added `PointerInfo` classes, posted as second argument
 - Added `GameObject::add` sugar method, accepts array of `GameObject` and/or `Component`   
 - Added JSDoc's for most classes
 - Added new JSDoc template
@@ -61,7 +92,6 @@ v0.0.10a
 - Fixed package.json version mess
 - Fixed bundling mess
 - Fixed by adding missing `GameObject::onAdded` call
--
 - Moved examples to external repo
 - Renamed `Assert` to `Debug`
 
