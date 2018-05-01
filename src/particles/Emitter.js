@@ -447,18 +447,25 @@ class Emitter extends DisplayObject {
 
   /**
    * @ignore
-   * @param {Array<Texture>|string} value
+   * @param {Array<Texture>} value
    * @return {void}
    */
   set textures(value) {
-    if (value !== null && value.constructor === String)
-      this.mTextures = AssetManager.default.getTextures(/** @type {string} */(value));
-    else
-      this.mTextures = /** @type {Array<Texture>} */ (value);
+    this.mTextures = value;
 
     Debug.assert(!(this.mTextures === null || this.mTextures.length === 0), 'At least one texture must be provided.');
 
     this.setRenderDirty();
+  }
+
+   /**
+   * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
+   * 
+   * @param {string} value
+   * @return {void}
+   */
+  set texturesName(value) {
+    this.textures = AssetManager.default.getTextures(value);
   }
 
   /**
