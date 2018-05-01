@@ -436,7 +436,6 @@ class Emitter extends DisplayObject {
     this.setRenderDirty();
   }
 
-
   /**
    * Gets/Sets a list of textures to use.
    *
@@ -452,14 +451,12 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   set textures(value) {
-    if (value !== null && value.constructor === String) {
+    if (value !== null && value.constructor === String)
       this.mTextures = AssetManager.default.getTextures(/** @type {string} */(value));
-    } else {
+    else
       this.mTextures = /** @type {Array<Texture>} */ (value);
-    }
 
-    if (this.mTextures === null)
-      throw new Error('At least one texture must be provided.');
+    Debug.assert(!(this.mTextures === null || this.mTextures.length === 0), 'At least one texture must be provided.');
 
     this.setRenderDirty();
   }
