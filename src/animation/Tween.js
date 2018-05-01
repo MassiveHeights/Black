@@ -53,6 +53,9 @@ class Tween extends Component {
     this.mDelay = 0;
 
     /** @private @type {number} */
+    this.mRepeatDelay = 0;
+
+    /** @private @type {number} */
     this.mRepeatTimes = 0;
 
     /** @private @type {boolean} */
@@ -62,7 +65,16 @@ class Tween extends Component {
     this.mStarted = false;
 
     /** @private @type {boolean} */
-    this.mReverse = false;
+    this.mReversed = false;
+
+    /** @private @type {boolean} */
+    this.mYoyo = false;
+
+    /** @private @type {boolean} */
+    this.mIsYoyoBack = false;
+
+    /** @private @type {boolean} */
+    this.mReverseOnInit = false;
 
     /** @private @type {boolean} */
     this.mRemoveOnComplete = true;
@@ -164,6 +176,24 @@ class Tween extends Component {
   }
 
   /**
+   * Sets/Gets amount of seconds to wait between repeats.
+   *
+   * @return {number}
+   */
+  get repeatDelay() {
+    return this.mRepeatDelay;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value Seconds to wait.
+   * @return {void}
+   */
+  set repeatDelay(value) {
+    this.mRepeatDelay = value;
+  }
+
+  /**
    * Gets/Sets if tween should be looped over.
    *
    * @return {boolean}
@@ -182,12 +212,12 @@ class Tween extends Component {
   }
 
   /**
-   * Enables/disables reversing of tween values.
+   * Enables/disables reversing between repeats.
    *
    * @return {boolean}
    */
-  get reverse() {
-    return this.mReverse;
+  get yoyo() {
+    return this.mYoyo;
   }
 
   /**
@@ -195,8 +225,26 @@ class Tween extends Component {
    * @param {boolean} value
    * @return {void}
    */
-  set reverse(value) {
-    this.mReverse = value;
+  set yoyo(value) {
+    this.mYoyo = value;
+  }
+
+  /**
+   * Enables/disables reversed playback on start.
+   *
+   * @return {boolean}
+   */
+  get reversed() {
+    return this.mReversed;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set reversed(value) {
+    this.mReversed = value;
   }
 
   /**
@@ -428,6 +476,35 @@ class Tween extends Component {
   }
 
   /**
+   * Switches end values with start values.
+   *
+   * @param {boolean} asYoyo Indicates wether easing function should be also reversed.
+   * @return {Tween} Returns this.
+   */
+  reverse(asYoyo = false) {
+    if (this.mInitiated) {
+      this.__reverse();
+    } else {
+      this.mReverseOnInit = true;
+    }
+
+    if (asYoyo)
+      this.mIsYoyoBack = !this.mIsYoyoBack;
+
+    return this;
+  }
+
+  /**
+   * @private
+   * @return {void}
+   */
+  __reverse() {
+    for (let f in this.mValues) {
+      [this.mValues[f], this.mValuesStart[f]] = [this.mValuesStart[f], this.mValues[f]];
+    }
+  }
+
+  /**
    * @inheritDoc
    */
   onPostUpdate(dt){
@@ -449,6 +526,10 @@ class Tween extends Component {
         this.mValuesStart[f] = parseFloat(this.gameObject[f]);
       }
 
+      if (this.mReversed === true || this.mReverseOnInit === true) {
+        this.__reverse();
+      }
+
       this.mInitiated = true;
     }
 
@@ -457,7 +538,7 @@ class Tween extends Component {
     if (this.mElapsed > 1)
       this.mElapsed = 1;
 
-    let tt = this.mEase(this.mElapsed);
+    let tt = this.mEase(this.mIsYoyoBack ? 1 - this.mElapsed : this.mElapsed);
 
     for (let f in this.mValues) {
       let start = /** @type {number} */ (this.mValuesStart[f]);
@@ -469,7 +550,7 @@ class Tween extends Component {
       } else if (Array.isArray(end)) {
         this.gameObject[f] = this.mInterpolation(end, tt);
       } else {
-        this.gameObject[f] = /** @type {number} */ (start + (/** @type {number} */(end) - start) * tt);
+        this.gameObject[f] = /** @type {number} */ (start + (/** @type {number} */(end) - start) * (this.mIsYoyoBack ? 1 - tt : tt));
       }
     }
 
@@ -477,13 +558,11 @@ class Tween extends Component {
 
     if (this.mElapsed === 1) {
       if (this.mRepeatTimes-- > 0) {
-        if (this.mReverse) {
-          for (let f in this.mValues) {
-            [this.mValues[f], this.mValuesStart[f]] = [this.mValuesStart[f], this.mValues[f]];
-          }
+        if (this.mYoyo === true) {
+          this.reverse(true);
         }
 
-        this.mStartTime = t + this.mDelay;
+        this.mStartTime = t + this.mRepeatDelay;
 
         this.post('loop', this.gameObject);
       } else {

@@ -448,7 +448,7 @@ class Emitter extends DisplayObject {
 
   /**
    * @ignore
-   * @param {Array<Texture>} value
+   * @param {Array<Texture>|string} value
    * @return {void}
    */
   set textures(value) {
