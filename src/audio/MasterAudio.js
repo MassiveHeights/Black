@@ -14,13 +14,12 @@ class MasterAudio extends System {
 
     MasterAudio.instance = this;
 
-    this.__unlock();
-
     /** @private @type {AudioContext|null} */
     this.mContext = null;
 
     try {
       this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
+      this.__unlock();
     } catch (error) {
       Debug.warn('no audio support');
       return;
@@ -60,9 +59,11 @@ class MasterAudio extends System {
         unlockSource.context.resume();
 
       document.removeEventListener('touchstart', f);
+      document.removeEventListener('click', f);
     };
 
     document.addEventListener('touchstart', f);
+    document.addEventListener('click', f);
   }
 
   /**
