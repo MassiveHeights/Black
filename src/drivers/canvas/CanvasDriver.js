@@ -95,7 +95,6 @@ class CanvasDriver extends VideoNullDriver {
       }
 
       if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false) {
-        //this.setGlobalAlpha(renderer.getAlpha());
         this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
       }
 

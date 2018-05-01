@@ -15,7 +15,6 @@ class RenderTargetCanvas extends RenderTarget {
   constructor(width, height) {
     super(width, height);
 
-
     /** @ignore @private @type {HTMLCanvasElement} */
     this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 

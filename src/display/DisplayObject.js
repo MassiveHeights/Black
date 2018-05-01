@@ -302,8 +302,14 @@ class DisplayObject extends GameObject {
 
     this.mCacheAsBitmap = value;
 
-    if (value === false)
+    if (value === false) {
+      this.mCache = null;
+      this.mCacheAsBitmapDirty = true;
+      this.mCacheAsBitmapMatrixCache = null;
+      this.mCacheBounds = null;
+
       this.setTransformDirty();
+    }
   }
 
   /**

@@ -59,15 +59,16 @@ class Viewport extends MessageDispatcher {
    */
   __onResize() {
     let size = this.mContainerElement.getBoundingClientRect();
-    let newSize = new Rectangle(size.left, size.top, size.width, size.height);
+    let newSize = Rectangle.pool.get().set(size.left, size.top, size.width, size.height);
 
     if (this.mSize.equals(newSize) === true)
       return;
 
-    this.mSize = newSize;
+    this.mSize.copyFrom(newSize);
     this.post('resize', this.mSize);
 
     this.mChecksLeftSeconds = 1;
+    Rectangle.pool.release(newSize);
   }
 
   /**

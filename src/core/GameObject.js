@@ -230,7 +230,7 @@ class GameObject extends MessageDispatcher {
     child.removeFromParent();
     child.__setParent(this);
 
-    if (this.stage !== null)
+    if (this.root instanceof Stage)
       Black.instance.onChildrenAdded(child);
 
     this.mChildOrComponentBeenAdded = true;
@@ -603,7 +603,7 @@ class GameObject extends MessageDispatcher {
           child.__fixedUpdate(dt);
       }
     }
-    
+
   }
 
   /**
@@ -820,11 +820,9 @@ class GameObject extends MessageDispatcher {
 
     this.onGetLocalBounds(outRect);
 
-    let stage = Black.stage;
-
     let matrix = Matrix.pool.get();
     matrix.copyFrom(this.worldTransformation);
-    matrix.prepend(stage.worldTransformationInversed); // 120ms
+    matrix.prepend(this.stage.worldTransformationInversed); // 120ms
     matrix.transformRect(outRect, outRect); // 250ms
     Matrix.pool.release(matrix);
 
@@ -1360,12 +1358,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
-   * @private
+   * Returns top most parent object.
+   * 
    * @readonly
    * @return {GameObject}
    */
-  get __root() {
+  get root() {
     let current = this;
 
     while (current.mParent != null)
@@ -1382,11 +1380,7 @@ class GameObject extends MessageDispatcher {
    * @return {Stage|null}
    */
   get stage() {
-    let r = this.__root;
-    if (r instanceof Stage)
-      return r;
-
-    return null;
+    return this.mAdded === true ? Black.stage : null;
   }
 
   /**
