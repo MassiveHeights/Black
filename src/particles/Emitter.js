@@ -448,14 +448,19 @@ class Emitter extends DisplayObject {
 
   /**
    * @ignore
-   * @param {Array<Texture>} value
+   * @param {Array<Texture>|string} value
    * @return {void}
    */
   set textures(value) {
-    if (value.length === 0)
+    if (value !== null && value.constructor === String) {
+      this.mTextures = AssetManager.default.getTextures(/** @type {string} */(value));
+    } else {
+      this.mTextures = /** @type {Array<Texture>} */ (value);
+    }
+
+    if (this.mTextures === null)
       throw new Error('At least one texture must be provided.');
 
-    this.mTextures = value;
     this.setRenderDirty();
   }
 

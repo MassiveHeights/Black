@@ -177,7 +177,7 @@ class Black extends MessageDispatcher {
       return;
 
     for (let i = 0; i < this.mSystemClasses.length; i++)
-      this.addSystem(new this.mSystemClasses[i]());
+      this.__addSystem(new this.mSystemClasses[i]());
   }
 
   /**
@@ -228,32 +228,29 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Adds a given system to the execution list.
-   *
-   * @deprecated
+   * @private
    * @param  {System} system The System object you want to add.
    * @return {System}
    */
-  addSystem(system) {
+  __addSystem(system) {
     this.mSystems.push(system);
     return system;
   }
 
   /**
-   * Removes the given system from execution list.
+   * Gets system by type.
    *
-   * @deprecated
-   * @param {System} system The System instance to remove.
-   * @return {System|null}
+   * @param {Function} typeName The system type.
+   * @return {Component|null} The `System` instance or null if not found.
    */
-  removeSystem(system) {
-    // TODO: remove system on next frame
-    let ix = this.mSystems.indexOf(system);
-    if (ix === -1)
-      return null;
+  getSystem(typeName) {
+    for (let i = 0; i < this.mSystems.length; i++) {
+      let s = this.mSystems[i];
+      if (s instanceof typeName)
+        return s;
+    }
 
-    this.mSystems.splice(ix, 1);
-    return system;
+    return null;
   }
 
   /**
