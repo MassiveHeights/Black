@@ -1,7 +1,7 @@
 /**
- * Message holds all information about dispatched event.
+ * Message holds all information about dispatched event. This is a pooled object.
  *
- * @cat core
+ * @cat messages
  */
 /* @echo EXPORT */
 class Message {
@@ -12,43 +12,18 @@ class Message {
     /** @type {string} The name of message. */
     this.name = '';
 
-    /** @type {string|null} */
-    this.pathMask = null;
-
-    /** @type {string|null} */
-    this.componentMask = null;
-
     /** @type {Object} `GameObject` which receives this message. */
     this.target = null;
-
-    /** @type {MessageDispatcher} `GameObject` the message starts to invoke from. */
-    this.origin = null;
 
     /** @type {boolean} Specifies if invocation of this message was canceled. */
     this.canceled = false;
 
     /** @type {MessageType} Message type. See `MessageType` enum. */
-    this.type = MessageType.NONE; // 0 - none, 1 - bubbling, 2 - invoking
+    this.type = MessageType.DIRECT;
   }
 
   /**
-   * Gets path
-   *
-   * @return {string|null}
-   */
-  get path() {
-    let hasComponentMask = this.componentMask !== null;
-
-    if (this.pathMask !== null)
-      return hasComponentMask === true ? this.pathMask + '#' + this.componentMask : this.pathMask;
-    else if (hasComponentMask === true)
-      return this.componentMask;
-
-    return null;
-  }
-
-  /**
-   * Cancels message invocation
+   * Cancels message invocation.
    *
    * @return {void}
    */
@@ -56,8 +31,9 @@ class Message {
     this.canceled = true;
   }
 
+  // @ifdef DEBUG
   /**
-   * Generates message string representation
+   * Generates message string representation.
    *
    * @return {string}
    */
@@ -70,11 +46,28 @@ class Message {
 
     return `MESSAGE: { name: '${this.name}', sender: '${name}', target: '${this.target.name}', path: '${this.path}' }`;
   }
+  // @endif
 
   /**
-   * @event Message#progress
+   * @ignore
+   * @returns {Message}
    */
+  __reset() {
+    this.sender = null;
+    this.name = '';
+    this.pathMask = null;
+    this.componentMask = null;
+    this.target = null;
+    this.canceled = false;
+    this.type = MessageType.DIRECT;
+    return this;
+  }
+
+  /**
+  * @event Message#progress
+  */
   static get PROGRESS() { return 'progress'; }
+
   /**
    * @event Message#complete
    */
@@ -82,16 +75,10 @@ class Message {
 }
 
 /**
- * 
- * @cat core
- * @static
- * @constant
- * @enum {string}
+ * Pool for messages.
+ *
+ * @type {ObjectPool}
+ * @nocollapse
+ *
  */
-/* @echo EXPORT */
-const MessageType = {
-  NONE: 'none',
-  BUBBLE: 'bubble',
-  CAPTURE: 'capture',
-  GLOBAL: 'global'
-};
+Message.pool = new ObjectPool(Message);

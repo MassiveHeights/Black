@@ -3,19 +3,11 @@
  *
  * Global messages will not be dispatched on non GameObject objects.
  *
- * @cat core
- * @unrestricted
+ * @cat messages
  */
 /* @echo EXPORT */
 class MessageDispatcher {
-  /**
-   * Creates new instance of MessageDispatcher.
-   */
   constructor() {
-    /**
-     * @private
-     * @type {Object<string, Array>}
-     */
     this.mListeners = null;
   }
 
@@ -28,259 +20,136 @@ class MessageDispatcher {
    * @param {*} [context=null] Object to be used as `this` in callback function.
    * @return {void}
    */
-  on(message, callback, context = null) {
-    this.__on(message, callback, false, this, context);
-  }
-
-  // once(message, callback, context = null) {
-  //   this.__on(message, callback, true, this, context);
-  // }
-
-  /**
-  * Returns true if this object is subscribed for any messages with a given name.
-  *
-  * @public
-  * @param {string} message Message name to check.
-  * @returns {boolean} True if found.
-  */
-  hasOn(message) {
-    Debug.assert(message !== null, `Param 'message' cannot be null.`);
-
-    let filterIx = message.indexOf('@');
-    if (filterIx !== -1) {
-      let pureName = message.substring(0, filterIx);
-      let global = MessageDispatcher.mOverheardHandlers;
-
-      if (global.hasOwnProperty(pureName) === false)
-        return false;
-
-      let listeners = global[pureName];
-      for (let i = 0; i < listeners.length; i++)
-        if (listeners[i].owner === this)
-          return true;
-
-      return false;
-    } else {
-      if (this.mListeners === null)
-        return false;
-
-      if (this.mListeners.hasOwnProperty(message) === false)
-        return false;
-    }
-
-    return true;
+  on(name, cb, context) {
+    return this.__on(name, cb, false, context);
   }
 
   /**
-   * Removes listener by given name and callback.
-   * If callback is null then all callbacks will be removed.
+   * Adds listener by given name and callback. Binding will be automatically removed after first execution.
    *
    * @public
    * @param {string} message Message name.
-   * @param {Function=} [callback=null] Function to be removed from listeners.
-   * @param {*} [context=null] Object, which corresponds to callback function.
+   * @param {Function} callback Function to be called on message send.
+   * @param {*} [context=null] Object to be used as `this` in callback function.
    * @return {void}
    */
-  off(message, callback = null, context = null) {
-    Debug.assert(message !== null, 'name cannot be null.');
-
-    let filterIx = message.indexOf('@');
-    if (filterIx !== -1) {
-      let pureName = message.substring(0, filterIx);
-      let pathMask = message.substring(filterIx + 1);
-      let global = MessageDispatcher.mOverheardHandlers;
-
-      if (global.hasOwnProperty(pureName) === false)
-        return;
-
-      let dispatchers = (global[pureName]);
-      if (callback === null) {
-        for (let i = dispatchers.length; i--;)
-          if (dispatchers[i].owner === this)
-            dispatchers.splice(i, 1);
-      } else {
-        for (let i = dispatchers.length; i--;) {
-          if (dispatchers[i].owner === this && dispatchers[i].callback === callback) {
-            dispatchers.splice(i, 1);
-            return;
-          }
-        }
-      }
-      return;
-    } else {
-      if (this.mListeners === null)
-        return;
-
-      let dispatchers = (this.mListeners[message]);
-
-      if (dispatchers === undefined)
-        return;
-
-      if (callback === null) {
-        dispatchers.splice(0, dispatchers.length);
-        return;
-      } else {
-        for (let i = dispatchers.length; i--;) {
-          if (dispatchers[i].callback === callback && dispatchers[i].context === context) {
-            dispatchers.splice(i, 1);
-            return;
-          }
-        }
-      }
-    }
+  once(name, cb, context) {
+    return this.__on(name, cb, true, context);
   }
 
   /**
-   * Sends message with given pattern and params
+   * Posts message with a given params.
+   * 
+   * Adding `~` character to the begging of the name will bubble message to the top of the tree.
    *
    * @public
    * @param {string} message  The name of a message
-   * @param {...*} payload A list of params to send
+   * @param {...*} params A list of params to send
    * @return {void}
    */
-  post(message, ...payload) {
-    Debug.assert(message !== null, `Param 'name' cannot be null.`);
+  post(name, ...params) {
+    let message = this.__draftMessage(name);
 
-    let msg = this.__parseMessage(this, message);
+    if (message.type === MessageType.DIRECT)
+      this.__invoke(this, message, ...params);
+    else if (message.type === MessageType.BUBBLE)
+      this.__postBubbles(this, message, true, ...params);
 
-    let isGameObjectOrComponent = this instanceof GameObject || this instanceof Component;
-    if (msg.type === MessageType.BUBBLE && isGameObjectOrComponent === false)
-      throw new Error('Posting not direct messages are not allowed on non Game Objects.');
+    if (message.canceled === false)
+      this.__invokeOverheard(this, message, ...params);
 
-    if (msg.type === MessageType.NONE) {
-      this.__invoke(this, msg, ...payload);
-
-      if (msg.canceled === false)
-        this.__invokeComponents(this, msg, ...payload);
-
-      if (msg.canceled === false)
-        this.__invokeOverheard(this, msg, ...payload);
-      return;
-    }
-
-    if (msg.type === MessageType.GLOBAL) {
-      let isGameObject = this instanceof GameObject;
-      if (isGameObject === true)
-        msg.origin = /** @type {GameObject}*/ (this).stage;
-      else
-        msg.origin = null;
-
-      this.__postGlobal(this, msg, null, ...payload);
-
-      if (msg.canceled === false)
-        msg.origin.__invokeOverheard(this, msg, ...payload);
-      return;
-    }
-
-    if (msg.type === MessageType.BUBBLE) {
-      this.__postBubbles(this, msg, true, ...payload);
-
-      if (msg.canceled === false)
-        msg.sender.__invokeOverheard(msg.sender, msg, ...payload);
-      return;
-    }
-
-    if (msg.type === MessageType.CAPTURE) {
-      this.__postBubbles(this, msg, false, ...payload);
-
-      if (msg.canceled === false)
-        msg.sender.__invokeOverheard(msg.sender, msg, ...payload);
-      return;
-    }
+    Message.pool.release(message);
   }
 
   /**
-   * @private
-   * @ignore
-   * @param {MessageDispatcher} sender 
-   * @param {string} message 
-   * @return {Message}
+   * Returns parent MessageDispatcher.
+   * 
+   * @readonly
+   * @return {MessageDispatcher|null}
    */
-  __parseMessage(sender, message) {
-    const result = new Message();
-    const hasTilda = message.charAt(0) === '~';
-    const ixAt = message.indexOf('@');
-    const ixHash = message.indexOf('#');
+  get parent() {
+    return null;
+  }
 
-    result.sender = sender;
+  /**
+   * Returns the stage Game Object to which this belongs to or null if not added onto stage.
+   *
+   * @readonly
+   * @return {Stage|null}
+   */
+  get stage() {
+    return null;
+  }
 
-    if (ixAt === -1 && ixHash === -1) {
-      result.type = hasTilda ? MessageType.BUBBLE : MessageType.NONE;
-      result.name = hasTilda ? message.substring(1) : message;
-      return result;
-    }
-
-    // path or component mask found so lets its not local anymore
-    result.type = hasTilda ? MessageType.CAPTURE : MessageType.GLOBAL;
-
-    // we got a dog but no prison
-    if (ixAt >= 0 && ixHash === -1) {
-      result.name = hasTilda ? message.substring(1, ixAt) : message.substring(0, ixAt);
-      result.pathMask = message.substring(ixAt + 1);
-
-      if (result.pathMask === '')
-        result.pathMask = '*';
-
-      return result;
-    }
-
-    // we got into prison without the dog
-    if (ixAt === -1 && ixHash >= 0) {
-      result.name = hasTilda ? message.substring(1, ixHash) : message.substring(0, ixHash);
-      result.pathMask = '*';
-      result.componentMask = message.substring(ixHash + 1);
-      return result;
-    }
-
-    // both prison and the dog
-    if (ixAt !== -1 && ixHash !== -1) {
-      result.name = hasTilda ? message.substring(1, ixAt) : message.substring(0, ixAt);
-      result.pathMask = message.substring(ixAt + 1, ixHash);
-      result.componentMask = message.substring(ixHash + 1);
-      return result;
-    }
-
-    return result;
+  /**
+   * Returns string representing a url like path to this object in the display
+   * tree.
+   *
+   * @readonly
+   * @return {string|null}
+   */
+  get path() {
+    return null;
   }
 
   /**
    * @private
    * @ignore
-   * @param {string} message
+   * @param {string} name
    * @param {Function} callback
    * @param {boolean} [isOnce=false]
-   * @param {MessageDispatcher} [owner=null]
    * @param {*} [context=null]
    * @return {void}
    */
-  __on(message, callback, isOnce = false, owner = null, context = null) {
-    Debug.assert(message !== null, 'message cannot be null.');
-    Debug.assert(message.trim().length > 0, 'message cannot be null.');
+  __on(name, callback, isOnce = false, context = null) {
+    Debug.assert(name !== null, 'name cannot be null.');
+    Debug.assert(name.trim().length > 0, 'name cannot be null.');
+    Debug.assert(!(name.indexOf('~') === 0), 'Using `~` is not tot allowed here.');
     Debug.assert(callback !== null, 'callback cannot be null.');
-    Debug.assert(!(message.indexOf('~') === 0), 'Not allowed. Use regular method.');
 
-    let earIndex = message.indexOf('@');
+    let earIndex = name.indexOf('@');
     if (earIndex !== -1) {
-      let messageName = message.substring(0, earIndex);
-      let pathMask = message.substring(earIndex + 1);
+      let messageName = name.substring(0, earIndex);
+      let pathPattern = name.substring(earIndex + 1);
       let global = MessageDispatcher.mOverheardHandlers;
 
       if (global.hasOwnProperty(messageName) === false)
         global[messageName] = [];
 
-      let dispatchers = (global[messageName]);
-      dispatchers.push(new MessageBinding(message, callback, isOnce, owner, context, pathMask));
+      let bindings = global[messageName];
+      bindings.push(new MessageBinding(this, messageName, callback, isOnce, context, pathPattern));
       return;
     }
 
     if (this.mListeners === null)
       this.mListeners = {};
 
-    if (this.mListeners.hasOwnProperty(message) === false)
-      this.mListeners[message] = [];
+    if (this.mListeners.hasOwnProperty(name) === false)
+      this.mListeners[name] = [];
 
-    let dispatchers = (this.mListeners[message]);
-    dispatchers.push(new MessageBinding(message, callback, isOnce, owner, context));
+    let binding = new MessageBinding(this, name, callback, isOnce, context);
+    this.mListeners[name].push(binding);
+
+    return binding;
+  }
+
+  /**
+   * @ignore
+   * @param {MessageBinding} binding 
+   */
+  __off(binding) {
+    if (this.mListeners === null)
+      return;
+
+    if (this.mListeners.hasOwnProperty(binding.name) === false)
+      return;
+
+    let bindings = this.mListeners[binding.name];
+    const ix = bindings.indexOf(binding);
+    if (ix === -1)
+      return;
+
+    bindings.splice(ix, 1);
   }
 
   /**
@@ -295,68 +164,27 @@ class MessageDispatcher {
     if (message.canceled === true)
       return;
 
-    if (this.__isGameObject === true) {
-      if (/** @type {GameObject} */ (this).stage === null)
-        return;
-    }
-
     if (this.mListeners === null)
       return;
 
-    let dispatchers = (this.mListeners[message.name]);
-
-    if (dispatchers === undefined || dispatchers.length === 0)
+    if (this.stage === null && (this instanceof Stage) === false)
       return;
 
-    if (message.path !== null) {
-      let isGameObject = this instanceof GameObject;
-      if (isGameObject === true) {
-        let inPath = this.__checkPath(/** @type {GameObject} */(this).path, message.path);
-        if (!inPath)
-          return;
-      }
-    }
+    let bindings = (this.mListeners[message.name]);
 
-    // no path filter found - just invoke it
-    let clone = dispatchers.slice(0);
+    if (bindings === undefined || bindings.length === 0)
+      return;
 
-    for (let i = 0; i < clone.length; i++) {
-      let dispatcher = clone[i];
+    let cloned = bindings.slice(0);
+
+    for (let i = 0; i < cloned.length; i++) {
       message.target = this;
-      dispatcher.callback.call(dispatcher.context, message, ...params);
 
-      if (message.canceled === true)
-        return;
-    }
-  }
+      let binding = cloned[i];
+      binding.callback.call(binding.context, message, ...params);
 
-  /**
-   * @private
-   * @ignore
-   * @param {MessageDispatcher} sender 
-   * @param {Message} message 
-   * @param {...*} params 
-   * @return {void}
-   */
-  __invokeComponents(sender, message, ...params) {
-    if (message.canceled === true)
-      return;
-
-    let isGameObject = this instanceof GameObject;
-    if (isGameObject === false)
-      return;
-
-    if (this.__isGameObject === true) {
-      if (/** @type {GameObject} */ (this).stage === null)
-        return;
-    }
-
-    let go = /** @type {GameObject} */ (this);
-
-    let len = go.mComponents.length;
-    for (let i = 0; i < len; i++) {
-      let c = go.mComponents[i];
-      c.__invoke(sender, message, ...params);
+      if (binding.isOnce === true)
+        this._off(binding);
 
       if (message.canceled === true)
         return;
@@ -375,24 +203,27 @@ class MessageDispatcher {
     if (message.canceled === true)
       return;
 
-    let dispatchers = MessageDispatcher.mOverheardHandlers[message.name];
+    let bindings = MessageDispatcher.mOverheardHandlers[message.name];
 
-    if (dispatchers === undefined || dispatchers.length === 0)
+    if (bindings === undefined || bindings.length === 0)
       return;
 
-    let clone = dispatchers.slice(0);
+    let cloned = bindings.slice(0);
 
-    for (let i = 0; i < clone.length; i++) {
-      let dispatcher = clone[i];
+    for (let i = 0; i < cloned.length; i++) {
+      let binding = cloned[i];
 
-      if (!this.__checkPath(/** @type {GameObject} */(sender).path, dispatcher.pathMask))
+      if (binding.owner.stage === null)
         continue;
 
-      if (/** @type {GameObject} */(dispatcher.owner).stage == null)
+      if (!this.__checkPath(sender.path, binding))
         continue;
 
       message.target = this;
-      dispatcher.callback.call(dispatcher.context, message, ...params);
+      binding.callback.call(binding.context, message, ...params);
+
+      if (binding.isOnce === true)
+        this._off(binding);
 
       if (message.canceled === true)
         return;
@@ -400,28 +231,8 @@ class MessageDispatcher {
   }
 
   /**
- * @private
- * @ignore
- * @param {*}  sender
- * @param {Message}  message
- * @param {GameObject=}  origin
- * @param {...*} params
- * @return {void}
- */
-  __postGlobal(sender, message, origin, ...params) {
-    if (origin === null)
-      origin = /** @type {GameObject} */ (message.origin);
-
-    origin.__invoke(sender, message, ...params);
-    origin.__invokeComponents(sender, message, ...params);
-
-    for (let i = 0; i < origin.numChildren; i++) {
-      let child = origin.getChildAt(i);
-      child.__postGlobal(sender, message, child, ...params);
-    }
-  }
-
-  /**
+   * Message will always reach the stage even if some of the middle nodes were removed during process of invocation.
+   * 
    * @private
    * @ignore
    * @param {*}  sender
@@ -431,109 +242,66 @@ class MessageDispatcher {
    * @return {void}
    */
   __postBubbles(sender, message, toTop, ...params) {
-    message.origin = toTop === true ? this : /** @type {GameObject}*/ (this).stage;
+    message.origin = this;
 
-    let list = [/** @type {GameObject|Component} */(this)];
+    let list = [this];
 
-    let current = /** @type {GameObject|Component} */ (this);
-    if (this instanceof Component) {
-      if (/** @type {Component} */ (current).gameObject !== null) {
-        list.push(/** @type {Component} */(current).gameObject);
-        current = /** @type {Component} */(current).gameObject;
-      }
+    let current = this;
+    while (current.parent !== null) {
+      list.push(current.parent);
+      current = current.parent;
     }
 
-    while (/** @type {GameObject} */ (current).parent !== null) {
-      list.push(/** @type {GameObject} */ (current).parent);
-      current = /** @type {GameObject} */(current).parent;
-    }
+    for (let i = 0; i < list.length; i++) {
+      let dispatcher = list[i];
+      dispatcher.__invoke(sender, message, ...params);
 
-    if (toTop) {
-      for (let i = 0; i < list.length; i++) {
-        let dispatcher = /** @type {GameObject} */ (list[i]);
-        dispatcher.__invoke(sender, message, ...params);
-        dispatcher.__invokeComponents(sender, message, ...params);
-      }
-    } else {
-      for (let i = list.length - 1; i >= 0; i--) {
-        let dispatcher = /** @type {GameObject} */ (list[i]);
-        dispatcher.__invoke(sender, message, ...params);
-        dispatcher.__invokeComponents(sender, message, ...params);
-      }
+      if (message.canceled === true)
+        return;
     }
   }
 
   /**
    * @private
    * @ignore
-   * @param {string|null} path
-   * @param {string|null} pathMask
-   * @return {boolean}
-   */
-  __checkPath(path, pathMask) {
-    if (path == null || pathMask == null)
-      return false;
-
-    if (path === pathMask)
-      return true;
-
-    if (pathMask.indexOf('*') === -1)
-      return path === pathMask;
-    else
-      return new RegExp("^" + pathMask.split("*").join(".*") + "$").test(path);
-  }
-
-  /**
-   * @ignore
-   * @returns `true` whenever this is type of GameObject.
-   */
-  get __isGameObject() {
-    return this.sender instanceof GameObject;
-  }
-
-}
-
-/**
- * @cat core
- * @ignore
- */
-class MessageBinding {
-  /**
-   * @ignore
+   * 
    * @param {string} name 
-   * @param {Function} callback 
-   * @param {boolean} isOnce 
-   * @param {MessageDispatcher} owner 
-   * @param {*=} [context=null]
-   * @param {?string} [pathMask=null]
+   * @returns {Message}
    */
-  constructor(name, callback, isOnce, owner, context = null, pathMask = null) {
-    /** @type {string} */
-    this.name = name;
+  __draftMessage(name) {
+    const message = Message.pool.get();
+    message.__reset();
 
-    /** @type {Function} */
-    this.callback = callback;
+    message.sender = this;
 
-    /** @type {boolean} */
-    this.isOnce = isOnce;
+    if (name.startsWith('~') === true) {
+      message.name = name.substr(1);
+      message.type = MessageType.BUBBLE;
+    } else {
+      message.name = name;
+    }
 
-    /** @type {MessageDispatcher} */
-    this.owner = owner;
-
-    /** @type {*} */
-    this.context = context;
-
-    // for overhearing
-    /** @type {string|null} */
-    this.pathMask = pathMask;
+    return message;
   }
 
   /**
-   * @param {MessageBinding} binding 
+   * @ignore
+   * @private
+   * @param {string} path
+   * @param {MessageBinding} binding
    * @returns {boolean}
    */
-  equals(binding) {
-    return this.name === binding.name && this.owner === binding.owner;
+  __checkPath(path, binding) {
+    if (path === null || binding.pathPattern === null)
+      return false;
+
+    if (path === binding.pathPattern)
+      return true;
+
+    if (binding.pathPattern.indexOf('*') === -1)
+      return path === binding.pathPattern;
+    
+    return binding.glob.test(path);
   }
 }
 

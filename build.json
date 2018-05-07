@@ -1,8 +1,6 @@
 {
   "files":
   [
-
-
     "src/core/Debug.js",
 
     "src/math/MathEx.js",
@@ -12,6 +10,7 @@
     "src/utils/MapMap.js",
     "src/utils/ObjectPool.js",
     "src/utils/ColorHelper.js",
+    "src/utils/Glob.js",
     "src/geom/Vector.js",
     "src/geom/Matrix.js",
     "src/geom/Rectangle.js",
@@ -21,7 +20,9 @@
     "src/geom/Polygon.js",
     "src/geom/Curve.js",
 
+    "src/messages/MessageType.js",
     "src/messages/Message.js",
+    "src/messages/MessageBinding.js",
     "src/messages/MessageDispatcher.js",
 
     "src/display/text/FontMetrics.js",

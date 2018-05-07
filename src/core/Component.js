@@ -27,7 +27,7 @@ class Component extends MessageDispatcher {
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
-  onAdded(gameObject) {}
+  onAdded(gameObject) { }
 
   /**
    * Called when detached from GameObject.
@@ -36,7 +36,7 @@ class Component extends MessageDispatcher {
    * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
-  onRemoved(gameObject) {}
+  onRemoved(gameObject) { }
 
   /**
    * Called at every fixed frame update.
@@ -45,7 +45,7 @@ class Component extends MessageDispatcher {
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
-  onFixedUpdate(dt) {}
+  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update.
@@ -54,7 +54,7 @@ class Component extends MessageDispatcher {
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
-  onUpdate(dt) {}
+  onUpdate(dt) { }
 
   /**
    * Called after all updates have been executed.
@@ -63,12 +63,7 @@ class Component extends MessageDispatcher {
    * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
-  onPostUpdate(dt) {}
-
-  // TODO: finish
-  dispose() {}
-
-  // TODO: finish
+  onPostUpdate(dt) { }
 
   /**
    * Detaches this Component from its parent GameObject.
@@ -91,10 +86,34 @@ class Component extends MessageDispatcher {
   get gameObject() {
     return this.mGameObject;
   }
+  
+  /**
+   * Returns this Component owner GameObject.
+   * @readonly
+   * @return {GameObject|null}
+   */
+  get parent() {
+    return this.mGameObject;
+  }
+
+  /**
+   * Returns the stage Game Object to which this component belongs to or null if not on the stage.
+   *
+   * @override
+   * @readonly
+   * @return {Stage|null}
+   */
+  get stage() {
+    if (this.mGameObject === null)
+      return null;
+
+    return this.mGameObject.stage;
+  }
 
   /**
    * Returns string representing a url like path to this object in the display tree.
    *
+   * @override
    * @readonly
    * @return {string|null}
    */

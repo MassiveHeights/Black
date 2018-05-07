@@ -12,5 +12,5 @@ class DisplayObjectRendererCanvas extends Renderer {
   render(driver) {
     if (this.texture !== null)
       driver.drawTexture(this.texture);
-  }  
+  }
 }

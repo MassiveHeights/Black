@@ -1349,16 +1349,16 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns this GameObject parent GameObject.
+   * Returns this GameObject parent GameObject or null.
    * @readonly
-   * @return {GameObject}
+   * @return {GameObject|null}
    */
   get parent() {
     return this.mParent;
   }
 
   /**
-   * Returns top most parent object.
+   * Returns top most parent object or this if there is no parents.
    * 
    * @readonly
    * @return {GameObject}
@@ -1374,8 +1374,8 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns the stage Game Object to which this game object belongs to or null if not added on stage.
-   * Shortcut for `Black.stage`.
    *
+   * @override
    * @readonly
    * @return {Stage|null}
    */
@@ -1460,6 +1460,7 @@ class GameObject extends MessageDispatcher {
    * Returns string representing a url like path to this object in the display
    * tree.
    *
+   * @override
    * @readonly
    * @return {string|null}
    */
