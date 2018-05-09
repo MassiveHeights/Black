@@ -1,6 +1,6 @@
 {
   "name": "black",
-  "version": "0.3.42",
+  "version": "0.3.5",
   "description": "",
   "main": "dist/black-es6-module.js",
   "directories": {},

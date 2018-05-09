@@ -1,5 +1,15 @@
 Black Engine: Changelog
 =======================
+v0.3.5
+------
+- Improved `MessageDispatcher`
+- Removed `MessageDispatcher#off` method, use `MessageBinding.off` instead
+- Removed ability to post direct messages
+- Removed capturing phase
+- Changed `MessageDispatcher` to have path/parent/stage getters
+- Added `MessageDispatcher#once` method
+- Added `Input.once` method
+- Added `Glob` class
 
 v0.3.42
 -------
