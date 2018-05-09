@@ -11,7 +11,7 @@ class Component extends MessageDispatcher {
    * Creates new Component instance.
    */
   constructor() {
-    super();
+    super(true);
 
     /** @private @type {GameObject|null} */
     this.mGameObject = null;

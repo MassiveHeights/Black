@@ -331,10 +331,22 @@ class Input extends System {
    * @param {string} name            The name of the message to listen for.
    * @param {Function} callback      The callback function that will be called when message received.
    * @param {Object=} [context=null] Optional context.
-   * @return {void}
+   * @return {MessageBinding}
    */
   static on(name, callback, context = null) {
-    Input.instance.on(name, callback, context);
+    return Input.instance.on(name, callback, context);
+  }
+
+  /**
+   * Listens for one single global input event by given message name.
+   *
+   * @param {string} name            The name of the message to listen for.
+   * @param {Function} callback      The callback function that will be called when message received.
+   * @param {Object=} [context=null] Optional context.
+   * @return {MessageBinding}
+   */
+  static once(name, callback, context = null) {
+    return Input.instance.once(name, callback, context);
   }
 
   /**

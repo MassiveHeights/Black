@@ -21,6 +21,7 @@
     "src/geom/Curve.js",
 
     "src/messages/MessageType.js",
+    "src/messages/BindingType.js",
     "src/messages/Message.js",
     "src/messages/MessageBinding.js",
     "src/messages/MessageDispatcher.js",

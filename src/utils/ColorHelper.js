@@ -1,3 +1,6 @@
+/**
+ * @cat utils
+ */
 /* @echo EXPORT */
 class RGB {
   /**
@@ -18,7 +21,9 @@ class RGB {
   }
 }
 
-
+/**
+ * @cat utils
+ */
 /* @echo EXPORT */
 class HSV {
   /**

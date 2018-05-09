@@ -215,7 +215,7 @@ class Black extends MessageDispatcher {
   /**
    * Returns true if system exists.
    * 
-   * @param {System} systemTypeName
+   * @param {Function} systemTypeName
    */
   hasSystem(systemTypeName) {
     for (let i = 0; i < this.mSystems.length; i++) {
@@ -304,9 +304,7 @@ class Black extends MessageDispatcher {
       self.mFramesThisSecond = 0;
 
       // Start the main loop.
-      self.mRAFHandle = requestAnimationFrame((x) => {
-        self.__update(x);
-      });
+      self.mRAFHandle = window.requestAnimationFrame(self.__update.bind(self));
     });
   }
 
@@ -330,7 +328,7 @@ class Black extends MessageDispatcher {
    */
   __update(timestamp) {
     // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
-    Black.instance = this;    
+    Black.instance = this;
 
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = false;
@@ -388,12 +386,18 @@ class Black extends MessageDispatcher {
         }
       }
 
+      // UPDATE
+      Black.mUpdateTime = performance.now();
       this.__internalUpdate(dt);
       this.__internalPostUpdate(dt);
+      Black.mUpdateTime = performance.now() - Black.mUpdateTime;
 
+      // RENDER
+      Black.mRenderTime = performance.now();
       this.mVideo.beginFrame();
       this.mVideo.render(this.mStage);
       this.mVideo.endFrame();
+      Black.mRenderTime = performance.now() - Black.mRenderTime;
 
       Black.__frameNum++;
 
@@ -405,9 +409,7 @@ class Black extends MessageDispatcher {
       Renderer.__dirty = false;
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(x => {
-      this.__update(x);
-    });
+    this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
   }
 
   /**
@@ -798,3 +800,6 @@ Black.__frameNum = 0;
  * @static
  */
 Black.instance = null;
+
+Black.mUpdateTime = 0;
+Black.mRenderTime = 0;

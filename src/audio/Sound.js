@@ -33,6 +33,9 @@ class Sound extends Component {
     /** @private @type {SoundInstance} */
     this.mSoundInstance = null;
 
+    /** @private @type {MessageBinding|null}  */
+    this.mCompleteBinding = null;
+
     /** @private @type {boolean} */
     this.mSpatialEffect = spatialEffect;
   }
@@ -50,7 +53,7 @@ class Sound extends Component {
     overwrite && this.mSoundInstance && this.stop();
     if (!this.mSoundInstance || overwrite) {
       this.mSoundInstance = this.mSoundClip.play('master', volume, loop);
-      this.mSoundInstance.on('complete', this.__onSoundComplete, this);
+      this.mCompleteBinding = this.mSoundInstance.on('complete', this.__onSoundComplete, this);
       this.spatialEffect = this.mSpatialEffect;
     }
     return this.mSoundInstance;
@@ -64,7 +67,7 @@ class Sound extends Component {
    */
   stop() {
     if (this.mSoundInstance) {
-      this.mSoundInstance.off('complete', this.__onSoundComplete, this);
+      this.mCompleteBinding.off();
       this.mSoundInstance.stop();
       this.mSoundInstance = null;
     }

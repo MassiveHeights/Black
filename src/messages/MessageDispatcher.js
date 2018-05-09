@@ -3,38 +3,43 @@
  *
  * Global messages will not be dispatched on non GameObject objects.
  *
- * @cat messages
+ * @cat core
  */
 /* @echo EXPORT */
 class MessageDispatcher {
-  constructor() {
+  /**
+   * Creates new MessageDispatcher instance
+   * @param {boolean} [checkForStage=false]
+   */
+  constructor(checkForStage = false) {
     this.mListeners = null;
+    this.checkForStage = checkForStage;
   }
 
   /**
    * Adds listener by given name and callback.
    *
    * @public
-   * @param {string} message Message name.
+   * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
-   * @param {*} [context=null] Object to be used as `this` in callback function.
-   * @return {void}
+   * @param {*} [context=null]  Object to be used as `this` in callback function.
+   * @return {MessageBinding}
    */
-  on(name, cb, context) {
-    return this.__on(name, cb, false, context);
+  on(name, callback, context) {
+    return this.__on(name, callback, false, context);
   }
 
   /**
    * Adds listener by given name and callback. Binding will be automatically removed after first execution.
    *
    * @public
-   * @param {string} message Message name.
+   * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
-   * @param {*} [context=null] Object to be used as `this` in callback function.
-   * @return {void}
+   * @param {*} [context=null]  Object to be used as `this` in callback function.
+   * @return {MessageBinding}
    */
-  once(name, cb, context) {
-    return this.__on(name, cb, true, context);
+  once(name, callback, context) {
+    return this.__on(name, callback, true, context);
   }
 
   /**
@@ -43,8 +48,8 @@ class MessageDispatcher {
    * Adding `~` character to the begging of the name will bubble message to the top of the tree.
    *
    * @public
-   * @param {string} message  The name of a message
-   * @param {...*} params A list of params to send
+   * @param {string} name  The name of a message
+   * @param {...*} params  A list of params to send
    * @return {void}
    */
   post(name, ...params) {
@@ -99,7 +104,7 @@ class MessageDispatcher {
    * @param {Function} callback
    * @param {boolean} [isOnce=false]
    * @param {*} [context=null]
-   * @return {void}
+   * @return {MessageBinding}
    */
   __on(name, callback, isOnce = false, context = null) {
     Debug.assert(name !== null, 'name cannot be null.');
@@ -117,8 +122,9 @@ class MessageDispatcher {
         global[messageName] = [];
 
       let bindings = global[messageName];
-      bindings.push(new MessageBinding(this, messageName, callback, isOnce, context, pathPattern));
-      return;
+      let binding = new MessageBinding(this, messageName, callback, isOnce, context, BindingType.OVERHEARD, pathPattern);
+      bindings.push(binding);
+      return binding;
     }
 
     if (this.mListeners === null)
@@ -127,7 +133,7 @@ class MessageDispatcher {
     if (this.mListeners.hasOwnProperty(name) === false)
       this.mListeners[name] = [];
 
-    let binding = new MessageBinding(this, name, callback, isOnce, context);
+    let binding = new MessageBinding(this, name, callback, isOnce, context, BindingType.REGULAR);
     this.mListeners[name].push(binding);
 
     return binding;
@@ -138,18 +144,32 @@ class MessageDispatcher {
    * @param {MessageBinding} binding 
    */
   __off(binding) {
-    if (this.mListeners === null)
-      return;
+    if (binding.type === BindingType.REGULAR) {
+      if (this.mListeners === null)
+        return;
 
-    if (this.mListeners.hasOwnProperty(binding.name) === false)
-      return;
+      if (this.mListeners.hasOwnProperty(binding.name) === false)
+        return;
 
-    let bindings = this.mListeners[binding.name];
-    const ix = bindings.indexOf(binding);
-    if (ix === -1)
-      return;
+      let bindings = this.mListeners[binding.name];
+      const ix = bindings.indexOf(binding);
+      if (ix === -1)
+        return;
 
-    bindings.splice(ix, 1);
+      bindings.splice(ix, 1);
+    } else if (binding.type === BindingType.OVERHEARD) {
+      let global = MessageDispatcher.mOverheardHandlers;
+      if (global.hasOwnProperty(binding.name) === false)
+        return;
+
+      let bindings = global[binding.name];
+
+      const ix = bindings.indexOf(binding);
+      if (ix === -1)
+        return;
+
+      bindings.splice(ix, 1);
+    }
   }
 
   /**
@@ -167,7 +187,7 @@ class MessageDispatcher {
     if (this.mListeners === null)
       return;
 
-    if (this.stage === null && (this instanceof Stage) === false)
+    if (this.checkForStage === true && this.stage === null && (this instanceof Stage) === false)
       return;
 
     let bindings = (this.mListeners[message.name]);
@@ -181,10 +201,14 @@ class MessageDispatcher {
       message.target = this;
 
       let binding = cloned[i];
+
+      if (this.checkForStage === true && binding.owner.stage === null)
+        continue;
+
       binding.callback.call(binding.context, message, ...params);
 
       if (binding.isOnce === true)
-        this._off(binding);
+        this.__off(binding);
 
       if (message.canceled === true)
         return;
@@ -223,7 +247,7 @@ class MessageDispatcher {
       binding.callback.call(binding.context, message, ...params);
 
       if (binding.isOnce === true)
-        this._off(binding);
+        this.__off(binding);
 
       if (message.canceled === true)
         return;
@@ -287,7 +311,7 @@ class MessageDispatcher {
   /**
    * @ignore
    * @private
-   * @param {string} path
+   * @param {string|null} path
    * @param {MessageBinding} binding
    * @returns {boolean}
    */
@@ -300,7 +324,7 @@ class MessageDispatcher {
 
     if (binding.pathPattern.indexOf('*') === -1)
       return path === binding.pathPattern;
-    
+
     return binding.glob.test(path);
   }
 }

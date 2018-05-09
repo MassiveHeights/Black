@@ -61,8 +61,7 @@ class FontAsset extends Asset {
     loaderElement.type = 'text/css';
     loaderElement.media = 'all';
     loaderElement.rel = 'stylesheet';
-    loaderElement.onerror = function () {
-    };
+    loaderElement.onerror = function () { };
     document.getElementsByTagName('head')[0].appendChild(loaderElement);
     return loaderElement;
   }

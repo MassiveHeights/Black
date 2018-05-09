@@ -1,7 +1,7 @@
 /**
  * Message holds all information about dispatched event. This is a pooled object.
  *
- * @cat messages
+ * @cat core
  */
 /* @echo EXPORT */
 class Message {
@@ -14,6 +14,9 @@ class Message {
 
     /** @type {Object} `GameObject` which receives this message. */
     this.target = null;
+
+    /** @type {Object} The point from which sending is begun. */
+    this.origin = null;
 
     /** @type {boolean} Specifies if invocation of this message was canceled. */
     this.canceled = false;
@@ -55,23 +58,11 @@ class Message {
   __reset() {
     this.sender = null;
     this.name = '';
-    this.pathMask = null;
-    this.componentMask = null;
     this.target = null;
     this.canceled = false;
     this.type = MessageType.DIRECT;
     return this;
   }
-
-  /**
-  * @event Message#progress
-  */
-  static get PROGRESS() { return 'progress'; }
-
-  /**
-   * @event Message#complete
-   */
-  static get COMPLETE() { return 'complete'; }
 }
 
 /**
@@ -82,3 +73,7 @@ class Message {
  *
  */
 Message.pool = new ObjectPool(Message);
+
+// TODO: add jsdoc
+Message.PROGRESS = 'progress';
+Message.COMPLETE = 'complete';

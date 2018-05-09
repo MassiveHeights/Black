@@ -12,7 +12,7 @@ class GameObject extends MessageDispatcher {
    * Creates new instance of GameObject.
    */
   constructor() {
-    super();
+    super(true);
 
     /** @private @type {number} */
     this.mId = ++GameObject.ID;

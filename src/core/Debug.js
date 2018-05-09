@@ -73,8 +73,25 @@ class Debug {
   static error(...message) {
     console.info('%c%s', 'color: #d50000', 'ERROR:', ...message);
   }
+
+  /**
+   * 
+   * @param {string} name 
+   */
+  static time(name) {
+    Debug.timeProfiles[name] = performance.now();
+  }
+
+  /**
+   * 
+   * @param {string} name 
+   */
+  static timeEnd(name) {
+    Debug.timeProfiles[name] = performance.now() - Debug.timeProfiles[name];
+  }
 }
 
 Debug.throwOnFail = true;
 Debug.logOnFail = false;
+Debug.timeProfiles = {};
 // @endif

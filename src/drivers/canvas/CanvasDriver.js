@@ -114,7 +114,6 @@ class CanvasDriver extends VideoNullDriver {
         session.endPassRenderers.push(renderer);
 
       if (session.endPassRenderers.length > 0 && session.endPassRenderers[session.endPassRenderers.length - 1].endPassRequiredAt === i) {
-
         const r = session.endPassRenderers.pop();
         this.endClip();
 
@@ -165,7 +164,6 @@ class CanvasDriver extends VideoNullDriver {
     this.mContainerElement.appendChild(cvs);
 
     this.mCtx = /** @type {CanvasRenderingContext2D} */ (cvs.getContext('2d'));
-    this.mCtx.globalCompositeOperation = 'lighter';
   }
 
   /**

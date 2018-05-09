@@ -402,6 +402,8 @@ class Generator {
     let t = this.getTypeInfo(name);
     if (t) {
       let cc = this.getTypeCat(t);
+      if (!cc)
+        console.log('Unable to find cat for', t.id);
 
       let url = `${BASE_URL}${cc.replace('.', '/')}/${name}`;
       return `<a href="${url}">${name}</a>`;
@@ -521,7 +523,7 @@ class Generator {
 
       return `<span class="no-description">NO DESCRIPTION</span>`;
 	  */
-	  return '';
+      return '';
     }
 
     return this.parseCodeTag(this.parseLinks(item.description));
