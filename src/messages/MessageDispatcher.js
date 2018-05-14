@@ -187,7 +187,7 @@ class MessageDispatcher {
     if (this.mListeners === null)
       return;
 
-    if (this.checkForStage === true && this.stage === null && (this instanceof Stage) === false)
+    if (this.checkForStage === true && this !== Black.stage && this.stage === null)
       return;
 
     let bindings = (this.mListeners[message.name]);
@@ -202,7 +202,7 @@ class MessageDispatcher {
 
       let binding = cloned[i];
 
-      if (this.checkForStage === true && binding.owner.stage === null)
+      if (this.checkForStage === true && binding.owner.stage === Black.stage && binding.owner.stage === null)
         continue;
 
       binding.callback.call(binding.context, message, ...params);
