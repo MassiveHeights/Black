@@ -216,6 +216,8 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject} The GameObject instance that you pass in the child parameter.
    */
   addChildAt(child, index = 0) {
+    Debug.assert(child instanceof GameObject, 'Type error.');
+
     let numChildren = this.mChildren.length;
 
     if (index < 0 || index > numChildren)
@@ -373,6 +375,8 @@ class GameObject extends MessageDispatcher {
    * @throws {Error}
    */
   addComponent(component) {
+    Debug.assert(component instanceof Component, 'Type error.');
+
     let instance = component;
 
     if (instance.gameObject)
@@ -399,6 +403,8 @@ class GameObject extends MessageDispatcher {
    * @return {Component|null}
    */
   removeComponent(instance) {
+    Debug.assert(instance instanceof Component, 'Type error.');
+
     if (!instance)
       return null;
 
@@ -603,7 +609,6 @@ class GameObject extends MessageDispatcher {
           child.__fixedUpdate(dt);
       }
     }
-
   }
 
   /**
@@ -657,7 +662,7 @@ class GameObject extends MessageDispatcher {
 
     if (this.mChildOrComponentBeenAdded === false)
       return;
-
+      
     if (this.mComponents.length > 0) {
       this.mComponentClone = this.mComponents.slice();
 
