@@ -137,7 +137,7 @@ class Stage extends GameObject {
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.dpr;
     }
-    
+
     this.mStageWidth = Math.round(this.mStageWidth);
     this.mStageHeight = Math.round(this.mStageHeight);
     this.mX = Math.round(this.mX);

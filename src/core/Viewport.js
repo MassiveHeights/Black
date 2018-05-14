@@ -34,7 +34,7 @@ class Viewport extends MessageDispatcher {
     this.isTransperent = true;
     this.backgroundColor = 0x222222;
 
-    this.mChecksLeftSeconds = 0;    
+    this.mChecksLeftSeconds = 0;
 
     window.addEventListener('resize', x => this.__onResize());
   }
@@ -59,6 +59,7 @@ class Viewport extends MessageDispatcher {
    */
   __onResize() {
     let size = this.mContainerElement.getBoundingClientRect();
+
     let newSize = Rectangle.pool.get().set(size.left, size.top, size.width, size.height);
 
     if (this.mSize.equals(newSize) === true)

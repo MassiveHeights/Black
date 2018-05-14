@@ -56,7 +56,7 @@ class Tween extends Component {
     this.mRepeatDelay = 0;
 
     /** @private @type {number} */
-    this.mRepeatTimes = 0;
+    this.mRepeats = 0;
 
     /** @private @type {boolean} */
     this.mInitiated = false;
@@ -162,8 +162,8 @@ class Tween extends Component {
    *
    * @return {number}
    */
-  get repeat() {
-    return this.mRepeatTimes;
+  get repeats() {
+    return this.mRepeats;
   }
 
   /**
@@ -171,8 +171,8 @@ class Tween extends Component {
    * @param {number} value Number of times.
    * @return {void}
    */
-  set repeat(value) {
-    this.mRepeatTimes = value;
+  set repeats(value) {
+    this.mRepeats = value;
   }
 
   /**
@@ -199,7 +199,7 @@ class Tween extends Component {
    * @return {boolean}
    */
   get loop() {
-    return this.mRepeatTimes === Infinity;
+    return this.mRepeats === Infinity;
   }
 
   /**
@@ -208,7 +208,7 @@ class Tween extends Component {
    * @return {void}
    */
   set loop(value) {
-    this.mRepeatTimes = value ? Infinity : 0;
+    this.mRepeats = value ? Infinity : 0;
   }
 
   /**
@@ -557,7 +557,7 @@ class Tween extends Component {
     this.post('update', this.gameObject);
 
     if (this.mElapsed === 1) {
-      if (this.mRepeatTimes-- > 0) {
+      if (this.mRepeats-- > 0) {
         if (this.mYoyo === true) {
           this.reverse(true);
         }
