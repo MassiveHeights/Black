@@ -6,7 +6,7 @@ class Pair {
     this.bodyB = null;
 
     this.isColliding = true;
-    this.normal = new Phaser.Point();
+    this.normal = new Vector();
     this.overlap = 0;
   }
 

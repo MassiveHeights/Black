@@ -78,7 +78,7 @@ class BoxesPair extends Pair {
       if (absOverlap < this.overlap) {
         this.overlap = absOverlap;
         normal.copyFrom(projection.axis);
-        overlap < 0 && normal.multiply(-1, -1);
+        overlap < 0 && normal.multiplyScalar(-1);
       }
     }
 

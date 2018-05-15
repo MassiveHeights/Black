@@ -22,20 +22,20 @@ class RigidBody extends Component {
     this.isStatic = false;
     this.isBoundsCheckable = false;
     this.worldBounds = null;
-    this.boundsCollide = { left: false, right: false, top: false, bottom: false };
+    this.boundsCollide = {left: false, right: false, top: false, bottom: false};
     this.mass = 1;
 
     this.mSpritePrevPos = new Vector();
     this.mIsInWorld = false;
   }
 
-  onAdded() {
+  onAddedToStage() {
     this.mIsInWorld = true;
     this.reset();
     this.validateColliders();
   }
 
-  onRemoved() {
+  onRemovedFromStage() {
     this.mIsInWorld = false;
     this.sprite = null;
   }
@@ -212,7 +212,7 @@ class RigidBody extends Component {
 
     prevPosition.set(x, y);
     spritePrevPos.copyFrom(position);
-    sprite.position.copyFrom(sprite.parent.globalToLocal(position));
+    sprite.parent.globalToLocal(position, sprite);
   }
 
   postUpdate() {

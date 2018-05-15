@@ -27,12 +27,12 @@ class Arcade extends System {
   }
 
   onComponentAdded(sprite, body) {
-    if (this.mBodies.indexOf(body) !== -1)
+    if (!(body instanceof RigidBody) || this.mBodies.indexOf(body) !== -1)
       return;
 
     body.sprite = sprite;
     this.mBodies.push(body);
-    body.onAdded();
+    body.onAddedToStage();
     this.mChanged = true; // todo also when body collider added, removed
   }
 
@@ -43,7 +43,7 @@ class Arcade extends System {
 
     this.mBodies.splice(index, 1);
     this.mChanged = true;
-    body.onRemoved();
+    body.onRemovedFromStage();
   }
 
   onFixedUpdate(dt) {

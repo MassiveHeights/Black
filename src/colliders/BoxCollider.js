@@ -68,8 +68,8 @@ class BoxCollider extends Collider {
     const points = this.points;
 
     for (let i = 0; i < 4; i++) {
-      transform.apply(localPoints[i], points[i]);
-      transform.apply(localNormals[i], normals[i]);
+      transform.transformVector(localPoints[i], points[i]);
+      transform.transformVector(localNormals[i], normals[i]);
       normals[i].normalize();
     }
 
