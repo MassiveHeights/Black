@@ -155,6 +155,20 @@
     "src/audio/Sound.js",
     "src/audio/SoundListener.js",
 
+    "src/physics/RigidBody.js",
+    "src/physics/arcade/helpers/Projection.js",
+    "src/physics/arcade/helpers/Range.js",    
+
+    "src/physics/arcade/pairs/Pair.js",
+    "src/physics/arcade/pairs/BoxToBoxPair.js",
+    "src/physics/arcade/pairs/BoxToCirclePair.js",
+    "src/physics/arcade/pairs/CircleToCirclePair.js",
+
+    "src/physics/arcade/phases/Phase.js",
+    "src/physics/arcade/phases/NarrowPhase.js",
+
+    "src/physics/arcade/Arcade.js",
+
     "src/Black.js"
   ]
 }

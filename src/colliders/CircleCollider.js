@@ -27,6 +27,41 @@ class CircleCollider extends Collider {
 
     /** @private @type {Circle} */
     this.mCircle = new Circle(x, y, radius);
+
+
+    this.localPosition = new Vector();
+    this.localRadius = 0;
+
+    this.position = new Vector();
+    this.radius = 0;
+    this.changed = false;
+
+    this.minX = 0;
+    this.minY = 0;
+    this.maxX = 0;
+    this.maxY = 0;
+
+    this.set(x, y, radius);
+  }
+
+  set(x, y, radius) {
+    this.localPosition.set(x, y);
+    this.localRadius = radius;
+    this.changed = true;
+  }
+
+  refresh(transform) {
+    const position = this.position;
+    const scale = Math.sqrt(transform.a * transform.a + transform.b * transform.b);
+    const radius = this.localRadius * scale;
+    transform.apply(this.localPosition, position);
+
+    this.minX = position.x - radius;
+    this.minY = position.y - radius;
+    this.maxX = position.x + radius;
+    this.maxY = position.y + radius;
+    this.radius = radius;
+    this.changed = true;
   }
 
   /**
@@ -37,13 +72,6 @@ class CircleCollider extends Collider {
    * @returns {boolean}
    */
   containsPoint(point) {
-    if (this.gameObject != null) { 
-      let pos = new Vector(this.mX, this.mY);
-      
-      if (pos.distance(point) <= this.mRadius)
-        return true;
-    }
-
-    return false;
+    return (this.gameObject != null && localPosition.distance(point) <= this.localRadius);
   }
 }
