@@ -25,7 +25,7 @@ class Pair {
 
   static integrate(impulse, dx, dy) {
     const dist = impulse.x * impulse.x + impulse.y * impulse.y;
-    const delta = dist / (dx * dx + dy * dy + dist) - 1;  // todo param
+    const delta = dist / (dx * dx + dy * dy + dist) - 0.5;
 
     if (delta) {
       dx *= delta;
@@ -59,11 +59,11 @@ class Pair {
     const massB = bodyB.mass / totalMass;
     const friction = Math.min(bodyA.friction, bodyB.friction);
 
-    !bodyA.isStatic && Pair.integrate(bodyA.impulse,
+    !bodyA.isStatic && Pair.integrate(bodyA.correction,
       overlapX * massA + tangentVelX * friction * massA,
       overlapY * massA + tangentVelY * friction * massA);
 
-    !bodyB.isStatic && Pair.integrate(bodyB.impulse,
+    !bodyB.isStatic && Pair.integrate(bodyB.correction,
       -(overlapX * massB + tangentVelX * friction * massB),
       -(overlapY * massB + tangentVelY * friction * massB));
   }

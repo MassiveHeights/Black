@@ -2,13 +2,10 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    //this.id = String(RigidBody.mId++);
     this.mBoxColliders = [];
     this.mCircleColliders = [];
-    this.colliders = [];
-    this.mDefaultCollider = null;
+    this.mDefaultCollider = new BoxCollider(0, 0, 0, 0);
 
-    this.sprite = null;
     this.position = new Vector();
     this.velocity = new Vector();
     this.transform = new Matrix();
@@ -18,44 +15,36 @@ class RigidBody extends Component {
     this.friction = 0.1;
     this.frictionAir = 0.01;
     this.prevPosition = new Vector();
-    this.impulse = new Vector();
+    this.correction = new Vector();
     this.isStatic = false;
     this.isBoundsCheckable = false;
     this.worldBounds = null;
     this.boundsCollide = {left: false, right: false, top: false, bottom: false};
     this.mass = 1;
-
-    this.mSpritePrevPos = new Vector();
-    this.mIsInWorld = false;
-  }
-
-  onAddedToStage() {
-    this.mIsInWorld = true;
-    this.reset();
-    this.validateColliders();
-  }
-
-  onRemovedFromStage() {
-    this.mIsInWorld = false;
-    this.sprite = null;
   }
 
   validateColliders() {
-    if (this.colliders.length === 0) {
-      const sprite = this.sprite;
-      const w = sprite.width / sprite.scaleX;
-      const h = sprite.height / sprite.scaleY;
+    const gameObject = this.gameObject;
+    const colliders = gameObject.mCollidersCache;
+    this.mBoxColliders.length = 0;
+    this.mCircleColliders.length = 0;
 
-      this.mDefaultCollider = new BoxCollider(-sprite.pivotX, -sprite.pivotY, w, h);
-      this.addCollider(this.mDefaultCollider);
-    } else if (this.mDefaultCollider && this.colliders.length > 1) {
-      this.removeCollider(this.mDefaultCollider);
-      this.mDefaultCollider = null;
+    if (colliders.length === 0) {
+      this.mDefaultCollider.set(-gameObject.pivotX, -gameObject.pivotY,
+        gameObject.texture.width, gameObject.texture.height); // todo refresh on texture changed
+
+      this.mBoxColliders.push(this.mDefaultCollider);
+    } else {
+      for (let i = 0, l = colliders.length; i < l; i++) {
+        const collider = colliders[i];
+        const collection = collider instanceof BoxCollider ? this.mBoxColliders : this.mCircleColliders;
+        collection.push(collider);
+      }
     }
   }
 
   reset() {
-    const pos = this.sprite.parent.localToGlobal(this.sprite);
+    const pos = this.gameObject.parent.localToGlobal(this.gameObject);
     const position = this.position;
     const dx = pos.x - position.x;
     const dy = pos.y - position.y;
@@ -69,31 +58,6 @@ class RigidBody extends Component {
   set mass(v) {
     this.invMass = v === 0 ? 0 : 1 / v;
     this.mMass = v === 0 ? 0 : v;
-  }
-
-  addCollider(collider) {
-    const colliders = this.colliders;
-
-    if (colliders.indexOf(collider) !== -1)
-      return;
-
-    const collection = collider instanceof BoxCollider ? this.mBoxColliders : this.mCircleColliders;
-    collection.push(collider);
-    colliders.push(collider);
-    this.validateColliders();
-  }
-
-  removeCollider(collider) {
-    const colliders = this.colliders;
-    const i = colliders.indexOf(collider);
-
-    if (i === -1)
-      return;
-
-    const collection = collider instanceof BoxCollider ? this.mBoxColliders : this.mCircleColliders;
-    collection.splice(collection.indexOf(collider), 1);
-    colliders.splice(i, 1);
-    this.validateColliders();
   }
 
   applyTranslate(x, y) {
@@ -113,12 +77,12 @@ class RigidBody extends Component {
     this.prevPosition.y = this.position.y - y;
   }
 
-  update(gravity, viscosity, left, right, top, bottom) {
-    const sprite = this.sprite;
-    const colliders = this.colliders;
-    const wt = sprite.worldTransformation;
+  update(dt, sqDt, gravity, left, right, top, bottom) {
+    const gameObject = this.gameObject;
+    const colliders = gameObject.mCollidersCache;
+    const wt = gameObject.worldTransformation;
     const t = this.transform;
-    const transformChanged = t.data[0] !== wt.data[0]/* || t.b !== wt.b || t.c !== wt.c*/ || t.data[3] !== wt.data[3];
+    const transformChanged = t.data[0] !== wt.data[0] || t.data[2] !== wt.data[2]; // check scale x, y and rotation are the same (skew is forbidden)
     let colliderChanged = false;
 
     if (transformChanged) {
@@ -133,34 +97,37 @@ class RigidBody extends Component {
     }
 
     if (transformChanged || colliderChanged) {
-      let minX = Number.MAX_VALUE;
-      let minY = Number.MAX_VALUE;
-      let maxX = -Number.MAX_VALUE;
-      let maxY = -Number.MAX_VALUE;
+      if (colliders.length !== 0) {
+        let minX = Number.MAX_VALUE;
+        let minY = Number.MAX_VALUE;
+        let maxX = -Number.MAX_VALUE;
+        let maxY = -Number.MAX_VALUE;
 
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        const collider = colliders[i];
+        for (let i = 0, l = colliders.length; i < l; i++) {
+          const collider = colliders[i];
+          collider.refresh(t);
+          minX = Math.min(minX, collider.minX);
+          minY = Math.min(minY, collider.minY);
+          maxX = Math.max(maxX, collider.maxX);
+          maxY = Math.max(maxY, collider.maxY);
+        }
+
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
+      } else {
+        const collider = this.mDefaultCollider;
         collider.refresh(t);
-        minX = Math.min(minX, collider.minX);
-        minY = Math.min(minY, collider.minY);
-        maxX = Math.max(maxX, collider.maxX);
-        maxY = Math.max(maxY, collider.maxY);
+        this.minX = collider.minX;
+        this.minY = collider.minY;
+        this.maxX = collider.maxX;
+        this.maxY = collider.maxY;
       }
-
-      this.minX = minX;
-      this.minY = minY;
-      this.maxX = maxX;
-      this.maxY = maxY;
     }
 
     const position = this.position;
     const prevPosition = this.prevPosition;
-    const spritePrevPos = this.mSpritePrevPos;
-
-    if (Math.abs(wt.data[4] - spritePrevPos.x) > 0.1 || Math.abs(wt.data[5] - spritePrevPos.y) > 0.1) {
-      this.reset(); // sprite was moved without physics
-    }
-
     const x = position.x;
     const y = position.y;
 
@@ -171,8 +138,8 @@ class RigidBody extends Component {
       velocity.x = position.x - prevPosition.x;
       velocity.y = position.y - prevPosition.y;
 
-      position.x += viscosity * velocity.x * frictionAir;
-      position.y += viscosity * velocity.y * frictionAir + gravity;
+      position.x += velocity.x * frictionAir;
+      position.y += velocity.y * frictionAir + gravity * sqDt;
 
       if (this.isBoundsCheckable) {
         const worldBounds = this.worldBounds;
@@ -211,26 +178,67 @@ class RigidBody extends Component {
     }
 
     prevPosition.set(x, y);
-    spritePrevPos.copyFrom(position);
-    sprite.parent.globalToLocal(position, sprite);
+    gameObject.parent.globalToLocal(position, gameObject);
   }
 
   postUpdate() {
-    const colliders = this.colliders;
+    const colliders = this.gameObject.mCollidersCache;
     const position = this.position;
-    const impulse = this.impulse;
+    const correction = this.correction;
 
-    position.x += impulse.x;
-    position.y += impulse.y;
-    impulse.set(0, 0);
+    position.x += correction.x;
+    position.y += correction.y;
+    correction.set(0, 0);
+
+    this.mDefaultCollider.changed = false;
 
     for (let i = 0, l = colliders.length; i < l; i++) {
       colliders[i].changed = false;
     }
   }
+
+  debug() {
+    const debug = RigidBody.mDebug;
+
+    if (debug.graphics === null) {
+      debug.graphics = new Graphics();
+    }
+
+    if (debug.time !== Black.instance.mLastFrameTimeMs) {
+      debug.time = Black.instance.mLastFrameTimeMs;
+      Black.instance.stage.add(debug.graphics);
+      debug.graphics.clear();
+    }
+
+    const dpr = this.gameObject.stage.dpr;
+    const graphics = debug.graphics;
+    const boxColliders = this.mBoxColliders;
+    const circleColliders = this.mCircleColliders;
+    const position = this.position;
+    graphics.lineStyle(5 * dpr, 0x00ff00);
+
+    for (let i = 0, l = boxColliders.length; i < l; i++) {
+      const collider = boxColliders[i];
+      const points = collider.points;
+
+      for (let j = 0; j < 4; j++) {
+        const point = points[j];
+        const next = points[j + 1] || points[0];
+
+        graphics.drawLine((position.x + point.x) * dpr, (position.y + point.y) * dpr,
+          (position.x + next.x) * dpr, (position.y + next.y) * dpr);
+      }
+    }
+
+    for (let i = 0, l = circleColliders.length; i < l; i++) {
+      const collider = circleColliders[i];
+      graphics.drawCircle((position.x + collider.position.x) * dpr,
+        (position.y + collider.position.y) * dpr, collider.radius * dpr);
+    }
+  }
 }
 
-RigidBody.debugBmd = null;
-RigidBody.debugCtx = null;
-RigidBody.debugClearTime = 0;
-RigidBody.mId = 0;
+RigidBody.mDebug = {
+  graphics: null,
+  time    : 0,
+};

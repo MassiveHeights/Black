@@ -52,9 +52,9 @@ class CircleCollider extends Collider {
 
   refresh(transform) {
     const position = this.position;
-    const scale = Math.sqrt(transform.a * transform.a + transform.b * transform.b);
+    const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
     const radius = this.localRadius * scale;
-    transform.apply(this.localPosition, position);
+    transform.transformVector(this.localPosition, position);
 
     this.minX = position.x - radius;
     this.minY = position.y - radius;

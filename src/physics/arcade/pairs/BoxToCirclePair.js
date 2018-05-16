@@ -6,7 +6,7 @@ class BoxCirclePair extends Pair {
     this.mBoxHalfHeight = 0;
     this.mBoxCos = 0;
     this.mBoxSin = 0;
-    this.mCircleCenter = new Phaser.Point();
+    this.mCircleCenter = new Vector();
   }
 
   static __rotate(point, anchorX, anchorY, cos, sin) {
@@ -36,10 +36,18 @@ class BoxCirclePair extends Pair {
     let hh = this.mBoxHalfHeight;
 
     if (box.changed) {
-      boxCos = this.mBoxCos = Math.cos(boxBody.sprite.worldRotation);
-      boxSin = this.mBoxSin = Math.sin(boxBody.sprite.worldRotation);
-      hw = this.mBoxHalfWidth = box.localRect.width * boxBody.transform.a / boxCos / 2;
-      hh = this.mBoxHalfHeight = box.localRect.height * boxBody.transform.d / boxCos / 2;
+      let rotation = 0;
+      let gameObject = boxBody.gameObject;
+
+      while (gameObject) {
+        rotation += gameObject.rotation;
+        gameObject = gameObject.parent;
+      }
+
+      boxCos = this.mBoxCos = Math.cos(rotation);
+      boxSin = this.mBoxSin = Math.sin(rotation);
+      hw = this.mBoxHalfWidth = box.localRect.width * boxBody.transform.data[0] / boxCos / 2;
+      hh = this.mBoxHalfHeight = box.localRect.height * boxBody.transform.data[3] / boxCos / 2;
     }
 
     circleCenter.x = circleBody.position.x + circle.position.x;
@@ -55,8 +63,8 @@ class BoxCirclePair extends Pair {
       return this.isColliding = true;
     }
 
-    let closestX = Phaser.Math.clamp(dx, -hw, hw);
-    let closestY = Phaser.Math.clamp(dy, -hh, hh);
+    let closestX = MathEx.clamp(dx, -hw, hw);
+    let closestY = MathEx.clamp(dy, -hh, hh);
     const inside = dx === closestX && dy === closestY;
 
     if (inside) {
@@ -76,9 +84,15 @@ class BoxCirclePair extends Pair {
       return this.isColliding = false;
     }
 
-    const d = Math.sqrt(sqLength);
-    this.overlap = r - d;
-    inside ? normal.set(-normalX / d, -normalY / d) : normal.set(normalX / d, normalY / d);
+    if (sqLength === 0) {
+      this.overlap = r;
+      inside ? normal.set(-normalX, -normalY) : normal.set(normalX, normalY);
+    } else {
+      const d = Math.sqrt(sqLength);
+      this.overlap = r - d;
+      inside ? normal.set(-normalX / d, -normalY / d) : normal.set(normalX / d, normalY / d);
+    }
+
     BoxCirclePair.__rotate(normal, 0, 0, boxCos, boxSin);
 
     return this.isColliding = true;

@@ -1,18 +1,14 @@
 class Arcade extends System {
   constructor() {
     super();
-    
+
     this.mBodies = []; // All bodies that are on stage
     this.mChanged = true; // Indicates necessity of pairs rebuild
     this.mPairs = []; // All colliders pairs to check collisions within
     this.phases = [new NarrowPhase()]; // Phases for search collision within pairs
-    //this.bounds = Phaser.GAMES[0].world.bounds; // World bounds to collide with bodies
-    this.gravity = 1;
-    this.viscosity = 1;
-    this.iterations = 1;
+    this.bounds = null; // World bounds to collide with bodies
+    this.gravity = 1000;
     this.mPairsHash = {};
-
-    this.bounds = new Rectangle(0, 0, 1000, 1000);
   }
 
   collideCallback(colliderA, colliderB, cb, ctx, ...args) {
@@ -26,36 +22,83 @@ class Arcade extends System {
     cb.call(ctx, pair.normal.x * sign, pair.normal.y * sign, pair.overlap, ...args);
   }
 
-  onComponentAdded(sprite, body) {
-    if (!(body instanceof RigidBody) || this.mBodies.indexOf(body) !== -1)
-      return;
+  onChildrenAdded(gameObject){
+    GameObject.forEach(gameObject, object => {
+      const body = object.getComponent(RigidBody);
 
-    body.sprite = sprite;
-    this.mBodies.push(body);
-    body.onAddedToStage();
-    this.mChanged = true; // todo also when body collider added, removed
+      if (body !== null) {
+        this.__addBody(body);
+      }
+    });
   }
 
-  remove(body) {
-    const index = this.mBodies.indexOf(body);
-    if (index === -1)
-     return;
+  onChildrenRemoved(gameObject) {
+    GameObject.forEach(gameObject, object => {
+      const body = object.getComponent(RigidBody);
 
-    this.mBodies.splice(index, 1);
+      if (body !== null) {
+        this.__removeBody(body);
+      }
+    });
+  }
+
+  onComponentAdded(child, component) {
+    if (!child.stage) return;
+
+    if (component instanceof RigidBody) {
+      this.__addBody(component);
+    } else if (component instanceof Collider) {
+      this.__onColliderAddedOrRemoved(child, component);
+    }
+  }
+
+  onComponentRemoved(child, component) {
+    if (!child.stage) return;
+
+    if (component instanceof RigidBody) {
+      this.__removeBody(component);
+    } else if (component instanceof Collider) {
+      this.__onColliderAddedOrRemoved(child, component);
+    }
+  }
+
+  __onColliderAddedOrRemoved(child, collider) {
+    const bodies = this.mBodies;
+    let body = null;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      if (bodies[i].gameObject === child) {
+        body = bodies[i];
+        break;
+      }
+    }
+
+    if (body !== null) {
+      body.validateColliders();
+      this.mChanged = true;
+    }
+  }
+
+  __addBody(body) {
+    body.reset();
+    body.validateColliders();
+    this.mBodies.push(body);
     this.mChanged = true;
-    body.onRemovedFromStage();
+  }
+
+  __removeBody(body) {
+    this.mBodies.splice(this.mBodies.indexOf(body), 1);
+    this.mChanged = true;
   }
 
   onFixedUpdate(dt) {
+    this.bounds = this.bounds || Black.stage.bounds.scale(1 / Black.stage.dpr, 1 / Black.stage.dpr);
     this.mChanged && this.__rebuildPairs();
-    this.__update();
-
-    for (let i = 0, l = this.iterations; i < l; i++) {
-      this.__test();
-      this.__solve();
-      this.__postUpdate();
-      this.mChanged = false;
-    }
+    this.__update(dt);
+    this.__test();
+    this.__solve();
+    this.__postUpdate();
+    this.mChanged = false;
   }
 
   // Recreates pairs array
@@ -108,19 +151,19 @@ class Arcade extends System {
     }
   }
 
-  // Updates each sprite position according to its collider
-  __update() {
+  // Updates each game object position according to its collider
+  __update(dt) {
     const gravity = this.gravity;
-    const viscosity = this.viscosity;
     const bodies = this.mBodies;
     const bounds = this.bounds;
     const left = bounds.x;
     const right = left + bounds.width;
     const top = bounds.y;
     const bottom = top + bounds.height;
+    const sqDt = dt * dt;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].update(gravity, viscosity, left, right, top, bottom);
+      bodies[i].update(dt, sqDt, gravity, left, right, top, bottom);
     }
   }
 
