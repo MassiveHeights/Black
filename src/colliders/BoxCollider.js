@@ -40,7 +40,7 @@ class BoxCollider extends Collider {
     this.points = points;
     this.normals = normals;
     this.center = new Vector();
-    this.changed = true;
+    this.mChanged = true;
 
     this.minX = 0;
     this.minY = 0;
@@ -52,7 +52,7 @@ class BoxCollider extends Collider {
 
   set(x, y, width, height) {
     this.localRect.set(x, y, width, height);
-    this.changed = true;
+    this.mChanged = true;
 
     const localPoints = this.localPoints;
     localPoints[0].set(x, y);
@@ -78,7 +78,6 @@ class BoxCollider extends Collider {
     this.minY = Math.min(points[0].y, points[1].y, points[2].y, points[3].y);
     this.maxX = Math.max(points[0].x, points[1].x, points[2].x, points[3].x);
     this.maxY = Math.max(points[0].y, points[1].y, points[2].y, points[3].y);
-    this.changed = true;
   }
 
   /**

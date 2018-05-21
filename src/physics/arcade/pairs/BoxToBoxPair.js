@@ -1,4 +1,4 @@
-class BoxesPair extends Pair {
+class BoxToBoxPair extends Pair {
   constructor() {
     super();
 
@@ -37,11 +37,11 @@ class BoxesPair extends Pair {
     const bodyB = this.bodyB;
     const a = this.a;
     const b = this.b;
-    const offsetX = bodyB.position.x - bodyA.position.x;
-    const offsetY = bodyB.position.y - bodyA.position.y;
+    const offsetX = bodyB.mPosition.x - bodyA.mPosition.x;
+    const offsetY = bodyB.mPosition.y - bodyA.mPosition.y;
 
     this.overlap = Number.MAX_VALUE;
-    (a.changed || b.changed) && this.refreshProjectionsRanges();
+    (a.mChanged || b.mChanged) && this.refreshProjectionsRanges();
 
     for (let i = 0; i < 4; i++) {
       const projection = projections[i];
@@ -52,7 +52,7 @@ class BoxesPair extends Pair {
       const maxB = projection.rangeB.max + projection.offset;
 
       if (minA > maxB || minB > maxA) {
-        return this.isColliding = false;
+        return this.mInCollision = false;
       }
     }
 
@@ -82,9 +82,9 @@ class BoxesPair extends Pair {
       }
     }
 
-    return this.isColliding = true;
+    return this.mInCollision = true;
   }
 }
 
-BoxesPair.pool = new ObjectPool(BoxesPair);
-BoxesPair.pool.capacity = 1000;
+BoxToBoxPair.pool = new ObjectPool(BoxToBoxPair);
+BoxToBoxPair.pool.capacity = 1000;

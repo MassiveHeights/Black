@@ -34,7 +34,7 @@ class CircleCollider extends Collider {
 
     this.position = new Vector();
     this.radius = 0;
-    this.changed = false;
+    this.mChanged = false;
 
     this.minX = 0;
     this.minY = 0;
@@ -47,7 +47,7 @@ class CircleCollider extends Collider {
   set(x, y, radius) {
     this.localPosition.set(x, y);
     this.localRadius = radius;
-    this.changed = true;
+    this.mChanged = true;
   }
 
   refresh(transform) {
@@ -61,7 +61,6 @@ class CircleCollider extends Collider {
     this.maxX = position.x + radius;
     this.maxY = position.y + radius;
     this.radius = radius;
-    this.changed = true;
   }
 
   /**

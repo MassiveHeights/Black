@@ -1,4 +1,4 @@
-class BoxCirclePair extends Pair {
+class BoxToCirclePair extends Pair {
   constructor() {
     super();
 
@@ -27,15 +27,15 @@ class BoxCirclePair extends Pair {
     const circle = this.b;
 
     const circleCenter = this.mCircleCenter;
-    const boxCenterX = boxBody.position.x + box.center.x;
-    const boxCenterY = boxBody.position.y + box.center.y;
+    const boxCenterX = boxBody.mPosition.x + box.center.x;
+    const boxCenterY = boxBody.mPosition.y + box.center.y;
 
     let boxCos = this.mBoxCos;
     let boxSin = this.mBoxSin;
     let hw = this.mBoxHalfWidth;
     let hh = this.mBoxHalfHeight;
 
-    if (box.changed) {
+    if (box.mChanged) {
       let rotation = 0;
       let gameObject = boxBody.gameObject;
 
@@ -46,12 +46,12 @@ class BoxCirclePair extends Pair {
 
       boxCos = this.mBoxCos = Math.cos(rotation);
       boxSin = this.mBoxSin = Math.sin(rotation);
-      hw = this.mBoxHalfWidth = box.localRect.width * boxBody.transform.data[0] / boxCos / 2;
-      hh = this.mBoxHalfHeight = box.localRect.height * boxBody.transform.data[3] / boxCos / 2;
+      hw = this.mBoxHalfWidth = box.localRect.width * boxBody.mTransform.data[0] / boxCos / 2;
+      hh = this.mBoxHalfHeight = box.localRect.height * boxBody.mTransform.data[3] / boxCos / 2;
     }
 
-    circleCenter.x = circleBody.position.x + circle.position.x;
-    circleCenter.y = circleBody.position.y + circle.position.y;
+    circleCenter.x = circleBody.mPosition.x + circle.position.x;
+    circleCenter.y = circleBody.mPosition.y + circle.position.y;
     BoxCirclePair.__rotate(circleCenter, boxCenterX, boxCenterY, boxCos, -boxSin);
 
     const dx = circleCenter.x - boxCenterX;
@@ -60,7 +60,7 @@ class BoxCirclePair extends Pair {
     if (dx === 0 && dy === 0) {
       this.overlap = circle.radius + hw;
       normal.set(-1, 0);
-      return this.isColliding = true;
+      return this.mInCollision = true;
     }
 
     let closestX = MathEx.clamp(dx, -hw, hw);
@@ -81,7 +81,7 @@ class BoxCirclePair extends Pair {
     const r = circle.radius;
 
     if (sqLength > r * r && !inside) {
-      return this.isColliding = false;
+      return this.mInCollision = false;
     }
 
     if (sqLength === 0) {
@@ -95,9 +95,9 @@ class BoxCirclePair extends Pair {
 
     BoxCirclePair.__rotate(normal, 0, 0, boxCos, boxSin);
 
-    return this.isColliding = true;
+    return this.mInCollision = true;
   }
 }
 
-BoxCirclePair.pool = new ObjectPool(BoxCirclePair);
-BoxCirclePair.pool.capacity = 1000;
+BoxToCirclePair.pool = new ObjectPool(BoxToCirclePair);
+BoxToCirclePair.pool.capacity = 1000;

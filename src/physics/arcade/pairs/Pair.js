@@ -5,7 +5,14 @@ class Pair {
     this.bodyA = null;
     this.bodyB = null;
 
-    this.isColliding = true;
+    this.mInCollision = false;
+    this.mInIsland = false;
+
+    this.mNormalImpulse = 0;
+    this.mTangentImpulse = 0;
+    this.mPositionImpulse = 0;
+    this.mSeparation = 0;
+
     this.normal = new Vector();
     this.overlap = 0;
   }
@@ -20,51 +27,127 @@ class Pair {
   }
 
   test() {
-    return this.isColliding;
+    return this.mInCollision;
   }
 
-  static integrate(impulse, dx, dy) {
-    const dist = impulse.x * impulse.x + impulse.y * impulse.y;
-    const delta = dist / (dx * dx + dy * dy + dist) - 0.5;
+  preSolve() {
+    const normalX = this.normal.x;
+    const normalY = this.normal.y;
+    const tangentX = -normalY;
+    const tangentY = +normalX;
+    const velocityA = this.bodyA.mVelocity;
+    const velocityB = this.bodyB.mVelocity;
+    const invMassA = this.bodyA.mInvMass;
+    const invMassB = this.bodyB.mInvMass;
 
-    if (delta) {
-      dx *= delta;
-      dy *= delta;
+    const impulseX = this.mNormalImpulse * normalX + this.mTangentImpulse * tangentX;
+    const impulseY = this.mNormalImpulse * normalY + this.mTangentImpulse * tangentY;
+
+    velocityA.x -= impulseX * invMassA;
+    velocityA.y -= impulseY * invMassA;
+
+    velocityB.x += impulseX * invMassB;
+    velocityB.y += impulseY * invMassB;
+
+    this.mPositionImpulse = 0;
+    this.mVelocityBias = 0;
+    this.mSeparation = -this.overlap;
+
+    if (!this.mInCollision) {
+      this.mVelocityBias = 60 * this.overlap;
     }
 
-    impulse.x += dx;
-    impulse.y += dy;
+    const relVelX = velocityB.x - velocityA.x;
+    const relVelY = velocityB.y - velocityA.y;
+    const relVel = relVelX * normalX + relVelY * normalY;
+
+    if (relVel < -30) {
+      this.mVelocityBias -= Math.min(this.bodyA.mBounce, this.bodyB.mBounce) * relVel;
+    }
   }
 
-  solve() {
-    const bodyA = this.bodyA;
-    const bodyB = this.bodyB;
-    const normal = this.normal;
-    const overlap = this.overlap;
-    const posA = bodyA.position;
-    const posB = bodyB.position;
-    const prevPosA = bodyA.prevPosition;
-    const prevPosB = bodyB.prevPosition;
-    const overlapX = normal.x * overlap;
-    const overlapY = normal.y * overlap;
-    const relVelX = (prevPosB.x - posB.x) - (prevPosA.x - posA.x);
-    const relVelY = (prevPosB.y - posB.y) - (prevPosA.y - posA.y);
-    const tangentX = -normal.y;
-    const tangentY = +normal.x;
-    const tangentVel = relVelX * tangentX + relVelY * tangentY;
-    const tangentVelX = tangentX * tangentVel;
-    const tangentVelY = tangentY * tangentVel;
-    const totalMass = bodyA.mass + bodyB.mass;
-    const massA = bodyA.mass / totalMass;
-    const massB = bodyB.mass / totalMass;
-    const friction = Math.min(bodyA.friction, bodyB.friction);
+  solveVelocity() {
+    const normalX = this.normal.x;
+    const normalY = this.normal.y;
+    const tangentX = -normalY;
+    const tangentY = +normalX;
+    const velocityA = this.bodyA.mVelocity;
+    const velocityB = this.bodyB.mVelocity;
+    const invMassA = this.bodyA.mInvMass;
+    const invMassB = this.bodyB.mInvMass;
+    const k = 1 / (invMassA + invMassB);
 
-    !bodyA.isStatic && Pair.integrate(bodyA.correction,
-      overlapX * massA + tangentVelX * friction * massA,
-      overlapY * massA + tangentVelY * friction * massA);
+    {
+      const relVelX = velocityB.x - velocityA.x;
+      const relVelY = velocityB.y - velocityA.y;
 
-    !bodyB.isStatic && Pair.integrate(bodyB.correction,
-      -(overlapX * massB + tangentVelX * friction * massB),
-      -(overlapY * massB + tangentVelY * friction * massB));
+      const relVel = relVelX * normalX + relVelY * normalY;
+      let lambda = -k * (relVel - this.mVelocityBias);
+
+      const newImpulse = Math.max(this.mNormalImpulse + lambda, 0);
+      lambda = newImpulse - this.mNormalImpulse;
+
+      const impulseX = lambda * normalX;
+      const impulseY = lambda * normalY;
+
+      velocityA.x -= impulseX * invMassA;
+      velocityA.y -= impulseY * invMassA;
+
+      velocityB.x += impulseX * invMassB;
+      velocityB.y += impulseY * invMassB;
+
+      this.mNormalImpulse = newImpulse;
+    }
+
+    const relVelX = velocityB.x - velocityA.x;
+    const relVelY = velocityB.y - velocityA.y;
+
+    const relVel = relVelX * tangentX + relVelY * tangentY;
+    let lambda = -k * relVel;
+
+    const maxFriction = Math.min(this.bodyA.friction, this.bodyB.friction) * this.mNormalImpulse;
+    const newImpulse = MathEx.clamp(this.mTangentImpulse + lambda, -maxFriction, maxFriction);
+    lambda = newImpulse - this.mTangentImpulse;
+
+    const impulseX = lambda * tangentX;
+    const impulseY = lambda * tangentY;
+
+    velocityA.x -= impulseX * invMassA;
+    velocityA.y -= impulseY * invMassA;
+
+    velocityB.x += impulseX * invMassB;
+    velocityB.y += impulseY * invMassB;
+
+    this.mTangentImpulse = newImpulse;
+  }
+
+  // todo change overlap for each iteration
+  solvePosition() {
+    const invMassA = this.bodyA.mInvMass;
+    const invMassB = this.bodyB.mInvMass;
+    const positionA = this.bodyA.mPosition;
+    const positionB = this.bodyB.mPosition;
+    const separation = this.mSeparation;
+    const correction = Pair.baumgarte * MathEx.clamp(separation + Pair.slop, -Pair.maxCorrection, 0);
+    let normalImpulse = -correction / (invMassA + invMassB);
+
+    const impulsePrev = this.mPositionImpulse;
+    this.mPositionImpulse = Math.max(impulsePrev + normalImpulse, 0);
+    normalImpulse = this.mPositionImpulse - impulsePrev;
+
+    const impulseX = normalImpulse * this.normal.x;
+    const impulseY = normalImpulse * this.normal.y;
+
+    positionA.x -= impulseX * invMassA;
+    positionA.y -= impulseY * invMassA;
+
+    positionB.x += impulseX * invMassB;
+    positionB.y += impulseY * invMassB;
+
+    return separation;
   }
 }
+
+Pair.slop = 0.15;
+Pair.baumgarte = 0.2;
+Pair.maxCorrection = 5;

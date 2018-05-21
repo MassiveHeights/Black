@@ -1,3 +1,3 @@
 class Phase {
-  update(pairs, changed) { }
+  test(pairs) { }
 }
