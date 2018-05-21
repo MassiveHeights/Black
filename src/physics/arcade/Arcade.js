@@ -4,9 +4,11 @@ class Arcade extends System {
 
     this.mBodies = []; // All bodies that are on stage
     this.mPairs = []; // All colliders pairs to check collisions within
-    this.phases = [new NarrowPhase()]; // Phases for search collision within pairs
+    this.mContacts = [];  // All pairs which are in collision
+    this.mBroadPhase = new Phase();
+    this.mNarrowPhase = new NarrowPhase();
     this.gravity = new Vector(0, 2000);
-    this.iterations = 1;
+    this.iterations = 2;
     this.mPairsHash = {};
 
     this.mIslandBodies = [];
@@ -100,6 +102,10 @@ class Arcade extends System {
     if (body !== null) {
       body.mColliderAddedOrRemoved = true;
       this.__addPairs(collider, body);
+
+      if (child.mCollidersCache.length === 1) {
+        this.__removePairs(body.mCollider);
+      }
     }
   }
 
@@ -109,6 +115,10 @@ class Arcade extends System {
     if (body !== null) {
       body.mColliderAddedOrRemoved = true;
       this.__removePairs(collider);
+
+      if (child.mCollidersCache.length === 0) {
+        this.__addCollider(child, body.mCollider);
+      }
     }
   }
 
@@ -185,94 +195,83 @@ class Arcade extends System {
   }
 
   onFixedUpdate(dt) {
+    const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
-    const phases = this.phases;
-    const islandBodies = this.mIslandBodies;
-    const islandContacts = this.mIslandContacts;
+    contacts.length = 0;
 
+    // update sprite position
+    // refresh body colliders if scale, rotation changed
+    // todo: refresh default collider if anchor or frame changed
+    // todo: change body position if sprite was moved without physics
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].update();
+    }
+
+    // reset each pair to defaults
+    // so phases will know, if pair in collision is true, then it needs more precise check
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
       pair.mInCollision = true;
       pair.mInIsland = false;
     }
 
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].update();
-    }
-
-    for (let i = 0, l = phases.length; i < l; i++) {
-      phases[i].test(pairs);
-    }
-
-    for (let i = 0, iLen = bodies.length; i < iLen; i++) {
-      const body = bodies[i];
-      const colliders = body.gameObject.mCollidersCache;
-      body.mInIsland = false;
-      body.mContacts.length = 0;
-      body.mColliderAddedOrRemoved = false;
-      body.mCollider.mChanged = false;
-
-      for (let j = 0, jLen = colliders.length; j < jLen; j++) {
-        colliders[j].mChanged = false;
-      }
-    }
+    // update pairs in collision flag, overlap, normal properties
+    this.mBroadPhase.test(pairs);
+    this.mNarrowPhase.test(pairs);
 
     for (let i = 0, l = pairs.length; i < l; i++) {
-      const pair = pairs[i];
-
-      if (pair.mInCollision) {
-        pair.bodyA.mContacts.push(pair);
-        pair.bodyB.mContacts.push(pair);
-      } else {
-        pair.mNormalImpulse = 0;
-        pair.mTangentImpulse = 0;
+      if (pairs[i].mInCollision) {
+        contacts.push(pairs[i]);
       }
     }
 
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      const body = bodies[i];
+    this.__solve(dt);
 
-      if (body.mInIsland || body.mIsSleeping || body.mIsStatic) continue;
-
-      islandBodies.length = 0;
-      islandContacts.length = 0;
-
-      this.__fillIsland(body);
-
-      this.__solve(dt);
-    }
-  }
-
-  __fillIsland(body) {
-    this.mIslandBodies.push(body);
-    body.mInIsland = true;
-
-    if (body.mIsStatic) return;
-
-    const contacts = body.mContacts;
-
-    for (let i = 0, l = contacts.length; i < l; i++) {
-      const contact = contacts[i];
-
-      if (contact.mInIsland) continue;
-
-      this.mIslandContacts.push(contact);
-      contact.mInIsland = true;
-
-      const other = body === contact.bodyA ? contact.bodyB : contact.bodyA;
-
-      if (other.mInIsland) continue;
-
-      this.__fillIsland(other);
-    }
+    // const islandBodies = this.mIslandBodies;
+    // const islandContacts = this.mIslandContacts;
+    //
+    // for (let i = 0, iLen = bodies.length; i < iLen; i++) {
+    //   const body = bodies[i];
+    //   const colliders = body.gameObject.mCollidersCache;
+    //   body.mInIsland = false;
+    //   body.mContacts.length = 0;
+    //   body.mColliderAddedOrRemoved = false;
+    //   body.mCollider.mChanged = false;
+    //
+    //   for (let j = 0, jLen = colliders.length; j < jLen; j++) {
+    //     colliders[j].mChanged = false;
+    //   }
+    // }
+    //
+    // for (let i = 0, l = pairs.length; i < l; i++) {
+    //   const pair = pairs[i];
+    //
+    //   if (pair.mInCollision) {
+    //     pair.bodyA.mContacts.push(pair);
+    //     pair.bodyB.mContacts.push(pair);
+    //   }
+    // }
+    //
+    // for (let i = 0, l = bodies.length; i < l; i++) {
+    //   const body = bodies[i];
+    //
+    //   if (body.mInIsland || body.mIsSleeping || body.mIsStatic) continue;
+    //
+    //   islandBodies.length = 0;
+    //   islandContacts.length = 0;
+    //
+    //   this.__fillIsland(body);
+    //
+    //   this.__solve(dt);
+    // }
   }
 
   __solve(dt) {
-    const contacts = this.mIslandContacts;
-    const bodies = this.mIslandBodies;
-    const gravity = this.gravity;
     const iterations = this.iterations;
+    const contacts = this.mContacts;
+    const gravity = this.gravity;
+    const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -311,12 +310,36 @@ class Arcade extends System {
       position.y += velocity.y * dt;
     }
 
-    for (let i = 0, minSeparation = 0; i < iterations; i++) {
-      for (let j = 0, l = contacts.length; j < l; j++) {
-        minSeparation = Math.min(minSeparation, contacts[j].solvePosition());
-      }
+    // for (let i = 0, maxOverlap = 0; i < iterations; i++) {
+    //   for (let j = 0, l = contacts.length; j < l; j++) {
+    //     maxOverlap = Math.max(maxOverlap, contacts[j].solvePosition());
+    //   }
+    //
+    //   if (maxOverlap <= Pair.slop) break;
+    // }
+  }
 
-      if (minSeparation >= -Pair.slop) break;
+  __fillIsland(body) {
+    this.mIslandBodies.push(body);
+    body.mInIsland = true;
+
+    if (body.mIsStatic) return;
+
+    const contacts = body.mContacts;
+
+    for (let i = 0, l = contacts.length; i < l; i++) {
+      const contact = contacts[i];
+
+      if (contact.mInIsland) continue;
+
+      this.mIslandContacts.push(contact);
+      contact.mInIsland = true;
+
+      const other = body === contact.bodyA ? contact.bodyB : contact.bodyA;
+
+      if (other.mInIsland) continue;
+
+      this.__fillIsland(other);
     }
   }
 }

@@ -11,7 +11,10 @@ class Pair {
     this.mNormalImpulse = 0;
     this.mTangentImpulse = 0;
     this.mPositionImpulse = 0;
-    this.mSeparation = 0;
+    this.mFriction = 0;
+    this.mBias = 0;
+    this.mMass = 0;
+    this.mOffset = new Vector();
 
     this.normal = new Vector();
     this.overlap = 0;
@@ -35,13 +38,19 @@ class Pair {
     const normalY = this.normal.y;
     const tangentX = -normalY;
     const tangentY = +normalX;
+    const positionA = this.bodyA.mPosition;
+    const positionB = this.bodyB.mPosition;
     const velocityA = this.bodyA.mVelocity;
     const velocityB = this.bodyB.mVelocity;
     const invMassA = this.bodyA.mInvMass;
     const invMassB = this.bodyB.mInvMass;
+    const offset = this.mOffset;
 
     const impulseX = this.mNormalImpulse * normalX + this.mTangentImpulse * tangentX;
     const impulseY = this.mNormalImpulse * normalY + this.mTangentImpulse * tangentY;
+
+    offset.x = positionB.x - positionA.x;
+    offset.y = positionB.y - positionA.y;
 
     velocityA.x -= impulseX * invMassA;
     velocityA.y -= impulseY * invMassA;
@@ -49,21 +58,14 @@ class Pair {
     velocityB.x += impulseX * invMassB;
     velocityB.y += impulseY * invMassB;
 
-    this.mPositionImpulse = 0;
-    this.mVelocityBias = 0;
-    this.mSeparation = -this.overlap;
-
-    if (!this.mInCollision) {
-      this.mVelocityBias = 60 * this.overlap;
-    }
-
     const relVelX = velocityB.x - velocityA.x;
     const relVelY = velocityB.y - velocityA.y;
     const relVel = relVelX * normalX + relVelY * normalY;
 
-    if (relVel < -30) {
-      this.mVelocityBias -= Math.min(this.bodyA.mBounce, this.bodyB.mBounce) * relVel;
-    }
+    this.mBias = relVel < -30 ? -Math.max(this.bodyA.mBounce, this.bodyB.mBounce) * relVel : 0;
+    this.mMass = 1 / (invMassA + invMassB);
+    this.mFriction = Math.min(this.bodyA.mFriction, this.bodyB.mFriction);
+    this.mPositionImpulse = 0;
   }
 
   solveVelocity() {
@@ -75,68 +77,71 @@ class Pair {
     const velocityB = this.bodyB.mVelocity;
     const invMassA = this.bodyA.mInvMass;
     const invMassB = this.bodyB.mInvMass;
-    const k = 1 / (invMassA + invMassB);
 
     {
       const relVelX = velocityB.x - velocityA.x;
       const relVelY = velocityB.y - velocityA.y;
-
       const relVel = relVelX * normalX + relVelY * normalY;
-      let lambda = -k * (relVel - this.mVelocityBias);
+      let impulse = -(relVel - this.mBias) * this.mMass;
+      const newImpulse = Math.max(this.mNormalImpulse + impulse, 0);
+      impulse = newImpulse - this.mNormalImpulse;
+      this.mNormalImpulse = newImpulse;
 
-      const newImpulse = Math.max(this.mNormalImpulse + lambda, 0);
-      lambda = newImpulse - this.mNormalImpulse;
-
-      const impulseX = lambda * normalX;
-      const impulseY = lambda * normalY;
+      const impulseX = impulse * normalX;
+      const impulseY = impulse * normalY;
 
       velocityA.x -= impulseX * invMassA;
       velocityA.y -= impulseY * invMassA;
 
       velocityB.x += impulseX * invMassB;
       velocityB.y += impulseY * invMassB;
-
-      this.mNormalImpulse = newImpulse;
     }
 
-    const relVelX = velocityB.x - velocityA.x;
-    const relVelY = velocityB.y - velocityA.y;
+    {
+      const relVelX = velocityB.x - velocityA.x;
+      const relVelY = velocityB.y - velocityA.y;
+      const relVel = relVelX * tangentX + relVelY * tangentY;
+      let impulse = -relVel * this.mMass;
+      const maxFriction = this.mFriction * this.mNormalImpulse;
+      const newImpulse = MathEx.clamp(this.mTangentImpulse + impulse, -maxFriction, maxFriction);
+      impulse = newImpulse - this.mTangentImpulse;
+      this.mTangentImpulse = newImpulse;
 
-    const relVel = relVelX * tangentX + relVelY * tangentY;
-    let lambda = -k * relVel;
+      const impulseX = impulse * tangentX;
+      const impulseY = impulse * tangentY;
 
-    const maxFriction = Math.min(this.bodyA.friction, this.bodyB.friction) * this.mNormalImpulse;
-    const newImpulse = MathEx.clamp(this.mTangentImpulse + lambda, -maxFriction, maxFriction);
-    lambda = newImpulse - this.mTangentImpulse;
+      velocityA.x -= impulseX * invMassA;
+      velocityA.y -= impulseY * invMassA;
 
-    const impulseX = lambda * tangentX;
-    const impulseY = lambda * tangentY;
-
-    velocityA.x -= impulseX * invMassA;
-    velocityA.y -= impulseY * invMassA;
-
-    velocityB.x += impulseX * invMassB;
-    velocityB.y += impulseY * invMassB;
-
-    this.mTangentImpulse = newImpulse;
+      velocityB.x += impulseX * invMassB;
+      velocityB.y += impulseY * invMassB;
+    }
   }
 
-  // todo change overlap for each iteration
   solvePosition() {
+    const normalX = this.normal.x;
+    const normalY = this.normal.y;
     const invMassA = this.bodyA.mInvMass;
     const invMassB = this.bodyB.mInvMass;
     const positionA = this.bodyA.mPosition;
     const positionB = this.bodyB.mPosition;
-    const separation = this.mSeparation;
-    const correction = Pair.baumgarte * MathEx.clamp(separation + Pair.slop, -Pair.maxCorrection, 0);
-    let normalImpulse = -correction / (invMassA + invMassB);
+    const offset = this.mOffset;
 
+    const dx = offset.x - positionB.x + positionA.x;
+    const dy = offset.y - positionB.y + positionA.y;
+
+    const overlap = this.overlap + (dx * normalX + dy * normalY);
+    const correction = (overlap - Pair.slop) * Pair.baumgarte;
+
+    if (correction <= 0) return;
+
+    let normalImpulse = correction * this.mMass;
     const impulsePrev = this.mPositionImpulse;
     this.mPositionImpulse = Math.max(impulsePrev + normalImpulse, 0);
     normalImpulse = this.mPositionImpulse - impulsePrev;
 
-    const impulseX = normalImpulse * this.normal.x;
-    const impulseY = normalImpulse * this.normal.y;
+    const impulseX = normalImpulse * normalX;
+    const impulseY = normalImpulse * normalY;
 
     positionA.x -= impulseX * invMassA;
     positionA.y -= impulseY * invMassA;
@@ -144,10 +149,9 @@ class Pair {
     positionB.x += impulseX * invMassB;
     positionB.y += impulseY * invMassB;
 
-    return separation;
+    return overlap;
   }
 }
 
 Pair.slop = 0.15;
 Pair.baumgarte = 0.2;
-Pair.maxCorrection = 5;

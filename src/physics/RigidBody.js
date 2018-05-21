@@ -23,7 +23,7 @@ class RigidBody extends Component {
 
     this.mFrictionAir = 0.01;
     this.mFriction = 0.1;
-    this.mBounce = 0.1;
+    this.mBounce = 0.2;
 
     this.mass = 1;
   }
