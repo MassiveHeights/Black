@@ -2,10 +2,7 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    this.mBoxColliders = [];
-    this.mCircleColliders = [];
     this.mCollider = new BoxCollider(0, 0, 0, 0);
-
     this.mContacts = [];
 
     this.mInIsland = false;
@@ -102,43 +99,17 @@ class RigidBody extends Component {
   }
 
   debug() {
-    const debug = RigidBody.mDebug;
-
-    if (debug.graphics === null) {
-      debug.graphics = new Graphics();
-    }
-
-    if (debug.time !== Black.instance.mLastFrameTimeMs) {
-      debug.time = Black.instance.mLastFrameTimeMs;
-      Black.instance.stage.add(debug.graphics);
-      debug.graphics.clear();
-    }
-
-    const dpr = this.gameObject.stage.dpr;
-    const graphics = debug.graphics;
-    const boxColliders = this.mBoxColliders;
-    const circleColliders = this.mCircleColliders;
-    const position = this.position;
-    graphics.lineStyle(5 * dpr, 0x00ff00);
-
-    for (let i = 0, l = boxColliders.length; i < l; i++) {
-      const collider = boxColliders[i];
-      const points = collider.points;
-
-      for (let j = 0; j < 4; j++) {
-        const point = points[j];
-        const next = points[j + 1] || points[0];
-
-        graphics.drawLine((position.x + point.x) * dpr, (position.y + point.y) * dpr,
-          (position.x + next.x) * dpr, (position.y + next.y) * dpr);
-      }
-    }
-
-    for (let i = 0, l = circleColliders.length; i < l; i++) {
-      const collider = circleColliders[i];
-      graphics.drawCircle((position.x + collider.position.x) * dpr,
-        (position.y + collider.position.y) * dpr, collider.radius * dpr);
-    }
+    // const debug = RigidBody.mDebug;
+    //
+    // if (debug.graphics === null) {
+    //   debug.graphics = new Graphics();
+    // }
+    //
+    // if (debug.time !== Black.instance.mLastFrameTimeMs) {
+    //   debug.time = Black.instance.mLastFrameTimeMs;
+    //   Black.instance.stage.add(debug.graphics);
+    //   debug.graphics.clear();
+    // }
   }
 }
 

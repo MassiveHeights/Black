@@ -62,7 +62,7 @@ class Pair {
     const relVelY = velocityB.y - velocityA.y;
     const relVel = relVelX * normalX + relVelY * normalY;
 
-    this.mBias = relVel < -30 ? -Math.max(this.bodyA.mBounce, this.bodyB.mBounce) * relVel : 0;
+    this.mBias = -Math.max(this.bodyA.mBounce, this.bodyB.mBounce) * relVel;
     this.mMass = 1 / (invMassA + invMassB);
     this.mFriction = Math.min(this.bodyA.mFriction, this.bodyB.mFriction);
     this.mPositionImpulse = 0;
@@ -148,8 +148,6 @@ class Pair {
 
     positionB.x += impulseX * invMassB;
     positionB.y += impulseY * invMassB;
-
-    return overlap;
   }
 }
 

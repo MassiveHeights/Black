@@ -213,7 +213,6 @@ class Arcade extends System {
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
       pair.mInCollision = true;
-      pair.mInIsland = false;
     }
 
     // update pairs in collision flag, overlap, normal properties
@@ -228,6 +227,8 @@ class Arcade extends System {
 
     this.__solve(dt);
 
+    // if (this.sleepEnabled)
+    // pair.mInIsland = false;
     // const islandBodies = this.mIslandBodies;
     // const islandContacts = this.mIslandContacts;
     //
@@ -292,7 +293,7 @@ class Arcade extends System {
     }
 
     for (let i = 0; i < iterations; i++) {
-      for (let j = 0, l = contacts.length; i < l; i++) {
+      for (let j = 0, l = contacts.length; j < l; j++) {
         contacts[j].solveVelocity();
       }
     }
@@ -310,36 +311,34 @@ class Arcade extends System {
       position.y += velocity.y * dt;
     }
 
-    // for (let i = 0, maxOverlap = 0; i < iterations; i++) {
-    //   for (let j = 0, l = contacts.length; j < l; j++) {
-    //     maxOverlap = Math.max(maxOverlap, contacts[j].solvePosition());
-    //   }
-    //
-    //   if (maxOverlap <= Pair.slop) break;
-    // }
-  }
-
-  __fillIsland(body) {
-    this.mIslandBodies.push(body);
-    body.mInIsland = true;
-
-    if (body.mIsStatic) return;
-
-    const contacts = body.mContacts;
-
-    for (let i = 0, l = contacts.length; i < l; i++) {
-      const contact = contacts[i];
-
-      if (contact.mInIsland) continue;
-
-      this.mIslandContacts.push(contact);
-      contact.mInIsland = true;
-
-      const other = body === contact.bodyA ? contact.bodyB : contact.bodyA;
-
-      if (other.mInIsland) continue;
-
-      this.__fillIsland(other);
+    for (let i = 0; i < iterations; i++) {
+      for (let j = 0, l = contacts.length; j < l; j++) {
+        contacts[j].solvePosition();
+      }
     }
   }
+
+  // __fillIsland(body) {
+  //   this.mIslandBodies.push(body);
+  //   body.mInIsland = true;
+  //
+  //   if (body.mIsStatic) return;
+  //
+  //   const contacts = body.mContacts;
+  //
+  //   for (let i = 0, l = contacts.length; i < l; i++) {
+  //     const contact = contacts[i];
+  //
+  //     if (contact.mInIsland) continue;
+  //
+  //     this.mIslandContacts.push(contact);
+  //     contact.mInIsland = true;
+  //
+  //     const other = body === contact.bodyA ? contact.bodyB : contact.bodyA;
+  //
+  //     if (other.mInIsland) continue;
+  //
+  //     this.__fillIsland(other);
+  //   }
+  // }
 }

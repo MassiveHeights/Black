@@ -8,11 +8,11 @@ class BoxToBoxPair extends Pair {
       projections.push(new Projection());
     }
 
-    this.mPprojections = projections;
+    this.mProjections = projections;
   }
 
   set(a, b, bodyA, bodyB) {
-    const projections = this.mPprojections;
+    const projections = this.mProjections;
 
     for (let i = 0, j = 0; i < 4; i += 2, j += 1) {
       projections[i].set(a.points, b.points, a.normals[j]);
@@ -23,7 +23,7 @@ class BoxToBoxPair extends Pair {
   }
 
   refreshProjectionsRanges() {
-    const projections = this.mPprojections;
+    const projections = this.mProjections;
 
     for (let i = 0; i < 4; i++) {
       projections[i].refresh();
@@ -31,7 +31,7 @@ class BoxToBoxPair extends Pair {
   }
 
   test() {
-    const projections = this.mPprojections;
+    const projections = this.mProjections;
     const normal = this.normal;
     const bodyA = this.bodyA;
     const bodyB = this.bodyB;
