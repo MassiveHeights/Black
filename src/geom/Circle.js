@@ -104,6 +104,88 @@ class Circle {
   }
 
   /**
+   * Resets all values to zero.
+   *
+   * @return {Circle} Returns this.
+   */
+  zero() {
+    return this.set(0, 0, 0);
+  }
+
+  /**
+   * Shows whether this circle intersects another.
+   *
+   * @param {Circle} circle Circle to check.
+   * @return {boolean} True if intersects.
+   */
+  intersects(circle) {
+    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
+    return d <= this.r + circle.r && d >= this.r - circle.r;
+  }
+
+  /**
+   * Shows whether this circle collide with another.
+   *
+   * @param {Circle} circle Circle to check.
+   * @return {boolean} True if collide.
+   */
+  collide(circle) {
+    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
+    return d <= this.r + circle.r;
+  }
+
+  /**
+   * Shows whether this circle overlap another.
+   *
+   * @param {Circle} circle Circle to check.
+   * @return {boolean} True if overlap.
+   */
+  overlap(circle) {
+    if (this.r < circle.r) {
+      return false;
+    }
+
+    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
+    return d <= this.r - circle.r;
+  }
+
+
+  /**
+   * Represents center as vector.
+   *
+   * @param {Vector=} outVector Object for result.
+   * @return {Vector} Center point.
+   */
+  center(outVector = undefined) {
+    outVector = outVector || new Vector();
+    return outVector.set(this.x, this.y);
+  }
+
+  static getCircumferencePoint(x, y, r, angle, outVector = undefined) {
+    outVector = outVector || new Vector();
+    outVector.set(x + r * Math.sin(angle), y + r * -Math.cos(angle));
+    return outVector;
+  }
+
+  /**
+   * Returns area of this circle.
+   *
+   * @return {number} area.
+   */
+  get volume() {
+    return Math.PI * this.r * this.r;
+  }
+
+  /**
+   * Returns perimeter of this circle.
+   *
+   * @return {number} perimeter.
+   */
+  get perimeter() {
+    return 2 * Math.PI * this.r;
+  }
+
+  /**
    * Finds left X position.
    *
    * @return {number} Left X position.
@@ -155,81 +237,6 @@ class Circle {
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
-  }
-
-  /**
-   * Resets all values to zero.
-   *
-   * @return {Circle} Returns this.
-   */
-  zero() {
-    return this.set(0, 0, 0);
-  }
-
-  /**
-   * Shows whether this circle intersects another.
-   *
-   * @param {Circle} circle Circle to check.
-   * @return {boolean} True if intersects.
-   */
-  intersects(circle) {
-    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
-    return d <= this.r + circle.r && d >= this.r - circle.r;
-  }
-
-  /**
-   * Shows whether this circle collide with another.
-   *
-   * @param {Circle} circle Circle to check.
-   * @return {boolean} True if collide.
-   */
-  collide(circle) {
-    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
-    return d <= this.r + circle.r;
-  }
-
-  /**
-   * Shows whether this circle overlap another.
-   *
-   * @param {Circle} circle Circle to check.
-   * @return {boolean} True if overlap.
-   */
-  overlap(circle) {
-    if (this.r < circle.r) {
-      return false;
-    }
-
-    let d = new Vector(this.x, this.y).distance(new Vector(circle.x, circle.y));
-    return d <= this.r - circle.r;
-  }
-
-  /**
-   * Returns area of this circle.
-   *
-   * @return {number} area.
-   */
-  get volume() {
-    return Math.PI * this.r * this.r;
-  }
-
-  /**
-   * Returns perimeter of this circle.
-   *
-   * @return {number} perimeter.
-   */
-  get perimeter() {
-    return 2 * Math.PI * this.r;
-  }
-
-  /**
-   * Represents center as vector.
-   *
-   * @param {Vector=} outVector Object for result.
-   * @return {Vector} Center point.
-   */
-  center(outVector = undefined) {
-    outVector = outVector || new Vector();
-    return outVector.set(this.x, this.y);
   }
 
   // @ifdef DEBUG

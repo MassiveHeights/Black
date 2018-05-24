@@ -12,44 +12,22 @@ class Graphics extends DisplayObject {
   constructor() {
     super();
 
-    /** @type {number} Color parameter for line style */
-    this.lineColor = 0;
-
-    /** @type {number} Alpha parameter for line style */
-    this.lineAlpha = 1.0;
-
-    /** @type {number} Width parameter for line style */
-    this.lineWidth = 0;
-
-    /** @type {number} Color parameter for fill style */
-    this.fillColor = 0;
-
-    /** @type {number} Alpha parameter for fill style */
-    this.fillAlpha = 1.0;
-
-    /** @private @type {CapsStyle} */
-    this.mCaps = CapsStyle.NONE;
-
-    /** @private @type {JointStyle} */
-    this.mJoints = JointStyle.MITER;
-
-    /** @private @type {number} */
-    this.mMiterLimit = 3;
-
     /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
     /** @private @type {Array<GraphicsCommand>} */
     this.mCommandQueue = [];
-  }
 
-  /**
-   * @private
-   * @ignore
-   * @readonly
-   */
-  get halfLineWidth() {
-    return this.lineWidth / 2;
+    /** @private @type {number} */
+    this.mPosX = 0;
+
+    /** @private @type {number} */
+    this.mPosY = 0;
+
+    /** @private @type {number} */
+    this.mPadding = 0;
+
+    this.lineStyle(1, 0, 1);
   }
 
   /**
@@ -86,6 +64,7 @@ class Graphics extends DisplayObject {
   }
 
   // TODO: what about correct bounds? Shape-perfect instead of aabb?
+  // colliders?
   /**
    * @inheritDoc
    */
@@ -104,6 +83,225 @@ class Graphics extends DisplayObject {
   }
 
   /**
+   * Clears the graphics that were drawn and resets fill and line styles.
+   * 
+   * @public
+   * @returns {void}
+   */
+  clear() {
+    this.mBounds.zero();
+    this.mPosX = 0;
+    this.mPosY = 0;
+
+    this.mCommandQueue.splice(0, this.mCommandQueue.length);
+    this.setTransformDirty();
+  }
+
+  /**
+   * Moves the starting point of a path to given x and y coordinates.
+   * 
+   * @public
+   * @param {number} x The x-axis of the point.
+   * @param {number} y The y-axis of the point.
+   * @returns {void} 
+   */
+  moveTo(x, y) {
+    this.mPosX = x;
+    this.mPosY = y;
+    this.__pushCommand(GraphicsCommandType.MOVE_TO, x, y);
+  }
+
+  /**
+   * Draws a line between last point and given.
+   * 
+   * @public
+   * @param {number} x The x-axis of the point.
+   * @param {number} y The y-axis of the point.
+   * @returns {void} 
+   */
+  lineTo(x, y) {
+    this.__inflateBounds(this.mPosX, this.mPosY, -this.mPadding);
+    this.__inflateBounds(this.mPosX, this.mPosY, this.mPadding);
+
+    this.mPosX = x;
+    this.mPosY = y;
+
+    this.__inflateBounds(this.mPosX, this.mPosY, -this.mPadding);
+    this.__inflateBounds(this.mPosX, this.mPosY, this.mPadding);
+
+    this.__pushCommand(GraphicsCommandType.LINE_TO, x, y);
+  }
+
+  /**
+   * Adds an arc to the current path.
+   * 
+   * @public
+   * @param {number} x             The x-axis of the arc's center.
+   * @param {number} y             The y-axis of the arc's center.
+   * @param {number} radius        The radius of the arc.  
+   * @param {number} startAngle    The starting angle in radians.
+   * @param {number} endAngle      The ending angle in radians.
+   * @param {number} anticlockwise If true the arc will be drawn counter-clockwise.
+   * @returns {void} 
+   */
+  arc(x, y, radius, startAngle, endAngle, anticlockwise = false) {
+    let sa = startAngle + Math.PI * 0.5;
+    let ea = endAngle + Math.PI * 0.5;
+    let needsMoveTo = false;
+    let moveToX = 0;
+    let moveToY = 0;
+
+    let diff = Math.abs((sa) - (ea));
+    if (diff >= MathEx.PI2) {
+      this.__inflateBounds(x - radius, y - radius, -this.mPadding);
+      this.__inflateBounds(x + radius, y + radius, this.mPadding);
+
+      let end = Circle.getCircumferencePoint(x, y, radius, endAngle + Math.PI * 0.5);
+
+      needsMoveTo = true;
+      endAngle = startAngle + MathEx.PI2;
+      moveToX = end.x;
+      moveToY = end.y;
+    } else {
+      let c = 0;
+
+      let ws = startAngle;
+      let we = endAngle;
+
+      if (ws < 0)
+        ws += MathEx.PI2;
+
+      if (we < 0)
+        we += MathEx.PI2;
+
+      if (diff > Math.Pi || anticlockwise)
+        [ws, we] = [we, ws];
+
+      //console.log(ws, we);
+
+      for (let i = 0; i < Math.PI * 2; i += Math.PI * 0.5) {
+
+        if (i >= ws && i <= we) {
+          let point = Circle.getCircumferencePoint(x, y, radius, i + Math.PI * 0.5);
+          this.__inflateBounds(point.x, point.y, -this.mPadding);
+          this.__inflateBounds(point.x, point.y, this.mPadding);
+          //console.log(i, ws, we);
+
+          c++;
+        }
+      }
+
+      if (c < 4) {
+        let start = Circle.getCircumferencePoint(x, y, radius, sa);
+        let end = Circle.getCircumferencePoint(x, y, radius, ea);
+
+        this.__inflateBounds(start.x, start.y, -this.mPadding);
+        this.__inflateBounds(start.x, start.y, this.mPadding);
+
+        this.__inflateBounds(end.x, end.y, -this.mPadding);
+        this.__inflateBounds(end.x, end.y, this.mPadding);
+      }
+    }
+
+    this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, startAngle, endAngle, anticlockwise);
+
+    if (needsMoveTo === true)
+      this.__pushCommand(GraphicsCommandType.MOVE_TO, moveToX, moveToY);
+  }
+
+  /**
+   * Adds circle to current path.
+   * 
+   * @public
+   * @param {number} x      The x-axis of the circles's center.
+   * @param {number} y      The y-axis of the circles's center.
+   * @param {number} radius The radius of the circle.
+   * @returns {void}
+   */
+  circle(x, y, radius) {
+    this.__inflateBounds(x - radius, y - radius, -this.mPadding);
+    this.__inflateBounds(x + radius, y + radius, this.mPadding);
+
+    this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, 0, MathEx.PI2);
+  }
+
+  /**
+   * Creates closed rectangle like path.
+   * 
+   * @public
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} width 
+   * @param {number} height 
+   * 
+   * @returns {void}
+   */
+  rect(x, y, width, height) {
+    Debug.isNumber(x, y, width, height);
+
+    let xSign = width < 0 ? -1 : 1;
+    let ySign = height < 0 ? -1 : 1;
+
+    this.__inflateBounds(x, y, -this.mPadding * ySign);
+    this.__inflateBounds(x + width, y + height, this.mPadding * ySign);
+
+    this.__pushCommand(GraphicsCommandType.RECT, x, y, width, height);
+  }
+
+  // /**
+  //  * @public
+  //  * @param {number} cp1x 
+  //  * @param {number} cp1y 
+  //  * @param {number} cp2x 
+  //  * @param {number} cp2y 
+  //  * @param {number} x 
+  //  * @param {number} y 
+  //  */
+  // bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
+  //   this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
+  // }
+
+  /**
+   * Starts new path.
+   * 
+   * @public
+   * @returns {void}
+   */
+  beginPath() {
+    this.__pushCommand(GraphicsCommandType.BEGIN_PATH);
+  }
+
+  /**
+   * Closes current path.
+   * 
+   * @public
+   * @returns {void}
+   */
+  closePath() {
+    this.__pushCommand(GraphicsCommandType.CLOSE_PATH);
+  }
+
+  /**
+   * Strokes current path with the current line style..
+   * 
+   * @public
+   * @returns {void}
+   */
+  stroke() {
+    this.__pushCommand(GraphicsCommandType.STROKE);
+  }
+
+  /**
+   * Fills current path with the current fill style.
+   * 
+   * @public
+   * @returns {void}
+   */
+  fill() {
+    this.__pushCommand(GraphicsCommandType.FILL);
+  }
+
+  /**
    * Sets line style
    * 
    * @public
@@ -112,16 +310,19 @@ class Graphics extends DisplayObject {
    * @param {number=} [alpha=1] Line alpha.
    * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
    * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
-   * @param {number=} [miterLimit=3] Mite limit.
+   * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
   lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
-    this.lineWidth = lineWidth;
-    this.lineColor = color;
-    this.lineAlpha = alpha;
-    this.mCaps = caps;
-    this.mJoints = joints;
-    this.mMiterLimit = 3;
+    Debug.isNumber(lineWidth, color, alpha, miterLimit);
+    //Debug.assert(lineWidth >= 0)
+
+    if (joints === JointStyle.MITER && lineWidth > this.mPadding)
+      this.mPadding = lineWidth;
+    else if (lineWidth / 2 > this.mPadding)
+      this.mPadding = lineWidth / 2;
+
+    this.__pushCommand(GraphicsCommandType.LINE_STYLE, lineWidth, color, alpha, caps, joints, miterLimit);
   }
 
   /**
@@ -133,93 +334,8 @@ class Graphics extends DisplayObject {
    * @returns {void}
    */
   fillStyle(color = 0, alpha = 1) {
-    this.fillColor = color;
-    this.fillAlpha = alpha;
-  }
-
-  /**
-   * Clears the graphics that were drawn and resets fill and line styles
-   * 
-   * @public
-   * @returns {void}
-   */
-  clear() {
-    this.lineColor = 0;
-    this.lineAlpha = 1.0;
-    this.lineWidth = 0;
-
-    this.fillColor = 0;
-    this.fillAlpha = 1.0;
-
-    this.mBounds.zero();
-
-    this.mCommandQueue.splice(0, this.mCommandQueue.length);
-    this.setTransformDirty();
-  }
-
-  /**
-   * Sets custom tranformation for futher objects
-   * @param {Matrix} matrix 
-   */
-  setCustomTransform(matrix) {
-    let d = matrix.data;
-    this.__pushCommand(GraphicsCommandType.TRANSFORM, d[0], d[1], d[2], d[3], d[4], d[5]);
-    this.setTransformDirty();
-  }
-
-  /**
-   * Draws line with given coordinates for two points
-   * 
-   * @public
-   * @param {number} x1 First point x-coordinate.
-   * @param {number} y1 First point y-coordinate.
-   * @param {number} x2 Second point x-coordinate.
-   * @param {number} y2 Second point y-coordinate.
-   * @returns {void}
-   */
-  drawLine(x1, y1, x2, y2) {
-    this.__inflateBounds(x1 - this.halfLineWidth, y1 - this.halfLineWidth);
-    this.__inflateBounds(x1 + this.halfLineWidth, y1 + this.halfLineWidth);
-
-    this.__inflateBounds(x2 - this.halfLineWidth, y2 - this.halfLineWidth);
-    this.__inflateBounds(x2 + this.halfLineWidth * 2, y2 + this.halfLineWidth);
-
-    this.__pushCommand(GraphicsCommandType.LINE, x1, y1, x2, y2);
-    this.setTransformDirty();
-  }
-
-  /**
-   * Draws rectangle with given coordinates of top left point and its width and height
-   * 
-   * @public
-   * @param {number} x Left-Top coordinate along X-axis.
-   * @param {number} y Left-Top coordinate along Y-axis.
-   * @param {number} width Width of rectangle.
-   * @param {number} height Height of rectangle.
-   * @returns {void}
-   */
-  drawRect(x, y, width, height) {
-    this.__inflateBounds(x - this.halfLineWidth, y - this.halfLineWidth);
-    this.__inflateBounds(x + width + this.halfLineWidth, y + height + this.halfLineWidth);
-    this.__pushCommand(GraphicsCommandType.RECTANGLE, x, y, width, height);
-    this.setTransformDirty();
-  }
-
-  /**
-   * Draws a circle with given center coordinates and radius
-   * 
-   * @public
-   * @param {number} x Center coordinate along X-axis.
-   * @param {number} y Center coordinate along Y-axis.
-   * @param {number} radius Radius of circle.
-   * @returns {void}
-   */
-  drawCircle(x, y, radius) {
-    this.__inflateBounds(x - radius - this.halfLineWidth, y - radius - this.halfLineWidth);
-    this.__inflateBounds(x + radius + this.halfLineWidth, y + radius + this.halfLineWidth);
-
-    this.__pushCommand(GraphicsCommandType.CIRCLE, x, y, radius);
-    this.setTransformDirty();
+    Debug.isNumber(color, alpha);
+    this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
   }
 
   /**
@@ -228,7 +344,10 @@ class Graphics extends DisplayObject {
    * @param {number} x 
    * @param {number} y 
    */
-  __inflateBounds(x, y) {
+  __inflateBounds(x, y, padding) {
+    x += padding;
+    y += padding;
+
     if (x < this.mBounds.x) {
       this.mBounds.width += this.mBounds.x - x;
       this.mBounds.x = x;
@@ -250,10 +369,20 @@ class Graphics extends DisplayObject {
    * @private
    * @ignore
    * @param {GraphicsCommandType} type
-   * @param {...number} points 
+   * @param {...number} data 
    */
-  __pushCommand(type, ...points) {
-    let cmd = new GraphicsCommand(type, points, this.lineColor, this.lineAlpha, this.lineWidth, this.fillColor, this.fillAlpha, this.mCaps, this.mJoints, this.mMiterLimit);
+  __pushCommand(type, ...data) {
+    let cmd = new GraphicsCommand(type, data);
     this.mCommandQueue.push(cmd);
+  }
+
+
+  /**
+   * @private
+   * @ignore
+   * @readonly
+   */
+  get __halfLineWidth() {
+    return this.lineWidth > 0 ? this.lineWidth / 2 : 0;
   }
 }

@@ -21,7 +21,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    */
   render(driver) {
     this.__drawCommandBuffer(driver);
-    
+
     if (this.color !== null && this.color !== 0xFFFFFF) {
       driver.context.globalCompositeOperation = 'multiply';
       this.__drawCommandBuffer(driver, this.color);
@@ -38,44 +38,63 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       const cmd = this.commands[i];
 
       switch (cmd.type) {
-        case GraphicsCommandType.TRANSFORM: {
-          ctx.setTransform(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+        case GraphicsCommandType.LINE_STYLE: {
+          ctx.lineWidth = cmd.data[0];
+          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.data[1], cmd.data[2]);
+          ctx.lineCap = cmd.data[3];
+          ctx.lineJoin = cmd.data[4];
+          ctx.mitterLimit = cmd.data[5];
           break;
         }
-        case GraphicsCommandType.LINE: {
-          this.__setLineStyle(cmd, ctx);
+
+        case GraphicsCommandType.FILL_STYLE: {
+          ctx.fillStyle = ColorHelper.intToRGBA(cmd.data[0], cmd.data[1]);
+          break;
+        }
+
+        case GraphicsCommandType.ARC: {
+          ctx.arc(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+          break;
+        }
+
+        case GraphicsCommandType.RECT: {
+          ctx.rect(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3]);
+          break;
+        }
+        case GraphicsCommandType.BEZIER_CURVE_TO: {
+          ctx.bezierCurveTo(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+          break;
+        }
+        case GraphicsCommandType.BEGIN_PATH: {
           ctx.beginPath();
+          break;
+        }
+        case GraphicsCommandType.CLOSE_PATH: {
+          ctx.closePath();
+          break;
+        }
+        case GraphicsCommandType.FILL: {
+          ctx.fill();
+          break;
+        }
+
+        case GraphicsCommandType.LINE_TO: {
+          ctx.lineTo(cmd.data[0] * r, cmd.data[1] * r);
+          break;
+        }
+
+        case GraphicsCommandType.MOVE_TO: {
           ctx.moveTo(cmd.data[0] * r, cmd.data[1] * r);
-          ctx.lineTo(cmd.data[2] * r, cmd.data[3] * r);
-          ctx.stroke();
           break;
         }
-        case GraphicsCommandType.RECTANGLE: {
-          ctx.beginPath();
-          ctx.rect(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3] * r);
 
-          this.__setFillStyle(cmd, ctx);
-          ctx.fill();
-
-          this.__setLineStyle(cmd, ctx);
-          ctx.stroke();
-
-          break;
-        }
-        case GraphicsCommandType.CIRCLE: {
-          ctx.beginPath();
-          ctx.arc(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, 0, 2 * Math.PI);
-
-          this.__setFillStyle(cmd, ctx, color);
-          ctx.fill();
-
-          this.__setLineStyle(cmd, ctx);
+        case GraphicsCommandType.STROKE: {
           ctx.stroke();
           break;
         }
 
         default:
-          Debug.error('Unsupported canvas command.');
+          Debug.error(`Unsupported canvas command '${cmd.type}'.`);
           break;
       }
     }
