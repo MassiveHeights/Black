@@ -63,8 +63,6 @@ class Graphics extends DisplayObject {
     return driver.registerRenderer(renderer);
   }
 
-  // TODO: what about correct bounds? Shape-perfect instead of aabb?
-  // colliders?
   /**
    * @inheritDoc
    */

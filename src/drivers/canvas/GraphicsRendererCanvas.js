@@ -33,7 +33,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     const len = this.commands.length;
     const r = driver.renderScaleFactor;
     ctx.save();
-
+    
     for (let i = 0; i < len; i++) {
       const cmd = this.commands[i];
 
@@ -53,18 +53,18 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.ARC: {
-          ctx.arc(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+          ctx.arc(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3], cmd.data[4], cmd.data[5]);
           break;
         }
 
         case GraphicsCommandType.RECT: {
-          ctx.rect(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3]);
+          ctx.rect(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3] * r);
           break;
         }
-        case GraphicsCommandType.BEZIER_CURVE_TO: {
-          ctx.bezierCurveTo(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
-          break;
-        }
+        // case GraphicsCommandType.BEZIER_CURVE_TO: {
+        //   ctx.bezierCurveTo(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+        //   break;
+        // }
         case GraphicsCommandType.BEGIN_PATH: {
           ctx.beginPath();
           break;

@@ -283,7 +283,7 @@ class DisplayObject extends GameObject {
 
   /**
    * Gets/Sets whether this container and all it's childen should be baked into bitmap. Setting `cacheAsBitmap` onto
-   *  Sprites, TextField's and other inhireted classes will give zero effect.
+   * Sprites,, TextField's or any other inhireted classes will give zero effect.
    *
    * @return {boolean} 
    */
