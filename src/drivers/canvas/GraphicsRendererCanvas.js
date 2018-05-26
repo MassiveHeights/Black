@@ -39,7 +39,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
 
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
-          ctx.lineWidth = cmd.data[0];
+          ctx.lineWidth = cmd.data[0] * r;
           ctx.strokeStyle = ColorHelper.intToRGBA(cmd.data[1], cmd.data[2]);
           ctx.lineCap = cmd.data[3];
           ctx.lineJoin = cmd.data[4];

@@ -92,6 +92,7 @@ class Graphics extends DisplayObject {
     this.mPosY = 0;
 
     this.mCommandQueue.splice(0, this.mCommandQueue.length);
+    this.beginPath();
     this.setTransformDirty();
   }
 
@@ -175,16 +176,12 @@ class Graphics extends DisplayObject {
       if (diff > Math.Pi || anticlockwise)
         [ws, we] = [we, ws];
 
-      //console.log(ws, we);
-
       for (let i = 0; i < Math.PI * 2; i += Math.PI * 0.5) {
 
         if (i >= ws && i <= we) {
           let point = Circle.getCircumferencePoint(x, y, radius, i + Math.PI * 0.5);
           this.__inflateBounds(point.x, point.y, -this.mPadding);
           this.__inflateBounds(point.x, point.y, this.mPadding);
-          //console.log(i, ws, we);
-
           c++;
         }
       }
@@ -372,15 +369,5 @@ class Graphics extends DisplayObject {
   __pushCommand(type, ...data) {
     let cmd = new GraphicsCommand(type, data);
     this.mCommandQueue.push(cmd);
-  }
-
-
-  /**
-   * @private
-   * @ignore
-   * @readonly
-   */
-  get __halfLineWidth() {
-    return this.lineWidth > 0 ? this.lineWidth / 2 : 0;
   }
 }
