@@ -4,9 +4,7 @@ class BoxToCirclePair extends Pair {
 
     this.mBoxHalfWidth = 0;
     this.mBoxHalfHeight = 0;
-    this.mBoxCos = 0;
-    this.mBoxSin = 0;
-    this.mCircleCenter = new Vector();
+    this.mBoxRotate = new Vector();
   }
 
   static __rotate(point, anchorX, anchorY, cos, sin) {
@@ -20,46 +18,42 @@ class BoxToCirclePair extends Pair {
   }
 
   test() {
-    const normal = this.normal;
-    const boxBody = this.bodyA;
-    const circleBody = this.bodyB;
     const box = this.a;
     const circle = this.b;
 
-    const circleCenter = this.mCircleCenter;
-    const boxCenterX = boxBody.mPosition.x + box.center.x;
-    const boxCenterY = boxBody.mPosition.y + box.center.y;
+    if (box.mMax.x < circle.mMin.x || box.mMin.x > circle.mMax.x ||
+      box.mMax.y < circle.mMin.y || box.mMin.y > circle.mMax.y)
+    {
+      return this.mInCollision = false;
+    }
 
-    let boxCos = this.mBoxCos;
-    let boxSin = this.mBoxSin;
+    const boxRotate = this.mBoxRotate;
+    const normal = this.mNormal;
     let hw = this.mBoxHalfWidth;
     let hh = this.mBoxHalfHeight;
 
     if (box.mChanged) {
-      let rotation = 0;
-      let gameObject = boxBody.gameObject;
+      const transform = box.gameObject.worldTransformation;
+      const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
 
-      while (gameObject) {
-        rotation += gameObject.rotation;
-        gameObject = gameObject.parent;
-      }
-
-      boxCos = this.mBoxCos = Math.cos(rotation);
-      boxSin = this.mBoxSin = Math.sin(rotation);
-      hw = this.mBoxHalfWidth = box.localRect.width * boxBody.mTransform.data[0] / boxCos / 2;
-      hh = this.mBoxHalfHeight = box.localRect.height * boxBody.mTransform.data[3] / boxCos / 2;
+      boxRotate.set(transform.data[0] / scale, transform.data[1] / scale);
+      hw = this.mBoxHalfWidth = box.mRect.width / 2 * scale;
+      hh = this.mBoxHalfHeight = box.mRect.height / 2 * scale;
     }
 
-    circleCenter.x = circleBody.mPosition.x + circle.position.x;
-    circleCenter.y = circleBody.mPosition.y + circle.position.y;
-    BoxCirclePair.__rotate(circleCenter, boxCenterX, boxCenterY, boxCos, -boxSin);
+    const rotated = boxRotate.y !== 0;
 
-    const dx = circleCenter.x - boxCenterX;
-    const dy = circleCenter.y - boxCenterY;
+    if (rotated) {
+      BoxToCirclePair.__rotate(circle.mCenter, box.mCenter.x, box.mCenter.y, boxRotate.x, -boxRotate.y);
+    }
+
+    const dx = circle.mCenter.x - box.mCenter.x;
+    const dy = circle.mCenter.y - box.mCenter.y;
 
     if (dx === 0 && dy === 0) {
-      this.overlap = circle.radius + hw;
+      this.mOverlap = circle.mRadius + hw;
       normal.set(-1, 0);
+
       return this.mInCollision = true;
     }
 
@@ -78,22 +72,24 @@ class BoxToCirclePair extends Pair {
     const normalX = dx - closestX;
     const normalY = dy - closestY;
     const sqLength = normalX * normalX + normalY * normalY;
-    const r = circle.radius;
+    const r = circle.mRadius;
 
     if (sqLength > r * r && !inside) {
       return this.mInCollision = false;
     }
 
     if (sqLength === 0) {
-      this.overlap = r;
-      inside ? normal.set(-normalX, -normalY) : normal.set(normalX, normalY);
+      this.mOverlap = r;
+      normal.set(0, 1);
     } else {
       const d = Math.sqrt(sqLength);
-      this.overlap = r - d;
+      this.mOverlap = r - d;
       inside ? normal.set(-normalX / d, -normalY / d) : normal.set(normalX / d, normalY / d);
     }
 
-    BoxCirclePair.__rotate(normal, 0, 0, boxCos, boxSin);
+    if (rotated) {
+      BoxToCirclePair.__rotate(normal, 0, 0, boxRotate.x, boxRotate.y);
+    }
 
     return this.mInCollision = true;
   }

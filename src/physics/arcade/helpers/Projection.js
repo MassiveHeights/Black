@@ -1,23 +1,23 @@
 class Projection {
   constructor() {
     this.axis = null;
-    this.pointsA = null;
-    this.pointsB = null;
+    this.verticesA = null;
+    this.verticesB = null;
     this.rangeA = new Range();
     this.rangeB = new Range();
     this.offset = 0;
   }
 
-  set(pointsA, pointsB, axis) {
-    this.pointsA = pointsA;
-    this.pointsB = pointsB;
+  set(verticesA, verticesB, axis) {
+    this.verticesA = verticesA;
+    this.verticesB = verticesB;
     this.axis = axis;
     this.refresh();
   }
 
   refresh() {
-    Projection.project(this.pointsA, this.axis, this.rangeA);
-    Projection.project(this.pointsB, this.axis, this.rangeB);
+    Projection.project(this.verticesA, this.axis, this.rangeA);
+    Projection.project(this.verticesB, this.axis, this.rangeB);
   }
 
   static project(points, axis, range) {
@@ -32,5 +32,12 @@ class Projection {
 
     range.min = min;
     range.max = max;
+  }
+}
+
+class Range {
+  constructor() {
+    this.min = 0;
+    this.max = 0;
   }
 }

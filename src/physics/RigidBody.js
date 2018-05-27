@@ -2,13 +2,10 @@ class RigidBody extends Component {
   constructor() {
     super();
 
+    this.mHash = RigidBody.mHash++;
     this.mCollider = new BoxCollider(0, 0, 0, 0);
-    this.mContacts = [];
-
-    this.mInIsland = false;
-    this.mIsStatic = false;
-    this.mIsSleeping = false;
     this.mColliderAddedOrRemoved = false;
+    this.mIsStatic = false;
 
     this.mPosition = new Vector();
     this.mVelocity = new Vector();
@@ -18,9 +15,9 @@ class RigidBody extends Component {
     this.mMass = 0;
     this.mInvMass = 0;
 
-    this.mFrictionAir = 0.01;
-    this.mFriction = 0.1;
-    this.mBounce = 0.2;
+    this.frictionAir = 0.01;
+    this.friction = 0.1;
+    this.bounce = 0.1;
 
     this.mass = 1;
   }
@@ -30,69 +27,71 @@ class RigidBody extends Component {
   }
 
   set mass(v) {
-    this.mInvMass = v === 0 ? 0 : 1 / v;
-    this.mMass = v === 0 ? 0 : v;
+    this.mMass = v;
+
+    if (v === 0 || this.mIsStatic) {
+      this.mInvMass = 0;
+    } else {
+      this.mInvMass = 1 / v;
+    }
+  }
+
+  get isStatic() {
+    return this.mIsStatic;
+  }
+
+  set isStatic(v) {
+    this.mIsStatic = v;
+    this.mass = this.mMass;
+  }
+
+  applyForce(x, y) {
+    this.mForce.x += x;
+    this.mForce.y += y;
+  }
+
+  set x(v) {
+    this.mPosition.x = v;
+  }
+
+  get x() {
+    return this.mPosition.x;
+  }
+
+  set y(v) {
+    this.mPosition.y = v;
+  }
+
+  get y() {
+    return this.mPosition.y;
   }
 
   update() {
     const gameObject = this.gameObject;
     const colliders = gameObject.mCollidersCache;
     const collider = this.mCollider;
+    const position = this.mPosition;
     const wt = gameObject.worldTransformation;
     const transform = this.mTransform;
     const transformChanged = transform.data[0] !== wt.data[0] || transform.data[2] !== wt.data[2]; // check scale x, y and rotation are the same (skew is forbidden)
-    const colliderAddedOrRemoved = this.mColliderAddedOrRemoved;
-    let colliderChanged = false;
 
-    if (gameObject.texture) {
-      collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height); // todo
-    }
-
-    if (transformChanged || colliderAddedOrRemoved) {
+    if (transformChanged) {
       transform.set(wt.data[0], wt.data[1], wt.data[2], wt.data[3], 0, 0);
-
-      collider.refresh(transform);
       collider.mChanged = true;
 
       for (let i = 0, l = colliders.length; i < l; i++) {
-        colliders[i].refresh(transform);
         colliders[i].mChanged = true;
-      }
-    } else {
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        if (colliders[i].mChanged) {
-          colliders[i].refresh(transform);
-          colliderChanged = true;
-          break;
-        }
       }
     }
 
-    if (transformChanged || colliderChanged || colliderAddedOrRemoved) {
-      if (colliders.length === 0) {
-        this.minX = collider.minX;
-        this.minY = collider.minY;
-        this.maxX = collider.maxX;
-        this.maxY = collider.maxY;
-      } else {
-        let minX = Number.MAX_VALUE;
-        let minY = Number.MAX_VALUE;
-        let maxX = -Number.MAX_VALUE;
-        let maxY = -Number.MAX_VALUE;
+    if (gameObject.texture /* && (pivot changed || texture changed) todo */) {
+      collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height);
+    }
 
-        for (let i = 0, l = colliders.length; i < l; i++) {
-          const collider = colliders[i];
-          minX = Math.min(minX, collider.minX);
-          minY = Math.min(minY, collider.minY);
-          maxX = Math.max(maxX, collider.maxX);
-          maxY = Math.max(maxY, collider.maxY);
-        }
+    collider.refresh(transform, position);
 
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-      }
+    for (let i = 0, l = colliders.length; i < l; i++) {
+      colliders[i].refresh(transform, position);
     }
 
     gameObject.parent.globalToLocal(this.mPosition, gameObject);
@@ -112,6 +111,8 @@ class RigidBody extends Component {
     // }
   }
 }
+
+RigidBody.mHash = 1;
 
 RigidBody.mDebug = {
   graphics: null,

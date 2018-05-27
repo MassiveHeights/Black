@@ -157,7 +157,6 @@
 
     "src/physics/RigidBody.js",
     "src/physics/arcade/helpers/Projection.js",
-    "src/physics/arcade/helpers/Range.js",    
 
     "src/physics/arcade/pairs/Pair.js",
     "src/physics/arcade/pairs/BoxToBoxPair.js",

@@ -7,23 +7,38 @@ class Arcade extends System {
     this.mContacts = [];  // All pairs which are in collision
     this.mBroadPhase = new Phase();
     this.mNarrowPhase = new NarrowPhase();
-    this.gravity = new Vector(0, 2000);
-    this.iterations = 2;
-    this.mPairsHash = {};
+    this.mBodiesHash = Object.create(null); // for quick search in collide callback
 
-    this.mIslandBodies = [];
-    this.mIslandContacts = [];
+    this.gravity = new Vector(0, 1000);
+    this.iterations = 1;
   }
 
-  collideCallback(colliderA, colliderB, cb, ctx, ...args) {
-    const id = colliderA.id + '&' + colliderB.id;
-    const pair = this.mPairsHash[id];
+  collisionInfo(bodyA, bodyB, colliderA, colliderB, cb, ctx, ...args) {
+    const bodiesHash = this.mBodiesHash;
+    const pairsHash = bodiesHash[bodyA.mHash];
 
-    if (!pair || !pair.mInCollision)
-      return;
+    if (!pairsHash) return;
 
-    const sign = pair.a === colliderA ? 1 : -1;
-    cb.call(ctx, pair.normal.x * sign, pair.normal.y * sign, pair.overlap, ...args);
+    const pair = pairsHash[colliderA.mHash + '&' + colliderB.mHash] ||
+      pairsHash[colliderB.mHash + '&' + colliderA.mHash];
+
+    if (pair && pair.mInCollision) {
+      const sign = pair.a === colliderA ? 1 : -1;
+      cb.call(ctx, pair.mNormal.x * sign, pair.mNormal.y * sign, pair.mOverlap, ...args);
+    }
+  }
+
+  inCollision(bodyA, bodyB) {
+    const bodiesHash = this.mBodiesHash;
+    const pairsHash = bodiesHash[bodyA.mHash];
+
+    for (let id in pairsHash) {
+      if (pairsHash[id].bodyB === bodyB) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   onChildrenAdded(gameObject) {
@@ -70,6 +85,8 @@ class Arcade extends System {
     const bodies = this.mBodies;
     const colliders = body.gameObject.mCollidersCache;
 
+    this.mBodiesHash[body.mHash] = Object.create(null);
+
     if (colliders.length === 0) {
       this.__addPairs(body.mCollider, body);
     } else {
@@ -93,6 +110,8 @@ class Arcade extends System {
       }
     }
 
+    delete this.mBodiesHash[body.mHash];
+
     bodies.splice(bodies.indexOf(body), 1);
   }
 
@@ -100,7 +119,7 @@ class Arcade extends System {
     const body = this.__getBody(child);
 
     if (body !== null) {
-      body.mColliderAddedOrRemoved = true;
+      collider.mChanged = true;
       this.__addPairs(collider, body);
 
       if (child.mCollidersCache.length === 1) {
@@ -113,7 +132,6 @@ class Arcade extends System {
     const body = this.__getBody(child);
 
     if (body !== null) {
-      body.mColliderAddedOrRemoved = true;
       this.__removePairs(collider);
 
       if (child.mCollidersCache.length === 0) {
@@ -177,12 +195,14 @@ class Arcade extends System {
 
     pair.set(a, b, bodyA, bodyB);
     this.mPairs.push(pair);
-    this.mPairsHash[a.id + '&' + b.id] = pair;
-    this.mPairsHash[b.id + '&' + a.id] = pair;
+
+    this.mBodiesHash[bodyA.mHash][a.mHash + '&' + b.mHash] = pair;
+    this.mBodiesHash[bodyB.mHash][b.mHash + '&' + a.mHash] = pair;
   }
 
   __removePairs(collider) {
     const pairs = this.mPairs;
+    const pairsHash = this.mBodiesHash;
 
     for (let i = pairs.length - 1; i >= 0; i--) {
       const pair = pairs[i];
@@ -190,6 +210,9 @@ class Arcade extends System {
       if (pair.a === collider || pair.b === collider) {
         pairs.splice(i, 1);
         pair.constructor.pool.release(pair);
+
+        delete pairsHash[pair.bodyA.mHash][pair.a.mHash + '&' + pair.b.mHash];
+        delete pairsHash[pair.bodyB.mHash][pair.b.mHash + '&' + pair.a.mHash];
       }
     }
   }
@@ -211,8 +234,7 @@ class Arcade extends System {
     // reset each pair to defaults
     // so phases will know, if pair in collision is true, then it needs more precise check
     for (let i = 0, l = pairs.length; i < l; i++) {
-      const pair = pairs[i];
-      pair.mInCollision = true;
+      pairs[i].mInCollision = true;
     }
 
     // update pairs in collision flag, overlap, normal properties
@@ -226,53 +248,13 @@ class Arcade extends System {
     }
 
     this.__solve(dt);
-
-    // if (this.sleepEnabled)
-    // pair.mInIsland = false;
-    // const islandBodies = this.mIslandBodies;
-    // const islandContacts = this.mIslandContacts;
-    //
-    // for (let i = 0, iLen = bodies.length; i < iLen; i++) {
-    //   const body = bodies[i];
-    //   const colliders = body.gameObject.mCollidersCache;
-    //   body.mInIsland = false;
-    //   body.mContacts.length = 0;
-    //   body.mColliderAddedOrRemoved = false;
-    //   body.mCollider.mChanged = false;
-    //
-    //   for (let j = 0, jLen = colliders.length; j < jLen; j++) {
-    //     colliders[j].mChanged = false;
-    //   }
-    // }
-    //
-    // for (let i = 0, l = pairs.length; i < l; i++) {
-    //   const pair = pairs[i];
-    //
-    //   if (pair.mInCollision) {
-    //     pair.bodyA.mContacts.push(pair);
-    //     pair.bodyB.mContacts.push(pair);
-    //   }
-    // }
-    //
-    // for (let i = 0, l = bodies.length; i < l; i++) {
-    //   const body = bodies[i];
-    //
-    //   if (body.mInIsland || body.mIsSleeping || body.mIsStatic) continue;
-    //
-    //   islandBodies.length = 0;
-    //   islandContacts.length = 0;
-    //
-    //   this.__fillIsland(body);
-    //
-    //   this.__solve(dt);
-    // }
   }
 
   __solve(dt) {
     const iterations = this.iterations;
+    const bodies = this.mBodies;
     const contacts = this.mContacts;
     const gravity = this.gravity;
-    const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -282,7 +264,7 @@ class Arcade extends System {
       const velocity = body.mVelocity;
       const invMass = body.mInvMass;
       const force = body.mForce;
-      const damping = 1 - body.mFrictionAir;
+      const damping = 1 - body.frictionAir;
 
       velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
       velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
@@ -318,27 +300,11 @@ class Arcade extends System {
     }
   }
 
-  // __fillIsland(body) {
-  //   this.mIslandBodies.push(body);
-  //   body.mInIsland = true;
-  //
-  //   if (body.mIsStatic) return;
-  //
-  //   const contacts = body.mContacts;
-  //
-  //   for (let i = 0, l = contacts.length; i < l; i++) {
-  //     const contact = contacts[i];
-  //
-  //     if (contact.mInIsland) continue;
-  //
-  //     this.mIslandContacts.push(contact);
-  //     contact.mInIsland = true;
-  //
-  //     const other = body === contact.bodyA ? contact.bodyB : contact.bodyA;
-  //
-  //     if (other.mInIsland) continue;
-  //
-  //     this.__fillIsland(other);
-  //   }
-  // }
+  createBounds(x = 0, y = 0, width = Black.stage.width, height = Black.stage.height, parent = Black.stage, thickness = 1000) {
+    parent.addComponent(new BoxCollider(x - thickness, y - thickness, width + thickness * 2, thickness)); // top
+    parent.addComponent(new BoxCollider(x + width, y, thickness, height)); // right
+    parent.addComponent(new BoxCollider(x - thickness, y + height, width + thickness * 2, thickness)); // bottom
+    parent.addComponent(new BoxCollider(x - thickness, y, thickness, height)); // left
+    parent.addComponent(new RigidBody());
+  }
 }

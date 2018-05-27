@@ -4,6 +4,7 @@
  * @cat colliders
  * @extends Component
  */
+
 /* @echo EXPORT */
 class Collider extends Component {
   /**
@@ -11,8 +12,11 @@ class Collider extends Component {
    *
    * @ignore
    */
-  constructor (){
+  constructor() {
     super();
+
+    this.mHash = Collider.mHash++;
+    this.mChanged = true;
   }
 
   /**
@@ -26,4 +30,10 @@ class Collider extends Component {
     Debug.error('Abstract method.');
     return false;
   }
+
+  onPostUpdate(dt) {
+    this.mChanged = false;
+  }
 }
+
+Collider.mHash = 1;

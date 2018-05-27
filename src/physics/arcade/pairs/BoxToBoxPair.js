@@ -4,7 +4,7 @@ class BoxToBoxPair extends Pair {
 
     const projections = [];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 4; i++) {
       projections.push(new Projection());
     }
 
@@ -15,8 +15,8 @@ class BoxToBoxPair extends Pair {
     const projections = this.mProjections;
 
     for (let i = 0, j = 0; i < 4; i += 2, j += 1) {
-      projections[i].set(a.points, b.points, a.normals[j]);
-      projections[i + 1].set(a.points, b.points, b.normals[j]);
+      projections[i].set(a.mVertices, b.mVertices, a.mNormals[j]);
+      projections[i + 1].set(a.mVertices, b.mVertices, b.mNormals[j]);
     }
 
     return super.set(a, b, bodyA, bodyB);
@@ -31,16 +31,19 @@ class BoxToBoxPair extends Pair {
   }
 
   test() {
-    const projections = this.mProjections;
-    const normal = this.normal;
-    const bodyA = this.bodyA;
-    const bodyB = this.bodyB;
     const a = this.a;
     const b = this.b;
-    const offsetX = bodyB.mPosition.x - bodyA.mPosition.x;
-    const offsetY = bodyB.mPosition.y - bodyA.mPosition.y;
 
-    this.overlap = Number.MAX_VALUE;
+    if (a.mMax.x < b.mMin.x || a.mMin.x > b.mMax.x || a.mMax.y < b.mMin.y || a.mMin.y > b.mMax.y) {
+      return this.mInCollision = false;
+    }
+
+    const projections = this.mProjections;
+    const normal = this.mNormal;
+    const offsetX = b.mCenter.x - a.mCenter.x;
+    const offsetY = b.mCenter.y - a.mCenter.y;
+
+    this.mOverlap = Number.MAX_VALUE;
     (a.mChanged || b.mChanged) && this.refreshProjectionsRanges();
 
     for (let i = 0; i < 4; i++) {
@@ -75,8 +78,8 @@ class BoxToBoxPair extends Pair {
 
       const absOverlap = Math.abs(overlap);
 
-      if (absOverlap < this.overlap) {
-        this.overlap = absOverlap;
+      if (absOverlap < this.mOverlap) {
+        this.mOverlap = absOverlap;
         normal.copyFrom(projection.axis);
         overlap < 0 && normal.multiplyScalar(-1);
       }

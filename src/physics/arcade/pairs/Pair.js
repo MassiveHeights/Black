@@ -6,8 +6,7 @@ class Pair {
     this.bodyB = null;
 
     this.mInCollision = false;
-    this.mInIsland = false;
-
+    this.mInCollisionPrev = false;
     this.mNormalImpulse = 0;
     this.mTangentImpulse = 0;
     this.mPositionImpulse = 0;
@@ -16,8 +15,8 @@ class Pair {
     this.mMass = 0;
     this.mOffset = new Vector();
 
-    this.normal = new Vector();
-    this.overlap = 0;
+    this.mNormal = new Vector();
+    this.mOverlap = 0;
   }
 
   set(a, b, bodyA, bodyB) {
@@ -34,8 +33,8 @@ class Pair {
   }
 
   preSolve() {
-    const normalX = this.normal.x;
-    const normalY = this.normal.y;
+    const normalX = this.mNormal.x;
+    const normalY = this.mNormal.y;
     const tangentX = -normalY;
     const tangentY = +normalX;
     const positionA = this.bodyA.mPosition;
@@ -62,15 +61,15 @@ class Pair {
     const relVelY = velocityB.y - velocityA.y;
     const relVel = relVelX * normalX + relVelY * normalY;
 
-    this.mBias = -Math.max(this.bodyA.mBounce, this.bodyB.mBounce) * relVel;
+    this.mBias = relVel < -30 ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
     this.mMass = 1 / (invMassA + invMassB);
-    this.mFriction = Math.min(this.bodyA.mFriction, this.bodyB.mFriction);
+    this.mFriction = Math.min(this.bodyA.friction, this.bodyB.friction);
     this.mPositionImpulse = 0;
   }
 
   solveVelocity() {
-    const normalX = this.normal.x;
-    const normalY = this.normal.y;
+    const normalX = this.mNormal.x;
+    const normalY = this.mNormal.y;
     const tangentX = -normalY;
     const tangentY = +normalX;
     const velocityA = this.bodyA.mVelocity;
@@ -119,8 +118,8 @@ class Pair {
   }
 
   solvePosition() {
-    const normalX = this.normal.x;
-    const normalY = this.normal.y;
+    const normalX = this.mNormal.x;
+    const normalY = this.mNormal.y;
     const invMassA = this.bodyA.mInvMass;
     const invMassB = this.bodyB.mInvMass;
     const positionA = this.bodyA.mPosition;
@@ -130,7 +129,7 @@ class Pair {
     const dx = offset.x - positionB.x + positionA.x;
     const dy = offset.y - positionB.y + positionA.y;
 
-    const overlap = this.overlap + (dx * normalX + dy * normalY);
+    const overlap = this.mOverlap + (dx * normalX + dy * normalY);
     const correction = (overlap - Pair.slop) * Pair.baumgarte;
 
     if (correction <= 0) return;
@@ -152,4 +151,4 @@ class Pair {
 }
 
 Pair.slop = 0.15;
-Pair.baumgarte = 0.2;
+Pair.baumgarte = 0.8;

@@ -4,6 +4,7 @@
  * @cat colliders
  * @extends Component
  */
+
 /* @echo EXPORT */
 class CircleCollider extends Collider {
   /**
@@ -16,51 +17,55 @@ class CircleCollider extends Collider {
   constructor(x, y, radius) {
     super();
 
-    /** @private @type {number} */
-    this.mX = x;
-
-    /** @private @type {number} */
-    this.mY = y;
-
-    /** @private @type {number} */
-    this.mRadius = radius;
-
     /** @private @type {Circle} */
-    this.mCircle = new Circle(x, y, radius);
+    this.mCircle = new Circle(x, y, radius);  // local to sprite
 
+    // local to body
+    this.mLocalCenter = new Vector();
+    this.mLocalMin = new Vector();
+    this.mLocalMax = new Vector();
 
-    this.localPosition = new Vector();
-    this.localRadius = 0;
-
-    this.position = new Vector();
-    this.radius = 0;
-    this.mChanged = false;
-
-    this.minX = 0;
-    this.minY = 0;
-    this.maxX = 0;
-    this.maxY = 0;
+    // global
+    this.mRadius = 0;
+    this.mCenter = new Vector();
+    this.mMin = new Vector();
+    this.mMax = new Vector();
 
     this.set(x, y, radius);
   }
 
   set(x, y, radius) {
-    this.localPosition.set(x, y);
-    this.localRadius = radius;
+    this.mCircle.set(x, y, radius);
     this.mChanged = true;
   }
 
-  refresh(transform) {
-    const position = this.position;
-    const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
-    const radius = this.localRadius * scale;
-    transform.transformVector(this.localPosition, position);
+  // This method calls from arcade fixed update
+  refresh(transform, position) {
+    const localMin = this.mLocalMin;
+    const localMax = this.mLocalMax;
+    const min = this.mMin;
+    const max = this.mMax;
+    const localCenter = this.mLocalCenter;
+    const center = this.mCenter;
 
-    this.minX = position.x - radius;
-    this.minY = position.y - radius;
-    this.maxX = position.x + radius;
-    this.maxY = position.y + radius;
-    this.radius = radius;
+    if (this.mChanged) {
+      const circle = this.mCircle;
+      const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
+
+      const vec = Vector.pool.get();
+      transform.transformVector(vec.set(circle.x, circle.y), localCenter);
+      Vector.pool.release(vec);
+
+      this.mRadius = circle.r * scale;
+    }
+
+    min.x = localMin.x + position.x;
+    min.y = localMin.y + position.y;
+    max.x = localMax.x + position.x;
+    max.y = localMax.y + position.y;
+
+    center.x = localCenter.x + position.x;
+    center.y = localCenter.y + position.y;
   }
 
   /**
@@ -71,6 +76,15 @@ class CircleCollider extends Collider {
    * @returns {boolean}
    */
   containsPoint(point) {
-    return (this.gameObject != null && localPosition.distance(point) <= this.localRadius);
+    if (this.gameObject === null) {
+      return false;
+    }
+
+    const circle = this.mCircle;
+    const vec = Vector.pool.get();
+    const distance = vec.set(circle.x, circle.y).distance(point);
+    Vector.pool.release(vec);
+
+    return distance <= circle.r;
   }
 }
