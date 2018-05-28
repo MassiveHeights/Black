@@ -148,6 +148,10 @@ class Pair {
     positionB.x += impulseX * invMassB;
     positionB.y += impulseY * invMassB;
   }
+
+  static __id(a, b) {
+    return a > b ? `${a}&${b}` : `${b}&${a}`;
+  }
 }
 
 Pair.slop = 0.15;

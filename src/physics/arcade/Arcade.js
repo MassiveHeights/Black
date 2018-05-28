@@ -8,19 +8,14 @@ class Arcade extends System {
     this.mBroadPhase = new Phase();
     this.mNarrowPhase = new NarrowPhase();
     this.mBodiesHash = Object.create(null); // for quick search in collide callback
+    this.mPairsHash = Object.create(null);
 
     this.gravity = new Vector(0, 1000);
     this.iterations = 1;
   }
 
-  collisionInfo(bodyA, bodyB, colliderA, colliderB, cb, ctx, ...args) {
-    const bodiesHash = this.mBodiesHash;
-    const pairsHash = bodiesHash[bodyA.mHash];
-
-    if (!pairsHash) return;
-
-    const pair = pairsHash[colliderA.mHash + '&' + colliderB.mHash] ||
-      pairsHash[colliderB.mHash + '&' + colliderA.mHash];
+  collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
+    const pair = this.mPairsHash[Pair.__id(colliderA.a, colliderB.b)];
 
     if (pair && pair.mInCollision) {
       const sign = pair.a === colliderA ? 1 : -1;
@@ -28,14 +23,29 @@ class Arcade extends System {
     }
   }
 
-  inCollision(bodyA, bodyB) {
+  inCollision(bodyA, bodyB, cb = null, ctx = null, ...args) {
     const bodiesHash = this.mBodiesHash;
-    const pairsHash = bodiesHash[bodyA.mHash];
+    const pairs = bodiesHash[bodyA.mHash];
 
-    for (let id in pairsHash) {
-      if (pairsHash[id].bodyB === bodyB) {
-        return true;
+    if (!pairs) {
+      return false;
+    }
+
+    for (let i = 0, l = pairs.length; i < l; i++) {
+      const pair = pairs[i];
+
+      if (!pair.mInCollision) continue;
+
+      const sign = pair.bodyA === bodyA && pair.bodyB === bodyB ? 1 :
+        pair.bodyA === bodyB && pair.bodyB === bodyA ? -1 : 0;
+
+      if (sign === 0) continue;
+
+      if (cb) {
+        cb.call(ctx, pair.mNormal.x * sign, pair.mNormal.y * sign, pair.mOverlap, ...args);
       }
+
+      return true;
     }
 
     return false;
@@ -85,7 +95,7 @@ class Arcade extends System {
     const bodies = this.mBodies;
     const colliders = body.gameObject.mCollidersCache;
 
-    this.mBodiesHash[body.mHash] = Object.create(null);
+    this.mBodiesHash[body.mHash] = [];
 
     if (colliders.length === 0) {
       this.__addPairs(body.mCollider, body);
@@ -196,13 +206,15 @@ class Arcade extends System {
     pair.set(a, b, bodyA, bodyB);
     this.mPairs.push(pair);
 
-    this.mBodiesHash[bodyA.mHash][a.mHash + '&' + b.mHash] = pair;
-    this.mBodiesHash[bodyB.mHash][b.mHash + '&' + a.mHash] = pair;
+    this.mPairsHash[Pair.__id(a, b)] = pair;
+    this.mBodiesHash[bodyA.mHash].push(pair);
+    this.mBodiesHash[bodyB.mHash].push(pair);
   }
 
   __removePairs(collider) {
     const pairs = this.mPairs;
-    const pairsHash = this.mBodiesHash;
+    const bodiesHash = this.mBodiesHash;
+    const pairsHash = this.mPairsHash;
 
     for (let i = pairs.length - 1; i >= 0; i--) {
       const pair = pairs[i];
@@ -211,8 +223,9 @@ class Arcade extends System {
         pairs.splice(i, 1);
         pair.constructor.pool.release(pair);
 
-        delete pairsHash[pair.bodyA.mHash][pair.a.mHash + '&' + pair.b.mHash];
-        delete pairsHash[pair.bodyB.mHash][pair.b.mHash + '&' + pair.a.mHash];
+        delete pairsHash[Pair.__id(pair.a, pair.b)];
+        bodiesHash[pair.bodyA.mHash].splice(bodiesHash[pair.bodyA.mHash].indexOf(pair), 1);
+        bodiesHash[pair.bodyB.mHash].splice(bodiesHash[pair.bodyB.mHash].indexOf(pair), 1);
       }
     }
   }
@@ -300,11 +313,23 @@ class Arcade extends System {
     }
   }
 
-  createBounds(x = 0, y = 0, width = Black.stage.width, height = Black.stage.height, parent = Black.stage, thickness = 1000) {
+  createBounds() {
+    const x = 0;
+    const y = 0;
+    const width = Black.instance.viewport.size.width;
+    const height = Black.instance.viewport.size.height;
+    const parent = Black.instance.stage.mChildren[0];
+    const thickness = 1000;
+
+    const body = new RigidBody();
+    body.isStatic = true;
+
+    parent.addComponent(body);
     parent.addComponent(new BoxCollider(x - thickness, y - thickness, width + thickness * 2, thickness)); // top
     parent.addComponent(new BoxCollider(x + width, y, thickness, height)); // right
     parent.addComponent(new BoxCollider(x - thickness, y + height, width + thickness * 2, thickness)); // bottom
     parent.addComponent(new BoxCollider(x - thickness, y, thickness, height)); // left
-    parent.addComponent(new RigidBody());
+
+    return body;
   }
 }

@@ -66,6 +66,22 @@ class RigidBody extends Component {
     return this.mPosition.y;
   }
 
+  set velocityX(v) {
+    this.mVelocity.x = v;
+  }
+
+  get velocityX() {
+    return this.mVelocity.x;
+  }
+
+  set velocityY(v) {
+    this.mVelocity.y = v;
+  }
+
+  get velocityY() {
+    return this.mVelocity.y;
+  }
+
   update() {
     const gameObject = this.gameObject;
     const colliders = gameObject.mCollidersCache;
