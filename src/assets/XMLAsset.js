@@ -1,11 +1,11 @@
 /**
  * Single JSON file asset class responsible for loading json file.
  *
- * @cat loaders
+ * @cat assets
  * @extends Asset
  */
 /* @echo EXPORT */
-class JSONAsset extends Asset {
+class XMLAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
@@ -16,14 +16,16 @@ class JSONAsset extends Asset {
   constructor(name, url) {
     super(name, url);
 
-    this.mimeType = 'application/json';
+    /** @private @type {XHRAssetLoader} */
+    this.mXHR = new XHRAssetLoader(url);
+    this.mXHR.mimeType = 'text/xml';
+    this.addLoader(this.mXHR);
   }
 
   /**
    * @inheritDoc
    */
-  onLoaded(){
-    this.mData = JSON.parse(/** @type {string} */ (this.mRequest.responseText) );
-    super.onLoaded();
+  onAllLoaded() {
+    super.ready(new DOMParser().parseFromString(/** @type {string} */(this.mXHR.data), 'text/xml'));
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
  *
- * @cat loaders
+ * @cat assets
  * @extends Asset
  */
 /* @echo EXPORT */
@@ -16,49 +16,28 @@ class BitmapFontAsset extends Asset {
   constructor(name, imageUrl, xmlUrl) {
     super(name, imageUrl);
 
-    /** @private @type {TextureAsset} */
-    this.mTextureAsset = new TextureAsset(name, imageUrl);
-    this.mTextureAsset.on(Message.COMPLETE, this.onImageLoaded, this);
+    /** @type {number} */
+    this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
-    /** @private @type {XMLAsset} */
-    this.mXMLAsset = new XMLAsset(name, xmlUrl);
-    this.mXMLAsset.on(Message.COMPLETE, this.onXMLLoaded, this);
-  }
+    /** @private @type {ImageAssetLoader} */
+    this.mImageLoader = new ImageAssetLoader(imageUrl);
 
-  /**
-   * @ignore
-   * @private
-   * @returns {void}
-   */
-  onImageLoaded() {
-    this.mXMLAsset.load();
-  }
+    /** @private @type {XHRAssetLoader} */
+    this.mXHR = new XHRAssetLoader(xmlUrl);
+    this.mXHR.mimeType = 'text/xml';
 
-  /**
-   * @ignore
-   * @private
-   * @returns {void}
-   */
-  onXMLLoaded() {
-    this.onLoaded();
+    this.addLoader(this.mImageLoader);
+    this.addLoader(this.mXHR);
   }
 
   /**
    * @inheritDoc
    */
-  onLoaded() {
-    let xml = this.mXMLAsset.data;
-    let texture = this.mTextureAsset.data;
+  onAllLoaded() {
+    let xml = new DOMParser().parseFromString(/** @type {string} */(this.mXHR.data), 'text/xml');
+    let texture = new Texture(this.mImageLoader.data, null, null, this.mScale);
 
-    this.mData = BitmapFontAsset.parse(xml, texture);
-    super.onLoaded();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  load() {
-    this.mTextureAsset.load();
+    super.ready(BitmapFontAsset.parse(xml, texture));
   }
 
   /**

@@ -74,6 +74,11 @@ class Message {
  */
 Message.pool = new ObjectPool(Message);
 
-// TODO: add jsdoc
+/** @const @public @type {string} */
 Message.PROGRESS = 'progress';
+
+/** @const @public @type {string} */
 Message.COMPLETE = 'complete';
+
+/** @const @public @type {string} */
+Message.ERROR = 'error';

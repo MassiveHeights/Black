@@ -1,5 +1,3 @@
-// TODO: fix jsdoc to display this enum
-
 /**
  * @readonly
  * @enum {number}

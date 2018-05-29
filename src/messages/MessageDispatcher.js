@@ -12,7 +12,7 @@ class MessageDispatcher {
    * @param {boolean} [checkForStage=false]
    */
   constructor(checkForStage = false) {
-    this.mListeners = null;
+    this.mBindings = null;
     this.checkForStage = checkForStage;
   }
 
@@ -27,6 +27,32 @@ class MessageDispatcher {
    */
   on(name, callback, context) {
     return this.__on(name, callback, false, context);
+  }
+
+  /**
+   * Removes all bindings by given message name.
+   * 
+   * @public
+   * @param {...string} names One or more message name.
+   * @returns {void}
+   */
+  off(...names) {
+    for (let i = 0; i < names.length; i++) {
+      const name = names[i];
+
+      let earIndex = name.indexOf('@');
+      if (earIndex !== -1) {
+        Debug.error('Removing overheard bindings is not allowed.');
+        return;
+      }
+
+      if (this.mBindings !== null && this.mBindings.hasOwnProperty(name) === true) {
+        let bindings = this.mBindings[name].slice();
+
+        for (let i = 0; i < bindings.length; i++)
+          this.__off(bindings[i]);
+      }
+    }
   }
 
   /**
@@ -127,14 +153,14 @@ class MessageDispatcher {
       return binding;
     }
 
-    if (this.mListeners === null)
-      this.mListeners = {};
+    if (this.mBindings === null)
+      this.mBindings = {};
 
-    if (this.mListeners.hasOwnProperty(name) === false)
-      this.mListeners[name] = [];
+    if (this.mBindings.hasOwnProperty(name) === false)
+      this.mBindings[name] = [];
 
     let binding = new MessageBinding(this, name, callback, isOnce, context, BindingType.REGULAR);
-    this.mListeners[name].push(binding);
+    this.mBindings[name].push(binding);
 
     return binding;
   }
@@ -145,13 +171,13 @@ class MessageDispatcher {
    */
   __off(binding) {
     if (binding.type === BindingType.REGULAR) {
-      if (this.mListeners === null)
+      if (this.mBindings === null)
         return;
 
-      if (this.mListeners.hasOwnProperty(binding.name) === false)
+      if (this.mBindings.hasOwnProperty(binding.name) === false)
         return;
 
-      let bindings = this.mListeners[binding.name];
+      let bindings = this.mBindings[binding.name];
       const ix = bindings.indexOf(binding);
       if (ix === -1)
         return;
@@ -184,13 +210,13 @@ class MessageDispatcher {
     if (message.canceled === true)
       return;
 
-    if (this.mListeners === null)
+    if (this.mBindings === null)
       return;
 
     if (this.checkForStage === true && this !== Black.stage && this.stage === null)
       return;
 
-    let bindings = (this.mListeners[message.name]);
+    let bindings = (this.mBindings[message.name]);
 
     if (bindings === undefined || bindings.length === 0)
       return;

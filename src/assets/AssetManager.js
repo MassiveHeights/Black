@@ -1,15 +1,11 @@
-/*
-TODO:
-  1. proper error handling
-  2. max parallel downloads
-  3. check for name duplicates
-  4. load progress
-*/
-
 /**
  * Responsible for preloading assets and manages its in memory state.
  *
- * @cat loaders
+ * @fires Message.PROGRESS
+ * @fires Message.COMPLETE
+ * @fires Message.ERROR
+ * 
+ * @cat assets
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -27,6 +23,12 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {number} */
     this.mTotalLoaded = 0;
 
+    /** @private @type {number} */
+    this.mTotalPending = 0;
+
+    /** @private @type {number} */
+    this.mTotalErrors = 0;
+
     /** @private @type {boolean} */
     this.mIsAllLoaded = false;
 
@@ -35,6 +37,9 @@ class AssetManager extends MessageDispatcher {
 
     /** @private @type {Array<Asset>} */
     this.mQueue = [];
+
+    /** @private @type {Array<AssetLoader>} */
+    this.mLoadersQueue = [];
 
     /** @private @type {Object.<string, Texture>} */
     this.mTextures = {};
@@ -59,6 +64,12 @@ class AssetManager extends MessageDispatcher {
 
     /** @private @type {Object.<string, BitmapFontData>} */
     this.mBitmapFonts = {};
+
+    /** @private @type {AssetManagerState} */
+    this.mState = AssetManagerState.NONE;
+
+    /** @private @type {Object.<string, boolean>} */
+    this.mDictionary = {};
   }
 
   /**
@@ -78,6 +89,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueImage(name, url) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
   }
 
@@ -90,6 +103,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueAtlas(name, imageUrl, dataUrl) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
   }
 
@@ -102,6 +117,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueBitmapFont(name, imageUrl, xmlUrl) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new BitmapFontAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
   }
 
@@ -113,6 +130,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueXML(name, url) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new XMLAsset(name, this.mDefaultPath + url));
   }
 
@@ -124,6 +143,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueJSON(name, url) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
   }
 
@@ -135,6 +156,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueSound(name, url) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
   }
 
@@ -147,6 +170,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueSoundAtlas(name, soundUrl, dataUrl) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new SoundAtlasAsset(name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
   }
 
@@ -158,6 +183,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueFont(name, url) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
   }
 
@@ -168,6 +195,8 @@ class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueGoogleFont(name) {
+    this.__validateState();
+    this.__validateName(name);
     this.mQueue.push(new FontAsset(name, '', false));
   }
 
@@ -178,11 +207,26 @@ class AssetManager extends MessageDispatcher {
    * @return {void}
    */
   loadQueue() {
+    this.__validateState();
+    this.__validateName(name);
+    this.mState = AssetManagerState.LOADING;
+
     for (let i = 0; i < this.mQueue.length; i++) {
       let item = this.mQueue[i];
 
-      item.on(Message.COMPLETE, this.onAssetLoaded, this);
-      item.load();
+      if (item.loaders.length > 0) {
+        item.on(Message.COMPLETE, this.onAssetLoaded, this);
+        item.on(Message.ERROR, this.onAssetError, this);
+        this.mLoadersQueue.push(...item.loaders);
+
+        this.mTotalPending++;
+      }
+    }
+
+    // Loader will notify Asset when its ready. Asset will notify AssetManager.
+    for (let i = 0; i < this.mLoadersQueue.length; i++) {
+      let loader = this.mLoadersQueue[i];
+      loader.load();
     }
   }
 
@@ -194,11 +238,11 @@ class AssetManager extends MessageDispatcher {
    */
   onAssetLoaded(msg) {
     this.mTotalLoaded++;
-    this.mLoadingProgress = this.mTotalLoaded / this.mQueue.length;
+    this.mLoadingProgress = this.mTotalLoaded / this.mTotalPending;
 
     let item = /** @type {Asset}*/ (msg.sender);
+    item.off(Message.COMPLETE, Message.ERROR);
 
-    // TODO: rework this
     // TODO: check for dups
     if (item.constructor === TextureAsset)
       this.mTextures[item.name] = item.data;
@@ -217,14 +261,43 @@ class AssetManager extends MessageDispatcher {
     else if (item.constructor === BitmapFontAsset)
       this.mBitmapFonts[item.name] = item.data;
     else
-      console.error('Unable to handle asset type.', item);
+      Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
-    if (this.mTotalLoaded === this.mQueue.length) {
+    if (this.mTotalLoaded === this.mTotalPending) {
       this.mQueue.splice(0, this.mQueue.length);
+      this.mLoadersQueue.splice(0, this.mLoadersQueue.length);
+      this.mState = AssetManagerState.FINISHED;
       this.mTotalLoaded = 0;
+      this.mTotalErrors = 0;
       this.mIsAllLoaded = true;
+      this.mDictionary = {};
+      this.post(Message.COMPLETE);
+    }
+  }
+
+  onAssetError(msg) {
+    this.mTotalErrors++;
+
+    let total = this.mTotalLoaded + this.mTotalErrors;
+    this.mLoadingProgress = this.mTotalLoaded / this.mTotalPending;
+
+    let item = /** @type {Asset}*/ (msg.sender);
+
+    item.off(Message.COMPLETE, Message.ERROR);
+    Debug.warn(`[AssetManager] Error loading asset '${item.name}'.`);
+
+    this.post(Message.ERROR, item);
+
+    if (total === this.mTotalPending) {
+      this.mQueue.splice(0, this.mQueue.length);
+      this.mLoadersQueue.splice(0, this.mLoadersQueue.length);
+      this.mState = AssetManagerState.FINISHED;
+      this.mTotalLoaded = 0;
+      this.mTotalErrors = 0;
+      this.mIsAllLoaded = true;
+      this.mDictionary = {};
       this.post(Message.COMPLETE);
     }
   }
@@ -242,7 +315,7 @@ class AssetManager extends MessageDispatcher {
     if (t != null)
       return t;
 
-    Debug.warn(`BitmapFontData '${name}' was not found`);
+    Debug.warn(`[AssetManager] BitmapFontData '${name}' was not found.`);
     return null;
   }
 
@@ -265,7 +338,7 @@ class AssetManager extends MessageDispatcher {
         return t;
     }
 
-    Debug.warn(`Texture '${name}' was not found`);
+    Debug.warn(`[AssetManager] Texture '${name}' was not found.`);
     return null;
   }
 
@@ -318,10 +391,14 @@ class AssetManager extends MessageDispatcher {
    * Returns AtlasTexture by given name.
    *
    * @param {string} name The name of the Asset.
-   * @return {AtlasTexture} Returns atlas or null.
+   * @return {AtlasTexture|null} Returns atlas or null.
    */
   getAtlas(name) {
-    return this.mAtlases[name];
+    if (this.mAtlases[name] != null)
+      return this.mAtlases[name];
+
+    Debug.warn(`[AssetManager] Atlas '${name}' was not found.`);
+    return null;
   }
 
   /**
@@ -343,7 +420,7 @@ class AssetManager extends MessageDispatcher {
         return t;
     }
 
-    Debug.warn(`Sound '${name}' was not found`);
+    Debug.warn(`[AssetManager] Sound '${name}' was not found.`);
     return null;
   }
 
@@ -365,6 +442,16 @@ class AssetManager extends MessageDispatcher {
    */
   getJSON(name) {
     return this.mJsons[name];
+  }
+
+  __validateState() {
+    Debug.assert(this.mState === AssetManagerState.NONE || this.mState === AssetManagerState.FINISHED, 'Illegal state.');
+  }
+
+  __validateName(name) {
+    Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
+
+    this.mDictionary[name] = true;
   }
 
   /**
@@ -393,6 +480,23 @@ class AssetManager extends MessageDispatcher {
    */
   get isAllLoaded() {
     return this.mIsAllLoaded;
+  }
+
+  /**
+   * Returns number of errors occured during loading.
+   * @returns {number}
+   */
+  get numErrors() {
+    return this.mTotalErrors;
+  }
+
+  /**
+   * Returns current state.
+   * 
+   * @returns {AssetManagerState}
+   */
+  get state() {
+    return this.mState;
   }
 }
 
