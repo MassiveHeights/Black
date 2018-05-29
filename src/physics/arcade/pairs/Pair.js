@@ -61,7 +61,7 @@ class Pair {
     const relVelY = velocityB.y - velocityA.y;
     const relVel = relVelX * normalX + relVelY * normalY;
 
-    this.mBias = relVel < -30 ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
+    this.mBias = relVel < -Pair.bounceTrashhold ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
     this.mMass = 1 / (invMassA + invMassB);
     this.mFriction = Math.min(this.bodyA.friction, this.bodyB.friction);
     this.mPositionImpulse = 0;
@@ -130,7 +130,7 @@ class Pair {
     const dy = offset.y - positionB.y + positionA.y;
 
     const overlap = this.mOverlap + (dx * normalX + dy * normalY);
-    const correction = (overlap - Pair.slop) * Pair.baumgarte;
+    const correction = (overlap - Pair.slop) * Pair.baumgarte * Pair.pixelsPerMeter;
 
     if (correction <= 0) return;
 
@@ -152,7 +152,13 @@ class Pair {
   static __id(a, b) {
     return a > b ? `${a}&${b}` : `${b}&${a}`;
   }
+
+  static settings(pixelsPerMeter = 1, baumgarte = 0.6) {
+    Pair.pixelsPerMeter = pixelsPerMeter;
+    Pair.slop = 0.005 * Pair.pixelsPerMeter;
+    Pair.bounceTrashhold = Pair.pixelsPerMeter; // Pair.pixelsPerMeter / 1.0
+    Pair.baumgarte = baumgarte;
+  }
 }
 
-Pair.slop = 0.15;
-Pair.baumgarte = 0.8;
+Pair.settings();

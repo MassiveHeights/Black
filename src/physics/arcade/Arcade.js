@@ -257,6 +257,9 @@ class Arcade extends System {
     for (let i = 0, l = pairs.length; i < l; i++) {
       if (pairs[i].mInCollision) {
         contacts.push(pairs[i]);
+      } else {
+        pairs[i].mNormalImpulse = 0;
+        pairs[i].mTangentImpulse = 0;
       }
     }
 
@@ -302,8 +305,8 @@ class Arcade extends System {
       const position = body.mPosition;
       const velocity = body.mVelocity;
 
-      position.x += velocity.x * dt;
-      position.y += velocity.y * dt;
+      position.x += velocity.x * dt * Pair.pixelsPerMeter;
+      position.y += velocity.y * dt * Pair.pixelsPerMeter;
     }
 
     for (let i = 0; i < iterations; i++) {
