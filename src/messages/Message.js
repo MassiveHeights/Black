@@ -82,3 +82,6 @@ Message.COMPLETE = 'complete';
 
 /** @const @public @type {string} */
 Message.ERROR = 'error';
+
+/** @const @public @type {string} */
+Message.CHANGE = 'change';

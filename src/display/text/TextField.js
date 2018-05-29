@@ -504,6 +504,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
+    this.post(Message.CHANGE);
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
