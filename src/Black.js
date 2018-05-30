@@ -132,6 +132,9 @@ class Black extends MessageDispatcher {
     /** @private @type {boolean} */
     this.mWasStopped = false;
 
+    /** @private @type {SplashScreen} */
+    this.mSplashScreen = new SplashScreen();
+
     this.__bootViewport();
   }
 
@@ -301,6 +304,10 @@ class Black extends MessageDispatcher {
       self.mLastFrameTimeMs = timestamp;
       self.mLastFpsUpdate = timestamp;
       self.mFramesThisSecond = 0;
+
+      // show splash screen
+      if (SplashScreen.enabled === true)
+        self.mSplashScreen.show();
 
       // Start the main loop.
       self.mRAFHandle = window.requestAnimationFrame(self.__update.bind(self));

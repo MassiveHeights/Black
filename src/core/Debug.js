@@ -51,7 +51,7 @@ class Debug {
       return;
 
     message = message == null ? 'Assertation info.' : message;
-    Debug.warn(message);
+    Debug.info(message);
   }
 
   /**
@@ -78,7 +78,7 @@ class Debug {
    * @param  {...string} message
    */
   static warn(...message) {
-    console.info('%c%s', 'color: #f67400', ...message);
+    console.info('%c%s', 'color: #f67400', 'WARN:', ...message);
   }
 
   /**

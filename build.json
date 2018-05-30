@@ -161,6 +161,7 @@
     "src/audio/Sound.js",
     "src/audio/SoundListener.js",
 
+    "src/core/SplashScreen.js",
     "src/Black.js"
   ]
 }
