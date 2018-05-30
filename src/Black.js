@@ -241,7 +241,7 @@ class Black extends MessageDispatcher {
    * Gets system by type.
    *
    * @param {Function} typeName The system type.
-   * @return {Component|null} The `System` instance or null if not found.
+   * @return {System|null} The `System` instance or null if not found.
    */
   getSystem(typeName) {
     for (let i = 0; i < this.mSystems.length; i++) {
@@ -278,8 +278,7 @@ class Black extends MessageDispatcher {
       return;
 
     // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false)
-      Debug.info('Fixed time-step is disabled, some systems may not work.');
+    Debug.assertInfo(this.mEnableFixedTimeStep === true, 'Fixed time-step is disabled, some systems may not work.');
 
     this.__bootSystems();
     this.__bootStage();

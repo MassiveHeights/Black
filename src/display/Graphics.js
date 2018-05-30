@@ -140,7 +140,7 @@ class Graphics extends DisplayObject {
    * @param {number} radius        The radius of the arc.  
    * @param {number} startAngle    The starting angle in radians.
    * @param {number} endAngle      The ending angle in radians.
-   * @param {number} anticlockwise If true the arc will be drawn counter-clockwise.
+   * @param {boolean} anticlockwise If true the arc will be drawn counter-clockwise.
    * @returns {void} 
    */
   arc(x, y, radius, startAngle, endAngle, anticlockwise = false) {
@@ -173,7 +173,7 @@ class Graphics extends DisplayObject {
       if (we < 0)
         we += MathEx.PI2;
 
-      if (diff > Math.Pi || anticlockwise)
+      if (diff > Math.PI || anticlockwise)
         [ws, we] = [we, ws];
 
       for (let i = 0; i < Math.PI * 2; i += Math.PI * 0.5) {
@@ -364,7 +364,7 @@ class Graphics extends DisplayObject {
    * @private
    * @ignore
    * @param {GraphicsCommandType} type
-   * @param {...number} data 
+   * @param {...*} data 
    */
   __pushCommand(type, ...data) {
     let cmd = new GraphicsCommand(type, data);

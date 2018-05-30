@@ -14,7 +14,7 @@ class XMLAsset extends Asset {
    * @return {void}
    */
   constructor(name, url) {
-    super(name, url);
+    super(name);
 
     /** @private @type {XHRAssetLoader} */
     this.mXHR = new XHRAssetLoader(url);

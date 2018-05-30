@@ -14,7 +14,7 @@ class SoundAtlasAsset extends Asset {
    * @param {string} dataUrl  URL to load atlas data from.
    */
   constructor(name, soundUrl, dataUrl) {
-    super(name, soundUrl);
+    super(name);
 
     if (Device.webAudioSupported === false)
       return;

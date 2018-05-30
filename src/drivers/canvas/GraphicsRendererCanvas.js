@@ -35,34 +35,34 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     ctx.save();
     
     for (let i = 0; i < len; i++) {
-      const cmd = this.commands[i];
+      const cmd = this.commands[i];      
 
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
-          ctx.lineWidth = cmd.data[0] * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.data[1], cmd.data[2]);
-          ctx.lineCap = cmd.data[3];
-          ctx.lineJoin = cmd.data[4];
-          ctx.mitterLimit = cmd.data[5];
+          ctx.lineWidth = cmd.getNumber(0) * r;
+          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.getNumber(1), cmd.getNumber(2));
+          ctx.lineCap = cmd.getString(3);
+          ctx.lineJoin = cmd.getString(4);
+          ctx.mitterLimit = cmd.getNumber(5);
           break;
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(cmd.data[0], cmd.data[1]);
+          ctx.fillStyle = ColorHelper.intToRGBA(cmd.getNumber(0), cmd.getNumber(1));
           break;
         }
 
         case GraphicsCommandType.ARC: {
-          ctx.arc(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3], cmd.data[4], cmd.data[5]);
+          ctx.arc(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
           break;
         }
 
         case GraphicsCommandType.RECT: {
-          ctx.rect(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3] * r);
+          ctx.rect(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
           break;
         }
         // case GraphicsCommandType.BEZIER_CURVE_TO: {
-        //   ctx.bezierCurveTo(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+        //   ctx.bezierCurveTo(cmd.getNumber(0), cmd.getNumber(1), cmd.getNumber(2), cmd.getNumber(3), cmd.getNumber(4), cmd.getNumber(5));
         //   break;
         // }
         case GraphicsCommandType.BEGIN_PATH: {
@@ -79,12 +79,12 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.LINE_TO: {
-          ctx.lineTo(cmd.data[0] * r, cmd.data[1] * r);
+          ctx.lineTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
           break;
         }
 
         case GraphicsCommandType.MOVE_TO: {
-          ctx.moveTo(cmd.data[0] * r, cmd.data[1] * r);
+          ctx.moveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
           break;
         }
 
@@ -109,30 +109,5 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    */
   get isRenderable() {
     return this.commands.length > 0;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {GraphicsCommand} cmd
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  __setLineStyle(cmd, ctx) {
-    ctx.lineWidth = cmd.lineWidth;
-    ctx.strokeStyle = ColorHelper.hexColorToString(cmd.lineColor);
-    ctx.globalAlpha = cmd.lineAlpha * this.alpha;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {GraphicsCommand} cmd
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  __setFillStyle(cmd, ctx, color = null) {
-    color = color === null ? cmd.fillColor : color;
-
-    ctx.globalAlpha = cmd.fillAlpha * this.alpha;
-    ctx.fillStyle = ColorHelper.hexColorToString(color);
   }
 }

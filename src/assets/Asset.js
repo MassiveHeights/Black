@@ -17,7 +17,7 @@ class Asset extends MessageDispatcher {
     /** @protected @type {string} */
     this.mName = name;
 
-    /** @protected @type {?|null} */
+    /** @protected @type {Object|undefined} */
     this.mData = null;
 
     /** @protected @type {Array<AssetLoader>} */
@@ -25,6 +25,9 @@ class Asset extends MessageDispatcher {
 
     /** @private @type {number} */
     this.mNumLoaded = 0;
+
+    /** @private @type {boolean} */
+    this.mIsReady = false;
   }
 
   /**
@@ -68,8 +71,7 @@ class Asset extends MessageDispatcher {
   /**
    * @protected
    */
-  onAllLoaded() {
-  }
+  onAllLoaded() {}
 
   /**
    * @public
@@ -86,11 +88,12 @@ class Asset extends MessageDispatcher {
 
   /**
    * @protected
-   * @param {?|null} data
+   * @param {Object=} data
    * @returns {void}
    */
   ready(data) {
     this.mData = data;
+    this.mIsReady = true;
     this.post(Message.COMPLETE);
   }
 
@@ -117,8 +120,8 @@ class Asset extends MessageDispatcher {
    *
    * @return {boolean}
    */
-  get isLoaded() {
-    return this.mIsLoaded;
+  get isReady() {
+    return this.mIsReady;
   }
 
   /**

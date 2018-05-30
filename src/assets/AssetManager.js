@@ -208,7 +208,6 @@ class AssetManager extends MessageDispatcher {
    */
   loadQueue() {
     this.__validateState();
-    this.__validateName(name);
     this.mState = AssetManagerState.LOADING;
 
     for (let i = 0; i < this.mQueue.length; i++) {
@@ -260,8 +259,9 @@ class AssetManager extends MessageDispatcher {
       this.mXMLs[item.name] = item.data;
     else if (item.constructor === BitmapFontAsset)
       this.mBitmapFonts[item.name] = item.data;
-    else
+    else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
+    }
 
     this.post(Message.PROGRESS, this.mLoadingProgress);
 

@@ -14,7 +14,7 @@ class BitmapFontAsset extends Asset {
    * @param {string} xmlUrl   XML URL.
    */
   constructor(name, imageUrl, xmlUrl) {
-    super(name, imageUrl);
+    super(name);
 
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
