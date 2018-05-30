@@ -226,7 +226,9 @@ class DisplayObject extends GameObject {
     const sf = Black.stage.scaleFactor;
     const fs = Black.driver.finalScale;
 
-    let m = Matrix.pool.get().set(1, 0, 0, 1, ~~(-bounds.x * sf - this.stage.mX), ~~(-bounds.y * sf - this.stage.mY));
+    /** @type {Matrix} */
+    let m = Matrix.pool.get();
+    m.set(1, 0, 0, 1, ~~(-bounds.x * sf - this.stage.mX), ~~(-bounds.y * sf - this.stage.mY));
 
     if (this.mClipRect !== null && this.mClipRect.isEmpty === false) {
       m.data[4] += this.pivotX * sf;

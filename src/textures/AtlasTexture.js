@@ -43,8 +43,7 @@ class AtlasTexture extends Texture {
   getTexture(name) {
     /** @type {Texture} */
     let t = this.mSubTextures[name];
-    if (t === undefined)
-      Debug.warn(`Texture '${name}' was not found`);
+    Debug.assertWarn(t !== undefined, `Texture '${name}' was not found`);
 
     return /** @type {Texture} */ (t);
   }

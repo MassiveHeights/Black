@@ -38,6 +38,22 @@ class Debug {
       throw new Error(message);
   }
 
+  static assertWarn(value, message) {
+    if (value === true)
+      return;
+
+    message = message == null ? 'Assertation warning.' : message;
+    Debug.warn(message);
+  }
+
+  static assertInfo(value, message) {
+    if (value === true)
+      return;
+
+    message = message == null ? 'Assertation info.' : message;
+    Debug.warn(message);
+  }
+
   /**
    * Outputs a message to the console
    * 

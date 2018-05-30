@@ -26,6 +26,6 @@ class JSONAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    super.ready(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    super.ready(/** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data))));
   }
 }
