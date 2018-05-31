@@ -10,7 +10,7 @@ class SplashScreen extends MessageDispatcher {
 
   show() {
     let duration = SplashScreen.duration * 0.001;
-    let css = `#logo,#splash-screen{position:relative;box-sizing:border-box}#logo-inner,#logo-name{margin-left:auto;margin-right:auto}#splash-screen{z-index:999;top:0;left:0;width:100%;height:100%;display:block;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQYV2OUkpL6/+zZMwYpKSkGEM3IwMDwnwEJMBJUAQCLUhABUGRZzwAAAABJRU5ErkJggg==);opacity:1;animation:hide 0s ease-in ${duration}s forwards}@keyframes hide{to{opacity:0}}#logo{top:20%;left:50%;animation:fadein ${duration}s linear forwards}@keyframes fadein{0%{opacity:0}100%,20%{opacity:1}}#logo-name{width:100%;margin-top:108px}`;
+    let css = `#logo,#splash-screen{position:relative;box-sizing:border-box}#logo-inner,#logo-name{margin-left:auto;margin-right:auto}#splash-screen{z-index:999;top:0;left:0;width:100%;height:100%;display:block;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQYV2OUkpL6/+zZMwYpKSkGEM3IwMDwnwEJMBJUAQCLUhABUGRZzwAAAABJRU5ErkJggg==);opacity:1;animation:hide 0s ease-in ${duration}s forwards}@keyframes hide{to{opacity:0}}#logo{top:20%;left:50%;animation:fadein ${duration}s linear forwards}@keyframes fadein{0%{opacity:0}100%,40%{opacity:1}}#logo-name{width:100%;margin-top:108px}`;
 
     var style = document.createElement('style');
     style.type = 'text/css';
@@ -64,15 +64,13 @@ class SplashScreen extends MessageDispatcher {
       if (cw !== container.offsetWidth || ch !== container.offsetHeight) {
         cw = container.offsetWidth;
         ch = container.offsetHeight;
-        console.log('fre');
-
         refresh();
       }
     }, 1000 / 60);
 
     setTimeout(() => {
       clearTimeout(handle);
-      
+
       style.parentNode.removeChild(style);
       splash.parentNode.removeChild(splash);
     }, SplashScreen.duration);
