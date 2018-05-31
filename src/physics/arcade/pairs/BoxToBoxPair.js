@@ -9,6 +9,7 @@ class BoxToBoxPair extends Pair {
     }
 
     this.mProjections = projections;
+    this.mChanged = false;
   }
 
   set(a, b, bodyA, bodyB) {
@@ -34,17 +35,21 @@ class BoxToBoxPair extends Pair {
     const a = this.a;
     const b = this.b;
 
+    if (a.mChanged || b.mChanged) {
+      this.mChanged = true;
+    }
+
     if (a.mMax.x < b.mMin.x || a.mMin.x > b.mMax.x || a.mMax.y < b.mMin.y || a.mMin.y > b.mMax.y) {
       return this.mInCollision = false;
     }
 
     const projections = this.mProjections;
     const normal = this.mNormal;
-    const offsetX = b.mCenter.x - a.mCenter.x;
-    const offsetY = b.mCenter.y - a.mCenter.y;
+    const offsetX = this.bodyB.x - this.bodyA.x;
+    const offsetY = this.bodyB.y - this.bodyA.y;
 
+    this.mChanged && this.refreshProjectionsRanges();
     this.mOverlap = Number.MAX_VALUE;
-    (a.mChanged || b.mChanged) && this.refreshProjectionsRanges();
 
     for (let i = 0; i < 4; i++) {
       const projection = projections[i];

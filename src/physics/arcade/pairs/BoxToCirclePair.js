@@ -5,6 +5,7 @@ class BoxToCirclePair extends Pair {
     this.mBoxHalfWidth = 0;
     this.mBoxHalfHeight = 0;
     this.mBoxRotate = new Vector();
+    this.mChanged = false;
   }
 
   static __rotate(point, anchorX, anchorY, cos, sin) {
@@ -21,25 +22,29 @@ class BoxToCirclePair extends Pair {
     const box = this.a;
     const circle = this.b;
 
+    if (box.mChanged) {
+      this.mChanged = true;
+    }
+
     if (box.mMax.x < circle.mMin.x || box.mMin.x > circle.mMax.x ||
       box.mMax.y < circle.mMin.y || box.mMin.y > circle.mMax.y)
     {
       return this.mInCollision = false;
     }
 
+    if (this.mChanged) {
+      const transform = box.gameObject.worldTransformation;
+      const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
+
+      this.mBoxRotate.set(transform.data[0] / scale, transform.data[1] / scale);
+      this.mBoxHalfWidth = box.mRect.width / 2 * scale;
+      this.mBoxHalfHeight = box.mRect.height / 2 * scale;
+    }
+
     const boxRotate = this.mBoxRotate;
     const normal = this.mNormal;
     let hw = this.mBoxHalfWidth;
     let hh = this.mBoxHalfHeight;
-
-    if (box.mChanged) {
-      const transform = box.gameObject.worldTransformation;
-      const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
-
-      boxRotate.set(transform.data[0] / scale, transform.data[1] / scale);
-      hw = this.mBoxHalfWidth = box.mRect.width / 2 * scale;
-      hh = this.mBoxHalfHeight = box.mRect.height / 2 * scale;
-    }
 
     const rotated = boxRotate.y !== 0;
 

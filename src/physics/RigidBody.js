@@ -100,31 +100,50 @@ class RigidBody extends Component {
       }
     }
 
-    if (gameObject.texture /* && (pivot changed || texture changed) todo */) {
+    if (colliders.length === 0 && gameObject.texture) {
+      // if (pivot changed || texture changed) {
       collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height);
-    }
+      // }todo
 
-    collider.refresh(transform, position);
-
-    for (let i = 0, l = colliders.length; i < l; i++) {
-      colliders[i].refresh(transform, position);
+      collider.refresh(transform, position);
+    } else {
+      for (let i = 0, l = colliders.length; i < l; i++) {
+        colliders[i].refresh(transform, position);
+      }
     }
 
     gameObject.parent.globalToLocal(this.mPosition, gameObject);
   }
 
   debug() {
-    // const debug = RigidBody.mDebug;
-    //
-    // if (debug.graphics === null) {
-    //   debug.graphics = new Graphics();
-    // }
-    //
-    // if (debug.time !== Black.instance.mLastFrameTimeMs) {
-    //   debug.time = Black.instance.mLastFrameTimeMs;
-    //   Black.instance.stage.add(debug.graphics);
-    //   debug.graphics.clear();
-    // }
+    const debug = RigidBody.mDebug;
+
+    if (debug.graphics === null) {
+      debug.graphics = new Graphics();
+    }
+
+    if (debug.time !== Black.instance.mLastFrameTimeMs) {
+      debug.time = Black.instance.mLastFrameTimeMs;
+      Black.instance.stage.add(debug.graphics);
+      debug.graphics.clear();
+    }
+
+    const colliders = this.gameObject.mCollidersCache;
+    const colldier = this.mCollider;
+    debug.graphics.lineColor = 0xffffff;
+
+    if (colliders.length) {
+      for (let i = 0, l = colliders.length; i < l; i++) {
+        const vertices = colliders[i].mVertices;
+
+        for (let j = 1; j < 4; j++) {
+          const vertex = vertices[j];
+          const prev = vertices[j - 1];
+
+          debug.graphics.drawLine(prev.x, prev.y, vertex.x, vertex.y);
+        }
+      }
+    }
   }
 }
 

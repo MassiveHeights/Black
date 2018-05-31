@@ -129,7 +129,6 @@ class Arcade extends System {
     const body = this.__getBody(child);
 
     if (body !== null) {
-      collider.mChanged = true;
       this.__addPairs(collider, body);
 
       if (child.mCollidersCache.length === 1) {
@@ -164,6 +163,7 @@ class Arcade extends System {
 
   __addPairs(collider, fromBody) {
     const bodies = this.mBodies;
+    collider.mChanged = true;
 
     for (let i = 0, iLen = bodies.length; i < iLen; i++) {
       const body = bodies[i];
@@ -317,12 +317,13 @@ class Arcade extends System {
   }
 
   createBounds() {
-    const x = 0;
-    const y = 0;
-    const width = Black.instance.viewport.size.width;
-    const height = Black.instance.viewport.size.height;
+    const bounds = Black.stage.bounds;
     const parent = Black.instance.stage.mChildren[0];
-    const thickness = 1000;
+    const x = bounds.x;
+    const y = bounds.y;
+    const width = bounds.width;
+    const height = bounds.height;
+    const thickness = 100;
 
     const body = new RigidBody();
     body.isStatic = true;
