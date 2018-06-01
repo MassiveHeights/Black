@@ -130,7 +130,7 @@ class Pair {
     const dy = offset.y - positionB.y + positionA.y;
 
     const overlap = this.mOverlap + (dx * normalX + dy * normalY);
-    const correction = (overlap - Pair.slop) * Pair.baumgarte * Pair.pixelsPerMeter;
+    const correction = (overlap - Pair.slop) * Pair.baumgarte;
 
     if (correction <= 0) return;
 
@@ -154,10 +154,10 @@ class Pair {
   }
 
   static settings(pixelsPerMeter = 1, baumgarte = 0.6) {
-    Pair.pixelsPerMeter = pixelsPerMeter;
-    Pair.slop = 0.005 * Pair.pixelsPerMeter;
-    Pair.bounceTrashhold = Pair.pixelsPerMeter; // Pair.pixelsPerMeter / 1.0
+    Pair.slop = 0.5;
     Pair.baumgarte = baumgarte;
+    Pair.pixelsPerMeter = pixelsPerMeter;
+    Pair.bounceTrashhold = Pair.pixelsPerMeter; // Pair.pixelsPerMeter / 1.0
   }
 }
 

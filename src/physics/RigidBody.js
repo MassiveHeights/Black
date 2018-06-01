@@ -2,8 +2,17 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    this.mHash = RigidBody.mHash++;
+    // default collier
     this.mCollider = new BoxCollider(0, 0, 0, 0);
+
+    // game object pivot and texture to watch changes
+    this.mPivot = new Vector(Number.MAX_VALUE);
+    this.mTexrure = null;
+    this.mCachedPosition = new Vector(Number.MAX_VALUE);
+
+    // all pairs with this body
+    this.mPairs = [];
+
     this.mColliderAddedOrRemoved = false;
     this.mIsStatic = false;
 
@@ -50,22 +59,6 @@ class RigidBody extends Component {
     this.mForce.y += y;
   }
 
-  set x(v) {
-    this.mPosition.x = v;
-  }
-
-  get x() {
-    return this.mPosition.x;
-  }
-
-  set y(v) {
-    this.mPosition.y = v;
-  }
-
-  get y() {
-    return this.mPosition.y;
-  }
-
   set velocityX(v) {
     this.mVelocity.x = v;
   }
@@ -87,6 +80,7 @@ class RigidBody extends Component {
     const colliders = gameObject.mCollidersCache;
     const collider = this.mCollider;
     const position = this.mPosition;
+    const cachedPosition = this.mCachedPosition;
     const wt = gameObject.worldTransformation;
     const transform = this.mTransform;
     const transformChanged = transform.data[0] !== wt.data[0] || transform.data[2] !== wt.data[2]; // check scale x, y and rotation are the same (skew is forbidden)
@@ -100,10 +94,20 @@ class RigidBody extends Component {
       }
     }
 
+    if (cachedPosition.x !== wt.data[4] || cachedPosition.y !== wt.data[5]) {
+      wt.transformXY(gameObject.pivotX, gameObject.pivotY, position);
+    }
+
     if (colliders.length === 0 && gameObject.texture) {
-      // if (pivot changed || texture changed) {
-      collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height);
-      // }todo
+      const pivot = this.mPivot;
+
+      if (pivot.x !== gameObject.pivotX || pivot.y !== gameObject.pivotY || this.mTexrure !== gameObject.texture) {
+        pivot.x = gameObject.pivotX;
+        pivot.y = gameObject.pivotY;
+        this.mTexrure = gameObject.texture;
+
+        collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height);
+      }
 
       collider.refresh(transform, position);
     } else {
@@ -112,42 +116,44 @@ class RigidBody extends Component {
       }
     }
 
-    gameObject.parent.globalToLocal(this.mPosition, gameObject);
+    if (gameObject.parent) {
+      gameObject.parent.globalToLocal(position, gameObject);
+
+      const wt = gameObject.worldTransformation;
+      cachedPosition.x = wt.data[4];
+      cachedPosition.y = wt.data[5];
+    }
   }
 
   debug() {
-    const debug = RigidBody.mDebug;
+    if (!this.gameObject) return;
 
-    if (debug.graphics === null) {
-      debug.graphics = new Graphics();
+    if (RigidBody.mDebug.graphics === null) {
+      RigidBody.mDebug.graphics = new Graphics();
     }
+
+    const debug = RigidBody.mDebug;
+    const graphics = debug.graphics;
+    const colliders = this.gameObject.mCollidersCache;
 
     if (debug.time !== Black.instance.mLastFrameTimeMs) {
       debug.time = Black.instance.mLastFrameTimeMs;
-      Black.instance.stage.add(debug.graphics);
+      Black.stage.add(debug.graphics);
+
       debug.graphics.clear();
+      debug.graphics.lineColor = 0xffffff;
+      debug.graphics.lineWidth = 30;
     }
 
-    const colliders = this.gameObject.mCollidersCache;
-    const colldier = this.mCollider;
-    debug.graphics.lineColor = 0xffffff;
-
-    if (colliders.length) {
+    if (colliders.length === 0) {
+      this.mCollider.debug(graphics);
+    } else {
       for (let i = 0, l = colliders.length; i < l; i++) {
-        const vertices = colliders[i].mVertices;
-
-        for (let j = 1; j < 4; j++) {
-          const vertex = vertices[j];
-          const prev = vertices[j - 1];
-
-          debug.graphics.drawLine(prev.x, prev.y, vertex.x, vertex.y);
-        }
+        colliders[i].debug(graphics);
       }
     }
   }
 }
-
-RigidBody.mHash = 1;
 
 RigidBody.mDebug = {
   graphics: null,

@@ -45,8 +45,8 @@ class BoxToBoxPair extends Pair {
 
     const projections = this.mProjections;
     const normal = this.mNormal;
-    const offsetX = this.bodyB.x - this.bodyA.x;
-    const offsetY = this.bodyB.y - this.bodyA.y;
+    const offsetX = this.bodyB.mPosition.x - this.bodyA.mPosition.x;
+    const offsetY = this.bodyB.mPosition.y - this.bodyA.mPosition.y;
 
     this.mChanged && this.refreshProjectionsRanges();
     this.mOverlap = Number.MAX_VALUE;

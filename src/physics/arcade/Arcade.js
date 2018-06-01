@@ -7,11 +7,19 @@ class Arcade extends System {
     this.mContacts = [];  // All pairs which are in collision
     this.mBroadPhase = new Phase();
     this.mNarrowPhase = new NarrowPhase();
-    this.mBodiesHash = Object.create(null); // for quick search in collide callback
-    this.mPairsHash = Object.create(null);
+    this.mPairsHash = Object.create(null); // for quick search in collide callback
 
     this.gravity = new Vector(0, 1000);
     this.iterations = 1;
+
+    this.mBoundsBody = new RigidBody();
+    this.mBoundsBody.isStatic = true;
+    this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
+    this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
+    this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
+    this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
+    this.mBoundsParent = null;
+    this.mBoundsInited = false;
   }
 
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
@@ -24,12 +32,7 @@ class Arcade extends System {
   }
 
   inCollision(bodyA, bodyB, cb = null, ctx = null, ...args) {
-    const bodiesHash = this.mBodiesHash;
-    const pairs = bodiesHash[bodyA.mHash];
-
-    if (!pairs) {
-      return false;
-    }
+    const pairs = bodyA.mPairs;
 
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
@@ -72,8 +75,6 @@ class Arcade extends System {
   }
 
   onComponentAdded(child, component) {
-    if (!child.stage) return;
-
     if (component instanceof RigidBody) {
       this.__addBody(component);
     } else if (component instanceof Collider) {
@@ -82,8 +83,6 @@ class Arcade extends System {
   }
 
   onComponentRemoved(child, component) {
-    if (!child.stage) return;
-
     if (component instanceof RigidBody) {
       this.__removeBody(component);
     } else if (component instanceof Collider) {
@@ -94,8 +93,7 @@ class Arcade extends System {
   __addBody(body) {
     const bodies = this.mBodies;
     const colliders = body.gameObject.mCollidersCache;
-
-    this.mBodiesHash[body.mHash] = [];
+    body.mPairs.length = 0;
 
     if (colliders.length === 0) {
       this.__addPairs(body.mCollider, body);
@@ -120,8 +118,7 @@ class Arcade extends System {
       }
     }
 
-    delete this.mBodiesHash[body.mHash];
-
+    body.mPairs.length = 0;
     bodies.splice(bodies.indexOf(body), 1);
   }
 
@@ -207,13 +204,12 @@ class Arcade extends System {
     this.mPairs.push(pair);
 
     this.mPairsHash[Pair.__id(a, b)] = pair;
-    this.mBodiesHash[bodyA.mHash].push(pair);
-    this.mBodiesHash[bodyB.mHash].push(pair);
+    bodyA.mPairs.push(pair);
+    bodyB.mPairs.push(pair);
   }
 
   __removePairs(collider) {
     const pairs = this.mPairs;
-    const bodiesHash = this.mBodiesHash;
     const pairsHash = this.mPairsHash;
 
     for (let i = pairs.length - 1; i >= 0; i--) {
@@ -224,8 +220,9 @@ class Arcade extends System {
         pair.constructor.pool.release(pair);
 
         delete pairsHash[Pair.__id(pair.a, pair.b)];
-        bodiesHash[pair.bodyA.mHash].splice(bodiesHash[pair.bodyA.mHash].indexOf(pair), 1);
-        bodiesHash[pair.bodyB.mHash].splice(bodiesHash[pair.bodyB.mHash].indexOf(pair), 1);
+
+        pair.bodyA.mPairs.splice(pair.bodyA.mPairs.indexOf(pair), 1);
+        pair.bodyB.mPairs.splice(pair.bodyB.mPairs.indexOf(pair), 1);
       }
     }
   }
@@ -238,8 +235,6 @@ class Arcade extends System {
 
     // update sprite position
     // refresh body colliders if scale, rotation changed
-    // todo: refresh default collider if anchor or frame changed
-    // todo: change body position if sprite was moved without physics
     for (let i = 0, l = bodies.length; i < l; i++) {
       bodies[i].update();
     }
@@ -316,24 +311,45 @@ class Arcade extends System {
     }
   }
 
-  createBounds() {
+  __initBounds() {
     const bounds = Black.stage.bounds;
-    const parent = Black.instance.stage.mChildren[0];
-    const x = bounds.x;
-    const y = bounds.y;
-    const width = bounds.width;
-    const height = bounds.height;
-    const thickness = 100;
+    const thickness = Number.MAX_SAFE_INTEGER;
 
-    const body = new RigidBody();
-    body.isStatic = true;
+    this.mBoundsLeft.set(bounds.x - thickness, bounds.y, thickness, bounds.height);
+    this.mBoundsRight.set(bounds.x + bounds.width, bounds.y, thickness, bounds.height);
+    this.mBoundsTop.set(bounds.x - thickness, bounds.y - thickness, bounds.width + thickness * 2, thickness);
+    this.mBoundsBottom.set(bounds.x - thickness, bounds.y + bounds.height, bounds.width + thickness * 2, thickness);
 
-    parent.addComponent(body);
-    parent.addComponent(new BoxCollider(x - thickness, y - thickness, width + thickness * 2, thickness)); // top
-    parent.addComponent(new BoxCollider(x + width, y, thickness, height)); // right
-    parent.addComponent(new BoxCollider(x - thickness, y + height, width + thickness * 2, thickness)); // bottom
-    parent.addComponent(new BoxCollider(x - thickness, y, thickness, height)); // left
+    this.mBoundsParent = Black.stage;
+    this.mBoundsInited = true;
 
-    return body;
+    this.mBoundsParent.addComponent(this.mBoundsLeft);
+    this.mBoundsParent.addComponent(this.mBoundsRight);
+    this.mBoundsParent.addComponent(this.mBoundsTop);
+    this.mBoundsParent.addComponent(this.mBoundsBottom);
+  }
+
+  enableBounds() {
+    if (!this.mBoundsInited) {
+      this.__initBounds();
+    }
+
+    this.mBoundsParent.addComponent(this.mBoundsBody);
+  }
+
+  disableBounds() {
+    this.mBoundsParent.removeComponent(this.mBoundsBody);
+  }
+
+  setBounds(x, y, width, height, parent = Black.stage) {
+    const thickness = Number.MAX_SAFE_INTEGER;
+
+    this.mBoundsLeft.set(x - thickness, y, thickness, height);
+    this.mBoundsRight.set(x + width, y, thickness, height);
+    this.mBoundsTop.set(x - thickness, y - thickness, width + thickness * 2, thickness);
+    this.mBoundsBottom.set(x - thickness, y + height, width + thickness * 2, thickness);
+
+    this.mBoundsParent = parent;
+    this.mBoundsInited = true;
   }
 }

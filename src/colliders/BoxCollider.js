@@ -105,4 +105,15 @@ class BoxCollider extends Collider {
   containsPoint(point) {
     return this.mRect.containsXY(point.x, point.y);
   }
+
+  debug(graphics) {
+    const vertices = this.mVertices;
+
+    for (let j = 1; j < 4; j++) {
+      const vertex = vertices[j];
+      const prev = vertices[j - 1];
+
+      graphics.drawLine(prev.x, prev.y, vertex.x, vertex.y);
+    }
+  }
 }

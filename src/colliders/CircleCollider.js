@@ -51,12 +51,15 @@ class CircleCollider extends Collider {
     if (this.mChanged) {
       const circle = this.mCircle;
       const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
+      const radius = circle.r * scale;
 
-      const vec = Vector.pool.get();
-      transform.transformVector(vec.set(circle.x, circle.y), localCenter);
-      Vector.pool.release(vec);
+      transform.transformXY(circle.x, circle.y, localCenter);
+      this.mRadius = radius;
 
-      this.mRadius = circle.r * scale;
+      localMin.x = localCenter.x - radius;
+      localMin.y = localCenter.y - radius;
+      localMax.x = localCenter.x + radius;
+      localMax.y = localCenter.y + radius;
     }
 
     min.x = localMin.x + position.x;
@@ -86,5 +89,9 @@ class CircleCollider extends Collider {
     Vector.pool.release(vec);
 
     return distance <= circle.r;
+  }
+
+  debug(graphics) {
+    graphics.drawCircle(this.mCenter.x, this.mCenter.y, this.mRadius);
   }
 }

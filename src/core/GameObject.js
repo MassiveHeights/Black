@@ -388,8 +388,9 @@ class GameObject extends MessageDispatcher {
     if (instance instanceof Collider)
       this.mCollidersCache.push(instance);
 
-    if (this.stage !== null)
+    if (this.stage !== null || Black.stage === this) {
       Black.instance.onComponentAdded(this, instance);
+    }
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -421,8 +422,9 @@ class GameObject extends MessageDispatcher {
         this.mCollidersCache.splice(index, 1);
     }
 
-    if (this.stage !== null)
+    if (this.stage !== null || Black.stage === this) {
       Black.instance.onComponentRemoved(this, instance);
+    }
 
     this.mNumComponentsRemoved++;
 
