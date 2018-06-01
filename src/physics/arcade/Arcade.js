@@ -1,27 +1,83 @@
+/**
+ * Base arcade physics class
+ *
+ * @cat physics.arcade
+ * @extends System
+ */
+
+/* @echo EXPORT */
 class Arcade extends System {
+
+  /**
+   * Creates new instance of Arcade.
+   */
   constructor() {
     super();
 
-    this.mBodies = []; // All bodies that are on stage
-    this.mPairs = []; // All colliders pairs to check collisions within
-    this.mContacts = [];  // All pairs which are in collision
-    this.mBroadPhase = new Phase();
-    this.mNarrowPhase = new NarrowPhase();
-    this.mPairsHash = Object.create(null); // for quick search in collide callback
+    /** @private @type {Array<RigidBody>} Bodies that are on stage */
+    this.mBodies = [];
 
+    /** @private @type {Array<Pair>} Pairs to check collisions within. With colliders which bodies are on stage */
+    this.mPairs = [];
+
+    /** @private @type {Array<Pair>} Pairs which are in collision per frame */
+    this.mContacts = [];
+
+    /** @private @type {BroadPhase} Broad collision test instance */
+    this.mBroadPhase = new BroadPhase();
+
+    /** @private @type {Object} Object to store pairs by their id. For quick search in collision callbacks */
+    this.mPairsHash = Object.create(null);
+
+    /** @private @type {RigidBody} Reference to world bounds body */
+    this.mBoundsBody = new RigidBody();
+
+    /** @private @type {BoxCollider} */
+    this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
+
+    /** @private @type {BoxCollider} */
+    this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
+
+    /** @private @type {BoxCollider} */
+    this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
+
+    /** @private @type {BoxCollider} */
+    this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
+
+    /** @private @type {GameObject} */
+    this.mBoundsParent = null;
+
+    /** @private @type {Boolean} */
+    this.mBoundsInited = false;
+
+    /** @public @type {Vector} */
     this.gravity = new Vector(0, 1000);
+
+    /** @public @type {Number} Bigger value gives better resolver result, but require more calculations */
     this.iterations = 1;
 
-    this.mBoundsBody = new RigidBody();
+
     this.mBoundsBody.isStatic = true;
-    this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
-    this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
-    this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
-    this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
-    this.mBoundsParent = null;
-    this.mBoundsInited = false;
   }
 
+  /**
+   * Invokes passed callback if given colliders are in collision
+   *
+   * Callback params:
+   *
+   * normalX - collision normal projected on x axis. In direction from colliderA to colliderB
+   * normalY - collision normal projected on y axis. In direction from colliderA to colliderB
+   * overlap - positive number
+   * [args] - rest arguments
+   *
+   * @public
+   *
+   * @param {Collider} colliderA
+   * @param {Collider} colliderB
+   * @param {Function} cb Callback
+   * @param {Object} ctx
+   * @param {...*} [args] Rest arguments
+   */
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
     const pair = this.mPairsHash[Pair.__id(colliderA.a, colliderB.b)];
 
@@ -31,6 +87,28 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * If callback passed and given bodies are in collision invokes callback
+   *
+   * Note: if more than one collision occurred within bodies, callback will be invoked only with first found
+   *
+   * Callback params:
+   *
+   * normalX - collision normal projected on x axis. In direction from bodyA collider to bodyB collider
+   * normalY - collision normal projected on y axis. In direction from bodyA collider to bodyB collider
+   * overlap - positive number
+   * [args] - rest arguments
+   *
+   * @public
+   *
+   * @param {RigidBody} bodyA
+   * @param {RigidBody} bodyB
+   * @param {Function} [cb = null] Callback
+   * @param {Object} [ctx = null]
+   * @param {...*} [args] Rest arguments
+   *
+   * @returns {boolean} Indicator of bodies collision
+   */
   inCollision(bodyA, bodyB, cb = null, ctx = null, ...args) {
     const pairs = bodyA.mPairs;
 
@@ -54,6 +132,9 @@ class Arcade extends System {
     return false;
   }
 
+  /**
+   * @inheritDoc
+   */
   onChildrenAdded(gameObject) {
     GameObject.forEach(gameObject, object => {
       const body = object.getComponent(RigidBody);
@@ -64,6 +145,9 @@ class Arcade extends System {
     });
   }
 
+  /**
+   * @inheritDoc
+   */
   onChildrenRemoved(gameObject) {
     GameObject.forEach(gameObject, object => {
       const body = object.getComponent(RigidBody);
@@ -74,6 +158,9 @@ class Arcade extends System {
     });
   }
 
+  /**
+   * @inheritDoc
+   */
   onComponentAdded(child, component) {
     if (component instanceof RigidBody) {
       this.__addBody(component);
@@ -82,6 +169,9 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   onComponentRemoved(child, component) {
     if (component instanceof RigidBody) {
       this.__removeBody(component);
@@ -90,6 +180,12 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * Adds body to arcade world. Start tracking its gameObject colliders
+   *
+   * @private
+   * @param {RigidBody} body
+   */
   __addBody(body) {
     const bodies = this.mBodies;
     const colliders = body.gameObject.mCollidersCache;
@@ -106,6 +202,12 @@ class Arcade extends System {
     bodies.push(body);
   }
 
+  /**
+   * Removes body from arcade world
+   *
+   * @private
+   * @param {RigidBody} body
+   */
   __removeBody(body) {
     const bodies = this.mBodies;
     const colliders = body.gameObject.mCollidersCache;
@@ -122,10 +224,17 @@ class Arcade extends System {
     bodies.splice(bodies.indexOf(body), 1);
   }
 
+  /**
+   * Adds collider to arcade world.
+   *
+   * @private
+   * @param {GameObject} child
+   * @param {Collider} collider
+   */
   __addCollider(child, collider) {
-    const body = this.__getBody(child);
+    const body = child.getComponent(RigidBody);
 
-    if (body !== null) {
+    if (body && this.mBodies.indexOf(body) !== -1) {
       this.__addPairs(collider, body);
 
       if (child.mCollidersCache.length === 1) {
@@ -134,10 +243,17 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * Removes collider from arcade world.
+   *
+   * @private
+   * @param {GameObject} child
+   * @param {Collider} collider
+   */
   __removeCollider(child, collider) {
-    const body = this.__getBody(child);
+    const body = child.getComponent(RigidBody);
 
-    if (body !== null) {
+    if (body && this.mBodies.indexOf(body) !== -1) {
       this.__removePairs(collider);
 
       if (child.mCollidersCache.length === 0) {
@@ -146,18 +262,13 @@ class Arcade extends System {
     }
   }
 
-  __getBody(gameObject) {
-    const bodies = this.mBodies;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      if (bodies[i].gameObject === gameObject) {
-        return bodies[i];
-      }
-    }
-
-    return null;
-  }
-
+  /**
+   * Generate pairs, passed collider with all present colliders
+   *
+   * @private
+   * @param {Collider} collider
+   * @param {RigidBody} fromBody
+   */
   __addPairs(collider, fromBody) {
     const bodies = this.mBodies;
     collider.mChanged = true;
@@ -178,6 +289,15 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * Creates pair and adds it to world
+   *
+   * @private
+   * @param {Collider} a
+   * @param {Collider} b
+   * @param {RigidBody} bodyA
+   * @param {RigidBody} bodyB
+   */
   __addPair(a, b, bodyA, bodyB) {
     const isBoxA = a instanceof BoxCollider;
     const isBoxB = b instanceof BoxCollider;
@@ -208,6 +328,12 @@ class Arcade extends System {
     bodyB.mPairs.push(pair);
   }
 
+  /**
+   * Removes all pairs with given collider
+   *
+   * @private
+   * @param {Collider} collider
+   */
   __removePairs(collider) {
     const pairs = this.mPairs;
     const pairsHash = this.mPairsHash;
@@ -227,6 +353,9 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   onFixedUpdate(dt) {
     const contacts = this.mContacts;
     const bodies = this.mBodies;
@@ -245,9 +374,13 @@ class Arcade extends System {
       pairs[i].mInCollision = true;
     }
 
-    // update pairs in collision flag, overlap, normal properties
-    this.mBroadPhase.test(pairs);
-    this.mNarrowPhase.test(pairs);
+    // update pairs in collision flag todo
+    // this.mBroadPhase.test(pairs);
+
+    // narrow collision test
+    for (let i = 0, l = pairs.length; i < l; i++) {
+      pairs[i].mInCollision && pairs[i].test();
+    }
 
     for (let i = 0, l = pairs.length; i < l; i++) {
       if (pairs[i].mInCollision) {
@@ -261,6 +394,12 @@ class Arcade extends System {
     this.__solve(dt);
   }
 
+  /**
+   * Solve contacts
+   *
+   * @private
+   * @param {Number} dt
+   */
   __solve(dt) {
     const iterations = this.iterations;
     const bodies = this.mBodies;
@@ -300,8 +439,8 @@ class Arcade extends System {
       const position = body.mPosition;
       const velocity = body.mVelocity;
 
-      position.x += velocity.x * dt * Pair.pixelsPerMeter;
-      position.y += velocity.y * dt * Pair.pixelsPerMeter;
+      position.x += velocity.x * dt * Pair.unitsPerMeter;
+      position.y += velocity.y * dt * Pair.unitsPerMeter;
     }
 
     for (let i = 0; i < iterations; i++) {
@@ -311,6 +450,11 @@ class Arcade extends System {
     }
   }
 
+  /**
+   * Sets bounds to default values
+   *
+   * @private
+   */
   __initBounds() {
     const bounds = Black.stage.bounds;
     const thickness = Number.MAX_SAFE_INTEGER;
@@ -329,6 +473,11 @@ class Arcade extends System {
     this.mBoundsParent.addComponent(this.mBoundsBottom);
   }
 
+  /**
+   * Allows objects to collide with bounds body
+   *
+   * @public
+   */
   enableBounds() {
     if (!this.mBoundsInited) {
       this.__initBounds();
@@ -337,10 +486,25 @@ class Arcade extends System {
     this.mBoundsParent.addComponent(this.mBoundsBody);
   }
 
+  /**
+   * Removes world bounds
+   *
+   * @public
+   */
   disableBounds() {
     this.mBoundsParent.removeComponent(this.mBoundsBody);
   }
 
+  /**
+   * Sets bounds rectangle to passed values
+   *
+   * @private
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   * @param [parent=Black.stage]
+   */
   setBounds(x, y, width, height, parent = Black.stage) {
     const thickness = Number.MAX_SAFE_INTEGER;
 

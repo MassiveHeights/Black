@@ -1,4 +1,16 @@
+/**
+ * BoxToBoxPair is used to test collision within boxes
+ *
+ * @cat physics.arcade.pairs
+ * @extends Pair
+ */
+
+/* @echo EXPORT */
 class BoxToBoxPair extends Pair {
+
+  /**
+   * Creates new instance of BoxToBoxPair.
+   */
   constructor() {
     super();
 
@@ -8,10 +20,16 @@ class BoxToBoxPair extends Pair {
       projections.push(new Projection());
     }
 
+    /** @private @type {Array<Projection>} Projection keeps range of projected vertices. For each normal from both the colliders */
     this.mProjections = projections;
+
+    /** @private @type {Boolean} Flag to indicate this projections need refresh */
     this.mChanged = false;
   }
 
+  /**
+   * @inheritDoc
+   */
   set(a, b, bodyA, bodyB) {
     const projections = this.mProjections;
 
@@ -23,7 +41,14 @@ class BoxToBoxPair extends Pair {
     return super.set(a, b, bodyA, bodyB);
   }
 
-  refreshProjectionsRanges() {
+  /**
+   * Refreshes projections
+   *
+   * @private
+   *
+   * return {void}
+   */
+  __refreshProjectionsRanges() {
     const projections = this.mProjections;
 
     for (let i = 0; i < 4; i++) {
@@ -31,6 +56,9 @@ class BoxToBoxPair extends Pair {
     }
   }
 
+  /**
+   * @inheritDoc
+   */
   test() {
     const a = this.a;
     const b = this.b;
@@ -48,7 +76,7 @@ class BoxToBoxPair extends Pair {
     const offsetX = this.bodyB.mPosition.x - this.bodyA.mPosition.x;
     const offsetY = this.bodyB.mPosition.y - this.bodyA.mPosition.y;
 
-    this.mChanged && this.refreshProjectionsRanges();
+    this.mChanged && this.__refreshProjectionsRanges();
     this.mOverlap = Number.MAX_VALUE;
 
     for (let i = 0; i < 4; i++) {

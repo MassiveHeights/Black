@@ -7,6 +7,7 @@
 
 /* @echo EXPORT */
 class CircleCollider extends Collider {
+
   /**
    * Creates new instance of CircleCollider.
    *
@@ -20,26 +21,50 @@ class CircleCollider extends Collider {
     /** @private @type {Circle} */
     this.mCircle = new Circle(x, y, radius);  // local to sprite
 
-    // local to body
+    /** @private @type {Vector} Local to rigid body center */
     this.mLocalCenter = new Vector();
+
+    /** @private @type {Vector} Local to rigid body min x and y vertex */
     this.mLocalMin = new Vector();
+
+    /** @private @type {Vector} Local to rigid body max x and y vertex */
     this.mLocalMax = new Vector();
 
-    // global
+    /** @private @type {Number} Global in stage coordinates radius */
     this.mRadius = 0;
+
+    /** @private @type {Number} Global in stage coordinates center */
     this.mCenter = new Vector();
+
+    /** @private @type {Vector} Global in stage coordinates min x and y vertex */
     this.mMin = new Vector();
+
+    /** @private @type {Vector} Global in stage coordinates max x and y vertex */
     this.mMax = new Vector();
 
     this.set(x, y, radius);
   }
 
+  /**
+   * Setter
+   *
+   * @public
+   * @param {number} x      Center coordinate within X-axis.
+   * @param {number} y      Center coordinate within Y-axis.
+   * @param {number} radius Radius of the circle.
+   */
   set(x, y, radius) {
     this.mCircle.set(x, y, radius);
     this.mChanged = true;
   }
 
-  // This method calls from arcade fixed update
+  /**
+   * Updates min, max, center, radius of this collider, to prepare to collision test
+   *
+   * @public
+   * @param {Matrix} transform Game object world transformation with zero position.
+   * @param {Vector} position  Rigid body position.
+   */
   refresh(transform, position) {
     const localMin = this.mLocalMin;
     const localMax = this.mLocalMax;
@@ -91,6 +116,12 @@ class CircleCollider extends Collider {
     return distance <= circle.r;
   }
 
+  /**
+   * Draw this
+   *
+   * @public
+   * @param {Graphics} graphics Drawing place
+   */
   debug(graphics) {
     graphics.drawCircle(this.mCenter.x, this.mCenter.y, this.mRadius);
   }

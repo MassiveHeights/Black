@@ -1,4 +1,16 @@
+/**
+ * CircleToCirclePair is used to test collision within circles colliders
+ *
+ * @cat physics.arcade.pairs
+ * @extends Pair
+ */
+
+/* @echo EXPORT */
 class CircleToCirclePair extends Pair {
+
+  /**
+   * @inheritDoc
+   */
   test() {
     const a = this.a;
     const b = this.b;

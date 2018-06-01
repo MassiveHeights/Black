@@ -31,6 +31,12 @@ class Collider extends Component {
     return false;
   }
 
+  /**
+   * Resets dirty state
+   *
+   * @public
+   * @param {Number} dt
+   */
   onPostUpdate(dt) {
     this.mChanged = false;
   }

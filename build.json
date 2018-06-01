@@ -162,9 +162,7 @@
     "src/physics/arcade/pairs/BoxToBoxPair.js",
     "src/physics/arcade/pairs/BoxToCirclePair.js",
     "src/physics/arcade/pairs/CircleToCirclePair.js",
-
-    "src/physics/arcade/phases/Phase.js",
-    "src/physics/arcade/phases/NarrowPhase.js",
+    "src/physics/arcade/phases/BroadPhase.js",
 
     "src/physics/arcade/Arcade.js",
 

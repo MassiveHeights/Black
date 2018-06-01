@@ -7,6 +7,7 @@
 
 /* @echo EXPORT */
 class BoxCollider extends Collider {
+
   /**
    * Creates instance of BoxCollider.
    *
@@ -26,29 +27,57 @@ class BoxCollider extends Collider {
       vertices.push(new Vector());
     }
 
-    // local to sprite
+    /** @private @type {Rectangle} Local to game object */
     this.mRect = new Rectangle();
 
-    // local to body
+    /** @private @type {Array<Vector>} Local to rigid body normals */
     this.mNormals = normals;
+
+    /** @private @type {Array<Vector>} Local to rigid body vertices */
     this.mVertices = vertices;
+
+    /** @private @type {Vector} Local to rigid body min x and y vertex */
     this.mLocalMin = new Vector();
+
+    /** @private @type {Vector} Local to rigid body max x and y vertex */
     this.mLocalMax = new Vector();
+
+    /** @private @type {Vector} Local to rigid body center */
     this.mLocalCenter = new Vector();
 
-    // global
+    /** @private @type {Vector} Global in stage coordinates min x and y vertex */
     this.mMin = new Vector();
+
+    /** @private @type {Vector} Global in stage coordinates max x and y vertex */
     this.mMax = new Vector();
+
+    /** @private @type {Vector} Global in stage coordinates center */
     this.mCenter = new Vector();
 
     this.set(x, y, width, height);
   }
 
+  /**
+   * Setter
+   *
+   * @public
+   * @param {number} x      X-coordinate.
+   * @param {number} y      Y-coordinate.
+   * @param {number} width  Rectangle width.
+   * @param {number} height Rectangle height.
+   */
   set(x, y, width, height) {
     this.mRect.set(x, y, width, height);
     this.mChanged = true;
   }
 
+  /**
+   * Updates min, max, center of this collider, to prepare to collision test
+   *
+   * @public
+   * @param {Matrix} transform Game object world transformation with zero position.
+   * @param {Vector} position  Rigid body position.
+   */
   refresh(transform, position) {
     const localMin = this.mLocalMin;
     const localMax = this.mLocalMax;
@@ -106,6 +135,12 @@ class BoxCollider extends Collider {
     return this.mRect.containsXY(point.x, point.y);
   }
 
+  /**
+   * Draw this
+   *
+   * @public
+   * @param {Graphics} graphics Drawing place
+   */
   debug(graphics) {
     const vertices = this.mVertices;
 

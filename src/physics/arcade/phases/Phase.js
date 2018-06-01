@@ -1,3 +1,0 @@
-class Phase {
-  test(pairs) { }
-}

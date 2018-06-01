@@ -1,24 +1,72 @@
+/**
+ * Pair is used for narrow test, and resolve collision within two colliders
+ *
+ * @cat physics.arcade.pairs
+ */
+
+/* @echo EXPORT */
 class Pair {
+
+  /**
+   * Creates new instance of Pair.
+   */
   constructor() {
+
+    /** @private @type {Collider|null} Collider from body A */
     this.a = null;
+
+    /** @private @type {Collider|null} Collider from body B */
     this.b = null;
+
+    /** @private @type {RigidBody|null} Parent of collider a */
     this.bodyA = null;
+
+    /** @private @type {RigidBody|null} Parent of collider b */
     this.bodyB = null;
 
+    /** @private @type {Boolean} Flag to indicate collision state */
     this.mInCollision = false;
-    this.mInCollisionPrev = false;
+
+    /** @private @type {Number} Cached normal impulse to apply in next iteration or frame if collision still exist */
     this.mNormalImpulse = 0;
+
+    /** @private @type {Number} Cached tangent impulse to apply in next iteration or frame if collision still exist */
     this.mTangentImpulse = 0;
+
+    /** @private @type {Number} Position impulse cache to use within iterations */
     this.mPositionImpulse = 0;
+
+    /** @private @type {Number} This colliders cached friction */
     this.mFriction = 0;
+
+    /** @private @type {Number} This colliders cached bounce factor */
     this.mBias = 0;
+
+    /** @private @type {Number} This colliders cached inverse mass sum */
     this.mMass = 0;
+
+    /** @private @type {Vector} Offset within the colliders on preSolve to correct overlap on each iteration */
     this.mOffset = new Vector();
 
+    /** @private @type {Vector} Normal collision direction from a to b */
     this.mNormal = new Vector();
+
+    /** @private @type {Number} Positive number. Penetration within colliders */
     this.mOverlap = 0;
   }
 
+  /**
+   * Setter
+   *
+   * @internal
+   *
+   * @param {Collider} a
+   * @param {Collider} b
+   * @param {RigidBody} bodyA
+   * @param {RigidBody} bodyB
+   *
+   * return {Pair} This
+   */
   set(a, b, bodyA, bodyB) {
     this.a = a;
     this.b = b;
@@ -28,10 +76,24 @@ class Pair {
     return this;
   }
 
+  /**
+   * Tests the collision state. Updates normal and overlap for solve
+   *
+   * @internal
+   *
+   * return {Boolean} This pair in collision flag
+   */
   test() {
     return this.mInCollision;
   }
 
+  /**
+   * Prepares the solve properties depends on bodies physics characteristics and test result
+   *
+   * @internal
+   *
+   * return {void}
+   */
   preSolve() {
     const normalX = this.mNormal.x;
     const normalY = this.mNormal.y;
@@ -67,6 +129,13 @@ class Pair {
     this.mPositionImpulse = 0;
   }
 
+  /**
+   * Updates the bodies velocities to solve collision
+   *
+   * @internal
+   *
+   * return {void}
+   */
   solveVelocity() {
     const normalX = this.mNormal.x;
     const normalY = this.mNormal.y;
@@ -117,6 +186,14 @@ class Pair {
     }
   }
 
+
+  /**
+   * Updates the bodies positions to solve collision
+   *
+   * @internal
+   *
+   * return {void}
+   */
   solvePosition() {
     const normalX = this.mNormal.x;
     const normalY = this.mNormal.y;
@@ -149,15 +226,34 @@ class Pair {
     positionB.y += impulseY * invMassB;
   }
 
+  /**
+   * Generates pair id
+   *
+   * @internal
+   * @param {Collider} a pair collider
+   * @param {Collider} b pair collider
+   *
+   * return {String} Pair unique id
+   */
   static __id(a, b) {
     return a > b ? `${a}&${b}` : `${b}&${a}`;
   }
 
-  static settings(pixelsPerMeter = 1, baumgarte = 0.6) {
-    Pair.slop = 0.5;
+  /**
+   * Solving settings
+   *
+   * @public
+   * @param {Number} [unitsPerMeter=1] To preserve physics reactions in different screen resolutions
+   * @param {Number} [baumgarte=0.6] Baumgarte coefficient for position solve. From 0.2 to 0.8
+   * @param {Number} [slop=0.5] Allowed overlap to skip position solve
+   *
+   * return {void}
+   */
+  static settings(unitsPerMeter = 1, baumgarte = 0.6, slop = 0.5) {
+    Pair.slop = slop;
     Pair.baumgarte = baumgarte;
-    Pair.pixelsPerMeter = pixelsPerMeter;
-    Pair.bounceTrashhold = Pair.pixelsPerMeter; // Pair.pixelsPerMeter / 1.0
+    Pair.unitsPerMeter = unitsPerMeter;
+    Pair.bounceTrashhold = Pair.unitsPerMeter; // Pair.unitsPerMeter / 1.0
   }
 }
 

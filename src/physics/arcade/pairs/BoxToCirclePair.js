@@ -1,14 +1,40 @@
+/**
+ * BoxToCirclePair is used to test collision within box - circle colliders
+ *
+ * @cat physics.arcade.pairs
+ * @extends Pair
+ */
+
+/* @echo EXPORT */
 class BoxToCirclePair extends Pair {
+
+  /**
+   * Creates new instance of BoxToBoxPair.
+   */
   constructor() {
     super();
 
+    /** @private @type {Number} Cached half width of box in stage coordinates */
     this.mBoxHalfWidth = 0;
+
+    /** @private @type {Number} Cached half height of box in stage coordinates */
     this.mBoxHalfHeight = 0;
+
+    /** @private @type {Vector} Cached cos and sin from box game object world transformation without scale, to rotate */
     this.mBoxRotate = new Vector();
+
+    /** @private @type {Boolean} Flag indicates necessity of the properties refresh */
     this.mChanged = false;
   }
 
-  static __rotate(point, anchorX, anchorY, cos, sin) {
+  /**
+   * Rotates point around anchor
+   *
+   * @private
+   *
+   * return {void}
+   */
+  __rotate(point, anchorX, anchorY, cos, sin) {
     const x = point.x - anchorX;
     const y = point.y - anchorY;
     const tx = cos * x - sin * y;
@@ -18,6 +44,9 @@ class BoxToCirclePair extends Pair {
     point.y = ty + anchorY;
   }
 
+  /**
+   * @inheritDoc
+   */
   test() {
     const box = this.a;
     const circle = this.b;
@@ -49,7 +78,7 @@ class BoxToCirclePair extends Pair {
     const rotated = boxRotate.y !== 0;
 
     if (rotated) {
-      BoxToCirclePair.__rotate(circle.mCenter, box.mCenter.x, box.mCenter.y, boxRotate.x, -boxRotate.y);
+      this.__rotate(circle.mCenter, box.mCenter.x, box.mCenter.y, boxRotate.x, -boxRotate.y);
     }
 
     const dx = circle.mCenter.x - box.mCenter.x;
@@ -93,7 +122,7 @@ class BoxToCirclePair extends Pair {
     }
 
     if (rotated) {
-      BoxToCirclePair.__rotate(normal, 0, 0, boxRotate.x, boxRotate.y);
+      this.__rotate(normal, 0, 0, boxRotate.x, boxRotate.y);
     }
 
     return this.mInCollision = true;
