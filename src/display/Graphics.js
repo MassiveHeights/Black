@@ -71,11 +71,11 @@ class Graphics extends DisplayObject {
     let bounds = new Rectangle();
     let newPath = () => {
       return {
-        bounds       : null,
-        points       : [],
-        maxLineWidth : 0,
+        bounds: null,
+        points: [],
+        maxLineWidth: 0,
         lastLineWidth: 0,
-        lineMult     : 0.5,
+        lineMult: 0.5,
       };
     }
 
@@ -245,6 +245,9 @@ class Graphics extends DisplayObject {
     let points = [];
     let diff = Math.abs(startAngle - endAngle);
 
+    if (startAngle === endAngle)
+      return;
+
     if (diff >= MathEx.PI2) {
       points.push(x - radius, y - radius, x + radius, y + radius);
 
@@ -255,41 +258,40 @@ class Graphics extends DisplayObject {
       moveToX = end.x;
       moveToY = end.y;
     } else {
-      let start = startAngle;
+      let start = startAngle % MathEx.PI2 + (startAngle < 0 ? MathEx.PI2 : 0);
       let end = endAngle;
 
       if (anticlockwise) {
+        end = start;
         start = endAngle;
-        end = startAngle;
       }
 
-      let minX = Number.MAX_VALUE;
-      let minY = Number.MAX_VALUE;
-      let maxX = -Number.MAX_VALUE;
-      let maxY = -Number.MAX_VALUE;
+      while (end < start)
+        end += MathEx.PI2;
 
-      const quart = Math.PI * 0.5;
-      let angle = start + quart - (start % quart);
+      const right = start === 0 || end >= MathEx.PI2;
+      const left = start <= Math.PI && end >= Math.PI || end >= Math.PI * 3;
+      const bottom = start <= Math.PI * 0.5 && end >= Math.PI * 0.5 || end >= Math.PI * 2.5;
+      const top = start <= Math.PI * 1.5 && end >= Math.PI * 1.5 || end >= Math.PI * 3.5;
 
-      const angles = [start, end];
+      let startCos, endCos, startSin, endSin;
 
-      while (angle < end) {
-        angles.push(angle);
-        angle += quart;
+      if (!left || !right) {
+        startCos = Math.cos(start) * radius;
+        endCos = Math.cos(end) * radius;
       }
 
-      for (let i = 0, l = angles.length; i < l; i++) {
-        const xp = Math.cos(angles[i]) * radius;
-        const yp = Math.sin(angles[i]) * radius;
-
-        minX = Math.min(minX, xp);
-        minY = Math.min(minY, yp);
-        maxX = Math.max(maxX, xp);
-        maxY = Math.max(maxY, yp);
+      if (!top || !bottom) {
+        startSin = Math.sin(start) * radius;
+        endSin = Math.sin(end) * radius;
       }
 
+      const minX = left ? -radius : Math.min(startCos, endCos);
+      const maxX = right ? radius : Math.max(startCos, endCos);
+      const minY = top ? -radius : Math.min(startSin, endSin);
+      const maxY = bottom ? radius : Math.max(startSin, endSin);
 
-      points.push(minX, minY, maxX, maxY);
+      points.push(minX + x, minY + y, maxX + x, maxY + y);
     }
 
     this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, startAngle, endAngle, anticlockwise);
