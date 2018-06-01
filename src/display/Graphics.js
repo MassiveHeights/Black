@@ -71,11 +71,11 @@ class Graphics extends DisplayObject {
     let bounds = new Rectangle();
     let newPath = () => {
       return {
-        bounds: null,
-        points: [],
-        maxLineWidth: 0,
+        bounds       : null,
+        points       : [],
+        maxLineWidth : 0,
         lastLineWidth: 0,
-        lineMult: 0.5
+        lineMult     : 0.5,
       };
     }
 
@@ -90,6 +90,7 @@ class Graphics extends DisplayObject {
         case GraphicsCommandType.BEGIN_PATH: {
           path.bounds && bounds.union(path.bounds);
           path = newPath();
+          break;
         }
         case GraphicsCommandType.BOUNDS: {
           for (let k = 0; k < cmd.data.length; k += 2)
@@ -148,7 +149,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Sets line style. Zero or less values of `lineWidth` are ignored.
-   * 
+   *
    * @public
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
@@ -168,7 +169,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Sets fill style
-   * 
+   *
    * @public
    * @param {number} [color=0] Fill color.
    * @param {number=} [alpha=1] Fill alpha.
@@ -181,7 +182,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Clears the graphics that were drawn and resets fill and line styles.
-   * 
+   *
    * @public
    * @returns {void}
    */
@@ -197,11 +198,11 @@ class Graphics extends DisplayObject {
 
   /**
    * Moves the starting point of a path to given x and y coordinates.
-   * 
+   *
    * @public
    * @param {number} x The x-axis of the point.
    * @param {number} y The y-axis of the point.
-   * @returns {void} 
+   * @returns {void}
    */
   moveTo(x, y) {
     this.mPosX = x;
@@ -211,11 +212,11 @@ class Graphics extends DisplayObject {
 
   /**
    * Draws a line between last point and given.
-   * 
+   *
    * @public
    * @param {number} x The x-axis of the point.
    * @param {number} y The y-axis of the point.
-   * @returns {void} 
+   * @returns {void}
    */
   lineTo(x, y) {
     this.mPosX = x;
@@ -227,26 +228,23 @@ class Graphics extends DisplayObject {
 
   /**
    * Adds an arc to the current path.
-   * 
+   *
    * @public
    * @param {number} x             The x-axis of the arc's center.
    * @param {number} y             The y-axis of the arc's center.
-   * @param {number} radius        The radius of the arc.  
+   * @param {number} radius        The radius of the arc.
    * @param {number} startAngle    The starting angle in radians.
    * @param {number} endAngle      The ending angle in radians.
    * @param {boolean=} [anticlockwise=false] If true the arc will be drawn counter-clockwise.
-   * @returns {void} 
+   * @returns {void}
    */
   arc(x, y, radius, startAngle, endAngle, anticlockwise = false) {
-    // let sa = startAngle + Math.PI * 0.5;
-    // let ea = endAngle + Math.PI * 0.5;
     let needsMoveTo = false;
     let moveToX = 0;
     let moveToY = 0;
-
     let points = [];
+    let diff = Math.abs(startAngle - endAngle);
 
-    let diff = Math.abs((startAngle) - (endAngle));
     if (diff >= MathEx.PI2) {
       points.push(x - radius, y - radius, x + radius, y + radius);
 
@@ -257,44 +255,41 @@ class Graphics extends DisplayObject {
       moveToX = end.x;
       moveToY = end.y;
     } else {
-      let c = 0;
+      let start = startAngle;
+      let end = endAngle;
 
-      let ws = startAngle;
-      let we = endAngle;
+      if (anticlockwise) {
+        start = endAngle;
+        end = startAngle;
+      }
 
-      if (ws < 0)
-        ws += MathEx.PI2;
+      let minX = Number.MAX_VALUE;
+      let minY = Number.MAX_VALUE;
+      let maxX = -Number.MAX_VALUE;
+      let maxY = -Number.MAX_VALUE;
 
-      if (we < 0)
-        we += MathEx.PI2;
+      const quart = Math.PI * 0.5;
+      let angle = start + quart - (start % quart);
 
-      // if (anticlockwise === true)
-      //   [ws, we] = [we, ws];
+      const angles = [start, end];
 
-      let kaka = (Math.PI * 0.5) - (startAngle % (Math.PI * 0.5));
-      startAngle = kaka;
-      // endAngle = ea;
-      console.log(kaka);
+      while (angle < end) {
+        angles.push(angle);
+        angle += quart;
+      }
+
+      for (let i = 0, l = angles.length; i < l; i++) {
+        const xp = Math.cos(angles[i]) * radius;
+        const yp = Math.sin(angles[i]) * radius;
+
+        minX = Math.min(minX, xp);
+        minY = Math.min(minY, yp);
+        maxX = Math.max(maxX, xp);
+        maxY = Math.max(maxY, yp);
+      }
 
 
-      // for (let i = 0; i < Math.PI * 2; i += Math.PI * 0.5) {
-      //   if (i >= ws && i <= we) {
-      //     let point = Circle.getCircumferencePoint(x, y, radius, i + Math.PI * 0.5);
-      //     points.push(point.x, point.y);
-      //     console.log('point', i);
-
-      //     c++;
-      //   }
-      // }
-
-      // if (c < 4) {
-      //   console.log('<4');
-
-      //   let start = Circle.getCircumferencePoint(x, y, radius, sa);
-      //   let end = Circle.getCircumferencePoint(x, y, radius, ea);
-
-      //   points.push(start.x, start.y, end.x, end.y);
-      // }
+      points.push(minX, minY, maxX, maxY);
     }
 
     this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, startAngle, endAngle, anticlockwise);
@@ -306,7 +301,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Adds circle to current path.
-   * 
+   *
    * @public
    * @param {number} x      The x-axis of the circles's center.
    * @param {number} y      The y-axis of the circles's center.
@@ -320,13 +315,13 @@ class Graphics extends DisplayObject {
 
   /**
    * Creates closed rectangle like path.
-   * 
+   *
    * @public
-   * @param {number} x 
-   * @param {number} y 
-   * @param {number} width 
-   * @param {number} height 
-   * 
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   *
    * @returns {void}
    */
   rect(x, y, width, height) {
@@ -351,7 +346,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Starts new path.
-   * 
+   *
    * @public
    * @returns {void}
    */
@@ -361,7 +356,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Closes current path.
-   * 
+   *
    * @public
    * @returns {void}
    */
@@ -371,7 +366,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Strokes current path with the current line style..
-   * 
+   *
    * @public
    * @returns {void}
    */
@@ -381,7 +376,7 @@ class Graphics extends DisplayObject {
 
   /**
    * Fills current path with the current fill style.
-   * 
+   *
    * @public
    * @returns {void}
    */
@@ -393,7 +388,7 @@ class Graphics extends DisplayObject {
    * @private
    * @ignore
    * @param {GraphicsCommandType} type
-   * @param {...*} data 
+   * @param {...*} data
    */
   __pushCommand(type, ...data) {
     let cmd = new GraphicsCommand(type, data);
