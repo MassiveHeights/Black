@@ -33,6 +33,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     const len = this.commands.length;
     const r = driver.renderScaleFactor;
     ctx.save();
+    ctx.beginPath();
     
     for (let i = 0; i < len; i++) {
       const cmd = this.commands[i];      
@@ -90,6 +91,10 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
 
         case GraphicsCommandType.STROKE: {
           ctx.stroke();
+          break;
+        }
+
+        case GraphicsCommandType.BOUNDS: {
           break;
         }
 

@@ -259,13 +259,7 @@ class CanvasDriver extends VideoNullDriver {
    */
   setTransform(m) {
     const v = m.value;
-
-    Debug.assert(!isNaN(v[0]), 'a-element cannot be NaN');
-    Debug.assert(!isNaN(v[1]), 'b-element cannot be NaN');
-    Debug.assert(!isNaN(v[2]), 'c-element cannot be NaN');
-    Debug.assert(!isNaN(v[3]), 'd-element cannot be NaN');
-    Debug.assert(!isNaN(v[4]), 'tx-element cannot be NaN');
-    Debug.assert(!isNaN(v[5]), 'ty-element cannot be NaN');
+    Debug.isNumber(v[0], v[1], v[2], v[3], v[4], v[5]);
 
     this.mTransform = m;
 

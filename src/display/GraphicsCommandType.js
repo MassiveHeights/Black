@@ -7,11 +7,6 @@
  */
 /* @echo EXPORT */
 const GraphicsCommandType = {  
-  LINE_CAP: 'lineCap',
-  LINE_JOIN: 'lineJoin',
-  LINE_WIDTH: 'lineWidth',
-  MITTER_LIMIT: 'mitterLimit',
-
   LINE_STYLE: 'lineStyle',
   FILL_STYLE: 'fillStyle',
 
@@ -23,5 +18,6 @@ const GraphicsCommandType = {
   FILL: 'fill',
   LINE_TO: 'lineTo',
   MOVE_TO: 'moveTo',
-  STROKE: 'stroke'
+  STROKE: 'stroke',
+  BOUNDS: 'bounds',
 };

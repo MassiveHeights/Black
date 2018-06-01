@@ -8,8 +8,8 @@ class Vector {
   /**
    * Creates new Vector instance.
    *
-   * @param  {number=} x = 0 X-component.
-   * @param  {number=} y = 0 y-component.
+   * @param  {number=} [x=0] X-component.
+   * @param  {number=} [y=0] y-component.
    */
   constructor(x = 0, y = 0) {
     Debug.isNumber(x, y);
