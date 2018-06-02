@@ -242,7 +242,6 @@ class AssetManager extends MessageDispatcher {
     let item = /** @type {Asset}*/ (msg.sender);
     item.off(Message.COMPLETE, Message.ERROR);
 
-    // TODO: check for dups
     if (item.constructor === TextureAsset)
       this.mTextures[item.name] = item.data;
     else if (item.constructor === AtlasTextureAsset)

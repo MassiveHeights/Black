@@ -754,6 +754,14 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Retuns HTML comtainer element id.
+   * @returns {string}
+   */
+  get containerElementId() {
+    return this.mContainerElementId;
+  }
+
+  /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
    * @readonly
    * @returns {number}
@@ -790,7 +798,7 @@ class Black extends MessageDispatcher {
    */
   static get frameNum() {
     return Black.__frameNum;
-  }
+  }  
 }
 
 /**

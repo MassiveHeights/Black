@@ -17,7 +17,7 @@ class SplashScreen extends MessageDispatcher {
     style.innerHTML = css;
     document.getElementsByTagName('head')[0].appendChild(style);
 
-    let container = document.getElementById('game-container');
+    let container = document.getElementById(Black.instance.containerElementId);
 
     let splash = document.createElement('div');
     splash.id = 'splash-screen';
