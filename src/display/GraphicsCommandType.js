@@ -12,7 +12,7 @@ const GraphicsCommandType = {
 
   ARC: 'arc',
   RECT: 'rect',
-  //BEZIER_CURVE_TO: 'bezierCurveTo',
+  BEZIER_CURVE_TO: 'bezierCurveTo',
   BEGIN_PATH: 'beginPath',
   CLOSE_PATH: 'closePath',
   FILL: 'fill',
