@@ -362,7 +362,6 @@ class Arcade extends System {
     const pairs = this.mPairs;
     contacts.length = 0;
 
-    // update sprite position
     // refresh body colliders if scale, rotation changed
     for (let i = 0, l = bodies.length; i < l; i++) {
       bodies[i].update();
@@ -371,7 +370,7 @@ class Arcade extends System {
     // reset each pair to defaults
     // so phases will know, if pair in collision is true, then it needs more precise check
     for (let i = 0, l = pairs.length; i < l; i++) {
-      pairs[i].mInCollision = true;
+      pairs[i].mInCollision = !(pairs[i].bodyA.mInvMass === 0 && pairs[i].bodyB.mInvMass === 0);
     }
 
     // update pairs in collision flag todo
@@ -380,6 +379,11 @@ class Arcade extends System {
     // narrow collision test
     for (let i = 0, l = pairs.length; i < l; i++) {
       pairs[i].mInCollision && pairs[i].test();
+    }
+
+    // clear colliders dirty flags
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].postUpdate();
     }
 
     for (let i = 0, l = pairs.length; i < l; i++) {

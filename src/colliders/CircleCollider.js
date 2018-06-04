@@ -123,6 +123,7 @@ class CircleCollider extends Collider {
    * @param {Graphics} graphics Drawing place
    */
   debug(graphics) {
-    graphics.drawCircle(this.mCenter.x, this.mCenter.y, this.mRadius);
+    graphics.circle(this.mCenter.x, this.mCenter.y, this.mRadius);
+    graphics.stroke();
   }
 }

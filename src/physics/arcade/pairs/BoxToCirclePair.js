@@ -62,10 +62,11 @@ class BoxToCirclePair extends Pair {
     }
 
     if (this.mChanged) {
-      const transform = box.gameObject.worldTransformation;
-      const scale = Math.sqrt(transform.data[0] * transform.data[0] + transform.data[1] * transform.data[1]);
+      this.mChanged = false;
+      const transformData = this.bodyA.mTransform.data;
+      const scale = Math.sqrt(transformData[0] * transformData[0] + transformData[1] * transformData[1]);
 
-      this.mBoxRotate.set(transform.data[0] / scale, transform.data[1] / scale);
+      this.mBoxRotate.set(transformData[0] / scale, transformData[1] / scale);
       this.mBoxHalfWidth = box.mRect.width / 2 * scale;
       this.mBoxHalfHeight = box.mRect.height / 2 * scale;
     }

@@ -25,7 +25,7 @@ class RigidBody extends Component {
 
     /** @private @type {Vector} Game object global position.
      * To track changes and update this position, if object was moved without physics */
-    this.mCachedPosition = new Vector(Number.MAX_VALUE);
+    this.mCachedPosition = new Vector();
 
     /** @private @type {Array<Pair>} All pairs this body participates in */
     this.mPairs = [];
@@ -107,6 +107,44 @@ class RigidBody extends Component {
   set isStatic(v) {
     this.mIsStatic = v;
     this.mass = this.mMass;
+  }
+
+  /**
+   * Sets the global position x of this body.
+   *
+   * @param {Number} v Position to set.
+   * @return {void}
+   */
+  set x(v) {
+    this.mPosition.x = v;
+  }
+
+  /**
+   * Returns this position x.
+   *
+   * @return {Number}
+   */
+  get x() {
+    return this.mPosition.x;
+  }
+
+  /**
+   * Sets the global position y of this body.
+   *
+   * @param {Number} v Position to set.
+   * @return {void}
+   */
+  set y(v) {
+    this.mPosition.y = v;
+  }
+
+  /**
+   * Returns this position y.
+   *
+   * @return {Number}
+   */
+  get y() {
+    return this.mPosition.y;
   }
 
   /**
@@ -215,16 +253,6 @@ class RigidBody extends Component {
       }
     }
 
-    // Update this position if game object position was changed during frame
-    if (cachedPosition.x !== wtData[4] || cachedPosition.y !== wtData[5]) {
-
-      // in case this is the stage
-      cachedPosition.x = wtData[4];
-      cachedPosition.y = wtData[5];
-
-      wt.transformXY(gameObject.pivotX, gameObject.pivotY, position);
-    }
-
     // Refresh colliders
     if (colliders.length === 0 && gameObject.texture) {
       const pivot = this.mPivot;
@@ -244,13 +272,35 @@ class RigidBody extends Component {
       }
     }
 
-    // In case gameObject is not stage
     if (gameObject.parent) {
-      gameObject.parent.globalToLocal(position, gameObject);
+      const prevX = cachedPosition.x;
+      const prevY = cachedPosition.y;
 
-      const wtData = gameObject.worldTransformation.data;
-      cachedPosition.x = wtData[4];
-      cachedPosition.y = wtData[5];
+      wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+
+      // Update this position if game object position was changed during frame
+      if (cachedPosition.x !== prevX || cachedPosition.y !== prevY) {
+        position.x += cachedPosition.x - prevX;
+        position.y += cachedPosition.y - prevY;
+      }
+
+      gameObject.parent.globalToLocal(this.mPosition, gameObject);
+      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+    }
+  }
+
+  /**
+   * Resets colliders dirty state after collision test. Sync with update
+   *
+   * @public
+   * @param {Number} dt
+   */
+  postUpdate(dt) {
+    const colliders = this.gameObject.mCollidersCache;
+    this.mCollider.mChanged = false;
+
+    for (let i = 0, l = colliders.length; i < l; i++) {
+      colliders[i].mChanged = false;
     }
   }
 
@@ -276,15 +326,14 @@ class RigidBody extends Component {
       Black.stage.add(debug.graphics);
 
       debug.graphics.clear();
-      debug.graphics.lineColor = 0xffffff;
-      debug.graphics.lineWidth = 5;
+      debug.graphics.lineStyle(4, 0xffffff);
     }
 
     if (colliders.length === 0) {
-      this.mCollider.debug(graphics);
+      this.mCollider.debug(graphics, this.mPosition);
     } else {
       for (let i = 0, l = colliders.length; i < l; i++) {
-        colliders[i].debug(graphics);
+        colliders[i].debug(graphics, this.mPosition);
       }
     }
   }

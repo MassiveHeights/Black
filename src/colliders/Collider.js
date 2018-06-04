@@ -30,16 +30,6 @@ class Collider extends Component {
     Debug.error('Abstract method.');
     return false;
   }
-
-  /**
-   * Resets dirty state
-   *
-   * @public
-   * @param {Number} dt
-   */
-  onPostUpdate(dt) {
-    this.mChanged = false;
-  }
 }
 
 Collider.mHash = 1;

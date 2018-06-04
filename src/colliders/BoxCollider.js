@@ -129,7 +129,8 @@ class BoxCollider extends Collider {
    *
    * @public
    * @param {Vector} point Global coordinates.
-   * @returns {boolean}
+   *
+   * @return {boolean}
    */
   containsPoint(point) {
     return this.mRect.containsXY(point.x, point.y);
@@ -139,16 +140,20 @@ class BoxCollider extends Collider {
    * Draw this
    *
    * @public
-   * @param {Graphics} graphics Drawing place
+   * @param {Graphics} graphics   Drawing place
+   * @param {Vector} bodyPosition This parent global position
+   *
+   * @return {void}
    */
-  debug(graphics) {
+  debug(graphics, bodyPosition) {
     const vertices = this.mVertices;
 
-    for (let j = 1; j < 4; j++) {
-      const vertex = vertices[j];
-      const prev = vertices[j - 1];
+    graphics.moveTo(bodyPosition.x + vertices[0], bodyPosition.y + vertices[1]);
 
-      graphics.drawLine(prev.x, prev.y, vertex.x, vertex.y);
+    for (let i = 1; i < 4; i++) {
+      graphics.lineTo(bodyPosition.x + vertices[i], bodyPosition.y + vertices[i]);
     }
+
+    graphics.stroke();
   }
 }

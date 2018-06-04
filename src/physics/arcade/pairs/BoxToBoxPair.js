@@ -76,7 +76,11 @@ class BoxToBoxPair extends Pair {
     const offsetX = this.bodyB.mPosition.x - this.bodyA.mPosition.x;
     const offsetY = this.bodyB.mPosition.y - this.bodyA.mPosition.y;
 
-    this.mChanged && this.__refreshProjectionsRanges();
+    if (this.mChanged) {
+      this.mChanged = false;
+      this.__refreshProjectionsRanges();
+    }
+
     this.mOverlap = Number.MAX_VALUE;
 
     for (let i = 0; i < 4; i++) {
