@@ -110,17 +110,41 @@ class RigidBody extends Component {
   }
 
   /**
-   * Adds force to this force accumulator
+   * Sets the force x of this body.
    *
-   * @public
-   * @param x Force to add on x-axis
-   * @param y Force to add on y-axis.
-   *
+   * @param {Number} v Force to set.
    * @return {void}
    */
-  applyForce(x, y) {
-    this.mForce.x += x;
-    this.mForce.y += y;
+  set forceX(v) {
+    this.mForce.x = v;
+  }
+
+  /**
+   * Returns this force x.
+   *
+   * @return {Number}
+   */
+  get forceX() {
+    return this.mForce.x;
+  }
+
+  /**
+   * Sets the force y of this body.
+   *
+   * @param {Number} v Force to set.
+   * @return {void}
+   */
+  set forceY(v) {
+    this.mForce.y = v;
+  }
+
+  /**
+   * Returns this force y.
+   *
+   * @return {Number}
+   */
+  get forceY() {
+    return this.mForce.y;
   }
 
   /**
@@ -192,7 +216,12 @@ class RigidBody extends Component {
     }
 
     // Update this position if game object position was changed during frame
-    if (cachedPosition.x !== wt.data[4] || cachedPosition.y !== wt.data[5]) {
+    if (cachedPosition.x !== wtData[4] || cachedPosition.y !== wtData[5]) {
+
+      // in case this is the stage
+      cachedPosition.x = wtData[4];
+      cachedPosition.y = wtData[5];
+
       wt.transformXY(gameObject.pivotX, gameObject.pivotY, position);
     }
 
