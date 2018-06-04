@@ -333,18 +333,89 @@ class Graphics extends DisplayObject {
     this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
   }
 
-  // /**
-  //  * @public
-  //  * @param {number} cp1x 
-  //  * @param {number} cp1y 
-  //  * @param {number} cp2x 
-  //  * @param {number} cp2y 
-  //  * @param {number} x 
-  //  * @param {number} y 
-  //  */
-  // bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
-  //   this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
-  // }
+  /**
+   * @public
+   * @param {number} cp1x
+   * @param {number} cp1y
+   * @param {number} cp2x
+   * @param {number} cp2y
+   * @param {number} x
+   * @param {number} y
+   */
+  bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
+    const rangeX = this.__bezierRange(this.mPosX, cp1x, cp2x, x, Vector.pool.get());
+    const rangeY = this.__bezierRange(this.mPosY, cp1y, cp2y, y, Vector.pool.get());
+
+    this.mPosX = x;
+    this.mPosY = y;
+
+    this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, rangeX.x, rangeY.x, rangeX.y, rangeY.y);
+
+    Vector.pool.release(rangeX);
+    Vector.pool.release(rangeY);
+  }
+
+  /**
+   * @private
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} p2
+   * @param {number} p3
+   * @param {Vector} [out=new Vector()]
+   *
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   */
+  __bezierRange(p0, p1, p2, p3, out = new Vector()) {
+    const a = (p2 - 2 * p1 + p0) - (p3 - 2 * p2 + p1);
+    const b = 2 * (p1 - p0) - 2 * (p2 - p1);
+    const c = p0 - p1;
+    const discriminant = b * b - 4 * a * c;
+
+    let min = Math.min(p0, p3);
+    let max = Math.max(p0, p3);
+
+    if (discriminant >= 0) {
+      const discRoot = Math.sqrt(discriminant);
+      const inv2a = 1 / (a * 2);
+      let x1 = (-b + discRoot) * inv2a;
+      let x2 = (-b - discRoot) * inv2a;
+      x1 = isFinite(x1) ? x1 : 0.5;
+      x2 = isFinite(x2) ? x2 : 0.5;
+
+      if (x1 > 0 && x1 < 1) {
+        const dot = this.__bezierDot(p0, p1, p2, p3, x1);
+        min = Math.min(dot, min);
+        max = Math.max(dot, max);
+      }
+
+      if (x2 > 0 && x2 < 1) {
+        const dot = this.__bezierDot(p0, p1, p2, p3, x2);
+        min = Math.min(dot, min);
+        max = Math.max(dot, max);
+      }
+    }
+
+    out.x = min;
+    out.y = max;
+
+    return out;
+  }
+
+  /**
+   * @private
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} p2
+   * @param {number} p3
+   * @param {number} x
+   *
+   * @return {number}
+   */
+  __bezierDot(p0, p1, p2, p3, x) {
+    const y = 1 - x;
+    return p0 * y * y * y + 3 * p1 * x * y * y + 3 * p2 * x * x * y + p3 * x * x * x;
+  }
 
   /**
    * Starts new path.
