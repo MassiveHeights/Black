@@ -1,6 +1,7 @@
 /**
  * A helper class for Graphics.
  *
+ * @ignore
  * @cat display
  */
 /* @echo EXPORT */
@@ -9,48 +10,40 @@ class GraphicsCommand {
    * Creates new instance of GraphicsCommand
    * 
    * @param {GraphicsCommandType} type
-   * @param {Array<number>} data
-   * @param {number} lineColor 
-   * @param {number} lineAlpha 
-   * @param {number} lineWidth 
-   * @param {number} fillColor 
-   * @param {number} fillAlpha 
-   * @param {CapsStyle} caps 
-   * @param {JointStyle} joints 
-   * @param {number} miterLimit 
+   * @param {Array<*>} data
    */
-  constructor(type, data, lineColor = 0, lineAlpha = 1, lineWidth = 0, fillColor = 0, fillAlpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
-
-    /** @public @type {Array<number>} */
-    this.data = data;
-
+  constructor(type, data) {
     /** @public @type {GraphicsCommandType} */
     this.type = type;
 
-    // stroke
-    /** @public @type {number} */
-    this.lineColor = lineColor;
-
-    /** @public @type {number} */
-    this.lineAlpha = lineAlpha;
-
-    /** @public @type {number} */
-    this.lineWidth = lineWidth;
-
-    /** @public @type {CapsStyle} */
-    this.caps = caps;
-
-    /** @public @type {JointStyle} */
-    this.joints = joints;
-
-    /** @public @type {number} */
-    this.miterLimit = miterLimit;
-
-    // fill
-    /** @public @type {number} */
-    this.fillColor = fillColor;
-
-    /** @public @type {number} */
-    this.fillAlpha = fillAlpha;
+    /** @public @type {Array<*>} */
+    this.data = data;
   }
+
+  /**
+   * Returns value at given index as a number. Used for GCC only.
+   * @param {number} ix 
+   * @returns {number}
+   */
+  getNumber(ix) {
+    return /** @type {!number} */ (this.data[ix]);
+  }
+
+  /**
+   * Returns value at given index as a string. Used for GCC only.
+   * @param {number} ix 
+   * @returns {string}
+   */
+  getString(ix) {
+    return /** @type {!string} */ (this.data[ix]);
+  }
+
+    /**
+   * Returns value at given index as a string. Used for GCC only.
+   * @param {number} ix 
+   * @returns {boolean}
+   */
+  getBoolean(ix) {
+    return /** @type {!boolean} */ (this.data[ix]);
+  }  
 }

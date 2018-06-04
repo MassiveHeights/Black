@@ -8,10 +8,10 @@ class Rectangle {
   /**
    * Creates new instance of Rectangle.
    *
-   * @param  {number=} y = 0 X-component.
-   * @param  {number=} x = 0 Y-component.
-   * @param  {number=} w = 0 The width.
-   * @param  {number=} h = 0 The height.
+   * @param  {number=} [y=0] X-component.
+   * @param  {number=} [x=0] Y-component.
+   * @param  {number=} [w=0] The width.
+   * @param  {number=} [h=0] The height.
    */
   constructor(x = 0, y = 0, w = 0, h = 0) {
     Debug.isNumber(x, y, w, h);
@@ -379,6 +379,33 @@ class Rectangle {
   }
 
   /**
+   * Expands this rectangle with a given point.
+   * 
+   * @param {*} x 
+   * @param {*} y 
+   * @returns {Rectangle}
+   */
+  expandXY(x, y) {
+    if (x < this.x) {
+      this.width += this.x - x;
+      this.x = x;
+    }
+
+    if (y < this.y) {
+      this.height += this.y - y;
+      this.y = y;
+    }
+
+    if (x > this.x + this.width)
+      this.width = x - this.x;
+
+    if (y > this.y + this.height)
+      this.height = y - this.y;
+
+    return this;
+  }
+
+  /**
    * Increases the size of this rectangle by given x- and y- values.
    *
    * @param {number=} [x=0] X-component.
@@ -461,6 +488,77 @@ class Rectangle {
       new Line(this.bottomRight, this.bottomLeft),
       new Line(this.bottomLeft, this.topLeft)
     ];
+  }
+
+  /**
+   * Calculates a bonding box enclosing the given list of points.
+   * 
+   * @param {...Vector} points 
+   * @returns {Rectangle}
+   */
+  static fromPoints(...points) {
+    let result = new Rectangle();
+
+    if (points.length === 0)
+      return result;
+
+    let length = points.length;
+    let minX = points[0].x;
+    let minY = points[0].y;
+    let maxX = points[0].x;
+    let maxY = points[0].y;
+
+    for (let i = 1; i < length; i++) {
+      let p = points[i];
+      let x = p.x;
+      let y = p.y;
+
+      minX = Math.min(x, minX);
+      maxX = Math.max(x, maxX);
+      minY = Math.min(y, minY);
+      maxY = Math.max(y, maxY);
+    }
+
+    result.x = minX;
+    result.y = minY;
+    result.width = maxX - minX;
+    result.height = maxY - minY;
+    return result;
+  }
+
+  /**
+   * Calculates a bonding box enclosing the given list of x-y pairs.
+   * 
+   * @param {...number} points 
+   * @returns {Rectangle}
+   */
+  static fromPointsXY(...points) {
+    let result = new Rectangle();
+
+    if (points.length < 2)
+      return result;
+
+    let length = points.length;
+    let minX = points[0];
+    let minY = points[1];
+    let maxX = points[0];
+    let maxY = points[1];
+
+    for (let i = 2; i < length; i += 2) {
+      let x = points[i];
+      let y = points[i + 1];
+
+      minX = Math.min(x, minX);
+      maxX = Math.max(x, maxX);
+      minY = Math.min(y, minY);
+      maxY = Math.max(y, maxY);
+    }
+
+    result.x = minX;
+    result.y = minY;
+    result.width = maxX - minX;
+    result.height = maxY - minY;
+    return result;
   }
 
   // @ifdef DEBUG

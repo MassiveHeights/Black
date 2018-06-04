@@ -132,6 +132,9 @@ class Black extends MessageDispatcher {
     /** @private @type {boolean} */
     this.mWasStopped = false;
 
+    /** @private @type {SplashScreen} */
+    this.mSplashScreen = new SplashScreen();
+
     this.__bootViewport();
   }
 
@@ -241,7 +244,7 @@ class Black extends MessageDispatcher {
    * Gets system by type.
    *
    * @param {Function} typeName The system type.
-   * @return {Component|null} The `System` instance or null if not found.
+   * @return {System|null} The `System` instance or null if not found.
    */
   getSystem(typeName) {
     for (let i = 0; i < this.mSystems.length; i++) {
@@ -278,8 +281,7 @@ class Black extends MessageDispatcher {
       return;
 
     // TODO: show only when needed, eg required by any system
-    if (this.mEnableFixedTimeStep === false)
-      Debug.info('Fixed time-step is disabled, some systems may not work.');
+    Debug.assertInfo(this.mEnableFixedTimeStep === true, 'Fixed time-step is disabled, some systems may not work.');
 
     this.__bootSystems();
     this.__bootStage();
@@ -302,6 +304,10 @@ class Black extends MessageDispatcher {
       self.mLastFrameTimeMs = timestamp;
       self.mLastFpsUpdate = timestamp;
       self.mFramesThisSecond = 0;
+
+      // show splash screen
+      if (SplashScreen.enabled === true)
+        self.mSplashScreen.show();
 
       // Start the main loop.
       self.mRAFHandle = window.requestAnimationFrame(self.__update.bind(self));
@@ -748,6 +754,14 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Retuns HTML comtainer element id.
+   * @returns {string}
+   */
+  get containerElementId() {
+    return this.mContainerElementId;
+  }
+
+  /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
    * @readonly
    * @returns {number}
@@ -784,7 +798,7 @@ class Black extends MessageDispatcher {
    */
   static get frameNum() {
     return Black.__frameNum;
-  }
+  }  
 }
 
 /**

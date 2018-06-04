@@ -21,7 +21,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    */
   render(driver) {
     this.__drawCommandBuffer(driver);
-    
+
     if (this.color !== null && this.color !== 0xFFFFFF) {
       driver.context.globalCompositeOperation = 'multiply';
       this.__drawCommandBuffer(driver, this.color);
@@ -33,49 +33,73 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     const len = this.commands.length;
     const r = driver.renderScaleFactor;
     ctx.save();
-
+    ctx.beginPath();
+    
     for (let i = 0; i < len; i++) {
-      const cmd = this.commands[i];
+      const cmd = this.commands[i];      
 
       switch (cmd.type) {
-        case GraphicsCommandType.TRANSFORM: {
-          ctx.setTransform(cmd.data[0], cmd.data[1], cmd.data[2], cmd.data[3], cmd.data[4], cmd.data[5]);
+        case GraphicsCommandType.LINE_STYLE: {
+          ctx.lineWidth = cmd.getNumber(0) * r;
+          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.getNumber(1), cmd.getNumber(2));
+          ctx.lineCap = cmd.getString(3);
+          ctx.lineJoin = cmd.getString(4);
+          ctx.mitterLimit = cmd.getNumber(5);
           break;
         }
-        case GraphicsCommandType.LINE: {
-          this.__setLineStyle(cmd, ctx);
-          ctx.beginPath();
-          ctx.moveTo(cmd.data[0] * r, cmd.data[1] * r);
-          ctx.lineTo(cmd.data[2] * r, cmd.data[3] * r);
-          ctx.stroke();
-          break;
-        }
-        case GraphicsCommandType.RECTANGLE: {
-          ctx.beginPath();
-          ctx.rect(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, cmd.data[3] * r);
 
-          this.__setFillStyle(cmd, ctx);
+        case GraphicsCommandType.FILL_STYLE: {
+          ctx.fillStyle = ColorHelper.intToRGBA(cmd.getNumber(0), cmd.getNumber(1));
+          break;
+        }
+
+        case GraphicsCommandType.ARC: {
+          ctx.arc(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
+          break;
+        }
+
+        case GraphicsCommandType.RECT: {
+          ctx.rect(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
+          break;
+        }
+        case GraphicsCommandType.BEZIER_CURVE_TO: {
+          ctx.bezierCurveTo(cmd.getNumber(0), cmd.getNumber(1), cmd.getNumber(2), cmd.getNumber(3), cmd.getNumber(4), cmd.getNumber(5));
+          break;
+        }
+        case GraphicsCommandType.BEGIN_PATH: {
+          ctx.beginPath();
+          break;
+        }
+        case GraphicsCommandType.CLOSE_PATH: {
+          ctx.closePath();
+          break;
+        }
+        case GraphicsCommandType.FILL: {
           ctx.fill();
-
-          this.__setLineStyle(cmd, ctx);
-          ctx.stroke();
-
           break;
         }
-        case GraphicsCommandType.CIRCLE: {
-          ctx.beginPath();
-          ctx.arc(cmd.data[0] * r, cmd.data[1] * r, cmd.data[2] * r, 0, 2 * Math.PI);
 
-          this.__setFillStyle(cmd, ctx, color);
-          ctx.fill();
+        case GraphicsCommandType.LINE_TO: {
+          ctx.lineTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
+          break;
+        }
 
-          this.__setLineStyle(cmd, ctx);
+        case GraphicsCommandType.MOVE_TO: {
+          ctx.moveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
+          break;
+        }
+
+        case GraphicsCommandType.STROKE: {
           ctx.stroke();
+          break;
+        }
+
+        case GraphicsCommandType.BOUNDS: {
           break;
         }
 
         default:
-          Debug.error('Unsupported canvas command.');
+          Debug.error(`Unsupported canvas command '${cmd.type}'.`);
           break;
       }
     }
@@ -90,30 +114,5 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    */
   get isRenderable() {
     return this.commands.length > 0;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {GraphicsCommand} cmd
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  __setLineStyle(cmd, ctx) {
-    ctx.lineWidth = cmd.lineWidth;
-    ctx.strokeStyle = ColorHelper.hexColorToString(cmd.lineColor);
-    ctx.globalAlpha = cmd.lineAlpha * this.alpha;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {GraphicsCommand} cmd
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  __setFillStyle(cmd, ctx, color = null) {
-    color = color === null ? cmd.fillColor : color;
-
-    ctx.globalAlpha = cmd.fillAlpha * this.alpha;
-    ctx.fillStyle = ColorHelper.hexColorToString(color);
   }
 }

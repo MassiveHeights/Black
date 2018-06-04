@@ -150,12 +150,20 @@ class Renderer {
     return this.color;
   }
 
+  /**
+   * Tints given texture with a given color.
+   * 
+   * @param {Texture} texture 
+   * @param {number|null} color 
+   * @returns {Texture}
+   */
   static getColoredTexture(texture, color) {
     if (color === 0xFFFFFF || color === null)
       return texture;
 
-    if (Renderer.__colorCache.has(texture.id, color))
-      return Renderer.__colorCache.get(texture.id, color);
+    let colorString = color.toString();
+    if (Renderer.__colorCache.has(texture.id, colorString))
+      return /** @type {Texture}*/ (Renderer.__colorCache.get(texture.id, colorString));
 
     let region = texture.region;
     let w = region.width;
@@ -164,7 +172,7 @@ class Renderer {
     let rt = new RenderTargetCanvas(w, h);
     let ctx = rt.context;
 
-    ctx.fillStyle = ColorHelper.hexColorToString(color);
+    ctx.fillStyle = ColorHelper.hexColorToString(color); 
     ctx.fillRect(0, 0, w, h);
 
     ctx.globalCompositeOperation = 'multiply';
@@ -174,7 +182,7 @@ class Renderer {
     ctx.drawImage(texture.native, region.x, region.y, region.width, region.height, 0, 0, region.width, region.height);
 
     let t = new Texture(rt.native, null, texture.untrimmedRegion.clone(), texture.scale);
-    Renderer.__colorCache.set(texture.id, color, t);
+    Renderer.__colorCache.set(texture.id, colorString, t);
 
     return t;
   }

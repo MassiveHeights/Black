@@ -1532,7 +1532,7 @@ class GameObject extends MessageDispatcher {
    * Waits for given amount of seconds before processing.
    *
    * @param {number} [seconds=1] Duration
-   * @return {function(*):*}
+   * @return {function(?):?}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, (/** @type {number} */(seconds) * 1000)), (/** @type {number} */(seconds) * 1000));
@@ -1542,7 +1542,7 @@ class GameObject extends MessageDispatcher {
    * Waits for a specific message.
    *
    * @param {string} message The name of the message to wait for.
-   * @return {function(*):*}
+   * @return {function(?):?}
    */
   waitMessage(message) {
     return cb => this.on(message, cb.bind(this));
