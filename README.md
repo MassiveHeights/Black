@@ -1,7 +1,7 @@
 <br /><br /><br />
 <p align="center">
   <a href="http://blacksmith2d.io">
-    <img alt="Blacksmith 2D" src="http://blacksmith2d.io/content/branding/icon.svg" width="200" />
+    <img alt="Blacksmith 2D" src="http://blacksmith2d.io/content/branding/gray-logo.svg" width="200" />
   </a>
 </p>
 <br /><br /><br />
