@@ -133,6 +133,3 @@ class BoxToCirclePair extends Pair {
     return this.mInCollision = true;
   }
 }
-
-BoxToCirclePair.pool = new ObjectPool(BoxToCirclePair);
-BoxToCirclePair.pool.capacity = 1000;

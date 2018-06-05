@@ -17,6 +17,9 @@ class RigidBody extends Component {
     /** @private @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
+    /** @private @type {Array<Collider>} Stores all used colliders. Default or sprite collidersCache. Used for rebuild pairs */
+    this.mColliders = [];
+
     /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */
     this.mPivot = new Vector(Number.MAX_VALUE);
 

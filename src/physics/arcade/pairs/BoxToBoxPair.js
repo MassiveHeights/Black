@@ -125,6 +125,3 @@ class BoxToBoxPair extends Pair {
     return this.mInCollision = true;
   }
 }
-
-BoxToBoxPair.pool = new ObjectPool(BoxToBoxPair);
-BoxToBoxPair.pool.capacity = 1000;

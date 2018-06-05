@@ -39,6 +39,3 @@ class CircleToCirclePair extends Pair {
     return this.mInCollision = true;
   }
 }
-
-CircleToCirclePair.pool = new ObjectPool(CircleToCirclePair);
-CircleToCirclePair.pool.capacity = 1000;

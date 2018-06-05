@@ -50,12 +50,14 @@ class Arcade extends System {
     /** @private @type {Boolean} */
     this.mBoundsInited = false;
 
+    /** @private @type {Boolean} Marks this dirty state. Necessity to rebuild pairs */
+    this.mChanged = false;
+
     /** @public @type {Vector} */
     this.gravity = new Vector(0, 1000);
 
     /** @public @type {Number} Bigger value gives better resolver result, but require more calculations */
     this.iterations = 1;
-
 
     this.mBoundsBody.isStatic = true;
   }
@@ -140,7 +142,8 @@ class Arcade extends System {
       const body = object.getComponent(RigidBody);
 
       if (body !== null) {
-        this.__addBody(body);
+        this.mBodies.push(body);
+        this.mChanged = true;
       }
     });
   }
@@ -153,7 +156,8 @@ class Arcade extends System {
       const body = object.getComponent(RigidBody);
 
       if (body !== null) {
-        this.__removeBody(body);
+        this.mBodies.splice(this.mBodies.indexOf(body), 1);
+        this.mChanged = true;
       }
     });
   }
@@ -163,9 +167,10 @@ class Arcade extends System {
    */
   onComponentAdded(child, component) {
     if (component instanceof RigidBody) {
-      this.__addBody(component);
+      this.mBodies.push(component);
+      this.mChanged = true;
     } else if (component instanceof Collider) {
-      this.__addCollider(child, component);
+      this.mChanged = true;
     }
   }
 
@@ -174,241 +179,67 @@ class Arcade extends System {
    */
   onComponentRemoved(child, component) {
     if (component instanceof RigidBody) {
-      this.__removeBody(component);
+      this.mBodies.splice(this.mBodies.indexOf(component), 1);
+      this.mChanged = true;
     } else if (component instanceof Collider) {
-      this.__removeCollider(component);
-    }
-  }
-
-  /**
-   * Adds body to arcade world. Start tracking its gameObject colliders
-   *
-   * @private
-   * @param {RigidBody} body
-   */
-  __addBody(body) {
-    const bodies = this.mBodies;
-    const colliders = body.gameObject.mCollidersCache;
-    body.mPairs.length = 0;
-
-    if (colliders.length === 0) {
-      this.__addPairs(body.mCollider, body);
-    } else {
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        this.__addPairs(colliders[i], body);
-      }
-    }
-
-    bodies.push(body);
-  }
-
-  /**
-   * Removes body from arcade world
-   *
-   * @private
-   * @param {RigidBody} body
-   */
-  __removeBody(body) {
-    const bodies = this.mBodies;
-    const pairs = this.mPairs;
-    const pairsHash = this.mPairsHash;
-
-    for (let i = pairs.length - 1; i >= 0; i--) {
-      const pair = pairs[i];
-
-      if (pair.bodyA === body || pair.bodyB === body) {
-        pairs.splice(i, 1);
-        pair.constructor.pool.release(pair);
-
-        delete pairsHash[Pair.__id(pair.a, pair.b)];
-      }
-    }
-
-    body.mPairs.length = 0;
-    bodies.splice(bodies.indexOf(body), 1);
-  }
-
-  /**
-   * Adds collider to arcade world.
-   *
-   * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
-   */
-  __addCollider(child, collider) {
-    const body = child.getComponent(RigidBody);
-
-    if (body && this.mBodies.indexOf(body) !== -1) {
-      this.__addPairs(collider, body);
-
-      if (child.mCollidersCache.length === 1) {
-        this.__removePairs(body.mCollider);
-      }
-    }
-  }
-
-  /**
-   * Removes collider from arcade world.
-   *
-   * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
-   */
-  __removeCollider(child, collider) {
-    const body = child.getComponent(RigidBody);
-
-    if (body && this.mBodies.indexOf(body) !== -1) {
-      this.__removePairs(collider);
-
-      if (child.mCollidersCache.length === 0) {
-        this.__addCollider(child, body.mCollider);
-      }
-    }
-  }
-
-  /**
-   * Generate pairs, passed collider with all present colliders
-   *
-   * @private
-   * @param {Collider} collider
-   * @param {RigidBody} fromBody
-   */
-  __addPairs(collider, fromBody) {
-    const bodies = this.mBodies;
-    collider.mChanged = true;
-
-    for (let i = 0, iLen = bodies.length; i < iLen; i++) {
-      const body = bodies[i];
-      const colliders = body.gameObject.mCollidersCache;
-
-      if (body === fromBody) continue;
-
-      if (colliders.length === 0) {
-        this.__addPair(collider, body.mCollider, fromBody, body);
-      } else {
-        for (let j = 0, jLen = colliders.length; j < jLen; j++) {
-          this.__addPair(collider, colliders[j], fromBody, body);
-        }
-      }
-    }
-  }
-
-  /**
-   * Creates pair and adds it to world
-   *
-   * @private
-   * @param {Collider} a
-   * @param {Collider} b
-   * @param {RigidBody} bodyA
-   * @param {RigidBody} bodyB
-   */
-  __addPair(a, b, bodyA, bodyB) {
-    const isBoxA = a instanceof BoxCollider;
-    const isBoxB = b instanceof BoxCollider;
-    let pair;
-
-    if (isBoxA && isBoxB) {
-      pair = BoxToBoxPair.pool.get();
-    } else if (!isBoxA && !isBoxB) {
-      pair = CircleToCirclePair.pool.get();
-    } else {
-      pair = BoxToCirclePair.pool.get();
-
-      if (isBoxB) {
-        const body = bodyA;
-        const collider = a;
-        a = b;
-        bodyA = bodyB;
-        b = collider;
-        bodyB = body;
-      }
-    }
-
-    pair.set(a, b, bodyA, bodyB);
-    this.mPairs.push(pair);
-
-    this.mPairsHash[Pair.__id(a, b)] = pair;
-    bodyA.mPairs.push(pair);
-    bodyB.mPairs.push(pair);
-  }
-
-  /**
-   * Removes all pairs with given collider
-   *
-   * @private
-   * @param {Collider} collider
-   */
-  __removePairs(collider) {
-    const pairs = this.mPairs;
-    const pairsHash = this.mPairsHash;
-
-    for (let i = pairs.length - 1; i >= 0; i--) {
-      const pair = pairs[i];
-
-      if (pair.a === collider || pair.b === collider) {
-        pairs.splice(i, 1);
-        pair.constructor.pool.release(pair);
-
-        delete pairsHash[Pair.__id(pair.a, pair.b)];
-
-        pair.bodyA.mPairs.splice(pair.bodyA.mPairs.indexOf(pair), 1);
-        pair.bodyB.mPairs.splice(pair.bodyB.mPairs.indexOf(pair), 1);
-      }
+      this.mChanged = true;
     }
   }
 
   __rebuildPairs() {
     const bodies = this.mBodies;
     const pairs = this.mPairs;
+    const pairsHashPrev = this.mPairsHash;
     this.mPairsHash = Object.create(null);
-    const pairsHash = this.mPairsHash;
+    pairs.length = 0;
 
-    for (let i = 0, l = pairs.length; i < l; i++) {
-      pairs[i].constructor.pool.release(pairs[i]);
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      const body = bodies[i];
+      body.mPairs.length = 0;
+      body.mColliders = body.gameObject.mCollidersCache.slice();
+      body.mColliders.length === 0 && body.mColliders.push(body.mCollider);
     }
 
     for (let i = 0, iLen = bodies.length - 1; i < iLen; i++) {
       let bodyA = bodies[i];
-      const collidersA = bodyA.gameObject.mCollidersCache.slice();
-      collidersA.length === 0 && collidersA.push(bodyA.mCollider);
+      const collidersA = bodyA.mColliders;
 
       for (let j = i + 1, jLen = bodies.length; j < jLen; j++) {
         let bodyB = bodies[j];
-        const collidersB = bodyB.gameObject.mCollidersCache.slice();
-        collidersB.length === 0 && collidersB.push(bodyB.mCollider);
+        const collidersB = bodyB.mColliders;
 
         for (let k = 0, kLen = collidersA.length; k < kLen; k++) {
           let colliderA = collidersA[k];
 
           for (let l = 0, lLen = collidersB.length; l < lLen; l++) {
             let colliderB = collidersB[l];
-
-            const isBoxA = colliderA instanceof BoxCollider;
-            const isBoxB = colliderB instanceof BoxCollider;
+            const id = Pair.__id(colliderA, colliderB);
             let pair;
 
-            if (isBoxA && isBoxB) {
-              pair = BoxToBoxPair.pool.get();
-            } else if (!isBoxA && !isBoxB) {
-              pair = CircleToCirclePair.pool.get();
+            if (pairsHashPrev[id]) {
+              pair = pairsHashPrev[id];
             } else {
-              pair = BoxToCirclePair.pool.get();
+              const isBoxA = colliderA.constructor === BoxCollider;
+              const isBoxB = colliderB.constructor === BoxCollider;
+              let swap = false;
+              colliderA.mChanged = true;
+              colliderB.mChanged = true;
 
-              if (isBoxB) {
-                let tmp = bodyA;
-                bodyA = bodyB;
-                bodyB = tmp;
-
-                tmp = colliderA;
-                colliderA = colliderB;
-                colliderB = tmp;
+              if (isBoxA && isBoxB) {
+                pair = new BoxToBoxPair();
+              } else if (!isBoxA && !isBoxB) {
+                pair = new CircleToCirclePair();
+              } else {
+                pair = new BoxToCirclePair();
+                swap = isBoxB;
               }
+
+              swap ? pair.set(colliderB, colliderA, bodyB, bodyA) : pair.set(colliderA, colliderB, bodyA, bodyB);
             }
 
-            pair.set(colliderA, colliderB, bodyA, bodyB);
             pairs.push(pair);
+            this.mPairsHash[id] = pair;
 
-            pairsHash[Pair.__id(colliderA, colliderB)] = pair;
             bodyA.mPairs.push(pair);
             bodyB.mPairs.push(pair);
           }
@@ -421,6 +252,11 @@ class Arcade extends System {
    * @inheritDoc
    */
   onFixedUpdate(dt) {
+    if (this.mChanged) {
+      this.mChanged = false;
+      this.__rebuildPairs();
+    }
+
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
