@@ -236,7 +236,7 @@ class Pair {
    * return {String} Pair unique id
    */
   static __id(a, b) {
-    return a > b ? `${a}&${b}` : `${b}&${a}`;
+    return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;
   }
 
   /**
@@ -244,12 +244,12 @@ class Pair {
    *
    * @public
    * @param {Number} [unitsPerMeter=1] To preserve physics reactions in different screen resolutions
-   * @param {Number} [baumgarte=0.6] Baumgarte coefficient for position solve. From 0.2 to 0.8
+   * @param {Number} [baumgarte=0.2] Baumgarte coefficient for position solve. From 0.2 to 0.8
    * @param {Number} [slop=0.5] Allowed overlap to skip position solve
    *
    * return {void}
    */
-  static settings(unitsPerMeter = 1, baumgarte = 0.6, slop = 0.5) {
+  static settings(unitsPerMeter = 1, baumgarte = 0.2, slop = 0.5) {
     Pair.slop = slop;
     Pair.baumgarte = baumgarte;
     Pair.unitsPerMeter = unitsPerMeter;

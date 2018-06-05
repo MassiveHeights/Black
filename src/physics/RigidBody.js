@@ -234,23 +234,36 @@ class RigidBody extends Component {
     const colliders = gameObject.mCollidersCache;
     const collider = this.mCollider;
     const position = this.mPosition;
-    const cachedPosition = this.mCachedPosition;
     const wt = gameObject.worldTransformation;
     const wtData = wt.data;
     const transform = this.mTransform;
 
     // Check scale x, y and rotation (skew is forbidden for arcade physics)
     // Also for circle world scale x and y should be the same
-    const transformChanged = transform.data[0] !== wtData[0] || transform.data[2] !== wtData[2];
-
-    // Set colliders dirty
-    if (transformChanged) {
+    if (transform.data[0] !== wtData[0] || transform.data[2] !== wtData[2]) {
       transform.set(wtData[0], wtData[1], wtData[2], wtData[3], 0, 0);
       collider.mChanged = true;
 
       for (let i = 0, l = colliders.length; i < l; i++) {
         colliders[i].mChanged = true;
       }
+    }
+
+    if (gameObject.parent) {
+      const cachedPosition = this.mCachedPosition;
+      const prevX = cachedPosition.x;
+      const prevY = cachedPosition.y;
+
+      wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+
+      // Update this position if game object position was changed during frame
+      if (cachedPosition.x !== prevX || cachedPosition.y !== prevY) {
+        position.x += cachedPosition.x - prevX;
+        position.y += cachedPosition.y - prevY;
+      }
+
+      gameObject.parent.globalToLocal(this.mPosition, gameObject);
+      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
     }
 
     // Refresh colliders
@@ -270,22 +283,6 @@ class RigidBody extends Component {
       for (let i = 0, l = colliders.length; i < l; i++) {
         colliders[i].refresh(transform, position);
       }
-    }
-
-    if (gameObject.parent) {
-      const prevX = cachedPosition.x;
-      const prevY = cachedPosition.y;
-
-      wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
-
-      // Update this position if game object position was changed during frame
-      if (cachedPosition.x !== prevX || cachedPosition.y !== prevY) {
-        position.x += cachedPosition.x - prevX;
-        position.y += cachedPosition.y - prevY;
-      }
-
-      gameObject.parent.globalToLocal(this.mPosition, gameObject);
-      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
     }
   }
 
@@ -326,14 +323,14 @@ class RigidBody extends Component {
       Black.stage.add(debug.graphics);
 
       debug.graphics.clear();
-      debug.graphics.lineStyle(4, 0xffffff);
+      debug.graphics.lineStyle(2, 0x00ff00);
     }
 
     if (colliders.length === 0) {
-      this.mCollider.debug(graphics, this.mPosition);
+      this.mCollider.debug(graphics, this.mCachedPosition);
     } else {
       for (let i = 0, l = colliders.length; i < l; i++) {
-        colliders[i].debug(graphics, this.mPosition);
+        colliders[i].debug(graphics, this.mCachedPosition);
       }
     }
   }

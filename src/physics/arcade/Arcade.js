@@ -79,7 +79,7 @@ class Arcade extends System {
    * @param {...*} [args] Rest arguments
    */
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
-    const pair = this.mPairsHash[Pair.__id(colliderA.a, colliderB.b)];
+    const pair = this.mPairsHash[Pair.__id(colliderA, colliderB)];
 
     if (pair && pair.mInCollision) {
       const sign = pair.a === colliderA ? 1 : -1;
@@ -210,13 +210,17 @@ class Arcade extends System {
    */
   __removeBody(body) {
     const bodies = this.mBodies;
-    const colliders = body.gameObject.mCollidersCache;
+    const pairs = this.mPairs;
+    const pairsHash = this.mPairsHash;
 
-    if (colliders.length === 0) {
-      this.__removePairs(body.mCollider, body);
-    } else {
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        this.__removePairs(colliders[i], body);
+    for (let i = pairs.length - 1; i >= 0; i--) {
+      const pair = pairs[i];
+
+      if (pair.bodyA === body || pair.bodyB === body) {
+        pairs.splice(i, 1);
+        pair.constructor.pool.release(pair);
+
+        delete pairsHash[Pair.__id(pair.a, pair.b)];
       }
     }
 
@@ -349,6 +353,66 @@ class Arcade extends System {
 
         pair.bodyA.mPairs.splice(pair.bodyA.mPairs.indexOf(pair), 1);
         pair.bodyB.mPairs.splice(pair.bodyB.mPairs.indexOf(pair), 1);
+      }
+    }
+  }
+
+  __rebuildPairs() {
+    const bodies = this.mBodies;
+    const pairs = this.mPairs;
+    this.mPairsHash = Object.create(null);
+    const pairsHash = this.mPairsHash;
+
+    for (let i = 0, l = pairs.length; i < l; i++) {
+      pairs[i].constructor.pool.release(pairs[i]);
+    }
+
+    for (let i = 0, iLen = bodies.length - 1; i < iLen; i++) {
+      let bodyA = bodies[i];
+      const collidersA = bodyA.gameObject.mCollidersCache.slice();
+      collidersA.length === 0 && collidersA.push(bodyA.mCollider);
+
+      for (let j = i + 1, jLen = bodies.length; j < jLen; j++) {
+        let bodyB = bodies[j];
+        const collidersB = bodyB.gameObject.mCollidersCache.slice();
+        collidersB.length === 0 && collidersB.push(bodyB.mCollider);
+
+        for (let k = 0, kLen = collidersA.length; k < kLen; k++) {
+          let colliderA = collidersA[k];
+
+          for (let l = 0, lLen = collidersB.length; l < lLen; l++) {
+            let colliderB = collidersB[l];
+
+            const isBoxA = colliderA instanceof BoxCollider;
+            const isBoxB = colliderB instanceof BoxCollider;
+            let pair;
+
+            if (isBoxA && isBoxB) {
+              pair = BoxToBoxPair.pool.get();
+            } else if (!isBoxA && !isBoxB) {
+              pair = CircleToCirclePair.pool.get();
+            } else {
+              pair = BoxToCirclePair.pool.get();
+
+              if (isBoxB) {
+                let tmp = bodyA;
+                bodyA = bodyB;
+                bodyB = tmp;
+
+                tmp = colliderA;
+                colliderA = colliderB;
+                colliderB = tmp;
+              }
+            }
+
+            pair.set(colliderA, colliderB, bodyA, bodyB);
+            pairs.push(pair);
+
+            pairsHash[Pair.__id(colliderA, colliderB)] = pair;
+            bodyA.mPairs.push(pair);
+            bodyB.mPairs.push(pair);
+          }
+        }
       }
     }
   }

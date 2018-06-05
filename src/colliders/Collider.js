@@ -14,9 +14,6 @@ class Collider extends Component {
    */
   constructor() {
     super();
-
-    this.mHash = Collider.mHash++;
-    this.mChanged = true;
   }
 
   /**
@@ -31,5 +28,3 @@ class Collider extends Component {
     return false;
   }
 }
-
-Collider.mHash = 1;

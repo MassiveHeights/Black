@@ -42,6 +42,9 @@ class CircleCollider extends Collider {
     /** @private @type {Vector} Global in stage coordinates max x and y vertex */
     this.mMax = new Vector();
 
+    /** @private @type {Boolean} Dirty flag */
+    this.mChanged = true;
+
     this.set(x, y, radius);
   }
 
@@ -123,6 +126,7 @@ class CircleCollider extends Collider {
    * @param {Graphics} graphics Drawing place
    */
   debug(graphics) {
+    graphics.beginPath();
     graphics.circle(this.mCenter.x, this.mCenter.y, this.mRadius);
     graphics.stroke();
   }

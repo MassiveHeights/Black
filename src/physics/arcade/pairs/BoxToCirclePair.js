@@ -23,6 +23,9 @@ class BoxToCirclePair extends Pair {
     /** @private @type {Vector} Cached cos and sin from box game object world transformation without scale, to rotate */
     this.mBoxRotate = new Vector();
 
+    /** @private @type {Vector} Tmp point to rotate */
+    this.mCircleCenter = new Vector();
+
     /** @private @type {Boolean} Flag indicates necessity of the properties refresh */
     this.mChanged = false;
   }
@@ -56,34 +59,35 @@ class BoxToCirclePair extends Pair {
     }
 
     if (box.mMax.x < circle.mMin.x || box.mMin.x > circle.mMax.x ||
-      box.mMax.y < circle.mMin.y || box.mMin.y > circle.mMax.y)
-    {
+      box.mMax.y < circle.mMin.y || box.mMin.y > circle.mMax.y) {
       return this.mInCollision = false;
     }
 
     if (this.mChanged) {
       this.mChanged = false;
       const transformData = this.bodyA.mTransform.data;
-      const scale = Math.sqrt(transformData[0] * transformData[0] + transformData[1] * transformData[1]);
+      const scaleX = Math.sqrt(transformData[0] * transformData[0] + transformData[1] * transformData[1]);
+      const scaleY = Math.sqrt(transformData[2] * transformData[2] + transformData[3] * transformData[3]);
 
-      this.mBoxRotate.set(transformData[0] / scale, transformData[1] / scale);
-      this.mBoxHalfWidth = box.mRect.width / 2 * scale;
-      this.mBoxHalfHeight = box.mRect.height / 2 * scale;
+      this.mBoxRotate.set(transformData[0] / scaleX, transformData[1] / scaleX);
+      this.mBoxHalfWidth = box.mRect.width / 2 * scaleX;
+      this.mBoxHalfHeight = box.mRect.height / 2 * scaleY;
     }
 
     const boxRotate = this.mBoxRotate;
     const normal = this.mNormal;
+    const circleCenter = this.mCircleCenter.copyFrom(circle.mCenter);
     let hw = this.mBoxHalfWidth;
     let hh = this.mBoxHalfHeight;
 
     const rotated = boxRotate.y !== 0;
 
     if (rotated) {
-      this.__rotate(circle.mCenter, box.mCenter.x, box.mCenter.y, boxRotate.x, -boxRotate.y);
+      this.__rotate(circleCenter, box.mCenter.x, box.mCenter.y, boxRotate.x, -boxRotate.y);
     }
 
-    const dx = circle.mCenter.x - box.mCenter.x;
-    const dy = circle.mCenter.y - box.mCenter.y;
+    const dx = circleCenter.x - box.mCenter.x;
+    const dy = circleCenter.y - box.mCenter.y;
 
     if (dx === 0 && dy === 0) {
       this.mOverlap = circle.mRadius + hw;

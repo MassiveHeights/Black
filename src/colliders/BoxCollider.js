@@ -54,6 +54,9 @@ class BoxCollider extends Collider {
     /** @private @type {Vector} Global in stage coordinates center */
     this.mCenter = new Vector();
 
+    /** @private @type {Boolean} Dirty flag */
+    this.mChanged = true;
+
     this.set(x, y, width, height);
   }
 
@@ -148,12 +151,12 @@ class BoxCollider extends Collider {
   debug(graphics, bodyPosition) {
     const vertices = this.mVertices;
 
-    graphics.moveTo(bodyPosition.x + vertices[0], bodyPosition.y + vertices[1]);
-
-    for (let i = 1; i < 4; i++) {
-      graphics.lineTo(bodyPosition.x + vertices[i], bodyPosition.y + vertices[i]);
-    }
-
+    graphics.beginPath();
+    graphics.moveTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
+    graphics.lineTo(bodyPosition.x + vertices[1].x, bodyPosition.y + vertices[1].y);
+    graphics.lineTo(bodyPosition.x + vertices[2].x, bodyPosition.y + vertices[2].y);
+    graphics.lineTo(bodyPosition.x + vertices[3].x, bodyPosition.y + vertices[3].y);
+    graphics.lineTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
     graphics.stroke();
   }
 }
