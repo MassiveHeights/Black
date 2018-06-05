@@ -72,7 +72,7 @@ When you provide payment information to Massive Heights or its authorized proces
 
 From time to time, Massive Heights may display links to the Third Party Licensor Content on the Marketplace. Massive Heights does not license or provide the Third Party Licensor Content to you under this Agreement. Any use of the Third Party Licensor Content requires you to enter into a separate license agreement directly with the provider of the Third Party Licensor Content. The terms of your license agreement with the provider of the Third Party Licensor Content will govern all matters related to your usage of the Third Party Licensor Content rather than the terms of this Agreement.
 
-  **5. ROYALTY**
+**5. ROYALTY**
 
 To receiveCommercial Licenses in accordance with the provisions of Section 1 **(LICENSE GRANT)** you agree to pay Massive Heights a royalty equal to 5% of all worldwide gross revenue actually attributable to each Product, regardless of whether that revenue is received by you or any other person or legal entity, as follows:
 
@@ -90,7 +90,7 @@ f. Revenue in any other form actually attributable to a Product (unless excluded
 
 Commercial License may be temporarily not available for you or its accessibility to you can be bound to release of a certain version (versions) of Black Engine and or Smith Editor.
 
-However, no royalty is owed on the revenue that is not over than $1000 (USD) in a quarter and if provided Splash Screen demonstration which sample is setted (or recommended) by Massive Heights for a period of not less than 3 seconds. Providing the specified conditions (the revenue is not over than 1000 (USD) in a quarter and demonstration of Splash Screen for a period of not less than 3 seconds) you are granted an Indie type of license. In case of non-fulfillment of the requirements or non-compliance with the conditions for obtaining an Indie License, you are obliged to pay in favor of Massive Heights in the amount of 5% of your gross revenue, taking into account the requirements below.
+However, no royalty is owed on the revenue that is not over than $10 000 (USD) in a quarter and if provided Splash Screen demonstration which sample is setted (or recommended) by Massive Heights for a period of not less than 3 seconds. Providing the specified conditions (the revenue is not over than $10 000 (USD) in a quarter and demonstration of Splash Screen for a period of not less than 3 seconds) you are granted an Indie type of license. In case of non-fulfillment of the requirements or non-compliance with the conditions for obtaining an Indie License, you are obliged to pay in favor of Massive Heights in the amount of 5% of your gross revenue, taking into account the requirements below.
 
 The royalty is based on gross revenue from the end-users, regardless of whether you sell your Product to the end-users directly, self-publish via the App Store or any similar store, or work with a publisher.  The following simplified example illustrates the application of the royalty to gross sales:  if your Product earns $10 on the App Store, Apple may pay you $7 (having deducted 30% as a distribution fee), but your royalty to Massive Heights would still be 5% of $10 (or $0.50).
 
@@ -234,9 +234,9 @@ As used in this Agreement, the following capitalized words have the following me
 
 _&quot;_ **Massive Heights Licenses**&quot; means the License, the Blacksmith 2D License.
 
-_&quot;_ **Indie**&quot; – type of a license under this Agreement, permission to use Black Engine and or Smith Editor for commercial purposes provided that the gross revenue is not over than $1000 (USD) in a quarter and if provided Splash Screen demonstration which sample is setted (or recommended) by Massive Heights for a period of not less than 3 seconds.
+_&quot;_ **Indie**&quot; – type of a license under this Agreement, permission to use Black Engine and or Smith Editor for commercial purposes provided that the gross revenue is not over than $10 000 (USD) in a quarter and if provided Splash Screen demonstration which sample is setted (or recommended) by Massive Heights for a period of not less than 3 seconds.
 
-_&quot;_ **Commercial**&quot; – type of a license under this Agreement that turns from Indie type of the license to Commercial in case of the gross revenue is over than or equal to $1000 (USD) in a quarter.
+_&quot;_ **Commercial**&quot; – type of a license under this Agreement that turns from Indie type of the license to Commercial in case of the gross revenue is over than or equal to $10 000 (USD) in a quarter.
 
 &quot;**Massive Heights Trademarks**&quot; means the trademarks, service marks, trade names and logos associated with Massive Heights and other intellectual property, and Blacksmith 2D®, including Black Engine and Smith Editor.
 
