@@ -12,44 +12,21 @@ class Graphics extends DisplayObject {
   constructor() {
     super();
 
-    /** @type {number} Color parameter for line style */
-    this.lineColor = 0;
-
-    /** @type {number} Alpha parameter for line style */
-    this.lineAlpha = 1.0;
-
-    /** @type {number} Width parameter for line style */
-    this.lineWidth = 0;
-
-    /** @type {number} Color parameter for fill style */
-    this.fillColor = 0;
-
-    /** @type {number} Alpha parameter for fill style */
-    this.fillAlpha = 1.0;
-
-    /** @private @type {CapsStyle} */
-    this.mCaps = CapsStyle.NONE;
-
-    /** @private @type {JointStyle} */
-    this.mJoints = JointStyle.MITER;
-
-    /** @private @type {number} */
-    this.mMiterLimit = 3;
-
     /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
     /** @private @type {Array<GraphicsCommand>} */
     this.mCommandQueue = [];
-  }
 
-  /**
-   * @private
-   * @ignore
-   * @readonly
-   */
-  get halfLineWidth() {
-    return this.lineWidth / 2;
+    /** @private @type {number} */
+    this.mPosX = 0;
+
+    /** @private @type {number} */
+    this.mPosY = 0;
+
+    /** @private @type {number} */
+    this.mPadding = 0;
+    //this.lineStyle(1, 0, 1);
   }
 
   /**
@@ -85,14 +62,81 @@ class Graphics extends DisplayObject {
     return driver.registerRenderer(renderer);
   }
 
-  // TODO: what about correct bounds? Shape-perfect instead of aabb?
   /**
    * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    this.mBounds.copyTo(outRect);
+    let bounds = new Rectangle();
+    let newPath = () => {
+      return {
+        bounds: null,
+        points: [],
+        maxLineWidth: 0,
+        lastLineWidth: 0,
+        lineMult: 0.5,
+      };
+    }
+
+    let path = newPath();
+
+    let len = this.mCommandQueue.length;
+    for (let i = 0; i < len; i++) {
+
+      let cmd = this.mCommandQueue[i];
+
+      switch (cmd.type) {
+        case GraphicsCommandType.BEGIN_PATH: {
+          path.bounds && bounds.union(path.bounds);
+          path = newPath();
+          break;
+        }
+        case GraphicsCommandType.BOUNDS: {
+          for (let k = 0; k < cmd.data.length; k += 2)
+            path.points.push(cmd.data[k], cmd.data[k + 1]);
+          break;
+        }
+        case GraphicsCommandType.LINE_STYLE: {
+          path.lastLineWidth = cmd.getNumber(0);
+          let joints = cmd.getString(4);
+
+          if (joints === JointStyle.MITER)
+            path.lineMult = 1;
+
+          break;
+        }
+        case GraphicsCommandType.FILL: {
+          let tmpBounds = Rectangle.fromPointsXY(...path.points);
+          path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+
+          break;
+        }
+        case GraphicsCommandType.STROKE: {
+          if (path.lastLineWidth > path.maxLineWidth)
+            path.maxLineWidth = path.lastLineWidth;
+
+          if (path.maxLineWidth === 0)
+            path.maxLineWidth = 1;
+
+          path.maxLineWidth *= path.lineMult;
+
+          let tmpBounds = Rectangle.fromPointsXY(...path.points);
+          if (path.points.length > 2)
+            tmpBounds.inflate(path.maxLineWidth, path.maxLineWidth);
+
+          path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+
+          break;
+        }
+
+        default:
+          break;
+      }
+    }
+
+    path.bounds && bounds.union(path.bounds);
+    bounds.copyTo(outRect);
 
     if (this.mClipRect !== null) {
       this.mClipRect.copyTo(outRect);
@@ -104,156 +148,323 @@ class Graphics extends DisplayObject {
   }
 
   /**
-   * Sets line style
-   * 
+   * Sets line style. Zero or less values of `lineWidth` are ignored.
+   *
    * @public
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
-   * @param {number=} [miterLimit=3] Mite limit.
+   * @param {CapsStyle=} [caps=CapsStyle.ROUND] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.ROUND] Line joints style.
+   * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
-  lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
-    this.lineWidth = lineWidth;
-    this.lineColor = color;
-    this.lineAlpha = alpha;
-    this.mCaps = caps;
-    this.mJoints = joints;
-    this.mMiterLimit = 3;
+  lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.ROUND, joints = JointStyle.ROUND, miterLimit = 3) {
+    Debug.isNumber(lineWidth, color, alpha, miterLimit);
+    if (lineWidth <= 0)
+      return;
+
+    this.__pushCommand(GraphicsCommandType.LINE_STYLE, lineWidth, color, alpha, caps, joints, miterLimit);
   }
 
   /**
    * Sets fill style
-   * 
+   *
    * @public
    * @param {number} [color=0] Fill color.
    * @param {number=} [alpha=1] Fill alpha.
    * @returns {void}
    */
   fillStyle(color = 0, alpha = 1) {
-    this.fillColor = color;
-    this.fillAlpha = alpha;
+    Debug.isNumber(color, alpha);
+    this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
   }
 
   /**
-   * Clears the graphics that were drawn and resets fill and line styles
-   * 
+   * Clears the graphics that were drawn and resets fill and line styles.
+   *
    * @public
    * @returns {void}
    */
   clear() {
-    this.lineColor = 0;
-    this.lineAlpha = 1.0;
-    this.lineWidth = 0;
-
-    this.fillColor = 0;
-    this.fillAlpha = 1.0;
-
     this.mBounds.zero();
+    this.mPosX = 0;
+    this.mPosY = 0;
 
     this.mCommandQueue.splice(0, this.mCommandQueue.length);
+    this.beginPath();
     this.setTransformDirty();
   }
 
   /**
-   * Sets custom tranformation for futher objects
-   * @param {Matrix} matrix 
-   */
-  setCustomTransform(matrix) {
-    let d = matrix.data;
-    this.__pushCommand(GraphicsCommandType.TRANSFORM, d[0], d[1], d[2], d[3], d[4], d[5]);
-    this.setTransformDirty();
-  }
-
-  /**
-   * Draws line with given coordinates for two points
-   * 
+   * Moves the starting point of a path to given x and y coordinates.
+   *
    * @public
-   * @param {number} x1 First point x-coordinate.
-   * @param {number} y1 First point y-coordinate.
-   * @param {number} x2 Second point x-coordinate.
-   * @param {number} y2 Second point y-coordinate.
+   * @param {number} x The x-axis of the point.
+   * @param {number} y The y-axis of the point.
    * @returns {void}
    */
-  drawLine(x1, y1, x2, y2) {
-    this.__inflateBounds(x1 - this.halfLineWidth, y1 - this.halfLineWidth);
-    this.__inflateBounds(x1 + this.halfLineWidth, y1 + this.halfLineWidth);
-
-    this.__inflateBounds(x2 - this.halfLineWidth, y2 - this.halfLineWidth);
-    this.__inflateBounds(x2 + this.halfLineWidth * 2, y2 + this.halfLineWidth);
-
-    this.__pushCommand(GraphicsCommandType.LINE, x1, y1, x2, y2);
-    this.setTransformDirty();
+  moveTo(x, y) {
+    this.mPosX = x;
+    this.mPosY = y;
+    this.__pushCommand(GraphicsCommandType.MOVE_TO, x, y);
   }
 
   /**
-   * Draws rectangle with given coordinates of top left point and its width and height
-   * 
+   * Draws a line between last point and given.
+   *
    * @public
-   * @param {number} x Left-Top coordinate along X-axis.
-   * @param {number} y Left-Top coordinate along Y-axis.
-   * @param {number} width Width of rectangle.
-   * @param {number} height Height of rectangle.
+   * @param {number} x The x-axis of the point.
+   * @param {number} y The y-axis of the point.
    * @returns {void}
    */
-  drawRect(x, y, width, height) {
-    this.__inflateBounds(x - this.halfLineWidth, y - this.halfLineWidth);
-    this.__inflateBounds(x + width + this.halfLineWidth, y + height + this.halfLineWidth);
-    this.__pushCommand(GraphicsCommandType.RECTANGLE, x, y, width, height);
-    this.setTransformDirty();
+  lineTo(x, y) {
+    this.mPosX = x;
+    this.mPosY = y;
+
+    this.__pushCommand(GraphicsCommandType.LINE_TO, x, y);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, this.mPosX, this.mPosY, x, y);
   }
 
   /**
-   * Draws a circle with given center coordinates and radius
-   * 
+   * Adds an arc to the current path.
+   *
    * @public
-   * @param {number} x Center coordinate along X-axis.
-   * @param {number} y Center coordinate along Y-axis.
-   * @param {number} radius Radius of circle.
+   * @param {number} x             The x-axis of the arc's center.
+   * @param {number} y             The y-axis of the arc's center.
+   * @param {number} radius        The radius of the arc.
+   * @param {number} startAngle    The starting angle in radians.
+   * @param {number} endAngle      The ending angle in radians.
+   * @param {boolean=} [anticlockwise=false] If true the arc will be drawn counter-clockwise.
    * @returns {void}
    */
-  drawCircle(x, y, radius) {
-    this.__inflateBounds(x - radius - this.halfLineWidth, y - radius - this.halfLineWidth);
-    this.__inflateBounds(x + radius + this.halfLineWidth, y + radius + this.halfLineWidth);
+  arc(x, y, radius, startAngle, endAngle, anticlockwise = false) {
+    let needsMoveTo = false;
+    let moveToX = 0;
+    let moveToY = 0;
+    let points = [];
+    let diff = Math.abs(startAngle - endAngle);
 
-    this.__pushCommand(GraphicsCommandType.CIRCLE, x, y, radius);
-    this.setTransformDirty();
+    if (startAngle === endAngle)
+      return;
+
+    if (diff >= MathEx.PI2) {
+      points.push(x - radius, y - radius, x + radius, y + radius);
+
+      let end = Circle.getCircumferencePoint(x, y, radius, endAngle + Math.PI * 0.5);
+
+      needsMoveTo = true;
+      endAngle = startAngle + MathEx.PI2;
+      moveToX = end.x;
+      moveToY = end.y;
+    } else {
+      let start = startAngle % MathEx.PI2 + (startAngle < 0 ? MathEx.PI2 : 0);
+      let end = endAngle;
+
+      if (anticlockwise) {
+        end = start;
+        start = endAngle;
+      }
+
+      while (end < start)
+        end += MathEx.PI2;
+
+      const right = start === 0 || end >= MathEx.PI2;
+      const left = start <= Math.PI && end >= Math.PI || end >= Math.PI * 3;
+      const bottom = start <= Math.PI * 0.5 && end >= Math.PI * 0.5 || end >= Math.PI * 2.5;
+      const top = start <= Math.PI * 1.5 && end >= Math.PI * 1.5 || end >= Math.PI * 3.5;
+
+      let startCos, endCos, startSin, endSin;
+
+      if (!left || !right) {
+        startCos = Math.cos(start) * radius;
+        endCos = Math.cos(end) * radius;
+      }
+
+      if (!top || !bottom) {
+        startSin = Math.sin(start) * radius;
+        endSin = Math.sin(end) * radius;
+      }
+
+      const minX = left ? -radius : Math.min(startCos, endCos);
+      const maxX = right ? radius : Math.max(startCos, endCos);
+      const minY = top ? -radius : Math.min(startSin, endSin);
+      const maxY = bottom ? radius : Math.max(startSin, endSin);
+
+      points.push(minX + x, minY + y, maxX + x, maxY + y);
+    }
+
+    this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, startAngle, endAngle, anticlockwise);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, ...points);
+
+    if (needsMoveTo === true)
+      this.__pushCommand(GraphicsCommandType.MOVE_TO, moveToX, moveToY);
+  }
+
+  /**
+   * Adds circle to current path.
+   *
+   * @public
+   * @param {number} x      The x-axis of the circles's center.
+   * @param {number} y      The y-axis of the circles's center.
+   * @param {number} radius The radius of the circle.
+   * @returns {void}
+   */
+  circle(x, y, radius) {
+    this.__pushCommand(GraphicsCommandType.ARC, x, y, radius, 0, MathEx.PI2);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, x - radius, y - radius, x + radius, y + radius);
+  }
+
+  /**
+   * Creates closed rectangle like path.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   *
+   * @returns {void}
+   */
+  rect(x, y, width, height) {
+    Debug.isNumber(x, y, width, height);
+
+    this.__pushCommand(GraphicsCommandType.RECT, x, y, width, height);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
+  }
+
+  /**
+   * @public
+   * @param {number} cp1x
+   * @param {number} cp1y
+   * @param {number} cp2x
+   * @param {number} cp2y
+   * @param {number} x
+   * @param {number} y
+   */
+  bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y) {
+    const rangeX = this.__bezierRange(this.mPosX, cp1x, cp2x, x, Vector.pool.get());
+    const rangeY = this.__bezierRange(this.mPosY, cp1y, cp2y, y, Vector.pool.get());
+
+    this.mPosX = x;
+    this.mPosY = y;
+
+    this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, rangeX.x, rangeY.x, rangeX.y, rangeY.y);
+
+    Vector.pool.release(rangeX);
+    Vector.pool.release(rangeY);
   }
 
   /**
    * @private
-   * @ignore
-   * @param {number} x 
-   * @param {number} y 
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} p2
+   * @param {number} p3
+   * @param {Vector} [out=new Vector()]
+   *
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
-  __inflateBounds(x, y) {
-    if (x < this.mBounds.x) {
-      this.mBounds.width += this.mBounds.x - x;
-      this.mBounds.x = x;
+  __bezierRange(p0, p1, p2, p3, out = new Vector()) {
+    const a = (p2 - 2 * p1 + p0) - (p3 - 2 * p2 + p1);
+    const b = 2 * (p1 - p0) - 2 * (p2 - p1);
+    const c = p0 - p1;
+    const discriminant = b * b - 4 * a * c;
+
+    let min = Math.min(p0, p3);
+    let max = Math.max(p0, p3);
+
+    if (discriminant >= 0) {
+      const discRoot = Math.sqrt(discriminant);
+      const inv2a = 1 / (a * 2);
+      let x1 = (-b + discRoot) * inv2a;
+      let x2 = (-b - discRoot) * inv2a;
+      x1 = isFinite(x1) ? x1 : 0.5;
+      x2 = isFinite(x2) ? x2 : 0.5;
+
+      if (x1 > 0 && x1 < 1) {
+        const dot = this.__bezierDot(p0, p1, p2, p3, x1);
+        min = Math.min(dot, min);
+        max = Math.max(dot, max);
+      }
+
+      if (x2 > 0 && x2 < 1) {
+        const dot = this.__bezierDot(p0, p1, p2, p3, x2);
+        min = Math.min(dot, min);
+        max = Math.max(dot, max);
+      }
     }
 
-    if (y < this.mBounds.y) {
-      this.mBounds.height += this.mBounds.y - y;
-      this.mBounds.y = y;
-    }
+    out.x = min;
+    out.y = max;
 
-    if (x > this.mBounds.x + this.mBounds.width)
-      this.mBounds.width = x - this.mBounds.x;
+    return out;
+  }
 
-    if (y > this.mBounds.y + this.mBounds.height)
-      this.mBounds.height = y - this.mBounds.y;
+  /**
+   * @private
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} p2
+   * @param {number} p3
+   * @param {number} x
+   *
+   * @return {number}
+   */
+  __bezierDot(p0, p1, p2, p3, x) {
+    const y = 1 - x;
+    return p0 * y * y * y + 3 * p1 * x * y * y + 3 * p2 * x * x * y + p3 * x * x * x;
+  }
+
+  /**
+   * Starts new path.
+   *
+   * @public
+   * @returns {void}
+   */
+  beginPath() {
+    this.__pushCommand(GraphicsCommandType.BEGIN_PATH);
+  }
+
+  /**
+   * Closes current path.
+   *
+   * @public
+   * @returns {void}
+   */
+  closePath() {
+    this.__pushCommand(GraphicsCommandType.CLOSE_PATH);
+  }
+
+  /**
+   * Strokes current path with the current line style..
+   *
+   * @public
+   * @returns {void}
+   */
+  stroke() {
+    this.__pushCommand(GraphicsCommandType.STROKE);
+  }
+
+  /**
+   * Fills current path with the current fill style.
+   *
+   * @public
+   * @returns {void}
+   */
+  fill() {
+    this.__pushCommand(GraphicsCommandType.FILL);
   }
 
   /**
    * @private
    * @ignore
    * @param {GraphicsCommandType} type
-   * @param {...number} points 
+   * @param {...*} data
    */
-  __pushCommand(type, ...points) {
-    let cmd = new GraphicsCommand(type, points, this.lineColor, this.lineAlpha, this.lineWidth, this.fillColor, this.fillAlpha, this.mCaps, this.mJoints, this.mMiterLimit);
+  __pushCommand(type, ...data) {
+    let cmd = new GraphicsCommand(type, data);
     this.mCommandQueue.push(cmd);
   }
 }

@@ -38,6 +38,22 @@ class Debug {
       throw new Error(message);
   }
 
+  static assertWarn(value, message) {
+    if (value === true)
+      return;
+
+    message = message == null ? 'Assertation warning.' : message;
+    Debug.warn(message);
+  }
+
+  static assertInfo(value, message) {
+    if (value === true)
+      return;
+
+    message = message == null ? 'Assertation info.' : message;
+    Debug.info(message);
+  }
+
   /**
    * Outputs a message to the console
    * 
@@ -62,7 +78,7 @@ class Debug {
    * @param  {...string} message
    */
   static warn(...message) {
-    console.info('%c%s', 'color: #f67400', ...message);
+    console.info('%c%s', 'color: #f67400', 'WARN:', ...message);
   }
 
   /**

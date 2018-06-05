@@ -47,16 +47,22 @@
     "src/textures/CanvasRenderTexture.js",
     "src/textures/AtlasTexture.js",
 
-    "src/loaders/Asset.js",
-    "src/loaders/TextureAsset.js",
-    "src/loaders/JSONAsset.js",
-    "src/loaders/XMLAsset.js",
-    "src/loaders/FontAsset.js",
-    "src/loaders/AtlasTextureAsset.js",
-    "src/loaders/BitmapFontAsset.js",
-    "src/loaders/SoundAsset.js",
-    "src/loaders/SoundAtlasAsset.js",
-    "src/loaders/AssetManager.js",
+    "src/assets/loaders/AssetLoader.js",
+    "src/assets/loaders/ImageAssetLoader.js",
+    "src/assets/loaders/XHRAssetLoader.js",
+    "src/assets/loaders/FontFaceAssetLoader.js",
+
+    "src/assets/Asset.js",
+    "src/assets/TextureAsset.js",
+    "src/assets/JSONAsset.js",
+    "src/assets/XMLAsset.js",
+    "src/assets/FontAsset.js",
+    "src/assets/AtlasTextureAsset.js",
+    "src/assets/BitmapFontAsset.js",
+    "src/assets/SoundAsset.js",
+    "src/assets/SoundAtlasAsset.js",
+    "src/assets/AssetManagerState.js",
+    "src/assets/AssetManager.js",
 
     "src/drivers/BlendMode.js",
     "src/drivers/Renderer.js",
@@ -155,6 +161,7 @@
     "src/audio/Sound.js",
     "src/audio/SoundListener.js",
 
+    "src/core/SplashScreen.js",
     "src/Black.js"
   ]
 }

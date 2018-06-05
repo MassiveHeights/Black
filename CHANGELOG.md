@@ -1,5 +1,12 @@
 Black Engine: Changelog
 =======================
+v0.4.0
+------
+- Graphics reworked (now it has bounds and API similar to HTML canvas)
+- `AssetManager` dramatically improved
+- TextField now posts `change` message when text is changed
+- Added Splash Screen
+
 v0.3.5
 ------
 - Improved `MessageDispatcher`

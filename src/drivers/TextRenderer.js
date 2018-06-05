@@ -159,14 +159,12 @@ class TextRenderer extends Renderer {
    * @inheritDoc
    */
   getTransform() {
-    
-    
     let fieldXOffset = 0;
     let fieldYOffset = 0;
-    
+
     let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
     let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
-    
+
     const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
 
     if (this.autoSize === false) {
