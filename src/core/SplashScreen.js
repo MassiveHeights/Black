@@ -18,6 +18,8 @@ class SplashScreen extends MessageDispatcher {
     document.getElementsByTagName('head')[0].appendChild(style);
 
     let container = document.getElementById(Black.instance.containerElementId);
+    let oldOverflow = container.style.overflow;    
+    container.style.overflow = 'hidden';
 
     let splash = document.createElement('div');
     splash.id = 'splash-screen';
@@ -73,6 +75,10 @@ class SplashScreen extends MessageDispatcher {
 
       style.parentNode.removeChild(style);
       splash.parentNode.removeChild(splash);
+
+      container.style.overflow = oldOverflow;
+
+      this.post(Message.COMPLETE);
     }, SplashScreen.duration);
 
   }

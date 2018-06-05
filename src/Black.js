@@ -762,6 +762,15 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Returns currently active splash screen. Splash screen posts 'complete' message on hide.
+   * 
+   * @returns {SplashScreen}
+   */
+  get splashScreen() {
+    return this.mSplashScreen;
+  }
+
+  /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
    * @readonly
    * @returns {number}
