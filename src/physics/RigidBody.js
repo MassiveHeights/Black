@@ -4,10 +4,8 @@
  * @cat physics
  * @extends Component
  */
-
 /* @echo EXPORT */
 class RigidBody extends Component {
-
   /**
    * Creates new instance of RigidBody.
    */

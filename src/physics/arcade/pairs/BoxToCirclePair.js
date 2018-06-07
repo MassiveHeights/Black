@@ -1,5 +1,5 @@
 /**
- * BoxToCirclePair is used to test collision within box - circle colliders
+ * BoxToCirclePair is used to test collision within box - circle colliders.
  *
  * @cat physics.arcade.pairs
  * @extends Pair

@@ -1,15 +1,13 @@
 /**
- * Base arcade physics class
+ * Simple AABB physics engine (beta).
  *
  * @cat physics.arcade
  * @extends System
  */
-
 /* @echo EXPORT */
 class Arcade extends System {
-
   /**
-   * Creates new instance of Arcade.
+   * Creates new Arcade instance.
    */
   constructor() {
     super();
@@ -67,18 +65,18 @@ class Arcade extends System {
    *
    * Callback params:
    *
-   * normalX - collision normal projected on x axis. In direction from colliderA to colliderB
-   * normalY - collision normal projected on y axis. In direction from colliderA to colliderB
-   * overlap - positive number
-   * [args] - rest arguments
+   * normalX - collision normal projected on x axis. In direction from colliderA to colliderB.
+   * normalY - collision normal projected on y axis. In direction from colliderA to colliderB.
+   * overlap - positive number.
+   * [args] - rest arguments.
    *
    * @public
    *
    * @param {Collider} colliderA
    * @param {Collider} colliderB
    * @param {Function} cb Callback
-   * @param {Object} ctx
-   * @param {...*} [args] Rest arguments
+   * @param {Object}   ctx
+   * @param {...*} args Rest arguments
    */
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
     const pair = this.mPairsHash[Pair.__id(colliderA, colliderB)];
@@ -90,16 +88,16 @@ class Arcade extends System {
   }
 
   /**
-   * If callback passed and given bodies are in collision invokes callback
+   * If callback passed and given bodies are in collision invokes callback.
    *
-   * Note: if more than one collision occurred within bodies, callback will be invoked only with first found
+   * Note: if more than one collision occurred within bodies, callback will be invoked only with first found.
    *
    * Callback params:
    *
-   * normalX - collision normal projected on x axis. In direction from bodyA collider to bodyB collider
-   * normalY - collision normal projected on y axis. In direction from bodyA collider to bodyB collider
-   * overlap - positive number
-   * [args] - rest arguments
+   * normalX - collision normal projected on x axis. In direction from bodyA collider to bodyB collider.
+   * normalY - collision normal projected on y axis. In direction from bodyA collider to bodyB collider.
+   * overlap - positive number.
+   * [args] - rest arguments.
    *
    * @public
    *
@@ -109,7 +107,7 @@ class Arcade extends System {
    * @param {Object} [ctx = null]
    * @param {...*} [args] Rest arguments
    *
-   * @returns {boolean} Indicator of bodies collision
+   * @returns {boolean} Indicator of bodies collision.
    */
   inCollision(bodyA, bodyB, cb = null, ctx = null, ...args) {
     const pairs = bodyA.mPairs;
@@ -117,16 +115,17 @@ class Arcade extends System {
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
 
-      if (!pair.mInCollision) continue;
+      if (pair.mInCollision === false)
+        continue;
 
       const sign = pair.bodyA === bodyA && pair.bodyB === bodyB ? 1 :
         pair.bodyA === bodyB && pair.bodyB === bodyA ? -1 : 0;
 
-      if (sign === 0) continue;
+      if (sign === 0)
+        continue;
 
-      if (cb) {
+      if (cb)
         cb.call(ctx, pair.mNormal.x * sign, pair.mNormal.y * sign, pair.mOverlap, ...args);
-      }
 
       return true;
     }
@@ -313,7 +312,8 @@ class Arcade extends System {
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
 
-      if (body.mInvMass === 0) continue;
+      if (body.mInvMass === 0)
+        continue;
 
       const velocity = body.mVelocity;
       const invMass = body.mInvMass;
@@ -338,7 +338,8 @@ class Arcade extends System {
       const body = bodies[i];
       body.mForce.set(0, 0);
 
-      if (body.mInvMass === 0) continue;
+      if (body.mInvMass === 0)
+        continue;
 
       const position = body.mPosition;
       const velocity = body.mVelocity;
@@ -378,9 +379,10 @@ class Arcade extends System {
   }
 
   /**
-   * Allows objects to collide with bounds body
+   * Allows objects to collide with bounds body.
    *
    * @public
+   * @returns {void}
    */
   enableBounds() {
     if (!this.mBoundsInited) {
@@ -391,16 +393,17 @@ class Arcade extends System {
   }
 
   /**
-   * Removes world bounds
+   * Removes world bounds.
    *
    * @public
+   * @returns {void}
    */
   disableBounds() {
     this.mBoundsParent.removeComponent(this.mBoundsBody);
   }
 
   /**
-   * Sets bounds rectangle to passed values
+   * Sets bounds rectangle to passed values.
    *
    * @private
    * @param x
@@ -408,6 +411,7 @@ class Arcade extends System {
    * @param width
    * @param height
    * @param [parent=Black.stage]
+   * @returns {void}
    */
   setBounds(x, y, width, height, parent = Black.stage) {
     const thickness = Number.MAX_SAFE_INTEGER;

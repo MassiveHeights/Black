@@ -1,5 +1,5 @@
 /**
- * Pair is used for narrow test, and resolve collision within two colliders
+ * Pair is used for narrow test, and resolve collision within two colliders.
  *
  * @cat physics.arcade.pairs
  */
@@ -186,9 +186,8 @@ class Pair {
     }
   }
 
-
   /**
-   * Updates the bodies positions to solve collision
+   * Updates the bodies positions to solve collision.
    *
    * @internal
    *
@@ -209,7 +208,8 @@ class Pair {
     const overlap = this.mOverlap + (dx * normalX + dy * normalY);
     const correction = (overlap - Pair.slop) * Pair.baumgarte;
 
-    if (correction <= 0) return;
+    if (correction <= 0)
+      return;
 
     let normalImpulse = correction * this.mMass;
     const impulsePrev = this.mPositionImpulse;
@@ -227,7 +227,7 @@ class Pair {
   }
 
   /**
-   * Generates pair id
+   * Generates pair id.
    *
    * @internal
    * @param {Collider} a pair collider

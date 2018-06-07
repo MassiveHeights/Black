@@ -1,5 +1,5 @@
 /**
- * Projection is used to calculate ranges for collision test with Separate Axis Theorem
+ * Projection is used to calculate ranges for collision test with Separate Axis Theorem.
  *
  * @cat physics.arcade.helpers
  */
@@ -90,16 +90,15 @@ class Projection {
  */
 /* @echo EXPORT */
 class Range {
-
   /**
    * Creates new instance of Range.
    */
   constructor() {
 
-    /** @private @type {Number} Min value */
+    /** @public @type {Number} Min value */
     this.min = 0;
 
-    /** @private @type {Number} Max value */
+    /** @public @type {Number} Max value */
     this.max = 0;
   }
 }
