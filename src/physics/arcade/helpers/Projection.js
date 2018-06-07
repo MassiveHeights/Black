@@ -3,7 +3,6 @@
  *
  * @cat physics.arcade.helpers
  */
-
 /* @echo EXPORT */
 class Projection {
 
@@ -50,7 +49,7 @@ class Projection {
   }
 
   /**
-   * Recalculates the ranges
+   * Recalculates the ranges.
    *
    * @internal
    *
@@ -62,7 +61,7 @@ class Projection {
   }
 
   /**
-   * Recalculates range
+   * Recalculates range.
    *
    * @internal
    *
@@ -84,11 +83,10 @@ class Projection {
 }
 
 /**
- * Range
+ * Simple range helper class.
  *
  * @cat physics.arcade.helpers
  */
-/* @echo EXPORT */
 class Range {
   /**
    * Creates new instance of Range.

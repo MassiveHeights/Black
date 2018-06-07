@@ -4,7 +4,6 @@
  * @cat physics.arcade
  * @extends System
  */
-
 /* @echo EXPORT */
 class Arcade extends System {
   /**
@@ -54,10 +53,9 @@ class Arcade extends System {
   }
 
   /**
-   * Invokes passed callback if given colliders are in collision
+   * Invokes passed callback if given colliders are in collision.
    *
    * Callback params:
-   *
    * normalX - collision normal projected on x axis. In direction from colliderA to colliderB.
    * normalY - collision normal projected on y axis. In direction from colliderA to colliderB.
    * overlap - positive number.
@@ -82,12 +80,11 @@ class Arcade extends System {
 
   /**
    * If callback passed and given bodies are in collision invokes callback.
-   * if no bodyB provided result will show that is bodyA in collision with any other body or no
+   * If no bodyB provided result will show that bodyA is in collision with any other body if so.
    *
-   * Note: if more than one collision occurred within bodies, callback will be invoked only with first found.
+   * Note: if more than one collision occurred within bodies, callback will be invoked only with a first found.
    *
    * Callback params:
-   *
    * normalX - collision normal projected on x axis. In direction from bodyA collider to bodyB collider.
    * normalY - collision normal projected on y axis. In direction from bodyA collider to bodyB collider.
    * overlap - positive number.
@@ -186,7 +183,7 @@ class Arcade extends System {
   }
 
   /**
-   * Adds body to arcade world. Start tracking its gameObject colliders
+   * Adds body to arcade world. Start tracking its gameObject colliders.
    *
    * @private
    * @param {RigidBody} body
@@ -208,7 +205,7 @@ class Arcade extends System {
   }
 
   /**
-   * Removes body from arcade world
+   * Removes body from arcade world.
    *
    * @private
    * @param {RigidBody} body
@@ -278,7 +275,7 @@ class Arcade extends System {
   }
 
   /**
-   * Generate pairs, passed collider with all present colliders
+   * Generate pairs, passed collider with all present colliders.
    *
    * @private
    * @param {Collider} collider
@@ -305,7 +302,7 @@ class Arcade extends System {
   }
 
   /**
-   * Creates pair and adds it to world
+   * Creates pair and adds it to world.
    *
    * @private
    * @param {Collider} a
@@ -345,7 +342,7 @@ class Arcade extends System {
   }
 
   /**
-   * Removes all pairs with given collider
+   * Removes all pairs with given collider.
    *
    * @private
    * @param {Collider} collider
@@ -420,7 +417,7 @@ class Arcade extends System {
   }
 
   /**
-   * Solve contacts
+   * Solve contacts.
    *
    * @private
    * @param {Number} dt
@@ -495,7 +492,7 @@ class Arcade extends System {
   }
 
   /**
-   * Enabled or disables world colliding bounds
+   * Enabled or disables world colliding bounds.
    *
    * @public
    * @param {boolean} v Value to set
