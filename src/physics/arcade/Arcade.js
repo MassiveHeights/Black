@@ -4,6 +4,7 @@
  * @cat physics.arcade
  * @extends System
  */
+
 /* @echo EXPORT */
 class Arcade extends System {
   /**
@@ -27,8 +28,8 @@ class Arcade extends System {
     /** @private @type {Object} Object to store pairs by their id. For quick search in collision callbacks */
     this.mPairsHash = Object.create(null);
 
-    /** @private @type {RigidBody} Reference to world bounds body */
-    this.mBoundsBody = new RigidBody();
+    /** @private @type {RigidBody|null} Reference to world bounds body */
+    this.mBoundsBody = null;
 
     /** @private @type {BoxCollider} */
     this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
@@ -42,20 +43,14 @@ class Arcade extends System {
     /** @private @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {GameObject} */
-    this.mBoundsParent = null;
-
-    /** @private @type {Boolean} */
-    this.mBoundsInited = false;
-
     /** @private @type {Boolean} Marks this dirty state. Necessity to rebuild pairs */
     this.mChanged = false;
 
-    /** @public @type {Vector} */
-    this.gravity = new Vector(0, 1000);
+    /** @private @type {Vector} */
+    this.mGravity = new Vector(0, 1000);
 
-    /** @public @type {Number} Bigger value gives better resolver result, but require more calculations */
-    this.iterations = 1;
+    /** @private @type {Number} Bigger value gives better resolver result, but require more calculations */
+    this.mIterations = 1;
 
     this.mBoundsBody.isStatic = true;
   }
@@ -89,6 +84,7 @@ class Arcade extends System {
 
   /**
    * If callback passed and given bodies are in collision invokes callback.
+   * if no bodyB provided result will show that is bodyA in collision with any other body or no
    *
    * Note: if more than one collision occurred within bodies, callback will be invoked only with first found.
    *
@@ -109,8 +105,18 @@ class Arcade extends System {
    *
    * @returns {boolean} Indicator of bodies collision.
    */
-  inCollision(bodyA, bodyB, cb = null, ctx = null, ...args) {
+  isColliding(bodyA, bodyB = null, cb = null, ctx = null, ...args) {
     const pairs = bodyA.mPairs;
+
+    if (bodyB === null) {
+      for (let i = 0, l = pairs.length; i < l; i++) {
+        if (pairs[i].mInCollision) {
+          return true;
+        }
+      }
+
+      return false;
+    }
 
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
@@ -304,10 +310,10 @@ class Arcade extends System {
    * @param {Number} dt
    */
   __solve(dt) {
-    const iterations = this.iterations;
+    const iterations = this.mIterations;
     const bodies = this.mBodies;
     const contacts = this.mContacts;
-    const gravity = this.gravity;
+    const gravity = this.mGravity;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -356,11 +362,13 @@ class Arcade extends System {
   }
 
   /**
-   * Sets bounds to default values
+   * Sets bounds to default values.
+   * Should be called on start and on resize.
    *
    * @private
+   * @return {void}
    */
-  __initBounds() {
+  __setBounds() {
     const bounds = Black.stage.bounds;
     const thickness = Number.MAX_SAFE_INTEGER;
 
@@ -368,60 +376,89 @@ class Arcade extends System {
     this.mBoundsRight.set(bounds.x + bounds.width, bounds.y, thickness, bounds.height);
     this.mBoundsTop.set(bounds.x - thickness, bounds.y - thickness, bounds.width + thickness * 2, thickness);
     this.mBoundsBottom.set(bounds.x - thickness, bounds.y + bounds.height, bounds.width + thickness * 2, thickness);
-
-    this.mBoundsParent = Black.stage;
-    this.mBoundsInited = true;
-
-    this.mBoundsParent.addComponent(this.mBoundsLeft);
-    this.mBoundsParent.addComponent(this.mBoundsRight);
-    this.mBoundsParent.addComponent(this.mBoundsTop);
-    this.mBoundsParent.addComponent(this.mBoundsBottom);
   }
 
   /**
-   * Allows objects to collide with bounds body.
+   * Enabled or disables world colliding bounds
    *
    * @public
-   * @returns {void}
+   * @param {boolean} v Value to set
+   *
+   * @return {void}
    */
-  enableBounds() {
-    if (!this.mBoundsInited) {
-      this.__initBounds();
+  set boundsEnabled(v) {
+    if (v) {
+      if (!this.mBoundsBody) {
+        this.mBoundsBody = new RigidBody();
+
+        Black.stage.addComponent(this.mBoundsLeft);
+        Black.stage.addComponent(this.mBoundsRight);
+        Black.stage.addComponent(this.mBoundsTop);
+        Black.stage.addComponent(this.mBoundsBottom);
+
+        this.__setBounds();
+      }
+
+      Black.stage.addComponent(this.mBoundsBody);
+    } else {
+      Black.stage.removeComponent(this.mBoundsBody);
     }
-
-    this.mBoundsParent.addComponent(this.mBoundsBody);
   }
 
   /**
-   * Removes world bounds.
+   * Sets the gravity x.
    *
-   * @public
-   * @returns {void}
+   * @param {Number} v Value to set.
+   * @return {void}
    */
-  disableBounds() {
-    this.mBoundsParent.removeComponent(this.mBoundsBody);
+  set gravityX(v) {
+    this.mGravity.x = v;
   }
 
   /**
-   * Sets bounds rectangle to passed values.
+   * Returns this gravity x.
    *
-   * @private
-   * @param x
-   * @param y
-   * @param width
-   * @param height
-   * @param [parent=Black.stage]
-   * @returns {void}
+   * @return {Number}
    */
-  setBounds(x, y, width, height, parent = Black.stage) {
-    const thickness = Number.MAX_SAFE_INTEGER;
+  get gravityX() {
+    return this.mGravity.x;
+  }
 
-    this.mBoundsLeft.set(x - thickness, y, thickness, height);
-    this.mBoundsRight.set(x + width, y, thickness, height);
-    this.mBoundsTop.set(x - thickness, y - thickness, width + thickness * 2, thickness);
-    this.mBoundsBottom.set(x - thickness, y + height, width + thickness * 2, thickness);
+  /**
+   * Sets the gravity y.
+   *
+   * @param {Number} v Value to set.
+   * @return {void}
+   */
+  set gravityY(v) {
+    this.mGravity.y = v;
+  }
 
-    this.mBoundsParent = parent;
-    this.mBoundsInited = true;
+  /**
+   * Returns this gravity y.
+   *
+   * @return {Number}
+   */
+  get gravityY() {
+    return this.mGravity.y;
+  }
+
+  /**
+   * Sets the count of solving iterations.
+   *
+   * @param {Number} v Value to set.
+   * @return {void}
+   */
+  set iterations(v) {
+    this.mIterations = v;
+  }
+
+  /**
+   * Returns this count of solving iterations.
+   *
+   * @return {Number}
+   */
+  get iterations() {
+    return this.mIterations;
   }
 }

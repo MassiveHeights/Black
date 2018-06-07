@@ -47,10 +47,10 @@ class RigidBody extends Component {
     this.mTransform = new Matrix(Number.MAX_VALUE);
 
     /** @private @type {number} Cached mass */
-    this.mMass = 0;
+    this.mMass = 1;
 
     /** @private @type {number} Inverted mass or zero if body is static */
-    this.mInvMass = 0;
+    this.mInvMass = 1;
 
     /** @private @type {number} Velocity damper */
     this.frictionAir = 0.01;
@@ -60,8 +60,6 @@ class RigidBody extends Component {
 
     /** @private @type {number} Bounce for collision solving */
     this.bounce = 0.1;
-
-    this.mass = 1;
   }
 
   /**
