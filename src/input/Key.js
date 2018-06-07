@@ -397,4 +397,8 @@ const Key = {
    * @type {number}
    */
   SINGLE_QUOTE: 222,
+  /**
+   * @type {number}
+   */
+  SPACE: 32
 };
