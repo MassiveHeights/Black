@@ -12,7 +12,7 @@
     "watch-es6-module": "gulp watch-es6-module",
     "watch-test": "gulp watch-test",
     "postinstall": "gulp",
-    "test": "jest --verbose",
+    "test": "jest --silent --config jest.config.json --runInBand",
     "coverage": "jest --coverage",
     "examples": "gulp examples",
     "template": "gulp template"
@@ -44,6 +44,7 @@
     "gulp-watch": "^4.3.5",
     "jest": "^22.4.2",
     "jsdoc": "^3.4.3",
-    "jsdoc-to-markdown": "^3.0.0"
+    "jsdoc-to-markdown": "^3.0.0",
+    "jsdom": "^11.11.0"
   }
 }

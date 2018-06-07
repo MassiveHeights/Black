@@ -297,7 +297,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
-    this.mRAFHandle = requestAnimationFrame(function (timestamp) {
+    this.mRAFHandle = window.requestAnimationFrame(function (timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
 
@@ -322,7 +322,7 @@ class Black extends MessageDispatcher {
   stop() {
     this.mIsStarted = false;
     this.mIsRunning = false;
-    cancelAnimationFrame(this.mRAFHandle);
+    window.cancelAnimationFrame(this.mRAFHandle);
 
     console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
   }
