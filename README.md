@@ -16,7 +16,7 @@ For more information on using Black Engine, see the [Blacksmith 2D](http://black
 ✔️ [Tweens](http://blacksmith2d.io/Docs/Examples/Tweening/Chain)  
 ✔️ [Message Dispatcher](http://blacksmith2d.io/Docs/Examples/Input/Layers)  
 ✔️ [Advanced Particle System](http://blacksmith2d.io/Docs/Examples/Particles/Vector%20Field)  
-✔️ [Spine and Sprite Animations](http://blacksmith2d.io/Docs/Examples/Sprites/Sprite%20Animation)  
+✔️ [Sprite Animations](http://blacksmith2d.io/Docs/Examples/Sprites/Sprite%20Animation)  
 ✔️ [Asset Manager](http://blacksmith2d.io/Docs/Examples/Basics/Load%20images%20from%20atlas)  
 ✔️ [Advanced Font Rendering and font metrics](http://blacksmith2d.io/Docs/Examples/Text/Having%20fun)  
 ✔️ [Texture Atlas](http://blacksmith2d.io/Docs/Examples/Basics/Load%20images%20from%20atlas)  
@@ -28,7 +28,7 @@ For more information on using Black Engine, see the [Blacksmith 2D](http://black
 ✔️ [Bitmap Fonts](http://blacksmith2d.io/Docs/Examples/Text/Bitmap%20Font)  
 ✔️ [Graphics](http://blacksmith2d.io/Docs/Examples/Graphics/Basic%20Shapes)  
 ✔️ [Battery Efficient](http://blacksmith2d.io/Docs/Examples/Drivers/Skip%20Unchanged%20Frames)  
-✔️ [Smart Cache As Bitmap](http://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
+✔️ [Smart Cache As Bitmap](http://blacksmith2d.io/Docs/Examples/Sprites/Cache%20As%20Bitmap)  
 ✔️ [Render Texture](http://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
 ✔️ GCC Ready  
 
