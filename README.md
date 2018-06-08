@@ -14,7 +14,7 @@ For more information on using Black Engine, see the [Blacksmith 2D](http://black
 ✔️ Super lightweight  
 ✔️ [Display Resolution Awareness](http://blacksmith2d.io/Docs/Examples/Stage/Letterbox)  
 ✔️ [Tweens](http://blacksmith2d.io/Docs/Examples/Tweening/Chain)  
-✔️ Message Dispatcher and event bubbling  
+✔️ [Message Dispatcher](http://localhost:3000/?group=Input&example=Layers.js)  
 ✔️ [Advanced Particle System](http://blacksmith2d.io/Docs/Examples/Particles/Vector%20Field)  
 ✔️ [Spine and Sprite Animations](http://blacksmith2d.io/Docs/Examples/Sprites/Sprite%20Animation)  
 ✔️ [Asset Manager](http://blacksmith2d.io/Docs/Examples/Basics/Load%20images%20from%20atlas)  
