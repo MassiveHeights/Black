@@ -6,12 +6,22 @@
 </p>
 <br /><br /><br />
 
-Black is a highly optimized 2D framework for desktop, mobile games and ads.  
-For more information on using Black Engine, see the [Blacksmith 2D](http://blacksmith2d.io/) website.
+# BLACKSMITH 2D
+Black is a highly optimized 2D framework for web, mobile games, and playable ads.  
 
+**Most valuable when size matters**  
+All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts%20Blitz) game is only 33KB gzipped for both engine and game code.
+
+**Advanced scene graph and rendering pipeline**  
+Dirty flag tracks scene changes and avoids unnecessary calculations and context calls. If no changes were made to the scene since last frame, no rendering will be done. Battery efficient.
+
+**Cache as bitmap**  
+Automatically detects changes and updates bitmap cache. Allows to gain even more performance on heavy scenes and runs smoothly on old devices.
+
+For more information about how to use Black Engine, please check the [Blacksmith 2D](http://blacksmith2d.io/) website.
 
 ## FEATURES
-✔️ Super lightweight  
+✔️ [Extra lightweight](https://github.com/MassiveHeights/Black#size-and-performance-comparison)  
 ✔️ [Display Resolution Awareness](http://blacksmith2d.io/Docs/Examples/Stage/Letterbox)  
 ✔️ [Tweens](http://blacksmith2d.io/Docs/Examples/Tweening/Chain)  
 ✔️ [Message Dispatcher](http://blacksmith2d.io/Docs/Examples/Input/Layers)  
@@ -42,10 +52,6 @@ npm start
 ```
 Then open `http://127.0.0.1:4245` in browser!
 
-## SUPPORT
-Feel free to chat with developers directly on [Facebook](https://www.facebook.com/Blacksmith2D/), [Discord](https://discord.gg/HWzzCcy) or [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ). Have other questions? Feel free to contact support by <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.
-Remember to check [Documentation](http://blacksmith2d.io/Docs/) before asking questions.
-
 ## SIZE AND PERFORMANCE COMPARISON
 A Piggy Mark was made to compare basic sprite rendering performance and build size.
 
@@ -55,10 +61,14 @@ Black|**4410**|**5070**|**6285**|**9210**|**40**|**2,2**
 Phaser v2|3265|3750|4580|6210|207|17.7
 Phaser v3|2970|3470|4530|6190|217|17.8
 
-
+All tests are made on iPhone 6s Safari.  
 \* How much time it takes to load a test. Tested using [UPTRENDS](https://www.uptrends.com) on iPhone 8 with bandwidth of 3G.
 
-All tests are made on iPhone 6s Safari. Black Engine loads 8x times faster then other engines and 30% faster in rendering.  
+
+
+## SUPPORT
+Feel free to chat with developers directly on [Facebook](https://www.facebook.com/Blacksmith2D/), [Discord](https://discord.gg/HWzzCcy) or [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ). Have other questions? Feel free to contact support by <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.
+Remember to check [Documentation](http://blacksmith2d.io/Docs/) before asking questions.
 
 ## CONTRIBUTING TO BLACK ENGINE
 Written something cool using Black Engine? Please tell us about it via <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.  
