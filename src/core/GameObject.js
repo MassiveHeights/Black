@@ -662,7 +662,7 @@ class GameObject extends MessageDispatcher {
 
     if (this.mChildOrComponentBeenAdded === false)
       return;
-      
+
     if (this.mComponents.length > 0) {
       this.mComponentClone = this.mComponents.slice();
 
@@ -1477,10 +1477,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets tag of this GameObject.
-   *
-   * @return {string|null}
-   */
+  * Gets/Sets tag of this GameObject.
+  *
+  * @return {string|null}
+  */
   get tag() {
     return this.mTag;
   }

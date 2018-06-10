@@ -618,9 +618,18 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onChildrenRemoved(child);
 
-    GameObject.forEach(child, (x) => {
+    let forEach = (gameObject, action) => {
+      let cloned = gameObject.mChildren.slice();
+      action(gameObject);
+            
+      for (let i = 0; i < cloned.length; i++) {
+        GameObject.forEach(cloned[i], action);
+      }
+    };
+    
+    forEach(child, (x) => {
       if (x.mAdded === true) {
-        this.onTagUpdated(x, x.mTag, null);
+        this.onTagUpdated(x, null, x.mTag);
 
         x.mAdded = false;
         x.onRemoved();
@@ -807,7 +816,7 @@ class Black extends MessageDispatcher {
    */
   static get frameNum() {
     return Black.__frameNum;
-  }  
+  }
 }
 
 /**
