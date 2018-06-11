@@ -14,6 +14,9 @@ class Collider extends Component {
    */
   constructor() {
     super();
+
+    /** @public @type {boolean} Dirty flag */
+    this.mChanged = true;
   }
 
   /**

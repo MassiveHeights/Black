@@ -14,10 +14,10 @@ class BoxToCirclePair extends Pair {
   constructor() {
     super();
 
-    /** @private @type {Number} Cached half width of box in stage coordinates */
+    /** @private @type {number} Cached half width of box in stage coordinates */
     this.mBoxHalfWidth = 0;
 
-    /** @private @type {Number} Cached half height of box in stage coordinates */
+    /** @private @type {number} Cached half height of box in stage coordinates */
     this.mBoxHalfHeight = 0;
 
     /** @private @type {Vector} Cached cos and sin from box game object world transformation without scale, to rotate */
@@ -25,9 +25,6 @@ class BoxToCirclePair extends Pair {
 
     /** @private @type {Vector} Tmp point to rotate */
     this.mCircleCenter = new Vector();
-
-    /** @private @type {Boolean} Flag indicates necessity of the properties refresh */
-    this.mChanged = false;
   }
 
   /**

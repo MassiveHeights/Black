@@ -362,11 +362,12 @@ class Graphics extends DisplayObject {
    * @param {number} p1
    * @param {number} p2
    * @param {number} p3
-   * @param {Vector} [out=new Vector()]
+   * @param {Vector} [out=null]
    *
    * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
-  __bezierRange(p0, p1, p2, p3, out = new Vector()) {
+  __bezierRange(p0, p1, p2, p3, out = null) {
+    out = out === null ? new Vector() : out;
     const a = (p2 - 2 * p1 + p0) - (p3 - 2 * p2 + p1);
     const b = 2 * (p1 - p0) - 2 * (p2 - p1);
     const c = p0 - p1;

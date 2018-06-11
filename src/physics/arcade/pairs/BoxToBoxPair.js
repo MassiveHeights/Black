@@ -22,9 +22,6 @@ class BoxToBoxPair extends Pair {
 
     /** @private @type {Array<Projection>} Projection keeps range of projected vertices. For each normal from both the colliders */
     this.mProjections = projections;
-
-    /** @private @type {Boolean} Flag to indicate this projections need refresh */
-    this.mChanged = false;
   }
 
   /**

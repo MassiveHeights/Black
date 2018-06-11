@@ -54,9 +54,6 @@ class BoxCollider extends Collider {
     /** @private @type {Vector} Global in stage coordinates center */
     this.mCenter = new Vector();
 
-    /** @private @type {Boolean} Dirty flag */
-    this.mChanged = true;
-
     this.set(x, y, width, height);
   }
 

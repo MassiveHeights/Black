@@ -43,16 +43,13 @@ class Arcade extends System {
     /** @private @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Boolean} Marks this dirty state. Necessity to rebuild pairs */
-    this.mChanged = false;
-
     /** @private @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
-    /** @private @type {Number} Bigger value gives better resolver result, but require more calculations */
+    /** @private @type {number} Bigger value gives better resolver result, but require more calculations */
     this.mIterations = 5;
 
-    /** @private @type {Boolean} Switch for sleep calculations */
+    /** @private @type {boolean} Switch for sleep calculations */
     this.mSleepAllowed = true;
   }
 
@@ -68,11 +65,13 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {Collider} colliderA
-   * @param {Collider} colliderB
-   * @param {Function} cb Callback
-   * @param {Object}   ctx
-   * @param {...*} args Rest arguments
+   * @param {Collider} colliderA Collider to check
+   * @param {Collider} colliderB Collider to check
+   * @param {Function} cb        Callback
+   * @param {Object} ctx         Callback context
+   * @param {...*} [args]        Rest arguments
+   *
+   * @return {void}
    */
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
     const pair = this.mPairsHash[Pair.__id(colliderA, colliderB)];
@@ -98,13 +97,13 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {RigidBody} bodyA
-   * @param {RigidBody=} [bodyB=null]
+   * @param {RigidBody} bodyA         Body to check
+   * @param {RigidBody=} [bodyB=null] Body to check
    * @param {Function=} [cb=null]     Callback
-   * @param {Object=} [ctx=null]
-   * @param {...*} [args] Rest arguments
+   * @param {Object=} [ctx=null]      Callback context
+   * @param {...*} [args]             Rest arguments
    *
-   * @returns {boolean} Indicator of bodies collision.
+   * @return {boolean} Indicator of bodies collision.
    */
   isColliding(bodyA, bodyB = null, cb = null, ctx = null, ...args) {
     const pairs = bodyA.mPairs;
@@ -145,7 +144,7 @@ class Arcade extends System {
    */
   onChildrenAdded(gameObject) {
     GameObject.forEach(gameObject, object => {
-      const body = object.getComponent(RigidBody);
+      const body = /** @type {RigidBody} */ object.getComponent(RigidBody);
 
       if (body !== null) {
         this.__addBody(body);
@@ -192,7 +191,9 @@ class Arcade extends System {
    * Adds body to arcade world. Start tracking its gameObject colliders
    *
    * @private
-   * @param {RigidBody} body
+   * @param {RigidBody} body Body to add
+   *
+   * @return {void}
    */
   __addBody(body) {
     const bodies = this.mBodies;
@@ -214,7 +215,10 @@ class Arcade extends System {
    * Removes body from arcade world
    *
    * @private
-   * @param {RigidBody} body
+   * @param {RigidBody} body        Body to remove
+   * @param {GameObject} gameObject Body's game object
+   *
+   * @return {void}
    */
   __removeBody(body, gameObject) {
     const bodies = this.mBodies;
@@ -236,8 +240,10 @@ class Arcade extends System {
    * Adds collider to arcade world.
    *
    * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to add
+   *
+   * @return {void}
    */
   __addCollider(child, collider) {
     const body = child.getComponent(RigidBody);
@@ -255,8 +261,10 @@ class Arcade extends System {
    * Removes collider from arcade world.
    *
    * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to remove
+   *
+   * @return {void}
    */
   __removeCollider(child, collider) {
     const body = child.getComponent(RigidBody);
@@ -284,8 +292,10 @@ class Arcade extends System {
    * Generate pairs, passed collider with all present colliders
    *
    * @private
-   * @param {Collider} collider
-   * @param {RigidBody} fromBody
+   * @param {Collider} collider   Collider to generate with
+   * @param {RigidBody} fromBody  The collider body
+   *
+   * @return {void}
    */
   __addPairs(collider, fromBody) {
     const bodies = this.mBodies;
@@ -311,10 +321,12 @@ class Arcade extends System {
    * Creates pair and adds it to world
    *
    * @private
-   * @param {Collider} a
-   * @param {Collider} b
-   * @param {RigidBody} bodyA
-   * @param {RigidBody} bodyB
+   * @param {Collider} a      Pair collider
+   * @param {Collider} b      Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
+   *
+   * @return {void}
    */
   __addPair(a, b, bodyA, bodyB) {
     const isBoxA = a.constructor === BoxCollider;
@@ -351,7 +363,9 @@ class Arcade extends System {
    * Removes all pairs with given collider
    *
    * @private
-   * @param {Collider} collider
+   * @param {Collider} collider Pairs collider
+   *
+   * @return {void}
    */
   __removePairs(collider) {
     const pairs = this.mPairs;
@@ -428,7 +442,7 @@ class Arcade extends System {
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
-      body.postUpdate(); // clear colliders dirty flags
+      body.clearFlags(); // clear colliders dirty flags
 
       if (body.mInGroup || body.mIsSleeping || body.mInvMass === 0) continue;
 
@@ -473,7 +487,9 @@ class Arcade extends System {
    * Solve contacts
    *
    * @private
-   * @param {Number} dt
+   * @param {number} dt Time from last update, ms.
+   *
+   * @return {void}
    */
   __solve(dt) {
     const iterations = this.mIterations;
@@ -575,7 +591,7 @@ class Arcade extends System {
   /**
    * Sets the gravity x.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set gravityX(v) {
@@ -585,7 +601,7 @@ class Arcade extends System {
   /**
    * Returns this gravity x.
    *
-   * @return {Number}
+   * @return {number}
    */
   get gravityX() {
     return this.mGravity.x;
@@ -594,7 +610,7 @@ class Arcade extends System {
   /**
    * Sets the gravity y.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set gravityY(v) {
@@ -604,7 +620,7 @@ class Arcade extends System {
   /**
    * Returns this gravity y.
    *
-   * @return {Number}
+   * @return {number}
    */
   get gravityY() {
     return this.mGravity.y;
@@ -613,7 +629,7 @@ class Arcade extends System {
   /**
    * Sets the count of solving iterations.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set iterations(v) {
@@ -623,7 +639,7 @@ class Arcade extends System {
   /**
    * Returns this count of solving iterations.
    *
-   * @return {Number}
+   * @return {number}
    */
   get iterations() {
     return this.mIterations;
@@ -632,7 +648,7 @@ class Arcade extends System {
   /**
    * Sets the sleep allowed flag.
    *
-   * @param {Boolean} v Value to set.
+   * @param {boolean} v Value to set.
    * @return {void}
    */
   set sleepAllowed(v) {
@@ -642,7 +658,7 @@ class Arcade extends System {
   /**
    * Returns this sleepAllowed flag.
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   get sleepAllowed() {
     return this.mSleepAllowed;

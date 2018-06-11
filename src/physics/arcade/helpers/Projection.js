@@ -27,14 +27,14 @@ class Projection {
     /** @private @type {Range} Range from project box b vertices to axis */
     this.rangeB = new Range();
 
-    /** @private @type {Number} body a to body b offset projected on the axis */
+    /** @private @type {number} body a to body b offset projected on the axis */
     this.offset = 0;
   }
 
   /**
    * Setter
    *
-   * @internal
+   * @public
    *
    * @param {Array<Vector>} verticesA box a points
    * @param {Array<Vector>} verticesB box b points
@@ -52,23 +52,23 @@ class Projection {
   /**
    * Recalculates the ranges
    *
-   * @internal
+   * @public
    *
    * return {void}
    */
   refresh() {
-    Projection.project(this.verticesA, this.axis, this.rangeA);
-    Projection.project(this.verticesB, this.axis, this.rangeB);
+    Projection.__project(this.verticesA, this.axis, this.rangeA);
+    Projection.__project(this.verticesB, this.axis, this.rangeB);
   }
 
   /**
    * Recalculates range
    *
-   * @internal
+   * @private
    *
    * return {void}
    */
-  static project(points, axis, range) {
+  static __project(points, axis, range) {
     let min = Number.MAX_VALUE;
     let max = -Number.MAX_VALUE;
 
@@ -95,10 +95,10 @@ class Range {
    */
   constructor() {
 
-    /** @public @type {Number} Min value */
+    /** @public @type {number} Min value */
     this.min = 0;
 
-    /** @public @type {Number} Max value */
+    /** @public @type {number} Max value */
     this.max = 0;
   }
 }
