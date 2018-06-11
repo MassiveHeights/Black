@@ -27,6 +27,8 @@ class Pair {
     /** @private @type {Boolean} Flag to indicate collision state */
     this.mInCollision = false;
 
+    this.mInGroup = false;
+
     /** @private @type {Number} Cached normal impulse to apply in next iteration or frame if collision still exist */
     this.mNormalImpulse = 0;
 
@@ -238,23 +240,10 @@ class Pair {
   static __id(a, b) {
     return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;
   }
-
-  /**
-   * Solving settings
-   *
-   * @public
-   * @param {Number} [unitsPerMeter=1] To preserve physics reactions in different screen resolutions
-   * @param {Number} [baumgarte=0.2] Baumgarte coefficient for position solve. From 0.2 to 0.8
-   * @param {Number} [slop=0.5] Allowed overlap to skip position solve
-   *
-   * return {void}
-   */
-  static settings(unitsPerMeter = 1, baumgarte = 0.2, slop = 0.5) {
-    Pair.slop = slop;
-    Pair.baumgarte = baumgarte;
-    Pair.unitsPerMeter = unitsPerMeter;
-    Pair.bounceTrashhold = Pair.unitsPerMeter; // Pair.unitsPerMeter / 1.0
-  }
 }
 
-Pair.settings();
+Pair.timeToSleep = 30; // 30 updates to start sleep if velocities is lower threshold
+Pair.slop = 0.5;
+Pair.baumgarte = 0.2;
+Pair.unitsPerMeter = 1;
+Pair.sleepThreshold = 0.05 * Pair.unitsPerMeter;

@@ -4,6 +4,7 @@
  * @cat physics
  * @extends Component
  */
+
 /* @echo EXPORT */
 class RigidBody extends Component {
   /**
@@ -15,8 +16,13 @@ class RigidBody extends Component {
     /** @private @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Array<Collider>} Stores all used colliders. Default or sprite collidersCache. Used for rebuild pairs */
-    this.mColliders = [];
+    this.mInGroup = false;
+
+    this.mIsSleeping = false;
+
+    this.mSleepTime = 0;
+
+    this.mContacts = [];
 
     /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */
     this.mPivot = new Vector(Number.MAX_VALUE);
@@ -322,8 +328,9 @@ class RigidBody extends Component {
       Black.stage.add(debug.graphics);
 
       debug.graphics.clear();
-      debug.graphics.lineStyle(2, 0x00ff00);
     }
+
+    debug.graphics.lineStyle(2, this.mIsSleeping ? 0x00ff00 : 0xff0000);
 
     if (colliders.length === 0) {
       this.mCollider.debug(graphics, this.mCachedPosition);

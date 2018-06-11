@@ -50,7 +50,11 @@ class Arcade extends System {
     this.mGravity = new Vector(0, 1000);
 
     /** @private @type {Number} Bigger value gives better resolver result, but require more calculations */
-    this.mIterations = 1;
+    this.mIterations = 5;
+
+    this.mGroupBodies = [];
+
+    this.mGroupContacts = [];
   }
 
   /**
@@ -391,7 +395,10 @@ class Arcade extends System {
     // reset each pair to defaults
     // so phases will know, if pair in collision is true, then it needs more precise check
     for (let i = 0, l = pairs.length; i < l; i++) {
-      pairs[i].mInCollision = !(pairs[i].bodyA.mInvMass === 0 && pairs[i].bodyB.mInvMass === 0);
+      const pair = pairs[i];
+
+      pair.mInCollision = !((pair.bodyA.mIsSleeping || pair.bodyA.mInvMass === 0) &&
+        (pair.bodyB.mIsSleeping || pair.bodyB.mInvMass === 0));
     }
 
     // update pairs in collision flag todo
@@ -404,19 +411,90 @@ class Arcade extends System {
 
     // clear colliders dirty flags
     for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].postUpdate();
+      const body = bodies[i];
+      body.postUpdate(); // clear colliders dirty flags
+      body.mInGroup = false;
+      body.mContacts.length = 0;
     }
 
     for (let i = 0, l = pairs.length; i < l; i++) {
-      if (pairs[i].mInCollision) {
-        contacts.push(pairs[i]);
+      const pair = pairs[i];
+      pair.mInGroup = false;
+
+      if (pair.mInCollision) {
+        pair.bodyA.mContacts.push(pair);
+        pair.bodyB.mContacts.push(pair);
       } else {
-        pairs[i].mNormalImpulse = 0;
-        pairs[i].mTangentImpulse = 0;
+        pair.mNormalImpulse = 0;
+        pair.mTangentImpulse = 0;
       }
     }
 
-    this.__solve(dt);
+
+    const groupContacts = this.mGroupContacts;
+    const groupBodies = this.mGroupBodies;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      const body = bodies[i];
+
+      if (body.mInGroup || body.mIsSleeping || body.mInvMass === 0) continue;
+
+      groupBodies.length = 0;
+      groupContacts.length = 0;
+
+      this.__fillGroup(body);
+      this.__solve(dt);
+      this.__updateSleep();
+
+      for (let j = 0; j < l; j++) {
+        if (bodies[j].mInvMass === 0) {
+          bodies[j].mInGroup = false;
+        }
+      }
+    }
+  }
+
+  __fillGroup(body) {
+    this.mGroupBodies.push(body);
+    body.mInGroup = true;
+    body.mIsSleeping = false;
+
+    if (body.mInvMass === 0) return;
+
+    const contacts = body.mContacts;
+
+    for (let i = 0, l = contacts.length; i < l; i++) {
+      const contact = contacts[i];
+
+      if (contact.mInGroup) continue;
+
+      this.mGroupContacts.push(contact);
+      contact.mInGroup = true;
+      const other = contact.bodyA === body ? contact.bodyB : contact.bodyA;
+
+      if (other.mInGroup === false) {
+        this.__fillGroup(other);
+      }
+    }
+  }
+
+  __updateSleep() {
+    const bodies = this.mGroupBodies;
+    let minSleepTime = Number.MAX_VALUE;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      const body = bodies[i];
+      const velocity = body.mVelocity;
+
+      body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < Pair.sleepThreshold ? body.mSleepTime + 1 : 0;
+      minSleepTime = Math.min(body.mSleepTime, minSleepTime);
+    }
+
+    if (minSleepTime < Pair.timeToSleep) return;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].mIsSleeping = true;
+    }
   }
 
   /**
@@ -427,8 +505,8 @@ class Arcade extends System {
    */
   __solve(dt) {
     const iterations = this.mIterations;
-    const bodies = this.mBodies;
-    const contacts = this.mContacts;
+    const bodies = this.mGroupBodies;
+    const contacts = this.mGroupContacts;
     const gravity = this.mGravity;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
