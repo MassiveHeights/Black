@@ -3,15 +3,12 @@
  *
  * @cat physics.arcade.pairs
  */
-
 /* @echo EXPORT */
 class Pair {
-
   /**
    * Creates new instance of Pair.
    */
   constructor() {
-
     /** @private @type {Collider|null} Collider from body A */
     this.a = null;
 
@@ -80,7 +77,7 @@ class Pair {
   }
 
   /**
-   * Tests the collision state. Updates normal and overlap for solve
+   * Tests the collision state. Updates normal and overlap for solve.
    *
    * @public
    *
@@ -91,7 +88,7 @@ class Pair {
   }
 
   /**
-   * Prepares the solve properties depends on bodies physics characteristics and test result
+   * Prepares the solve properties depends on bodies physics characteristics and test result.
    *
    * @public
    *
@@ -133,7 +130,7 @@ class Pair {
   }
 
   /**
-   * Updates the bodies velocities to solve collision
+   * Updates the bodies velocities to solve collision.
    *
    * @public
    *

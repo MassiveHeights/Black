@@ -1,6 +1,6 @@
 /**
- * THE BLACK ENGINE ITSELF!
- *
+ * The Black Engine itself.
+ * 
  * @export
  * @extends MessageDispatcher
  */
@@ -296,6 +296,8 @@ class Black extends MessageDispatcher {
 
     this.mIsStarted = true;
     this.mVideo.start();
+
+    this.post(Message.READY);
 
     this.mRAFHandle = requestAnimationFrame(function (timestamp) {
       // TODO: do first update here

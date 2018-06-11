@@ -4,10 +4,8 @@
  * @cat physics.arcade.pairs
  * @extends Pair
  */
-
 /* @echo EXPORT */
 class BoxToBoxPair extends Pair {
-
   /**
    * Creates new instance of BoxToBoxPair.
    */

@@ -85,3 +85,6 @@ Message.ERROR = 'error';
 
 /** @const @public @type {string} */
 Message.CHANGE = 'change';
+
+/** @const @public @type {string} */
+Message.READY = 'ready';

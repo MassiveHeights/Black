@@ -4,7 +4,6 @@
  * @cat physics.arcade.pairs
  * @extends Pair
  */
-
 /* @echo EXPORT */
 class CircleToCirclePair extends Pair {
   /**
