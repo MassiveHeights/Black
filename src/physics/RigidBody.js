@@ -16,12 +16,16 @@ class RigidBody extends Component {
     /** @private @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
+    /** @private @type {Boolean} For internal usage. To mark this body is in island */
     this.mInGroup = false;
 
+    /** @private @type {Boolean} Flag to mark this body is in rest */
     this.mIsSleeping = false;
 
+    /** @private @type {Number} Internal counter. How many times (updates) this body has velocity lower than Pair.sleepThreshold */
     this.mSleepTime = 0;
 
+    /** @private @type {Array<Pair>} All colliding pairs this body participates in */
     this.mContacts = [];
 
     /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */

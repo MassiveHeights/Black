@@ -27,8 +27,6 @@ class Pair {
     /** @private @type {Boolean} Flag to indicate collision state */
     this.mInCollision = false;
 
-    this.mInGroup = false;
-
     /** @private @type {Number} Cached normal impulse to apply in next iteration or frame if collision still exist */
     this.mNormalImpulse = 0;
 
@@ -242,8 +240,8 @@ class Pair {
   }
 }
 
-Pair.timeToSleep = 30; // 30 updates to start sleep if velocities is lower threshold
+Pair.timeToSleep = 5; // 30 updates to start sleep if velocities is lower threshold
 Pair.slop = 0.5;
 Pair.baumgarte = 0.2;
 Pair.unitsPerMeter = 1;
-Pair.sleepThreshold = 0.05 * Pair.unitsPerMeter;
+Pair.sleepThreshold = 0.1 * Pair.unitsPerMeter;

@@ -52,9 +52,8 @@ class Arcade extends System {
     /** @private @type {Number} Bigger value gives better resolver result, but require more calculations */
     this.mIterations = 5;
 
-    this.mGroupBodies = [];
-
-    this.mGroupContacts = [];
+    /** @private @type {Boolean} Switch for sleep calculations */
+    this.mSleepAllowed = true;
   }
 
   /**
@@ -377,11 +376,6 @@ class Arcade extends System {
    * @inheritDoc
    */
   onFixedUpdate(dt) {
-    if (this.mChanged) {
-      this.mChanged = false;
-      this.__rebuildPairs();
-    }
-
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
@@ -389,7 +383,10 @@ class Arcade extends System {
 
     // refresh body colliders if scale, rotation changed
     for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].update();
+      const body = bodies[i];
+      body.update();
+      body.mContacts.length = 0;
+      body.mInGroup = false;
     }
 
     // reset each pair to defaults
@@ -409,19 +406,11 @@ class Arcade extends System {
       pairs[i].mInCollision && pairs[i].test();
     }
 
-    // clear colliders dirty flags
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      const body = bodies[i];
-      body.postUpdate(); // clear colliders dirty flags
-      body.mInGroup = false;
-      body.mContacts.length = 0;
-    }
-
     for (let i = 0, l = pairs.length; i < l; i++) {
       const pair = pairs[i];
-      pair.mInGroup = false;
 
       if (pair.mInCollision) {
+        contacts.push(pair);
         pair.bodyA.mContacts.push(pair);
         pair.bodyB.mContacts.push(pair);
       } else {
@@ -430,70 +419,53 @@ class Arcade extends System {
       }
     }
 
+    this.__solve(dt);
 
-    const groupContacts = this.mGroupContacts;
-    const groupBodies = this.mGroupBodies;
+    if (!this.mSleepAllowed) return;
+
+    const group = [];
+    const stack = [];
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
+      body.postUpdate(); // clear colliders dirty flags
 
       if (body.mInGroup || body.mIsSleeping || body.mInvMass === 0) continue;
 
-      groupBodies.length = 0;
-      groupContacts.length = 0;
+      group.length = 0;
+      stack.length = 0;
 
-      this.__fillGroup(body);
-      this.__solve(dt);
-      this.__updateSleep();
+      stack.push(body);
 
-      for (let j = 0; j < l; j++) {
-        if (bodies[j].mInvMass === 0) {
-          bodies[j].mInGroup = false;
+      while (stack.length !== 0) {
+        const body = stack.pop();
+        const contacts = body.mContacts;
+
+        group.push(body);
+        body.mInGroup = true;
+
+        for (let i = 0, l = contacts.length; i < l; i++) {
+          const contact = contacts[i];
+          const other = contact.bodyA === body ? contact.bodyB : contact.bodyA;
+
+          if (other.mInGroup || other.mInvMass === 0) continue;
+
+          stack.push(other);
         }
       }
-    }
-  }
 
-  __fillGroup(body) {
-    this.mGroupBodies.push(body);
-    body.mInGroup = true;
-    body.mIsSleeping = false;
+      let isSleeping = true;
 
-    if (body.mInvMass === 0) return;
-
-    const contacts = body.mContacts;
-
-    for (let i = 0, l = contacts.length; i < l; i++) {
-      const contact = contacts[i];
-
-      if (contact.mInGroup) continue;
-
-      this.mGroupContacts.push(contact);
-      contact.mInGroup = true;
-      const other = contact.bodyA === body ? contact.bodyB : contact.bodyA;
-
-      if (other.mInGroup === false) {
-        this.__fillGroup(other);
+      for (let i = 0, l = group.length; i < l; i++) {
+        const body = group[i];
+        const velocity = body.mVelocity;
+        body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < Pair.sleepThreshold ? body.mSleepTime + 1 : 0;
+        isSleeping = isSleeping && body.mSleepTime > Pair.timeToSleep;
       }
-    }
-  }
 
-  __updateSleep() {
-    const bodies = this.mGroupBodies;
-    let minSleepTime = Number.MAX_VALUE;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      const body = bodies[i];
-      const velocity = body.mVelocity;
-
-      body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < Pair.sleepThreshold ? body.mSleepTime + 1 : 0;
-      minSleepTime = Math.min(body.mSleepTime, minSleepTime);
-    }
-
-    if (minSleepTime < Pair.timeToSleep) return;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].mIsSleeping = true;
+      for (let i = 0, l = group.length; i < l; i++) {
+        group[i].mIsSleeping = isSleeping;
+      }
     }
   }
 
@@ -505,14 +477,14 @@ class Arcade extends System {
    */
   __solve(dt) {
     const iterations = this.mIterations;
-    const bodies = this.mGroupBodies;
-    const contacts = this.mGroupContacts;
+    const bodies = this.mBodies;
+    const contacts = this.mContacts;
     const gravity = this.mGravity;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
 
-      if (body.mInvMass === 0)
+      if (body.mInvMass === 0 || body.mIsSleeping)
         continue;
 
       const velocity = body.mVelocity;
@@ -538,7 +510,7 @@ class Arcade extends System {
       const body = bodies[i];
       body.mForce.set(0, 0);
 
-      if (body.mInvMass === 0)
+      if (body.mInvMass === 0 || body.mIsSleeping)
         continue;
 
       const position = body.mPosition;
@@ -655,5 +627,24 @@ class Arcade extends System {
    */
   get iterations() {
     return this.mIterations;
+  }
+
+  /**
+   * Sets the sleep allowed flag.
+   *
+   * @param {Boolean} v Value to set.
+   * @return {void}
+   */
+  set sleepAllowed(v) {
+    this.mSleepAllowed = v;
+  }
+
+  /**
+   * Returns this sleepAllowed flag.
+   *
+   * @return {Boolean}
+   */
+  get sleepAllowed() {
+    return this.mSleepAllowed;
   }
 }
