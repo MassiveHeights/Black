@@ -163,6 +163,7 @@ class RigidBody extends Component {
    * @return {void}
    */
   set forceX(v) {
+    this.mIsSleeping = false;
     this.mForce.x = v;
   }
 
@@ -182,6 +183,7 @@ class RigidBody extends Component {
    * @return {void}
    */
   set forceY(v) {
+    this.mIsSleeping = false;
     this.mForce.y = v;
   }
 
@@ -271,7 +273,10 @@ class RigidBody extends Component {
         position.y += cachedPosition.y - prevY;
       }
 
-      gameObject.parent.globalToLocal(this.mPosition, gameObject);
+      gameObject.parent.globalToLocal(this.mPosition, cachedPosition);
+      gameObject.x = cachedPosition.x;
+      gameObject.y = cachedPosition.y;
+
       gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
     }
 
@@ -310,44 +315,44 @@ class RigidBody extends Component {
     }
   }
 
-  /**
-   * Draws all the colliders
-   *
-   * @public
-   * @return {void}
-   */
-  debug() {
-    if (!this.gameObject) return;
-
-    if (RigidBody.mDebug.graphics === null) {
-      RigidBody.mDebug.graphics = new Graphics();
-    }
-
-    const debug = RigidBody.mDebug;
-    const graphics = debug.graphics;
-    const colliders = this.gameObject.mCollidersCache;
-
-    if (debug.time !== Black.instance.mLastFrameTimeMs) {
-      debug.time = Black.instance.mLastFrameTimeMs;
-      Black.stage.add(debug.graphics);
-
-      debug.graphics.clear();
-    }
-
-    debug.graphics.lineStyle(2, this.mIsSleeping ? 0x00ff00 : 0xff0000);
-
-    if (colliders.length === 0) {
-      this.mCollider.debug(graphics, this.mCachedPosition);
-    } else {
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        colliders[i].debug(graphics, this.mCachedPosition);
-      }
-    }
-  }
+  // /**
+  //  * Draws all the colliders
+  //  *
+  //  * @public
+  //  * @return {void}
+  //  */
+  // debug() {
+  //   if (!this.gameObject) return;
+  //
+  //   if (RigidBody.mDebug.graphics === null) {
+  //     RigidBody.mDebug.graphics = new Graphics();
+  //   }
+  //
+  //   const debug = RigidBody.mDebug;
+  //   const graphics = debug.graphics;
+  //   const colliders = this.gameObject.mCollidersCache;
+  //
+  //   if (debug.time !== Black.instance.mLastFrameTimeMs) {
+  //     debug.time = Black.instance.mLastFrameTimeMs;
+  //     Black.stage.add(debug.graphics);
+  //
+  //     debug.graphics.clear();
+  //   }
+  //
+  //   debug.graphics.lineStyle(2, this.mIsSleeping ? 0x00ff00 : 0xff0000);
+  //
+  //   if (colliders.length === 0) {
+  //     this.mCollider.debug(graphics, this.mCachedPosition);
+  //   } else {
+  //     for (let i = 0, l = colliders.length; i < l; i++) {
+  //       colliders[i].debug(graphics, this.mCachedPosition);
+  //     }
+  //   }
+  // }
 }
 
-/** @private @type {Object} Debug options */
-RigidBody.mDebug = {
-  graphics: null,
-  time    : 0,
-};
+// /** @private @type {Object} Debug options */
+// RigidBody.mDebug = {
+//   graphics: null,
+//   time    : 0,
+// };

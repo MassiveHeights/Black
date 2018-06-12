@@ -12,6 +12,12 @@ class BoxToBoxPair extends Pair {
   constructor() {
     super();
 
+    /** @public @type {BoxCollider|null} Collider from body A */
+    this.a = null;
+
+    /** @public @type {BoxCollider|null} Collider from body B */
+    this.b = null;
+
     const projections = [];
 
     for (let i = 0; i < 4; i++) {
@@ -23,9 +29,23 @@ class BoxToBoxPair extends Pair {
   }
 
   /**
-   * @inheritDoc
+   * Setter
+   *
+   * @public
+   *
+   * @param {BoxCollider} a   Pair collider
+   * @param {BoxCollider} b   Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
+   *
+   * return {Pair} This
    */
   set(a, b, bodyA, bodyB) {
+    this.a = a;
+    this.b = b;
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+
     const projections = this.mProjections;
 
     for (let i = 0, j = 0; i < 4; i += 2, j += 1) {
@@ -33,7 +53,7 @@ class BoxToBoxPair extends Pair {
       projections[i + 1].set(a.mVertices, b.mVertices, b.mNormals[j]);
     }
 
-    return super.set(a, b, bodyA, bodyB);
+    return this;
   }
 
   /**

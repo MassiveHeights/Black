@@ -4,6 +4,7 @@
  * @cat physics.arcade.pairs
  * @extends Pair
  */
+
 /* @echo EXPORT */
 class BoxToCirclePair extends Pair {
 
@@ -12,6 +13,12 @@ class BoxToCirclePair extends Pair {
    */
   constructor() {
     super();
+
+    /** @public @type {BoxCollider|null} Collider from body A */
+    this.a = null;
+
+    /** @public @type {CircleCollider|null} Collider from body B */
+    this.b = null;
 
     /** @private @type {number} Cached half width of box in stage coordinates */
     this.mBoxHalfWidth = 0;
@@ -24,6 +31,27 @@ class BoxToCirclePair extends Pair {
 
     /** @private @type {Vector} Tmp point to rotate */
     this.mCircleCenter = new Vector();
+  }
+
+  /**
+   * Setter
+   *
+   * @public
+   *
+   * @param {BoxCollider} a     Pair box collider
+   * @param {CircleCollider} b  Pair circle collider
+   * @param {RigidBody} bodyA   Pair body
+   * @param {RigidBody} bodyB   Pair body
+   *
+   * return {Pair} This
+   */
+  set(a, b, bodyA, bodyB) {
+    this.a = a;
+    this.b = b;
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+
+    return this;
   }
 
   /**

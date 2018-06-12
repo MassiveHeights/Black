@@ -9,20 +9,23 @@ class Pair {
    * Creates new instance of Pair.
    */
   constructor() {
-    /** @private @type {Collider|null} Collider from body A */
+    /** @public @type {Collider|null} Collider from body A */
     this.a = null;
 
-    /** @private @type {Collider|null} Collider from body B */
+    /** @public @type {Collider|null} Collider from body B */
     this.b = null;
 
-    /** @private @type {RigidBody|null} Parent of collider a */
+    /** @public @type {RigidBody|null} Parent of collider a */
     this.bodyA = null;
 
-    /** @private @type {RigidBody|null} Parent of collider b */
+    /** @public @type {RigidBody|null} Parent of collider b */
     this.bodyB = null;
 
-    /** @private @type {boolean} Flag to indicate collision state */
+    /** @public @type {boolean} Flag to indicate collision state */
     this.mInCollision = false;
+
+    /** @public @type {boolean} Flag to determine one from two bodies can move. invMass !== 0 and isSleeping === false */
+    this.mIsStatic = false;
 
     /** @private @type {number} Cached normal impulse to apply in next iteration or frame if collision still exist */
     this.mNormalImpulse = 0;
@@ -45,35 +48,14 @@ class Pair {
     /** @private @type {Vector} Offset within the colliders on preSolve to correct overlap on each iteration */
     this.mOffset = new Vector();
 
-    /** @private @type {Vector} Normal collision direction from a to b */
+    /** @public @type {Vector} Normal collision direction from a to b */
     this.mNormal = new Vector();
 
-    /** @private @type {number} Positive number. Penetration within colliders */
+    /** @public @type {number} Positive number. Penetration within colliders */
     this.mOverlap = 0;
 
     /** @public @type {boolean} Flag to indicate this pair needs refresh */
     this.mChanged = false;
-  }
-
-  /**
-   * Setter
-   *
-   * @public
-   *
-   * @param {Collider} a      Pair collider
-   * @param {Collider} b      Pair collider
-   * @param {RigidBody} bodyA Pair body
-   * @param {RigidBody} bodyB Pair body
-   *
-   * return {Pair} This
-   */
-  set(a, b, bodyA, bodyB) {
-    this.a = a;
-    this.b = b;
-    this.bodyA = bodyA;
-    this.bodyB = bodyB;
-
-    return this;
   }
 
   /**
