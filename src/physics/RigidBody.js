@@ -260,7 +260,7 @@ class RigidBody extends Component {
       }
     }
 
-    if (gameObject.parent) {
+    if (gameObject !== Black.stage) {
       const cachedPosition = this.mCachedPosition;
       const prevX = cachedPosition.x;
       const prevY = cachedPosition.y;
@@ -273,11 +273,7 @@ class RigidBody extends Component {
         position.y += cachedPosition.y - prevY;
       }
 
-      gameObject.parent.globalToLocal(this.mPosition, cachedPosition);
-      gameObject.x = cachedPosition.x;
-      gameObject.y = cachedPosition.y;
-
-      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+      this.setPositionToGameObject();
     }
 
     // Refresh colliders
@@ -298,6 +294,18 @@ class RigidBody extends Component {
         colliders[i].refresh(transform, position);
       }
     }
+  }
+
+  setPositionToGameObject() {
+    const gameObject = this.gameObject;
+
+    if (gameObject === Black.stage) return;
+
+    const cachedPosition = this.mCachedPosition;
+    gameObject.parent.globalToLocal(this.mPosition, cachedPosition);
+    gameObject.x = cachedPosition.x;
+    gameObject.y = cachedPosition.y;
+    gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
   }
 
   /**

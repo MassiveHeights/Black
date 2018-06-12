@@ -4,6 +4,7 @@
  * @cat physics.arcade
  * @extends System
  */
+
 /* @echo EXPORT */
 class Arcade extends System {
   /**
@@ -498,8 +499,42 @@ class Arcade extends System {
    */
   __solve(dt) {
     const iterations = this.mIterations;
-    const bodies = this.mBodies;
     const contacts = this.mContacts;
+
+    this.__integrateVelocity(dt);
+
+    for (let i = 0, l = contacts.length; i < l; i++) {
+      contacts[i].preSolve();
+    }
+
+    for (let i = 0; i < iterations; i++) {
+      for (let j = 0, l = contacts.length; j < l; j++) {
+        contacts[j].solveVelocity();
+      }
+    }
+
+    this.__integratePosition(dt);
+
+    for (let i = 0; i < iterations; i++) {
+      for (let j = 0, l = contacts.length; j < l; j++) {
+        contacts[j].solvePosition();
+      }
+    }
+  }
+
+  renderUpdate(dt) {
+    const bodies = this.mBodies;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].setPositionToGameObject();
+    }
+
+    this.__integrateVelocity(dt);
+    this.__integratePosition(dt);
+  }
+
+  __integrateVelocity(dt) {
+    const bodies = this.mBodies;
     const gravity = this.mGravity;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
@@ -516,16 +551,10 @@ class Arcade extends System {
       velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
       velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
     }
+  }
 
-    for (let i = 0, l = contacts.length; i < l; i++) {
-      contacts[i].preSolve();
-    }
-
-    for (let i = 0; i < iterations; i++) {
-      for (let j = 0, l = contacts.length; j < l; j++) {
-        contacts[j].solveVelocity();
-      }
-    }
+  __integratePosition(dt) {
+    const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -539,12 +568,6 @@ class Arcade extends System {
 
       position.x += velocity.x * dt * Pair.unitsPerMeter;
       position.y += velocity.y * dt * Pair.unitsPerMeter;
-    }
-
-    for (let i = 0; i < iterations; i++) {
-      for (let j = 0, l = contacts.length; j < l; j++) {
-        contacts[j].solvePosition();
-      }
     }
   }
 
