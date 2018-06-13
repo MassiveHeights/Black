@@ -280,7 +280,7 @@ class Black extends MessageDispatcher {
       if (SplashScreen.enabled === true)
         self.mSplashScreen.show();
 
-      self.mLastUpdateTime = timestamp - Time.mDeltaTimeMs + 1;
+      self.mLastUpdateTime = timestamp - Time.mDeltaTimeMs;
       self.mLastRenderTime = self.mLastUpdateTime;
 
       self.__internalUpdate();
@@ -338,8 +338,8 @@ class Black extends MessageDispatcher {
 
     if (Time.mAlphaTime <= 0) {
       console.log('<= 0', Time.mAlphaTime);
-    } else if (Time.mAlphaTime >= 1) {
-      console.log('>= 0', Time.mAlphaTime)
+    } else if (Time.mAlphaTime > 1) {
+      console.log('> 1', Time.mAlphaTime)
     }
 
     Black.mRenderTime = performance.now();
