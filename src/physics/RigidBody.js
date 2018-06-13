@@ -70,6 +70,10 @@ class RigidBody extends Component {
 
     /** @public @type {number} Bounce for collision solving */
     this.bounce = 0.1;
+
+    // During renders we interpolate gameObject position from prev to current (0; 1]. Current = prev + translation
+    this.mGameObjectPositionPrev = new Vector();  // game object local position on last update
+    this.mGameObjectTranslation = new Vector();  // game object local translate. Range from prevPosition to next (current)
   }
 
   /**
@@ -237,7 +241,7 @@ class RigidBody extends Component {
   /**
    * Updates game object position, colliders
    *
-   * @internal
+   * @public
    * @return {void}
    */
   update() {
@@ -268,12 +272,24 @@ class RigidBody extends Component {
       wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
 
       // Update this position if game object position was changed during frame
-      if (cachedPosition.x !== prevX || cachedPosition.y !== prevY) {
+      if (Math.abs(cachedPosition.x - prevX) > 0.0001 || Math.abs(cachedPosition.y - prevY) > 0.0001) {
         position.x += cachedPosition.x - prevX;
         position.y += cachedPosition.y - prevY;
       }
 
-      this.setPositionToGameObject();
+      const gameObjectPositionPrev = this.mGameObjectPositionPrev;
+      const gameObjectTranslation = this.mGameObjectTranslation;
+
+      gameObjectPositionPrev.x = gameObject.x;
+      gameObjectPositionPrev.y = gameObject.y;
+
+      gameObject.parent.globalToLocal(this.mPosition, gameObjectTranslation);
+      gameObject.x = gameObjectTranslation.x;
+      gameObject.y = gameObjectTranslation.y;
+      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+
+      gameObjectTranslation.x -= gameObjectPositionPrev.x;
+      gameObjectTranslation.y -= gameObjectPositionPrev.y;
     }
 
     // Refresh colliders
@@ -296,16 +312,17 @@ class RigidBody extends Component {
     }
   }
 
-  setPositionToGameObject() {
+  renderUpdate(percent) {
     const gameObject = this.gameObject;
 
     if (gameObject === Black.stage) return;
 
-    const cachedPosition = this.mCachedPosition;
-    gameObject.parent.globalToLocal(this.mPosition, cachedPosition);
-    gameObject.x = cachedPosition.x;
-    gameObject.y = cachedPosition.y;
-    gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
+    const prev = this.mGameObjectPositionPrev;
+    const range = this.mGameObjectTranslation;
+
+    // percent = framesFromLastUpdate / totalFramesWithinUpdates;
+    gameObject.x = prev.x + range.x * percent;
+    gameObject.y = prev.y + range.y * percent;
   }
 
   /**

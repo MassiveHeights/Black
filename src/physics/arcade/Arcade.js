@@ -1,3 +1,6 @@
+const times = 1;  // renders within updates + 1
+let time = 0;
+
 /**
  * Simple AABB physics engine (beta).
  *
@@ -51,6 +54,12 @@ class Arcade extends System {
 
     /** @private @type {boolean} Switch for sleep calculations */
     this.mSleepEnabled = true;
+
+    /** @private @type {Array<RigidBody>} Bodies that will be added to arcade in next update */
+    this.mBodiesToAdd = [];
+
+    /** @private @type {Array<Collider>} Colliders that will be added to arcade in next update */
+    this.mCollidersToAdd = [];
   }
 
   /**
@@ -142,10 +151,10 @@ class Arcade extends System {
    */
   onChildrenAdded(gameObject) {
     GameObject.forEach(gameObject, object => {
-      const body = /** @type {!RigidBody} */ (object.getComponent(RigidBody));
+      const body = object.getComponent(RigidBody);
 
-      if (body !== null) {
-        this.__addBody(body);
+      if (body) {
+        this.mBodiesToAdd.push(/** @type {RigidBody} */ (body));
       }
     });
   }
@@ -168,9 +177,9 @@ class Arcade extends System {
    */
   onComponentAdded(child, component) {
     if (component instanceof RigidBody) {
-      this.__addBody(/** @type {RigidBody} */ (component));
+      this.mBodiesToAdd.push(/** @type {RigidBody} */ (component));
     } else if (component instanceof Collider) {
-      this.__addCollider(child, /** @type {Collider} */ (component));
+      this.mCollidersToAdd.push(/** @type {Collider} */ (component));
     }
   }
 
@@ -244,7 +253,7 @@ class Arcade extends System {
    * @return {void}
    */
   __addCollider(child, collider) {
-    const body = /** @type {!RigidBody} */ (child.getComponent(RigidBody));
+    const body = child.getComponent(RigidBody);
 
     if (body && this.mBodies.indexOf(body) !== -1) {
       this.__addPairs(collider, /** @type {RigidBody} */ (body));
@@ -265,7 +274,7 @@ class Arcade extends System {
    * @return {void}
    */
   __removeCollider(child, collider) {
-    const body = /** @type {!RigidBody} */ (child.getComponent(RigidBody));
+    const body = child.getComponent(RigidBody);
 
     if (body && this.mBodies.indexOf(/** @type {RigidBody} */ (body)) !== -1) {
       this.__removePairs(collider);
@@ -384,10 +393,32 @@ class Arcade extends System {
     }
   }
 
+  onFixedUpdate(dt) {
+    if (time === 0) {
+      const bodiesToAdd = this.mBodiesToAdd;
+      const collidersToAdd = this.mCollidersToAdd;
+
+      while (bodiesToAdd.length !== 0) {
+        const body = bodiesToAdd.pop();
+        this.__addBody(body);
+      }
+
+      while (collidersToAdd.length !== 0) {
+        const collider = this.mCollidersToAdd.pop();
+        this.__addCollider(collider.gameObject, collider);
+      }
+
+      this.__update(dt);
+    }
+
+    this.renderUpdate(++time / times);
+    time %= times;
+  }
+
   /**
    * @inheritDoc
    */
-  onFixedUpdate(dt) {
+  __update(dt) {
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
@@ -500,8 +531,23 @@ class Arcade extends System {
   __solve(dt) {
     const iterations = this.mIterations;
     const contacts = this.mContacts;
+    const bodies = this.mBodies;
+    const gravity = this.mGravity;
 
-    this.__integrateVelocity(dt);
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      const body = bodies[i];
+
+      if (body.mInvMass === 0 || body.mIsSleeping)
+        continue;
+
+      const force = body.mForce;
+      const velocity = body.mVelocity;
+      const invMass = body.mInvMass;
+      const damping = 1 - body.frictionAir;
+
+      velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
+      velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
+    }
 
     for (let i = 0, l = contacts.length; i < l; i++) {
       contacts[i].preSolve();
@@ -512,49 +558,6 @@ class Arcade extends System {
         contacts[j].solveVelocity();
       }
     }
-
-    this.__integratePosition(dt);
-
-    for (let i = 0; i < iterations; i++) {
-      for (let j = 0, l = contacts.length; j < l; j++) {
-        contacts[j].solvePosition();
-      }
-    }
-  }
-
-  renderUpdate(dt) {
-    const bodies = this.mBodies;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].setPositionToGameObject();
-    }
-
-    this.__integrateVelocity(dt);
-    this.__integratePosition(dt);
-  }
-
-  __integrateVelocity(dt) {
-    const bodies = this.mBodies;
-    const gravity = this.mGravity;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      const body = bodies[i];
-
-      if (body.mInvMass === 0 || body.mIsSleeping)
-        continue;
-
-      const velocity = body.mVelocity;
-      const invMass = body.mInvMass;
-      const force = body.mForce;
-      const damping = 1 - body.frictionAir;
-
-      velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
-      velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
-    }
-  }
-
-  __integratePosition(dt) {
-    const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -568,6 +571,20 @@ class Arcade extends System {
 
       position.x += velocity.x * dt * Pair.unitsPerMeter;
       position.y += velocity.y * dt * Pair.unitsPerMeter;
+    }
+
+    for (let i = 0; i < iterations; i++) {
+      for (let j = 0, l = contacts.length; j < l; j++) {
+        contacts[j].solvePosition();
+      }
+    }
+  }
+
+  renderUpdate(percent) {
+    const bodies = this.mBodies;
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].renderUpdate(percent);
     }
   }
 
