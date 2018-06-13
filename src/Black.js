@@ -5,7 +5,7 @@
  * @fires Black#unpause
  * @fires Black#ready
  * @fires Black#loop
- * 
+ *
  * @export
  * @extends MessageDispatcher
  */
@@ -193,7 +193,7 @@ class Black extends MessageDispatcher {
 
   /**
    * Returns true if system exists.
-   * 
+   *
    * @param {Function} systemTypeName
    */
   hasSystem(systemTypeName) {
@@ -280,14 +280,14 @@ class Black extends MessageDispatcher {
       if (SplashScreen.enabled === true)
         self.mSplashScreen.show();
 
-      self.mLastUpdateTime = performance.now();
+      self.mLastUpdateTime = timestamp - Time.mDeltaTimeMs + 1;
       self.mLastRenderTime = self.mLastUpdateTime;
 
       self.__internalUpdate();
       self.__internalPostUpdate();
 
       // Start the main loop.
-      self.__update();
+      self.__update(timestamp);
     });
   }
 
@@ -313,28 +313,17 @@ class Black extends MessageDispatcher {
     this.mRAFHandle = window.requestAnimationFrame(this.__update);
 
     const maxNumUpdates = 10;
-    let dtms = Time.mDeltaTimeMs;
-    let elapsed = 0;
-    let nextTick = this.mLastUpdateTime + dtms;
-    let numTicks = 0;
-
-    if (timestamp >= nextTick) {
-      elapsed = timestamp - this.mLastUpdateTime;
-      numTicks = Math.floor(elapsed / dtms);
-    }
+    let numTicks = Math.floor((timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs);
 
     if (numTicks > maxNumUpdates) {
-      numTicks = maxNumUpdates;
-
       this.post('loop', numTicks);
       Debug.warn(`Unable to catch up updates ${numTicks}`);
+
+      numTicks = maxNumUpdates;
     }
 
-    Time.mAlphaTime = 0;
-
     Black.mUpdateTime = performance.now();
-    for (var i = 0; i < numTicks; i++) {
-      this.mLastUpdateTime += dtms;
+    for (let i = 0; i < numTicks; i++) {
       Time.mTime += Time.mDeltaTime;
 
       this.__internalUpdate();
@@ -342,19 +331,18 @@ class Black extends MessageDispatcher {
     }
     Black.mUpdateTime = performance.now() - Black.mUpdateTime;
 
-    Black.mRenderTime = performance.now();
-    let diff = (nextTick - this.mLastUpdateTime);
-    if (diff === 0) {
-      Time.mAlphaTime = 0;
-    } else {
-      Time.mAlphaTime = (performance.now() - this.mLastUpdateTime) / diff;
+    for (let l = timestamp - Time.mDeltaTimeMs; this.mLastUpdateTime < l;)
+      this.mLastUpdateTime += Time.mDeltaTimeMs;
 
-      if (Time.mAlphaTime < 0) {
-        console.log('<0', diff, Time.mAlphaTime);
-        //Time.mAlphaTime = 0;        
-      }
+    Time.mAlphaTime = (timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs;
+
+    if (Time.mAlphaTime <= 0) {
+      console.log('<= 0', Time.mAlphaTime);
+    } else if (Time.mAlphaTime >= 1) {
+      console.log('>= 0', Time.mAlphaTime)
     }
 
+    Black.mRenderTime = performance.now();
     this.mVideo.beginFrame();
 
     //console.log('lag', this.mLastUpdateTime / dt);
@@ -677,7 +665,7 @@ class Black extends MessageDispatcher {
 
   /**
    * Returns currently active splash screen. Splash screen posts 'complete' message on hide.
-   * 
+   *
    * @returns {SplashScreen}
    */
   get splashScreen() {
