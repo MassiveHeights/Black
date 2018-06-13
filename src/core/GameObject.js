@@ -573,11 +573,10 @@ class GameObject extends MessageDispatcher {
   /**
    * @ignore
    * @private
-   * @param {number} dt
    * @return {void}
    */
-  __fixedUpdate(dt) {
-    this.onFixedUpdate(dt);
+  __update() {
+    this.onUpdate();
 
     if (this.mChildOrComponentBeenAdded === false)
       return;
@@ -594,8 +593,7 @@ class GameObject extends MessageDispatcher {
         if (c.mAdded === false)
           break;
 
-        c.mGameObject = this;
-        c.onFixedUpdate(dt);
+        c.onUpdate();
       }
     }
 
@@ -606,37 +604,30 @@ class GameObject extends MessageDispatcher {
         let child = this.mChildrenClone[i];
 
         if (child.mAdded === true)
-          child.__fixedUpdate(dt);
+          child.__update();
       }
     }
   }
 
-  /**
+   /**
    * @ignore
    * @private
-   * @param {number} dt time since the last frame
    * @return {void}
    */
-  __update(dt) {
-    this.onUpdate(dt);
-
-    if (this.mChildOrComponentBeenAdded === false)
-      return;
+  __render() {
+    this.onRender();
 
     if (this.mComponents.length > 0) {
-      this.mComponentClone = this.mComponents.slice();
-
-      for (let k = 0; k < this.mComponentClone.length; k++) {
+      for (let k = 0; k < this.mComponents.length; k++) {
         if (this.mAdded === false)
           break;
 
-        let c = this.mComponentClone[k];
+        let c = this.mComponents[k];
 
         if (c.mAdded === false)
           break;
 
-        c.mGameObject = this;
-        c.onUpdate(dt);
+        c.onRender();
       }
     }
 
@@ -647,82 +638,36 @@ class GameObject extends MessageDispatcher {
         let child = this.mChildrenClone[i];
 
         if (child.mAdded === true)
-          child.__update(dt);
+          child.__render();
       }
     }
   }
-
-  /**
-   * @ignore
-   * @param {number} dt time since the last frame
-   * @return {void}
-   */
-  __postUpdate(dt) {
-    this.onPostUpdate(dt);
-
-    if (this.mChildOrComponentBeenAdded === false)
-      return;
-
-    if (this.mComponents.length > 0) {
-      this.mComponentClone = this.mComponents.slice();
-
-      for (let k = 0; k < this.mComponentClone.length; k++) {
-        if (this.mAdded === false)
-          break;
-
-        let c = this.mComponentClone[k];
-
-        if (c.mAdded === false)
-          break;
-
-        c.mGameObject = this;
-        c.onPostUpdate(dt);
-      }
-    }
-
-    if (this.mChildren.length > 0) {
-      this.mChildrenClone = this.mChildren.slice();
-
-      for (let i = 0; i < this.mChildrenClone.length; i++) {
-        let child = this.mChildrenClone[i];
-
-        if (child.mAdded === true)
-          child.__postUpdate(dt);
-      }
-    }
-  }
-
-  /**
-   * Called at every fixed frame update.
-   *
-   * @protected
-   * @param {number} dt Time since the last frame.
-   * @return {void}
-   */
-  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
    * going from top to bottom of the display list.
    * 
    * @protected
-   * @param {number} dt Time since the last frame.
    * @return {void}
    */
-  onUpdate(dt) { }
+  onUpdate() { }
 
   /**
-   * Called after all updates have been executed.
-   *
+   * Called at the end of the loop, after `onCollectRenderables`. Should be used to interpolate between last and current
+   * state. 
+   * 
+   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
+   * 
    * @protected
-   * @param {number} dt Time since the last frame.
    * @return {void}
    */
-  onPostUpdate(dt) { }
+  onRender() { }
 
   /**
-   * Called every time `GameObject` has to be rendered.
-   * Doesn't render itself. Collects render data to be processed by video driver after.
+   * Called every time `GameObject` has to be rendered. Doesn't render itself. Collects render data to be processed by 
+   * video driver after. 
+   * 
+   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
    *
    * @protected
    * @param {VideoNullDriver} driver Current registered video driver.
@@ -730,7 +675,7 @@ class GameObject extends MessageDispatcher {
    * @param {boolean=} [isBackBufferActive=false] Specifies if render to backBuffer.
    * @return {Renderer}
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     return null;
   }
 

@@ -1,6 +1,11 @@
 /**
  * A tweening component.
  *
+ * @fires Tween#start
+ * @fires Tween#update
+ * @fires Tween#loop
+ * @fires Tween#complete 
+ * 
  * @cat animation
  * @unrestricted
  * @extends Component
@@ -336,7 +341,7 @@ class Tween extends Component {
    */
   play() {
     if (!this.mIsPaused) {
-      this.__start(Black.instance.uptime);
+      this.__start(Time.now);
     } else {
       this.__resume();
     }
@@ -395,7 +400,7 @@ class Tween extends Component {
       return this;
 
     this.mIsPaused = true;
-    this.mPausedTime = Black.instance.uptime;
+    this.mPausedTime = Time.now;
 
     return this;
   }
@@ -410,7 +415,7 @@ class Tween extends Component {
       return;
 
     this.mIsPaused = false;
-    this.mStartTime += Black.instance.uptime - this.mPausedTime;
+    this.mStartTime += Time.now - this.mPausedTime;
   }
 
 
@@ -449,7 +454,7 @@ class Tween extends Component {
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
-      this.__start(Black.instance.uptime);
+      this.__start(Time.now);
     }
   }
 
@@ -507,8 +512,9 @@ class Tween extends Component {
   /**
    * @inheritDoc
    */
-  onPostUpdate(dt){
+  onRender(){
     let t = Time.now;
+    let dt = Time.delta;
 
     if (t < this.mStartTime || !this.mIsPlaying || this.mIsPaused)
       return;

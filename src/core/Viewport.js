@@ -42,15 +42,14 @@ class Viewport extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {number} dt 
    */
-  __update(dt) {
+  __update() {
     if (this.mChecksLeftSeconds <= 0)
       return;
 
     this.__onResize();
 
-    this.mChecksLeftSeconds -= dt;
+    this.mChecksLeftSeconds -= Time.delta;
   }
 
   /**

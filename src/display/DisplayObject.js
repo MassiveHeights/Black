@@ -134,7 +134,7 @@ class DisplayObject extends GameObject {
   /**
   * @inheritDoc
   */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mCacheAsBitmap === true && isBackBufferActive === true) {

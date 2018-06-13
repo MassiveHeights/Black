@@ -1,6 +1,7 @@
 /**
  * @ignore
  * @extends MessageDispatcher
+ * @cat core
  */
 /* @echo EXPORT */
 class SplashScreen extends MessageDispatcher {

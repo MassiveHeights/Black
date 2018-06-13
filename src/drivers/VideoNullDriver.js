@@ -144,7 +144,7 @@ class VideoNullDriver {
    * @param {boolean} isBackBufferActive
    */
   __collectRenderables(session, gameObject, parentRenderer, isBackBufferActive) {
-    let renderer = gameObject.onRender(this, parentRenderer, isBackBufferActive);
+    let renderer = gameObject.onCollectRenderables(this, parentRenderer, isBackBufferActive);
 
     if (renderer != null) {
       if (renderer.clipRect !== null)
@@ -197,7 +197,7 @@ class VideoNullDriver {
       let parent = parents[i];
 
       let oldDirty = parent.mDirty;
-      let renderer = parent.onRender(this, parentRenderer);
+      let renderer = parent.onCollectRenderables(this, parentRenderer);
       parent.mDirty = oldDirty;
 
       if (renderer != null) {

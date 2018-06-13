@@ -39,31 +39,20 @@ class Component extends MessageDispatcher {
   onRemoved(gameObject) { }
 
   /**
-   * Called at every fixed frame update.
-   *
-   * @protected
-   * @param  {number} dt Amount of seconds since the last update.
-   * @return {void}
-   */
-  onFixedUpdate(dt) { }
-
-  /**
    * Called at every engine update.
    *
    * @protected
-   * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
-  onUpdate(dt) { }
+  onUpdate() { }
 
   /**
    * Called after all updates have been executed.
    *
    * @protected
-   * @param  {number} dt Amount of seconds since the last update.
    * @return {void}
    */
-  onPostUpdate(dt) { }
+  onRender() { }
 
   /**
    * Detaches this Component from its parent GameObject.

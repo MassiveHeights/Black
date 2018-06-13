@@ -1,12 +1,16 @@
 /**
- * THE BLACK ENGINE ITSELF!
+ * The Black class represents the core of the Black Engine.
  *
+ * @fires Black#pause
+ * @fires Black#unpause
+ * @fires Black#ready
+ * @fires Black#loop
+ * 
  * @export
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
 class Black extends MessageDispatcher {
-
   /**
    * Creates a new Black instance.
    * @param {string}                                                       containerElementId The id of an DOM element.
@@ -43,34 +47,13 @@ class Black extends MessageDispatcher {
     this.mStageHeight = this.mContainerElement.clientHeight;
 
     /** @private @type {number} */
-    this.mSimulationTimestep = 1000 / 60;
-
-    /** @private @type {number} */
-    this.mUptime = 0;
-
-    /** @private @type {number} */
-    this.mFrameAccum = 0;
-
-    /** @private @type {number} */
-    this.mLastFrameTimeMs = 0;
-
-    /** @private @type {number} */
-    this.mCurrentTime = 0;
-
-    /** @private @type {number} */
     this.mFPS = 60;
 
     /** @private @type {number} */
-    this.mLastFpsUpdate = 0;
+    this.mLastUpdateTime = 0;
 
     /** @private @type {number} */
-    this.mFramesThisSecond = 0;
-
-    /** @private @type {number} */
-    this.mNumUpdateSteps = 0;
-
-    /** @private @type {number} */
-    this.mMinFrameDelay = 0;
+    this.mLastRenderTime = 0;
 
     /** @private @type {Array<System>} */
     this.mSystems = [];
@@ -86,12 +69,6 @@ class Black extends MessageDispatcher {
 
     /** @private @type {boolean} */
     this.mIsPanic = false;
-
-    /** @private @type {number} */
-    this.mLastFrameUpdateTime = 0;
-
-    /** @private @type {number} */
-    this.mLastFrameRenderTime = 0;
 
     /** @private @type {number} */
     this.mRAFHandle = -1; // not sure
@@ -127,15 +104,14 @@ class Black extends MessageDispatcher {
     this.mStage = null;
 
     /** @private @type {boolean} */
-    this.mEnableFixedTimeStep = false;
-
-    /** @private @type {boolean} */
     this.mWasStopped = false;
 
     /** @private @type {SplashScreen} */
     this.mSplashScreen = new SplashScreen();
 
     this.__bootViewport();
+
+    this.__update = this.__update.bind(this);
   }
 
   /**
@@ -280,8 +256,7 @@ class Black extends MessageDispatcher {
     if (this.mIsStarted === true)
       return;
 
-    // TODO: show only when needed, eg required by any system
-    Debug.assertInfo(this.mEnableFixedTimeStep === true, 'Fixed time-step is disabled, some systems may not work.');
+    this.post(Message.READY);
 
     this.__bootSystems();
     this.__bootStage();
@@ -301,16 +276,18 @@ class Black extends MessageDispatcher {
       // TODO: do first update here
       self.mIsRunning = true;
 
-      self.mLastFrameTimeMs = timestamp;
-      self.mLastFpsUpdate = timestamp;
-      self.mFramesThisSecond = 0;
-
       // show splash screen
       if (SplashScreen.enabled === true)
         self.mSplashScreen.show();
 
+      self.mLastUpdateTime = performance.now();
+      self.mLastRenderTime = self.mLastUpdateTime;
+
+      self.__internalUpdate();
+      self.__internalPostUpdate();
+
       // Start the main loop.
-      self.mRAFHandle = window.requestAnimationFrame(self.__update.bind(self));
+      self.__update();
     });
   }
 
@@ -333,202 +310,98 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   __update(timestamp) {
-    // TODO: this method seems to be totaly broken. maxAllowedFPS is not working correctly
-    Black.instance = this;
+    this.mRAFHandle = window.requestAnimationFrame(this.__update);
 
-    if (this.mPaused === true && this.mUnpausing === true) {
-      this.mUnpausing = false;
+    const maxNumUpdates = 10;
+    let dtms = Time.mDeltaTimeMs;
+    let elapsed = 0;
+    let nextTick = this.mLastUpdateTime + dtms;
+    let numTicks = 0;
 
-      this.mLastFrameTimeMs = 0;
-      this.mLastFpsUpdate = timestamp;
-      this.mLastFrameTimeMs = timestamp;
-      this.mCurrentTime = 0; // same as first update
-      this.mFrameAccum = 0;
-
-      this.__setUnpaused();
+    if (timestamp >= nextTick) {
+      elapsed = timestamp - this.mLastUpdateTime;
+      numTicks = Math.floor(elapsed / dtms);
     }
 
-    if (timestamp < this.mLastFrameTimeMs + this.mMinFrameDelay) {
-      this.mRAFHandle = window.requestAnimationFrame(x => {
-        this.__update(x);
-      });
-      return;
+    if (numTicks > maxNumUpdates) {
+      numTicks = maxNumUpdates;
+
+      this.post('loop', numTicks);
+      Debug.warn(`Unable to catch up updates ${numTicks}`);
     }
 
-    if (this.mPaused === false) {
-      this.mFrameAccum += (timestamp - this.mLastFrameTimeMs);
-      this.mLastFrameTimeMs = timestamp;
+    Time.mAlphaTime = 0;
 
-      // BEGIN
-      if (timestamp > this.mLastFpsUpdate + 1000) {
-        this.mFPS = this.mFramesThisSecond;
+    Black.mUpdateTime = performance.now();
+    for (var i = 0; i < numTicks; i++) {
+      this.mLastUpdateTime += dtms;
+      Time.mTime += Time.mDeltaTime;
 
-        this.mLastFpsUpdate = timestamp;
-        this.mFramesThisSecond = 0;
+      this.__internalUpdate();
+      this.__internalPostUpdate();
+    }
+    Black.mUpdateTime = performance.now() - Black.mUpdateTime;
+
+    Black.mRenderTime = performance.now();
+    let diff = (nextTick - this.mLastUpdateTime);
+    if (diff === 0) {
+      Time.mAlphaTime = 0;
+    } else {
+      Time.mAlphaTime = (performance.now() - this.mLastUpdateTime) / diff;
+
+      if (Time.mAlphaTime < 0) {
+        console.log('<0', diff, Time.mAlphaTime);
+        //Time.mAlphaTime = 0;        
       }
-      this.mFramesThisSecond++;
-
-      this.mNumUpdateSteps = 0;
-
-      // fix first update
-      if (this.mCurrentTime === 0)
-        this.mCurrentTime = timestamp - this.mMinFrameDelay;
-
-      const dt = Time.scale * ((timestamp - this.mCurrentTime) * 0.001);
-      this.mCurrentTime = timestamp;
-      Time.mDeltaTime = dt;
-
-      if (this.mEnableFixedTimeStep === true) {
-        while (this.mFrameAccum >= this.mSimulationTimestep) {
-          this.__internalFixedUpdate(this.mSimulationTimestep * 0.001);
-
-          this.mFrameAccum -= this.mSimulationTimestep;
-
-          if (++this.mNumUpdateSteps >= (60 * 3)) { // 3 seconds window
-            console.log('[BLACK]: Not enough time to calculate update logic.');
-            this.mIsPanic = true;
-            break;
-          }
-        }
-      }
-
-      // UPDATE
-      Black.mUpdateTime = performance.now();
-      this.__internalUpdate(dt);
-      this.__internalPostUpdate(dt);
-      Black.mUpdateTime = performance.now() - Black.mUpdateTime;
-
-      // RENDER
-      Black.mRenderTime = performance.now();
-      this.mVideo.beginFrame();
-      this.mVideo.render(this.mStage);
-      this.mVideo.endFrame();
-      Black.mRenderTime = performance.now() - Black.mRenderTime;
-
-      Black.__frameNum++;
-
-      // TODO: remove uptime
-      this.mUptime += dt;
-      Time.mTime = this.mUptime;
-
-      this.mIsPanic = false;
-      Renderer.__dirty = false;
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(this.__update.bind(this));
+    this.mVideo.beginFrame();
+
+    //console.log('lag', this.mLastUpdateTime / dt);
+    this.__internalRender();
+    this.mVideo.render(this.mStage);
+    this.mVideo.endFrame();
+    Black.mRenderTime = performance.now() - Black.mRenderTime;
+
+    Black.__frameNum++;
+
+    this.mIsPanic = false;
+    Renderer.__dirty = false;
+
+    this.mLastRenderTime = timestamp;
   }
 
   /**
    * @private
-   * @param {number} dt
    * @return {void}
    */
-  __internalFixedUpdate(dt) {
-    for (let i = 0; i < this.mSystems.length; i++)
-      this.mSystems[i].onFixedUpdate(dt);
+  __internalUpdate() {
+    this.mViewport.__update();
 
-    this.mStage.__fixedUpdate(dt);
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onUpdate();
+
+    this.mStage.__update();
   }
 
   /**
    * @private
-   * @param {number} dt
    * @return {void}
    */
-  __internalUpdate(dt) {
-    this.mViewport.__update(dt);
-
+  __internalPostUpdate() {
     for (let i = 0; i < this.mSystems.length; i++)
-      this.mSystems[i].onUpdate(dt, this.mUptime);
-
-    this.mStage.__update(dt);
+      this.mSystems[i].onPostUpdate();
   }
 
   /**
    * @private
-   * @param {number} dt
    * @return {void}
    */
-  __internalPostUpdate(dt) {
+  __internalRender() {
     for (let i = 0; i < this.mSystems.length; i++)
-      this.mSystems[i].onPostUpdate(dt, this.mUptime);
+      this.mSystems[i].onRender();
 
-    this.mStage.__postUpdate(dt);
-  }
-
-  /**
-   * Gets/Sets the number of milliseconds fixed-time-step will run over.
-   *
-   * @return {number}
-   */
-  get simulationTimestep() {
-    return this.mSimulationTimestep;
-  }
-
-  /**
-   * @ignore
-   * @param {number} timestep
-   * @return {void}
-   */
-  set simulationTimestep(timestep) {
-    this.mSimulationTimestep = timestep;
-  }
-
-  /**
-   * Returns current frame rate
-   *
-   * @return {number}
-   */
-  get FPS() {
-    return this.mFPS;
-  }
-
-  /**
-   * Gets/Sets max number of updates engine must do in a second.
-   *
-   * @return {number}
-   */
-  get maxAllowedFPS() {
-    return 1000 / this.mMinFrameDelay;
-  }
-
-  /**
-   * @ignore
-   * @param {number} fps The max allowed FPS. If less then zero engine will be stopped.
-   * @return {void}
-   */
-  set maxAllowedFPS(fps) {
-    if (fps <= 0)
-      this.stop();
-    else
-      this.mMinFrameDelay = 1000 / fps;
-  }
-
-  /**
-   * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
-   *
-   * @return {Viewport}
-   */
-  get viewport() {
-    return this.mViewport;
-  }
-
-  /**
-   * Returns the DOM element the engine runs in.
-   *
-   * @return {Element}
-   */
-  get containerElement() {
-    return this.mContainerElement;
-  }
-
-  /**
-   * Returns amount of seconds since engine start.
-   *
-   * @return {number}
-   */
-  get uptime() {
-    return this.mUptime;
+    this.mStage.__render();
   }
 
   /**
@@ -621,12 +494,12 @@ class Black extends MessageDispatcher {
     let forEach = (gameObject, action) => {
       let cloned = gameObject.mChildren.slice();
       action(gameObject);
-            
+
       for (let i = 0; i < cloned.length; i++) {
         GameObject.forEach(cloned[i], action);
       }
     };
-    
+
     forEach(child, (x) => {
       if (x.mAdded === true) {
         this.onTagUpdated(x, null, x.mTag);
@@ -690,6 +563,55 @@ class Black extends MessageDispatcher {
   }
 
   /**
+   * Gets/Sets the number of updates should be done per second.
+   *
+   * @return {number}
+   */
+  get ups() {
+    return Time.mDeltaTimeMs;
+  }
+
+  /**
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set ups(value) {
+    Debug.isNumber(value);
+    Debug.assert(value > 0);
+
+    Time.mDeltaTimeMs = 1000 / value;
+    Time.mDeltaTime = Time.mDeltaTimeMs * 0.001;
+  }
+
+  /**
+   * Returns current frame rate
+   *
+   * @return {number}
+   */
+  get fps() {
+    return this.mFPS;
+  }
+
+  /**
+   * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
+   *
+   * @return {Viewport}
+   */
+  get viewport() {
+    return this.mViewport;
+  }
+
+  /**
+   * Returns the DOM element the engine runs in.
+   *
+   * @return {Element}
+   */
+  get containerElement() {
+    return this.mContainerElement;
+  }
+
+  /**
    * Gets/Sets if engine should be automatically paused when window is hidden.
    *
    * @return {boolean}
@@ -733,23 +655,6 @@ class Black extends MessageDispatcher {
    */
   get isPaused() {
     return this.mPaused;
-  }
-
-  /**
-   * Gets/Sets if fixed-time-step update should happen. When disabled the physics system and other systems may not work.
-   * @return {boolean}
-   */
-  get enableFixedTimeStep() {
-    return this.mEnableFixedTimeStep;
-  }
-
-  /**
-   * @ignore
-   * @param {boolean} value
-   * @return {void}
-   */
-  set enableFixedTimeStep(value) {
-    this.mEnableFixedTimeStep = value;
   }
 
   /**

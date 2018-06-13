@@ -38,7 +38,7 @@ class Sprite extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mDirty & DirtyFlag.RENDER) {

@@ -55,7 +55,7 @@ class BitmapTextField extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = /** @type {BitmapTextRenderer} */ (this.mRenderer);
 
     let oldDirty = this.mDirty;

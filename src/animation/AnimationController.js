@@ -126,12 +126,11 @@ class AnimationController extends Component {
   /**
    * @inheritDoc
    */
-  onPostUpdate(dt) {
+  onRender(alpha) {
     if (this.mCurrentAnim === null)
       return;
 
-    // TODO: replace with time.time
-    let newTexture = this.mCurrentAnim.__update(dt, Black.instance.uptime);
+    let newTexture = this.mCurrentAnim.__update();
     if (newTexture === null)
       return;
 

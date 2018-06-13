@@ -39,7 +39,7 @@ class Graphics extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = /** @type {GraphicsRenderer} */ (this.mRenderer);
 
     if (this.mDirty & DirtyFlag.RENDER) {

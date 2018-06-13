@@ -103,7 +103,7 @@ class Sound extends Component {
   /**
    * @inheritDoc
    */
-  onPostUpdate(dt) {
+  onRender(alpha) {
     if (this.mSpatialEffect && this.mSoundInstance != null && this.mSoundInstance.isPlaying === true) {
       const stage = Black.stage;
       const pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));

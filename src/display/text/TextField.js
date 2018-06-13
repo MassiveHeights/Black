@@ -80,7 +80,7 @@ class TextField extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = /** @type {TextRenderer} */ (this.mRenderer);
 
     let oldDirty = this.mDirty;

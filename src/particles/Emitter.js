@@ -139,7 +139,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   updateNextTick(dt = 0) {
-    let t = Black.instance.uptime;
+    let t = Time.now;
     let firstEmit = false;
 
     if (this.mState === EmitterState.PENDING) {
@@ -193,7 +193,7 @@ class Emitter extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = /** @type {EmitterRendererCanvas} */ (this.mRenderer);
 
     if (this.mDirty & DirtyFlag.RENDER) {
@@ -219,11 +219,12 @@ class Emitter extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onUpdate(dt) {
+  onUpdate() {
+    let dt = Time.delta;
     // rate logic
     this.updateNextTick(dt);
 
-    if (Black.instance.uptime >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
+    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
       this.__create(this.mEmitCount.getValue());
 
     // main update login

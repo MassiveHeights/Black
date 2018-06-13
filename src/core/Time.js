@@ -13,18 +13,6 @@ class Time {
    * Time since start in seconds.
    * 
    * @static
-   * @ignore
-   * @returns {number}
-   * @deprecated Use Time.now() instead.
-   */
-  static get time() {
-    return Time.mTime;
-  }
-
-  /**
-   * Time since start in seconds.
-   * 
-   * @static
    * @returns {number}
    */
   static get now() {
@@ -32,13 +20,33 @@ class Time {
   }
 
   /**
-   * Time since last frame
+   * Time since last frame.
    * 
    * @static
    * @returns {number}
    */
   static get dt() {
-    return Time.mDeltaTime;
+    return Time.mDeltaTime * Time.mScale;
+  }
+
+  /**
+   * Time since last update.
+   * 
+   * @static
+   * @returns {number}
+   */
+  static get alpha() {
+    return Time.mAlphaTime;
+  }
+
+  /**
+   * Time since last frame.
+   * 
+   * @static
+   * @returns {number}
+   */
+  static get delta() {
+    return Time.mDeltaTime * Time.mScale;
   }
 
   /**
@@ -71,10 +79,22 @@ Time.mTime = 0;
  * @ignore
  * @type {number}
  */
-Time.mDeltaTime = 0;
+Time.mDeltaTimeMs = 1000 / 60;
+
+/** 
+ * @ignore
+ * @type {number}
+ */
+Time.mDeltaTime = (1000 / 60) * 0.001;
 
 /** 
  * @ignore
  * @type {number}
  */
 Time.mScale = 1;
+
+/** 
+ * @ignore
+ * @type {number}
+ */
+Time.mAlphaTime = 0;
