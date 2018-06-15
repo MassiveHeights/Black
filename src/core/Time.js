@@ -69,32 +69,23 @@ class Time {
   }
 }
 
-/**
- * @ignore
- * @type {number}
- */
+/** @ignore @type {number} */
 Time.mTime = 0;
 
-/** 
- * @ignore
- * @type {number}
- */
+/** @ignore @type {number} */
+Time.mActualTime = 0;
+
+/** @ignore @type {number} */
 Time.mDeltaTimeMs = 1000 / 60;
 
-/** 
- * @ignore
- * @type {number}
- */
+/** @ignore @type {number} */
 Time.mDeltaTime = (1000 / 60) * 0.001;
 
-/** 
- * @ignore
- * @type {number}
- */
+/** @ignore @type {number} */
 Time.mScale = 1;
 
-/** 
- * @ignore
- * @type {number}
- */
+/** @ignore @type {number} */
 Time.mAlphaTime = 0;
+
+/** @ignore @type {number} */
+Time.mRenderOffset = 0;

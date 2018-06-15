@@ -162,7 +162,7 @@ class Emitter extends DisplayObject {
         if (this.mEmitNumRepeatsLeft <= 0) {
           this.mState = EmitterState.FINISHED;
 
-          this.post('complete');
+          this.post(Message.COMPLETE);
           return;
         } else {
           this.mState = EmitterState.PENDING;

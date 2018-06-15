@@ -126,7 +126,7 @@ class AnimationController extends Component {
   /**
    * @inheritDoc
    */
-  onRender(alpha) {
+  onRender() {
     if (this.mCurrentAnim === null)
       return;
 

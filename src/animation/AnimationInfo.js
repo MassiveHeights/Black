@@ -151,7 +151,7 @@ class AnimationInfo {
         this.mCurrentFrame = 0;
       } else {
         this.mCurrentFrame = this.mFrames.length - 1;
-        this.mController.post('complete', this);
+        this.mController.post(Message.COMPLETE, this);
         this.mCompleted = true;
         return null;
       }

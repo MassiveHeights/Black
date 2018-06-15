@@ -47,9 +47,6 @@ class Black extends MessageDispatcher {
     this.mStageHeight = this.mContainerElement.clientHeight;
 
     /** @private @type {number} */
-    this.mFPS = 60;
-
-    /** @private @type {number} */
     this.mLastUpdateTime = 0;
 
     /** @private @type {number} */
@@ -256,13 +253,13 @@ class Black extends MessageDispatcher {
     if (this.mIsStarted === true)
       return;
 
-    this.post(Message.READY);
-
     this.__bootSystems();
     this.__bootStage();
     this.__bootVideo();
 
     this.mStage.__refresh();
+
+    this.post(Message.READY);
 
     this.mGameObject = new this.mGameClass();
     this.mStage.addChild(this.mGameObject);
@@ -280,14 +277,11 @@ class Black extends MessageDispatcher {
       if (SplashScreen.enabled === true)
         self.mSplashScreen.show();
 
-      self.mLastUpdateTime = timestamp - Time.mDeltaTimeMs;
+      self.mLastUpdateTime = timestamp;
       self.mLastRenderTime = self.mLastUpdateTime;
 
-      self.__internalUpdate();
-      self.__internalPostUpdate();
-
       // Start the main loop.
-      self.__update(timestamp);
+      self.__update(timestamp, true);
     });
   }
 
@@ -309,11 +303,26 @@ class Black extends MessageDispatcher {
    * @param {number} timestamp
    * @return {void}
    */
-  __update(timestamp) {
+  __update(timestamp, forceUpdate) {
+    if (this.mPaused === true && this.mUnpausing === true) {
+      this.mUnpausing = false;
+
+      this.mLastUpdateTime = timestamp;
+      this.mLastRenderTime = this.mLastUpdateTime;
+
+      this.__setUnpaused();
+    }
+
     this.mRAFHandle = window.requestAnimationFrame(this.__update);
+
+    if (this.mPaused === true)
+      return;
 
     const maxNumUpdates = 10;
     let numTicks = Math.floor((timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs);
+
+    if (forceUpdate === true)
+      numTicks = 1;
 
     if (numTicks > maxNumUpdates) {
       this.post('loop', numTicks);
@@ -323,8 +332,10 @@ class Black extends MessageDispatcher {
     }
 
     Black.mUpdateTime = performance.now();
+    Black.numUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
-      Time.mTime += Time.mDeltaTime;
+      Time.mActualTime += Time.mDeltaTime;
+      Time.mTime = Time.mActualTime;
 
       this.__internalUpdate();
       this.__internalPostUpdate();
@@ -336,16 +347,17 @@ class Black extends MessageDispatcher {
 
     Time.mAlphaTime = (timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs;
 
-    if (Time.mAlphaTime <= 0) {
-      console.log('<= 0', Time.mAlphaTime);
-    } else if (Time.mAlphaTime > 1) {
-      console.log('> 1', Time.mAlphaTime)
-    }
+    // if (Time.mAlphaTime <= 0) {
+    //   console.log('<= 0', Time.mAlphaTime);
+    // } else if (Time.mAlphaTime > 1) {
+    //   console.log('> 1', Time.mAlphaTime)
+    // }
 
     Black.mRenderTime = performance.now();
     this.mVideo.beginFrame();
 
-    //console.log('lag', this.mLastUpdateTime / dt);
+    Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001);
+
     this.__internalRender();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
@@ -573,15 +585,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns current frame rate
-   *
-   * @return {number}
-   */
-  get fps() {
-    return this.mFPS;
-  }
-
-  /**
    * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
    *
    * @return {Viewport}
@@ -664,7 +667,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Returns currently active splash screen. Splash screen posts 'complete' message on hide.
+   * Returns currently active splash screen. Splash screen posts Message.COMPLETE message on hide.
    *
    * @returns {SplashScreen}
    */
@@ -725,6 +728,13 @@ Black.__frameNum = 0;
  * @static
  */
 Black.instance = null;
+
+/** 
+ * Indicates how many updates will be done during this frame.
+ * 
+ * @type {number}
+ */
+Black.numUpdates = 0;
 
 Black.mUpdateTime = 0;
 Black.mRenderTime = 0;
