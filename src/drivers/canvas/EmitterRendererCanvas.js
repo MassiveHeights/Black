@@ -85,7 +85,7 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
 
     driver.setGlobalAlpha(this.gameObject.mAlpha * particle.alpha);
     driver.setTransform(worldTransform);
-    driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? this.gameObject.color : particle.color));
+    driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? this.gameObject.mColor : particle.color));
   }
 
   /**
