@@ -26,8 +26,8 @@ class TextRendererDOM extends TextRenderer {
     if (this.dirty & DirtyFlag.RENDER_CACHE) {
       super.render(driver);
 
-      let url = 'url(' + this.__canvas.toDataURL('image/jpeg', 0.5) + ')';
-      this.element.src = this.__canvas.toDataURL();
+      let url = 'url(' + this.mCanvas.toDataURL('image/jpeg', 0.5) + ')';
+      this.element.src = this.mCanvas.toDataURL();
     }
 
     if (this.dirty & DirtyFlag.RENDER) {

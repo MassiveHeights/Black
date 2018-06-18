@@ -144,18 +144,31 @@ class VideoNullDriver {
    * @param {boolean} isBackBufferActive
    */
   __collectRenderables(session, gameObject, parentRenderer, isBackBufferActive) {
-    let renderer = gameObject.onCollectRenderables(this, parentRenderer, isBackBufferActive);
+    let renderer = null; //gameObject.onCollectRenderables(this, parentRenderer, isBackBufferActive);
+    if (gameObject.mRenderer != null) {
+      renderer = gameObject.mRenderer;
 
-    if (renderer != null) {
+      renderer.gameObject = gameObject;
+      renderer.parent = parentRenderer;
+
+      if (renderer.hasVisibleArea === false) {
+        session.skipChildren = true;
+        return;
+      }
+
+      session.renderers.push(renderer);
+    }
+
+    if (renderer !== null) {
       if (renderer.clipRect !== null)
         renderer.endPassRequired = true;
 
       parentRenderer = renderer;
       session.rendererIndex++;
-    }
 
-    if (renderer !== null && renderer.skipChildren === true)
-      return;
+      if (renderer.skipChildren === true)
+        return;
+    }
 
     if (session.skipChildren === true) {
       session.skipChildren = false;
@@ -166,7 +179,7 @@ class VideoNullDriver {
     for (let i = 0; i < len; i++)
       this.__collectRenderables(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
 
-    if (renderer != null && renderer.endPassRequired === true)
+    if (renderer !== null && renderer.endPassRequired === true)
       renderer.endPassRequiredAt = session.rendererIndex - 1;
   }
 

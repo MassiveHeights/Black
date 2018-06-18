@@ -511,12 +511,10 @@ class Tween extends Component {
   }
 
   onRender() {
-    // if (Black.numUpdates !== 0)
-    //   return;
+    if (Black.numUpdates !== 0)
+      return;
 
     let time = Time.now;
-    console.log(time);
-    
 
     if (time < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;

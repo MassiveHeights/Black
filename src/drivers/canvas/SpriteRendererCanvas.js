@@ -10,6 +10,10 @@ class SpriteRendererCanvas extends DisplayObjectRendererCanvas {
    * @inheritDoc
    */
   render(driver) {
-    driver.drawTexture(Renderer.getColoredTexture(this.texture, this.color));
+    driver.drawTexture(Renderer.getColoredTexture(this.getTexture(), this.getColor()));
+  }
+
+  getTexture() {
+    return this.gameObject.mTexture;
   }
 }

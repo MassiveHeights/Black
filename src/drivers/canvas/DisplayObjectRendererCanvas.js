@@ -10,7 +10,7 @@ class DisplayObjectRendererCanvas extends Renderer {
    * @inheritDoc
    */
   render(driver) {
-    if (this.texture !== null)
-      driver.drawTexture(this.texture);
+    // if (this.getTexture() !== null)
+    //   driver.drawTexture(this.getTexture());
   }
 }

@@ -41,6 +41,9 @@ class DisplayObject extends GameObject {
 
     /** @protected @type {?number} */
     this.mColor = null;
+
+    /** @protected @type {boolean} */
+    this.mSnapToPixels = false;
   }
 
   /**
@@ -400,5 +403,13 @@ class DisplayObject extends GameObject {
   set clipRect(value) {
     this.mClipRect = value;
     this.setRenderDirty();
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
   }
 }

@@ -39,32 +39,6 @@ class Graphics extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {GraphicsRenderer} */ (this.mRenderer);
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.commands = this.mCommandQueue;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-      renderer.visible = this.mVisible;
-      renderer.dirty = this.mDirty;
-      renderer.pivotX = this.mPivotX;
-      renderer.pivotY = this.mPivotY;
-      renderer.clipRect = this.mClipRect;
-      renderer.bounds = this.mBounds;
-      renderer.snapToPixels = this.mSnapToPixels;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * @inheritDoc
-   */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 

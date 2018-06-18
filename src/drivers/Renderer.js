@@ -9,53 +9,11 @@ class Renderer {
    * Creates new instance of Renderer.
    */
   constructor() {
-    /**
-     * A texture to render onto screen.
-     * @type {Texture|null}
-     */
-    this.texture = null;
+    /** @type {GameObject|null} */
+    this.gameObject = null;
 
-    /**
-     * The world alpha.
-     * @type {number}
-     */
-    this.alpha = 1;
-
-    /**
-     * The world blend mode.
-     * @type {BlendMode}
-     */
-    this.blendMode = BlendMode.AUTO;
-
-    /**
-     * World transformation.
-     * @type {Matrix}
-     */
-    this.transform = null;
-
-    /**
-     * Desired color to apply onto drawing object.
-     * @type {number|null}
-     */
-    this.color = null;
-
-    /**
-     * Indicates visibility of this renderable.
-     * @type {boolean}
-     */
-    this.visible = true;
-
-    /**
-     * X-coordinate of the object's origin in its local space.
-     * @type {number}
-     */
-    this.pivotX = 0;
-
-    /**
-     * Y-coordinate of the object's origin in its local space.
-     * @type {number}
-     */
-    this.pivotY = 0;
+    /** @type {Renderer|null} */
+    this.parent = null;
 
     /**
      * Dirty flag.
@@ -75,12 +33,6 @@ class Renderer {
      */
     this.clipRect = null;
 
-    /**
-     * Round `x` and `y` values to `int`.
-     * @type {boolean}
-     */
-    this.snapToPixels = false;
-
     /** @ignore @type {number} */
     this.endPassRequiredAt = -1;
 
@@ -89,8 +41,6 @@ class Renderer {
 
     /** @ignore @type {boolean} */
     this.skipChildren = false;
-
-    // this.filters = null;
   }
 
   /**
@@ -101,15 +51,13 @@ class Renderer {
    */
   render(driver) { }
 
-  // renderFilters() {
-  // }
 
   /**
    * Returns true if renderer has something to render.
    * @returns {boolean} Returns true if renderer has something to render otherwise false.
    */
   get hasVisibleArea() {
-    return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);
+    return this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true && (this.gameObject.mClipRect !== null ? this.gameObject.mClipRect.isEmpty === false : true);
   }
 
   /**
@@ -118,7 +66,14 @@ class Renderer {
    * @returns {boolean} True if can be rendered otherwise false.
    */
   get isRenderable() {
-    return this.texture !== null;
+    return this.gameObject.mTexture !== null;
+  }
+
+  /**
+   * @returns {Texture|null}
+   */
+  getTexture() {
+    return null;
   }
 
   /**
@@ -127,7 +82,7 @@ class Renderer {
    * @returns {Matrix} Current transformation.
    */
   getTransform() {
-    return this.transform;
+    return this.gameObject.worldTransformation;
   }
 
   /**
@@ -135,7 +90,10 @@ class Renderer {
    * @returns {number} Current world alpha.
    */
   getAlpha() {
-    return this.alpha;
+    if (this.gameObject !== null)
+      return this.gameObject.mAlpha;
+
+    return 1;
   }
 
   /**
@@ -143,11 +101,53 @@ class Renderer {
    * @returns {BlendMode} Current world blend mode.
    */
   getBlendMode() {
-    return this.blendMode;
+    if (this.gameObject !== null)
+      return this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.getBlendMode() : this.gameObject.mBlendMode;
+
+    return BlendMode.NORMAL;
   }
 
+  /**
+   * Returns GameObject's tinting color.
+   * @returns {number|null}
+   */
   getColor() {
-    return this.color;
+    if (this.gameObject !== null)
+      return this.gameObject.mColor === null ? this.parent.getColor() : this.gameObject.mColor;
+
+    return null;
+  }
+
+  /**
+   * Returns GameObject's pivotX.
+   * @returns {number}
+   */
+  getPivotX() {
+    return this.gameObject.mPivotX;
+  }
+
+  /**
+   * Returns GameObject's pivotY.
+   * @returns {number}
+   */
+  getPivotY() {
+    return this.gameObject.mPivotY;
+  }
+
+  /**
+   * Returns GameObject's clipping rect or null.
+   * @returns {Rectangle|null}
+   */
+  getClipRect() {
+    return this.gameObject.mClipRect;
+  }
+
+  /**
+   * Returns GameObject's snapToPixels property value.
+   * @returns {boolean}
+   */
+  getSnapToPixels() {
+    return this.gameObject.snapToPixels;
   }
 
   /**
@@ -172,7 +172,7 @@ class Renderer {
     let rt = new RenderTargetCanvas(w, h);
     let ctx = rt.context;
 
-    ctx.fillStyle = ColorHelper.hexColorToString(color); 
+    ctx.fillStyle = ColorHelper.hexColorToString(color);
     ctx.fillRect(0, 0, w, h);
 
     ctx.globalCompositeOperation = 'multiply';

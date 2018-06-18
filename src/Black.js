@@ -326,7 +326,7 @@ class Black extends MessageDispatcher {
 
     if (numTicks > maxNumUpdates) {
       this.post('loop', numTicks);
-      Debug.warn(`Unable to catch up updates ${numTicks}`);
+      Debug.warn(`Unable to catch up ${numTicks} update(s).`);
 
       numTicks = maxNumUpdates;
     }
@@ -354,11 +354,8 @@ class Black extends MessageDispatcher {
     // }
 
     Black.mRenderTime = performance.now();
-    this.mVideo.beginFrame();
-
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
-
-    this.__internalRender();
+    this.mVideo.beginFrame();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
     Black.mRenderTime = performance.now() - Black.mRenderTime;
@@ -391,17 +388,6 @@ class Black extends MessageDispatcher {
   __internalPostUpdate() {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onPostUpdate();
-  }
-
-  /**
-   * @private
-   * @return {void}
-   */
-  __internalRender() {
-    for (let i = 0; i < this.mSystems.length; i++)
-      this.mSystems[i].onRender();
-
-    this.mStage.__render();
   }
 
   /**

@@ -70,6 +70,16 @@ class CanvasDriver extends VideoNullDriver {
     for (let i = 0, len = session.renderers.length; i !== len; i++) {
       /** @type {Renderer} */
       let renderer = session.renderers[i];
+      let willRender = renderer.isRenderable === true || renderer.hasVisibleArea;
+
+      if (willRender) {
+        renderer.gameObject.onRender();
+
+        for (let i = 0; i < renderer.gameObject.mComponents.length; i++) {
+          const comp = renderer.gameObject.mComponents[i];
+          comp.onRender();
+        }
+      }
 
       /** @type {Matrix|null} */
       let transform = null;
@@ -89,26 +99,26 @@ class CanvasDriver extends VideoNullDriver {
         transform = renderer.getTransform();
       }
 
-      if (renderer.isRenderable === true || renderer.hasVisibleArea) {
+      if (willRender) {
+        this.mSnapToPixels = renderer.getSnapToPixels();
         this.setTransform(transform);
         this.setGlobalBlendMode(renderer.getBlendMode()); // not perfect 
       }
 
-      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false) {
-        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
+      const clipRect = renderer.getClipRect();
+      if (clipRect !== null && clipRect.isEmpty === false) {
+        this.beginClip(clipRect, renderer.getPivotX(), renderer.getPivotY());
       }
 
-      if (renderer.skip === true) {
-        renderer.skip = false;
-      } else {
+      if (renderer.skip === false) {
         if (renderer.isRenderable === true) {
-          this.setGlobalAlpha(renderer.getAlpha());
-          this.mSnapToPixels = renderer.snapToPixels;
+          this.setGlobalAlpha(renderer.getAlpha() * renderer.parent.getAlpha());
 
           renderer.render(this);
           renderer.dirty = DirtyFlag.CLEAN;
         }
-      }
+      } else
+        renderer.skip = false;
 
       if (renderer.endPassRequired === true)
         session.endPassRenderers.push(renderer);

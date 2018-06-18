@@ -80,52 +80,9 @@ class TextField extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {TextRenderer} */ (this.mRenderer);
-
-    let oldDirty = this.mDirty;
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-      renderer.visible = this.mVisible;
-      renderer.clipRect = this.mClipRect;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
-      this.onGetLocalBounds();
-
-      renderer.padding = this.mPadding;
-      renderer.text = this.text;
-      renderer.style = this.mDefaultStyle;
-      renderer.multiline = this.mMultiline;
-      renderer.lineHeight = this.mLineHeight;
-      renderer.align = this.mAlign;
-      renderer.vAlign = this.mVerticalAlign;
-      renderer.fieldWidth = this.mFieldWidth;
-      renderer.fieldHeight = this.mFieldHeight;
-      renderer.autoSize = this.mAutoSize;
-      renderer.metrics = this.mMetrics;
-
-      if (renderer.hasVisibleArea === true)
-        this.mDirty ^= DirtyFlag.RENDER_CACHE;
-    }
-
-    renderer.dirty = oldDirty;
-
-    return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onGetLocalBounds(outRect = undefined) {
+  onGetLocalBounds(outRect = undefined) {    
     outRect = outRect || new Rectangle();
-
+    
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
       if (this.mMultiline === false)

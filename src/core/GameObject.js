@@ -98,9 +98,6 @@ class GameObject extends MessageDispatcher {
     /** @private @type {boolean} */
     this.mSuspendDirty = false;
 
-    /** @protected @type {boolean} */
-    this.mSnapToPixels = false;
-
     // cache all colliders for fast access
     /** @private @type {Array<Collider>} */
     this.mCollidersCache = [];
@@ -609,40 +606,6 @@ class GameObject extends MessageDispatcher {
     }
   }
 
-   /**
-   * @ignore
-   * @private
-   * @return {void}
-   */
-  __render() {
-    this.onRender();
-
-    if (this.mComponents.length > 0) {
-      for (let k = 0; k < this.mComponents.length; k++) {
-        if (this.mAdded === false)
-          break;
-
-        let c = this.mComponents[k];
-
-        if (c.mAdded === false)
-          break;
-
-        c.onRender();
-      }
-    }
-
-    if (this.mChildren.length > 0) {
-      this.mChildrenClone = this.mChildren.slice();
-
-      for (let i = 0; i < this.mChildrenClone.length; i++) {
-        let child = this.mChildrenClone[i];
-
-        if (child.mAdded === true)
-          child.__render();
-      }
-    }
-  }
-
   /**
    * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
    * going from top to bottom of the display list.
@@ -653,8 +616,8 @@ class GameObject extends MessageDispatcher {
   onUpdate() { }
 
   /**
-   * Called at the end of the loop, after `onCollectRenderables`. Should be used to interpolate between last and current
-   * state. 
+   * Called at the end of the loop, all renderers are already collected and this object and its children will be
+   * rendered. Should be used to interpolate between last and current state. 
    * 
    * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
    * 
@@ -1606,14 +1569,6 @@ class GameObject extends MessageDispatcher {
   get touchable() {
     let c = /** @type {InputComponent} */ (this.getComponent(InputComponent));
     return c !== null && c.touchable === true;
-  }
-
-  get snapToPixels() {
-    return this.mSnapToPixels;
-  }
-
-  set snapToPixels(value) {
-    this.mSnapToPixels = value;
   }
 
   // TODO: rename method

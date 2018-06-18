@@ -12,56 +12,22 @@ class TextRenderer extends Renderer {
   constructor() {
     super();
 
-    /** @type {string|null} @ignore */
-    this.text = null;
-
-    /** @type {TextStyle} @ignore */
-    this.style = null;
-
-    /** @type {boolean} @ignore */
-    this.multiline = false;
-
-    /** @type {boolean} @ignore */
-    this.autoSize = false;
-
-    /** @type {TextMetricsData} @ignore */
-    this.metrics = null;
-
-    /** @type {TextStyle.FontAlign} @ignore */
-    this.align = TextStyle.FontAlign.NONE;
-
-    /** @type {boolean} @ignore */
-    this.drawBounds = false;
-
-    /** @type {Rectangle} @ignore */
-    this.padding = new Rectangle(0, 0, 0, 0);
-
-    /** @type {string} @ignore */
-    this.vAlign = 'top';
-
-    /** @type {number} @ignore */
-    this.fieldWidth = 0;
-
-    /** @type {number} @ignore */
-    this.fieldHeight = 0;
-
-    /** @type {number} @ignore */
-    this.lineHeight = 0;
+    this.texture = null;
 
     /** @private @type {Matrix} @ignore */
-    this.__transformCache = new Matrix();
+    this.mTransformCache = new Matrix();
 
     /** @private @type {HTMLCanvasElement} */
-    this.__canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
     /** @private @type {CanvasRenderingContext2D} */
-    this.__context = /** @type {CanvasRenderingContext2D} */ (this.__canvas.getContext('2d'));
+    this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
     /** */
-    this.__context.lineJoin = 'round';
+    this.mContext.lineJoin = 'round';
 
     /** */
-    this.__context.miterLimit = 2;
+    this.mContext.miterLimit = 2;
   }
 
   /**
@@ -88,12 +54,12 @@ class TextRenderer extends Renderer {
     let lx = segment.bounds.x - Math.min(metrics.strokeBounds.x, metrics.shadowBounds.x);
     let ly = baseline + segment.bounds.y - Math.min(metrics.strokeBounds.y, metrics.shadowBounds.y);
 
-    lx += this.padding.x;
-    ly += this.padding.y;
+    lx += this.gameObject.padding.x;
+    ly += this.gameObject.padding.y;
 
-    if (this.align === 'center')
+    if (this.gameObject.align === 'center')
       lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
-    else if (this.align === 'right')
+    else if (this.gameObject.align === 'right')
       lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
     if (isStroke === true)
@@ -103,25 +69,21 @@ class TextRenderer extends Renderer {
   }
 
   render(driver) {
-    if (this.text === null)
-      return;
+    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      this.gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
 
-    if (this.dirty & DirtyFlag.RENDER_CACHE) {
-      const cvs = this.__canvas;
-      const ctx = this.__context;
+      const cvs = this.mCanvas;
+      const ctx = this.mContext;
       ctx.textBaseline = 'alphabetic';
-
-      // find canvas bounds    
-      // let canvasBounds = this.metrics.strokeBounds.clone().inflate(this.padding.right, this.padding.bottom);
 
       let canvasBounds = this.metrics.strokeBounds.clone();
       canvasBounds.union(this.metrics.shadowBounds);
-      canvasBounds.inflate(this.padding.right, this.padding.bottom);
+      canvasBounds.inflate(this.gameObject.padding.right, this.gameObject.padding.bottom);
 
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
 
-      let fontMetrics = FontMetrics.get(this.style.family);
+      let fontMetrics = FontMetrics.get(this.gameObject.mDefaultStyle.family);
       let segments = this.metrics.segments;
 
       for (let i = 0; i < segments.length; i++) {
@@ -155,47 +117,61 @@ class TextRenderer extends Renderer {
     }
   }
 
+  getTexture() {
+    return this.texture;
+  }
+
   /**
    * @inheritDoc
    */
   getTransform() {
-    let fieldXOffset = 0;
-    let fieldYOffset = 0;
+    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      this.gameObject.onGetLocalBounds();
+      this.metrics = this.gameObject.mMetrics;
+    
+      let transform = this.gameObject.worldTransformation;
 
-    let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
-    let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
+      let fieldXOffset = 0;
+      let fieldYOffset = 0;
 
-    const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
+      let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
+      let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
 
-    if (this.autoSize === false) {
-      if (this.align === 'center')
-        fieldXOffset = (this.fieldWidth - this.metrics.bounds.width) * 0.5;
-      else if (this.align === 'right')
-        fieldXOffset = this.fieldWidth - this.metrics.bounds.width;
+      const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
 
-      if (this.vAlign === 'middle')
-        fieldYOffset = (this.fieldHeight - this.metrics.bounds.height) * 0.5;
-      else if (this.vAlign === 'bottom')
-        fieldYOffset = this.fieldHeight - this.metrics.bounds.height;
+      if (this.gameObject.mAutoSize === false) {
+        if (this.gameObject.align === 'center')
+          fieldXOffset = (this.gameObject.mFieldWidth - this.metrics.bounds.width) * 0.5;
+        else if (this.gameObject.align === 'right')
+          fieldXOffset = this.gameObject.mFieldWidth - this.metrics.bounds.width;
+
+        if (this.gameObject.mVerticalAlign === 'middle')
+          fieldYOffset = (this.gameObject.mFieldHeight - this.metrics.bounds.height) * 0.5;
+        else if (this.gameObject.mVerticalAlign === 'bottom')
+          fieldYOffset = this.gameObject.mFieldHeight - this.metrics.bounds.height;
+      }
+
+      if (hasFilter === true || this.gameObject.mAutoSize === false) {
+        transform.copyTo(this.mTransformCache);
+        this.mTransformCache.translate((filterOffsetX + fieldXOffset) - this.gameObject.padding.x, (filterOffsetY + fieldYOffset) - this.gameObject.padding.y);
+        return this.mTransformCache;
+      } else if (this.gameObject.padding.isEmpty === false) {
+        transform.copyTo(this.mTransformCache);
+        this.mTransformCache.translate(-this.gameObject.padding.x, -this.gameObject.padding.y);
+        return this.mTransformCache;
+      } else {
+        this.mTransformCache = transform;
+        return transform;
+      }
     }
 
-    if (hasFilter === true || this.autoSize === false) {
-      this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate((filterOffsetX + fieldXOffset) - this.padding.x, (filterOffsetY + fieldYOffset) - this.padding.y);
-      return this.__transformCache;
-    } else if (this.padding.isEmpty === false) {
-      this.transform.copyTo(this.__transformCache);
-      this.__transformCache.translate(-this.padding.x, -this.padding.y);
-      return this.__transformCache;
-    } else {
-      return this.transform;
-    }
+    return this.mTransformCache;
   }
 
   /**
    * @inheritDoc
    */
   get isRenderable() {
-    return this.text !== null;
+    return this.gameObject.text !== null;
   }
 }

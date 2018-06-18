@@ -20,11 +20,14 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @returns {void}
    */
   render(driver) {
-    this.__drawCommandBuffer(driver);
+    this.bounds = this.gameObject.bounds;
+    this.commands = this.gameObject.mCommandQueue;
 
-    if (this.color !== null && this.color !== 0xFFFFFF) {
+    this.__drawCommandBuffer(driver);
+    
+    if (this.gameObject.color !== null && this.gameObject.color !== 0xFFFFFF) {
       driver.context.globalCompositeOperation = 'multiply';
-      this.__drawCommandBuffer(driver, this.color);
+      this.__drawCommandBuffer(driver, this.gameObject.color);
     }
   }
 
@@ -41,7 +44,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
           ctx.lineWidth = cmd.getNumber(0) * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.getNumber(1), cmd.getNumber(2));
+          ctx.strokeStyle = ColorHelper.intToRGBA(color || cmd.getNumber(1), cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
           ctx.mitterLimit = cmd.getNumber(5);
@@ -49,7 +52,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(cmd.getNumber(0), cmd.getNumber(1));
+          ctx.fillStyle = ColorHelper.intToRGBA(color || cmd.getNumber(0), cmd.getNumber(1));
           break;
         }
 
@@ -113,6 +116,6 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @returns {boolean} True if can be rendered otherwise false.
    */
   get isRenderable() {
-    return this.commands.length > 0;
+    return this.gameObject.mCommandQueue.length > 0;
   }
 }
