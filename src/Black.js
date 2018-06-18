@@ -334,7 +334,7 @@ class Black extends MessageDispatcher {
     Black.mUpdateTime = performance.now();
     Black.numUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
-      Time.mActualTime += Time.mDeltaTime;
+      Time.mActualTime += Time.delta;
       Time.mTime = Time.mActualTime;
 
       this.__internalUpdate();
@@ -356,7 +356,7 @@ class Black extends MessageDispatcher {
     Black.mRenderTime = performance.now();
     this.mVideo.beginFrame();
 
-    Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001);
+    Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
 
     this.__internalRender();
     this.mVideo.render(this.mStage);

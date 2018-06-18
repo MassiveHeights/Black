@@ -221,6 +221,7 @@ class Emitter extends DisplayObject {
    */
   onUpdate() {
     let dt = Time.delta;
+    
     // rate logic
     this.updateNextTick(dt);
 
