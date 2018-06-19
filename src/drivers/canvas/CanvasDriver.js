@@ -33,6 +33,9 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
+   * Execution order:
+   * Collect -> GO:onRender -> 
+   * 
    * @inheritDoc
    */
   render(gameObject, renderTexture = null, customTransform = null) {
@@ -114,8 +117,7 @@ class CanvasDriver extends VideoNullDriver {
         if (renderer.isRenderable === true) {
           this.setGlobalAlpha(renderer.getAlpha() * renderer.parent.getAlpha());
 
-          renderer.render(this);
-          renderer.dirty = DirtyFlag.CLEAN;
+          renderer.render(this, isBackBufferActive);
         }
       } else
         renderer.skip = false;

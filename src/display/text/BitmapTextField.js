@@ -51,43 +51,6 @@ class BitmapTextField extends DisplayObject {
   getRenderer() {
     return Black.driver.getRenderer('BitmapText');
   }
-  
-  /**
-   * @inheritDoc
-   */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {BitmapTextRenderer} */ (this.mRenderer);
-
-    let oldDirty = this.mDirty;
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-      renderer.visible = this.mVisible;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
-      renderer.text = this.text;
-      renderer.data = this.mData;
-      renderer.multiline = this.mMultiline;
-      renderer.lineHeight = this.mLineHeight;
-      renderer.fieldWidth = this.mFieldWidth;
-      renderer.fieldHeight = this.mFieldHeight;
-      renderer.autoSize = this.mAutoSize;
-      renderer.bounds = this.onGetLocalBounds();
-
-      if (renderer.hasVisibleArea === true)
-        this.mDirty ^= DirtyFlag.RENDER_CACHE;
-    }
-
-    renderer.dirty = oldDirty;
-
-    return driver.registerRenderer(renderer);
-  }
 
   /**
    * @inheritDoc

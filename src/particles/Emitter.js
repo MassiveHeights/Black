@@ -193,32 +193,6 @@ class Emitter extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {EmitterRendererCanvas} */ (this.mRenderer);
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.visible = this.mVisible;
-      renderer.particles = this.mParticles;
-      renderer.textures = this.mTextures;
-      renderer.space = this.mSpace;
-      renderer.isLocal = this.mIsLocal;
-      renderer.dirty = this.mDirty;
-      renderer.clipRect = this.clipRect;
-      renderer.sortOrder = this.mSortOrder;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * @inheritDoc
-   */
   onUpdate() {
     let dt = Time.delta;
     

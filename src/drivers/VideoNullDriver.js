@@ -146,10 +146,11 @@ class VideoNullDriver {
   __collectRenderables(session, gameObject, parentRenderer, isBackBufferActive) {
     let renderer = null; //gameObject.onCollectRenderables(this, parentRenderer, isBackBufferActive);
     if (gameObject.mRenderer != null) {
-      renderer = gameObject.mRenderer;
-
+      renderer = gameObject.mRenderer;      
       renderer.gameObject = gameObject;
       renderer.parent = parentRenderer;
+
+      renderer.preRender(this, isBackBufferActive);
 
       if (renderer.hasVisibleArea === false) {
         session.skipChildren = true;
@@ -157,10 +158,8 @@ class VideoNullDriver {
       }
 
       session.renderers.push(renderer);
-    }
 
-    if (renderer !== null) {
-      if (renderer.clipRect !== null)
+      if (renderer.getClipRect() !== null)
         renderer.endPassRequired = true;
 
       parentRenderer = renderer;
@@ -210,7 +209,8 @@ class VideoNullDriver {
       let parent = parents[i];
 
       let oldDirty = parent.mDirty;
-      let renderer = parent.onCollectRenderables(this, parentRenderer);
+      let renderer = parent.mRenderer;      
+
       parent.mDirty = oldDirty;
 
       if (renderer != null) {
@@ -246,22 +246,6 @@ class VideoNullDriver {
    * @protected
    */
   endClip() {
-  }
-
-  /**
-   * Puts renderer into queue for future rendering.
-   *
-   * @param {Renderer} renderer A Renderer instance.
-   * @returns {Renderer|null} Passed renderer or null if it cannot or should not be rendered.
-   */
-  registerRenderer(renderer) {
-    if (renderer.hasVisibleArea === false) {
-      this.mActiveSession.skipChildren = true;
-      return null;
-    }
-
-    this.mActiveSession.renderers.push(renderer);
-    return renderer;
   }
 
   /**

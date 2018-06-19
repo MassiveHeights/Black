@@ -16,12 +16,6 @@ class Renderer {
     this.parent = null;
 
     /**
-     * Dirty flag.
-     * @type {DirtyFlag}
-     */
-    this.dirty = DirtyFlag.DIRTY;
-
-    /**
      * Indicates whenever driver should skip rendering of this object.
      * @type {boolean}
      */
@@ -47,9 +41,19 @@ class Renderer {
    * Called when this renderer needs to be rendered.
    *
    * @param {VideoNullDriver} driver Active video driver.
+   * @param {boolean} isBackBufferActive
    * @returns {void}
    */
-  render(driver) { }
+  preRender(driver, isBackBufferActive) { }
+
+  /**
+   * Called when this renderer needs to be rendered.
+   *
+   * @param {VideoNullDriver} driver Active video driver.
+   * @param {boolean} isBackBufferActive
+   * @returns {void}
+   */
+  render(driver, isBackBufferActive) { }
 
 
   /**
