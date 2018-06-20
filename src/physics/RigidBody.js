@@ -312,7 +312,7 @@ class RigidBody extends Component {
     }
   }
 
-  renderUpdate(percent) {
+  renderUpdate(alpha) {
     const gameObject = this.gameObject;
 
     if (gameObject === Black.stage) return;
@@ -320,9 +320,8 @@ class RigidBody extends Component {
     const prev = this.mGameObjectPositionPrev;
     const range = this.mGameObjectTranslation;
 
-    // percent = framesFromLastUpdate / totalFramesWithinUpdates;
-    gameObject.x = prev.x + range.x * percent;
-    gameObject.y = prev.y + range.y * percent;
+    gameObject.x = prev.x + range.x * alpha;
+    gameObject.y = prev.y + range.y * alpha;
   }
 
   /**

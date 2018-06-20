@@ -393,32 +393,46 @@ class Arcade extends System {
     }
   }
 
-  onFixedUpdate(dt) {
-    if (time === 0) {
-      const bodiesToAdd = this.mBodiesToAdd;
-      const collidersToAdd = this.mCollidersToAdd;
+  // onFixedUpdate(dt) {
+  //   if (time === 0) {
+  //     const bodiesToAdd = this.mBodiesToAdd;
+  //     const collidersToAdd = this.mCollidersToAdd;
+  //
+  //     while (bodiesToAdd.length !== 0) {
+  //       const body = bodiesToAdd.pop();
+  //       this.__addBody(body);
+  //     }
+  //
+  //     while (collidersToAdd.length !== 0) {
+  //       const collider = this.mCollidersToAdd.pop();
+  //       this.__addCollider(collider.gameObject, collider);
+  //     }
+  //
+  //     this.__update(dt);
+  //   }
+  //
+  //   this.renderUpdate(++time / times);
+  //   time %= times;
+  // }
 
-      while (bodiesToAdd.length !== 0) {
-        const body = bodiesToAdd.pop();
-        this.__addBody(body);
-      }
+  /**
+   * @inheritDoc
+   */
+  onRender() {
+    console.log(100500)
+    const alpha = Time.mAlphaTime;
+    const bodies = this.mBodies;
 
-      while (collidersToAdd.length !== 0) {
-        const collider = this.mCollidersToAdd.pop();
-        this.__addCollider(collider.gameObject, collider);
-      }
-
-      this.__update(dt);
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      bodies[i].renderUpdate(alpha);
     }
-
-    this.renderUpdate(++time / times);
-    time %= times;
   }
 
   /**
    * @inheritDoc
    */
-  __update(dt) {
+  onUpdate() {
+    const dt = Time.mDeltaTimeMs;
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
@@ -577,14 +591,6 @@ class Arcade extends System {
       for (let j = 0, l = contacts.length; j < l; j++) {
         contacts[j].solvePosition();
       }
-    }
-  }
-
-  renderUpdate(percent) {
-    const bodies = this.mBodies;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].renderUpdate(percent);
     }
   }
 
