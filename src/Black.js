@@ -323,6 +323,8 @@ class Black extends MessageDispatcher {
       this.__setUnpaused();
     }
 
+    this.mRAFHandle = window.requestAnimationFrame(this.__update);
+
     if (this.mPaused === true)
       return;
 
@@ -343,7 +345,6 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < numTicks; i++) {
       Time.mActualTime += Time.delta;
       Time.mTime = Time.mActualTime;
-
       this.__internalUpdate();
       this.__internalSystemPostUpdate();
     }
@@ -364,7 +365,7 @@ class Black extends MessageDispatcher {
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
 
     this.__internalSystemRender();
-
+    
     this.mVideo.beginFrame();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
@@ -376,8 +377,6 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
-
-    this.mRAFHandle = window.requestAnimationFrame(this.__update);
   }
 
   /**
