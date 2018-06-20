@@ -205,7 +205,7 @@ class Input extends System {
   /**
    * @inheritDoc
    */
-  onUpdate(dt) {
+  onUpdate() {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 

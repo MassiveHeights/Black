@@ -39,7 +39,7 @@ class SoundListener extends Component {
   /**
    * @inheritDoc
    */
-  onPostUpdate(dt) {
+  onRender() {
     if (MasterAudio.currentListener === this) {
       let stage = Black.stage;
       let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));

@@ -32,9 +32,6 @@ class CanvasDriver extends VideoNullDriver {
     };
   }
 
-  /**
-   * @inheritDoc
-   */
   render(gameObject, renderTexture = null, customTransform = null) {
     let isBackBufferActive = renderTexture === null;
 
@@ -42,106 +39,73 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let session = this.__saveSession();
+    let parentRenderer = this.mStageRenderer;
 
-    let numEndClipsRequired = 0;
-    if (renderTexture != null) {
+    // RenderTexture related
+    if (renderTexture !== null) {
+      // Sawp context
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
 
-      // collect parents alpha, blending, clipping and masking
+      // clear context cache
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
 
-      this.mStageRenderer.alpha = 1;
-      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+      parentRenderer.alpha = 1;
+      parentRenderer.blendMode = BlendMode.NORMAL;
+      parentRenderer.color = null;
 
-      // alpha, blendmode will be overwritten into this.mStageRenderer
-      numEndClipsRequired = this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
-    } else {
-      this.mStageRenderer.alpha = 1;
-      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+      // collect parents of given GameObject
+      this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
+
+      for (let i = 0, len = session.parentRenderers.length; i !== len; i++) {
+        let renderer = session.parentRenderers[i];
+        renderer.begin(this);
+
+        if (renderer.skipSelf === false)
+          renderer.upload(this, false, null);
+      }
+
+      if (session.parentRenderers.length > 0)
+        parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
     }
 
-    session.rendererIndex = session.renderers.length;
-
-    if (session.skipChildren === false)
-      this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
-
+    this.__collectRenderers(session, gameObject, parentRenderer, isBackBufferActive);
     for (let i = 0, len = session.renderers.length; i !== len; i++) {
-      /** @type {Renderer} */
       let renderer = session.renderers[i];
 
-      /** @type {Matrix|null} */
-      let transform = null;
-
-      if (isBackBufferActive === false) {
-        if (customTransform === null) {
-          // TODO: too much allocations
-          transform = renderer.getTransform().clone();
-          transform.data[4] -= Black.stage.mX;
-          transform.data[5] -= Black.stage.mY;
-        } else {
-          // TODO: too much allocations
-          transform = renderer.getTransform().clone();
-          transform.prepend(customTransform);
-        }
-      } else {
-        transform = renderer.getTransform();
+      // Render game object and its components
+      renderer.gameObject.onRender();
+      for (let i = 0; i < renderer.gameObject.mComponents.length; i++) {
+        const comp = renderer.gameObject.mComponents[i];
+        comp.onRender();
       }
 
-      if (renderer.isRenderable === true || renderer.hasVisibleArea) {
-        this.setTransform(transform);
-        this.setGlobalBlendMode(renderer.getBlendMode()); // not perfect 
-      }
+      renderer.begin(this, isBackBufferActive, customTransform);
 
-      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false) {
-        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
-      }
-
-      if (renderer.skip === true) {
-        renderer.skip = false;
-      } else {
-        if (renderer.isRenderable === true) {
-          this.setGlobalAlpha(renderer.getAlpha());
-          this.mSnapToPixels = renderer.snapToPixels;
-
-          renderer.render(this);
-          renderer.dirty = DirtyFlag.CLEAN;
-        }
+      if (renderer.skipSelf === false) {
+        renderer.upload(this, isBackBufferActive, customTransform);
+        renderer.render(this, isBackBufferActive, customTransform);
       }
 
       if (renderer.endPassRequired === true)
-        session.endPassRenderers.push(renderer);
+        session.endPassRenderers.unshift(renderer);
 
-      if (session.endPassRenderers.length > 0 && session.endPassRenderers[session.endPassRenderers.length - 1].endPassRequiredAt === i) {
-        const r = session.endPassRenderers.pop();
-        this.endClip();
-
-        r.endPassRequiredAt = -1;
-        r.endPassRequired = false;
-      }
+      if (session.endPassRenderers.length > 0 && session.endPassRenderers[0].endPassRequiredAt === i)
+        session.endPassRenderers.shift().end(this);
     }
 
-    if (renderTexture != null) {
-      for (let i = 0; i < numEndClipsRequired; i++)
-        this.endClip();
+    if (renderTexture !== null) {
+      while (session.endPassParentRenderers.length > 0)
+        session.endPassParentRenderers.pop().end(this);
 
       this.mCtx = this.mLastRenderTexture;
 
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
-      session.clear();
-      session.skipChildren = false;
     }
 
     this.__restoreSession();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getRenderTarget(width, height) {
-    return new RenderTargetCanvas(width, height);
   }
 
   /**

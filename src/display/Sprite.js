@@ -32,33 +32,7 @@ class Sprite extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Sprite');
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = this.mRenderer;
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.skipChildren = false;
-      renderer.transform = this.worldTransformation;
-      renderer.texture = this.mTexture;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.visible = this.mVisible;
-      renderer.dirty = this.mDirty;
-      renderer.pivotX = this.mPivotX;
-      renderer.pivotY = this.mPivotY;
-      renderer.clipRect = this.mClipRect;
-      renderer.snapToPixels = this.mSnapToPixels;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
+    return Black.driver.getRenderer('Sprite', this);
   }
 
   /**

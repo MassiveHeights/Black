@@ -12,71 +12,52 @@ class BitmapTextRenderer extends Renderer {
   constructor() {
     super();
 
-    /** @ignore @type {string|null} */
-    this.text = null;
-
-    /** @ignore @type {BitmapFontData} */
-    this.data = null;
-
-    /** @ignore @type {boolean} */
-    this.multiline = false;
-
-    /** @ignore @type {boolean} */
-    this.autoSize = false;
-
-    /** @type {number} @ignore */
-    this.fieldWidth = 0;
-
-    /** @type {number} @ignore */
-    this.fieldHeight = 0;
-
-    /** @ignore @type {Rectangle} */
-    this.bounds = new Rectangle(0, 0, 0, 0);
-
-    /** @type {number} @ignore */
-    this.lineHeight = 0;
-
-    /** @ignore @private @type {Matrix} */
-    this.__transformCache = new Matrix();
-
     /** @ignore @private @type {HTMLCanvasElement} */
-    this.__canvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
     /** @ignore @private @type {CanvasRenderingContext2D} */
-    this.__context = /** @type {CanvasRenderingContext2D} */ (this.__canvas.getContext('2d'));
+    this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
+
+    /** @ignore @type {Texture|null} */
+    this.texture = null;
   }
 
   /**
    * @inheritDoc
    */
-  render(driver) {
-    if (this.text === null)
+  render() {
+    if (this.gameObject.mText === null)
       return;
 
-    const cvs = this.__canvas;
-    const ctx = this.__context;
+    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      const cvs = this.mCanvas;
+      const ctx = this.mContext;
 
-    let canvasBounds = this.bounds.clone();
+      let data = this.gameObject.mData;
+      let text = this.gameObject.mText;
+      let canvasBounds = this.gameObject.onGetLocalBounds();
 
-    let prevCharCode = -1;
-    let cx = 0;
-    let cy = 0;
+      // remove dirty flag only after getting bounds
+      this.gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
 
-    if (this.dirty & DirtyFlag.RENDER_CACHE) {
+      let prevCharCode = -1;
+      let cx = 0;
+      let cy = 0;
+
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
 
-      for (let i = 0; i < this.text.length; i++) {
-        let charCode = this.text.charCodeAt(i);
+      for (let i = 0; i < text.length; i++) {
+        let charCode = text.charCodeAt(i);
 
-        if (/(?:\r\n|\r|\n)/.test(this.text.charAt(i))) {
+        if (/(?:\r\n|\r|\n)/.test(text.charAt(i))) {
           cx = 0;
-          cy += this.data.lineHeight * this.lineHeight;
+          cy += data.lineHeight * this.gameObject.mLineHeight;
           prevCharCode = -1;
           continue;
         }
 
-        let charData = this.data.chars[charCode];
+        let charData = data.chars[charCode];
 
         if (charData == null)
           continue;
@@ -100,21 +81,7 @@ class BitmapTextRenderer extends Renderer {
       if (this.texture === null)
         this.texture = new Texture(cvs);
       else
-        this.texture.set(cvs);
+        this.texture.set(cvs);      
     }
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getTransform() {
-    return this.transform;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get isRenderable() {
-    return this.text !== null;
   }
 }

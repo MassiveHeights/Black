@@ -229,7 +229,7 @@ class SoundInstance extends MessageDispatcher {
     if (this.mState !== SoundState.PAUSED) {
       this.mStartTime = 0;
       this.mState = SoundState.COMPLETED;
-      this.post('complete');
+      this.post(Message.COMPLETE);
     }
   }
 

@@ -3,33 +3,17 @@ const jsdoc2md = require('jsdoc-to-markdown');
 const fs = require('fs');
 const path = require('path');
 
-//const inputFile = 'src/**/*.js';
-const inputFile = 'src/**/*.js';
+const inputFile = 'src/test.js';
 const outputDir = __dirname;
 
-//const BASE_URL = 'http://blacksmith2d.io/Docs/API/';
 const BASE_URL = '/Docs/API/';
-
-const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/') + '/';
-//const OUTPUT_PATH_PREFIX = 'D:\\Projects\\Massive Heights\\blacksmith2d.io.web\\Blacksmith.Homepage\\App_Data\\tmp-docs-repo\\src\\API\\';
+//const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/') + '/';
+const OUTPUT_PATH_PREFIX = 'd:\\MassiveHeights.Blacksmith\\blacksmith2d.io\\Blacksmith.Homepage\\App_Data\\docs-2\\src\\API\\';
+var events = [];
 
 String.prototype.replaceAll = function (search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
-};
-
-function rmDir(dirPath) {
-  try { var files = fs.readdirSync(dirPath); }
-  catch (e) { return; }
-  if (files.length > 0)
-    for (var i = 0; i < files.length; i++) {
-      var filePath = dirPath + '/' + files[i];
-      if (fs.statSync(filePath).isFile())
-        fs.unlinkSync(filePath);
-      else
-        rmDir(filePath);
-    }
-  fs.rmdirSync(dirPath);
 };
 
 class Generator {
@@ -44,21 +28,14 @@ class Generator {
     let extendsString = this.renderExtends(item);
 
     text += `<h1><span style="color: #999">${kind}</span> ${item.identifier.name} ${extendsString}</h1>\n`;
-
     text += this.parseCodeTag(item.identifier.description) + '\n';
 
     if (item.identifier.kind === 'class') {
-      //text += this.renderExtends(item) + '\n';
-
-      text += this.renderMethodList(item, 'Methods', x => !x.inherited && x.scope !== 'static');
-      text += this.renderMethodList(item, 'Inherited methods', x => x.inherited === true && x.scope !== 'static');
-      text += this.renderMethodList(item, 'Static methods', x => x.scope === 'static');
-      text += this.renderPropertyList(item, 'Properties', x => !x.inherited && x.scope !== 'static');
-      text += this.renderPropertyList(item, 'Inherited properties', x => x.inherited === true && x.scope !== 'static');
-      text += this.renderPropertyList(item, 'Static properties', x => x.scope === 'static');
-
-      text += this.renderMethods(item);
-      text += this.renderProperties(item);
+      text += this.renderMethods(item, 'member');
+      text += this.renderMethods(item, 'inherited');
+      text += this.renderProperties(item, 'member');
+      text += this.renderProperties(item, 'inherited');
+      text += this.renderMessages(item);
     } else if (item.identifier.kind === 'enum') {
       text += this.renderEnum(item);
     }
@@ -77,7 +54,6 @@ class Generator {
 
     fs.writeFileSync(filepath, text);
   }
-
 
   renderExtends(item) {
     let id = item.identifier;
@@ -193,9 +169,10 @@ class Generator {
     return null;
   }
 
-
-  renderMethods(item) {
+  renderMethods(item, type) {
     let text = '';
+
+    let count = 0;
 
     this.data.forEach(x => {
       if (x.ignore)
@@ -213,45 +190,156 @@ class Generator {
         if (access == 'instance')
           access = '';
       }
+      let inherited = (x.inherited || x.override);
+
+      if (type === 'member' && inherited)
+        return;
+
+      if (type === 'inherited' && !inherited)
+        return;
 
       if (x.memberof == item.name && (x.kind == 'function' || x.kind == 'constructor')) {
         text += '\n<div class="method-info">\n';
         let name = x.name;
         let sscope = '';
-        let sabstract = '';
+        let scopes = [];
+        // if (x.scope && x.scope == 'static')
+        //   sscope = '<span class="method-static">static</span>';
+
+        // if (x.virtual === true && !x.inherited)
+        //   sscope = '<span class="method-static">abstract</span>';
+
+        // if (x.inherited)
+        //   sscope += '<span class="method-static">inherited</span>';
+
+        // if (x.override || x.overrides != null)
+        //   sscope += '<span class="method-static">overridden</span>';
 
         if (x.scope && x.scope == 'static')
-          sscope = '<span class="method-static">static</span>';
-
-        if (x.virtual === true && !x.inherited)
-          sabstract = '<span class="method-static">abstract</span>';
-
+          scopes.push('static');
         if (x.inherited)
-          text += '<span class="method-static">inherited</span>';
+          scopes.push('inherited');
+        else if (x.override)
+          scopes.push('overridden');
 
-        if (x.override || x.overrides != null)
-          text += '<span class="method-static">overridden</span>';
+        sscope = '<span class="method-static">' + scopes.join(' ') + '</span>';
 
+        let anchor = x.longname.replace(/#/g, '.');
         if (x.kind == 'constructor') {
           let skind = '<span class="id-kind-method">constructor</span>';
-          text += `<a name="${name}"></a>\n<h3>new ${sscope}${name}(${this.genParams(x)}) ${skind}</h3>\n`;
+          text += `<span class="id-name"><a name="${anchor}" href="#${anchor}" class="id-href">${sscope}${name}</a>(${this.genParams(x)}) ${skind}</span><br />\n`;
         }
         else {
           let skind = '<span class="id-kind-method">method</span>';
-          text += `<a name="${name}"></a>\n<h3>${sscope}${name}(${this.genParams(x)}) ${skind}</h3>\n`;
+          let btn = ``;
+
+          if (x.params.length > 0)
+            btn = `<div class="expand"></div>`;
+          text += `<span class="id-name"><a name="${anchor}" href="#${anchor}" class="id-href">${name}</a>(${this.genParams(x)}) ${sscope} ${skind}</span>${btn}<br />\n`;
         }
 
         text += `${this.getDesc(x)}\n`;
 
-        //let pstr = this.genParamTypes(x);
-        text += '<br />\n';
-        //text += '#### Syntax\n';
-        text += `${this.renderParamsFull(item, x)}`;
-        text += this.renderReturn(item, x);
+        if (x.params.length > 0) {
+          text += '<div class="method-details">';
+          text += '<br />\n';
+          text += `${this.renderParamsFull(item, x)}`;
+          text += this.renderReturn(item, x);
+          text += '\n</div>\n';
+        }
+
         text += '\n</div>\n';
+        count++;
       }
     });
 
+    if (count > 0) {
+      if (type === 'member')
+        text = `<h2>Methods</h2>` + text;
+      else
+        text = `<h2>Inherited Methods</h2>` + text;
+    }
+
+    return text;
+  }
+
+  renderMessages(item) {
+    if (!item.identifier.fires)
+      return '';
+
+    if (item.identifier.fires.length === 0)
+      return '';
+
+    let text = '';
+    text = `<h2>Messages</h2>`;
+
+    if (item.identifier.fires) {
+      item.identifier.fires.forEach(x => {
+        const result = events.find(e => e.id === x);
+        if (!result)
+          return;
+
+        let skind = '<span class="id-kind-method">message</span>';
+
+        let name = result.name;
+        let anchor = result.longname.replace(/#/g, '.');
+
+        text += '\n<div class="method-info">\n';
+        text += `<span class="id-name"><a name="${anchor}" href="#${anchor}" class="id-href">${name}</a> ${skind}</span><br />\n`;
+        text += `${this.getDesc(result)}<br />\n`;
+
+        text += '</div>';
+      })
+    }
+
+
+    return text;
+  }
+
+  renderParamsFull(classItem, item) {
+    let access = item.access;
+    if (!access)
+      access = 'public';
+
+    if (item.params.length == 0)
+      return '';
+
+    let text = '<span class="span-params">Parameters</span><br />';
+    text += `<div class="params">`;
+
+    for (let i = 0; i < item.params.length; i++) {
+      let element = item.params[i];
+
+      if (!element.type) {
+        text += `${element.name} <br />`;
+        console.log('no type for: ' + element.name);
+        continue;
+      }
+
+
+      let typeName = '';
+      for (let k = 0; k < element.type.names.length; k++) {
+        let type = element.type.names[k];
+
+        typeName += `${type.replace('<', '&lt').replace('>', '&gt')}`;
+        if (k != element.type.names.length - 1)
+          typeName += ' | ';
+      }
+
+      let required = element.optional != null && element.optional == true ? 'false' : 'true';
+      let def = element.defaultvalue != null ? element.defaultvalue : '-';
+
+      text += `<span class="param-name">${element.name} : ${this.renderType(classItem, typeName)}</span>`;
+      let desc = this.getDesc(element);
+      if (desc.length > 0)
+        text += `— ${desc} <br />\n`;
+
+      //text += '</tr>\n';
+    }
+
+    text += `</div>`;
+
+    //text += '</table>\n';
     return text;
   }
 
@@ -264,8 +352,8 @@ class Generator {
     if (item.returns.length == 0)
       return '';
 
-    let str = item.kind === 'member' ? 'Type:' : 'Returns:';
-    text += `<span class="doc-returns">${str}</span> <span class="doc-returns-type">`;
+    let str = item.kind === 'member' ? 'Type:' : 'Returns';
+    text += `<span class="doc-returns">${str}</span><br /> <span class="doc-returns-type">`;
 
     var r = item.returns[0];
 
@@ -286,8 +374,10 @@ class Generator {
     return text;
   }
 
-  renderProperties(item) {
+  renderProperties(item, type = 'member') {
     let text = '';
+    let count = 0;
+
     let skind = '<span class="id-kind-property">property</span>';
 
     this.data.forEach(x => {
@@ -309,35 +399,76 @@ class Generator {
       }
 
       if (x.memberof == item.name && (x.kind == 'member' || x.kind == 'constant')) {
+        let inherited = (x.inherited || x.override);
+
+        if (type === 'member' && inherited)
+          return;
+
+        if (type === 'inherited' && !inherited)
+          return;
 
         text += '\n<div class="method-info">\n';
         let name = x.name;
 
         let sscope = '';
+        let scopes = [];
 
         if (x.scope && x.scope == 'static')
-          sscope = '<span class="method-static">static</span>';
-
+          scopes.push('static');
         if (x.inherited)
-          text += '<span class="method-static">inherited</span>';
+          scopes.push('inherited');
+        else if (x.override)
+          scopes.push('overridden');
 
-        if (x.override)
-          text += '<span class="method-static">overridden</span>';
+        sscope = '<span class="method-static">' + scopes.join(' ') + '</span>';
+        let typeString = '';
 
-        text += `<a name="${name}"></a>\n<h3>${sscope}${name} ${skind}</h3>\n`;
+        if (x.returns) {
+          let typesCount = 0;
 
+          for (let ii = 0; ii < x.returns.length; ii++) {
+            var r = x.returns[ii];
+
+            for (var k = 0; k < r.type.names.length; k++) {
+              var element = r.type.names[k];
+
+              typeString += this.renderType(x, element);
+
+              if (k != r.type.names.length - 1) {
+                typeString += ' | ';
+                typesCount++;
+              }
+            }
+          }
+
+          if (typesCount > 0) {
+            //typeString = '(' + typeString+ ')';
+          }
+
+          if (typeString.length > 0)
+            typeString = ' : ' + typeString;
+        }
+
+        let anchor = x.longname.replace(/#/g, '.');
+        text += `<span class="id-name"><a name="${anchor}" href="#${anchor}" class="id-href">${name}</a> ${typeString} ${sscope} ${skind}</span><br />\n`;
         text += `${this.getDesc(x)}<br />\n`;
 
-        text += this.renderReturn(item, x);
-
         text += '\n</div>\n';
+        count++;
       }
     });
+
+    if (count > 0) {
+      if (type === 'member')
+        text = `<h2>Properties</h2>` + text;
+      else
+        text = `<h2>Inherited Properties</h2>` + text;
+    }
 
     return text;
   }
 
-  renderParamsFull(classItem, item) {
+  renderParamsFull2(classItem, item) {
     let access = item.access;
     if (!access)
       access = 'public';
@@ -433,87 +564,6 @@ class Generator {
     }
 
     return null;
-  }
-
-  renderMethodList(item, title, selector) {
-    let text = '';
-
-    this.data.forEach(x => {
-      if (x.ignore)
-        return;
-
-      if (!selector(x))
-        return;
-
-      var access = '';
-
-      if (x.access) {
-        if (x.access != 'public' && x.access != 'protected' && x.access != 'static')
-          return;
-      } else {
-        if (x.scope)
-          access = x.scope;
-
-        if (access == 'instance')
-          access = '';
-      }
-
-      if (x.memberof == item.name && (x.kind == 'function' || x.kind == 'constructor')) {
-        let name = x.name;
-        let pstr = this.genParamTypes(x);
-
-        if (x.kind == 'constructor')
-          text += `<a href="#${name}" class="method-name">constructor</a>`;
-        else
-          text += `<a href="#${name}" class="method-name">${name}</a>`;
-      }
-    });
-
-    if (text.length) {
-      text = `<h2>${title}</h2>` + text;
-    }
-
-    return text;
-  }
-
-
-  renderPropertyList(item, title, selector) {
-    let text = '';
-
-    this.data.forEach(x => {
-      if (x.ignore)
-        return;
-
-      if (!selector(x))
-        return;
-
-      var access = '';
-
-      if (x.access) {
-        //if (x.access != 'public' && x.access != 'protected' && x.access != 'static')
-        if (x.access != 'public' && x.access != 'static')
-          return;
-      } else {
-        if (x.scope)
-          access = x.scope;
-
-        if (access == 'instance')
-          access = '';
-      }
-
-      if (x.memberof == item.name && (x.kind == 'member' || x.kind == 'constant')) {
-        let name = x.name;
-
-        text += `<a href="#${name}" class="method-name">${name}</a>`;
-        //text += '| ' + access + ' ' + this.renderHref(x, name) + ' | ' + this.getShortDesc(x) + ' |\n';
-      }
-    });
-
-    if (text.length) {
-      text = `<h2>${title}</h2>` + text;
-    }
-
-    return text;
   }
 
   getDesc(item, isEnum = false) {
@@ -645,6 +695,9 @@ const classNames = [];
 for (let i = 0; i < templateData.length; i++) {
   let identifier = templateData[i];
   let cat = null;
+
+  if (identifier.kind === 'event')
+    events.push(identifier);
 
   if (identifier.kind === 'class' || identifier.kind === 'enum') {
     if (identifier.customTags && identifier.customTags.length) {

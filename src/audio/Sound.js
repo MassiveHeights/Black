@@ -6,7 +6,6 @@
  */
 /* @echo EXPORT */
 class Sound extends Component {
-
   /**
    * Creates new instance of SoundComponent.
    * 
@@ -38,6 +37,9 @@ class Sound extends Component {
 
     /** @private @type {boolean} */
     this.mSpatialEffect = spatialEffect;
+
+    /** @private @type {string} */
+    this.mChannelName = channel;
   }
 
   /**
@@ -52,8 +54,8 @@ class Sound extends Component {
   play(volume = 1, loop = false, overwrite = false) {
     overwrite && this.mSoundInstance && this.stop();
     if (!this.mSoundInstance || overwrite) {
-      this.mSoundInstance = this.mSoundClip.play('master', volume, loop);
-      this.mCompleteBinding = this.mSoundInstance.on('complete', this.__onSoundComplete, this);
+      this.mSoundInstance = this.mSoundClip.play(this.mChannelName, volume, loop);
+      this.mCompleteBinding = this.mSoundInstance.on(Message.COMPLETE, this.__onSoundComplete, this);
       this.spatialEffect = this.mSpatialEffect;
     }
     return this.mSoundInstance;
@@ -103,7 +105,7 @@ class Sound extends Component {
   /**
    * @inheritDoc
    */
-  onPostUpdate(dt) {
+  onUpdate() {
     if (this.mSpatialEffect && this.mSoundInstance != null && this.mSoundInstance.isPlaying === true) {
       const stage = Black.stage;
       const pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));

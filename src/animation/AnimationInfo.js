@@ -105,7 +105,7 @@ class AnimationInfo {
     this.mStopped = false;
     this.mCompleted = false;
 
-    this.mNextFrameAt = Black.instance.uptime + this.mFrameDuration - this.mElapsed;
+    this.mNextFrameAt = Time.now + this.mFrameDuration - this.mElapsed;
     this.mElapsed = 0;
 
     return this.mFrames[this.mCurrentFrame];
@@ -130,16 +130,17 @@ class AnimationInfo {
    */
   __pause() {
     this.mPaused = true;
-    this.mElapsed = this.mNextFrameAt - Black.instance.uptime;
+    this.mElapsed = this.mNextFrameAt - Time.now;
   }
 
   /**
    * @ignore
-   * @param {number} dt
-   * @param {number} t
    * @return {Texture|null}
    */
-  __update(dt, t) {
+  __update() {
+    let t = Time.now;
+    let dt = Time.dt;
+    
     if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
       return null;
 
@@ -150,13 +151,13 @@ class AnimationInfo {
         this.mCurrentFrame = 0;
       } else {
         this.mCurrentFrame = this.mFrames.length - 1;
-        this.mController.post('complete', this);
+        this.mController.post(Message.COMPLETE, this);
         this.mCompleted = true;
         return null;
       }
     }
 
-    this.mNextFrameAt = Black.instance.uptime + this.mFrameDuration;
+    this.mNextFrameAt = Time.now + this.mFrameDuration;
     return this.mFrames[this.mCurrentFrame];
   }
 
@@ -181,7 +182,7 @@ class AnimationInfo {
     this.mFrameDuration = 1 / this.mFPS;
 
     // update next frame start time
-    this.mNextFrameAt += this.mNextFrameAt - Black.instance.uptime;
+    this.mNextFrameAt += this.mNextFrameAt - Time.now;
   }
 
   /**

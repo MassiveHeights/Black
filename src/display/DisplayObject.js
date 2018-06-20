@@ -41,6 +41,9 @@ class DisplayObject extends GameObject {
 
     /** @protected @type {?number} */
     this.mColor = null;
+
+    /** @protected @type {boolean} */
+    this.mSnapToPixels = false;
   }
 
   /**
@@ -49,7 +52,7 @@ class DisplayObject extends GameObject {
    * @returns {Renderer}
    */
   getRenderer() {
-    return Black.driver.getRenderer('DisplayObject');
+    return Black.driver.getRenderer('DisplayObject', this);
   }
 
   /**
@@ -134,7 +137,7 @@ class DisplayObject extends GameObject {
   /**
   * @inheritDoc
   */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     let renderer = this.mRenderer;
 
     if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
@@ -400,5 +403,13 @@ class DisplayObject extends GameObject {
   set clipRect(value) {
     this.mClipRect = value;
     this.setRenderDirty();
+  }
+
+  get snapToPixels() {
+    return this.mSnapToPixels;
+  }
+
+  set snapToPixels(value) {
+    this.mSnapToPixels = value;
   }
 }

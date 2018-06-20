@@ -75,7 +75,7 @@ class Stage extends GameObject {
   /**
    * @inheritDoc
    */
-  onUpdate(dt) {
+  onUpdate() {
     let size = Black.instance.viewport.size;
 
     if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
