@@ -47,6 +47,17 @@ class DisplayObject extends GameObject {
   }
 
   /**
+   * Called at the end of the loop, all renderers are already collected and this object and its children will be
+   * rendered. Should be used to interpolate between last and current state. 
+   * 
+   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
+   * 
+   * @protected
+   * @return {void}
+   */
+  onRender() { }
+
+  /**
    * Factory method returns concrete renderer for this Game Object.
    * 
    * @returns {Renderer}
