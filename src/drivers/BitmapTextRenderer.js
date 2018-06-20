@@ -25,7 +25,7 @@ class BitmapTextRenderer extends Renderer {
   /**
    * @inheritDoc
    */
-  render(driver) {
+  render() {
     if (this.gameObject.mText === null)
       return;
 
@@ -37,7 +37,7 @@ class BitmapTextRenderer extends Renderer {
       let text = this.gameObject.mText;
       let canvasBounds = this.gameObject.onGetLocalBounds();
 
-      // remove dirty flag only after onGetLocalBounds
+      // remove dirty flag only after getting bounds
       this.gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
 
       let prevCharCode = -1;
@@ -83,16 +83,5 @@ class BitmapTextRenderer extends Renderer {
       else
         this.texture.set(cvs);      
     }
-  }
-
-  getTexture() {
-    return this.texture;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get isRenderable() {
-    return this.gameObject.mText !== null;
   }
 }

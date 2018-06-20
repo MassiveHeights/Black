@@ -74,7 +74,7 @@ class TextField extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Text');
+    return Black.driver.getRenderer('Text', this);
   }
 
   /**

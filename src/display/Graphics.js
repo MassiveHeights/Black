@@ -33,7 +33,7 @@ class Graphics extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Graphics');
+    return Black.driver.getRenderer('Graphics', this);
   }
 
   /**

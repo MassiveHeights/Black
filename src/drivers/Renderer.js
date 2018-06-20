@@ -15,26 +15,16 @@ class Renderer {
     /** @type {Renderer|null} */
     this.parent = null;
 
-    /**
-     * Indicates whenever driver should skip rendering of this object.
-     * @type {boolean}
-     */
-    this.skip = false;
-
-    /**
-     * Optional clipping area.
-     * @type {Rectangle}
-     */
-    this.clipRect = null;
-
-    /** @ignore @type {number} */
-    this.endPassRequiredAt = -1;
-
-    /** @ignore @type {boolean} */
-    this.endPassRequired = false;
-
     /** @ignore @type {boolean} */
     this.skipChildren = false;
+    this.skipSelf = false;
+
+    this.endPassRequiredAt = -1;
+    this.endPassRequired = false;
+
+    this.alpha = 1;
+    this.blendMode = BlendMode.NORMAL;
+    this.color = null;
   }
 
   /**
@@ -44,114 +34,54 @@ class Renderer {
    * @param {boolean} isBackBufferActive
    * @returns {void}
    */
-  preRender(driver, isBackBufferActive) { }
+  preRender(driver, isBackBufferActive) {
+    this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
+  }
+
+  begin(driver, isBackBufferActive, customTransform = null) {
+    this.alpha = this.gameObject.mAlpha * this.parent.alpha;
+    this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
+    this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
+  }
+
+  upload(driver, isBackBufferActive, customTransform = null) {
+    let transform = this.gameObject.worldTransformation;
+
+    if (isBackBufferActive === false) {
+      if (customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(customTransform);
+      }
+    }
+
+    driver.setTransform(transform);
+    driver.setGlobalAlpha(this.alpha);
+    driver.setGlobalBlendMode(this.blendMode);
+
+    if (this.endPassRequired === true)
+      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
+  }
 
   /**
    * Called when this renderer needs to be rendered.
    *
    * @param {VideoNullDriver} driver Active video driver.
    * @param {boolean} isBackBufferActive
+   * @param {Matrix|null} customTransform
    * @returns {void}
    */
-  render(driver, isBackBufferActive) { }
-
-
-  /**
-   * Returns true if renderer has something to render.
-   * @returns {boolean} Returns true if renderer has something to render otherwise false.
-   */
-  get hasVisibleArea() {
-    return this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true && (this.gameObject.mClipRect !== null ? this.gameObject.mClipRect.isEmpty === false : true);
+  render(driver, isBackBufferActive, customTransform = null) {
   }
 
-  /**
-   * Returns true if this renderer can be rendered.
-   *
-   * @returns {boolean} True if can be rendered otherwise false.
-   */
-  get isRenderable() {
-    return this.gameObject.mTexture !== null;
-  }
+  end(driver) {
+    driver.endClip();
 
-  /**
-   * @returns {Texture|null}
-   */
-  getTexture() {
-    return null;
-  }
-
-  /**
-   * Returns current transformation. Useful when you need to return custom transformation.
-   *
-   * @returns {Matrix} Current transformation.
-   */
-  getTransform() {
-    return this.gameObject.worldTransformation;
-  }
-
-  /**
-   * Returns world alpha.
-   * @returns {number} Current world alpha.
-   */
-  getAlpha() {
-    if (this.gameObject !== null)
-      return this.gameObject.mAlpha;
-
-    return 1;
-  }
-
-  /**
-   * Returns world blend mode.
-   * @returns {BlendMode} Current world blend mode.
-   */
-  getBlendMode() {
-    if (this.gameObject !== null)
-      return this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.getBlendMode() : this.gameObject.mBlendMode;
-
-    return BlendMode.NORMAL;
-  }
-
-  /**
-   * Returns GameObject's tinting color.
-   * @returns {number|null}
-   */
-  getColor() {
-    if (this.gameObject !== null)
-      return this.gameObject.mColor === null ? this.parent.getColor() : this.gameObject.mColor;
-
-    return null;
-  }
-
-  /**
-   * Returns GameObject's pivotX.
-   * @returns {number}
-   */
-  getPivotX() {
-    return this.gameObject.mPivotX;
-  }
-
-  /**
-   * Returns GameObject's pivotY.
-   * @returns {number}
-   */
-  getPivotY() {
-    return this.gameObject.mPivotY;
-  }
-
-  /**
-   * Returns GameObject's clipping rect or null.
-   * @returns {Rectangle|null}
-   */
-  getClipRect() {
-    return this.gameObject.mClipRect;
-  }
-
-  /**
-   * Returns GameObject's snapToPixels property value.
-   * @returns {boolean}
-   */
-  getSnapToPixels() {
-    return this.gameObject.snapToPixels;
+    this.endPassRequiredAt = -1;
+    this.endPassRequired = false;
   }
 
   /**

@@ -106,6 +106,9 @@ class Black extends MessageDispatcher {
     /** @private @type {SplashScreen} */
     this.mSplashScreen = new SplashScreen();
 
+    /** @private @type {Array<number>} */
+    this.mFrameTimes = [];
+
     this.__bootViewport();
 
     this.__update = this.__update.bind(this);
@@ -304,6 +307,13 @@ class Black extends MessageDispatcher {
    * @return {void}
    */
   __update(timestamp, forceUpdate) {
+    // Calculate FPS
+    while (this.mFrameTimes.length > 0 && this.mFrameTimes[0] <= timestamp - 1000)
+      this.mFrameTimes.shift();
+
+    this.mFrameTimes.push(timestamp);
+    Black.FPS = this.mFrameTimes.length;
+
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = false;
 
@@ -313,22 +323,19 @@ class Black extends MessageDispatcher {
       this.__setUnpaused();
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(this.__update);
-
     if (this.mPaused === true)
       return;
 
-    const maxNumUpdates = 10;
     let numTicks = Math.floor((timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs);
 
     if (forceUpdate === true)
       numTicks = 1;
 
-    if (numTicks > maxNumUpdates) {
+    if (numTicks > Black.maxUpdatesPerFrame) {
       this.post('loop', numTicks);
       Debug.warn(`Unable to catch up ${numTicks} update(s).`);
 
-      numTicks = maxNumUpdates;
+      numTicks = Black.maxUpdatesPerFrame;
     }
 
     Black.mUpdateTime = performance.now();
@@ -366,6 +373,8 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
+
+    this.mRAFHandle = window.requestAnimationFrame(this.__update);
   }
 
   /**
@@ -724,3 +733,5 @@ Black.numUpdates = 0;
 
 Black.mUpdateTime = 0;
 Black.mRenderTime = 0;
+Black.FPS = 0;
+Black.maxUpdatesPerFrame = 60;

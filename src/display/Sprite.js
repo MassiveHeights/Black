@@ -32,7 +32,7 @@ class Sprite extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Sprite');
+    return Black.driver.getRenderer('Sprite', this);
   }
 
   /**

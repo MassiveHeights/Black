@@ -52,7 +52,7 @@ class DisplayObject extends GameObject {
    * @returns {Renderer}
    */
   getRenderer() {
-    return Black.driver.getRenderer('DisplayObject');
+    return Black.driver.getRenderer('DisplayObject', this);
   }
 
   /**

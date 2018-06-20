@@ -86,7 +86,7 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Emitter');
+    return Black.driver.getRenderer('Emitter', this);
   }
 
   /**

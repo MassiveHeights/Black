@@ -20,12 +20,12 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** @private @type {Rectangle|null} */
     this.mCacheBounds = null;
-
-    this.mTransform = null;
   }
 
-  preRender(driver, isBackBufferActive) {
-    if (this.gameObject.mCacheAsBitmap === true && isBackBufferActive === true) {
+  preRender(driver) {
+    super.preRender(driver);
+
+    if (this.gameObject.mCacheAsBitmap === true) {
       let isStatic = this.gameObject.checkStatic(true);
       if (isStatic === true && this.mCacheAsBitmapDirty === true) {
         this.gameObject.setTransformDirty();
@@ -37,18 +37,46 @@ class DisplayObjectRendererCanvas extends Renderer {
       }
     }
 
+    this.skipChildren = this.gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false;
+    this.skipSelf = false;
+  }
+
+  begin(driver, isBackBufferActive, customTransform = null) {
     if (this.gameObject.mCacheAsBitmap === true && isBackBufferActive === true && this.mCacheAsBitmapDirty === false) {
-      this.mTransform = this.mCacheAsBitmapMatrixCache;
-      this.skipChildren = true;
+      this.alpha = 1;
+      this.blendMode = BlendMode.NORMAL;
+      this.color = null;
     }
     else {
-      this.mTransform = this.gameObject.worldTransformation;
-      this.skipChildren = false;
+      this.alpha = this.gameObject.mAlpha * this.parent.alpha;
+      this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
+      this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
     }
   }
 
-  getTransform() {
-    return this.mTransform;
+  upload(driver, isBackBufferActive, customTransform = null) {
+    let transform = this.gameObject.worldTransformation;
+
+    if (this.gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false)
+      transform = this.mCacheAsBitmapMatrixCache;
+
+    if (isBackBufferActive === false) {
+      if (customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(customTransform);
+      }
+    }
+
+    driver.setTransform(transform);
+    driver.setGlobalAlpha(this.alpha);
+    driver.setGlobalBlendMode(this.blendMode);
+
+    if (this.endPassRequired === true)
+      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
   }
 
   /**
@@ -68,9 +96,9 @@ class DisplayObjectRendererCanvas extends Renderer {
     let m = Matrix.pool.get();
     m.set(1, 0, 0, 1, ~~(-bounds.x * sf - Black.stage.mX), ~~(-bounds.y * sf - Black.stage.mY));
 
-    if (this.getClipRect() !== null && this.getClipRect().isEmpty === false) {
-      m.data[4] += this.pivotX * sf;
-      m.data[5] += this.pivotY * sf;
+    if (this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false) {
+      m.data[4] += this.gameObject.mPivotX * sf;
+      m.data[5] += this.gameObject.mPivotY * sf;
     }
 
     if (this.mCacheBounds === null)

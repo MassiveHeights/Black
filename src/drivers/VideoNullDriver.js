@@ -55,8 +55,8 @@ class VideoNullDriver {
 
     /** @protected @type {Renderer} */
     this.mStageRenderer = new Renderer();
-    this.mStageRenderer.alpha = 1;
-    this.mStageRenderer.blendMode = BlendMode.NORMAL;
+    // this.mStageRenderer.alpha = 1;
+    // this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
     /** @protected @type {Object.<string, function(new: Renderer)>} */
     this.mRendererMap = {};
@@ -77,38 +77,17 @@ class VideoNullDriver {
   }
 
   /**
-   * The scale factor of stage multiplied by DPR multiplied by render resolution.
-   *
-   * @returns {number}
-   */
-  get finalScale() {
-    return this.mDPR * Black.stage.scaleFactor;
-  }
-
-  get renderScaleFactor() {
-    return this.mDevicePixelRatio;
-  }
-
-  /**
    * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
    *
-   * @param {string} type The type of the GameObject to find renderer for.
+   * @param {string} type      The type of the GameObject to find renderer for.
+   * @param {GameObject} owner The owner of this renderer.
    * @returns {Renderer} New renderer instance.
    */
-  getRenderer(type) {
-    return new this.mRendererMap[type]();
-  }
+  getRenderer(type, owner) {
+    let renderer = new this.mRendererMap[type]();
+    renderer.gameObject = owner;
 
-  /**
-   * A factory method - returns new instance of RenderTarget depending on driver type.
-   *
-   * @param {number} width  The width of render target.
-   * @param {number} height The height of render target.
-   * @returns {RenderTarget|null} New instance of just created RenderTarget.
-   */
-  getRenderTarget(width, height) {
-    Debug.error('Abstract method');
-    return null;
+    return renderer;
   }
 
   /**
@@ -143,43 +122,27 @@ class VideoNullDriver {
    * @param {Renderer} parentRenderer
    * @param {boolean} isBackBufferActive
    */
-  __collectRenderables(session, gameObject, parentRenderer, isBackBufferActive) {
-    let renderer = null; //gameObject.onCollectRenderables(this, parentRenderer, isBackBufferActive);
+  __collectRenderers(session, gameObject, parentRenderer, isBackBufferActive) {
+    let renderer = null;
+
     if (gameObject.mRenderer != null) {
-      renderer = gameObject.mRenderer;      
-      renderer.gameObject = gameObject;
+      renderer = gameObject.mRenderer;
       renderer.parent = parentRenderer;
-
       renderer.preRender(this, isBackBufferActive);
-
-      if (renderer.hasVisibleArea === false) {
-        session.skipChildren = true;
-        return;
-      }
 
       session.renderers.push(renderer);
 
-      if (renderer.getClipRect() !== null)
-        renderer.endPassRequired = true;
-
-      parentRenderer = renderer;
-      session.rendererIndex++;
-
       if (renderer.skipChildren === true)
         return;
+
+      parentRenderer = renderer;
     }
 
-    if (session.skipChildren === true) {
-      session.skipChildren = false;
-      return;
-    }
-
-    const len = gameObject.numChildren;
-    for (let i = 0; i < len; i++)
-      this.__collectRenderables(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
+    for (let i = 0; i < gameObject.numChildren; i++)
+      this.__collectRenderers(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
 
     if (renderer !== null && renderer.endPassRequired === true)
-      renderer.endPassRequiredAt = session.rendererIndex - 1;
+      renderer.endPassRequiredAt = session.renderers.length - 1;
   }
 
   /**
@@ -188,46 +151,34 @@ class VideoNullDriver {
    * @param {RenderSession} session
    * @param {GameObject} gameObject
    * @param {Renderer} parentRenderer
-   * @returns {number}
+   * @returns {void}
    */
   __collectParentRenderables(session, gameObject, parentRenderer) {
-    // parents needed to make sure that game object is visible, world alpha > 0 etc
-    // but parents should not be rendered
-    let numClippedParents = 0;
-
     let current = gameObject;
     if (current === null)
-      return numClippedParents;
+      return;
 
     let parents = [];
-
-    // TODO: one line parent gathering 
     for (current = current.parent; current !== null; current = current.parent)
       parents.splice(0, 0, current);
 
     for (let i = 0; i < parents.length; i++) {
-      let parent = parents[i];
+      current = parents[i];
 
-      let oldDirty = parent.mDirty;
-      let renderer = parent.mRenderer;      
+      let renderer = current.mRenderer;
 
-      parent.mDirty = oldDirty;
+      if (renderer == null)
+        continue;
 
-      if (renderer != null) {
-        renderer.skip = true;
+      session.parentRenderers.push(renderer);
+      renderer.parent = parentRenderer;
+      parentRenderer = renderer;
 
-        if (renderer.clipRect !== null)
-          numClippedParents++;
+      renderer.preRender(this, false);
 
-        parentRenderer.alpha = renderer.alpha;
-        parentRenderer.blendMode = renderer.blendMode;
-      }
-
-      if (session.skipChildren === true)
-        return numClippedParents;
+      if (renderer.endPassRequired === true)
+        session.endPassParentRenderers.push(renderer);
     }
-
-    return numClippedParents;
   }
 
   /**
@@ -387,6 +338,19 @@ class VideoNullDriver {
    */
   get context() {
     return null;
+  }
+
+  /**
+   * The scale factor of stage multiplied by DPR multiplied by render resolution.
+   *
+   * @returns {number}
+   */
+  get finalScale() {
+    return this.mDPR * Black.stage.scaleFactor;
+  }
+
+  get renderScaleFactor() {
+    return this.mDevicePixelRatio;
   }
 }
 

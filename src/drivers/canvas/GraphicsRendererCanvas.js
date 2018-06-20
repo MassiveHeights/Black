@@ -109,13 +109,4 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
 
     ctx.restore();
   }
-
-  /**
-   * Returns true if this renderer can be rendered.
-   *
-   * @returns {boolean} True if can be rendered otherwise false.
-   */
-  get isRenderable() {
-    return this.gameObject.mCommandQueue.length > 0;
-  }
 }

@@ -10,24 +10,16 @@ class RenderSession {
    */
   constructor() {
     /** @type {Array<Renderer>} */
-    this.renderers = [];
+    this.parentRenderers = [];
 
-    /** @type {boolean} */
-    this.skipChildren = false;
+    /** @type {Array<Renderer>} */
+    this.renderers = [];
 
     /** @type {Array<Renderer>} */
     this.endPassRenderers = [];
 
-    /** @type {number} */
-    this.rendererIndex = 0;
-  }
-
-  /**
-   * Clears all pending instructions.
-   */
-  clear() {
-    this.renderers.splice(0, this.renderers.length);
-    this.endPassRenderers.splice(0, this.endPassRenderers.length);
+    /** @type {Array<Renderer>} */
+    this.endPassParentRenderers = [];
   }
 
   /**
@@ -35,8 +27,8 @@ class RenderSession {
    */
   reset() {
     this.renderers.splice(0, this.renderers.length);
+    this.parentRenderers.splice(0, this.parentRenderers.length);
     this.endPassRenderers.splice(0, this.endPassRenderers.length);
-    this.rendererIndex = 0;
-    this.skipChildren = false;
+    this.endPassParentRenderers.splice(0, this.endPassParentRenderers.length);
   }
 }

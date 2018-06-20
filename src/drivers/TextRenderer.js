@@ -30,6 +30,11 @@ class TextRenderer extends Renderer {
     this.mContext.miterLimit = 2;
   }
 
+  preRender(driver, isBackBufferActive) {
+    this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true);
+    this.skipSelf = false;
+  }
+
   /**
    * @ignore
    * @private
@@ -66,6 +71,35 @@ class TextRenderer extends Renderer {
       ctx.strokeText(segment.text, lx, ly);
     else
       ctx.fillText(segment.text, lx, ly);
+  }
+
+  upload(driver, isBackBufferActive, customTransform = null) {
+    let transform = this.mTransformCache;
+
+    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      this.gameObject.onGetLocalBounds();
+
+      this.metrics = this.gameObject.mMetrics;
+      this.updateTransform();
+    }
+
+    if (isBackBufferActive === false) {
+      if (customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(customTransform);
+      }
+    }
+
+    driver.setTransform(transform);
+    driver.setGlobalAlpha(this.alpha);
+    driver.setGlobalBlendMode(this.blendMode);
+
+    if (this.endPassRequired === true)
+      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
   }
 
   render(driver) {
@@ -117,61 +151,40 @@ class TextRenderer extends Renderer {
     }
   }
 
-  getTexture() {
-    return this.texture;
-  }
-
   /**
    * @inheritDoc
    */
-  getTransform() {
-    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
-      this.gameObject.onGetLocalBounds();
-      this.metrics = this.gameObject.mMetrics;
-    
-      let transform = this.gameObject.worldTransformation;
+  updateTransform() {
+    let transform = this.gameObject.worldTransformation;
 
-      let fieldXOffset = 0;
-      let fieldYOffset = 0;
+    let fieldXOffset = 0;
+    let fieldYOffset = 0;
 
-      let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
-      let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
+    let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
+    let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
 
-      const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
+    const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
 
-      if (this.gameObject.mAutoSize === false) {
-        if (this.gameObject.align === 'center')
-          fieldXOffset = (this.gameObject.mFieldWidth - this.metrics.bounds.width) * 0.5;
-        else if (this.gameObject.align === 'right')
-          fieldXOffset = this.gameObject.mFieldWidth - this.metrics.bounds.width;
+    if (this.gameObject.mAutoSize === false) {
+      if (this.gameObject.align === 'center')
+        fieldXOffset = (this.gameObject.mFieldWidth - this.metrics.bounds.width) * 0.5;
+      else if (this.gameObject.align === 'right')
+        fieldXOffset = this.gameObject.mFieldWidth - this.metrics.bounds.width;
 
-        if (this.gameObject.mVerticalAlign === 'middle')
-          fieldYOffset = (this.gameObject.mFieldHeight - this.metrics.bounds.height) * 0.5;
-        else if (this.gameObject.mVerticalAlign === 'bottom')
-          fieldYOffset = this.gameObject.mFieldHeight - this.metrics.bounds.height;
-      }
-
-      if (hasFilter === true || this.gameObject.mAutoSize === false) {
-        transform.copyTo(this.mTransformCache);
-        this.mTransformCache.translate((filterOffsetX + fieldXOffset) - this.gameObject.padding.x, (filterOffsetY + fieldYOffset) - this.gameObject.padding.y);
-        return this.mTransformCache;
-      } else if (this.gameObject.padding.isEmpty === false) {
-        transform.copyTo(this.mTransformCache);
-        this.mTransformCache.translate(-this.gameObject.padding.x, -this.gameObject.padding.y);
-        return this.mTransformCache;
-      } else {
-        this.mTransformCache = transform;
-        return transform;
-      }
+      if (this.gameObject.mVerticalAlign === 'middle')
+        fieldYOffset = (this.gameObject.mFieldHeight - this.metrics.bounds.height) * 0.5;
+      else if (this.gameObject.mVerticalAlign === 'bottom')
+        fieldYOffset = this.gameObject.mFieldHeight - this.metrics.bounds.height;
     }
 
-    return this.mTransformCache;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get isRenderable() {
-    return this.gameObject.text !== null;
+    if (hasFilter === true || this.gameObject.mAutoSize === false) {
+      transform.copyTo(this.mTransformCache);
+      this.mTransformCache.translate((filterOffsetX + fieldXOffset) - this.gameObject.padding.x, (filterOffsetY + fieldYOffset) - this.gameObject.padding.y);
+    } else if (this.gameObject.padding.isEmpty === false) {
+      transform.copyTo(this.mTransformCache);
+      this.mTransformCache.translate(-this.gameObject.padding.x, -this.gameObject.padding.y);
+    } else {
+      this.mTransformCache = transform;
+    }
   }
 }

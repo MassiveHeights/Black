@@ -5,7 +5,7 @@
  * @cat drivers.canvas
  */
 /* @echo EXPORT */
-class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
+class EmitterRendererCanvas extends Renderer {
   /**
    * Creates new instance of EmitterRendererCanvas.
    */
@@ -25,9 +25,13 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
     this.__tmpWorld = new Matrix();
   }
 
-  /**
-   * @inheritDoc
-   */
+  /** @inheritDoc */
+  preRender() {
+    this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mTextures.length > 0 && this.gameObject.mVisible === true);
+    this.skipSelf = !(this.gameObject.mTextures.length > 0 && this.gameObject.mParticles.length > 0);
+  }
+
+  /** @inheritDoc */
   render(driver) {
     const plength = this.gameObject.mParticles.length;
 
@@ -35,7 +39,7 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
     let worldTransform = this.__tmpWorld;
     localTransform.identity();
 
-    if (this.sortOrder === EmitterSortOrder.FRONT_TO_BACK) {
+    if (this.gameObject.sortOrder === EmitterSortOrder.FRONT_TO_BACK) {
       for (let i = 0; i < plength; i++)
         this.__renderParticle(this.gameObject.mParticles[i], localTransform, worldTransform, driver);
     } else {
@@ -86,19 +90,5 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
     driver.setGlobalAlpha(this.gameObject.mAlpha * particle.alpha);
     driver.setTransform(worldTransform);
     driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? this.gameObject.mColor : particle.color));
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get hasVisibleArea() {
-    return this.gameObject.mAlpha > 0 && this.gameObject.mTextures.length > 0 && this.gameObject.mVisible === true;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get isRenderable() {
-    return this.gameObject.mTextures.length > 0 && this.gameObject.mParticles.length > 0;
   }
 }
