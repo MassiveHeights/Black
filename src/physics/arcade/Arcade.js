@@ -419,8 +419,11 @@ class Arcade extends System {
    * @inheritDoc
    */
   onRender() {
-    console.log(100500)
-    const alpha = Time.mAlphaTime;
+    // if (Black.numUpdates !== 0)
+    //   return;
+
+    const alpha = Black.instance.ups === 60 ? 1 : Time.mAlphaTime;
+    console.log(Black.instance.ups)
     const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
@@ -431,12 +434,24 @@ class Arcade extends System {
   /**
    * @inheritDoc
    */
-  onUpdate() {
-    const dt = Time.mDeltaTimeMs;
+  onPostUpdate() {
+    const dt = Time.delta;
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
+    const bodiesToAdd = this.mBodiesToAdd;
+    const collidersToAdd = this.mCollidersToAdd;
     contacts.length = 0;
+
+    while (bodiesToAdd.length !== 0) {
+      const body = bodiesToAdd.pop();
+      this.__addBody(body);
+    }
+
+    while (collidersToAdd.length !== 0) {
+      const collider = this.mCollidersToAdd.pop();
+      this.__addCollider(collider.gameObject, collider);
+    }
 
     // refresh body colliders if scale, rotation changed
     for (let i = 0, l = bodies.length; i < l; i++) {

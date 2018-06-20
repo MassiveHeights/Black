@@ -13,6 +13,11 @@ class RigidBody extends Component {
   constructor() {
     super();
 
+    this.globalPrev = new Vector();
+    this.globalRange = new Vector();
+
+    this.mPositionPrev = new Vector();
+
     /** @public @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
@@ -272,10 +277,8 @@ class RigidBody extends Component {
       wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
 
       // Update this position if game object position was changed during frame
-      if (Math.abs(cachedPosition.x - prevX) > 0.0001 || Math.abs(cachedPosition.y - prevY) > 0.0001) {
-        position.x += cachedPosition.x - prevX;
-        position.y += cachedPosition.y - prevY;
-      }
+      position.x += cachedPosition.x - prevX;
+      position.y += cachedPosition.y - prevY;
 
       const gameObjectPositionPrev = this.mGameObjectPositionPrev;
       const gameObjectTranslation = this.mGameObjectTranslation;
@@ -284,9 +287,6 @@ class RigidBody extends Component {
       gameObjectPositionPrev.y = gameObject.y;
 
       gameObject.parent.globalToLocal(this.mPosition, gameObjectTranslation);
-      gameObject.x = gameObjectTranslation.x;
-      gameObject.y = gameObjectTranslation.y;
-      gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
 
       gameObjectTranslation.x -= gameObjectPositionPrev.x;
       gameObjectTranslation.y -= gameObjectPositionPrev.y;
@@ -315,13 +315,16 @@ class RigidBody extends Component {
   renderUpdate(alpha) {
     const gameObject = this.gameObject;
 
-    if (gameObject === Black.stage) return;
+    if (gameObject === Black.stage)
+      return;
 
     const prev = this.mGameObjectPositionPrev;
     const range = this.mGameObjectTranslation;
 
     gameObject.x = prev.x + range.x * alpha;
     gameObject.y = prev.y + range.y * alpha;
+
+    gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, this.mCachedPosition);
   }
 
   /**
