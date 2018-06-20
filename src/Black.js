@@ -345,7 +345,7 @@ class Black extends MessageDispatcher {
       Time.mTime = Time.mActualTime;
 
       this.__internalUpdate();
-      this.__internalPostUpdate();
+      this.__internalSystemPostUpdate();
     }
     Black.mUpdateTime = performance.now() - Black.mUpdateTime;
 
@@ -362,6 +362,9 @@ class Black extends MessageDispatcher {
 
     Black.mRenderTime = performance.now();
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
+
+    this.__internalSystemRender();
+
     this.mVideo.beginFrame();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
@@ -394,9 +397,18 @@ class Black extends MessageDispatcher {
    * @private
    * @return {void}
    */
-  __internalPostUpdate() {
+  __internalSystemPostUpdate() {
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].onPostUpdate();
+  }
+
+  /**
+   * @private
+   * @return {void}
+   */
+  __internalSystemRender() {
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onRender();
   }
 
   /**
