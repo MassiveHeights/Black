@@ -13,11 +13,6 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    this.globalPrev = new Vector();
-    this.globalRange = new Vector();
-
-    this.mPositionPrev = new Vector();
-
     /** @public @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
@@ -271,6 +266,8 @@ class RigidBody extends Component {
 
     if (gameObject !== Black.stage) {
       const cachedPosition = this.mCachedPosition;
+      const gameObjectPositionPrev = this.mGameObjectPositionPrev;
+      const gameObjectTranslation = this.mGameObjectTranslation;
       const prevX = cachedPosition.x;
       const prevY = cachedPosition.y;
 
@@ -280,16 +277,18 @@ class RigidBody extends Component {
       position.x += cachedPosition.x - prevX;
       position.y += cachedPosition.y - prevY;
 
-      const gameObjectPositionPrev = this.mGameObjectPositionPrev;
-      const gameObjectTranslation = this.mGameObjectTranslation;
-
       gameObjectPositionPrev.x = gameObject.x;
       gameObjectPositionPrev.y = gameObject.y;
 
-      gameObject.parent.globalToLocal(this.mPosition, gameObjectTranslation);
+      gameObject.parent.globalToLocal(position, gameObjectTranslation);
 
       gameObjectTranslation.x -= gameObjectPositionPrev.x;
       gameObjectTranslation.y -= gameObjectPositionPrev.y;
+
+      // if (Math.abs(cachedPosition.x - prevX) > 0.001 || Math.abs(cachedPosition.y - prevY) > 0.001) {
+      //   gameObjectPositionPrev.x += gameObjectTranslation.x;
+      //   gameObjectPositionPrev.y += gameObjectTranslation.y;
+      // }
     }
 
     // Refresh colliders

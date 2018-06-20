@@ -422,8 +422,7 @@ class Arcade extends System {
     // if (Black.numUpdates !== 0)
     //   return;
 
-    const alpha = Black.instance.ups === 60 ? 1 : Time.mAlphaTime;
-    console.log(Black.instance.ups)
+    const alpha = Black.instance.ups === 1000 / 60 ? 1 : Time.mAlphaTime;
     const bodies = this.mBodies;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
@@ -562,6 +561,8 @@ class Arcade extends System {
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const gravity = this.mGravity;
+    const renderDt = 1 / 60;
+    const rendersPerUpdate = dt / renderDt;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -572,10 +573,17 @@ class Arcade extends System {
       const force = body.mForce;
       const velocity = body.mVelocity;
       const invMass = body.mInvMass;
-      const damping = 1 - body.frictionAir;
+      const damping = Math.pow(1 - body.frictionAir, rendersPerUpdate);
 
-      velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
-      velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
+      // for (let j = 0; j < rendersPerUpdate; j++) {
+      //   velocity.x = (velocity.x + force.x * renderDt * invMass + gravity.x * renderDt) * damping;
+      //   velocity.y = (velocity.y + force.y * renderDt * invMass + gravity.y * renderDt) * damping;
+      //
+      //   force.set(0, 0);
+      // }
+
+      velocity.x = (velocity.x + force.x * dt * invMass + gravity.x * dt) * damping;
+      velocity.y = (velocity.y + force.y * renderDt * invMass + gravity.y * dt) * damping;
     }
 
     for (let i = 0, l = contacts.length; i < l; i++) {
