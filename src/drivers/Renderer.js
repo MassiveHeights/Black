@@ -9,7 +9,7 @@ class Renderer {
    * Creates new instance of Renderer.
    */
   constructor() {
-    /** @type {GameObject|null} */
+    /** @type {DisplayObject|null} */
     this.gameObject = null;
 
     /** @type {Renderer|null} */
@@ -17,13 +17,20 @@ class Renderer {
 
     /** @ignore @type {boolean} */
     this.skipChildren = false;
+
+    /** @ignore @type {boolean} */
     this.skipSelf = false;
 
-    this.endPassRequiredAt = -1;
+    /** @ignore @type {boolean} */
     this.endPassRequired = false;
 
+    /** @ignore @type {number} */
     this.alpha = 1;
+
+    /** @ignore @type {BlendMode} */
     this.blendMode = BlendMode.NORMAL;
+
+    /** @ignore @type {number|null} */
     this.color = null;
   }
 
@@ -31,39 +38,41 @@ class Renderer {
    * Called when this renderer needs to be rendered.
    *
    * @param {VideoNullDriver} driver Active video driver.
-   * @param {boolean} isBackBufferActive
+   * @param {RenderSession} session Active session.
    * @returns {void}
    */
-  preRender(driver, isBackBufferActive) {
+  preRender(driver, session) {
     this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
   }
 
-  begin(driver, isBackBufferActive, customTransform = null) {
+  begin(driver, session) {
     this.alpha = this.gameObject.mAlpha * this.parent.alpha;
     this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
     this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
   }
 
-  upload(driver, isBackBufferActive, customTransform = null) {
-    let transform = this.gameObject.worldTransformation;
+  upload(driver, session) {
+    let gameObject = /** @type {DisplayObject} */ (this.gameObject);
+    let transform = gameObject.worldTransformation;
 
-    if (isBackBufferActive === false) {
-      if (customTransform === null) {
+    if (session.isBackBufferActive === false) {
+      if (session.customTransform === null) {
         transform = transform.clone(); // TODO: too much allocations
         transform.data[4] -= Black.stage.mX;
         transform.data[5] -= Black.stage.mY;
       } else {
         transform = transform.clone(); // TODO: too much allocations
-        transform.prepend(customTransform);
+        transform.prepend(session.customTransform);
       }
     }
 
-    driver.setTransform(transform);
+    driver.setSnapToPixels(gameObject.snapToPixels);
     driver.setGlobalAlpha(this.alpha);
     driver.setGlobalBlendMode(this.blendMode);
+    driver.setTransform(transform);
 
     if (this.endPassRequired === true)
-      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
+      driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
   }
 
   /**
@@ -74,10 +83,10 @@ class Renderer {
    * @param {Matrix|null} customTransform
    * @returns {void}
    */
-  render(driver, isBackBufferActive, customTransform = null) {
+  render(driver, session) {
   }
 
-  end(driver) {
+  end(driver, session) {
     driver.endClip();
 
     this.endPassRequiredAt = -1;

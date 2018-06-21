@@ -25,20 +25,22 @@ class BitmapTextRenderer extends Renderer {
   /**
    * @inheritDoc
    */
-  render() {
-    if (this.gameObject.mText === null)
+  render(driver, session) {
+    let gameObject = /** @type {BitmapTextField} */ (this.gameObject);
+
+    if (gameObject.mText === null)
       return;
 
-    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+    if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
       const cvs = this.mCanvas;
       const ctx = this.mContext;
 
-      let data = this.gameObject.mData;
-      let text = this.gameObject.mText;
-      let canvasBounds = this.gameObject.onGetLocalBounds();
+      let data = gameObject.mData;
+      let text = gameObject.mText;
+      let canvasBounds = gameObject.onGetLocalBounds();
 
       // remove dirty flag only after getting bounds
-      this.gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
+      gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
 
       let prevCharCode = -1;
       let cx = 0;
@@ -52,7 +54,7 @@ class BitmapTextRenderer extends Renderer {
 
         if (/(?:\r\n|\r|\n)/.test(text.charAt(i))) {
           cx = 0;
-          cy += data.lineHeight * this.gameObject.mLineHeight;
+          cy += data.lineHeight * gameObject.mLineHeight;
           prevCharCode = -1;
           continue;
         }

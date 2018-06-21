@@ -6,17 +6,19 @@
  */
 /* @echo EXPORT */
 class SpriteRendererCanvas extends Renderer {
-  preRender(driver, isBackBufferActive) {
-    this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
+  /** @inheritDoc */
+  preRender(driver, session) {
+    let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-    this.skipChildren = this.gameObject.mAlpha <= 0 || this.gameObject.mVisible === false;
-    this.skipSelf = this.gameObject.mTexture === null || this.skipChildren === true;
+    this.endPassRequired = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
+    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
+    this.skipSelf = gameObject.mTexture === null || this.skipChildren === true;
   }
 
-  /**
-   * @inheritDoc
-   */
-  render(driver) {
-    driver.drawTexture(Renderer.getColoredTexture(this.gameObject.mTexture, this.color));
+  /** @inheritDoc */
+  render(driver, session) {
+    let gameObject = /** @type {Sprite} */ (this.gameObject);
+
+    driver.drawTexture(Renderer.getColoredTexture(gameObject.mTexture, this.color));
   }
 }

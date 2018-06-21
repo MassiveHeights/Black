@@ -32,6 +32,9 @@ class CanvasDriver extends VideoNullDriver {
     };
   }
 
+  /**
+   * @inheritDoc
+   */
   render(gameObject, renderTexture = null, customTransform = null) {
     let isBackBufferActive = renderTexture === null;
 
@@ -39,11 +42,13 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let session = this.__saveSession();
-    let parentRenderer = this.mStageRenderer;
+    session.parentRenderer = this.mStageRenderer;
+    session.isBackBufferActive = isBackBufferActive;
+    session.customTransform = customTransform;
 
     // RenderTexture related
     if (renderTexture !== null) {
-      // Sawp context
+      // Swap context
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
 
@@ -51,53 +56,30 @@ class CanvasDriver extends VideoNullDriver {
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
 
-      parentRenderer.alpha = 1;
-      parentRenderer.blendMode = BlendMode.NORMAL;
-      parentRenderer.color = null;
+      session.parentRenderer.alpha = 1;
+      session.parentRenderer.blendMode = BlendMode.NORMAL;
+      session.parentRenderer.color = null;
 
       // collect parents of given GameObject
       this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
 
       for (let i = 0, len = session.parentRenderers.length; i !== len; i++) {
         let renderer = session.parentRenderers[i];
-        renderer.begin(this);
+        renderer.begin(this, session);
 
         if (renderer.skipSelf === false)
-          renderer.upload(this, false, null);
+          renderer.upload(this, session);
       }
 
       if (session.parentRenderers.length > 0)
-        parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
+        session.parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
     }
 
-    this.__collectRenderers(session, gameObject, parentRenderer, isBackBufferActive);
-    for (let i = 0, len = session.renderers.length; i !== len; i++) {
-      let renderer = session.renderers[i];
-
-      // Render game object and its components
-      renderer.gameObject.onRender();
-      for (let i = 0; i < renderer.gameObject.mComponents.length; i++) {
-        const comp = renderer.gameObject.mComponents[i];
-        comp.onRender();
-      }
-
-      renderer.begin(this, isBackBufferActive, customTransform);
-
-      if (renderer.skipSelf === false) {
-        renderer.upload(this, isBackBufferActive, customTransform);
-        renderer.render(this, isBackBufferActive, customTransform);
-      }
-
-      if (renderer.endPassRequired === true)
-        session.endPassRenderers.unshift(renderer);
-
-      if (session.endPassRenderers.length > 0 && session.endPassRenderers[0].endPassRequiredAt === i)
-        session.endPassRenderers.shift().end(this);
-    }
+    this.renderObject(gameObject, session);
 
     if (renderTexture !== null) {
       while (session.endPassParentRenderers.length > 0)
-        session.endPassParentRenderers.pop().end(this);
+        session.endPassParentRenderers.pop().end(this, session);
 
       this.mCtx = this.mLastRenderTexture;
 
@@ -106,6 +88,47 @@ class CanvasDriver extends VideoNullDriver {
     }
 
     this.__restoreSession();
+  }
+
+  /**
+   * @ignore
+   * @param {GameObject} child 
+   * @param {RenderSession} session 
+   */
+  renderObject(child, session) {
+    let skipChildren = false;
+    let renderer = child.mRenderer;
+
+    if (renderer != null) {
+      let parentRenderer = session.parentRenderer;
+
+      renderer.parent = parentRenderer;
+      renderer.preRender(this, session);
+
+      child.onRender();
+      for (let i = 0; i < child.mComponents.length; i++) {
+        const comp = child.mComponents[i];
+        comp.onRender();
+      }
+
+      renderer.begin(this, session);
+
+      if (renderer.skipSelf === false) {
+        renderer.upload(this, session);
+        renderer.render(this, session);
+      }
+
+      skipChildren = renderer.skipChildren;
+      session.parentRenderer = renderer;
+    }
+
+    if (skipChildren === false) {
+      for (let i = 0; i < child.mChildren.length; i++)
+        this.renderObject(child.mChildren[i], session);
+    }
+
+    if (renderer != null && renderer.endPassRequired === true)
+      renderer.end(this, session);
   }
 
   /**
@@ -239,6 +262,8 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   setGlobalAlpha(value) {
+    Debug.isNumber(value);
+
     if (value == this.mGlobalAlpha)
       return;
 
@@ -275,10 +300,13 @@ class CanvasDriver extends VideoNullDriver {
     let viewport = Black.instance.viewport;
     if (viewport.isTransperent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
-      this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+      this.mCtx.fillRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     } else {
-      this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+      this.mCtx.clearRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     }
+
+    // TODO: WHY?
+    this.mCtx.globalAlpha = 1;
   }
 
   /**

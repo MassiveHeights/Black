@@ -28,11 +28,48 @@ class TextRenderer extends Renderer {
 
     /** */
     this.mContext.miterLimit = 2;
+
+    /** @private @type {TextMetricsData|null} */
+    this.mMetrics = null;
   }
 
-  preRender(driver, isBackBufferActive) {
+  /** @inheritDoc */
+  preRender(driver, session) {
     this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true);
     this.skipSelf = false;
+  }
+
+  /** @inheritDoc */
+  upload(driver, session) {
+    let gameObject = /** @type {TextField} */ (this.gameObject);
+
+    if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      gameObject.onGetLocalBounds();
+
+      this.mMetrics = gameObject.mMetrics;
+      this.updateTransform();
+    }
+
+    let transform = this.mTransformCache;
+
+    if (session.isBackBufferActive === false) {
+      if (session.customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(session.customTransform);
+      }
+    }
+
+    driver.setSnapToPixels(gameObject.snapToPixels);
+    driver.setTransform(transform);
+    driver.setGlobalAlpha(this.alpha);
+    driver.setGlobalBlendMode(this.blendMode);
+
+    if (this.endPassRequired === true)
+      driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
   }
 
   /**
@@ -45,6 +82,8 @@ class TextRenderer extends Renderer {
    * @param {boolean} isStroke
    */
   renderSegment(metrics, segment, ctx, driver, fontMetrics, isStroke) {
+    let gameObject = /** @type {TextField} */ (this.gameObject);
+
     let baseline = fontMetrics.baselineNormalized * segment.style.size;
 
     if (isStroke === true) {
@@ -59,12 +98,12 @@ class TextRenderer extends Renderer {
     let lx = segment.bounds.x - Math.min(metrics.strokeBounds.x, metrics.shadowBounds.x);
     let ly = baseline + segment.bounds.y - Math.min(metrics.strokeBounds.y, metrics.shadowBounds.y);
 
-    lx += this.gameObject.padding.x;
-    ly += this.gameObject.padding.y;
+    lx += gameObject.padding.x;
+    ly += gameObject.padding.y;
 
-    if (this.gameObject.align === 'center')
+    if (gameObject.align === 'center')
       lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
-    else if (this.gameObject.align === 'right')
+    else if (gameObject.align === 'right')
       lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
     if (isStroke === true)
@@ -73,52 +112,26 @@ class TextRenderer extends Renderer {
       ctx.fillText(segment.text, lx, ly);
   }
 
-  upload(driver, isBackBufferActive, customTransform = null) {
-    let transform = this.mTransformCache;
+  /** @inheritDoc */
+  render(driver, session) {
+    let gameObject = /** @type {TextField} */ (this.gameObject);
 
-    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
-      this.gameObject.onGetLocalBounds();
-
-      this.metrics = this.gameObject.mMetrics;
-      this.updateTransform();
-    }
-
-    if (isBackBufferActive === false) {
-      if (customTransform === null) {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.data[4] -= Black.stage.mX;
-        transform.data[5] -= Black.stage.mY;
-      } else {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.prepend(customTransform);
-      }
-    }
-
-    driver.setTransform(transform);
-    driver.setGlobalAlpha(this.alpha);
-    driver.setGlobalBlendMode(this.blendMode);
-
-    if (this.endPassRequired === true)
-      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
-  }
-
-  render(driver) {
-    if (this.gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
-      this.gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
+    if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
+      gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
 
       const cvs = this.mCanvas;
       const ctx = this.mContext;
       ctx.textBaseline = 'alphabetic';
 
-      let canvasBounds = this.metrics.strokeBounds.clone();
-      canvasBounds.union(this.metrics.shadowBounds);
-      canvasBounds.inflate(this.gameObject.padding.right, this.gameObject.padding.bottom);
+      let canvasBounds = this.mMetrics.strokeBounds.clone();
+      canvasBounds.union(this.mMetrics.shadowBounds);
+      canvasBounds.inflate(gameObject.padding.right, gameObject.padding.bottom);
 
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
 
-      let fontMetrics = FontMetrics.get(this.gameObject.mDefaultStyle.family);
-      let segments = this.metrics.segments;
+      let fontMetrics = FontMetrics.get(gameObject.mDefaultStyle.family);
+      let segments = this.mMetrics.segments;
 
       for (let i = 0; i < segments.length; i++) {
         if (segments[i].style.dropShadow) {
@@ -127,7 +140,7 @@ class TextRenderer extends Renderer {
           ctx.shadowBlur = segments[i].style.shadowBlur;
           ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
           ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
-          this.renderSegment(this.metrics, segments[i], ctx, driver, fontMetrics, false);
+          this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
           ctx.restore();
         }
       }
@@ -137,12 +150,12 @@ class TextRenderer extends Renderer {
         if (segment.style.strokeThickness > 0) {
           ctx.lineJoin = 'round';
           ctx.miterLimit = 2;
-          this.renderSegment(this.metrics, segment, ctx, driver, fontMetrics, true);
+          this.renderSegment(this.mMetrics, segment, ctx, driver, fontMetrics, true);
         }
       }
 
       for (let i = 0; i < segments.length; i++)
-        this.renderSegment(this.metrics, segments[i], ctx, driver, fontMetrics, false);
+        this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
 
       if (this.texture === null)
         this.texture = new Texture(cvs);
@@ -151,38 +164,37 @@ class TextRenderer extends Renderer {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
+  /** @ignore */ 
   updateTransform() {
-    let transform = this.gameObject.worldTransformation;
+    let gameObject = /** @type {TextField} */ (this.gameObject);
+    let transform = gameObject.worldTransformation;
 
     let fieldXOffset = 0;
     let fieldYOffset = 0;
 
-    let filterOffsetX = Math.min(this.metrics.strokeBounds.x, this.metrics.shadowBounds.x);
-    let filterOffsetY = Math.min(this.metrics.strokeBounds.y, this.metrics.shadowBounds.y);
+    let filterOffsetX = Math.min(this.mMetrics.strokeBounds.x, this.mMetrics.shadowBounds.x);
+    let filterOffsetY = Math.min(this.mMetrics.strokeBounds.y, this.mMetrics.shadowBounds.y);
 
     const hasFilter = filterOffsetX !== 0 || filterOffsetY !== 0;
 
-    if (this.gameObject.mAutoSize === false) {
-      if (this.gameObject.align === 'center')
-        fieldXOffset = (this.gameObject.mFieldWidth - this.metrics.bounds.width) * 0.5;
-      else if (this.gameObject.align === 'right')
-        fieldXOffset = this.gameObject.mFieldWidth - this.metrics.bounds.width;
+    if (gameObject.mAutoSize === false) {
+      if (gameObject.align === 'center')
+        fieldXOffset = (gameObject.mFieldWidth - this.mMetrics.bounds.width) * 0.5;
+      else if (gameObject.align === 'right')
+        fieldXOffset = gameObject.mFieldWidth - this.mMetrics.bounds.width;
 
-      if (this.gameObject.mVerticalAlign === 'middle')
-        fieldYOffset = (this.gameObject.mFieldHeight - this.metrics.bounds.height) * 0.5;
-      else if (this.gameObject.mVerticalAlign === 'bottom')
-        fieldYOffset = this.gameObject.mFieldHeight - this.metrics.bounds.height;
+      if (gameObject.mVerticalAlign === 'middle')
+        fieldYOffset = (gameObject.mFieldHeight - this.mMetrics.bounds.height) * 0.5;
+      else if (gameObject.mVerticalAlign === 'bottom')
+        fieldYOffset = gameObject.mFieldHeight - this.mMetrics.bounds.height;
     }
 
-    if (hasFilter === true || this.gameObject.mAutoSize === false) {
+    if (hasFilter === true || gameObject.mAutoSize === false) {
       transform.copyTo(this.mTransformCache);
-      this.mTransformCache.translate((filterOffsetX + fieldXOffset) - this.gameObject.padding.x, (filterOffsetY + fieldYOffset) - this.gameObject.padding.y);
-    } else if (this.gameObject.padding.isEmpty === false) {
+      this.mTransformCache.translate((filterOffsetX + fieldXOffset) - gameObject.padding.x, (filterOffsetY + fieldYOffset) - gameObject.padding.y);
+    } else if (gameObject.padding.isEmpty === false) {
       transform.copyTo(this.mTransformCache);
-      this.mTransformCache.translate(-this.gameObject.padding.x, -this.gameObject.padding.y);
+      this.mTransformCache.translate(-gameObject.padding.x, -gameObject.padding.y);
     } else {
       this.mTransformCache = transform;
     }

@@ -20,73 +20,93 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** @private @type {Rectangle|null} */
     this.mCacheBounds = null;
+
+    this.mIsClipped = false;
   }
 
-  preRender(driver) {
-    super.preRender(driver);
+  /** @inheritDoc */
+  preRender(driver, session) {
+    let gameObject = /** @type {DisplayObject} */ (this.gameObject);
 
-    if (this.gameObject.mCacheAsBitmap === true) {
-      let isStatic = this.gameObject.checkStatic(true);
+    this.mIsClipped = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
+    this.endPassRequired = this.mIsClipped;
+
+    if (gameObject.mCacheAsBitmap === true) {
+      let isStatic = gameObject.checkStatic(true);
       if (isStatic === true && this.mCacheAsBitmapDirty === true) {
-        this.gameObject.setTransformDirty();
+        gameObject.setTransformDirty();
         this.__refreshBitmapCache();
         this.mCacheAsBitmapDirty = false;
+        this.endPassRequired = false;
       } else if (isStatic === false) {
         this.mCacheAsBitmapDirty = true;
-        this.gameObject.mDirty |= DirtyFlag.RENDER;
+        gameObject.mDirty |= DirtyFlag.RENDER;
       }
     }
 
-    this.skipChildren = this.gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false;
+    this.skipChildren = gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false;
     this.skipSelf = false;
+
+    if (this.skipChildren === true) {
+      this.endPassRequired = false;
+      this.skipSelf = true;
+    }
   }
 
-  begin(driver, isBackBufferActive, customTransform = null) {
-    if (this.gameObject.mCacheAsBitmap === true && isBackBufferActive === true && this.mCacheAsBitmapDirty === false) {
+  /** @inheritDoc */
+  begin(driver, session) {
+    let gameObject = /** @type {DisplayObject} */ (this.gameObject);
+    if (this.skipChildren === true && session.isBackBufferActive === true) {
       this.alpha = 1;
       this.blendMode = BlendMode.NORMAL;
       this.color = null;
+      this.skipSelf = false;
     }
     else {
-      this.alpha = this.gameObject.mAlpha * this.parent.alpha;
-      this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
-      this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
+      this.alpha = gameObject.mAlpha * this.parent.alpha;
+      this.color = gameObject.mColor === null ? this.parent.color : gameObject.mColor;
+      this.blendMode = gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : gameObject.mBlendMode;
+      this.skipSelf = !this.mIsClipped;
     }
   }
 
-  upload(driver, isBackBufferActive, customTransform = null) {
-    let transform = this.gameObject.worldTransformation;
+  /** @inheritDoc */
+  upload(driver, session) {
+    let gameObject = /** @type {DisplayObject} */ (this.gameObject);
+    let transform = gameObject.worldTransformation;
 
-    if (this.gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false)
+    if (this.skipChildren === true)
       transform = this.mCacheAsBitmapMatrixCache;
 
-    if (isBackBufferActive === false) {
-      if (customTransform === null) {
+    if (session.isBackBufferActive === false) {
+      if (session.customTransform === null) {
         transform = transform.clone(); // TODO: too much allocations
         transform.data[4] -= Black.stage.mX;
         transform.data[5] -= Black.stage.mY;
       } else {
         transform = transform.clone(); // TODO: too much allocations
-        transform.prepend(customTransform);
+        transform.prepend(session.customTransform);
       }
     }
 
-    driver.setTransform(transform);
-    driver.setGlobalAlpha(this.alpha);
-    driver.setGlobalBlendMode(this.blendMode);
+    if (this.skipChildren === true || this.endPassRequired === true) {
+      driver.setSnapToPixels(gameObject.snapToPixels);
+      driver.setTransform(transform);
+      driver.setGlobalAlpha(this.alpha);
+      driver.setGlobalBlendMode(this.blendMode);
+    }
 
     if (this.endPassRequired === true)
-      driver.beginClip(this.gameObject.mClipRect, this.gameObject.mPivotX, this.gameObject.mPivotY);
+      driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
   }
 
-  /**
-   * @inheritDoc
-   */
-  render(driver, isBackBufferActive) {
-    if (this.gameObject.mCacheAsBitmap === true && isBackBufferActive === true && this.mCacheAsBitmapDirty === false)
+  /** @inheritDoc */
+  render(driver, session) {
+    if (this.skipChildren === true && session.isBackBufferActive === true)
       driver.drawTexture(this.mCacheTexture);
   }
 
+  /** @inheritDoc */
   __refreshBitmapCache() {
     const bounds = this.gameObject.getBounds(Black.stage, true);
     const sf = Black.stage.scaleFactor;
@@ -96,7 +116,7 @@ class DisplayObjectRendererCanvas extends Renderer {
     let m = Matrix.pool.get();
     m.set(1, 0, 0, 1, ~~(-bounds.x * sf - Black.stage.mX), ~~(-bounds.y * sf - Black.stage.mY));
 
-    if (this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false) {
+    if (this.mIsClipped === true && this.skipChildren === true) {
       m.data[4] += this.gameObject.mPivotX * sf;
       m.data[5] += this.gameObject.mPivotY * sf;
     }

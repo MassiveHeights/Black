@@ -6,11 +6,9 @@
  */
 /* @echo EXPORT */
 class TextRendererCanvas extends TextRenderer {
-  /**
-   * @inheritDoc
-   */
-  render(driver) {
-    super.render(driver);
+  /** @inheritDoc */
+  render(driver, session) {
+    super.render(driver, session);
 
     driver.drawTexture(Renderer.getColoredTexture(this.texture, this.gameObject.mColor));
   }

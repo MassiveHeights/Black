@@ -301,6 +301,17 @@ class Black extends MessageDispatcher {
     console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
   }
 
+  __update2(timestamp, fuck) {
+    this.__internalUpdate();
+
+    this.mVideo.beginFrame();
+    this.mVideo.render(this.mStage);
+    this.mVideo.endFrame();
+
+    //this.mRAFHandle = window.requestAnimationFrame(this.__update);
+    this.mRAFHandle = window.requestAnimationFrame(/** @type {function(number)} */(this.__update));
+  }
+
   /**
    * @private
    * @param {number} timestamp
@@ -308,12 +319,6 @@ class Black extends MessageDispatcher {
    */
   __update(timestamp, forceUpdate) {
     // Calculate FPS
-    while (this.mFrameTimes.length > 0 && this.mFrameTimes[0] <= timestamp - 1000)
-      this.mFrameTimes.shift();
-
-    this.mFrameTimes.push(timestamp);
-    Black.FPS = this.mFrameTimes.length;
-
     if (this.mPaused === true && this.mUnpausing === true) {
       this.mUnpausing = false;
 
@@ -323,7 +328,7 @@ class Black extends MessageDispatcher {
       this.__setUnpaused();
     }
 
-    this.mRAFHandle = window.requestAnimationFrame(this.__update);
+    this.mRAFHandle = window.requestAnimationFrame(/** @type {function(number)} */(this.__update));
 
     if (this.mPaused === true)
       return;
@@ -353,19 +358,14 @@ class Black extends MessageDispatcher {
     for (let l = timestamp - Time.mDeltaTimeMs; this.mLastUpdateTime < l;)
       this.mLastUpdateTime += Time.mDeltaTimeMs;
 
-    Time.mAlphaTime = (timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs;
-
-    // if (Time.mAlphaTime <= 0) {
-    //   console.log('<= 0', Time.mAlphaTime);
-    // } else if (Time.mAlphaTime > 1) {
-    //   console.log('> 1', Time.mAlphaTime)
-    // }
+    if (numTicks === 0)
+      Time.mAlphaTime = (timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs;
+    else
+      Time.mAlphaTime = 1;
 
     Black.mRenderTime = performance.now();
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
-
     this.__internalSystemRender();
-    
     this.mVideo.beginFrame();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
@@ -377,6 +377,7 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
+
   }
 
   /**
@@ -506,7 +507,7 @@ class Black extends MessageDispatcher {
       }
     };
 
-    forEach(child, (x) => {
+    GameObject.forEach(child, (x) => {
       if (x.mAdded === true) {
         this.onTagUpdated(x, null, x.mTag);
 
@@ -574,7 +575,7 @@ class Black extends MessageDispatcher {
    * @return {number}
    */
   get ups() {
-    return Time.mDeltaTimeMs;
+    return Time.mDeltaTimeMs * 0.001;
   }
 
   /**
@@ -744,5 +745,4 @@ Black.numUpdates = 0;
 
 Black.mUpdateTime = 0;
 Black.mRenderTime = 0;
-Black.FPS = 0;
 Black.maxUpdatesPerFrame = 60;

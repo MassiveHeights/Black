@@ -146,51 +146,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-  * @inheritDoc
-  */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = this.mRenderer;
-
-    if (this.mCacheAsBitmap === true && isBackBufferActive === true) {
-      let isStatic = this.checkStatic(true);
-      if (isStatic === true && this.mCacheAsBitmapDirty === true) {
-        this.setTransformDirty();
-        this.__refreshBitmapCache();
-        this.mCacheAsBitmapDirty = false;
-      } else if (isStatic === false) {
-        this.mCacheAsBitmapDirty = true;
-        this.mDirty |= DirtyFlag.RENDER;
-      }
-    }
-
-    if (this.mCacheAsBitmap === true && isBackBufferActive === true && this.mCacheAsBitmapDirty === false) {
-      renderer.transform = this.mCacheAsBitmapMatrixCache;
-      renderer.skipChildren = true;
-      renderer.alpha = 1;
-      renderer.blendMode = BlendMode.NORMAL;
-      renderer.snapToPixels = this.mSnapToPixels;
-      renderer.clipRect = null;
-      renderer.texture = this.mCache;
-    } else if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.skipChildren = false;
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.visible = this.mVisible;
-      renderer.clipRect = this.mClipRect;
-      renderer.dirty = this.mDirty;
-      renderer.snapToPixels = this.mSnapToPixels;
-      renderer.texture = null;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-
-      this.mCacheAsBitmapDirty = true;
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
-  }
-
-  /**
    * @inheritDoc
    */
   hitTest(localPoint) {

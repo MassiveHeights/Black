@@ -13,33 +13,29 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     super();
   }
 
-  /**
-   * Called when this renderer needs to be rendered.
-   *
-   * @param {VideoNullDriver} driver Active video driver.
-   * @returns {void}
-   */
-  render(driver) {
-    this.bounds = this.gameObject.bounds;
-    this.commands = this.gameObject.mCommandQueue;
-
+  /** @inheritDoc */
+  render(driver, session) {
+    let gameObject = /** @type {Graphics} */ (this.gameObject);
     this.__drawCommandBuffer(driver);
-    
-    if (this.gameObject.color !== null && this.gameObject.color !== 0xFFFFFF) {
+
+    if (gameObject.mColor !== null && gameObject.mColor !== 0xFFFFFF) {
       driver.context.globalCompositeOperation = 'multiply';
-      this.__drawCommandBuffer(driver, this.gameObject.color);
+      this.__drawCommandBuffer(driver, gameObject.mColor);
     }
   }
 
   __drawCommandBuffer(driver, color = null) {
+    let gameObject = /** @type {Graphics} */ (this.gameObject);
+    let commands = gameObject.mCommandQueue;
+
     const ctx = driver.context;
-    const len = this.commands.length;
+    const len = commands.length;
     const r = driver.renderScaleFactor;
     ctx.save();
     ctx.beginPath();
-    
+
     for (let i = 0; i < len; i++) {
-      const cmd = this.commands[i];      
+      const cmd = commands[i];
 
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {

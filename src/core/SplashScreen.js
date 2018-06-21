@@ -18,7 +18,7 @@ class SplashScreen extends MessageDispatcher {
     style.innerHTML = css;
     document.getElementsByTagName('head')[0].appendChild(style);
 
-    let container = document.getElementById(Black.instance.containerElementId);
+    let container = /** @type {HTMLElement} */ (document.getElementById(Black.instance.containerElementId));
     let oldOverflow = container.style.overflow;    
     container.style.overflow = 'hidden';
 
