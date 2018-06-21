@@ -55,11 +55,8 @@ class Arcade extends System {
     /** @private @type {boolean} Switch for sleep calculations */
     this.mSleepEnabled = true;
 
-    /** @private @type {Array<RigidBody>} Bodies that will be added to arcade in next update */
-    this.mBodiesToAdd = [];
-
-    /** @private @type {Array<Collider>} Colliders that will be added to arcade in next update */
-    this.mCollidersToAdd = [];
+    /** @public @type {number} Update delta time, secs. */
+    this.delta = 1 / 60;
   }
 
   /**
@@ -154,7 +151,7 @@ class Arcade extends System {
       const body = object.getComponent(RigidBody);
 
       if (body) {
-        this.mBodiesToAdd.push(/** @type {RigidBody} */ (body));
+        this.__addBody(/** @type {RigidBody} */ (body));
       }
     });
   }
@@ -177,9 +174,9 @@ class Arcade extends System {
    */
   onComponentAdded(child, component) {
     if (component instanceof RigidBody) {
-      this.mBodiesToAdd.push(/** @type {RigidBody} */ (component));
+      this.__addBody(/** @type {RigidBody} */ (component));
     } else if (component instanceof Collider) {
-      this.mCollidersToAdd.push(/** @type {Collider} */ (component));
+      this.__addCollider(child, /** @type {Collider} */ (component));
     }
   }
 
@@ -393,64 +390,15 @@ class Arcade extends System {
     }
   }
 
-  // onFixedUpdate(dt) {
-  //   if (time === 0) {
-  //     const bodiesToAdd = this.mBodiesToAdd;
-  //     const collidersToAdd = this.mCollidersToAdd;
-  //
-  //     while (bodiesToAdd.length !== 0) {
-  //       const body = bodiesToAdd.pop();
-  //       this.__addBody(body);
-  //     }
-  //
-  //     while (collidersToAdd.length !== 0) {
-  //       const collider = this.mCollidersToAdd.pop();
-  //       this.__addCollider(collider.gameObject, collider);
-  //     }
-  //
-  //     this.__update(dt);
-  //   }
-  //
-  //   this.renderUpdate(++time / times);
-  //   time %= times;
-  // }
-
-  /**
-   * @inheritDoc
-   */
-  onRender() {
-    // if (Black.numUpdates !== 0)
-    //   return;
-
-    const alpha = Black.instance.ups === 1000 / 60 ? 1 : Time.mAlphaTime;
-    const bodies = this.mBodies;
-
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].renderUpdate(alpha);
-    }
-  }
-
   /**
    * @inheritDoc
    */
   onPostUpdate() {
-    const dt = Time.delta;
+    const dt = this.delta;
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
-    const bodiesToAdd = this.mBodiesToAdd;
-    const collidersToAdd = this.mCollidersToAdd;
     contacts.length = 0;
-
-    while (bodiesToAdd.length !== 0) {
-      const body = bodiesToAdd.pop();
-      this.__addBody(body);
-    }
-
-    while (collidersToAdd.length !== 0) {
-      const collider = this.mCollidersToAdd.pop();
-      this.__addCollider(collider.gameObject, collider);
-    }
 
     // refresh body colliders if scale, rotation changed
     for (let i = 0, l = bodies.length; i < l; i++) {
@@ -561,8 +509,6 @@ class Arcade extends System {
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const gravity = this.mGravity;
-    const renderDt = 1 / 60;
-    const rendersPerUpdate = dt / renderDt;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
@@ -573,17 +519,10 @@ class Arcade extends System {
       const force = body.mForce;
       const velocity = body.mVelocity;
       const invMass = body.mInvMass;
-      const damping = Math.pow(1 - body.frictionAir, rendersPerUpdate);
+      const damping = 1 - body.frictionAir;
 
-      // for (let j = 0; j < rendersPerUpdate; j++) {
-      //   velocity.x = (velocity.x + force.x * renderDt * invMass + gravity.x * renderDt) * damping;
-      //   velocity.y = (velocity.y + force.y * renderDt * invMass + gravity.y * renderDt) * damping;
-      //
-      //   force.set(0, 0);
-      // }
-
-      velocity.x = (velocity.x + force.x * dt * invMass + gravity.x * dt) * damping;
-      velocity.y = (velocity.y + force.y * renderDt * invMass + gravity.y * dt) * damping;
+      velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
+      velocity.y = (velocity.y + (force.y * invMass + gravity.y) * dt) * damping;
     }
 
     for (let i = 0, l = contacts.length; i < l; i++) {
