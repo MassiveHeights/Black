@@ -4,6 +4,7 @@
  * @cat colliders
  * @extends Component
  */
+
 /* @echo EXPORT */
 class Collider extends Component {
   /**
@@ -11,7 +12,7 @@ class Collider extends Component {
    *
    * @ignore
    */
-  constructor (){
+  constructor() {
     super();
   }
 

@@ -161,7 +161,19 @@
     "src/audio/Sound.js",
     "src/audio/SoundListener.js",
 
+    "src/physics/RigidBody.js",
+    "src/physics/arcade/helpers/Projection.js",
+
+    "src/physics/arcade/pairs/Pair.js",
+    "src/physics/arcade/pairs/BoxToBoxPair.js",
+    "src/physics/arcade/pairs/BoxToCirclePair.js",
+    "src/physics/arcade/pairs/CircleToCirclePair.js",
+    "src/physics/arcade/phases/BroadPhase.js",
+
+    "src/physics/arcade/Arcade.js",
+
     "src/core/SplashScreen.js",
+
     "src/Black.js"
   ]
 }

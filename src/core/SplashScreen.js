@@ -1,4 +1,5 @@
 /**
+ * @private
  * @ignore
  * @extends MessageDispatcher
  * @cat core

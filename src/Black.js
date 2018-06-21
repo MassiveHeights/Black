@@ -345,7 +345,6 @@ class Black extends MessageDispatcher {
       numTicks = Black.maxUpdatesPerFrame;
     }
 
-    Black.mUpdateTime = performance.now();
     Black.numUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
       Time.mActualTime += Time.delta;
@@ -353,7 +352,6 @@ class Black extends MessageDispatcher {
       this.__internalUpdate();
       this.__internalSystemPostUpdate();
     }
-    Black.mUpdateTime = performance.now() - Black.mUpdateTime;
 
     for (let l = timestamp - Time.mDeltaTimeMs; this.mLastUpdateTime < l;)
       this.mLastUpdateTime += Time.mDeltaTimeMs;
@@ -363,13 +361,12 @@ class Black extends MessageDispatcher {
     else
       Time.mAlphaTime = 1;
 
-    Black.mRenderTime = performance.now();
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
+
     this.__internalSystemRender();
     this.mVideo.beginFrame();
     this.mVideo.render(this.mStage);
     this.mVideo.endFrame();
-    Black.mRenderTime = performance.now() - Black.mRenderTime;
 
     Black.__frameNum++;
 
@@ -377,7 +374,6 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
-
   }
 
   /**
@@ -743,6 +739,5 @@ Black.instance = null;
  */
 Black.numUpdates = 0;
 
-Black.mUpdateTime = 0;
-Black.mRenderTime = 0;
+/** @ignore */
 Black.maxUpdatesPerFrame = 60;
