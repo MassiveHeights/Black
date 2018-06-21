@@ -58,6 +58,11 @@ class BitmapTextField extends DisplayObject {
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
+    }
+
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
       if (this.mMultiline === false)

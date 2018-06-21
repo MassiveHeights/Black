@@ -1,6 +1,3 @@
-const times = 1;  // renders within updates + 1
-let time = 0;
-
 /**
  * Simple AABB physics engine (beta).
  *

@@ -74,9 +74,6 @@ class DisplayObject extends GameObject {
 
     if (this.mClipRect !== null) {
       this.mClipRect.copyTo(outRect);
-
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
       return outRect;
     }
 
@@ -89,7 +86,7 @@ class DisplayObject extends GameObject {
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    this.onGetLocalBounds(outRect);
+    let localBounds = this.onGetLocalBounds();
 
     if (space == null)
       space = this.mParent;
@@ -100,13 +97,13 @@ class DisplayObject extends GameObject {
       if (includeChildren === false || this.mClipRect !== null) {
         let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
-        matrix.transformRect(outRect, outRect);
+        matrix.transformRect(localBounds, outRect);
         Matrix.pool.release(matrix);
       }
       else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
         let matrix = Matrix.pool.get();
         matrix.copyFrom(this.localTransformation);
-        matrix.transformRect(outRect, outRect);
+        matrix.transformRect(localBounds, outRect);
         Matrix.pool.release(matrix);
       } else {
         // Return cached
@@ -117,8 +114,17 @@ class DisplayObject extends GameObject {
       let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
       matrix.prepend(space.worldTransformationInversed);
-      matrix.transformRect(outRect, outRect);
+      matrix.transformRect(localBounds, outRect);
       Matrix.pool.release(matrix);
+    }
+
+    if (space !== this) {
+      if (this.mClipRect !== null) {        
+        outRect.x += this.mPivotX;
+        outRect.y += this.mPivotY;
+      }
+    } else {
+      localBounds.copyTo(outRect);
     }
 
     if (this.mClipRect !== null)
@@ -188,46 +194,6 @@ class DisplayObject extends GameObject {
     Vector.pool.release(tmpVector);
 
     return contains;
-  }
-
-  __refreshBitmapCache() {
-    const bounds = this.getBounds(this.stage, true);
-    const sf = Black.stage.scaleFactor;
-    const fs = Black.driver.finalScale;
-
-    /** @type {Matrix} */
-    let m = Matrix.pool.get();
-    m.set(1, 0, 0, 1, ~~(-bounds.x * sf - this.stage.mX), ~~(-bounds.y * sf - this.stage.mY));
-
-    if (this.mClipRect !== null && this.mClipRect.isEmpty === false) {
-      m.data[4] += this.pivotX * sf;
-      m.data[5] += this.pivotY * sf;
-    }
-
-    if (this.mCacheBounds === null)
-      this.mCacheBounds = new Rectangle();
-
-    bounds.copyTo(this.mCacheBounds);
-    bounds.width *= fs;
-    bounds.height *= fs;
-
-    if (this.mCache === null)
-      this.mCache = new CanvasRenderTexture(bounds.width, bounds.height, 1);
-    else
-      this.mCache.resize(bounds.width, bounds.height, 1);
-
-    Black.driver.render(this, this.mCache, m);
-    Matrix.pool.release(m);
-
-    if (this.mCacheAsBitmapMatrixCache === null)
-      this.mCacheAsBitmapMatrixCache = new Matrix();
-
-    this.mCacheAsBitmapMatrixCache.copyFrom(m);
-    this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
-    this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
-    this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
-
-    //this.mCache.__dumpToDocument();
   }
 
   /**

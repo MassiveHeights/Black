@@ -42,6 +42,11 @@ class Graphics extends DisplayObject {
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
+    }
+
     let bounds = new Rectangle();
     let path = new GraphicsPath();
     let len = this.mCommandQueue.length;
@@ -100,12 +105,6 @@ class Graphics extends DisplayObject {
 
     path.bounds && bounds.union(path.bounds);
     bounds.copyTo(outRect);
-
-    if (this.mClipRect !== null) {
-      this.mClipRect.copyTo(outRect);
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
-    }
 
     return outRect;
   }

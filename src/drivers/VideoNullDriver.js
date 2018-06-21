@@ -114,38 +114,6 @@ class VideoNullDriver {
     this.mActiveSession = this.mSessions[this.mSessions.length - 1] || null;
   }
 
-  // /**
-  //  * @ignore
-  //  * @protected
-  //  * @param {RenderSession} session
-  //  * @param {GameObject} gameObject
-  //  * @param {Renderer} parentRenderer
-  //  * @param {boolean} isBackBufferActive
-  //  */
-  // __collectRenderers(session, gameObject, parentRenderer, isBackBufferActive) {
-  //   let gameObject = /** @type {DisplayObject} */ (this.gameObject);
-  //   let renderer = null;
-
-  //   if (gameObject.mRenderer != null) {
-  //     renderer = gameObject.mRenderer;
-  //     renderer.parent = parentRenderer;
-  //     renderer.preRender(this, isBackBufferActive);
-
-  //     session.renderers.push(renderer);
-
-  //     if (renderer.skipChildren === true)
-  //       return;
-
-  //     parentRenderer = renderer;
-  //   }
-
-  //   for (let i = 0; i < gameObject.numChildren; i++)
-  //     this.__collectRenderers(session, gameObject.mChildren[i], parentRenderer, isBackBufferActive);
-
-  //   if (renderer !== null && renderer.endPassRequired === true)
-  //     renderer.endPassRequiredAt = session.renderers.length - 1;
-  // }
-
   /**
    * @ignore
    * @protected

@@ -48,13 +48,10 @@ class Sprite extends DisplayObject {
     if (!this.mTexture)
       return outRect;
 
-    if (this.mClipRect !== null) {
+    if (this.mClipRect !== null)
       this.mClipRect.copyTo(outRect);
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
-    } else {
+    else
       outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
-    }
 
     return outRect;
   }

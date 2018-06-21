@@ -31,11 +31,9 @@ class RigidBody extends Component {
     /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */
     this.mPivot = new Vector(Number.MAX_VALUE);
 
-    /** @private @type {Texture|null} Game object texture. To track changes and update default collider if needed */
-    this.mTexrure = null;
-
-    /** @private @type {Vector} Game object global position.
-     * To track changes and update this position, if object was moved without physics */
+    /** @private @type bounds} Game bounds position.
+     * To track changes and update this position, if object was moved without physics
+     */
     this.mCachedPosition = new Vector();
 
     /** @public @type {Array<Pair>} All pairs this body participates in */
@@ -278,15 +276,18 @@ class RigidBody extends Component {
     }
 
     // Refresh colliders
-    if (colliders.length === 0 && gameObject.texture) {
-      const pivot = this.mPivot;
-
-      if (pivot.x !== gameObject.pivotX || pivot.y !== gameObject.pivotY || this.mTexrure !== gameObject.texture) {
-        pivot.x = gameObject.pivotX;
-        pivot.y = gameObject.pivotY;
-        this.mTexrure = gameObject.texture;
-
-        collider.set(-gameObject.pivotX, -gameObject.pivotY, gameObject.texture.width, gameObject.texture.height);
+    if (colliders.length === 0) {
+      // TODO; do we need a boundsChanged callback?
+      let bounds = gameObject.localBounds;
+      
+      if (gameObject instanceof DisplayObject) {
+        let disp = /** @type {DisplayObject} */(gameObject);
+        if (disp.mClipRect !== null)
+          collider.set(0, 0, bounds.width, bounds.height);
+        else
+          collider.set(-gameObject.pivotX, -gameObject.pivotY, bounds.width, bounds.height);
+      } else {
+        collider.set(-gameObject.pivotX, -gameObject.pivotY, bounds.width, bounds.height);
       }
 
       collider.refresh(transform, position);

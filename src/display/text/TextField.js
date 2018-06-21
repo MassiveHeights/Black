@@ -80,9 +80,14 @@ class TextField extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onGetLocalBounds(outRect = undefined) {    
+  onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
-    
+
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
+    }
+
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
       if (this.mMultiline === false)
@@ -105,12 +110,6 @@ class TextField extends DisplayObject {
 
     outRect.width += this.mPadding.right;
     outRect.height += this.mPadding.bottom;
-
-    if (this.mClipRect !== null) {
-      this.mClipRect.copyTo(outRect);
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
-    }
 
     return outRect;
   }

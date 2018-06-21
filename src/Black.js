@@ -301,17 +301,6 @@ class Black extends MessageDispatcher {
     console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
   }
 
-  __update2(timestamp, fuck) {
-    this.__internalUpdate();
-
-    this.mVideo.beginFrame();
-    this.mVideo.render(this.mStage);
-    this.mVideo.endFrame();
-
-    //this.mRAFHandle = window.requestAnimationFrame(this.__update);
-    this.mRAFHandle = window.requestAnimationFrame(/** @type {function(number)} */(this.__update));
-  }
-
   /**
    * @private
    * @param {number} timestamp
@@ -359,7 +348,7 @@ class Black extends MessageDispatcher {
     if (numTicks === 0)
       Time.mAlphaTime = (timestamp - this.mLastUpdateTime) / Time.mDeltaTimeMs;
     else
-      Time.mAlphaTime = 1;
+      Time.mAlphaTime = 0;
 
     Time.mTime = Time.mActualTime + ((timestamp - this.mLastUpdateTime) * 0.001) * Time.mScale;
 
@@ -739,5 +728,8 @@ Black.instance = null;
  */
 Black.numUpdates = 0;
 
-/** @ignore */
+/** 
+ * Limit for number of updates to be done per one RAF.
+ * @public
+ */
 Black.maxUpdatesPerFrame = 60;
