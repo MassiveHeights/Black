@@ -304,9 +304,6 @@ class CanvasDriver extends VideoNullDriver {
     } else {
       this.mCtx.clearRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     }
-
-    // TODO: WHY?
-    this.mCtx.globalAlpha = 1;
   }
 
   /**
