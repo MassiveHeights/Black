@@ -1,9 +1,13 @@
+const times = 1;  // renders within updates + 1
+let time = 0;
+
 /**
  * Simple AABB physics engine (beta).
  *
  * @cat physics.arcade
  * @extends System
  */
+
 /* @echo EXPORT */
 class Arcade extends System {
   /**
@@ -42,14 +46,17 @@ class Arcade extends System {
     /** @private @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Boolean} Marks this dirty state. Necessity to rebuild pairs */
-    this.mChanged = false;
-
     /** @private @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
-    /** @private @type {Number} Bigger value gives better resolver result, but require more calculations */
-    this.mIterations = 1;
+    /** @private @type {number} Bigger value gives better resolver result, but require more calculations */
+    this.mIterations = 5;
+
+    /** @private @type {boolean} Switch for sleep calculations */
+    this.mSleepEnabled = true;
+
+    /** @public @type {number} Update delta time, secs. */
+    this.delta = 1 / 60;
   }
 
   /**
@@ -63,11 +70,13 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {Collider} colliderA
-   * @param {Collider} colliderB
-   * @param {Function} cb Callback
-   * @param {Object}   ctx
-   * @param {...*} args Rest arguments
+   * @param {Collider} colliderA Collider to check
+   * @param {Collider} colliderB Collider to check
+   * @param {Function} cb        Callback
+   * @param {Object} ctx         Callback context
+   * @param {...*} [args]        Rest arguments
+   *
+   * @return {void}
    */
   collisionInfo(colliderA, colliderB, cb, ctx, ...args) {
     const pair = this.mPairsHash[Pair.__id(colliderA, colliderB)];
@@ -92,13 +101,13 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {RigidBody} bodyA
-   * @param {RigidBody=} [bodyB=null]
+   * @param {RigidBody} bodyA         Body to check
+   * @param {RigidBody=} [bodyB=null] Body to check
    * @param {Function=} [cb=null]     Callback
-   * @param {Object=} [ctx=null]
-   * @param {...*} [args] Rest arguments
+   * @param {Object=} [ctx=null]      Callback context
+   * @param {...*} [args]             Rest arguments
    *
-   * @returns {boolean} Indicator of bodies collision.
+   * @return {boolean} Indicator of bodies collision.
    */
   isColliding(bodyA, bodyB = null, cb = null, ctx = null, ...args) {
     const pairs = bodyA.mPairs;
@@ -141,8 +150,8 @@ class Arcade extends System {
     GameObject.forEach(gameObject, object => {
       const body = object.getComponent(RigidBody);
 
-      if (body !== null) {
-        this.__addBody(body);
+      if (body) {
+        this.__addBody(/** @type {RigidBody} */ (body));
       }
     });
   }
@@ -152,9 +161,9 @@ class Arcade extends System {
    */
   onChildrenRemoved(gameObject) {
     GameObject.forEach(gameObject, object => {
-      const body = object.getComponent(RigidBody);
+      const body = /** @type {!RigidBody} */ (object.getComponent(RigidBody));
 
-      if (body !== null) {
+      if (body) {
         this.__removeBody(body, gameObject);
       }
     });
@@ -165,9 +174,9 @@ class Arcade extends System {
    */
   onComponentAdded(child, component) {
     if (component instanceof RigidBody) {
-      this.__addBody(component);
+      this.__addBody(/** @type {RigidBody} */ (component));
     } else if (component instanceof Collider) {
-      this.__addCollider(child, component);
+      this.__addCollider(child, /** @type {Collider} */ (component));
     }
   }
 
@@ -176,9 +185,9 @@ class Arcade extends System {
    */
   onComponentRemoved(child, component) {
     if (component instanceof RigidBody) {
-      this.__removeBody(component, child);
+      this.__removeBody(/** @type {RigidBody} */ (component), child);
     } else if (component instanceof Collider) {
-      this.__removeCollider(component);
+      this.__removeCollider(child, /** @type {Collider} */ (component));
     }
   }
 
@@ -186,7 +195,9 @@ class Arcade extends System {
    * Adds body to arcade world. Start tracking its gameObject colliders.
    *
    * @private
-   * @param {RigidBody} body
+   * @param {RigidBody} body Body to add
+   *
+   * @return {void}
    */
   __addBody(body) {
     const bodies = this.mBodies;
@@ -208,17 +219,20 @@ class Arcade extends System {
    * Removes body from arcade world.
    *
    * @private
-   * @param {RigidBody} body
+   * @param {RigidBody} body        Body to remove
+   * @param {GameObject} gameObject Body's game object
+   *
+   * @return {void}
    */
   __removeBody(body, gameObject) {
     const bodies = this.mBodies;
     const colliders = gameObject.mCollidersCache;
 
     if (colliders.length === 0) {
-      this.__removePairs(body.mCollider, body);
+      this.__removePairs(body.mCollider);
     } else {
       for (let i = 0, l = colliders.length; i < l; i++) {
-        this.__removePairs(colliders[i], body);
+        this.__removePairs(colliders[i]);
       }
     }
 
@@ -230,14 +244,16 @@ class Arcade extends System {
    * Adds collider to arcade world.
    *
    * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to add
+   *
+   * @return {void}
    */
   __addCollider(child, collider) {
     const body = child.getComponent(RigidBody);
 
     if (body && this.mBodies.indexOf(body) !== -1) {
-      this.__addPairs(collider, body);
+      this.__addPairs(collider, /** @type {RigidBody} */ (body));
 
       if (child.mCollidersCache.length === 1) {
         this.__removePairs(body.mCollider);
@@ -249,13 +265,15 @@ class Arcade extends System {
    * Removes collider from arcade world.
    *
    * @private
-   * @param {GameObject} child
-   * @param {Collider} collider
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to remove
+   *
+   * @return {void}
    */
   __removeCollider(child, collider) {
     const body = child.getComponent(RigidBody);
 
-    if (body && this.mBodies.indexOf(body) !== -1) {
+    if (body && this.mBodies.indexOf(/** @type {RigidBody} */ (body)) !== -1) {
       this.__removePairs(collider);
 
       const pairs = body.mPairs;
@@ -278,8 +296,10 @@ class Arcade extends System {
    * Generate pairs, passed collider with all present colliders.
    *
    * @private
-   * @param {Collider} collider
-   * @param {RigidBody} fromBody
+   * @param {Collider} collider   Collider to generate with
+   * @param {RigidBody} fromBody  The collider body
+   *
+   * @return {void}
    */
   __addPairs(collider, fromBody) {
     const bodies = this.mBodies;
@@ -305,10 +325,12 @@ class Arcade extends System {
    * Creates pair and adds it to world.
    *
    * @private
-   * @param {Collider} a
-   * @param {Collider} b
-   * @param {RigidBody} bodyA
-   * @param {RigidBody} bodyB
+   * @param {Collider} a      Pair collider
+   * @param {Collider} b      Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
+   *
+   * @return {void}
    */
   __addPair(a, b, bodyA, bodyB) {
     const isBoxA = a.constructor === BoxCollider;
@@ -345,7 +367,9 @@ class Arcade extends System {
    * Removes all pairs with given collider.
    *
    * @private
-   * @param {Collider} collider
+   * @param {Collider} collider Pairs collider
+   *
+   * @return {void}
    */
   __removePairs(collider) {
     const pairs = this.mPairs;
@@ -369,12 +393,8 @@ class Arcade extends System {
   /**
    * @inheritDoc
    */
-  onFixedUpdate(dt) {
-    if (this.mChanged) {
-      this.mChanged = false;
-      this.__rebuildPairs();
-    }
-
+  onPostUpdate() {
+    const dt = this.delta;
     const contacts = this.mContacts;
     const bodies = this.mBodies;
     const pairs = this.mPairs;
@@ -382,13 +402,23 @@ class Arcade extends System {
 
     // refresh body colliders if scale, rotation changed
     for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].update();
+      const body = bodies[i];
+      body.update();
+      body.mContacts.length = 0;
+      body.mInGroup = false;
     }
 
     // reset each pair to defaults
     // so phases will know, if pair in collision is true, then it needs more precise check
     for (let i = 0, l = pairs.length; i < l; i++) {
-      pairs[i].mInCollision = !(pairs[i].bodyA.mInvMass === 0 && pairs[i].bodyB.mInvMass === 0);
+      const pair = pairs[i];
+
+      pair.mIsStatic = (pair.bodyA.mIsSleeping || pair.bodyA.mInvMass === 0) &&
+        (pair.bodyB.mIsSleeping || pair.bodyB.mInvMass === 0);
+
+      if (pair.mIsStatic === false) {
+        pair.mInCollision = true;
+      }
     }
 
     // update pairs in collision flag todo
@@ -396,47 +426,99 @@ class Arcade extends System {
 
     // narrow collision test
     for (let i = 0, l = pairs.length; i < l; i++) {
-      pairs[i].mInCollision && pairs[i].test();
-    }
+      const pair = pairs[i];
 
-    // clear colliders dirty flags
-    for (let i = 0, l = bodies.length; i < l; i++) {
-      bodies[i].postUpdate();
+      if (pair.mInCollision && pair.mIsStatic === false) {
+        pair.test();
+      }
     }
 
     for (let i = 0, l = pairs.length; i < l; i++) {
-      if (pairs[i].mInCollision) {
-        contacts.push(pairs[i]);
+      const pair = pairs[i];
+
+      if (pair.mInCollision) {
+        pair.mIsStatic === false && contacts.push(pair);
+        pair.bodyA.mContacts.push(pair);
+        pair.bodyB.mContacts.push(pair);
       } else {
-        pairs[i].mNormalImpulse = 0;
-        pairs[i].mTangentImpulse = 0;
+        pair.mNormalImpulse = 0;
+        pair.mTangentImpulse = 0;
       }
     }
 
     this.__solve(dt);
+
+    if (!this.mSleepEnabled) return;
+
+    const group = [];
+    const stack = [];
+
+    for (let i = 0, l = bodies.length; i < l; i++) {
+      const body = bodies[i];
+      body.clearFlags(); // clear colliders dirty flags
+
+      if (body.mInGroup || body.mIsSleeping || body.mInvMass === 0) continue;
+
+      group.length = 0;
+      stack.length = 0;
+
+      stack.push(body);
+
+      while (stack.length !== 0) {
+        const body = stack.pop();
+        const contacts = body.mContacts;
+
+        group.push(body);
+        body.mInGroup = true;
+
+        for (let i = 0, l = contacts.length; i < l; i++) {
+          const contact = contacts[i];
+          const other = contact.bodyA === body ? contact.bodyB : contact.bodyA;
+
+          if (other.mInGroup || other.mInvMass === 0) continue;
+
+          stack.push(other);
+        }
+      }
+
+      let isSleeping = true;
+
+      for (let i = 0, l = group.length; i < l; i++) {
+        const body = group[i];
+        const velocity = body.mVelocity;
+        body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < Pair.sleepThreshold ? body.mSleepTime + 1 : 0;
+        isSleeping = isSleeping && body.mSleepTime > Pair.timeToSleep;
+      }
+
+      for (let i = 0, l = group.length; i < l; i++) {
+        group[i].mIsSleeping = isSleeping;
+      }
+    }
   }
 
   /**
    * Solve contacts.
    *
    * @private
-   * @param {Number} dt
+   * @param {number} dt Time from last update, ms.
+   *
+   * @return {void}
    */
   __solve(dt) {
     const iterations = this.mIterations;
-    const bodies = this.mBodies;
     const contacts = this.mContacts;
+    const bodies = this.mBodies;
     const gravity = this.mGravity;
 
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
 
-      if (body.mInvMass === 0)
+      if (body.mInvMass === 0 || body.mIsSleeping)
         continue;
 
+      const force = body.mForce;
       const velocity = body.mVelocity;
       const invMass = body.mInvMass;
-      const force = body.mForce;
       const damping = 1 - body.frictionAir;
 
       velocity.x = (velocity.x + (force.x * invMass + gravity.x) * dt) * damping;
@@ -457,7 +539,7 @@ class Arcade extends System {
       const body = bodies[i];
       body.mForce.set(0, 0);
 
-      if (body.mInvMass === 0)
+      if (body.mInvMass === 0 || body.mIsSleeping)
         continue;
 
       const position = body.mPosition;
@@ -522,7 +604,7 @@ class Arcade extends System {
   /**
    * Sets the gravity x.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set gravityX(v) {
@@ -532,7 +614,7 @@ class Arcade extends System {
   /**
    * Returns this gravity x.
    *
-   * @return {Number}
+   * @return {number}
    */
   get gravityX() {
     return this.mGravity.x;
@@ -541,7 +623,7 @@ class Arcade extends System {
   /**
    * Sets the gravity y.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set gravityY(v) {
@@ -551,7 +633,7 @@ class Arcade extends System {
   /**
    * Returns this gravity y.
    *
-   * @return {Number}
+   * @return {number}
    */
   get gravityY() {
     return this.mGravity.y;
@@ -560,7 +642,7 @@ class Arcade extends System {
   /**
    * Sets the count of solving iterations.
    *
-   * @param {Number} v Value to set.
+   * @param {number} v Value to set.
    * @return {void}
    */
   set iterations(v) {
@@ -570,9 +652,28 @@ class Arcade extends System {
   /**
    * Returns this count of solving iterations.
    *
-   * @return {Number}
+   * @return {number}
    */
   get iterations() {
     return this.mIterations;
+  }
+
+  /**
+   * Sets the sleep allowed flag.
+   *
+   * @param {boolean} v Value to set.
+   * @return {void}
+   */
+  set sleepEnabled(v) {
+    this.mSleepEnabled = v;
+  }
+
+  /**
+   * Returns this sleepAllowed flag.
+   *
+   * @return {boolean}
+   */
+  get sleepEnabled() {
+    return this.mSleepEnabled;
   }
 }

@@ -2,7 +2,7 @@
  * Collider with circle shape.
  *
  * @cat colliders
- * @extends Component
+ * @extends Collider
  */
 
 /* @echo EXPORT */
@@ -30,20 +30,8 @@ class CircleCollider extends Collider {
     /** @private @type {Vector} Local to rigid body max x and y vertex */
     this.mLocalMax = new Vector();
 
-    /** @private @type {Number} Global in stage coordinates radius */
+    /** @public @type {number} Global in stage coordinates radius */
     this.mRadius = 0;
-
-    /** @private @type {Number} Global in stage coordinates center */
-    this.mCenter = new Vector();
-
-    /** @private @type {Vector} Global in stage coordinates min x and y vertex */
-    this.mMin = new Vector();
-
-    /** @private @type {Vector} Global in stage coordinates max x and y vertex */
-    this.mMax = new Vector();
-
-    /** @private @type {Boolean} Dirty flag */
-    this.mChanged = true;
 
     this.set(x, y, radius);
   }
@@ -62,11 +50,7 @@ class CircleCollider extends Collider {
   }
 
   /**
-   * Updates min, max, center, radius of this collider, to prepare to collision test
-   *
-   * @public
-   * @param {Matrix} transform Game object world transformation with zero position.
-   * @param {Vector} position  Rigid body position.
+   * @inheritDoc
    */
   refresh(transform, position) {
     const localMin = this.mLocalMin;
@@ -119,15 +103,15 @@ class CircleCollider extends Collider {
     return distance <= circle.r;
   }
 
-  /**
-   * Draw this
-   *
-   * @public
-   * @param {Graphics} graphics Drawing place
-   */
-  debug(graphics) {
-    graphics.beginPath();
-    graphics.circle(this.mCenter.x, this.mCenter.y, this.mRadius);
-    graphics.stroke();
-  }
+  // /**
+  //  * Draw this
+  //  *
+  //  * @public
+  //  * @param {Graphics} graphics Drawing place
+  //  */
+  // debug(graphics) {
+  //   graphics.beginPath();
+  //   graphics.circle(this.mCenter.x, this.mCenter.y, this.mRadius);
+  //   graphics.stroke();
+  // }
 }

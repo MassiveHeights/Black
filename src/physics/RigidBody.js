@@ -4,6 +4,7 @@
  * @cat physics
  * @extends Component
  */
+
 /* @echo EXPORT */
 class RigidBody extends Component {
   /**
@@ -12,11 +13,20 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    /** @private @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
+    /** @public @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Array<Collider>} Stores all used colliders. Default or sprite collidersCache. Used for rebuild pairs */
-    this.mColliders = [];
+    /** @public @type {boolean} For internal usage. To mark this body is in island */
+    this.mInGroup = false;
+
+    /** @public @type {boolean} Flag to mark this body is in rest */
+    this.mIsSleeping = false;
+
+    /** @public @type {number} Internal counter. How many times (updates) this body has velocity lower than Pair.sleepThreshold */
+    this.mSleepTime = 0;
+
+    /** @public @type {Array<Pair>} All colliding pairs this body participates in */
+    this.mContacts = [];
 
     /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */
     this.mPivot = new Vector(Number.MAX_VALUE);
@@ -28,10 +38,10 @@ class RigidBody extends Component {
      * To track changes and update this position, if object was moved without physics */
     this.mCachedPosition = new Vector();
 
-    /** @private @type {Array<Pair>} All pairs this body participates in */
+    /** @public @type {Array<Pair>} All pairs this body participates in */
     this.mPairs = [];
 
-    /** @private @type {Boolean} Flag to indicate immovable body */
+    /** @private @type {boolean} Flag to indicate immovable body */
     this.mIsStatic = false;
 
     /** @private @type {Vector} This position in stage coordinates */
@@ -49,23 +59,23 @@ class RigidBody extends Component {
     /** @private @type {number} Cached mass */
     this.mMass = 1;
 
-    /** @private @type {number} Inverted mass or zero if body is static */
+    /** @public @type {number} Inverted mass or zero if body is static */
     this.mInvMass = 1;
 
-    /** @private @type {number} Velocity damper */
+    /** @public @type {number} Velocity damper */
     this.frictionAir = 0.01;
 
-    /** @private @type {number} Friction for collision solving */
+    /** @public @type {number} Friction for collision solving */
     this.friction = 0.1;
 
-    /** @private @type {number} Bounce for collision solving */
+    /** @public @type {number} Bounce for collision solving */
     this.bounce = 0.1;
   }
 
   /**
    * Returns this cached mass.
    *
-   * @return {Number}
+   * @return {number}
    */
   get mass() {
     return this.mMass;
@@ -74,7 +84,7 @@ class RigidBody extends Component {
   /**
    * Sets the mass of this body.
    *
-   * @param {Number} v Mass to set.
+   * @param {number} v Mass to set.
    * @return {void}
    */
   set mass(v) {
@@ -90,7 +100,7 @@ class RigidBody extends Component {
   /**
    * Returns this static indicator.
    *
-   * @return {Boolean}
+   * @return {boolean}
    */
   get isStatic() {
     return this.mIsStatic;
@@ -99,7 +109,7 @@ class RigidBody extends Component {
   /**
    * Sets this body movable state. Refresh inverted mass
    *
-   * @param {Boolean} v Value to set.
+   * @param {boolean} v Value to set.
    *
    * @return {void}
    */
@@ -111,7 +121,7 @@ class RigidBody extends Component {
   /**
    * Sets the global position x of this body.
    *
-   * @param {Number} v Position to set.
+   * @param {number} v Position to set.
    * @return {void}
    */
   set x(v) {
@@ -121,7 +131,7 @@ class RigidBody extends Component {
   /**
    * Returns this position x.
    *
-   * @return {Number}
+   * @return {number}
    */
   get x() {
     return this.mPosition.x;
@@ -130,7 +140,7 @@ class RigidBody extends Component {
   /**
    * Sets the global position y of this body.
    *
-   * @param {Number} v Position to set.
+   * @param {number} v Position to set.
    * @return {void}
    */
   set y(v) {
@@ -140,7 +150,7 @@ class RigidBody extends Component {
   /**
    * Returns this position y.
    *
-   * @return {Number}
+   * @return {number}
    */
   get y() {
     return this.mPosition.y;
@@ -149,17 +159,18 @@ class RigidBody extends Component {
   /**
    * Sets the force x of this body.
    *
-   * @param {Number} v Force to set.
+   * @param {number} v Force to set.
    * @return {void}
    */
   set forceX(v) {
+    this.mIsSleeping = false;
     this.mForce.x = v;
   }
 
   /**
    * Returns this force x.
    *
-   * @return {Number}
+   * @return {number}
    */
   get forceX() {
     return this.mForce.x;
@@ -168,17 +179,18 @@ class RigidBody extends Component {
   /**
    * Sets the force y of this body.
    *
-   * @param {Number} v Force to set.
+   * @param {number} v Force to set.
    * @return {void}
    */
   set forceY(v) {
+    this.mIsSleeping = false;
     this.mForce.y = v;
   }
 
   /**
    * Returns this force y.
    *
-   * @return {Number}
+   * @return {number}
    */
   get forceY() {
     return this.mForce.y;
@@ -187,7 +199,7 @@ class RigidBody extends Component {
   /**
    * Sets the velocity x of this body.
    *
-   * @param {Number} v Velocity to set.
+   * @param {number} v Velocity to set.
    * @return {void}
    */
   set velocityX(v) {
@@ -197,7 +209,7 @@ class RigidBody extends Component {
   /**
    * Returns this velocity x.
    *
-   * @return {Number}
+   * @return {number}
    */
   get velocityX() {
     return this.mVelocity.x;
@@ -206,7 +218,7 @@ class RigidBody extends Component {
   /**
    * Sets the velocity y of this body.
    *
-   * @param {Number} v Velocity to set.
+   * @param {number} v Velocity to set.
    * @return {void}
    */
   set velocityY(v) {
@@ -216,7 +228,7 @@ class RigidBody extends Component {
   /**
    * Returns this velocity y.
    *
-   * @return {Number}
+   * @return {number}
    */
   get velocityY() {
     return this.mVelocity.y;
@@ -225,7 +237,7 @@ class RigidBody extends Component {
   /**
    * Updates game object position, colliders
    *
-   * @internal
+   * @public
    * @return {void}
    */
   update() {
@@ -248,7 +260,7 @@ class RigidBody extends Component {
       }
     }
 
-    if (gameObject.parent) {
+    if (gameObject !== Black.stage) {
       const cachedPosition = this.mCachedPosition;
       const prevX = cachedPosition.x;
       const prevY = cachedPosition.y;
@@ -256,12 +268,12 @@ class RigidBody extends Component {
       wt.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
 
       // Update this position if game object position was changed during frame
-      if (cachedPosition.x !== prevX || cachedPosition.y !== prevY) {
-        position.x += cachedPosition.x - prevX;
-        position.y += cachedPosition.y - prevY;
-      }
+      position.x += cachedPosition.x - prevX;
+      position.y += cachedPosition.y - prevY;
 
-      gameObject.parent.globalToLocal(this.mPosition, gameObject);
+      gameObject.parent.globalToLocal(position, cachedPosition);
+      gameObject.x = cachedPosition.x;
+      gameObject.y = cachedPosition.y;
       gameObject.worldTransformation.transformXY(gameObject.pivotX, gameObject.pivotY, cachedPosition);
     }
 
@@ -289,9 +301,9 @@ class RigidBody extends Component {
    * Resets colliders dirty state after collision test. Sync with update
    *
    * @public
-   * @param {Number} dt
+   * @return {void}
    */
-  postUpdate(dt) {
+  clearFlags() {
     const colliders = this.gameObject.mCollidersCache;
     this.mCollider.mChanged = false;
 
@@ -300,43 +312,44 @@ class RigidBody extends Component {
     }
   }
 
-  /**
-   * Draws all the colliders
-   *
-   * @public
-   * @return {void}
-   */
-  debug() {
-    if (!this.gameObject) return;
-
-    if (RigidBody.mDebug.graphics === null) {
-      RigidBody.mDebug.graphics = new Graphics();
-    }
-
-    const debug = RigidBody.mDebug;
-    const graphics = debug.graphics;
-    const colliders = this.gameObject.mCollidersCache;
-
-    if (debug.time !== Black.instance.mLastFrameTimeMs) {
-      debug.time = Black.instance.mLastFrameTimeMs;
-      Black.stage.add(debug.graphics);
-
-      debug.graphics.clear();
-      debug.graphics.lineStyle(2, 0x00ff00);
-    }
-
-    if (colliders.length === 0) {
-      this.mCollider.debug(graphics, this.mCachedPosition);
-    } else {
-      for (let i = 0, l = colliders.length; i < l; i++) {
-        colliders[i].debug(graphics, this.mCachedPosition);
-      }
-    }
-  }
+  // /**
+  //  * Draws all the colliders
+  //  *
+  //  * @public
+  //  * @return {void}
+  //  */
+  // debug() {
+  //   if (!this.gameObject) return;
+  //
+  //   if (RigidBody.mDebug.graphics === null) {
+  //     RigidBody.mDebug.graphics = new Graphics();
+  //   }
+  //
+  //   const debug = RigidBody.mDebug;
+  //   const graphics = debug.graphics;
+  //   const colliders = this.gameObject.mCollidersCache;
+  //
+  //   if (debug.time !== Black.instance.mLastFrameTimeMs) {
+  //     debug.time = Black.instance.mLastFrameTimeMs;
+  //     Black.stage.add(debug.graphics);
+  //
+  //     debug.graphics.clear();
+  //   }
+  //
+  //   debug.graphics.lineStyle(2, this.mIsSleeping ? 0x00ff00 : 0xff0000);
+  //
+  //   if (colliders.length === 0) {
+  //     this.mCollider.debug(graphics, this.mCachedPosition);
+  //   } else {
+  //     for (let i = 0, l = colliders.length; i < l; i++) {
+  //       colliders[i].debug(graphics, this.mCachedPosition);
+  //     }
+  //   }
+  // }
 }
 
-/** @private @type {Object} Debug options */
-RigidBody.mDebug = {
-  graphics: null,
-  time    : 0,
-};
+// /** @private @type {Object} Debug options */
+// RigidBody.mDebug = {
+//   graphics: null,
+//   time    : 0,
+// };

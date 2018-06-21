@@ -2,7 +2,7 @@
  * Collider with rectangle shape.
  *
  * @cat colliders
- * @extends Component
+ * @extends Collider
  */
 
 /* @echo EXPORT */
@@ -27,13 +27,13 @@ class BoxCollider extends Collider {
       vertices.push(new Vector());
     }
 
-    /** @private @type {Rectangle} Local to game object */
+    /** @public @type {Rectangle} Local to gameObject */
     this.mRect = new Rectangle();
 
-    /** @private @type {Array<Vector>} Local to rigid body normals */
+    /** @public @type {Array<Vector>} Local to rigid body normals */
     this.mNormals = normals;
 
-    /** @private @type {Array<Vector>} Local to rigid body vertices */
+    /** @public @type {Array<Vector>} Local to rigid body vertices */
     this.mVertices = vertices;
 
     /** @private @type {Vector} Local to rigid body min x and y vertex */
@@ -44,18 +44,6 @@ class BoxCollider extends Collider {
 
     /** @private @type {Vector} Local to rigid body center */
     this.mLocalCenter = new Vector();
-
-    /** @private @type {Vector} Global in stage coordinates min x and y vertex */
-    this.mMin = new Vector();
-
-    /** @private @type {Vector} Global in stage coordinates max x and y vertex */
-    this.mMax = new Vector();
-
-    /** @private @type {Vector} Global in stage coordinates center */
-    this.mCenter = new Vector();
-
-    /** @private @type {Boolean} Dirty flag */
-    this.mChanged = true;
 
     this.set(x, y, width, height);
   }
@@ -75,11 +63,7 @@ class BoxCollider extends Collider {
   }
 
   /**
-   * Updates min, max, center of this collider, to prepare to collision test
-   *
-   * @public
-   * @param {Matrix} transform Game object world transformation with zero position.
-   * @param {Vector} position  Rigid body position.
+   * @inheritDoc
    */
   refresh(transform, position) {
     const localMin = this.mLocalMin;
@@ -139,24 +123,24 @@ class BoxCollider extends Collider {
     return this.mRect.containsXY(point.x, point.y);
   }
 
-  /**
-   * Draw this
-   *
-   * @public
-   * @param {Graphics} graphics   Drawing place
-   * @param {Vector} bodyPosition This parent global position
-   *
-   * @return {void}
-   */
-  debug(graphics, bodyPosition) {
-    const vertices = this.mVertices;
-
-    graphics.beginPath();
-    graphics.moveTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
-    graphics.lineTo(bodyPosition.x + vertices[1].x, bodyPosition.y + vertices[1].y);
-    graphics.lineTo(bodyPosition.x + vertices[2].x, bodyPosition.y + vertices[2].y);
-    graphics.lineTo(bodyPosition.x + vertices[3].x, bodyPosition.y + vertices[3].y);
-    graphics.lineTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
-    graphics.stroke();
-  }
+  // /**
+  //  * Draw this
+  //  *
+  //  * @public
+  //  * @param {Graphics} graphics   Drawing place
+  //  * @param {Vector} bodyPosition This parent global position
+  //  *
+  //  * @return {void}
+  //  */
+  // debug(graphics, bodyPosition) {
+  //   const vertices = this.mVertices;
+  //
+  //   graphics.beginPath();
+  //   graphics.moveTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
+  //   graphics.lineTo(bodyPosition.x + vertices[1].x, bodyPosition.y + vertices[1].y);
+  //   graphics.lineTo(bodyPosition.x + vertices[2].x, bodyPosition.y + vertices[2].y);
+  //   graphics.lineTo(bodyPosition.x + vertices[3].x, bodyPosition.y + vertices[3].y);
+  //   graphics.lineTo(bodyPosition.x + vertices[0].x, bodyPosition.y + vertices[0].y);
+  //   graphics.stroke();
+  // }
 }
