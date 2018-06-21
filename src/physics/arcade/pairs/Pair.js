@@ -9,76 +9,61 @@ class Pair {
    * Creates new instance of Pair.
    */
   constructor() {
-    /** @private @type {Collider|null} Collider from body A */
+    /** @public @type {Collider|null} Collider from body A */
     this.a = null;
 
-    /** @private @type {Collider|null} Collider from body B */
+    /** @public @type {Collider|null} Collider from body B */
     this.b = null;
 
-    /** @private @type {RigidBody|null} Parent of collider a */
+    /** @public @type {RigidBody|null} Parent of collider a */
     this.bodyA = null;
 
-    /** @private @type {RigidBody|null} Parent of collider b */
+    /** @public @type {RigidBody|null} Parent of collider b */
     this.bodyB = null;
 
-    /** @private @type {Boolean} Flag to indicate collision state */
+    /** @public @type {boolean} Flag to indicate collision state */
     this.mInCollision = false;
 
-    /** @private @type {Number} Cached normal impulse to apply in next iteration or frame if collision still exist */
+    /** @public @type {boolean} Flag to determine one from two bodies can move. invMass !== 0 and isSleeping === false */
+    this.mIsStatic = false;
+
+    /** @private @type {number} Cached normal impulse to apply in next iteration or frame if collision still exist */
     this.mNormalImpulse = 0;
 
-    /** @private @type {Number} Cached tangent impulse to apply in next iteration or frame if collision still exist */
+    /** @private @type {number} Cached tangent impulse to apply in next iteration or frame if collision still exist */
     this.mTangentImpulse = 0;
 
-    /** @private @type {Number} Position impulse cache to use within iterations */
+    /** @private @type {number} Position impulse cache to use within iterations */
     this.mPositionImpulse = 0;
 
-    /** @private @type {Number} This colliders cached friction */
+    /** @private @type {number} This colliders cached friction */
     this.mFriction = 0;
 
-    /** @private @type {Number} This colliders cached bounce factor */
+    /** @private @type {number} This colliders cached bounce factor */
     this.mBias = 0;
 
-    /** @private @type {Number} This colliders cached inverse mass sum */
+    /** @private @type {number} This colliders cached inverse mass sum */
     this.mMass = 0;
 
     /** @private @type {Vector} Offset within the colliders on preSolve to correct overlap on each iteration */
     this.mOffset = new Vector();
 
-    /** @private @type {Vector} Normal collision direction from a to b */
+    /** @public @type {Vector} Normal collision direction from a to b */
     this.mNormal = new Vector();
 
-    /** @private @type {Number} Positive number. Penetration within colliders */
+    /** @public @type {number} Positive number. Penetration within colliders */
     this.mOverlap = 0;
-  }
 
-  /**
-   * Setter
-   *
-   * @internal
-   *
-   * @param {Collider} a
-   * @param {Collider} b
-   * @param {RigidBody} bodyA
-   * @param {RigidBody} bodyB
-   *
-   * return {Pair} This
-   */
-  set(a, b, bodyA, bodyB) {
-    this.a = a;
-    this.b = b;
-    this.bodyA = bodyA;
-    this.bodyB = bodyB;
-
-    return this;
+    /** @public @type {boolean} Flag to indicate this pair needs refresh */
+    this.mChanged = false;
   }
 
   /**
    * Tests the collision state. Updates normal and overlap for solve.
    *
-   * @internal
+   * @public
    *
-   * return {Boolean} This pair in collision flag
+   * return {boolean} This pair in collision flag
    */
   test() {
     return this.mInCollision;
@@ -87,7 +72,7 @@ class Pair {
   /**
    * Prepares the solve properties depends on bodies physics characteristics and test result.
    *
-   * @internal
+   * @public
    *
    * return {void}
    */
@@ -129,7 +114,7 @@ class Pair {
   /**
    * Updates the bodies velocities to solve collision.
    *
-   * @internal
+   * @public
    *
    * return {void}
    */
@@ -186,7 +171,7 @@ class Pair {
   /**
    * Updates the bodies positions to solve collision.
    *
-   * @internal
+   * @public
    *
    * return {void}
    */
@@ -226,32 +211,20 @@ class Pair {
   /**
    * Generates pair id.
    *
-   * @internal
-   * @param {Collider} a pair collider
-   * @param {Collider} b pair collider
+   * @public
+   * @param {Collider} a Pair collider
+   * @param {Collider} b Pair collider
    *
    * return {String} Pair unique id
    */
   static __id(a, b) {
     return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;
   }
-
-  /**
-   * Solving settings
-   *
-   * @public
-   * @param {Number} [unitsPerMeter=1] To preserve physics reactions in different screen resolutions
-   * @param {Number} [baumgarte=0.2] Baumgarte coefficient for position solve. From 0.2 to 0.8
-   * @param {Number} [slop=0.5] Allowed overlap to skip position solve
-   *
-   * return {void}
-   */
-  static settings(unitsPerMeter = 1, baumgarte = 0.2, slop = 0.5) {
-    Pair.slop = slop;
-    Pair.baumgarte = baumgarte;
-    Pair.unitsPerMeter = unitsPerMeter;
-    Pair.bounceTrashhold = Pair.unitsPerMeter; // Pair.unitsPerMeter / 1.0
-  }
 }
 
-Pair.settings();
+Pair.timeToSleep = 5; // 30 updates to start sleep if velocities is lower threshold
+Pair.slop = 0.5;
+Pair.baumgarte = 0.2;
+Pair.unitsPerMeter = 1;
+Pair.sleepThreshold = 0.1 * Pair.unitsPerMeter;
+Pair.bounceTrashhold = Pair.unitsPerMeter;

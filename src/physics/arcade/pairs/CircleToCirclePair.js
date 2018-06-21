@@ -6,6 +6,41 @@
  */
 /* @echo EXPORT */
 class CircleToCirclePair extends Pair {
+
+  /**
+   * Creates new instance of CircleToCirclePair.
+   */
+  constructor() {
+    super();
+
+    /** @public @type {CircleCollider|null} Collider from body A */
+    this.a = null;
+
+    /** @public @type {CircleCollider|null} Collider from body B */
+    this.b = null;
+  }
+
+  /**
+   * Setter
+   *
+   * @public
+   *
+   * @param {CircleCollider} a  Pair circle collider
+   * @param {CircleCollider} b  Pair circle collider
+   * @param {RigidBody} bodyA   Pair body
+   * @param {RigidBody} bodyB   Pair body
+   *
+   * return {Pair} This
+   */
+  set(a, b, bodyA, bodyB) {
+    this.a = a;
+    this.b = b;
+    this.bodyA = bodyA;
+    this.bodyB = bodyB;
+
+    return this;
+  }
+
   /**
    * @inheritDoc
    */
