@@ -263,7 +263,7 @@ class Pair {
    * @param {Collider} a Pair collider
    * @param {Collider} b Pair collider
    *
-   * @return {String} Pair unique id
+   * @return {string} Pair unique id
    */
   static __id(a, b) {
     return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;

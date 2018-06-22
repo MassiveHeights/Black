@@ -274,10 +274,10 @@ class Arcade extends System {
    * @return {void}
    */
   __addCollider(child, collider) {
-    const body = child.getComponent(RigidBody);
+    const body = /** @type {RigidBody} */ (child.getComponent(RigidBody));
 
     if (body && this.mBodies.indexOf(body) !== -1) {
-      this.__addPairs(collider, /** @type {RigidBody} */(body));
+      this.__addPairs(collider, body);
 
       if (child.mCollidersCache.length === 1) {
         this.__removePairs(body.mCollider);
@@ -295,9 +295,9 @@ class Arcade extends System {
    * @return {void}
    */
   __removeCollider(child, collider) {
-    const body = child.getComponent(RigidBody);
+    const body = /** @type {RigidBody} */ (child.getComponent(RigidBody));
 
-    if (body && this.mBodies.indexOf(/** @type {RigidBody} */(body)) !== -1) {
+    if (body && this.mBodies.indexOf(body) !== -1) {
       this.__removePairs(collider);
 
       const pairs = body.mPairs;

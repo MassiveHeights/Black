@@ -106,7 +106,6 @@ class DisplayObjectRendererCanvas extends Renderer {
       driver.drawTexture(this.mCacheTexture);
   }
 
-  /** @inheritDoc */
   __refreshBitmapCache() {
     const bounds = this.gameObject.getBounds(Black.stage, true);
     const sf = Black.stage.scaleFactor;

@@ -75,7 +75,7 @@ class Graphics extends DisplayObject {
           break;
         }
         case GraphicsCommandType.FILL: {
-          let tmpBounds = Rectangle.fromPointsXY(...path.points);
+          let tmpBounds = Rectangle.fromPointsXY(path.points);
           path.bounds = path.bounds !== null ? path.bounds.union(tmpBounds) : tmpBounds;
 
           break;
@@ -89,7 +89,7 @@ class Graphics extends DisplayObject {
 
           path.maxLineWidth *= path.lineMult;
 
-          let tmpBounds = Rectangle.fromPointsXY(...path.points);
+          let tmpBounds = Rectangle.fromPointsXY(path.points);
           if (path.points.length > 2)
             tmpBounds.inflate(path.maxLineWidth, path.maxLineWidth);
 

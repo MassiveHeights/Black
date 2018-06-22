@@ -25,6 +25,9 @@ class Renderer {
     this.endPassRequired = false;
 
     /** @ignore @type {number} */
+    this.endPassRequiredAt = -1;
+
+    /** @ignore @type {number} */
     this.alpha = 1;
 
     /** @ignore @type {BlendMode} */
@@ -79,8 +82,7 @@ class Renderer {
    * Called when this renderer needs to be rendered.
    *
    * @param {VideoNullDriver} driver Active video driver.
-   * @param {boolean} isBackBufferActive
-   * @param {Matrix|null} customTransform
+   * @param {RenderSession} session
    * @returns {void}
    */
   render(driver, session) {

@@ -97,7 +97,7 @@ class CanvasDriver extends VideoNullDriver {
    */
   renderObject(child, session) {
     let skipChildren = false;
-    let renderer = child.mRenderer;
+    let renderer = /** @type {DisplayObject} */ (child).mRenderer;
 
     if (renderer != null) {
       let parentRenderer = session.parentRenderer;
@@ -105,7 +105,7 @@ class CanvasDriver extends VideoNullDriver {
       renderer.parent = parentRenderer;
       renderer.preRender(this, session);
 
-      child.onRender();
+      /** @type {DisplayObject} */ (child).onRender();
       for (let i = 0; i < child.mComponents.length; i++) {
         const comp = child.mComponents[i];
         comp.onRender();

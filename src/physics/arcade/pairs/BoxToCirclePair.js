@@ -16,13 +16,13 @@ class BoxToCirclePair extends Pair {
 
      /**
       * Collider from body a. 
-      * @private @type {BoxCollider|null}
+      * @public @type {BoxCollider|null}
       */
      this.a = null;
 
      /**
       * Collider from body a. 
-      * @private @type {CircleCollider|null}
+      * @public @type {CircleCollider|null}
       */
      this.b = null;
 
