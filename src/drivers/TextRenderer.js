@@ -52,6 +52,9 @@ class TextRenderer extends Renderer {
       this.updateTransform();
 
     let transform = this.mTransformCache;
+    
+    if (transform === null)
+      transform = this.gameObject.worldTransformation;
 
     if (session.isBackBufferActive === false) {
       if (session.customTransform === null) {
@@ -197,7 +200,7 @@ class TextRenderer extends Renderer {
       transform.copyTo(this.mTransformCache);
       this.mTransformCache.translate(-gameObject.padding.x, -gameObject.padding.y);
     } else {
-      this.mTransformCache = transform.clone();
+      this.mTransformCache = null;
     }
   }
 }
