@@ -45,10 +45,11 @@ class TextRenderer extends Renderer {
 
     if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
       gameObject.onGetLocalBounds();
-
       this.mMetrics = gameObject.mMetrics;
-      this.updateTransform();
     }
+
+    if (gameObject.mDirty & DirtyFlag.RENDER_CACHE || gameObject.mDirty & DirtyFlag.RENDER)
+      this.updateTransform();
 
     let transform = this.mTransformCache;
 
@@ -164,7 +165,7 @@ class TextRenderer extends Renderer {
     }
   }
 
-  /** @ignore */ 
+  /** @ignore */
   updateTransform() {
     let gameObject = /** @type {TextField} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
@@ -196,7 +197,7 @@ class TextRenderer extends Renderer {
       transform.copyTo(this.mTransformCache);
       this.mTransformCache.translate(-gameObject.padding.x, -gameObject.padding.y);
     } else {
-      this.mTransformCache = transform;
+      this.mTransformCache = transform.clone();
     }
   }
 }

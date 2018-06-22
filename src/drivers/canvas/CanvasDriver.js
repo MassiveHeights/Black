@@ -42,9 +42,10 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let session = this.__saveSession();
-    session.parentRenderer = this.mStageRenderer;
     session.isBackBufferActive = isBackBufferActive;
     session.customTransform = customTransform;
+
+    let parentRenderer = this.mStageRenderer;
 
     // RenderTexture related
     if (renderTexture !== null) {
@@ -56,9 +57,9 @@ class CanvasDriver extends VideoNullDriver {
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
 
-      session.parentRenderer.alpha = 1;
-      session.parentRenderer.blendMode = BlendMode.NORMAL;
-      session.parentRenderer.color = null;
+      parentRenderer.alpha = 1;
+      parentRenderer.blendMode = BlendMode.NORMAL;
+      parentRenderer.color = null;
 
       // collect parents of given GameObject
       this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
@@ -72,10 +73,10 @@ class CanvasDriver extends VideoNullDriver {
       }
 
       if (session.parentRenderers.length > 0)
-        session.parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
+        parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
     }
 
-    this.renderObject(gameObject, session);
+    this.renderObject(gameObject, session, parentRenderer);
 
     if (renderTexture !== null) {
       while (session.endPassParentRenderers.length > 0)
@@ -94,14 +95,13 @@ class CanvasDriver extends VideoNullDriver {
    * @ignore
    * @param {GameObject} child 
    * @param {RenderSession} session 
+   * @param {Renderer} renderer
    */
-  renderObject(child, session) {
+  renderObject(child, session, parentRenderer) {
     let skipChildren = false;
     let renderer = /** @type {DisplayObject} */ (child).mRenderer;
 
     if (renderer != null) {
-      let parentRenderer = session.parentRenderer;
-
       renderer.parent = parentRenderer;
       renderer.preRender(this, session);
 
@@ -119,12 +119,11 @@ class CanvasDriver extends VideoNullDriver {
       }
 
       skipChildren = renderer.skipChildren;
-      session.parentRenderer = renderer;
     }
 
     if (skipChildren === false) {
       for (let i = 0; i < child.mChildren.length; i++)
-        this.renderObject(child.mChildren[i], session);
+        this.renderObject(child.mChildren[i], session, renderer || parentRenderer);
     }
 
     if (renderer != null && renderer.endPassRequired === true)
