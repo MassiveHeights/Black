@@ -2,6 +2,7 @@
  * This class is used to create display text.
  *
  * @cat display.text
+ * @fires TextField#change
  * @extends DisplayObject
  */
 /* @echo EXPORT */
@@ -460,6 +461,11 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
+
+    /**
+     * Posts eveyrtime text has been changed.
+     * @event TextField#change
+     */
     this.post(Message.CHANGE);
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }

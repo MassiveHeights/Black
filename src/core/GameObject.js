@@ -647,7 +647,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns world bounds of this object and all children if specified (true by default).
-   * <br>
+   * 
    * `object.getBounds()` - relative to parent (default).<br>
    * `object.getBounds(object)` - local bounds.<br>
    * `object.getBounds(object.parent)` - relative to parent.<br>

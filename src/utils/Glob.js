@@ -1,10 +1,13 @@
 /**
+ * Helper glob matching class.
+ * 
  * @cat utils
- * @ignore
  */
 /* @echo EXPORT */
 class Glob {
   /**
+   * Creates new Glob instance.
+   * 
    * @ignore
    * @param {string} pattern 
    */
@@ -13,6 +16,7 @@ class Glob {
   }
 
   /**
+   * 
    * @ignore
    * @param {string} string 
    * @returns {boolean}

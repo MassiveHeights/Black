@@ -13,60 +13,112 @@ class RigidBody extends Component {
   constructor() {
     super();
 
-    /** @public @type {BoxCollider} Default collider. Used in case no any custom colliders provided by user */
+    /** 
+     * Default collider. Used in case no any custom colliders provided by user.
+     * @private @type {BoxCollider}
+     */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
-    /** @public @type {boolean} For internal usage. To mark this body is in island */
+    /** 
+     * For internal usage. To mark this body is in island.
+     * @private @type {boolean}
+     */
     this.mInGroup = false;
 
-    /** @public @type {boolean} Flag to mark this body is in rest */
+    /**
+     * Flag to mark this body is in rest.
+     * @private @type {boolean}
+     */
     this.mIsSleeping = false;
 
-    /** @public @type {number} Internal counter. How many times (updates) this body has velocity lower than Pair.sleepThreshold */
+    /** 
+     * Internal counter. How many times (updates) this body has velocity lower than `Pair.sleepThreshold`.
+     * @private @type {number}
+     */
     this.mSleepTime = 0;
 
-    /** @public @type {Array<Pair>} All colliding pairs this body participates in */
+    /** 
+     * All colliding pairs this body participates in.
+     * @private @type {Array<Pair>} 
+     */
     this.mContacts = [];
 
-    /** @private @type {Vector} Game object pivot. To track changes and update default collider if needed */
+    /**
+     * Game object pivot. To track changes and update default collider if needed.
+     * @private @type {Vector}
+     */
     this.mPivot = new Vector(Number.MAX_VALUE);
 
-    /** @private @type bounds} Game bounds position.
-     * To track changes and update this position, if object was moved without physics
+    /**  
+     * Game bounds position. To track changes and update this position, if object was moved without physics.
+     * @private @type {Vector}
      */
     this.mCachedPosition = new Vector();
 
-    /** @public @type {Array<Pair>} All pairs this body participates in */
+    /** 
+     * All pairs this body participates in.
+     * @public @type {Array<Pair>}
+     */
     this.mPairs = [];
 
-    /** @private @type {boolean} Flag to indicate immovable body */
+    /** 
+     * Flag to indicate immovable body.
+     * @private @type {boolean}
+     */
     this.mIsStatic = false;
 
-    /** @private @type {Vector} This position in stage coordinates */
+    /** 
+     * This position in stage coordinates.
+     * @private @type {Vector}
+     */
     this.mPosition = new Vector();
 
-    /** @private @type {Vector} This velocity to integrate */
+    /** 
+     * This velocity to integrate.
+     * @private @type {Vector}
+     */
     this.mVelocity = new Vector();
 
-    /** @private @type {Vector} Force accumulator */
+    /** 
+     * Force accumulator.
+     * @private @type {Vector}
+     */
     this.mForce = new Vector();
 
-    /** @private @type {Matrix} Game object transform. To track changes and update this colliders */
+    /** 
+     * Game object transform. To track changes and update this colliders.
+     * @private @type {Matrix}
+     */
     this.mTransform = new Matrix(Number.MAX_VALUE);
 
-    /** @private @type {number} Cached mass */
+    /**
+     * Cached mass
+     * @private @type {number}
+     */
     this.mMass = 1;
 
-    /** @public @type {number} Inverted mass or zero if body is static */
+    /**
+     * Inverted mass or zero if body is static. 
+     * @ignore @type {number} 
+     */
     this.mInvMass = 1;
 
-    /** @public @type {number} Velocity damper */
+    /** 
+     * Velocity damper.
+     * @public @type {number}
+     */
     this.frictionAir = 0.01;
 
-    /** @public @type {number} Friction for collision solving */
+    /**
+     * Friction for collision solving.
+     * @public @type {number}
+     */
     this.friction = 0.1;
 
-    /** @public @type {number} Bounce for collision solving */
+    /**
+     * Bounce for collision solving. 
+     * @public @type {number}
+     */
     this.bounce = 0.1;
   }
 
@@ -279,7 +331,7 @@ class RigidBody extends Component {
     if (colliders.length === 0) {
       // TODO; do we need a boundsChanged callback?
       let bounds = gameObject.localBounds;
-      
+
       if (gameObject instanceof DisplayObject) {
         let disp = /** @type {DisplayObject} */(gameObject);
         if (disp.mClipRect !== null)

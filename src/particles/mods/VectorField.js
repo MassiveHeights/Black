@@ -31,7 +31,7 @@ class VectorField extends Modifier {
   }
 
   /**
-   *
+   * Resets this vector field data.
    *
    * @returns {void}
    */
@@ -44,7 +44,7 @@ class VectorField extends Modifier {
   }
 
   /**
-   *
+   * Updates field data with a given callback function.
    *
    * @param {Function} fn
    * @returns {void}
@@ -59,8 +59,8 @@ class VectorField extends Modifier {
   }
 
   /**
-   *
-   *
+   * Returns value at given position.
+   * 
    * @param {number} x
    * @param {number} y
    * @returns {Vector|null}

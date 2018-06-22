@@ -1,5 +1,20 @@
 Black Engine: Changelog
 =======================
+v0.5.0
+------
+- Added Arcade physics system
+- Added `Black.ups` property to control number of updates per second (render goes as fast as it can)
+- Added `Time.alpha` - indicates how much time has been passed since last update in range from 0 to 1
+- Added `GameObject#onRender` and `Component#onRender` methods - called only for subclasses of DisplayObject
+- Added `System#onRender` method
+- Reworked Canvas Driver and performance improved
+- Reworked game loop - now onUpdate is a fixed time update
+- Removed `onFixedUpdate` and `onPostUpdate`
+- Removed `Black.FPS` getter
+- Removed `Black#uptime`, use `Time.now` instead
+- Fixed missing onRemoved call when removing children within onRemoved method
+- Improved `getBounds` performance for clipped objects
+
 v0.4.0
 ------
 - Graphics reworked (now it has bounds and API similar to HTML canvas)

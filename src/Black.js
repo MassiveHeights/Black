@@ -1,10 +1,10 @@
 /**
  * The Black class represents the core of the Black Engine.
  *
- * @fires Black#pause
- * @fires Black#unpause
+ * @fires Black#paused
+ * @fires Black#unpaused
  * @fires Black#ready
- * @fires Black#loop
+ * @fires Black#looped
  *
  * @export
  * @extends MessageDispatcher
@@ -13,6 +13,16 @@
 class Black extends MessageDispatcher {
   /**
    * Creates a new Black instance.
+   * 
+   * First parameter has to be a id of the HTML div element the game will be rendered to.
+   * Second parameter has to be `GameObject` class which will be the root object of your application.
+   * Third parameter has to be a class name of `VideoNullDriver` subclass eg `CanvasDriver`.
+   * Fourth parameter is optional array of System to use,
+   * 
+   * @example
+   * // Creates new Black instance with MyGame as a root class, CanvasDriver as renderer and Arcade physics as a system.
+   * new Black('game-container', MyGame, CanvasDriver, [Arcade]);
+   * 
    * @param {string}                                                       containerElementId The id of an DOM element.
    * @param {function(new: GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
    * @param {function(new: VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
@@ -121,6 +131,12 @@ class Black extends MessageDispatcher {
    */
   pause() {
     this.mPaused = true;
+
+    /**
+     * Posted after engine entered paused state.
+     *
+     * @event Black#paused
+     */
     this.post('paused');
   }
 
@@ -136,6 +152,12 @@ class Black extends MessageDispatcher {
 
   __setUnpaused() {
     this.mPaused = false;
+
+    /**
+     * Posted after engine is unpaused.
+     *
+     * @event Black#unpaused
+     */
     this.post('unpaused');
   }
 
@@ -262,6 +284,11 @@ class Black extends MessageDispatcher {
 
     this.mStage.__refresh();
 
+    /**
+     * Posted when all systems, stage and driver ready to be used. 
+     *
+     * @event Black#ready
+     */
     this.post(Message.READY);
 
     this.mGameObject = new this.mGameClass();
@@ -328,7 +355,16 @@ class Black extends MessageDispatcher {
       numTicks = 1;
 
     if (numTicks > Black.maxUpdatesPerFrame) {
-      this.post('loop', numTicks);
+      /**
+       * Posted when engine is not able to achieve desired amount of updates per second. 
+       * 
+       * Usually happens when user switches to another tab in browser or update logic is too heavy to be executed 
+       * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
+       * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
+       *
+       * @event Black#looped
+       */
+      this.post('looped', numTicks);
       Debug.warn(`Unable to catch up ${numTicks} update(s).`);
 
       numTicks = Black.maxUpdatesPerFrame;
@@ -669,6 +705,7 @@ class Black extends MessageDispatcher {
 
   /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
+   * 
    * @readonly
    * @returns {number}
    */

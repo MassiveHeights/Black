@@ -9,52 +9,100 @@ class Pair {
    * Creates new instance of Pair.
    */
   constructor() {
-    /** @public @type {Collider|null} Collider from body A */
+    /** 
+     * Collider from body a.
+     * @public @type {Collider|null}
+     */
     this.a = null;
 
-    /** @public @type {Collider|null} Collider from body B */
+    /** 
+     * Collider from body b. 
+     * @public @type {Collider|null}
+     */
     this.b = null;
 
-    /** @public @type {RigidBody|null} Parent of collider a */
+    /** 
+     * Parent of collider a. 
+     * @public @type {RigidBody|null}
+     */
     this.bodyA = null;
 
-    /** @public @type {RigidBody|null} Parent of collider b */
+    /**
+     * Parent of collider b.
+     * @public @type {RigidBody|null}
+     */
     this.bodyB = null;
 
-    /** @public @type {boolean} Flag to indicate collision state */
+    /**
+     * Flag to indicate collision state.
+     * @private @type {boolean}
+     */
     this.mInCollision = false;
 
-    /** @public @type {boolean} Flag to determine one from two bodies can move. invMass !== 0 and isSleeping === false */
+    /**
+     * Flag to determine one from two bodies can move. invMass !== 0 and isSleeping === false.
+     * @private @type {boolean}
+     */
     this.mIsStatic = false;
 
-    /** @private @type {number} Cached normal impulse to apply in next iteration or frame if collision still exist */
+    /** 
+     * Cached normal impulse to apply in next iteration or frame if collision still exist.
+     * @private @type {number}
+     */
     this.mNormalImpulse = 0;
 
-    /** @private @type {number} Cached tangent impulse to apply in next iteration or frame if collision still exist */
+    /**
+     * Cached tangent impulse to apply in next iteration or frame if collision still exist. 
+     * @private @type {number}
+     */
     this.mTangentImpulse = 0;
 
-    /** @private @type {number} Position impulse cache to use within iterations */
+    /**
+     * Position impulse cache to use within iterations. 
+     * @private @type {number}
+     */
     this.mPositionImpulse = 0;
 
-    /** @private @type {number} This colliders cached friction */
+    /**
+     * This colliders cached friction. 
+     * @private @type {number}
+     */
     this.mFriction = 0;
 
-    /** @private @type {number} This colliders cached bounce factor */
+    /** 
+     * This colliders cached bounce factor. 
+     * @private @type {number}
+     */
     this.mBias = 0;
 
-    /** @private @type {number} This colliders cached inverse mass sum */
+    /**
+     * This colliders cached inverse mass sum. 
+     * @private @type {number}
+     */
     this.mMass = 0;
 
-    /** @private @type {Vector} Offset within the colliders on preSolve to correct overlap on each iteration */
+    /**
+     * Offset within the colliders on preSolve to correct overlap on each iteration. 
+     * @private @type {Vector}
+     */
     this.mOffset = new Vector();
 
-    /** @public @type {Vector} Normal collision direction from a to b */
+    /**
+     * Normal collision direction from a to b. 
+     * @private @type {Vector}
+     */
     this.mNormal = new Vector();
 
-    /** @public @type {number} Positive number. Penetration within colliders */
+    /** 
+     * Positive number. Penetration within colliders. 
+     * @private @type {number}
+     */
     this.mOverlap = 0;
 
-    /** @public @type {boolean} Flag to indicate this pair needs refresh */
+    /**
+     * Flag to indicate this pair needs refresh. 
+     * @private @type {boolean}
+     */
     this.mChanged = false;
   }
 
@@ -63,7 +111,7 @@ class Pair {
    *
    * @public
    *
-   * return {boolean} This pair in collision flag
+   * @return {boolean} This pair in collision flag
    */
   test() {
     return this.mInCollision;
@@ -74,7 +122,7 @@ class Pair {
    *
    * @public
    *
-   * return {void}
+   * @return {void}
    */
   preSolve() {
     const normalX = this.mNormal.x;
@@ -116,7 +164,7 @@ class Pair {
    *
    * @public
    *
-   * return {void}
+   * @return {void}
    */
   solveVelocity() {
     const normalX = this.mNormal.x;
@@ -173,7 +221,7 @@ class Pair {
    *
    * @public
    *
-   * return {void}
+   * @return {void}
    */
   solvePosition() {
     const normalX = this.mNormal.x;
@@ -215,16 +263,27 @@ class Pair {
    * @param {Collider} a Pair collider
    * @param {Collider} b Pair collider
    *
-   * return {String} Pair unique id
+   * @return {String} Pair unique id
    */
   static __id(a, b) {
     return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;
   }
 }
 
+/** @ignore @type {number} */
 Pair.timeToSleep = 5; // 30 updates to start sleep if velocities is lower threshold
+
+/** @ignore @type {number} */
 Pair.slop = 0.5;
+
+/** @ignore @type {number} */
 Pair.baumgarte = 0.2;
+
+/** @ignore @type {number} */
 Pair.unitsPerMeter = 1;
+
+/** @ignore @type {number} */
 Pair.sleepThreshold = 0.1 * Pair.unitsPerMeter;
+
+/** @ignore @type {number} */
 Pair.bounceTrashhold = Pair.unitsPerMeter;

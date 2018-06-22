@@ -574,6 +574,11 @@ class Tween extends Component {
       }
     }
 
+    /**
+     * Posted on every tween update. 
+     * Note: tween can update object values inside `onRender` method without posting `Tween#update` message.
+     * @event Tween#update
+     */
     this.post(Message.UPDATE, this.gameObject);
 
     if (this.mElapsed === 1) {
@@ -583,9 +588,19 @@ class Tween extends Component {
         }
 
         this.mStartTime = t + this.mRepeatDelay;
+
+        /**
+         * Posted everytime tween is repeating.
+         * @event Tween#loop
+         */
         this.post('loop', this.gameObject);
       } else {
         this.mIsPlaying = false;
+
+        /**
+         * Posten when tween is finished.
+         * @event Tween#complete
+         */
         this.post(Message.COMPLETE, this.gameObject);
 
         if (this.mRemoveOnComplete) {
@@ -604,6 +619,11 @@ class Tween extends Component {
   __collectStartingValues() {
     if (this.mStarted === false) {
       this.mStarted = true;
+
+      /**
+       * Posted when tween started.
+       * @event Tween#start
+       */
       this.post('start', this.gameObject);
 
       for (let f in this.mValues) {

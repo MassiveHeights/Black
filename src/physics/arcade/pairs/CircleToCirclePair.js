@@ -13,10 +13,16 @@ class CircleToCirclePair extends Pair {
   constructor() {
     super();
 
-    /** @public @type {CircleCollider|null} Collider from body A */
+    /**
+     * Collider from body a. 
+     * @public @type {CircleCollider|null}
+     */
     this.a = null;
 
-    /** @public @type {CircleCollider|null} Collider from body B */
+    /**
+     * Collider from body b. 
+     * @public @type {CircleCollider|null}
+     */
     this.b = null;
   }
 
@@ -30,7 +36,7 @@ class CircleToCirclePair extends Pair {
    * @param {RigidBody} bodyA   Pair body
    * @param {RigidBody} bodyB   Pair body
    *
-   * return {Pair} This
+   * @return {Pair} This
    */
   set(a, b, bodyA, bodyB) {
     this.a = a;

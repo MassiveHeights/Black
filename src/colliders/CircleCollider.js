@@ -21,32 +21,45 @@ class CircleCollider extends Collider {
     /** @private @type {Circle} */
     this.mCircle = new Circle(x, y, radius);  // local to sprite
 
-    /** @private @type {Vector} Local to rigid body center */
+    /**
+     * Local to rigid body center.
+     * @private @type {Vector}
+     */
     this.mLocalCenter = new Vector();
 
-    /** @private @type {Vector} Local to rigid body min x and y vertex */
+    /**
+     * Local to rigid body min x and y vertex.
+     * @private @type {Vector} */
     this.mLocalMin = new Vector();
 
-    /** @private @type {Vector} Local to rigid body max x and y vertex */
+    /**
+     * Local to rigid body max x and y vertex 
+     * @private @type {Vector}
+     */
     this.mLocalMax = new Vector();
 
-    /** @public @type {number} Global in stage coordinates radius */
+    /**
+     * Global in stage coordinates radius 
+     * @private @type {number}
+     */
     this.mRadius = 0;
 
     this.set(x, y, radius);
   }
 
   /**
-   * Setter
+   * Updates this collider with a new given values.
    *
    * @public
    * @param {number} x      Center coordinate within X-axis.
    * @param {number} y      Center coordinate within Y-axis.
    * @param {number} radius Radius of the circle.
+   * @returns {CircleCollider}
    */
   set(x, y, radius) {
     this.mCircle.set(x, y, radius);
     this.mChanged = true;
+    return this;
   }
 
   /**

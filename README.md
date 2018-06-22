@@ -40,6 +40,7 @@ For more information about how to use Black Engine, please check the [Blacksmith
 ✔️ [Battery Efficient](http://blacksmith2d.io/Docs/Examples/Drivers/Skip%20Unchanged%20Frames)  
 ✔️ [Smart Cache As Bitmap](http://blacksmith2d.io/Docs/Examples/Sprites/Cache%20As%20Bitmap)  
 ✔️ [Render Texture](http://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
+✔️ [Arcade Physics](http://blacksmith2d.io/Docs/Examples/Arcade%20Physics/Mario)  
 ✔️ GCC Ready  
 
 ## GETTING STARTED

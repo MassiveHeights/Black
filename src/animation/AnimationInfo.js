@@ -1,6 +1,7 @@
 /**
  * Holds details about sprite animation.
  *
+ * @fires AnimationInfo#complete
  * @cat animation
  */
 /* @echo EXPORT */
@@ -151,6 +152,12 @@ class AnimationInfo {
         this.mCurrentFrame = 0;
       } else {
         this.mCurrentFrame = this.mFrames.length - 1;
+
+        /**
+         * Post messages when animation reach its end.
+         *
+         * @event AnimationInfo#complete
+         */
         this.mController.post(Message.COMPLETE, this);
         this.mCompleted = true;
         return null;

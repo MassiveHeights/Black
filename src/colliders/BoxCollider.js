@@ -27,39 +27,57 @@ class BoxCollider extends Collider {
       vertices.push(new Vector());
     }
 
-    /** @public @type {Rectangle} Local to gameObject */
+    /**
+     * Local to gameObject. 
+     * @private @type {Rectangle}
+     */
     this.mRect = new Rectangle();
 
-    /** @public @type {Array<Vector>} Local to rigid body normals */
+    /**
+     * Local to rigid body normals. 
+     * @private @type {Array<Vector>}
+     */
     this.mNormals = normals;
 
-    /** @public @type {Array<Vector>} Local to rigid body vertices */
+    /**
+     * Local to rigid body vertices. 
+     * @private @type {Array<Vector>} */
     this.mVertices = vertices;
 
-    /** @private @type {Vector} Local to rigid body min x and y vertex */
+    /**
+     * Local to rigid body min x and y vertex. 
+     * @private @type {Vector} */
     this.mLocalMin = new Vector();
 
-    /** @private @type {Vector} Local to rigid body max x and y vertex */
+    /**
+     * Local to rigid body max x and y vertex 
+     * @private @type {Vector}
+     */
     this.mLocalMax = new Vector();
 
-    /** @private @type {Vector} Local to rigid body center */
+    /**
+     * Local to rigid body center  
+     * @private @type {Vector}
+     */
     this.mLocalCenter = new Vector();
 
     this.set(x, y, width, height);
   }
 
   /**
-   * Setter
+   * Updates this collider with a new given values.
    *
    * @public
    * @param {number} x      X-coordinate.
    * @param {number} y      Y-coordinate.
    * @param {number} width  Rectangle width.
    * @param {number} height Rectangle height.
+   * @returns {BoxCollider}
    */
   set(x, y, width, height) {
     this.mRect.set(x, y, width, height);
     this.mChanged = true;
+    return this;
   }
 
   /**

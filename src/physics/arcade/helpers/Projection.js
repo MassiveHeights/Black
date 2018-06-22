@@ -93,10 +93,16 @@ class Range {
    */
   constructor() {
 
-    /** @public @type {number} Min value */
+    /** 
+     * Min value.
+     * @public @type {number} 
+     */
     this.min = 0;
 
-    /** @public @type {number} Max value */
+    /** 
+     * Max value.
+     * @public @type {number} 
+     */
     this.max = 0;
   }
 }

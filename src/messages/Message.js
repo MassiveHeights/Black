@@ -91,3 +91,6 @@ Message.READY = 'ready';
 
 /** @const @public @type {string} */
 Message.UPDATE = 'update';
+
+/** @const @public @type {string} */
+Message.RESIZE = 'resize';

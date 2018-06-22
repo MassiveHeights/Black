@@ -80,6 +80,10 @@ class SplashScreen extends MessageDispatcher {
 
       container.style.overflow = oldOverflow;
 
+      /**
+       * Posts when splash screen is hidden.
+       * @event SplashScreen#complete
+       */
       this.post(Message.COMPLETE);
     }, SplashScreen.duration);
 

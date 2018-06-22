@@ -2,7 +2,6 @@
  * A simple object pool class. Used to avoid GC.
  * 
  * @cat utils
- * @ignore
  */
 /* @echo EXPORT */
 class ObjectPool {
@@ -12,13 +11,13 @@ class ObjectPool {
    * @param {number} capacity 
    */
   constructor(type, capacity = 100) {
-    /** @type {Array<*>} */
+    /** @ignore @type {Array<*>} */
     this.mReleased = [];
 
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.mCapacity = capacity;
 
-    /** @type {Function} */
+    /** @ignore @type {Function} */
     this.mType = type;
   }
 

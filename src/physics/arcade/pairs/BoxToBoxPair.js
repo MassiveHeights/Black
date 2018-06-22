@@ -12,10 +12,16 @@ class BoxToBoxPair extends Pair {
   constructor() {
     super();
 
-    /** @public @type {BoxCollider|null} Collider from body A */
+    /**
+     * Collider from body a.
+     * @public @type {BoxCollider|null}
+     */
     this.a = null;
 
-    /** @public @type {BoxCollider|null} Collider from body B */
+    /**
+     * Collider from body b. 
+     * @public @type {BoxCollider|null}
+     */
     this.b = null;
 
     const projections = [];
@@ -24,12 +30,15 @@ class BoxToBoxPair extends Pair {
       projections.push(new Projection());
     }
 
-    /** @private @type {Array<Projection>} Projection keeps range of projected vertices. For each normal from both the colliders */
+    /**
+     * Projection keeps range of projected vertices. For each normal from both the colliders.
+     * @private @type {Array<Projection>}
+     */
     this.mProjections = projections;
   }
 
   /**
-   * Setter
+   * Updates this pair with a new given colliders and bodies.
    *
    * @public
    *
@@ -38,7 +47,7 @@ class BoxToBoxPair extends Pair {
    * @param {RigidBody} bodyA Pair body
    * @param {RigidBody} bodyB Pair body
    *
-   * return {Pair} This
+   * @return {Pair} This
    */
   set(a, b, bodyA, bodyB) {
     this.a = a;
@@ -57,11 +66,11 @@ class BoxToBoxPair extends Pair {
   }
 
   /**
-   * Refreshes projections
+   * Refreshes projections.
    *
    * @private
    *
-   * return {void}
+   * @return {void}
    */
   __refreshProjectionsRanges() {
     const projections = this.mProjections;

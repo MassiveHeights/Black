@@ -11,6 +11,9 @@
  * Every object in the display list should be `touchable` in order to receive input messages.
  *
  * @cat input
+ * @fires Input#pointerMove
+ * @fires Input#pointerDown
+ * @fires Input#pointerUp
  * @extends System
  */
 /* @echo EXPORT */
@@ -517,6 +520,21 @@ Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mou
  * @const
  */
 Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+
+/**
+ * Posts when mouse down or touch down event happened.
+ * @event Input#pointerDown
+ */
+
+/**
+ * Posts when mouse up or touch up event happened.
+ * @event Input#pointerUp
+ */ 
+
+/**
+ * Posts when mouse move or touch move event happened.
+ * @event Input#pointerMove
+ */ 
 
 /**
  * Stores additional information about pointer events.

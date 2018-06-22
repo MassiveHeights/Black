@@ -17,7 +17,7 @@ class AtlasTextureAsset extends Asset {
   constructor(name, imageUrl, dataUrl) {
     super(name);
 
-    /** @type {number} */
+    /** @private @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
     /** @private @type {ImageAssetLoader} */

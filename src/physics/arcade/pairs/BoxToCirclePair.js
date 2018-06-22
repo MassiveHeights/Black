@@ -14,27 +14,45 @@ class BoxToCirclePair extends Pair {
   constructor() {
     super();
 
-    /** @public @type {BoxCollider|null} Collider from body A */
-    this.a = null;
+     /**
+      * Collider from body a. 
+      * @private @type {BoxCollider|null}
+      */
+     this.a = null;
 
-    /** @public @type {CircleCollider|null} Collider from body B */
-    this.b = null;
+     /**
+      * Collider from body a. 
+      * @private @type {CircleCollider|null}
+      */
+     this.b = null;
 
-    /** @private @type {number} Cached half width of box in stage coordinates */
+    /** 
+     * Cached half width of box in stage coordinates.
+     * @private @type {number}
+     */
     this.mBoxHalfWidth = 0;
 
-    /** @private @type {number} Cached half height of box in stage coordinates */
+    /** 
+     * Cached half height of box in stage coordinates,
+     * @private @type {number}
+     */
     this.mBoxHalfHeight = 0;
 
-    /** @private @type {Vector} Cached cos and sin from box game object world transformation without scale, to rotate */
+    /**
+     * Cached cos and sin from box game object world transformation without scale, to rotate.
+     * @private @type {Vector}
+     */
     this.mBoxRotate = new Vector();
 
-    /** @private @type {Vector} Tmp point to rotate */
+    /**
+     * Tmp point to rotate. 
+     * @private @type {Vector}
+     */
     this.mCircleCenter = new Vector();
   }
 
   /**
-   * Setter
+   * Assigns colliders and bodies to this pair.
    *
    * @public
    *
@@ -43,7 +61,7 @@ class BoxToCirclePair extends Pair {
    * @param {RigidBody} bodyA   Pair body
    * @param {RigidBody} bodyB   Pair body
    *
-   * return {Pair} This
+   * @return {Pair} This
    */
   set(a, b, bodyA, bodyB) {
     this.a = a;
@@ -59,7 +77,7 @@ class BoxToCirclePair extends Pair {
    *
    * @private
    *
-   * return {void}
+   * @return {void}
    */
   __rotate(point, anchorX, anchorY, cos, sin) {
     const x = point.x - anchorX;

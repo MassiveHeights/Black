@@ -1,45 +1,51 @@
 /**
+ * RGB helper struct.
+ * 
  * @cat utils
  */
 /* @echo EXPORT */
 class RGB {
   /**
+   * Creates new RGB instance.
    * 
    * @param {number} r 
    * @param {number} g 
    * @param {number} b 
    */
   constructor(r = 0, g = 0, b = 0) {
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.r = r;
 
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.g = g;
 
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.b = b;
   }
 }
 
 /**
+ * Hue, saturation, lightness helper class.
+ * 
  * @cat utils
  */
 /* @echo EXPORT */
 class HSV {
   /**
+   * Creates new HSV instance.
    * 
    * @param {number} h
    * @param {number} s 
    * @param {number} v 
    */
   constructor(h = 0, s = 0, v = 0) {
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.h = h;
 
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.s = s;
 
-    /** @type {number} */
+    /** @ignore @type {number} */
     this.v = v;
   }
 }
@@ -52,7 +58,6 @@ class HSV {
 */
 /* @echo EXPORT */
 class ColorHelper {
-
   /**
    * Converts number color to RGB object.
    *
