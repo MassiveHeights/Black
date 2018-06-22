@@ -1,7 +1,6 @@
 /**
  * A double key map.
  * @cat utils
- * @ignore
  */
 /* @echo EXPORT */
 class MapMap {

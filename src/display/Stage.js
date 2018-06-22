@@ -2,6 +2,7 @@
  * The root container for all renderable objects
  *
  * @cat display
+ * @fires Stage#resize
  * @extends GameObject
  */
 /* @echo EXPORT */
@@ -75,7 +76,7 @@ class Stage extends GameObject {
   /**
    * @inheritDoc
    */
-  onUpdate(dt) {
+  onUpdate() {
     let size = Black.instance.viewport.size;
 
     if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
@@ -149,7 +150,12 @@ class Stage extends GameObject {
     Black.driver.__onResize(null, null);
 
     this.setTransformDirty();
-    this.post('resize');
+
+    /**
+     * Posts everytime stage size is changed.
+     * @event Stage#resize
+     */
+    this.post(Message.RESIZE);
   }
 
   /**

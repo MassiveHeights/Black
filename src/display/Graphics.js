@@ -33,33 +33,7 @@ class Graphics extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Graphics');
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {GraphicsRenderer} */ (this.mRenderer);
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.commands = this.mCommandQueue;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-      renderer.visible = this.mVisible;
-      renderer.dirty = this.mDirty;
-      renderer.pivotX = this.mPivotX;
-      renderer.pivotY = this.mPivotY;
-      renderer.clipRect = this.mClipRect;
-      renderer.bounds = this.mBounds;
-      renderer.snapToPixels = this.mSnapToPixels;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
+    return Black.driver.getRenderer('Graphics', this);
   }
 
   /**
@@ -68,28 +42,22 @@ class Graphics extends DisplayObject {
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
 
-    let bounds = new Rectangle();
-    let newPath = () => {
-      return {
-        bounds: null,
-        points: [],
-        maxLineWidth: 0,
-        lastLineWidth: 0,
-        lineMult: 0.5,
-      };
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
     }
 
-    let path = newPath();
-
+    let bounds = new Rectangle();
+    let path = new GraphicsPath();
     let len = this.mCommandQueue.length;
-    for (let i = 0; i < len; i++) {
 
+    for (let i = 0; i < len; i++) {
       let cmd = this.mCommandQueue[i];
 
       switch (cmd.type) {
         case GraphicsCommandType.BEGIN_PATH: {
           path.bounds && bounds.union(path.bounds);
-          path = newPath();
+          path = new GraphicsPath();
           break;
         }
         case GraphicsCommandType.BOUNDS: {
@@ -107,8 +75,8 @@ class Graphics extends DisplayObject {
           break;
         }
         case GraphicsCommandType.FILL: {
-          let tmpBounds = Rectangle.fromPointsXY(...path.points);
-          path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+          let tmpBounds = Rectangle.fromPointsXY(path.points);
+          path.bounds = path.bounds !== null ? path.bounds.union(tmpBounds) : tmpBounds;
 
           break;
         }
@@ -121,7 +89,7 @@ class Graphics extends DisplayObject {
 
           path.maxLineWidth *= path.lineMult;
 
-          let tmpBounds = Rectangle.fromPointsXY(...path.points);
+          let tmpBounds = Rectangle.fromPointsXY(path.points);
           if (path.points.length > 2)
             tmpBounds.inflate(path.maxLineWidth, path.maxLineWidth);
 
@@ -137,12 +105,6 @@ class Graphics extends DisplayObject {
 
     path.bounds && bounds.union(path.bounds);
     bounds.copyTo(outRect);
-
-    if (this.mClipRect !== null) {
-      this.mClipRect.copyTo(outRect);
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
-    }
 
     return outRect;
   }
@@ -362,11 +324,13 @@ class Graphics extends DisplayObject {
    * @param {number} p1
    * @param {number} p2
    * @param {number} p3
-   * @param {Vector} [out=new Vector()]
+   * @param {Vector=} out
    *
    * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
-  __bezierRange(p0, p1, p2, p3, out = new Vector()) {
+  __bezierRange(p0, p1, p2, p3, out) {
+    out = out || new Vector();
+
     const a = (p2 - 2 * p1 + p0) - (p3 - 2 * p2 + p1);
     const b = 2 * (p1 - p0) - 2 * (p2 - p1);
     const c = p0 - p1;
@@ -466,5 +430,24 @@ class Graphics extends DisplayObject {
   __pushCommand(type, ...data) {
     let cmd = new GraphicsCommand(type, data);
     this.mCommandQueue.push(cmd);
+  }
+}
+
+class GraphicsPath {
+  constructor() {
+    /** @type {Rectangle|null} */
+    this.bounds = null;
+
+    /** @type {Array<number>} */
+    this.points = [];
+
+    /** @type {number} */
+    this.maxLineWidth = 0;
+
+    /** @type {number} */
+    this.lastLineWidth = 0;
+
+    /** @type {number} */
+    this.lineMult = 0.5;
   }
 }

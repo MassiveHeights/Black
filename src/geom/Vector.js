@@ -331,7 +331,7 @@ class Vector {
    * Creates new Vector from given angle in radians.
    *
    * @param {number} angle Angle.
-   * @param {Vector} outVector Vector to be returned.
+   * @param {Vector=} outVector Vector to be returned.
    * @return {Vector} New Vector object.
    */
   static fromAngle(angle, outVector) {
@@ -348,7 +348,7 @@ class Vector {
    * @param {Vector=} outVector
    * @return {Vector}
    */
-  static randomRange(vectorMin, vectorMax, outVector = undefined) {
+  static randomRange(vectorMin, vectorMax, outVector) {
     outVector = outVector || new Vector();
 
     outVector.x = Math.random() * (vectorMax.x - vectorMin.x) + vectorMin.x;

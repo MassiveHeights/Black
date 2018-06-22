@@ -86,7 +86,7 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Emitter');
+    return Black.driver.getRenderer('Emitter', this);
   }
 
   /**
@@ -139,7 +139,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   updateNextTick(dt = 0) {
-    let t = Black.instance.uptime;
+    let t = Time.now;
     let firstEmit = false;
 
     if (this.mState === EmitterState.PENDING) {
@@ -162,7 +162,7 @@ class Emitter extends DisplayObject {
         if (this.mEmitNumRepeatsLeft <= 0) {
           this.mState = EmitterState.FINISHED;
 
-          this.post('complete');
+          this.post(Message.COMPLETE);
           return;
         } else {
           this.mState = EmitterState.PENDING;
@@ -193,37 +193,13 @@ class Emitter extends DisplayObject {
   /**
    * @inheritDoc
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {EmitterRendererCanvas} */ (this.mRenderer);
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.visible = this.mVisible;
-      renderer.particles = this.mParticles;
-      renderer.textures = this.mTextures;
-      renderer.space = this.mSpace;
-      renderer.isLocal = this.mIsLocal;
-      renderer.dirty = this.mDirty;
-      renderer.clipRect = this.clipRect;
-      renderer.sortOrder = this.mSortOrder;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    return driver.registerRenderer(renderer);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onUpdate(dt) {
+  onUpdate() {
+    let dt = Time.delta;
+    
     // rate logic
     this.updateNextTick(dt);
 
-    if (Black.instance.uptime >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
+    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
       this.__create(this.mEmitCount.getValue());
 
     // main update login

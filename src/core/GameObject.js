@@ -98,9 +98,6 @@ class GameObject extends MessageDispatcher {
     /** @private @type {boolean} */
     this.mSuspendDirty = false;
 
-    /** @protected @type {boolean} */
-    this.mSnapToPixels = false;
-
     // cache all colliders for fast access
     /** @private @type {Array<Collider>} */
     this.mCollidersCache = [];
@@ -388,8 +385,9 @@ class GameObject extends MessageDispatcher {
     if (instance instanceof Collider)
       this.mCollidersCache.push(instance);
 
-    if (this.stage !== null)
+    if (this.stage !== null || Black.stage === this) {
       Black.instance.onComponentAdded(this, instance);
+    }
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -421,8 +419,9 @@ class GameObject extends MessageDispatcher {
         this.mCollidersCache.splice(index, 1);
     }
 
-    if (this.stage !== null)
+    if (this.stage !== null || Black.stage === this) {
       Black.instance.onComponentRemoved(this, instance);
+    }
 
     this.mNumComponentsRemoved++;
 
@@ -573,11 +572,10 @@ class GameObject extends MessageDispatcher {
   /**
    * @ignore
    * @private
-   * @param {number} dt
    * @return {void}
    */
-  __fixedUpdate(dt) {
-    this.onFixedUpdate(dt);
+  __update() {
+    this.onUpdate();
 
     if (this.mChildOrComponentBeenAdded === false)
       return;
@@ -594,8 +592,7 @@ class GameObject extends MessageDispatcher {
         if (c.mAdded === false)
           break;
 
-        c.mGameObject = this;
-        c.onFixedUpdate(dt);
+        c.onUpdate();
       }
     }
 
@@ -606,123 +603,25 @@ class GameObject extends MessageDispatcher {
         let child = this.mChildrenClone[i];
 
         if (child.mAdded === true)
-          child.__fixedUpdate(dt);
+          child.__update();
       }
     }
   }
-
-  /**
-   * @ignore
-   * @private
-   * @param {number} dt time since the last frame
-   * @return {void}
-   */
-  __update(dt) {
-    this.onUpdate(dt);
-
-    if (this.mChildOrComponentBeenAdded === false)
-      return;
-
-    if (this.mComponents.length > 0) {
-      this.mComponentClone = this.mComponents.slice();
-
-      for (let k = 0; k < this.mComponentClone.length; k++) {
-        if (this.mAdded === false)
-          break;
-
-        let c = this.mComponentClone[k];
-
-        if (c.mAdded === false)
-          break;
-
-        c.mGameObject = this;
-        c.onUpdate(dt);
-      }
-    }
-
-    if (this.mChildren.length > 0) {
-      this.mChildrenClone = this.mChildren.slice();
-
-      for (let i = 0; i < this.mChildrenClone.length; i++) {
-        let child = this.mChildrenClone[i];
-
-        if (child.mAdded === true)
-          child.__update(dt);
-      }
-    }
-  }
-
-  /**
-   * @ignore
-   * @param {number} dt time since the last frame
-   * @return {void}
-   */
-  __postUpdate(dt) {
-    this.onPostUpdate(dt);
-
-    if (this.mChildOrComponentBeenAdded === false)
-      return;
-      
-    if (this.mComponents.length > 0) {
-      this.mComponentClone = this.mComponents.slice();
-
-      for (let k = 0; k < this.mComponentClone.length; k++) {
-        if (this.mAdded === false)
-          break;
-
-        let c = this.mComponentClone[k];
-
-        if (c.mAdded === false)
-          break;
-
-        c.mGameObject = this;
-        c.onPostUpdate(dt);
-      }
-    }
-
-    if (this.mChildren.length > 0) {
-      this.mChildrenClone = this.mChildren.slice();
-
-      for (let i = 0; i < this.mChildrenClone.length; i++) {
-        let child = this.mChildrenClone[i];
-
-        if (child.mAdded === true)
-          child.__postUpdate(dt);
-      }
-    }
-  }
-
-  /**
-   * Called at every fixed frame update.
-   *
-   * @protected
-   * @param {number} dt Time since the last frame.
-   * @return {void}
-   */
-  onFixedUpdate(dt) { }
 
   /**
    * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
    * going from top to bottom of the display list.
    * 
    * @protected
-   * @param {number} dt Time since the last frame.
    * @return {void}
    */
-  onUpdate(dt) { }
+  onUpdate() { }
 
   /**
-   * Called after all updates have been executed.
-   *
-   * @protected
-   * @param {number} dt Time since the last frame.
-   * @return {void}
-   */
-  onPostUpdate(dt) { }
-
-  /**
-   * Called every time `GameObject` has to be rendered.
-   * Doesn't render itself. Collects render data to be processed by video driver after.
+   * Called every time `GameObject` has to be rendered. Doesn't render itself. Collects render data to be processed by 
+   * video driver after. 
+   * 
+   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
    *
    * @protected
    * @param {VideoNullDriver} driver Current registered video driver.
@@ -730,7 +629,7 @@ class GameObject extends MessageDispatcher {
    * @param {boolean=} [isBackBufferActive=false] Specifies if render to backBuffer.
    * @return {Renderer}
    */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
+  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
     return null;
   }
 
@@ -748,7 +647,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns world bounds of this object and all children if specified (true by default).
-   * <br>
+   * 
    * `object.getBounds()` - relative to parent (default).<br>
    * `object.getBounds(object)` - local bounds.<br>
    * `object.getBounds(object.parent)` - relative to parent.<br>
@@ -1477,10 +1376,10 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets tag of this GameObject.
-   *
-   * @return {string|null}
-   */
+  * Gets/Sets tag of this GameObject.
+  *
+  * @return {string|null}
+  */
   get tag() {
     return this.mTag;
   }
@@ -1661,14 +1560,6 @@ class GameObject extends MessageDispatcher {
   get touchable() {
     let c = /** @type {InputComponent} */ (this.getComponent(InputComponent));
     return c !== null && c.touchable === true;
-  }
-
-  get snapToPixels() {
-    return this.mSnapToPixels;
-  }
-
-  set snapToPixels(value) {
-    this.mSnapToPixels = value;
   }
 
   // TODO: rename method

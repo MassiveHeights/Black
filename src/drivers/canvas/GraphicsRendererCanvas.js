@@ -13,35 +13,34 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     super();
   }
 
-  /**
-   * Called when this renderer needs to be rendered.
-   *
-   * @param {VideoNullDriver} driver Active video driver.
-   * @returns {void}
-   */
-  render(driver) {
+  /** @inheritDoc */
+  render(driver, session) {
+    let gameObject = /** @type {Graphics} */ (this.gameObject);
     this.__drawCommandBuffer(driver);
 
-    if (this.color !== null && this.color !== 0xFFFFFF) {
+    if (gameObject.mColor !== null && gameObject.mColor !== 0xFFFFFF) {
       driver.context.globalCompositeOperation = 'multiply';
-      this.__drawCommandBuffer(driver, this.color);
+      this.__drawCommandBuffer(driver, gameObject.mColor);
     }
   }
 
   __drawCommandBuffer(driver, color = null) {
+    let gameObject = /** @type {Graphics} */ (this.gameObject);
+    let commands = gameObject.mCommandQueue;
+
     const ctx = driver.context;
-    const len = this.commands.length;
+    const len = commands.length;
     const r = driver.renderScaleFactor;
     ctx.save();
     ctx.beginPath();
-    
+
     for (let i = 0; i < len; i++) {
-      const cmd = this.commands[i];      
+      const cmd = commands[i];
 
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
           ctx.lineWidth = cmd.getNumber(0) * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(cmd.getNumber(1), cmd.getNumber(2));
+          ctx.strokeStyle = ColorHelper.intToRGBA(color || cmd.getNumber(1), cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
           ctx.mitterLimit = cmd.getNumber(5);
@@ -49,7 +48,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(cmd.getNumber(0), cmd.getNumber(1));
+          ctx.fillStyle = ColorHelper.intToRGBA(color || cmd.getNumber(0), cmd.getNumber(1));
           break;
         }
 
@@ -63,7 +62,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
         case GraphicsCommandType.BEZIER_CURVE_TO: {
-          ctx.bezierCurveTo(cmd.getNumber(0), cmd.getNumber(1), cmd.getNumber(2), cmd.getNumber(3), cmd.getNumber(4), cmd.getNumber(5));
+          ctx.bezierCurveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r, cmd.getNumber(4) * r, cmd.getNumber(5) * r);
           break;
         }
         case GraphicsCommandType.BEGIN_PATH: {
@@ -105,14 +104,5 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     }
 
     ctx.restore();
-  }
-
-  /**
-   * Returns true if this renderer can be rendered.
-   *
-   * @returns {boolean} True if can be rendered otherwise false.
-   */
-  get isRenderable() {
-    return this.commands.length > 0;
   }
 }

@@ -42,106 +42,93 @@ class CanvasDriver extends VideoNullDriver {
       return;
 
     let session = this.__saveSession();
+    session.parentRenderer = this.mStageRenderer;
+    session.isBackBufferActive = isBackBufferActive;
+    session.customTransform = customTransform;
 
-    let numEndClipsRequired = 0;
-    if (renderTexture != null) {
+    // RenderTexture related
+    if (renderTexture !== null) {
+      // Swap context
       this.mLastRenderTexture = this.mCtx;
       this.mCtx = renderTexture.renderTarget.context;
 
-      // collect parents alpha, blending, clipping and masking
+      // clear context cache
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
 
-      this.mStageRenderer.alpha = 1;
-      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+      session.parentRenderer.alpha = 1;
+      session.parentRenderer.blendMode = BlendMode.NORMAL;
+      session.parentRenderer.color = null;
 
-      // alpha, blendmode will be overwritten into this.mStageRenderer
-      numEndClipsRequired = this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
-    } else {
-      this.mStageRenderer.alpha = 1;
-      this.mStageRenderer.blendMode = BlendMode.NORMAL;
+      // collect parents of given GameObject
+      this.__collectParentRenderables(session, gameObject, this.mStageRenderer);
+
+      for (let i = 0, len = session.parentRenderers.length; i !== len; i++) {
+        let renderer = session.parentRenderers[i];
+        renderer.begin(this, session);
+
+        if (renderer.skipSelf === false)
+          renderer.upload(this, session);
+      }
+
+      if (session.parentRenderers.length > 0)
+        session.parentRenderer = session.parentRenderers[session.parentRenderers.length - 1];
     }
 
-    session.rendererIndex = session.renderers.length;
+    this.renderObject(gameObject, session);
 
-    if (session.skipChildren === false)
-      this.__collectRenderables(session, gameObject, this.mStageRenderer, isBackBufferActive);
-
-    for (let i = 0, len = session.renderers.length; i !== len; i++) {
-      /** @type {Renderer} */
-      let renderer = session.renderers[i];
-
-      /** @type {Matrix|null} */
-      let transform = null;
-
-      if (isBackBufferActive === false) {
-        if (customTransform === null) {
-          // TODO: too much allocations
-          transform = renderer.getTransform().clone();
-          transform.data[4] -= Black.stage.mX;
-          transform.data[5] -= Black.stage.mY;
-        } else {
-          // TODO: too much allocations
-          transform = renderer.getTransform().clone();
-          transform.prepend(customTransform);
-        }
-      } else {
-        transform = renderer.getTransform();
-      }
-
-      if (renderer.isRenderable === true || renderer.hasVisibleArea) {
-        this.setTransform(transform);
-        this.setGlobalBlendMode(renderer.getBlendMode()); // not perfect 
-      }
-
-      if (renderer.clipRect !== null && renderer.clipRect.isEmpty === false) {
-        this.beginClip(renderer.clipRect, renderer.pivotX, renderer.pivotY);
-      }
-
-      if (renderer.skip === true) {
-        renderer.skip = false;
-      } else {
-        if (renderer.isRenderable === true) {
-          this.setGlobalAlpha(renderer.getAlpha());
-          this.mSnapToPixels = renderer.snapToPixels;
-
-          renderer.render(this);
-          renderer.dirty = DirtyFlag.CLEAN;
-        }
-      }
-
-      if (renderer.endPassRequired === true)
-        session.endPassRenderers.push(renderer);
-
-      if (session.endPassRenderers.length > 0 && session.endPassRenderers[session.endPassRenderers.length - 1].endPassRequiredAt === i) {
-        const r = session.endPassRenderers.pop();
-        this.endClip();
-
-        r.endPassRequiredAt = -1;
-        r.endPassRequired = false;
-      }
-    }
-
-    if (renderTexture != null) {
-      for (let i = 0; i < numEndClipsRequired; i++)
-        this.endClip();
+    if (renderTexture !== null) {
+      while (session.endPassParentRenderers.length > 0)
+        session.endPassParentRenderers.pop().end(this, session);
 
       this.mCtx = this.mLastRenderTexture;
 
       this.mGlobalAlpha = -1;
       this.mGlobalBlendMode = null;
-      session.clear();
-      session.skipChildren = false;
     }
 
     this.__restoreSession();
   }
 
   /**
-   * @inheritDoc
+   * @ignore
+   * @param {GameObject} child 
+   * @param {RenderSession} session 
    */
-  getRenderTarget(width, height) {
-    return new RenderTargetCanvas(width, height);
+  renderObject(child, session) {
+    let skipChildren = false;
+    let renderer = /** @type {DisplayObject} */ (child).mRenderer;
+
+    if (renderer != null) {
+      let parentRenderer = session.parentRenderer;
+
+      renderer.parent = parentRenderer;
+      renderer.preRender(this, session);
+
+      /** @type {DisplayObject} */ (child).onRender();
+      for (let i = 0; i < child.mComponents.length; i++) {
+        const comp = child.mComponents[i];
+        comp.onRender();
+      }
+
+      renderer.begin(this, session);
+
+      if (renderer.skipSelf === false) {
+        renderer.upload(this, session);
+        renderer.render(this, session);
+      }
+
+      skipChildren = renderer.skipChildren;
+      session.parentRenderer = renderer;
+    }
+
+    if (skipChildren === false) {
+      for (let i = 0; i < child.mChildren.length; i++)
+        this.renderObject(child.mChildren[i], session);
+    }
+
+    if (renderer != null && renderer.endPassRequired === true)
+      renderer.end(this, session);
   }
 
   /**
@@ -275,6 +262,8 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   setGlobalAlpha(value) {
+    Debug.isNumber(value);
+
     if (value == this.mGlobalAlpha)
       return;
 
@@ -311,9 +300,9 @@ class CanvasDriver extends VideoNullDriver {
     let viewport = Black.instance.viewport;
     if (viewport.isTransperent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
-      this.mCtx.fillRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+      this.mCtx.fillRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     } else {
-      this.mCtx.clearRect(0, 0, this.mCtx.canvas.width, this.mCtx.canvas.height);
+      this.mCtx.clearRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     }
   }
 

@@ -2,6 +2,7 @@
  * This class is used to create display text.
  *
  * @cat display.text
+ * @fires TextField#change
  * @extends DisplayObject
  */
 /* @echo EXPORT */
@@ -74,50 +75,7 @@ class TextField extends DisplayObject {
    * @inheritDoc
    */
   getRenderer() {
-    return Black.driver.getRenderer('Text');
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onRender(driver, parentRenderer, isBackBufferActive = false) {
-    let renderer = /** @type {TextRenderer} */ (this.mRenderer);
-
-    let oldDirty = this.mDirty;
-
-    if (this.mDirty & DirtyFlag.RENDER) {
-      renderer.transform = this.worldTransformation;
-      renderer.alpha = this.mAlpha * parentRenderer.alpha;
-      renderer.blendMode = this.blendMode === BlendMode.AUTO ? parentRenderer.blendMode : this.blendMode;
-      renderer.color = this.mColor === null ? parentRenderer.color : this.mColor;
-      renderer.visible = this.mVisible;
-      renderer.clipRect = this.mClipRect;
-
-      this.mDirty ^= DirtyFlag.RENDER;
-    }
-
-    if (this.mDirty & DirtyFlag.RENDER_CACHE) {
-      this.onGetLocalBounds();
-
-      renderer.padding = this.mPadding;
-      renderer.text = this.text;
-      renderer.style = this.mDefaultStyle;
-      renderer.multiline = this.mMultiline;
-      renderer.lineHeight = this.mLineHeight;
-      renderer.align = this.mAlign;
-      renderer.vAlign = this.mVerticalAlign;
-      renderer.fieldWidth = this.mFieldWidth;
-      renderer.fieldHeight = this.mFieldHeight;
-      renderer.autoSize = this.mAutoSize;
-      renderer.metrics = this.mMetrics;
-
-      if (renderer.hasVisibleArea === true)
-        this.mDirty ^= DirtyFlag.RENDER_CACHE;
-    }
-
-    renderer.dirty = oldDirty;
-
-    return driver.registerRenderer(renderer);
+    return Black.driver.getRenderer('Text', this);
   }
 
   /**
@@ -125,6 +83,11 @@ class TextField extends DisplayObject {
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
+
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
+    }
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
@@ -148,12 +111,6 @@ class TextField extends DisplayObject {
 
     outRect.width += this.mPadding.right;
     outRect.height += this.mPadding.bottom;
-
-    if (this.mClipRect !== null) {
-      this.mClipRect.copyTo(outRect);
-      outRect.x += this.mPivotX;
-      outRect.y += this.mPivotY;
-    }
 
     return outRect;
   }
@@ -504,6 +461,11 @@ class TextField extends DisplayObject {
       return;
 
     this.mText = value;
+
+    /**
+     * Posts eveyrtime text has been changed.
+     * @event TextField#change
+     */
     this.post(Message.CHANGE);
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }

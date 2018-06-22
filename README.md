@@ -40,6 +40,7 @@ For more information about how to use Black Engine, please check the [Blacksmith
 ✔️ [Battery Efficient](http://blacksmith2d.io/Docs/Examples/Drivers/Skip%20Unchanged%20Frames)  
 ✔️ [Smart Cache As Bitmap](http://blacksmith2d.io/Docs/Examples/Sprites/Cache%20As%20Bitmap)  
 ✔️ [Render Texture](http://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
+✔️ [Arcade Physics](http://blacksmith2d.io/Docs/Examples/Arcade%20Physics/Mario)  
 ✔️ GCC Ready  
 
 ## GETTING STARTED
@@ -57,14 +58,12 @@ A Piggy Mark was made to compare basic sprite rendering performance and build si
 
 **Engine**|**60 FPS**|**50 FPS**|**40 FPS**|**30 FPS**|**Size kB**|**Load Time sec.***
 :-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:
-Black|**4410**|**5070**|**6285**|**9210**|**40**|**2,2**
-Phaser v2|3265|3750|4580|6210|207|17.7
-Phaser v3|2970|3470|4530|6190|217|17.8
+Black|**3855**|**4870**|**5920**|**8605**|**41**|**2,3**
+Phaser v2|2975|3475|4525|5995|207|17.7
+Phaser v3|2680|3185|4040|5700|217|17.8
 
 All tests are made on iPhone 6s Safari.  
 \* How much time it takes to load a test. Tested using [UPTRENDS](https://www.uptrends.com) on iPhone 8 with bandwidth of 3G.
-
-
 
 ## SUPPORT
 Feel free to chat with developers directly on [Facebook](https://www.facebook.com/Blacksmith2D/), [Discord](https://discord.gg/HWzzCcy) or [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ). Have other questions? Feel free to contact support by <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.

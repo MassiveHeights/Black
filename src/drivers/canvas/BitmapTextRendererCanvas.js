@@ -6,13 +6,10 @@
  */
 /* @echo EXPORT */
 class BitmapTextRendererCanvas extends BitmapTextRenderer {
+  /** @inheritDoc */
+  render(driver, session) {
+    super.render(driver, session);
 
-  /**
-   * @inheritDoc
-   */
-  render(driver) {
-    super.render(driver);
-
-    driver.drawTexture(Renderer.getColoredTexture(this.texture, this.color));
+    driver.drawTexture(Renderer.getColoredTexture(this.texture, this.gameObject.mColor));
   }
 }

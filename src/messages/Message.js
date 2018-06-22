@@ -85,3 +85,12 @@ Message.ERROR = 'error';
 
 /** @const @public @type {string} */
 Message.CHANGE = 'change';
+
+/** @const @public @type {string} */
+Message.READY = 'ready';
+
+/** @const @public @type {string} */
+Message.UPDATE = 'update';
+
+/** @const @public @type {string} */
+Message.RESIZE = 'resize';

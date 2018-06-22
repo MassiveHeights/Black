@@ -493,10 +493,10 @@ class Rectangle {
   /**
    * Calculates a bonding box enclosing the given list of points.
    * 
-   * @param {...Vector} points 
+   * @param {Array<Vector>} points 
    * @returns {Rectangle}
    */
-  static fromPoints(...points) {
+  static fromPoints(points) {
     let result = new Rectangle();
 
     if (points.length === 0)
@@ -529,10 +529,10 @@ class Rectangle {
   /**
    * Calculates a bonding box enclosing the given list of x-y pairs.
    * 
-   * @param {...number} points 
+   * @param {Array<number>} points 
    * @returns {Rectangle}
    */
-  static fromPointsXY(...points) {
+  static fromPointsXY(points) {
     let result = new Rectangle();
 
     if (points.length < 2)

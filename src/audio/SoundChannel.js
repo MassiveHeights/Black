@@ -38,7 +38,7 @@ class SoundChannel {
     soundInstance._outputNode.connect(this._inputNode);
     this.mSounds.push(soundInstance);
 
-    soundInstance.on('complete', () => {
+    soundInstance.on(Message.COMPLETE, () => {
       this.mSounds.splice(this.mSounds.indexOf(soundInstance), 1);
       soundInstance._outputNode.disconnect(0);
     });

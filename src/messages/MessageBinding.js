@@ -15,28 +15,28 @@ class MessageBinding {
    * @param {?string} [pathPattern=null]             Glob pattern to filter sender by name.
    */
   constructor(owner, name, callback, isOnce, context = null, type = BindingType.REGULAR, pathPattern = null) {
-    /** @type {MessageDispatcher} */
+    /** @ignore @type {MessageDispatcher} */
     this.owner = owner;
 
-    /** @type {string} */
+    /** @ignore @type {string} */
     this.name = name;
 
-    /** @type {Function} */
+    /** @ignore @type {Function} */
     this.callback = callback;
 
-    /** @type {boolean} */
+    /** @ignore @type {boolean} */
     this.isOnce = isOnce;
 
-    /** @type {*} */
+    /** @ignore @type {*} */
     this.context = context;
 
-    /** @type {?string} */
+    /** @ignore @type {?string} */
     this.pathPattern = pathPattern;
 
-    /** @type {?Glob} */
+    /** @ignore @type {?Glob} */
     this.glob = null;
 
-    /** @type {BindingType} */
+    /** @ignore @type {BindingType} */
     this.type = type;
   }
 

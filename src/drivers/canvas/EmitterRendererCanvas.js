@@ -5,36 +5,12 @@
  * @cat drivers.canvas
  */
 /* @echo EXPORT */
-class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
+class EmitterRendererCanvas extends Renderer {
   /**
    * Creates new instance of EmitterRendererCanvas.
    */
   constructor() {
     super();
-
-    /**
-     * @ignore
-     * @type {Array<Particle>}
-     */
-    this.particles = [];
-
-    /**
-     * @ignore
-     * @type {Array<Texture>}
-     */
-    this.textures = [];
-
-    /**
-     * @ignore
-     * @type {EmitterSortOrder}
-     */
-    this.sortOrder = EmitterSortOrder.FRONT_TO_BACK;
-
-    /**
-     * @ignore
-     * @type {GameObject}
-     */
-    this.space = null;
 
     /**
      * @ignore
@@ -49,22 +25,31 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
     this.__tmpWorld = new Matrix();
   }
 
-  /**
-   * @inheritDoc
-   */
-  render(driver) {
-    const plength = this.particles.length;
+  /** @inheritDoc */
+  preRender(driver, session) {
+    let gameObject = /** @type {Emitter} */ (this.gameObject);
 
+    this.skipChildren = !(gameObject.mAlpha > 0 && gameObject.mTextures.length > 0 && gameObject.mVisible === true);
+    this.skipSelf = !(gameObject.mTextures.length > 0 && gameObject.mParticles.length > 0);
+  }
+
+  /** @inheritDoc */
+  render(driver, session) {
+    let gameObject = /** @type {Emitter} */ (this.gameObject);
+
+    driver.setSnapToPixels(gameObject.snapToPixels);
+
+    let plength = gameObject.mParticles.length;
     let localTransform = this.__tmpLocal;
     let worldTransform = this.__tmpWorld;
     localTransform.identity();
 
-    if (this.sortOrder === EmitterSortOrder.FRONT_TO_BACK) {
+    if (gameObject.sortOrder === EmitterSortOrder.FRONT_TO_BACK) {
       for (let i = 0; i < plength; i++)
-        this.__renderParticle(this.particles[i], localTransform, worldTransform, driver);
+        this.__renderParticle(gameObject.mParticles[i], localTransform, worldTransform, driver);
     } else {
       for (let i = plength - 1; i > 0; i--)
-        this.__renderParticle(this.particles[i], localTransform, worldTransform, driver);
+        this.__renderParticle(gameObject.mParticles[i], localTransform, worldTransform, driver);
     }
   }
 
@@ -77,7 +62,9 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
    * @param {VideoNullDriver} driver
    */
   __renderParticle(particle, localTransform, worldTransform, driver) {
-    let texture = this.textures[particle.textureIndex];
+    let gameObject = /** @type {Emitter} */ (this.gameObject);
+
+    let texture = gameObject.textures[particle.textureIndex];
     let tw = texture.displayWidth * particle.anchorX;
     let th = texture.displayHeight * particle.anchorY;
 
@@ -98,31 +85,17 @@ class EmitterRendererCanvas extends DisplayObjectRendererCanvas {
       localTransform.set(a, b, c, d, tx, ty);
     }
 
-    if (this.isLocal === true) {
+    if (gameObject.mIsLocal === true) {
       worldTransform.identity();
       worldTransform.copyFrom(localTransform);
-      worldTransform.prepend(this.transform);
+      worldTransform.prepend(gameObject.worldTransformation);
     } else {
-      worldTransform.copyFrom(this.space.worldTransformation);
+      worldTransform.copyFrom(gameObject.mSpace.worldTransformation);
       worldTransform.append(localTransform);
     }
 
-    driver.setGlobalAlpha(this.alpha * particle.alpha);
+    driver.setGlobalAlpha(gameObject.mAlpha * particle.alpha);
     driver.setTransform(worldTransform);
-    driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? this.color : particle.color));
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get hasVisibleArea() {
-    return this.alpha > 0 && this.textures.length > 0 && this.visible === true;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  get isRenderable() {
-    return this.textures.length > 0 && this.particles.length > 0;
+    driver.drawTexture(Renderer.getColoredTexture(texture, particle.color === null ? gameObject.mColor : particle.color));
   }
 }

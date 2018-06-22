@@ -3,7 +3,7 @@
  * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
  * 
  * @cat core
- * @fires resize
+ * @fires Viewport#resize
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -42,15 +42,14 @@ class Viewport extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {number} dt 
    */
-  __update(dt) {
+  __update() {
     if (this.mChecksLeftSeconds <= 0)
       return;
 
     this.__onResize();
 
-    this.mChecksLeftSeconds -= dt;
+    this.mChecksLeftSeconds -= Time.delta;
   }
 
   /**
@@ -66,7 +65,12 @@ class Viewport extends MessageDispatcher {
       return;
 
     this.mSize.copyFrom(newSize);
-    this.post('resize', this.mSize);
+
+    /**
+     * Posts everytime viewported size is changed.
+     * @event Viewport#resize
+     */
+    this.post(Message.RESIZE, this.mSize);
 
     this.mChecksLeftSeconds = 1;
     Rectangle.pool.release(newSize);

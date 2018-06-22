@@ -1,6 +1,9 @@
 /**
  * Holds information about external assets.
  *
+ * @fires Asset#error
+ * @fires Asset#complete
+ * 
  * @cat assets
  * @extends MessageDispatcher
  */
@@ -65,6 +68,11 @@ class Asset extends MessageDispatcher {
    */
   __onLoaderError(m) {
     this.abort();
+
+    /**
+     * Posted when error occured during loading this asset.
+     * @event Asset#error
+     */
     this.post(Message.ERROR);
   }
 
@@ -74,6 +82,7 @@ class Asset extends MessageDispatcher {
   onAllLoaded() {}
 
   /**
+   * Aborts loading of this asset.
    * @public
    */
   abort() {
@@ -87,6 +96,8 @@ class Asset extends MessageDispatcher {
   }
 
   /**
+   * Protected method used to notify AssetManager about completition of loading this asset.
+   * 
    * @protected
    * @param {Object=} data
    * @returns {void}
@@ -94,6 +105,11 @@ class Asset extends MessageDispatcher {
   ready(data) {
     this.mData = data;
     this.mIsReady = true;
+
+    /**
+     * Posten when asset finished loading.
+     * @event Asset#complete
+     */
     this.post(Message.COMPLETE);
   }
 

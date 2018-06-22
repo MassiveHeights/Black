@@ -11,33 +11,28 @@ class System extends MessageDispatcher {
   }
 
   /**
-   * onFixedUpdate
-   *
-   * @protected
-   * @param {number} dt Delta time.
-   * @return {void}
-   */
-  onFixedUpdate(dt) { }
-
-  /**
    * onUpdate
    *
    * @protected
-   * @param {number} dt Delta time.
-   * @param {number} t Time since engine start.
    * @return {void} 
    */
-  onUpdate(dt, t) { }
+  onUpdate() { }
 
   /**
    * onPostUpdate
    *
    * @protected
-   * @param {number} dt Delta time.
-   * @param {number} t Time since engine start.
    * @return {void}
    */
-  onPostUpdate(dt, t) { }
+  onPostUpdate() { }
+
+  /**
+   * onRender
+   *
+   * @protected
+   * @return {void}
+   */
+  onRender() { }
 
   /**
    * onChildrenAdded

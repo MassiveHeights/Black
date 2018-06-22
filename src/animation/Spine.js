@@ -152,7 +152,8 @@ class Spine extends DisplayObject {
     this.mSkeleton.setAttachment(slotName, attachmentName);
   }
 
-  onUpdate(dt) {
+  onUpdate() {
+    let dt = Time.delta;
     this.mState.update(dt);
     this.mState.apply(this.mSkeleton);
     this.mSkeleton.updateWorldTransform();

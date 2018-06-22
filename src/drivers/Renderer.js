@@ -9,145 +9,90 @@ class Renderer {
    * Creates new instance of Renderer.
    */
   constructor() {
-    /**
-     * A texture to render onto screen.
-     * @type {Texture|null}
-     */
-    this.texture = null;
+    /** @type {DisplayObject|null} */
+    this.gameObject = null;
 
-    /**
-     * The world alpha.
-     * @type {number}
-     */
-    this.alpha = 1;
-
-    /**
-     * The world blend mode.
-     * @type {BlendMode}
-     */
-    this.blendMode = BlendMode.AUTO;
-
-    /**
-     * World transformation.
-     * @type {Matrix}
-     */
-    this.transform = null;
-
-    /**
-     * Desired color to apply onto drawing object.
-     * @type {number|null}
-     */
-    this.color = null;
-
-    /**
-     * Indicates visibility of this renderable.
-     * @type {boolean}
-     */
-    this.visible = true;
-
-    /**
-     * X-coordinate of the object's origin in its local space.
-     * @type {number}
-     */
-    this.pivotX = 0;
-
-    /**
-     * Y-coordinate of the object's origin in its local space.
-     * @type {number}
-     */
-    this.pivotY = 0;
-
-    /**
-     * Dirty flag.
-     * @type {DirtyFlag}
-     */
-    this.dirty = DirtyFlag.DIRTY;
-
-    /**
-     * Indicates whenever driver should skip rendering of this object.
-     * @type {boolean}
-     */
-    this.skip = false;
-
-    /**
-     * Optional clipping area.
-     * @type {Rectangle}
-     */
-    this.clipRect = null;
-
-    /**
-     * Round `x` and `y` values to `int`.
-     * @type {boolean}
-     */
-    this.snapToPixels = false;
-
-    /** @ignore @type {number} */
-    this.endPassRequiredAt = -1;
-
-    /** @ignore @type {boolean} */
-    this.endPassRequired = false;
+    /** @type {Renderer|null} */
+    this.parent = null;
 
     /** @ignore @type {boolean} */
     this.skipChildren = false;
 
-    // this.filters = null;
+    /** @ignore @type {boolean} */
+    this.skipSelf = false;
+
+    /** @ignore @type {boolean} */
+    this.endPassRequired = false;
+
+    /** @ignore @type {number} */
+    this.endPassRequiredAt = -1;
+
+    /** @ignore @type {number} */
+    this.alpha = 1;
+
+    /** @ignore @type {BlendMode} */
+    this.blendMode = BlendMode.NORMAL;
+
+    /** @ignore @type {number|null} */
+    this.color = null;
   }
 
   /**
    * Called when this renderer needs to be rendered.
    *
    * @param {VideoNullDriver} driver Active video driver.
+   * @param {RenderSession} session Active session.
    * @returns {void}
    */
-  render(driver) { }
+  preRender(driver, session) {
+    this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
+  }
 
-  // renderFilters() {
-  // }
+  begin(driver, session) {
+    this.alpha = this.gameObject.mAlpha * this.parent.alpha;
+    this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
+    this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
+  }
 
-  /**
-   * Returns true if renderer has something to render.
-   * @returns {boolean} Returns true if renderer has something to render otherwise false.
-   */
-  get hasVisibleArea() {
-    return this.alpha > 0 && this.visible === true && (this.clipRect !== null ? this.clipRect.isEmpty === false : true);
+  upload(driver, session) {
+    let gameObject = /** @type {DisplayObject} */ (this.gameObject);
+    let transform = gameObject.worldTransformation;
+
+    if (session.isBackBufferActive === false) {
+      if (session.customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(session.customTransform);
+      }
+    }
+
+    driver.setSnapToPixels(gameObject.snapToPixels);
+    driver.setGlobalAlpha(this.alpha);
+    driver.setGlobalBlendMode(this.blendMode);
+    driver.setTransform(transform);
+
+    if (this.endPassRequired === true)
+      driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
   }
 
   /**
-   * Returns true if this renderer can be rendered.
+   * Called when this renderer needs to be rendered.
    *
-   * @returns {boolean} True if can be rendered otherwise false.
+   * @param {VideoNullDriver} driver Active video driver.
+   * @param {RenderSession} session
+   * @returns {void}
    */
-  get isRenderable() {
-    return this.texture !== null;
+  render(driver, session) {
   }
 
-  /**
-   * Returns current transformation. Useful when you need to return custom transformation.
-   *
-   * @returns {Matrix} Current transformation.
-   */
-  getTransform() {
-    return this.transform;
-  }
+  end(driver, session) {
+    driver.endClip();
 
-  /**
-   * Returns world alpha.
-   * @returns {number} Current world alpha.
-   */
-  getAlpha() {
-    return this.alpha;
-  }
-
-  /**
-   * Returns world blend mode.
-   * @returns {BlendMode} Current world blend mode.
-   */
-  getBlendMode() {
-    return this.blendMode;
-  }
-
-  getColor() {
-    return this.color;
+    this.endPassRequiredAt = -1;
+    this.endPassRequired = false;
   }
 
   /**
@@ -172,7 +117,7 @@ class Renderer {
     let rt = new RenderTargetCanvas(w, h);
     let ctx = rt.context;
 
-    ctx.fillStyle = ColorHelper.hexColorToString(color); 
+    ctx.fillStyle = ColorHelper.hexColorToString(color);
     ctx.fillRect(0, 0, w, h);
 
     ctx.globalCompositeOperation = 'multiply';

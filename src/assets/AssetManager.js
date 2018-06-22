@@ -262,6 +262,10 @@ class AssetManager extends MessageDispatcher {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
     }
 
+    /**
+     * Posted when loading progress is changed.
+     * @event AssetManager#progress
+     */
     this.post(Message.PROGRESS, this.mLoadingProgress);
 
     if (this.mTotalLoaded === this.mTotalPending) {
@@ -272,6 +276,11 @@ class AssetManager extends MessageDispatcher {
       this.mTotalErrors = 0;
       this.mIsAllLoaded = true;
       this.mDictionary = {};
+
+      /**
+       * Posted when all assets finished loading.
+       * @event AssetManager#complete
+       */
       this.post(Message.COMPLETE);
     }
   }
@@ -287,6 +296,10 @@ class AssetManager extends MessageDispatcher {
     item.off(Message.COMPLETE, Message.ERROR);
     Debug.warn(`[AssetManager] Error loading asset '${item.name}'.`);
 
+    /**
+     * Posted when error occured while loading assets.
+     * @event AssetManager#complete
+     */
     this.post(Message.ERROR, item);
 
     if (total === this.mTotalPending) {
