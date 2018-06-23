@@ -467,7 +467,7 @@ class TextField extends DisplayObject {
      * @event TextField#change
      */
     this.post(Message.CHANGE);
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER | DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**

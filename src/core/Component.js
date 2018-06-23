@@ -42,7 +42,7 @@ class Component extends MessageDispatcher {
   onRemoved(gameObject) { }
 
   /**
-   * Called at every engine update.
+   * Called at every update.
    *
    * @protected
    * @return {void}
@@ -50,7 +50,8 @@ class Component extends MessageDispatcher {
   onUpdate() { }
 
   /**
-   * Called after all updates have been executed.
+   * Called after all updates have been executed but before DisplayObject's onRender. GameObject itself does not have onRender method however Component#onRender will be called even if owner is not going to be rendered.
+   * This method can be used to interpolate/extrapolate values when low `Black#ups` value is used.
    *
    * @protected
    * @return {void}

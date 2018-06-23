@@ -14,8 +14,11 @@ class TextRenderer extends Renderer {
 
     this.texture = null;
 
-    /** @private @type {Matrix} @ignore */
+    /** @private @type {Matrix|null} @ignore */
     this.mTransformCache = new Matrix();
+
+    /** @private @type {boolean} @ignore */
+    this.mUseTransformCache = false;
 
     /** @private @type {HTMLCanvasElement} */
     this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
@@ -45,12 +48,13 @@ class TextRenderer extends Renderer {
 
     if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
       gameObject.onGetLocalBounds();
-
       this.mMetrics = gameObject.mMetrics;
-      this.updateTransform();
     }
 
-    let transform = this.mTransformCache;
+    if (gameObject.mDirty & DirtyFlag.RENDER_CACHE || gameObject.mDirty & DirtyFlag.RENDER)
+      this.updateTransform();
+
+    let transform = this.mUseTransformCache === true ? this.mTransformCache : this.gameObject.worldTransformation;
 
     if (session.isBackBufferActive === false) {
       if (session.customTransform === null) {
@@ -164,7 +168,7 @@ class TextRenderer extends Renderer {
     }
   }
 
-  /** @ignore */ 
+  /** @ignore */
   updateTransform() {
     let gameObject = /** @type {TextField} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
@@ -190,13 +194,15 @@ class TextRenderer extends Renderer {
     }
 
     if (hasFilter === true || gameObject.mAutoSize === false) {
+      this.mUseTransformCache = true;
       transform.copyTo(this.mTransformCache);
       this.mTransformCache.translate((filterOffsetX + fieldXOffset) - gameObject.padding.x, (filterOffsetY + fieldYOffset) - gameObject.padding.y);
     } else if (gameObject.padding.isEmpty === false) {
+      this.mUseTransformCache = true;
       transform.copyTo(this.mTransformCache);
       this.mTransformCache.translate(-gameObject.padding.x, -gameObject.padding.y);
     } else {
-      this.mTransformCache = transform;
+      this.mUseTransformCache = false;
     }
   }
 }

@@ -332,7 +332,6 @@ class Tween extends Component {
   __start(t) {
     this.mIsPlaying = true;
     this.mStartTime = t + this.mDelay;
-    this.__collectStartingValues();
   }
 
   /**
@@ -552,6 +551,8 @@ class Tween extends Component {
 
     if (t < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;
+
+    this.__collectStartingValues();
 
     this.mElapsed = (t - this.mStartTime) / this.mDuration;
 

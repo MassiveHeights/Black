@@ -15,9 +15,6 @@ class RenderSession {
     /** @type {Array<Renderer>} */
     this.endPassParentRenderers = [];
 
-    /** @type {Renderer|null} */
-    this.parentRenderer = null;
-
     /** @type {boolean} */
     this.isBackBufferActive = true;
 
@@ -31,5 +28,7 @@ class RenderSession {
   reset() {
     this.parentRenderers.splice(0, this.parentRenderers.length);
     this.endPassParentRenderers.splice(0, this.endPassParentRenderers.length);
+    this.isBackBufferActive = true;
+    this.customTransform = null;
   }
 }
