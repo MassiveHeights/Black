@@ -14,8 +14,11 @@ class TextRenderer extends Renderer {
 
     this.texture = null;
 
-    /** @private @type {Matrix|null} @ignore */
+    /** @private @type {Matrix} @ignore */
     this.mTransformCache = new Matrix();
+
+    /** @private @type {Matrix|null} @ignore */
+    this.mTransform = null;
 
     /** @private @type {boolean} @ignore */
     this.mUseTransformCache = false;
@@ -54,21 +57,21 @@ class TextRenderer extends Renderer {
     if (gameObject.mDirty & DirtyFlag.RENDER_CACHE || gameObject.mDirty & DirtyFlag.RENDER)
       this.updateTransform();
 
-    let transform = this.mUseTransformCache === true ? this.mTransformCache : this.gameObject.worldTransformation;
+    this.mTransform = this.mUseTransformCache === true ? this.mTransformCache : this.gameObject.worldTransformation;
 
     if (session.isBackBufferActive === false) {
       if (session.customTransform === null) {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.data[4] -= Black.stage.mX;
-        transform.data[5] -= Black.stage.mY;
+        this.mTransform = this.mTransform.clone(); // TODO: too much allocations
+        this.mTransform.data[4] -= Black.stage.mX;
+        this.mTransform.data[5] -= Black.stage.mY;
       } else {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.prepend(session.customTransform);
+        this.mTransform = this.mTransform.clone(); // TODO: too much allocations
+        this.mTransform.prepend(session.customTransform);
       }
     }
 
     driver.setSnapToPixels(gameObject.snapToPixels);
-    driver.setTransform(transform);
+    driver.setTransform(this.mTransform);
     driver.setGlobalAlpha(this.alpha);
     driver.setGlobalBlendMode(this.blendMode);
 
@@ -125,9 +128,17 @@ class TextRenderer extends Renderer {
 
       const cvs = this.mCanvas;
       const ctx = this.mContext;
+      let scale = driver.finalScale;
       ctx.textBaseline = 'alphabetic';
 
+      let data = this.mTransform.data;
+      let gameObjectScaleX = Math.sqrt((data[0] * data[0]) + (data[2] * data[2]));
+      let gameObjectScaleY = Math.sqrt((data[1] * data[1]) + (data[3] * data[3]));
+
+      scale = Math.max(gameObjectScaleX, gameObjectScaleY) * driver.mDPR;
+
       let canvasBounds = this.mMetrics.strokeBounds.clone();
+      canvasBounds.scale(scale, scale);
       canvasBounds.union(this.mMetrics.shadowBounds);
       canvasBounds.inflate(gameObject.padding.right, gameObject.padding.bottom);
 
@@ -136,6 +147,9 @@ class TextRenderer extends Renderer {
 
       let fontMetrics = FontMetrics.get(gameObject.mDefaultStyle.family);
       let segments = this.mMetrics.segments;
+
+      ctx.save();
+      ctx.scale(scale, scale);
 
       for (let i = 0; i < segments.length; i++) {
         if (segments[i].style.dropShadow) {
@@ -161,10 +175,13 @@ class TextRenderer extends Renderer {
       for (let i = 0; i < segments.length; i++)
         this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
 
+      ctx.restore();
+
+      // whats the max texture size?
       if (this.texture === null)
-        this.texture = new Texture(cvs);
+        this.texture = new Texture(cvs, null, null, 1 / scale);
       else
-        this.texture.set(cvs);
+        this.texture.set(cvs, null, null, 1 / scale);
     }
   }
 
