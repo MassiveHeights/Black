@@ -50,7 +50,7 @@ class Component extends MessageDispatcher {
   onUpdate() { }
 
   /**
-   * Called after all updates have been executed but before DisplayObject's onRender. GameObject itself does not have onRender method however Component#onRender will be called even if owner is not going to be rendered.
+   * Called after all updates have been executed but before DisplayObject's onRender. GameObject itself does not have onRender method so Component#onRender will not be called on GameObjects.
    * This method can be used to interpolate/extrapolate values when low `Black#ups` value is used.
    *
    * @protected
