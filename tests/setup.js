@@ -12,3 +12,12 @@ global.performance = {
 let container = document.createElement('div');
 container.id = 'game-container';
 document.body.appendChild(container);
+
+class WindowImage {
+  constructor(w, h) {
+    this.width = w;
+    this.height = h;
+  }
+}
+
+global.Image = WindowImage;
