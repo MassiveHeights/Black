@@ -12,7 +12,8 @@
     "watch-es6-module": "gulp watch-es6-module",
     "watch-test": "gulp watch-test",
     "postinstall": "gulp",
-    "test": "jest --config jest.config.json --runInBand --silent",
+    "test": "jest --config jest.config.json --runInBand",
+    "test-watch": "jest --config jest.config.json --runInBand --watch",
     "coverage": "jest --coverage --config jest.config.json --runInBand --silent",
     "examples": "gulp examples",
     "template": "gulp template"
@@ -35,7 +36,6 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.0",
-    "gulp-mocha": "^4.3.1",
     "gulp-preprocess": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.6.1",

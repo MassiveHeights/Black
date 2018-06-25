@@ -32,6 +32,12 @@ class CanvasDriver extends VideoNullDriver {
     };
   }
 
+  getRenderer(type, owner) {
+    let renderer = new this.mRendererMap[type]();
+    renderer.gameObject = /** @type {DisplayObject} */ (owner);
+    return renderer;
+  }
+
   /**
    * @inheritDoc
    */
