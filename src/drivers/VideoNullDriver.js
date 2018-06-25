@@ -84,10 +84,7 @@ class VideoNullDriver {
    * @returns {Renderer} New renderer instance.
    */
   getRenderer(type, owner) {
-    let renderer = new this.mRendererMap[type]();
-    renderer.gameObject = /** @type {DisplayObject} */ (owner);
-
-    return renderer;
+    return null;
   }
 
   /**

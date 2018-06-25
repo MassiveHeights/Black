@@ -401,10 +401,10 @@ class GameObject extends MessageDispatcher {
    * @return {Component|null}
    */
   removeComponent(instance) {
-    Debug.assert(instance instanceof Component, 'Type error.');
-
     if (!instance)
       return null;
+      
+    Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
     if (index > -1)
@@ -1442,7 +1442,7 @@ class GameObject extends MessageDispatcher {
    * @return {function(?):?}
    */
   waitMessage(message) {
-    return cb => this.on(message, cb.bind(this));
+    return cb => this.once(message, cb.bind(this));
   }
 
   /**
