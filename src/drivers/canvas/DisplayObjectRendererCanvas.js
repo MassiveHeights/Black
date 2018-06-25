@@ -21,6 +21,7 @@ class DisplayObjectRendererCanvas extends Renderer {
     /** @private @type {Rectangle|null} */
     this.mCacheBounds = null;
 
+    /** @private @type {boolean} */
     this.mIsClipped = false;
   }
 
@@ -60,13 +61,15 @@ class DisplayObjectRendererCanvas extends Renderer {
       this.alpha = 1;
       this.blendMode = BlendMode.NORMAL;
       this.color = null;
-      this.skipSelf = false;
+      this.skipSelf = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
     }
     else {
       this.alpha = gameObject.mAlpha * this.parent.alpha;
       this.color = gameObject.mColor === null ? this.parent.color : gameObject.mColor;
       this.blendMode = gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : gameObject.mBlendMode;
-      this.skipSelf = !this.mIsClipped;
+
+      this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
+      this.skipSelf = this.skipChildren === true || this.mIsClipped === false;
     }
   }
 
