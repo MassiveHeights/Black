@@ -263,7 +263,7 @@ class MessageDispatcher {
     for (let i = 0; i < cloned.length; i++) {
       let binding = cloned[i];
 
-      if (binding.owner.stage === null)
+      if (this.checkForStage === true && binding.owner.stage === Black.stage && binding.owner.stage === null)
         continue;
 
       if (!this.__checkPath(sender.path, binding))
