@@ -33,8 +33,8 @@ class MessageBinding {
     /** @ignore @type {?string} */
     this.pathPattern = pathPattern;
 
-    /** @ignore @type {?Glob} */
-    this.glob = null;
+    /** @ignore @type {Glob|null} */
+    this.glob = pathPattern == null ? null : new Glob(pathPattern);
 
     /** @ignore @type {BindingType} */
     this.type = type;
