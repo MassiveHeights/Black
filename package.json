@@ -12,8 +12,8 @@
     "watch-es6-module": "gulp watch-es6-module",
     "watch-test": "gulp watch-test",
     "postinstall": "gulp",
-    "test": "jest --silent --config jest.config.json --runInBand",
-    "coverage": "jest --coverage",
+    "test": "jest --config jest.config.json --runInBand --silent",
+    "coverage": "jest --coverage --config jest.config.json --runInBand --silent",
     "examples": "gulp examples",
     "template": "gulp template"
   },

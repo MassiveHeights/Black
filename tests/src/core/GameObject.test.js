@@ -27,7 +27,7 @@ describe('GameObject', () => {
     expect(go.pivotOffsetY).toEqual(0);
     expect(go.pivotX).toEqual(0);
     expect(go.pivotY).toEqual(0);
-    expect(go.snapToPixels).toEqual(false);
+    //expect(go.snapToPixels).toEqual(false);
     expect(go.localTransformation.equals(identity)).toEqual(true);
     expect(go.worldTransformation.equals(identity)).toEqual(true);
   });
@@ -51,7 +51,6 @@ describe('GameObject', () => {
 
     let sprite = new GameObject();
     sprite.name = 'square';
-    sprite.touchable = true;
     sprite.x = 100;
     sprite.y = 100;
     stage.addChild(sprite);
@@ -60,16 +59,13 @@ describe('GameObject', () => {
     inner.name = 'inner';
     inner.x = 10;
     inner.y = 10;
-    inner.touchable = true;
     sprite.addChild(inner);
 
     let inner2 = new GameObject();
     inner2.name = 'inner';
     inner2.x = 10;
     inner2.y = 10;
-    inner2.touchable = true;
     inner.addChild(inner2);
-
 
     sprite.onGetLocalBounds = inner.onGetLocalBounds = inner2.onGetLocalBounds = (outRect) => {
       outRect = outRect || new Rectangle();

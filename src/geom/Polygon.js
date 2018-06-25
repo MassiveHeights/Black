@@ -489,6 +489,23 @@ class Polygon {
     return this.refresh();
   }
 
+  /**
+   * Returns array of vertices.
+   * 
+   * @returns {Array<Vector>}
+   */
+  get vertices() {
+    return this.mVertices;
+  }
+
+  /**
+   * Returns center points of this polygon.
+   * @returns {Vector}
+   */
+  get center() {
+    return this.mCenter;  
+  }
+
   // @ifdef DEBUG
   /**
    * String representation of this polygon.
