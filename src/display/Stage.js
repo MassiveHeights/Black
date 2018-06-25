@@ -36,6 +36,8 @@ class Stage extends GameObject {
     /** @private @type {StageOrientation} */
     this.mOrientation = StageOrientation.UNIVERSAL;
 
+    this.mAdded = true;
+
     if (Black.instance.hasSystem(Input))
       this.addComponent(new InputComponent());
   }
