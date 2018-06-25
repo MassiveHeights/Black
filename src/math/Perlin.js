@@ -73,7 +73,7 @@ class Perlin {
       num %= this.mRepeat;
 
     return num;
-  };
+  }
 
   grad(hash, x, y, z) {
     const b = hash & 15;
