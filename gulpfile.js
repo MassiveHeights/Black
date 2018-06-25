@@ -10,7 +10,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const template = require('gulp-template');
 const rename = require('gulp-rename');
 const preprocess = require('gulp-preprocess');
-const mocha = require('gulp-mocha');
 const info = JSON.parse(fs.readFileSync('./build.json'));
 const files = info.files;
 const bs = require('browser-sync').create();
@@ -58,21 +57,7 @@ gulp.task('watch-es6-module', ['build-es6-module'], function () {
   gulp.watch(['./src/**/*.js'], ['build-es6-module']);
 });
 
-gulp.task('watch-test', ['build-es6'], function () {
-  bs.init({
-    server: {
-      baseDir: './',
-      directory: true,
-      index: './test/index.html'
-    },
-    open: false
-  });
-
-  gulp.watch(['./src/**/*.js', './test/src/**/*.js'], ['build-es6']).on('change', bs.reload);
-});
-
 gulp.task('default', ['build-es5', 'build-es6', 'build-es6-module']);
-
 
 // INTERNAL TASKS
 gulp.task('copy-examples', ['build-es6'], function () {

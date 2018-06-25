@@ -401,10 +401,10 @@ class GameObject extends MessageDispatcher {
    * @return {Component|null}
    */
   removeComponent(instance) {
-    Debug.assert(instance instanceof Component, 'Type error.');
-
     if (!instance)
       return null;
+      
+    Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
     if (index > -1)
