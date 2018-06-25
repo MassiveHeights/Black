@@ -1442,7 +1442,7 @@ class GameObject extends MessageDispatcher {
    * @return {function(?):?}
    */
   waitMessage(message) {
-    return cb => this.on(message, cb.bind(this));
+    return cb => this.once(message, cb.bind(this));
   }
 
   /**
