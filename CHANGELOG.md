@@ -1,5 +1,13 @@
 Black Engine: Changelog
 =======================
+v0.5.1
+------
+- Fixed broken `visible` property
+- Fixed broken overhearing
+- Fixed missing `Stage#onUpdate` calls
+- Added `TextField#highQuality` property to control how TextField will be rendered
+- Added many tests
+
 v0.5.0
 ------
 - Added Arcade physics system
