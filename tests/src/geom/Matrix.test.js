@@ -1,4 +1,4 @@
-import { Matrix, Rectangle, Vector } from './../../../dist/black-es6-module'
+import { Matrix, Rectangle, Vector } from './../../../dist/black-es6-module';
 
 describe('Matrix', function () {
   it('Should initialize new identity Matrix', function () {

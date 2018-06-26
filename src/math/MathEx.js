@@ -14,8 +14,7 @@ class MathEx {
    */
   static randomBetween(a, b) {
     return Math.floor(Math.random() * (b - a + 1) + a);
-  };
-
+  }
 
   /**
    * Clamps given value to min max range.
@@ -98,18 +97,6 @@ class MathEx {
    */
   static lerp(a, b, t) {
     return a + t * (b - a);
-  };
-
-
-  /**
-   * @ignore
-   * @param {number} a
-   * @param {number} b
-   * @param {number} t
-   * @return {number}
-   */
-  static lerpInverted(a, b, t) {
-    return (1 - t) * a + t * b;
   }
 
   /**
