@@ -69,6 +69,9 @@ class TextField extends DisplayObject {
 
     /** @private @type {TextMetricsData|null} */
     this.mMetrics = null;
+
+    /** @private @type {boolean} */
+    this.mHighQuality = false;
   }
 
   /**
@@ -512,7 +515,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets sets whenever to drop shadow or not.
    * 
    * @return {boolean} 
    */
@@ -534,7 +537,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets/sets the color of the shadow.
    * 
    * @return {number} 
    */
@@ -556,7 +559,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets/sets alpha component of the shadows.
    * 
    * @return {number} 
    */
@@ -578,7 +581,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets/sets the shadow blur radius.
    * 
    * @return {number} 
    */
@@ -600,7 +603,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets/sets shadow distance on x axis.
    * 
    * @return {number} 
    */
@@ -622,7 +625,7 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * 
+   * Gets/sets shadow distance on y axis.
    * 
    * @return {number} 
    */
@@ -640,6 +643,26 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowDistanceY = value;
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+  }
+
+  /**
+   * Gets/sets render quality of this text field. False by default.
+   * When true font will respect object's scale and device pixel ratio. The downside is it may cause font shaking when animating.
+   * 
+   * @returns {boolean}
+   */
+  get highQuality() {
+    return this.mHighQuality;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set highQuality(value) {
+    this.mHighQuality = value;
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 }

@@ -122,20 +122,26 @@ class TextRenderer extends Renderer {
   /** @inheritDoc */
   render(driver, session) {
     let gameObject = /** @type {TextField} */ (this.gameObject);
+    
+    if (gameObject.mHighQuality === true && gameObject.mDirty & DirtyFlag.RENDER) {
+      gameObject.mDirty ^= DirtyFlag.RENDER;
+      gameObject.mDirty |= DirtyFlag.RENDER_CACHE;
+    }
 
     if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
       gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
-
+      
       const cvs = this.mCanvas;
       const ctx = this.mContext;
-      let scale = driver.finalScale;
+      let scale = 1;
       ctx.textBaseline = 'alphabetic';
 
-      let data = this.mTransform.data;
-      let gameObjectScaleX = Math.sqrt((data[0] * data[0]) + (data[2] * data[2]));
-      let gameObjectScaleY = Math.sqrt((data[1] * data[1]) + (data[3] * data[3]));
-
-      scale = Math.max(gameObjectScaleX, gameObjectScaleY) * driver.mDPR;
+      if (gameObject.mHighQuality === true) {
+        let data = this.mTransform.data;
+        let gameObjectScaleX = Math.sqrt((data[0] * data[0]) + (data[2] * data[2]));
+        let gameObjectScaleY = Math.sqrt((data[1] * data[1]) + (data[3] * data[3]));
+        scale = Math.max(gameObjectScaleX, gameObjectScaleY) * driver.mDPR;
+      }
 
       let canvasBounds = this.mMetrics.strokeBounds.clone();
       canvasBounds.scale(scale, scale);
