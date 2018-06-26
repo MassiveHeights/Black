@@ -46,6 +46,9 @@ class Renderer {
    */
   preRender(driver, session) {
     this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
+
+    this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true);
+    this.skipSelf = this.skipChildren;
   }
 
   begin(driver, session) {

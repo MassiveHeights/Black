@@ -43,7 +43,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets/Sets stage orientation
+   * Gets/Sets stage orientation.
    * 
    * @returns {StageOrientation}
    */
@@ -62,7 +62,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Sets stage size by given width and height
+   * Sets stage size by given width and height.
    * 
    * @param {number} width New stage width.
    * @param {number} height New stage height.
@@ -161,7 +161,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Determines which of two numbers suits to stage orientation
+   * Determines which of two numbers suits to stage orientation.
    * 
    * @public
    * @param {number} land Landscape mode value.
@@ -178,7 +178,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets/Sets stage scale mode
+   * Gets/Sets stage scale mode.
    * 
    * @return {StageScaleMode}
    */
@@ -197,7 +197,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Device Pixel Ratio
+   * Device Pixel Ratio.
    * 
    * @public
    * @readonly
@@ -208,7 +208,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Stage scale factor
+   * Stage scale factor.
    * 
    * @public
    * @readonly
@@ -241,7 +241,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Specifies whether the stage is in landscape orientation
+   * Specifies whether the stage is in landscape orientation.
    * 
    * @public
    * @readonly
@@ -253,7 +253,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Specifies whether the stage is in portrait orientation
+   * Specifies whether the stage is in portrait orientation.
    * 
    * @public
    * @readonly
@@ -264,7 +264,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets stage center coordinate along X-axis
+   * Gets stage center coordinate along X-axis.
    * 
    * @public
    * @readonly
@@ -275,7 +275,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets stage center coordinate along Y-axis
+   * Gets stage center coordinate along Y-axis.
    * 
    * @public
    * @readonly

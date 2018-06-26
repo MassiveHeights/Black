@@ -42,7 +42,7 @@ class TextRenderer extends Renderer {
   /** @inheritDoc */
   preRender(driver, session) {
     this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true);
-    this.skipSelf = false;
+    this.skipSelf = this.skipChildren === true;
   }
 
   /** @inheritDoc */
