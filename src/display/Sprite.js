@@ -26,6 +26,10 @@ class Sprite extends DisplayObject {
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    this.mTiling = null;
+    this.mSlice9grid = null;
+    this.mSliceTexture = null;
   }
 
   /**
@@ -50,6 +54,8 @@ class Sprite extends DisplayObject {
 
     if (this.mClipRect !== null)
       this.mClipRect.copyTo(outRect);
+    else if (this.tiling !== null)
+      outRect.set(0, 0, this.tiling.width, this.tiling.height);
     else
       outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
 
@@ -100,5 +106,26 @@ class Sprite extends DisplayObject {
 
     this.mTextureName = value;
     this.texture = AssetManager.default.getTexture(/** @type {string} */(value));
+  }
+
+  get tiling() {
+    return this.mTiling;
+  }
+
+  set tiling(value) {
+    this.mTiling = value;
+    this.setTransformDirty();
+  }
+
+  get slice9grid() {
+    return this.mSlice9grid;
+  }
+
+  set slice9grid(value) {
+    this.mSlice9grid = value;
+    this.setTransformDirty();
+    
+    if (value === null)
+      this.mSliceTexture = null;
   }
 }
