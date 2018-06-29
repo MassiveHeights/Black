@@ -24,55 +24,48 @@ class SpriteRendererCanvas extends Renderer {
   }
 
   renderSlice9Grid(driver, texture, grid) {
-    let dpr = driver.mDevicePixelRatio;
+    const dpr = driver.mDevicePixelRatio;
 
     let desireWidth = texture.width * this.gameObject.mScaleX;
     let desireHeight = texture.height * this.gameObject.mScaleY;
 
-    let sourceX = texture.region.x;
-    let sourceY = texture.region.y;
-    let sourceWidth = texture.region.width;
-    let sourceHeight = texture.region.height;
+    const sourceX = texture.region.x;
+    const sourceY = texture.region.y;
+    const sourceWidth = texture.region.width;
+    const sourceHeight = texture.region.height;
 
-    let destX = texture.untrimmedRegion.x * dpr;
-    let destY = texture.untrimmedRegion.y * dpr;
-    let destWidth = texture.renderWidth * dpr;
-    let destHeight = texture.renderHeight * dpr;
+    const destX = texture.untrimmedRegion.x * dpr;
+    const destY = texture.untrimmedRegion.y * dpr;
+    const destWidth = texture.renderWidth * dpr;
+    const destHeight = texture.renderHeight * dpr;
 
-    let mX = desireWidth / sourceWidth;
-    let mY = desireHeight / sourceHeight;
+    this.sliceTexture = new CanvasRenderTexture(desireWidth, desireHeight, 1 / texture.scale);
+    const ctx = this.sliceTexture.renderTarget.context;
 
-    this.sliceTexture = new CanvasRenderTexture(desireWidth, desireHeight, 1);
-    let ctx = this.sliceTexture.renderTarget.context;
+    const data = this.gameObject.worldTransformation.data;
+    const scale = Math.min(this.gameObject.scaleX, this.gameObject.scaleY);
 
-    let data = this.gameObject.worldTransformation.data;
-    let gameObjectScaleX = this.gameObject.scaleX;
-    let gameObjectScaleY = this.gameObject.scaleY;
-
-    let scale = Math.min(gameObjectScaleX, gameObjectScaleY);
-
-    let m = new Matrix(data[0] / gameObjectScaleX, data[1] / gameObjectScaleX, data[2] / gameObjectScaleY, data[3] / gameObjectScaleY, data[4], data[5]);
+    const m = Matrix.pool.get().set(data[0] / this.gameObject.scaleX, data[1] / this.gameObject.scaleX, data[2] / this.gameObject.scaleY, data[3] / this.gameObject.scaleY, data[4], data[5]);
     driver.setTransform(m);
+    Matrix.pool.release(m);
 
-    let m2 = new Matrix();
-
-    if (scale < 1){
+    if (scale < 1) {
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
       desireWidth /= scale;
       desireHeight /= scale;
     }
 
-    const gridLeft = grid.x;
-    const gridTop = grid.y;
-    const gridRight = sourceWidth - grid.right;
-    const gridBottom = sourceHeight - grid.bottom;
+    const gridLeft = grid.x / texture.scale;
+    const gridTop = grid.y / texture.scale;
+    const gridRight = sourceWidth - grid.right / texture.scale;
+    const gridBottom = sourceHeight - grid.bottom / texture.scale;
 
     // non-scalabes
     const srcOffsetX = sourceX + sourceWidth - gridRight;
-    const dstOffsetX = destX + desireWidth - gridRight;
+    const dstOffsetX = destX + desireWidth / texture.scale - gridRight;
 
     const srcOffsetY = sourceY + sourceHeight - gridBottom;
-    const dstOffsetY = destY + desireHeight - gridBottom;
+    const dstOffsetY = destY + desireHeight / texture.scale - gridBottom;
 
     // top left
     ctx.drawImage(texture.native, sourceX, sourceY, gridLeft, gridTop, destX, destY, gridLeft, gridTop);
@@ -94,16 +87,16 @@ class SpriteRendererCanvas extends Renderer {
     const dstTopOffset = destY + gridTop;
 
     const srcRightOffset = sourceX + sourceWidth - gridRight;
-    const dstRightOffset = destX + desireWidth - gridRight;
+    const dstRightOffset = destX + desireWidth / texture.scale - gridRight;
 
     const srcBottomOffset = sourceY + sourceHeight - gridBottom;
-    const dstBottomOffset = destY + desireHeight - gridBottom;
+    const dstBottomOffset = destY + desireHeight / texture.scale - gridBottom;
 
     const srcCenterWidth = sourceWidth - gridLeft - gridRight;
-    const dstCenterWidth = desireWidth - gridLeft - gridRight;
+    const dstCenterWidth = desireWidth / texture.scale - gridLeft - gridRight;
 
     const srcCenterHeight = sourceHeight - gridTop - gridBottom;
-    const dstCenterHeight = desireHeight - gridTop - gridBottom;
+    const dstCenterHeight = desireHeight / texture.scale - gridTop - gridBottom;
 
     // top
     ctx.drawImage(texture.native, srcLeftOffset, sourceY, srcCenterWidth, gridTop, dstLeftOffset, destY, dstCenterWidth, gridTop);
