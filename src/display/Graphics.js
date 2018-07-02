@@ -431,6 +431,48 @@ class Graphics extends DisplayObject {
     let cmd = new GraphicsCommand(type, data);
     this.mCommandQueue.push(cmd);
   }
+
+  static fromGCQ(string) {
+    let getArg = (ci, commands) => {
+      if (typeof ci == 'number')
+        return +commands.shift();
+      else {
+        return +ci.substring(ci.startsWith('$') ? 2 : 1);
+      }
+    };
+
+    let o = JSON.parse(string);
+
+    let g = new Graphics();
+
+
+    o.shapes.forEach(x => {
+      let cmds = x.commands.split(' ');
+      cmds.get = getArg;
+
+
+
+      while (cmds.length > 0) {
+        g.beginPath();
+        g.lineStyle(0, 0xffffff);
+        g.fillStyle(0xffffff);
+
+        let c = cmds.shift();
+
+        if (c.startsWith('$s')) {// style
+          //g.lineStyle
+        } else if (c.startsWith('$r')) //rect
+          g.rect(cmds.get(c, cmds), cmds.get(0, cmds), cmds.get(1, cmds), cmds.get(2, cmds));
+        else if (c.startsWith('$c')) //rect
+          g.circle(cmds.get(c, cmds), cmds.get(0, cmds), cmds.get(1, cmds));
+
+        g.fill();
+      }
+
+    })
+
+    return g;
+  }
 }
 
 class GraphicsPath {
