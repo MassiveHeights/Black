@@ -105,7 +105,7 @@ class Input extends System {
    * @ignore
    * @private
    * @param {KeyboardEvent} e
-   * @return {boolean}
+   * @returns {boolean}
    */
   __onKeyEvent(e) {
     if (Black.instance.isPaused === true)
@@ -138,7 +138,7 @@ class Input extends System {
    * @ignore
    * @private
    * @param {Event} e
-   * @return {boolean}
+   * @returns {boolean}
    */
   __onPointerEvent(e) {
     if (Black.instance.isPaused === true)
@@ -176,7 +176,7 @@ class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {Event} evt
-   * @return {Vector}
+   * @returns {Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -190,7 +190,7 @@ class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {TouchEvent} evt
-   * @return {Vector}
+   * @returns {Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -334,7 +334,7 @@ class Input extends System {
    * @param {string} name            The name of the message to listen for.
    * @param {Function} callback      The callback function that will be called when message received.
    * @param {Object=} [context=null] Optional context.
-   * @return {MessageBinding}
+   * @returns {MessageBinding}
    */
   static on(name, callback, context = null) {
     return Input.instance.on(name, callback, context);
@@ -346,7 +346,7 @@ class Input extends System {
    * @param {string} name            The name of the message to listen for.
    * @param {Function} callback      The callback function that will be called when message received.
    * @param {Object=} [context=null] Optional context.
-   * @return {MessageBinding}
+   * @returns {MessageBinding}
    */
   static once(name, callback, context = null) {
     return Input.instance.once(name, callback, context);
@@ -355,7 +355,7 @@ class Input extends System {
   /**
    * Indicates if mouse or touch in down at this moment.
    *
-   * @return {boolean}
+   * @returns {boolean}
    */
   static get isPointerDown() {
     return Input.instance.mIsPointerDown;
@@ -364,7 +364,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer x-component.
    *
-   * @return {number}
+   * @returns {number}
    */
   static get pointerX() {
     return Input.instance.mPointerPosition.x;
@@ -373,7 +373,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer x-component.
    *
-   * @return {number} Description
+   * @returns {number} Description
    */
   static get pointerY() {
     return Input.instance.mPointerPosition.y;
@@ -382,7 +382,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer x-component relative to stage.
    *
-   * @return {number}
+   * @returns {number}
    */
   static get stageX() {
     return Input.instance.mStagePosition.x;
@@ -391,7 +391,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer x-component  relative to stage.
    *
-   * @return {number} Description
+   * @returns {number} Description
    */
   static get stageY() {
     return Input.instance.mStagePosition.y;
@@ -400,10 +400,19 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer position.
    *
-   * @return {Vector}
+   * @returns {Vector}
    */
   static get pointerPosition() {
     return Input.instance.mPointerPosition;
+  }
+
+  /**
+   * Returns pointer position relative to the stage.
+   * 
+   * @returns {Vector}
+   */
+  static get stagePosition(){
+    return Input.instance.mStagePosition;
   }
 
   /**
