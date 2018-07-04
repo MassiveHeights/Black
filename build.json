@@ -61,6 +61,7 @@
     "src/assets/BitmapFontAsset.js",
     "src/assets/SoundAsset.js",
     "src/assets/SoundAtlasAsset.js",
+    "src/assets/BSFAsset.js",
     "src/assets/AssetManagerState.js",
     "src/assets/AssetManager.js",
 
@@ -171,6 +172,8 @@
     "src/physics/arcade/phases/BroadPhase.js",
 
     "src/physics/arcade/Arcade.js",
+
+    "src/parsers/BSFParser.js",
 
     "src/core/SplashScreen.js",
 

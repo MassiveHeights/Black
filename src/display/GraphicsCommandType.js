@@ -20,4 +20,5 @@ const GraphicsCommandType = {
   MOVE_TO: 'moveTo',
   STROKE: 'stroke',
   BOUNDS: 'bounds',
+  TRANSFORM: 'transform'
 };

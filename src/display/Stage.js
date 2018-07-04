@@ -153,6 +153,7 @@ class Stage extends GameObject {
     // TODO: i don't like this line
     // TODO: me neither
     // TODO: but its setting Renderer.__dirty which is good
+    // TODO: replace with priority message?
     Black.driver.__onResize(null, null);
 
     this.setTransformDirty();
