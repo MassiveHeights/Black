@@ -51,12 +51,23 @@ class Renderer {
     this.skipSelf = this.skipChildren;
   }
 
+  /**
+   * Called after `preRender` but before `GameObject#onRender`. Used to compute world alpha, color and blend mode.
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
+   */
   begin(driver, session) {
     this.alpha = this.gameObject.mAlpha * this.parent.alpha;
     this.color = this.gameObject.mColor === null ? this.parent.color : this.gameObject.mColor;
     this.blendMode = this.gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : this.gameObject.mBlendMode;
   }
 
+  /**
+   * Called if `skipSelf` equals to false. Used to upload everything onto gpu.
+   * 
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
+   */
   upload(driver, session) {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
@@ -82,7 +93,7 @@ class Renderer {
   }
 
   /**
-   * Called when this renderer needs to be rendered.
+   * Called if `skipSelf` equals to false.
    *
    * @param {VideoNullDriver} driver Active video driver.
    * @param {RenderSession} session
@@ -91,6 +102,12 @@ class Renderer {
   render(driver, session) {
   }
 
+  /**
+   * Called after all children objects got rendered.
+   * 
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
+   */
   end(driver, session) {
     driver.endClip();
 

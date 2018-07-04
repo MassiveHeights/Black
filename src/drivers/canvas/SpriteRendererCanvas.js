@@ -9,9 +9,20 @@ class SpriteRendererCanvas extends Renderer {
   constructor() {
     super();
 
+    /** @type {CanvasPattern|null} */
     this.pattern = null;
+
+    /** @type {Texture|null} */
     this.patternTexture = null;
+
+    /** @type {Texture|null} */
     this.sliceTexture = null;
+
+    /** @type {number|null} */
+    this.sizeWidthCache = null;
+
+    /** @type {number|null} */
+    this.sizeHeightCache = null;
   }
 
   /** @inheritDoc */
@@ -25,9 +36,14 @@ class SpriteRendererCanvas extends Renderer {
 
   renderSlice9Grid(driver, texture, grid) {
     const dpr = driver.mDevicePixelRatio;
-
     let desireWidth = texture.width * this.gameObject.mScaleX;
     let desireHeight = texture.height * this.gameObject.mScaleY;
+
+    if (this.sizeWidthCache !== null && this.sizeWidthCache === desireWidth && this.sizeHeightCache === desireHeight)
+      return this.sliceTexture;
+
+    this.sizeWidthCache = desireWidth;
+    this.sizeHeightCache = desireHeight;
 
     const sourceX = texture.region.x;
     const sourceY = texture.region.y;
@@ -36,8 +52,6 @@ class SpriteRendererCanvas extends Renderer {
 
     const destX = texture.untrimmedRegion.x * dpr;
     const destY = texture.untrimmedRegion.y * dpr;
-    const destWidth = texture.renderWidth * dpr;
-    const destHeight = texture.renderHeight * dpr;
 
     this.sliceTexture = new CanvasRenderTexture(desireWidth, desireHeight, 1 / texture.scale);
     const ctx = this.sliceTexture.renderTarget.context;
@@ -49,7 +63,7 @@ class SpriteRendererCanvas extends Renderer {
     driver.setTransform(m);
     Matrix.pool.release(m);
 
-    if (scale < 1) {
+    if (scale <= 1) {
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
       desireWidth /= scale;
       desireHeight /= scale;
@@ -121,21 +135,20 @@ class SpriteRendererCanvas extends Renderer {
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
     let texture = Renderer.getColoredTexture(gameObject.mTexture, this.color);
-    if (gameObject.mSlice9grid !== null) {
-      texture = this.renderSlice9Grid(driver, texture, gameObject.mSlice9grid);
-    }
 
-    if (gameObject.tiling === null) {
-      driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
-      return;
-    }
+    if (gameObject.mSlice9grid !== null)
+      texture = this.renderSlice9Grid(driver, texture, gameObject.mSlice9grid);
+
+    if (gameObject.mTiling === null)
+      return driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
+
+    // we got some tiling
     let ctx = driver.mCtx;
     if (this.pattern === null || this.patternTexture !== texture) {
       this.pattern = ctx.createPattern(texture.native, 'repeat');
       this.patternTexture = texture;
     }
 
-    // if tiling
     ctx.fillStyle = this.pattern;
 
     let dpr = driver.mDPR;
@@ -146,6 +159,5 @@ class SpriteRendererCanvas extends Renderer {
     driver.setTransform(m);
 
     ctx.fillRect(-gameObject.tiling.wrapX, -gameObject.tiling.wrapY, gameObject.tiling.width / gameObject.tiling.scaleX, gameObject.tiling.height / gameObject.tiling.scaleY);
-    //console.log('123');
   }
 }
