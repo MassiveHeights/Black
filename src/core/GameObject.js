@@ -45,6 +45,12 @@ class GameObject extends MessageDispatcher {
     this.mPivotY = 0;
 
     /** @protected @type {number} */
+    this.mSkewX = 0;
+
+    /** @protected @type {number} */
+    this.mSkewY = 0;
+
+    /** @protected @type {number} */
     this.mAnchorX = 0;
 
     /** @protected @type {number} */
@@ -403,7 +409,7 @@ class GameObject extends MessageDispatcher {
   removeComponent(instance) {
     if (!instance)
       return null;
-      
+
     Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
@@ -476,20 +482,40 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.LOCAL) {
       this.mDirty ^= DirtyFlag.LOCAL;
 
-      if (this.mRotation === 0) {
-        let tx = this.mX - this.mPivotX * this.mScaleX;
-        let ty = this.mY - this.mPivotY * this.mScaleY;
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
+      if (this.mSkewX === 0.0 && this.mSkewY === 0.0) {
+        if (this.mRotation === 0) {
+          return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX - this.mPivotX * this.mScaleX, this.mY - this.mPivotY * this.mScaleY);
+        } else {
+          let cos = Math.cos(this.mRotation);
+          let sin = Math.sin(this.mRotation);
+          let a = this.mScaleX * cos;
+          let b = this.mScaleX * sin;
+          let c = this.mScaleY * -sin;
+          let d = this.mScaleY * cos;
+          let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
+          let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+          return this.mLocalTransform.set(a, b, c, d, tx, ty);
+        }
       } else {
-        let cos = Math.cos(this.mRotation);
-        let sin = Math.sin(this.mRotation);
-        let a = this.mScaleX * cos;
-        let b = this.mScaleX * sin;
-        let c = this.mScaleY * -sin;
-        let d = this.mScaleY * cos;
-        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
-        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
-        return this.mLocalTransform.set(a, b, c, d, tx, ty);
+        this.mLocalTransform.identity();
+        this.mLocalTransform.scale(this.mScaleX, this.mScaleY);
+        this.mLocalTransform.skew(this.mSkewX, this.mSkewY);
+        this.mLocalTransform.rotate(this.mRotation);
+
+        let a = this.mLocalTransform.data[0];
+        let b = this.mLocalTransform.data[1];
+        let c = this.mLocalTransform.data[2];
+        let d = this.mLocalTransform.data[3];
+        let tx = this.mX;
+        let ty = this.mY;
+
+        if (this.mPivotX !== 0.0 || this.mPivotY !== 0.0) {
+          tx = this.mX - a * this.mPivotX - c * this.mPivotY;
+          ty = this.mY - b * this.mPivotX - d * this.mPivotY;
+        }
+
+        this.mLocalTransform.data[4] = tx;
+        this.mLocalTransform.data[5] = ty;
       }
     }
 
