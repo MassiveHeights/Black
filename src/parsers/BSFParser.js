@@ -160,7 +160,8 @@ class BSFParser extends ParserBase {
     let g = this.mGraphics;
 
     if (node.cmds) {
-      this.mCmds = node.cmds.split(' ');
+      this.mCmds = node.cmds.replace(/([a-zA-Z])(?=\d)/g, '$1 ').split(' ');
+//      debugger
 
       while (this.mCmds.length > 0) {
         let cmd = this.mCmds.shift();
@@ -170,7 +171,7 @@ class BSFParser extends ParserBase {
 
         switch (type) {
           case '$S':
-            let ix = this.getArg(cmd);
+            let ix = this.getArg(0);
             let newStyle = this.mStyles[ix];
             style.merge(newStyle);
             style.compute();
@@ -183,33 +184,37 @@ class BSFParser extends ParserBase {
 
             break;
           case '$p':
-          // remember last command
+            // remember last command
             let pathData = cmd.substr(2);
-            this.mPathCmds = pathData.replace(/-/g, ' -').replace(/\B(?=[a-zA-Z])|,/g, ' ').split(' ');
+            this.mPathCmds = pathData.replace(/-/g, ' -')
+              .replace(/\B(?=[a-zA-Z])|,/g, ' ')
+              .replace(/([a-zA-Z])(?=\d)/g, '$1 ')
+              .split(' ');
+
             let ax = 0;
             let ay = 0;
             while (this.mPathCmds.length > 0) {
               let pc = this.mPathCmds.shift();
               let ct = pc[0];
-              if (ct === 'M'){
-                ax = this.getPathArg(pc);
-                ay = this.getPathArg(0);
+              if (ct === 'M') {                
+                ax = this.getPathArg(0);
+                ay = this.getPathArg(1);
                 this.mGraphics.moveTo(ax, ay);
               }
-              if (ct === 's'){
-                this.mGraphics.moveTo(this.getPathArg(pc), this.getPathArg(0));
+              if (ct === 's') {
+                this.mGraphics.moveTo(this.getPathArg(0), this.getPathArg(1));
               }
             }
             break;
           case '$T':
-            transform = new Matrix(this.getArg(cmd), this.getArg(0), this.getArg(1), this.getArg(2), this.getArg(3), this.getArg(4));
+            transform = new Matrix(this.getArg(0), this.getArg(0), this.getArg(1), this.getArg(2), this.getArg(3), this.getArg(4));
             this.mGraphics.setTransform(transform);
             break;
           case '$r':
-            this.mGraphics.rect(this.getArg(cmd), this.getArg(0), this.getArg(1), this.getArg(2));
+            this.mGraphics.rect(this.getArg(0), this.getArg(0), this.getArg(1), this.getArg(2));
             break;
           case '$c':
-            this.mGraphics.circle(this.getArg(cmd), this.getArg(0), this.getArg(1));
+            this.mGraphics.circle(this.getArg(0), this.getArg(0), this.getArg(1));
             break;
 
           default:
