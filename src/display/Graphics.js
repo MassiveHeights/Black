@@ -333,9 +333,25 @@ class Graphics extends DisplayObject {
     Vector.pool.release(rangeY);
   }
 
-  // TODO: bounds
+  /**
+   * @public
+   * @param {number} cpx
+   * @param {number} cpy
+   * @param {number} x
+   * @param {number} y
+   */
   quadraticCurveTo(cpx, cpy, x, y) {
-    this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
+    const rangeX = this.__quadraticRange(this.mPosX, cpx, x, Vector.pool.get());
+    const rangeY = this.__quadraticRange(this.mPosY, cpy, y, Vector.pool.get());
+
+    this.mPosX = x;
+    this.mPosY = y;
+
+    this.__pushCommand(GraphicsCommandType.QUADRATIC_CURVE_TO, cpx, cpy, x, y);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, rangeX.x, rangeY.x, rangeX.y, rangeY.y);
+
+    Vector.pool.release(rangeX);
+    Vector.pool.release(rangeY);
   }
 
   /**
@@ -399,6 +415,27 @@ class Graphics extends DisplayObject {
   __bezierDot(p0, p1, p2, p3, x) {
     const y = 1 - x;
     return p0 * y * y * y + 3 * p1 * x * y * y + 3 * p2 * x * x * y + p3 * x * x * x;
+  }
+
+  /**
+   * @private
+   * @param {number} p0
+   * @param {number} p1
+   * @param {number} p2
+   * @param {Vector=} out
+   *
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   */
+  __quadraticRange(p0, p1, p2, out) {
+    const a = p2 - p0;
+    const b = p1 - p0;
+    const c = b / a;
+    const d = p0 + (c < 0 || c > 1 ? b * b / (2 * b - a) : 0);
+
+    out.x = Math.min(p0, p2, d);
+    out.y = Math.max(p0, p2, d);
+
+    return out;
   }
 
   /**
