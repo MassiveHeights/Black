@@ -65,6 +65,10 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.bezierCurveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r, cmd.getNumber(4) * r, cmd.getNumber(5) * r);
           break;
         }
+        case GraphicsCommandType.QUADRATIC_CURVE_TO: {
+          ctx.quadraticCurveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
+          break;
+        }
         case GraphicsCommandType.BEGIN_PATH: {
           ctx.beginPath();
           break;

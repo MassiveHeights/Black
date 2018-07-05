@@ -135,10 +135,10 @@ class BSFParser extends ParserBase {
     this.mName = name;
 
     this.mStyles = [];
-    //this.mActiveStyle = new Style();
     this.mGraphics = new Graphics();
 
     this.mCmds = null;
+    this.mPathCmds = null;
   }
 
   parse(data) {
@@ -182,7 +182,25 @@ class BSFParser extends ParserBase {
               g.lineStyle(style.lineWidth, style.lineColor, style.lineAlpha);
 
             break;
-
+          case '$p':
+          // remember last command
+            let pathData = cmd.substr(2);
+            this.mPathCmds = pathData.replace(/-/g, ' -').replace(/\B(?=[a-zA-Z])|,/g, ' ').split(' ');
+            let ax = 0;
+            let ay = 0;
+            while (this.mPathCmds.length > 0) {
+              let pc = this.mPathCmds.shift();
+              let ct = pc[0];
+              if (ct === 'M'){
+                ax = this.getPathArg(pc);
+                ay = this.getPathArg(0);
+                this.mGraphics.moveTo(ax, ay);
+              }
+              if (ct === 's'){
+                this.mGraphics.moveTo(this.getPathArg(pc), this.getPathArg(0));
+              }
+            }
+            break;
           case '$T':
             transform = new Matrix(this.getArg(cmd), this.getArg(0), this.getArg(1), this.getArg(2), this.getArg(3), this.getArg(4));
             this.mGraphics.setTransform(transform);
@@ -217,6 +235,10 @@ class BSFParser extends ParserBase {
 
   getArg(cmd) {
     return typeof cmd == 'number' ? +this.mCmds.shift() : +cmd.substring(cmd.startsWith('$') ? 2 : 1);
+  }
+
+  getPathArg(cmd) {
+    return typeof cmd == 'number' ? +this.mPathCmds.shift() : +cmd.substring(1);
   }
   __parseStyles() {
     let obj = this.data;

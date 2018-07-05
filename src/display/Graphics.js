@@ -27,6 +27,9 @@ class Graphics extends DisplayObject {
     /** @private @type {number} */
     this.mPadding = 0;
     //this.lineStyle(1, 0, 1);
+
+    /** @private @type {Matrix|null} */
+    this.mTransform = null;
   }
 
   /**
@@ -113,11 +116,12 @@ class Graphics extends DisplayObject {
    * Transforms canvas to given space..
    *
    * @public
-   * @param {Matrix} matrix Transform to use.
+   * @param {Matrix|null} matrix Transform to use.
    * @returns {void}
    */
   setTransform(matrix) {
     this.__pushCommand(GraphicsCommandType.TRANSFORM, matrix);
+    this.mTransform = matrix;
   }
 
   /**
@@ -327,6 +331,11 @@ class Graphics extends DisplayObject {
 
     Vector.pool.release(rangeX);
     Vector.pool.release(rangeY);
+  }
+
+  // TODO: bounds
+  quadraticCurveTo(cpx, cpy, x, y) {
+    this.__pushCommand(GraphicsCommandType.BEZIER_CURVE_TO, cp1x, cp1y, cp2x, cp2y, x, y);
   }
 
   /**
