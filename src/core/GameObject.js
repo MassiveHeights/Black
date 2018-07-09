@@ -2,8 +2,8 @@
  * Building block in Black Engine.
  *
  * @cat core
- * @unrestricted
  * @export
+ * @unrestricted
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -766,7 +766,7 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject|null}
    */
   hitTest(localPoint) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
     let touchable = c !== null && c.touchable;
     let insideMask = this.onHitTestMask(localPoint);
 
@@ -1565,7 +1565,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   set touchable(value) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
 
     if (value === true) {
       if (c === null)

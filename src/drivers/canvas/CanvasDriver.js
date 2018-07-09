@@ -101,7 +101,7 @@ class CanvasDriver extends VideoNullDriver {
    * @ignore
    * @param {GameObject} child 
    * @param {RenderSession} session 
-   * @param {Renderer} renderer
+   * @param {Renderer} parentRenderer
    */
   renderObject(child, session, parentRenderer) {
     let skipChildren = false;

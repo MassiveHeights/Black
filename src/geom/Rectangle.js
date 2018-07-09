@@ -381,8 +381,8 @@ class Rectangle {
   /**
    * Expands this rectangle with a given point.
    * 
-   * @param {*} x 
-   * @param {*} y 
+   * @param {number} x 
+   * @param {number} y 
    * @returns {Rectangle}
    */
   expandXY(x, y) {

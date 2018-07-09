@@ -13,7 +13,7 @@ class Device {
      * @private
      * @type {Device}
      */
-    this.constructor.mInstance = this;
+    Device.mInstance = this;
 
     /**
      * @private

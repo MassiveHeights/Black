@@ -147,7 +147,7 @@ class Sprite extends DisplayObject {
 
   /**
    * @ignore
-   * @param {Rectangle|null}
+   * @param {Rectangle|null} value
    */
   set slice9grid(value) {
     this.mSlice9grid = value;

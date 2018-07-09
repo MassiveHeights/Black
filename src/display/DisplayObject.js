@@ -155,7 +155,7 @@ class DisplayObject extends GameObject {
    * @inheritDoc
    */
   hitTest(localPoint) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
     let touchable = c !== null && c.touchable;
     let insideMask = this.onHitTestMask(localPoint);
 
