@@ -307,14 +307,15 @@ class Stage extends GameObject {
     this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
 
     // orientation lock hacks
+    const angle = window.screen.orientation.angle;
     if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
-      this.mLocalTransform.rotate((window.orientation + 90) * Math.PI / 180);
+      this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
       let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
       let y = (Black.instance.viewport.size.height * 0.5) - (this.mStageWidth * 0.5 * this.mStageScaleFactor);
 
       this.mLocalTransform.setTranslation(x, y);
     } else if (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
-      this.mLocalTransform.rotate((window.orientation + 180) * Math.PI / 180);
+      this.mLocalTransform.rotate((angle + 180) * Math.PI / 180);
 
       let x = (Black.instance.viewport.size.width * 0.5) - (this.mStageHeight * 0.5 * this.mStageScaleFactor);
       let y = (Black.instance.viewport.size.height * 0.5) + (this.mStageWidth * 0.5 * this.mStageScaleFactor);
