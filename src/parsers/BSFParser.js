@@ -38,7 +38,6 @@ class Style {
     */
 
 
-
     this.L = '-';
     this.l = 1;
     this.w = 1;
@@ -128,7 +127,40 @@ class Style {
 
 }
 
-class BSFParser extends ParserBase {
+const pathCmds = {
+  MOVETO     : 'M',
+  MOVETO_REL : 'm',
+  LINETO     : 'L',
+  LINETO_REL : 'l',
+  VLINE      : 'V',
+  VLINE_REL  : 'v',
+  HLINE      : 'H',
+  HLINE_REL  : 'h',
+  CURVE      : 'C',
+  CURVE_REL  : 'c',
+  SCURVE     : 'S',
+  SCURVE_REL : 's',
+  QCURVE     : 'Q',
+  QCURVE_REL : 'q',
+  SQCURVE    : 'T',
+  SQCURVE_REL: 't',
+  ARC        : 'A',
+  ARC_REL    : 'a',
+  CLOSE_PATH : 'Z',
+};
+
+const shapeCmds = {
+  RECT    : 'r',
+  CIRCLE  : 'c',
+  ELLIPSE : 'e',
+  LINE    : 'l',
+  POLYLINE: 's',
+  PATH    : 'p',
+  POLYGON : 'g',
+  CLIPPING: 'm',
+};
+
+class BSVParser extends ParserBase {
   constructor(name) {
     super();
 
@@ -136,96 +168,119 @@ class BSFParser extends ParserBase {
 
     this.mStyles = [];
     this.mGraphics = new Graphics();
-
-    this.mCmds = null;
-    this.mPathCmds = null;
   }
 
   parse(data) {
     super.parse(data);
 
     this.mStyles = this.__parseStyles();
-
-    this.data.nodes.forEach(n => {
-      let parentTransform = new Matrix();
-      let parentStyle = new Style();
-
-      this.__traverse(n, parentTransform, parentStyle)
-    });
+    this.__traverse(this.data, new Style(), this.mGraphics);
   }
 
-  __traverse(node, parentTransform, parentStyle) {
-    let transform = parentTransform.clone();
-    let style = parentStyle.clone();
-    let g = this.mGraphics;
+  __traverse(node, parentStyle, graphics) {
+    const style = parentStyle.clone();
+
+    if (node.t) {
+      const g = new Graphics();
+
+      g.x = node.t[0] || 0;
+      g.y = node.t[1] || 0;
+      g.scaleX = node.t[2] || 1;
+      g.scaleY = node.t[3] || 1;
+      g.rotation = node.t[4] || 0;
+      g.mPivotX = node.t[5] || 0;
+      g.mPivotY = node.t[6] || 0;
+      g.mSkewX = node.t[7] || 0;
+      g.mSkewY = node.t[8] || 0;
+
+      g.x += g.mPivotX / g.scaleX;
+      g.y += g.mPivotY / g.scaleY;
+
+      graphics.addChild(g);
+      graphics = g;
+    }
 
     if (node.cmds) {
-      this.mCmds = node.cmds.replace(/([a-zA-Z])(?=\d)/g, '$1 ').split(' ');
-//      debugger
+      const cmds = node.cmds.split('$').map(v => v.trim()).filter(v => v).reverse();
 
-      while (this.mCmds.length > 0) {
-        let cmd = this.mCmds.shift();
-        let type = cmd[0] === '$' ? cmd.substr(0, 2) : cmd[0];
+      while (cmds.length > 0) {
+        const cmd = cmds.pop();
+        const name = cmd[0];
+        const args = cmd.slice(1).split(' ').map(v => Number(v));
 
-        g.beginPath();
+        graphics.beginPath();
 
-        switch (type) {
-          case '$S':
-            let ix = this.getArg(0);
-            let newStyle = this.mStyles[ix];
+        switch (name) {
+          case 'S':
+            let newStyle = this.mStyles[args[0]];
             style.merge(newStyle);
             style.compute();
 
             if (style.needsFill === true)
-              g.fillStyle(style.fillColor, style.fillAlpha);
+              graphics.fillStyle(style.fillColor, style.fillAlpha);
 
             if (style.needsStroke === true)
-              g.lineStyle(style.lineWidth, style.lineColor, style.lineAlpha);
+              graphics.lineStyle(style.lineWidth, style.lineColor, style.lineAlpha);
 
             break;
-          case '$p':
-            // remember last command
-            let pathData = cmd.substr(2);
-            this.mPathCmds = pathData.replace(/-/g, ' -')
-              .replace(/\B(?=[a-zA-Z])|,/g, ' ')
-              .replace(/([a-zA-Z])(?=\d)/g, '$1 ')
-              .split(' ');
+          case shapeCmds.PATH:
+            this.__drawPath(cmd, graphics);
+            break;
+          case shapeCmds.RECT:
+            graphics.rect(args[0], args[1], args[2], args[3]);
+            break;
+          case shapeCmds.CIRCLE:
+            graphics.circle(args[0], args[1], args[2]);
+            break;
+          case shapeCmds.ELLIPSE:
+            const x = args[0];
+            const y = args[1];
+            const rx = args[2];
+            const ry = args[3];
 
-            let ax = 0;
-            let ay = 0;
-            while (this.mPathCmds.length > 0) {
-              let pc = this.mPathCmds.shift();
-              let ct = pc[0];
-              if (ct === 'M') {                
-                ax = this.getPathArg(0);
-                ay = this.getPathArg(1);
-                this.mGraphics.moveTo(ax, ay);
-              }
-              if (ct === 's') {
-                this.mGraphics.moveTo(this.getPathArg(0), this.getPathArg(1));
-              }
+            const curves = [
+              ...this.__arcToBezier(x - rx, y, rx, ry, 0, 0, 0, x + rx, y),
+              ...this.__arcToBezier(x + rx, y, rx, ry, 0, 0, 0, x - rx, y),
+            ];
+
+            graphics.moveTo(x - rx, y);
+
+            for (let i = 0, l = curves.length; i < l; i++) {
+              const c = curves[i];
+              graphics.bezierCurveTo(c[2], c[3], c[4], c[5], c[6], c[7]);
             }
-            break;
-          case '$T':
-            transform = new Matrix(this.getArg(0), this.getArg(0), this.getArg(1), this.getArg(2), this.getArg(3), this.getArg(4));
-            this.mGraphics.setTransform(transform);
-            break;
-          case '$r':
-            this.mGraphics.rect(this.getArg(0), this.getArg(0), this.getArg(1), this.getArg(2));
-            break;
-          case '$c':
-            this.mGraphics.circle(this.getArg(0), this.getArg(0), this.getArg(1));
-            break;
 
+            // graphics.moveTo(x, y);
+            break;
+          case shapeCmds.LINE:
+            const x1 = args[0];
+            const y1 = args[1];
+            const x2 = args[2];
+            const y2 = args[3];
+
+            graphics.moveTo(x1, y1);
+            graphics.lineTo(x2, y2);
+            break;
+          case shapeCmds.POLYLINE:
+          case shapeCmds.POLYGON:
+            const points = cmd.slice(1).split(',');
+            graphics.moveTo(points[0], points[1]);
+
+            for (let i = 2, l = points.length; i < l; i += 2) {
+              graphics.lineTo(points[i], points[i + 1]);
+            }
+
+            name === shapeCmds.POLYGON && graphics.closePath();
+            break;
           default:
             break;
         }
 
         if (style.needsFill === true)
-          g.fill();
+          graphics.fill();
 
         if (style.needsStroke === true)
-          g.stroke();
+          graphics.stroke();
       }
     }
 
@@ -233,18 +288,10 @@ class BSFParser extends ParserBase {
       return;
 
     node.nodes.forEach(c => {
-      this.__traverse(c, transform, style);
-      g.setTransform(parentTransform);
+      this.__traverse(c, style, graphics);
     });
   }
 
-  getArg(cmd) {
-    return typeof cmd == 'number' ? +this.mCmds.shift() : +cmd.substring(cmd.startsWith('$') ? 2 : 1);
-  }
-
-  getPathArg(cmd) {
-    return typeof cmd == 'number' ? +this.mPathCmds.shift() : +cmd.substring(1);
-  }
   __parseStyles() {
     let obj = this.data;
     let out = [];
@@ -276,5 +323,317 @@ class BSFParser extends ParserBase {
     });
 
     return out;
+  }
+
+  // ARC TO BEZIER START
+  __approxUnitArc(theta1, delta_theta) {
+    const alpha = 4 / 3 * Math.tan(delta_theta / 4);
+
+    const x1 = Math.cos(theta1);
+    const y1 = Math.sin(theta1);
+    const x2 = Math.cos(theta1 + delta_theta);
+    const y2 = Math.sin(theta1 + delta_theta);
+
+    return [
+      x1, y1,
+      x1 - y1 * alpha, y1 + x1 * alpha,
+      x2 + y2 * alpha, y2 - x2 * alpha,
+      x2, y2,
+    ];
+  }
+
+  __vectorAngle(ux, uy, vx, vy) {
+    let sign = (ux * vy - uy * vx < 0) ? -1 : 1;
+    let dot = ux * vx + uy * vy;
+
+    if (dot > 1.0) {
+      dot = 1.0;
+    }
+
+    if (dot < -1.0) {
+      dot = -1.0;
+    }
+
+    return sign * Math.acos(dot);
+  }
+
+  __getArcCenter(x1, y1, x2, y2, fa, fs, rx, ry, sin_phi, cos_phi) {
+    const x1p = cos_phi * (x1 - x2) / 2 + sin_phi * (y1 - y2) / 2;
+    const y1p = -sin_phi * (x1 - x2) / 2 + cos_phi * (y1 - y2) / 2;
+
+    const rx_sq = rx * rx;
+    const ry_sq = ry * ry;
+    const x1p_sq = x1p * x1p;
+    const y1p_sq = y1p * y1p;
+
+    let radicant = (rx_sq * ry_sq) - (rx_sq * y1p_sq) - (ry_sq * x1p_sq);
+
+    if (radicant < 0) {
+      radicant = 0;
+    }
+
+    radicant /= (rx_sq * y1p_sq) + (ry_sq * x1p_sq);
+    radicant = Math.sqrt(radicant) * (fa === fs ? -1 : 1);
+
+    const cxp = radicant * rx / ry * y1p;
+    const cyp = radicant * -ry / rx * x1p;
+
+    const cx = cos_phi * cxp - sin_phi * cyp + (x1 + x2) / 2;
+    const cy = sin_phi * cxp + cos_phi * cyp + (y1 + y2) / 2;
+
+    const v1x = (x1p - cxp) / rx;
+    const v1y = (y1p - cyp) / ry;
+    const v2x = (-x1p - cxp) / rx;
+    const v2y = (-y1p - cyp) / ry;
+
+    const theta1 = this.__vectorAngle(1, 0, v1x, v1y);
+    let delta_theta = this.__vectorAngle(v1x, v1y, v2x, v2y);
+
+    if (fs === 0 && delta_theta > 0) {
+      delta_theta -= Math.PI * 2;
+    }
+    if (fs === 1 && delta_theta < 0) {
+      delta_theta += Math.PI * 2;
+    }
+
+    return [cx, cy, theta1, delta_theta];
+  }
+
+  __arcToBezier(px, py, rx, ry, xAxisRotation, largeFlag, sweepFlag, x, y) {
+    const sin_phi = Math.sin(xAxisRotation * Math.PI / 180);
+    const cos_phi = Math.cos(xAxisRotation * Math.PI / 180);
+
+    const x1p = cos_phi * (px - x) / 2 + sin_phi * (py - y) / 2;
+    const y1p = -sin_phi * (px - x) / 2 + cos_phi * (py - y) / 2;
+
+    if (x1p === 0 && y1p === 0)
+      return;
+
+    if (rx === 0 || ry === 0)
+      return;
+
+    rx = Math.abs(rx);
+    ry = Math.abs(ry);
+
+    const lambda = (x1p * x1p) / (rx * rx) + (y1p * y1p) / (ry * ry);
+
+    if (lambda > 1) {
+      rx *= Math.sqrt(lambda);
+      ry *= Math.sqrt(lambda);
+    }
+
+    const cc = this.__getArcCenter(px, py, x, y, largeFlag, sweepFlag, rx, ry, sin_phi, cos_phi);
+
+    const result = [];
+    let theta1 = cc[2];
+    let delta_theta = cc[3];
+
+    // Split an arc to multiple segments, so each segment
+    // will be less than τ/4 (= 90°)
+    //
+    const segments = Math.max(Math.ceil(Math.abs(delta_theta) / (Math.PI * 0.5)), 1);
+    delta_theta /= segments;
+
+    for (let i = 0; i < segments; i++) {
+      result.push(this.__approxUnitArc(theta1, delta_theta));
+      theta1 += delta_theta;
+    }
+
+    return result.map(function (curve) {
+      for (let i = 0; i < curve.length; i += 2) {
+        let x = curve[i];
+        let y = curve[i + 1];
+
+        // scale
+        x *= rx;
+        y *= ry;
+
+        // rotate
+        const xp = cos_phi * x - sin_phi * y;
+        const yp = sin_phi * x + cos_phi * y;
+
+        // translate
+        curve[i] = xp + cc[0];
+        curve[i + 1] = yp + cc[1];
+      }
+
+      return curve;
+    });
+  }
+
+  // ARC TO BEZIER END
+
+  __drawPath(data, graphics) {
+    const values = [];
+
+    data
+      .split(',')
+      .map(item => {
+        while (item.length !== 0) {
+          const arg = parseFloat(item);
+
+          if (isNaN(arg)) {
+            values.push(item.charAt(0));
+            item = item.slice(1);
+          } else {
+            values.push(arg);
+
+            for (let i = 1; true; i++) {
+              if (parseFloat(item.slice(0, i)) === arg) {
+                item = item.slice(i);
+                break;
+              }
+            }
+          }
+        }
+      });
+
+    values.reverse();
+
+    // Context position
+    let x = 0;
+    let y = 0;
+
+    // Path start position, to return on close path
+    let mx = 0;
+    let my = 0;
+
+    // Bezier curve control point 1 position, to draw next smoothed bezier curve
+    let bcx = 0;
+    let bcy = 0;
+
+    // Quadratic curve control point 1 position, to draw next smoothed quadratic curve
+    let qcx = 0;
+    let qcy = 0;
+
+    // Store last command
+    let prevValue = '';
+
+    // 0 for absolute path and x, y for relative
+    let relX = 0;
+    let relY = 0;
+
+    while (values.length !== 0) {
+      const last = values[values.length - 1];
+      const v = last === last.toString() ? values.pop() : prevValue;
+      prevValue = v;
+      relX = relY = 0;
+
+      if (v === v.toLowerCase()) {
+        relX = x;
+        relY = y;
+      }
+
+      switch (v) {
+        case pathCmds.MOVETO:
+        case pathCmds.MOVETO_REL:
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.moveTo(x, y);
+          mx = x;
+          my = y;
+          break;
+        case pathCmds.LINETO:
+        case pathCmds.LINETO_REL:
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.lineTo(x, y);
+          break;
+        case pathCmds.VLINE:
+        case pathCmds.VLINE_REL:
+          y = values.pop() + relY;
+          graphics.lineTo(x, y);
+          break;
+        case pathCmds.HLINE:
+        case pathCmds.HLINE_REL:
+          x = values.pop() + relX;
+          graphics.lineTo(x, y);
+          break;
+        case pathCmds.CURVE:
+        case pathCmds.CURVE_REL: {
+          const cp1x = values.pop() + relX;
+          const cp1y = values.pop() + relY;
+          const cp2x = values.pop() + relX;
+          const cp2y = values.pop() + relY;
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+          bcx = x * 2 - cp2x;
+          bcy = y * 2 - cp2y;
+          break;
+        }
+        case pathCmds.SCURVE:
+        case pathCmds.SCURVE_REL: {
+          const cp2x = values.pop() + relX;
+          const cp2y = values.pop() + relY;
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.bezierCurveTo(bcx, bcy, cp2x, cp2y, x, y);
+          bcx = x * 2 - cp2x;
+          bcy = y * 2 - cp2y;
+          break;
+        }
+        case pathCmds.QCURVE:
+        case pathCmds.QCURVE_REL: {
+          const cpx = values.pop() + relX;
+          const cpy = values.pop() + relY;
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.quadraticCurveTo(cpx, cpy, x, y);
+          qcx = x * 2 - cpx;
+          qcy = y * 2 - cpy;
+          break;
+        }
+        case pathCmds.SQCURVE:
+        case pathCmds.SQCURVE_REL: {
+          const cpx = values.pop();
+          const cpy = values.pop();
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+          graphics.quadraticCurveTo(cpx, cpy, x, y);
+          qcx = x * 2 - cpx;
+          qcy = y * 2 - cpy;
+          break;
+        }
+        case pathCmds.ARC:
+        case pathCmds.ARC_REL: {
+          const px = x;
+          const py = y;
+          const rx = values.pop();
+          const ry = values.pop();
+          const xAxisRotation = values.pop();
+          const largeArcFlag = values.pop();
+          const sweepFlag = values.pop();
+          x = values.pop() + relX;
+          y = values.pop() + relY;
+
+          const curves = this.__arcToBezier(px, py, rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y);
+
+          if (!curves) break;
+
+          for (let i = 0, l = curves.length; i < l; i++) {
+            const c = curves[i];
+            graphics.bezierCurveTo(c[2], c[3], c[4], c[5], c[6], c[7]);
+          }
+
+          break;
+        }
+        case pathCmds.CLOSE_PATH:
+          graphics.closePath();
+          x = mx;
+          y = my;
+          break;
+      }
+
+      if (v !== pathCmds.CURVE && v !== pathCmds.CURVE_REL && v !== pathCmds.SCURVE && v !== pathCmds.SCURVE_REL) {
+        bcx = x;
+        bcy = y;
+      }
+
+      if (v !== pathCmds.QCURVE && v !== pathCmds.QCURVE_REL && v !== pathCmds.SQCURVE && v !== pathCmds.SQCURVE_REL) {
+        qcx = x;
+        qcy = y;
+      }
+    }
   }
 }
