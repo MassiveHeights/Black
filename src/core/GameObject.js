@@ -571,9 +571,11 @@ class GameObject extends MessageDispatcher {
 
     if (MathEx.equals(skewX, skewY)) {
       this.mRotation = skewX;
-      skewX = skewY = 0;
+      this.mSkewX = this.mSkewY = 0;
     } else {
       this.mRotation = 0;
+      this.mSkewX = skewX;
+      this.mSkewY = skewY;
     }
 
     this.setTransformDirty();
