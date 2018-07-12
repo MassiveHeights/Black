@@ -1,7 +1,7 @@
 /**
  * Renders `Sprite` objects on canvas.
  *
- * @extends DisplayObjectRendererCanvas
+ * @extends Renderer
  * @cat drivers.canvas
  */
 /* @echo EXPORT */
@@ -143,7 +143,7 @@ class SpriteRendererCanvas extends Renderer {
       return driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
 
     // we got some tiling
-    let ctx = driver.mCtx;
+    let ctx = /** @type {CanvasDriver}*/ (driver).mCtx;
     if (this.pattern === null || this.patternTexture !== texture) {
       this.pattern = ctx.createPattern(texture.native, 'repeat');
       this.patternTexture = texture;

@@ -65,7 +65,7 @@ class Graphics extends DisplayObject {
         }
         case GraphicsCommandType.BOUNDS: {
           for (let k = 0; k < cmd.data.length; k += 2)
-            path.points.push(cmd.data[k], cmd.data[k + 1]);
+            path.points.push(cmd.getNumber(k), cmd.getNumber(k + 1));
           break;
         }
         case GraphicsCommandType.LINE_STYLE: {
@@ -110,18 +110,6 @@ class Graphics extends DisplayObject {
     bounds.copyTo(outRect);
 
     return outRect;
-  }
-
-  /**
-   * Transforms canvas to given space..
-   *
-   * @public
-   * @param {Matrix|null} matrix Transform to use.
-   * @returns {void}
-   */
-  setTransform(matrix) {
-    this.__pushCommand(GraphicsCommandType.TRANSFORM, matrix);
-    this.mTransform = matrix;
   }
 
   /**

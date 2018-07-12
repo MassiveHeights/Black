@@ -102,7 +102,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.TRANSFORM: {
-          const v = /** @type {Matrix*/ (cmd.data[0]).value;
+          const v = /** @type {Matrix} */ (cmd.data[0]).value;
           ctx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
           break;
         }

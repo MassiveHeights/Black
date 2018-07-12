@@ -273,7 +273,7 @@ class Black extends MessageDispatcher {
       return;
     }
 
-    this.constructor.instance = this;
+    Black.instance = this;
 
     if (this.mIsStarted === true)
       return;
