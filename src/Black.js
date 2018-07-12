@@ -325,7 +325,7 @@ class Black extends MessageDispatcher {
     this.mIsRunning = false;
     window.cancelAnimationFrame(this.mRAFHandle);
 
-    console.log('%c                        <<< BUY BUY >>>                        ', 'background: #000; color: #fff;');
+    console.log('%c                        <<< BYE BYE >>>                        ', 'background: #000; color: #fff;');
   }
 
   /**
