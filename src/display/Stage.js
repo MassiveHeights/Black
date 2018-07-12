@@ -307,7 +307,7 @@ class Stage extends GameObject {
     this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
 
     // orientation lock hacks
-    const angle = window.screen.orientation.angle;
+    const angle = window.orientation != null ? window.orientation : window.screen.orientation.angle;
     if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
       this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
       let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
