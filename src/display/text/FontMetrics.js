@@ -240,8 +240,8 @@ class FontMetrics {
    */
   __measureTop(text) {
     let pixels = this.__getPixels(text);
-    let fistIndex = this.__getFirstIndex(pixels);
-    return Math.round(fistIndex / this.mCanvas.width) - this.mPadding;
+    let firstIndex = this.__getFirstIndex(pixels);
+    return Math.round(firstIndex / this.mCanvas.width) - this.mPadding;
   };
 
   /**
