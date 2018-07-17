@@ -769,4 +769,4 @@ Black.numUpdates = 0;
  * Limit for number of updates to be done per one RAF.
  * @public
  */
-Black.maxUpdatesPerFrame = 60;
+Black.maxUpdatesPerFrame = 60; 
