@@ -875,6 +875,30 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Calculates GameObject's position relative to another GameObject.
+   *
+   * @param {GameObject} gameObject Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
+   */
+  relativeTo(gameObject, outVector = null) {
+    outVector = outVector || Vector.pool.get();
+    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
+    tmpVector.set(this.x, this.y);
+
+    if (this.parent == null || gameObject == null) {
+      outVector.copyFrom(tmpVector);
+      Vector.pool.release(tmpVector);
+      return outVector;
+    }
+
+    tmpVector = this.parent.localToGlobal(tmpVector, outVector);
+    tmpVector = gameObject.globalToLocal(tmpVector, outVector);
+    Vector.pool.release(tmpVector);
+    return outVector;
+  }
+
+  /**
    * Calculate global position of the object.
    *
    * @param {Vector} localPoint Coordinates vector.
