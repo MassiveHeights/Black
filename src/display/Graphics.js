@@ -454,6 +454,7 @@ class Graphics extends DisplayObject {
    */
   stroke() {
     this.__pushCommand(GraphicsCommandType.STROKE);
+    this.setTransformDirty();
   }
 
   /**
@@ -464,6 +465,7 @@ class Graphics extends DisplayObject {
    */
   fill() {
     this.__pushCommand(GraphicsCommandType.FILL);
+    this.setTransformDirty();
   }
 
   /**

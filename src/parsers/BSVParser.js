@@ -1,131 +1,15 @@
-class ParserBase {
-  constructor() {
-    this.data = null;
-  }
-
-  parse(data) {
-    this.data = data;
-  }
-}
-
-class Style {
-  constructor() {
-    /*
-    const CMD_STYLE_LINE = 'L';
-    const CMD_STYLE_LINE_ALPHA = 'l';
-    const CMD_STYLE_LINE_WIDTH = 'w';
-    const CMD_STYLE_FILL = 'F';
-    const CMD_STYLE_FILL_RULE = 'r';
-    const CMD_STYLE_FILL_ALPHA = 'f';
-    const CMD_STYLE_CAPS = 'c';
-    const CMD_STYLE_JOINTS = 'j';
-    const CMD_STYLE_MITER = 'm';
-    const CMD_STYLE_ALPHA = 'a';
-    */
-
-    /*
-    default values:
-      this.L = 0;
-      this.l = 1;
-      this.w = 1;
-      this.F = 0;
-      this.f = 1;
-      this.r = 1; // non zero
-      this.c = 'r';
-      this.j = 'r';
-      this.m = 4;
-      this.a = 1;
-    */
-
-
-    this.L = '-';
-    this.l = 1;
-    this.w = 1;
-    this.F = 0;
-    this.f = 1;
-    this.r = 1; // non zero
-    this.c = 'r';
-    this.j = 'r';
-    this.m = 4;
-    this.a = 1;
-
-    this.needsFill = true;
-    this.needsStroke = true;
-
-    this.fillColor = 0;
-    this.fillAlpha = 1;
-
-    this.lineColor = 0;
-    this.lineAlpha = 1;
-    this.lineWidth = 1;
-
-    // this.L = null;
-    // this.l = null;
-    // this.w = null;
-    // this.F = null;
-    // this.f = null;
-    // this.r = null; // non zero
-    // this.c = null;
-    // this.j = null;
-    // this.m = null;
-    // this.a = null;
-  }
-
-  merge(style) {
-    if (style.F)
-      this.F = style.F;
-
-    if (style.L)
-      this.L = style.L;
-
-    if (style.w)
-      this.w = style.w;
-
-    if (style.l)
-      this.l *= style.l;
-
-    if (style.f)
-      this.f *= style.f;
-  }
-
-  compute() {
-    this.needsFill = this.F !== '-';
-
-    if (this.needsFill)
-      this.fillColor = parseInt(this.F, 16);
-
-    this.lineWidth = +this.w;
-    this.needsStroke = this.L !== '-' && this.lineWidth > 0;
-
-    if (this.needsStroke)
-      this.lineColor = parseInt(this.L, 16);
-
-    this.lineAlpha = this.l;
-    this.fillAlpha = this.f;
-
-    // this.fillAlpha = 1;
-    // this.lineColor = 0;
-    // this.lineAlpha = 1;
-    // this.lineWidth = 1;
-  }
-
-  clone() {
-    let s = new Style();
-    s.L = this.L;
-    s.l = this.l;
-    s.w = this.w;
-    s.F = this.F;
-    s.f = this.f;
-    s.r = this.r;
-    s.c = this.c;
-    s.j = this.j;
-    s.m = this.m;
-    s.a = this.a;
-    return s;
-  }
-
-
-}
+const styleCmds = {
+  LINE      : 'L',
+  LINE_ALPHA: 'l',
+  LINE_WIDTH: 'w',
+  FILL      : 'F',
+  FILL_RULE : 'r',
+  FILL_ALPHA: 'f',
+  CAPS      : 'c',
+  JOINTS    : 'j',
+  MITER     : 'm',
+  ALPHA     : 'a',
+};
 
 const pathCmds = {
   MOVETO     : 'M',
@@ -160,6 +44,84 @@ const shapeCmds = {
   CLIPPING: 'm',
 };
 
+class Style {
+  constructor() {
+    this.L = 0; // stroke color
+    this.l = 1; // stroke alpha
+    this.w = 1; // line width
+    this.F = 0; // fill color
+    this.f = 1; // fill alpha
+    this.r = 1; // fill rule  {nonzero: 1, evenodd: 0}
+    this.c = 'b'; // line cap {butt: 'b', round: 'r', square: 's'}
+    this.j = 'm'; // line join {miter: 'm', round: 'r', bevel: 'b'}
+    this.m = 4; // miter limit
+    this.a = 1; // global alpha
+
+    this.needsFill = false;
+    this.needsStroke = false;
+
+    this.fillColor = 0;
+    this.fillAlpha = 1;
+
+    this.lineColor = 0;
+    this.lineAlpha = 1;
+    this.lineWidth = 1;
+  }
+
+  merge(style) {
+    if (style.hasOwnProperty('F'))
+      this.F = style.F;
+
+    if (style.hasOwnProperty('L'))
+      this.L = style.L;
+
+    if (style.hasOwnProperty('w'))
+      this.w = style.w;
+
+    if (style.hasOwnProperty('l'))
+      this.l *= style.l;
+
+    if (style.hasOwnProperty('f'))
+      this.f *= style.f;
+  }
+
+  compute() {
+    this.needsFill = !!this.F;
+
+    if (this.needsFill)
+      this.fillColor = parseInt(this.F, 16);
+
+    this.lineWidth = +this.w;
+    this.needsStroke = !!this.L && this.lineWidth > 0;
+
+    if (this.needsStroke)
+      this.lineColor = parseInt(this.L, 16);
+
+    this.lineAlpha = this.l;
+    this.fillAlpha = this.f;
+
+    // this.fillAlpha = 1;
+    // this.lineColor = 0;
+    // this.lineAlpha = 1;
+    // this.lineWidth = 1;
+  }
+
+  clone() {
+    let s = new Style();
+    s.L = this.L;
+    s.l = this.l;
+    s.w = this.w;
+    s.F = this.F;
+    s.f = this.f;
+    s.r = this.r;
+    s.c = this.c;
+    s.j = this.j;
+    s.m = this.m;
+    s.a = this.a;
+    return s;
+  }
+}
+
 class BSVParser extends ParserBase {
   constructor(name) {
     super();
@@ -180,39 +142,45 @@ class BSVParser extends ParserBase {
   __traverse(node, parentStyle, graphics) {
     const style = parentStyle.clone();
 
-    if (node.t) {
+    if (node.id || node.t) {
       const g = new Graphics();
 
-      g.x = node.t[0] || 0;
-      g.y = node.t[1] || 0;
-      g.scaleX = node.t[2] || 1;
-      g.scaleY = node.t[3] || 1;
-      g.rotation = node.t[4] || 0;
-      g.mPivotX = node.t[5] || 0;
-      g.mPivotY = node.t[6] || 0;
-      g.mSkewX = node.t[7] || 0;
-      g.mSkewY = node.t[8] || 0;
+      if (node.id) {
+        g.name = node.id;
+      }
 
-      g.x += g.mPivotX / g.scaleX;
-      g.y += g.mPivotY / g.scaleY;
+      if (node.t) {
+        g.x = node.t[0] || 0;
+        g.y = node.t[1] || 0;
+        g.scaleX = node.t[2] || 1;
+        g.scaleY = node.t[3] || 1;
+        g.rotation = node.t[4] || 0;
+        g.mPivotX = node.t[5] || 0;
+        g.mPivotY = node.t[6] || 0;
+        g.mSkewX = node.t[7] || 0;
+        g.mSkewY = node.t[8] || 0;
+
+        g.x += g.mPivotX / g.scaleX;
+        g.y += g.mPivotY / g.scaleY;
+      }
 
       graphics.addChild(g);
       graphics = g;
     }
 
     if (node.cmds) {
-      const cmds = node.cmds.split('$').map(v => v.trim()).filter(v => v).reverse();
+      const cmds = node.cmds.split('$').filter(v => v).reverse();
 
       while (cmds.length > 0) {
         const cmd = cmds.pop();
         const name = cmd[0];
-        const args = cmd.slice(1).split(' ').map(v => Number(v));
+        const args = cmd.slice(1).split(',').map(v => Number(v));
 
         graphics.beginPath();
 
         switch (name) {
           case 'S':
-            let newStyle = this.mStyles[args[0]];
+            const newStyle = this.mStyles[args[0]];
             style.merge(newStyle);
             style.compute();
 
@@ -293,46 +261,31 @@ class BSVParser extends ParserBase {
   }
 
   __parseStyles() {
-    let obj = this.data;
-    let out = [];
+    const obj = this.data;
 
     if (!obj.styles)
       return;
 
-    obj.styles.forEach(x => {
-      const CMD_STYLE_LINE = 'L';
-      const CMD_STYLE_LINE_ALPHA = 'l';
-      const CMD_STYLE_LINE_WIDTH = 'w';
-      const CMD_STYLE_FILL = 'F';
-      const CMD_STYLE_FILL_RULE = 'r';
-      const CMD_STYLE_FILL_ALPHA = 'f';
-      const CMD_STYLE_CAPS = 'c';
-      const CMD_STYLE_JOINTS = 'j';
-      const CMD_STYLE_MITER = 'm';
-      const CMD_STYLE_ALPHA = 'a';
+    return obj.styles.map(s => {
+      const style = {};
+      const props = s.split(' ');
 
-      let style = {};
-      let props = x.split(' ');
       props.forEach(p => {
-        let cmd = p[0];
-        let val = p.substring(1);
-        style[cmd] = val;
+        const cmd = p[0];
+        style[cmd] = p.slice(1);
       });
 
-      out.push(style);
+      return style;
     });
-
-    return out;
   }
 
   // ARC TO BEZIER START
-  __approxUnitArc(theta1, delta_theta) {
-    const alpha = 4 / 3 * Math.tan(delta_theta / 4);
-
-    const x1 = Math.cos(theta1);
-    const y1 = Math.sin(theta1);
-    const x2 = Math.cos(theta1 + delta_theta);
-    const y2 = Math.sin(theta1 + delta_theta);
+  __approxUnitArc(theta, deltaTheta) {
+    const alpha = 4 / 3 * Math.tan(deltaTheta / 4);
+    const x1 = Math.cos(theta);
+    const y1 = Math.sin(theta);
+    const x2 = Math.cos(theta + deltaTheta);
+    const y2 = Math.sin(theta + deltaTheta);
 
     return [
       x1, y1,
@@ -343,73 +296,57 @@ class BSVParser extends ParserBase {
   }
 
   __vectorAngle(ux, uy, vx, vy) {
-    let sign = (ux * vy - uy * vx < 0) ? -1 : 1;
-    let dot = ux * vx + uy * vy;
-
-    if (dot > 1.0) {
-      dot = 1.0;
-    }
-
-    if (dot < -1.0) {
-      dot = -1.0;
-    }
+    const sign = (ux * vy - uy * vx < 0) ? -1 : 1;
+    const dot = MathEx.clamp(ux * vx + uy * vy, -1, 1);
 
     return sign * Math.acos(dot);
   }
 
-  __getArcCenter(x1, y1, x2, y2, fa, fs, rx, ry, sin_phi, cos_phi) {
-    const x1p = cos_phi * (x1 - x2) / 2 + sin_phi * (y1 - y2) / 2;
-    const y1p = -sin_phi * (x1 - x2) / 2 + cos_phi * (y1 - y2) / 2;
+  __getArcCenter(x1, y1, x2, y2, fa, fs, rx, ry, sinPhi, cosPhi) {
+    const x1p = cosPhi * (x1 - x2) / 2 + sinPhi * (y1 - y2) / 2;
+    const y1p = -sinPhi * (x1 - x2) / 2 + cosPhi * (y1 - y2) / 2;
 
-    const rx_sq = rx * rx;
-    const ry_sq = ry * ry;
-    const x1p_sq = x1p * x1p;
-    const y1p_sq = y1p * y1p;
+    const rxSq = rx * rx;
+    const rySq = ry * ry;
+    const x1pSq = x1p * x1p;
+    const y1pSq = y1p * y1p;
 
-    let radicant = (rx_sq * ry_sq) - (rx_sq * y1p_sq) - (ry_sq * x1p_sq);
+    let radical = Math.max(0, (rxSq * rySq) - (rxSq * y1pSq) - (rySq * x1pSq));
+    radical /= (rxSq * y1pSq) + (rySq * x1pSq);
+    radical = Math.sqrt(radical) * (fa === fs ? -1 : 1);
 
-    if (radicant < 0) {
-      radicant = 0;
-    }
+    const cxp = radical * rx / ry * y1p;
+    const cyp = radical * -ry / rx * x1p;
 
-    radicant /= (rx_sq * y1p_sq) + (ry_sq * x1p_sq);
-    radicant = Math.sqrt(radicant) * (fa === fs ? -1 : 1);
-
-    const cxp = radicant * rx / ry * y1p;
-    const cyp = radicant * -ry / rx * x1p;
-
-    const cx = cos_phi * cxp - sin_phi * cyp + (x1 + x2) / 2;
-    const cy = sin_phi * cxp + cos_phi * cyp + (y1 + y2) / 2;
+    const cx = cosPhi * cxp - sinPhi * cyp + (x1 + x2) / 2;
+    const cy = sinPhi * cxp + cosPhi * cyp + (y1 + y2) / 2;
 
     const v1x = (x1p - cxp) / rx;
     const v1y = (y1p - cyp) / ry;
     const v2x = (-x1p - cxp) / rx;
     const v2y = (-y1p - cyp) / ry;
 
-    const theta1 = this.__vectorAngle(1, 0, v1x, v1y);
-    let delta_theta = this.__vectorAngle(v1x, v1y, v2x, v2y);
+    const theta = this.__vectorAngle(1, 0, v1x, v1y);
+    let deltaTheta = this.__vectorAngle(v1x, v1y, v2x, v2y);
 
-    if (fs === 0 && delta_theta > 0) {
-      delta_theta -= Math.PI * 2;
+    if (fs === 0 && deltaTheta > 0) {
+      deltaTheta -= Math.PI * 2;
     }
-    if (fs === 1 && delta_theta < 0) {
-      delta_theta += Math.PI * 2;
+    if (fs === 1 && deltaTheta < 0) {
+      deltaTheta += Math.PI * 2;
     }
 
-    return [cx, cy, theta1, delta_theta];
+    return [cx, cy, theta, deltaTheta];
   }
 
   __arcToBezier(px, py, rx, ry, xAxisRotation, largeFlag, sweepFlag, x, y) {
-    const sin_phi = Math.sin(xAxisRotation * Math.PI / 180);
-    const cos_phi = Math.cos(xAxisRotation * Math.PI / 180);
+    const sinPhi = Math.sin(xAxisRotation * Math.PI / 180);
+    const cosPhi = Math.cos(xAxisRotation * Math.PI / 180);
 
-    const x1p = cos_phi * (px - x) / 2 + sin_phi * (py - y) / 2;
-    const y1p = -sin_phi * (px - x) / 2 + cos_phi * (py - y) / 2;
+    const x1p = cosPhi * (px - x) / 2 + sinPhi * (py - y) / 2;
+    const y1p = -sinPhi * (px - x) / 2 + cosPhi * (py - y) / 2;
 
-    if (x1p === 0 && y1p === 0)
-      return;
-
-    if (rx === 0 || ry === 0)
+    if (x1p === 0 && y1p === 0 || rx === 0 || ry === 0)
       return;
 
     rx = Math.abs(rx);
@@ -418,43 +355,33 @@ class BSVParser extends ParserBase {
     const lambda = (x1p * x1p) / (rx * rx) + (y1p * y1p) / (ry * ry);
 
     if (lambda > 1) {
-      rx *= Math.sqrt(lambda);
-      ry *= Math.sqrt(lambda);
+      const lambdaRt = Math.sqrt(lambda);
+      rx *= lambdaRt;
+      ry *= lambdaRt;
     }
 
-    const cc = this.__getArcCenter(px, py, x, y, largeFlag, sweepFlag, rx, ry, sin_phi, cos_phi);
+    const center = this.__getArcCenter(px, py, x, y, largeFlag, sweepFlag, rx, ry, sinPhi, cosPhi);
+    const curves = [];
+    let theta = center[2];
+    let deltaTheta = center[3];
 
-    const result = [];
-    let theta1 = cc[2];
-    let delta_theta = cc[3];
-
-    // Split an arc to multiple segments, so each segment
-    // will be less than τ/4 (= 90°)
-    //
-    const segments = Math.max(Math.ceil(Math.abs(delta_theta) / (Math.PI * 0.5)), 1);
-    delta_theta /= segments;
+    const segments = Math.max(Math.ceil(Math.abs(deltaTheta) / (Math.PI * 0.5)), 1);
+    deltaTheta /= segments;
 
     for (let i = 0; i < segments; i++) {
-      result.push(this.__approxUnitArc(theta1, delta_theta));
-      theta1 += delta_theta;
+      curves.push(this.__approxUnitArc(theta, deltaTheta));
+      theta += deltaTheta;
     }
 
-    return result.map(function (curve) {
+    return curves.map(function (curve) {
       for (let i = 0; i < curve.length; i += 2) {
-        let x = curve[i];
-        let y = curve[i + 1];
+        const x = curve[i] * rx;
+        const y = curve[i + 1] * ry;
+        const xp = cosPhi * x - sinPhi * y;
+        const yp = sinPhi * x + cosPhi * y;
 
-        // scale
-        x *= rx;
-        y *= ry;
-
-        // rotate
-        const xp = cos_phi * x - sin_phi * y;
-        const yp = sin_phi * x + cos_phi * y;
-
-        // translate
-        curve[i] = xp + cc[0];
-        curve[i + 1] = yp + cc[1];
+        curve[i] = xp + center[0];
+        curve[i + 1] = yp + center[1];
       }
 
       return curve;

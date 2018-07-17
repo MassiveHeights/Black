@@ -5,7 +5,7 @@
  * @extends Asset
  */
 /* @echo EXPORT */
-class BSFAsset extends Asset {
+class BSVAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
