@@ -544,7 +544,7 @@ class GameObject extends MessageDispatcher {
    * @param {Matrix} value
    * @return {void}
    */
-  set worldTransformation(value) {
+  set localTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
     let a = value.data[0];
@@ -872,6 +872,30 @@ class GameObject extends MessageDispatcher {
 
     this.setTransformDirty();
     return this;
+  }
+
+  /**
+   * Calculates GameObject's position relative to another GameObject.
+   *
+   * @param {GameObject} gameObject Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
+   */
+  relativeTo(gameObject, outVector = null) {
+    outVector = outVector || Vector.pool.get();
+    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
+    tmpVector.set(this.x, this.y);
+
+    if (this.parent == null || gameObject == null) {
+      outVector.copyFrom(tmpVector);
+      Vector.pool.release(tmpVector);
+      return outVector;
+    }
+
+    tmpVector = this.parent.localToGlobal(tmpVector, outVector);
+    tmpVector = gameObject.globalToLocal(tmpVector, outVector);
+    Vector.pool.release(tmpVector);
+    return outVector;
   }
 
   /**

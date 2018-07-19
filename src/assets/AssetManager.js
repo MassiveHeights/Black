@@ -598,6 +598,17 @@ class AssetManager extends MessageDispatcher {
   get state() {
     return this.mState;
   }
+
+  /**
+   * Always returns 'AssetManager', can be used to overhear AssetManager's messages.
+   *
+   * @override
+   * @readonly
+   * @return {string|null}
+   */
+  get path() {
+    return 'AssetManager';
+  }
 }
 
 /**
