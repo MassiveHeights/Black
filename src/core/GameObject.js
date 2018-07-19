@@ -544,7 +544,7 @@ class GameObject extends MessageDispatcher {
    * @param {Matrix} value
    * @return {void}
    */
-  set worldTransformation(value) {
+  set localTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
     let a = value.data[0];

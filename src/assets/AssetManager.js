@@ -4,10 +4,11 @@
  * @fires Message.PROGRESS
  * @fires Message.COMPLETE
  * @fires Message.ERROR
- * 
+ *
  * @cat assets
  * @extends MessageDispatcher
  */
+
 /* @echo EXPORT */
 class AssetManager extends MessageDispatcher {
   /**
@@ -44,6 +45,12 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {Object.<string, Texture>} */
     this.mTextures = {};
 
+    /** @private @type {Object.<string, GraphicsData>} */
+    this.mGraphicsData = {};
+
+    /** @private @type {Object.<string, Texture>} */
+    this.mVectorTextures = {};
+
     /** @private @type {Object.<string, AtlasTexture>} */
     this.mAtlases = {};
 
@@ -74,8 +81,8 @@ class AssetManager extends MessageDispatcher {
 
   /**
    * Adds or changes texture to the internal list for future reuse by given name.
-   * @param {string} name 
-   * @param {Texture} texture 
+   * @param {string} name
+   * @param {Texture} texture
    */
   addTexture(name, texture) {
     this.mTextures[name] = texture;
@@ -146,6 +153,23 @@ class AssetManager extends MessageDispatcher {
     this.__validateState();
     this.__validateName(name);
     this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
+  }
+
+  /**
+   * Adds single black vector graphics file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   * @param {boolean=} [bake=false] Flag to bake full BVG as texture. If false neither root nor children will be baked.
+   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none child node will be baked.
+   * @param {Array<string>=} [namesToBake=null] Concrete nodes id which require baking. Works only if bakeChildren=true.
+   *
+   * @returns {void}
+   */
+  enqueueVector(name, url, bake = false, bakeChildren = false, namesToBake = null) {
+    this.__validateState();
+    this.__validateName(name);
+    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bake, bakeChildren, namesToBake));
   }
 
   /**
@@ -258,6 +282,51 @@ class AssetManager extends MessageDispatcher {
       this.mXMLs[item.name] = item.data;
     else if (item.constructor === BitmapFontAsset)
       this.mBitmapFonts[item.name] = item.data;
+    else if (item.constructor === BVGAsset) {
+      const parser = new BVGParser();
+      const graphicsData = parser.parse(item.data);
+      graphicsData.name = item.name;
+      this.mGraphicsData[item.name] = graphicsData;
+
+      if (item.mBake) {
+        const namesToBake = item.mNamesToBake;
+
+        if (item.mBakeChildren && namesToBake.length === 0) {
+          const traverse = nodes => {
+            if (nodes.length === 0) return;
+
+            for (let i = 0, l = nodes.length; i < l; i++) {
+              if (nodes[i].name) {
+                namesToBake.push(nodes[i].name);
+              }
+
+              traverse(nodes[i].mNodes);
+            }
+          };
+
+          traverse(graphicsData.mNodes);
+        }
+
+        namesToBake.unshift(graphicsData.name);
+
+        for (let i = 0, l = namesToBake.length; i < l; i++) {
+          const name = namesToBake[i];
+          const node = graphicsData.searchNode(name);
+          i !== 0 && this.__validateName(name);
+
+          if (!node) {
+            Debug.warn(`[AssetManager] GraphicsData node with id '${name}' was not found.`);
+            continue;
+          }
+
+          const graphics = new Graphics(node);
+          const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+
+          Black.driver.render(graphics, renderTexture);
+          this.mVectorTextures[namesToBake[i]] = renderTexture;
+        }
+      }
+    }
     else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
     }
@@ -339,14 +408,15 @@ class AssetManager extends MessageDispatcher {
    */
   getTexture(name) {
     /** @type {Texture} */
-    let t = this.mTextures[name];
+    let t = this.mTextures[name] || this.mVectorTextures[name];
 
     if (t != null)
       return t;
 
     for (let key in this.mAtlases) {
       t = this.mAtlases[key].subTextures[name];
-      if (t != null)
+
+      if (t)
         return t;
     }
 
@@ -354,6 +424,24 @@ class AssetManager extends MessageDispatcher {
     return null;
   }
 
+  getGraphicsData(name) {
+    /** @type {GraphicsData} */
+    let data = this.mGraphicsData[name];
+
+    if (data)
+      return data;
+
+    for (let key in this.mGraphicsData) {
+      data = this.mGraphicsData[key].searchNode(name);
+
+      if (data) {
+        return data;
+      }
+    }
+
+    Debug.warn(`[AssetManager] GraphicsData '${name}' was not found.`);
+    return null;
+  }
 
   /**
    * Returns array of Texture by given name mask.
@@ -366,12 +454,12 @@ class AssetManager extends MessageDispatcher {
     let out = [];
     let names = [];
 
-    let re = new RegExp("^" + nameMask.split("*").join(".*") + "$");
+    let re = new RegExp('^' + nameMask.split('*').join('.*') + '$');
 
     // collect single textures
     for (let key in this.mTextures)
       if (re.test(key))
-        names.push({ name: key, atlas: null });
+        names.push({name: key, atlas: null});
 
     // collect textures from all atlases
     for (let key in this.mAtlases) {
@@ -379,7 +467,7 @@ class AssetManager extends MessageDispatcher {
 
       for (let key2 in atlas.subTextures)
         if (re.test(key2))
-          names.push({ name: key2, atlas: atlas });
+          names.push({name: key2, atlas: atlas});
     }
 
     AtlasTexture.naturalSort(names, 'name');
@@ -504,11 +592,22 @@ class AssetManager extends MessageDispatcher {
 
   /**
    * Returns current state.
-   * 
+   *
    * @returns {AssetManagerState}
    */
   get state() {
     return this.mState;
+  }
+
+  /**
+   * Always returns 'AssetManager', can be used to overhear AssetManager's messages.
+   *
+   * @override
+   * @readonly
+   * @return {string|null}
+   */
+  get path() {
+    return 'AssetManager';
   }
 }
 
