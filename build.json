@@ -61,7 +61,7 @@
     "src/assets/BitmapFontAsset.js",
     "src/assets/SoundAsset.js",
     "src/assets/SoundAtlasAsset.js",
-    "src/assets/BSVAsset.js",
+    "src/assets/BVGAsset.js",
     "src/assets/AssetManagerState.js",
     "src/assets/AssetManager.js",
 
@@ -86,11 +86,13 @@
     "src/drivers/canvas/CanvasDriver.js",
 
     "src/display/DisplayObject.js",
+    "src/display/GraphicsData.js",
     "src/display/Graphics.js",
     "src/display/GraphicsCommand.js",
     "src/display/GraphicsCommandType.js",
     "src/display/CapsStyle.js",
     "src/display/JointStyle.js",
+    "src/display/FillRule.js",
     "src/display/TilingInfo.js",
     "src/display/Sprite.js",
     "src/display/text/TextStyle.js",
@@ -175,7 +177,8 @@
     "src/physics/arcade/Arcade.js",
 
     "src/parsers/ParserBase.js",
-    "src/parsers/BSVParser.js",
+    "src/parsers/BVGParser.js",
+    "src/parsers/BVGStyle.js",
 
     "src/core/SplashScreen.js",
 

@@ -1,9 +1,10 @@
 /**
  * Renders `Graphics` objects on canvas.
  *
-* @extends GraphicsRenderer
-* @cat drivers.canvas
-*/
+ * @extends GraphicsRenderer
+ * @cat drivers.canvas
+ */
+
 /* @echo EXPORT */
 class GraphicsRendererCanvas extends GraphicsRenderer {
   /**
@@ -24,15 +25,49 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     }
   }
 
+  /**
+   * Prepare context to draw.
+   *
+   * @private
+   * @param {VideoNullDriver} driver Driver to draw.
+   * @param {number|null=} [color=null] Tint.
+   *
+   * @returns {BVGStyle} Created style.
+   */
   __drawCommandBuffer(driver, color = null) {
-    let gameObject = /** @type {Graphics} */ (this.gameObject);
-    let commands = gameObject.mCommandQueue;
+    const gameObject = /** @type {Graphics} */ (this.gameObject);
+    const ctx = driver.context;
 
+    ctx.save();
+    ctx.beginPath();
+
+    this.__renderNode(driver, color, gameObject.mGraphicsData, gameObject.worldTransformation);
+
+    ctx.restore();
+  }
+
+  /**
+   * Recursively draws each node of GraphicsData.
+   *
+   * @private
+   * @param {VideoNullDriver} driver Driver to draw.
+   * @param {number} color Tint.
+   * @param {GraphicsData} node Commands provider.
+   * @param {Matrix} transform Graphics Data global transformation.
+   *
+   * @returns {BVGStyle} Created style.
+   */
+  __renderNode(driver, color, node, transform) {
+    const commands = node.mCommandQueue;
     const ctx = driver.context;
     const len = commands.length;
     const r = driver.renderScaleFactor;
-    ctx.save();
-    ctx.beginPath();
+    const px = node.mPivotX;
+    const py = node.mPivotY;
+
+    transform = transform.clone().append(node.mTransform);
+    const m = transform.data;
+    ctx.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
 
     for (let i = 0; i < len; i++) {
       const cmd = commands[i];
@@ -40,7 +75,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
           ctx.lineWidth = cmd.getNumber(0) * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(color || cmd.getNumber(1), cmd.getNumber(2));
+          ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : color, cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
           ctx.mitterLimit = cmd.getNumber(5);
@@ -48,25 +83,25 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(color || cmd.getNumber(0), cmd.getNumber(1));
+          ctx.fillStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : color, cmd.getNumber(1));
           break;
         }
 
         case GraphicsCommandType.ARC: {
-          ctx.arc(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
+          ctx.arc(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
           break;
         }
 
         case GraphicsCommandType.RECT: {
-          ctx.rect(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
+          ctx.rect(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
           break;
         }
         case GraphicsCommandType.BEZIER_CURVE_TO: {
-          ctx.bezierCurveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r, cmd.getNumber(4) * r, cmd.getNumber(5) * r);
+          ctx.bezierCurveTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r - px, cmd.getNumber(3) * r - py, cmd.getNumber(4) * r - px, cmd.getNumber(5) * r - py);
           break;
         }
         case GraphicsCommandType.QUADRATIC_CURVE_TO: {
-          ctx.quadraticCurveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
+          ctx.quadraticCurveTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r - px, cmd.getNumber(3) * r - py);
           break;
         }
         case GraphicsCommandType.BEGIN_PATH: {
@@ -78,17 +113,22 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
         case GraphicsCommandType.FILL: {
-          ctx.fill();
+          ctx.fill(cmd.getNumber(0));
           break;
         }
 
         case GraphicsCommandType.LINE_TO: {
-          ctx.lineTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
+          ctx.lineTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py);
           break;
         }
 
         case GraphicsCommandType.MOVE_TO: {
-          ctx.moveTo(cmd.getNumber(0) * r, cmd.getNumber(1) * r);
+          ctx.moveTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py);
+          break;
+        }
+
+        case GraphicsCommandType.LINE_DASH: {
+          ctx.setLineDash(cmd.getNumber(0));
           break;
         }
 
@@ -101,18 +141,14 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
 
-        case GraphicsCommandType.TRANSFORM: {
-          const v = /** @type {Matrix} */ (cmd.data[0]).value;
-          ctx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
-          break;
-        }
-
         default:
           Debug.error(`Unsupported canvas command '${cmd.type}'.`);
           break;
       }
     }
 
-    ctx.restore();
+    for (let i = 0, l = node.mNodes.length; i < l; i++) {
+      this.__renderNode(driver, color, node.mNodes[i], transform);
+    }
   }
 }
