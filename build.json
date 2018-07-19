@@ -179,6 +179,8 @@
 
     "src/core/SplashScreen.js",
 
+    "src/timers/Timer.js",
+
     "src/Black.js"
   ]
 }
