@@ -13,70 +13,83 @@ class BVGStyle {
    */
   constructor() {
 
-    /** Stroke color
+    /** 
+     * Stroke color
      *
      * @private @type {string} */
     this.L = '0';
 
-    /** Stroke alpha.
+    /** 
+     * Stroke alpha.
      *
      * @private @type {number} */
     this.l = 1;
 
-    /** Line width.
+    /** 
+     * Line width.
      *
      * @private @type {number} */
     this.w = 1;
 
-    /** Fill color.
+    /** 
+     * Fill color.
      *
      * @private @type {string} */
     this.F = '0';
 
-    /** Fill alpha.
+    /** 
+     * Fill alpha.
      *
      * @private @type {number} */
     this.f = 1;
 
-    /** Fill rule.
+    /** 
+     * Fill rule.
      * {nonzero: 1, evenodd: 0}
      *
      * @private @type {number} */
     this.r = 1;
 
-    /** Line cap.
+    /** 
+     * Line cap.
      * {butt: 'b', round: 'r', square: 's'}
      *
      * @private @type {string} */
     this.c = 'b';
 
-    /** Line join.
+    /** 
+     * Line join.
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
      * @private @type {string} */
     this.j = 'm';
 
-    /** Miter limit.
+    /** 
+     * Miter limit.
      *
      * @private @type {number} */
     this.m = 4;
 
-    /** Global alpha.
+    /** 
+     * Global alpha.
      *
      * @private @type {number} */
     this.a = 1;
 
-    /** Line dash.
+    /** 
+     * Line dash.
      *
      * @private @type {string} */
     this.d = '';
 
-    /** Fill necessity flag.
+    /** 
+     * Fill necessity flag.
      *
      * @public @type {boolean} */
     this.needsFill = true;
 
-    /** Stroke necessity flag.
+    /** 
+     * Stroke necessity flag.
      *
      * @public @type {boolean} */
     this.needsStroke = true;
@@ -108,7 +121,8 @@ class BVGStyle {
     /** @public @type {string} */
     this.fillRule = FillRule.NONE_ZERO;
 
-    /** Line dash segments length, unit.
+    /** 
+     * Line dash segments length, unit.
      *
      * @public @type {Array<numbers>} */
     this.lineDash = [];
@@ -179,10 +193,10 @@ class BVGStyle {
     this.lineAlpha = this.l;
     this.fillAlpha = this.f;
 
-    this.lineCap = {b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQAURE}[this.c];
-    this.lineJoin = {m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL}[this.j];
+    this.lineCap = { b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQAURE }[this.c];
+    this.lineJoin = { m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL }[this.j];
     this.miterLimit = this.m;
-    this.fillRule = {1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD}[this.r];
+    this.fillRule = { 1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD }[this.r];
     this.lineDash = this.d.split(',').map(v => Number(v));
   }
 

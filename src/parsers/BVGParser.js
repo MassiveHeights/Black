@@ -32,8 +32,8 @@ const shapeCmds = {
 };
 
 /**
- * Black Vector Graphics parser
- * Creates GraphicsData for Graphics from BVG format
+ * Black Vector Graphics parser.
+ * Creates GraphicsData for Graphics from BVG format.
  *
  * @cat parsers
  * @extends ParserBase
@@ -399,7 +399,7 @@ class BVGParser extends ParserBase {
 
   // ARC TO BEZIER START
   /**
-   * Approximate curve corner. Single bezier shouldn't be longer 90 degrees.
+   * Approximate curve corner. Single bezier shouldn't be longer than 90 degrees.
    *
    * @private
    * @params {number} theta Start angle.

@@ -1225,6 +1225,33 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Gets/Sets the scale factor of this object along y-axis.
+   *
+   * @export
+   * 
+   * @return {number}
+   */
+  get scaleY() {
+    return this.mScaleY;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set scaleY(value) {
+    if (this.mScaleY == value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mScaleY = value;
+    this.setTransformDirty();
+  }
+
+  /**
    * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
    * @export
    * @returns {number}
@@ -1251,29 +1278,54 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets the scale factor of this object along y-axis.
-   *
+   * Gets/sets horizontal skew angle in radians.
    * @export
-   * 
-   * @return {number}
+   * @returns {number}
    */
-  get scaleY() {
-    return this.mScaleY;
+  get skewX() {
+    return this.mSkewX;
   }
 
   /**
    * @export
    * @ignore
    * @param {number} value
-   * @return {void}
+   * 
+   * @returns {void}
    */
-  set scaleY(value) {
-    if (this.mScaleY == value)
+  set skewX(value) {
+    if (this.mSkewX == value)
       return;
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
-    this.mScaleY = value;
+    this.mSkewX = value;
+    this.setTransformDirty();
+  }
+
+  /**
+   * Gets/sets vertical skew angle in radians.
+   * @export
+   * @returns {number}
+   */
+  get skewY() {
+    return this.mSkewY;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {number} value
+   * 
+   * @returns {void}
+   */
+  set skewY(value) {
+    if (this.mSkewY == value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mSkewY = value;
     this.setTransformDirty();
   }
 

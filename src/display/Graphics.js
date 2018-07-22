@@ -1,5 +1,5 @@
 /**
- * A basic utility class for drawing simple shapes.
+ * A basic utility class for drawing shapes.
  *
  * @cat display
  * @extends DisplayObject
