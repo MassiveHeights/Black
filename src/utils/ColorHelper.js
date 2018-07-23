@@ -150,7 +150,7 @@ class ColorHelper {
   }
 
   /**
-   * Lineary interpolates between two colors within HSV model.
+   * Linearly interpolates between two colors within HSV model.
    * 
    * @param {number} hex1 First color number
    * @param {number} hex2 Second color number 

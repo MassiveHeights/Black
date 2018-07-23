@@ -51,7 +51,7 @@ class AtlasTexture extends Texture {
   /**
    * Returns array of Texture by given name or wildcard mask.
    * If `nameMask` is null then all textures will be returned.
-   * This method sorts all resulting textures using neurural sort algorith.
+   * This method sorts all resulting textures using neutral sort algorith.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
    * @param {Array<Texture>|null}         outTextures If passed will be overwritten by result object.

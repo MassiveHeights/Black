@@ -78,7 +78,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : color, cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
-          ctx.mitterLimit = cmd.getNumber(5);
+          ctx.miterLimit = cmd.getNumber(5);
           break;
         }
 

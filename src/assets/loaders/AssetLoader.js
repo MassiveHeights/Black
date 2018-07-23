@@ -28,14 +28,14 @@ class AssetLoader extends MessageDispatcher {
   }
 
   /**
-   * When overriden loads data. Should not be called directly.
+   * When overridden loads data. Should not be called directly.
    * 
    * @public
    */
   load() { }
 
   /**
-   * When overriden aborts loading process. Should not be called directly.
+   * When overridden aborts loading process. Should not be called directly.
    * 
    * @public
    */

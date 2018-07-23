@@ -78,7 +78,7 @@ class GameObject extends MessageDispatcher {
     this.mWorldTransform = new Matrix();
 
     /** @private @type {Matrix} */
-    this.mWorldTransformInversed = new Matrix();
+    this.mWorldTransformInverted = new Matrix();
 
     /** @private @type {DirtyFlag} */
     this.mDirty = DirtyFlag.DIRTY;
@@ -587,14 +587,14 @@ class GameObject extends MessageDispatcher {
    * @readonly
    * @return {Matrix}
    */
-  get worldTransformationInversed() {
+  get worldTransformationInverted() {
     if ((this.mDirty & DirtyFlag.WORLD_INV)) {
       this.mDirty ^= DirtyFlag.WORLD_INV;
 
-      this.worldTransformation.copyTo(this.mWorldTransformInversed).invert();
+      this.worldTransformation.copyTo(this.mWorldTransformInverted).invert();
     }
 
-    return this.mWorldTransformInversed;
+    return this.mWorldTransformInverted;
   }
 
   /**
@@ -715,7 +715,7 @@ class GameObject extends MessageDispatcher {
     } else {
       let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
-      matrix.prepend(space.worldTransformationInversed);
+      matrix.prepend(space.worldTransformationInverted);
       matrix.transformRect(outRect, outRect);
       Matrix.pool.release(matrix);
     }
@@ -742,7 +742,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns stage relative bounds of this object exluding it's children;
+   * Returns stage relative bounds of this object excluding it's children;
    * 
    * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
    * @returns {Rectangle} 
@@ -754,7 +754,7 @@ class GameObject extends MessageDispatcher {
 
     let matrix = Matrix.pool.get();
     matrix.copyFrom(this.worldTransformation);
-    matrix.prepend(this.stage.worldTransformationInversed); // 120ms
+    matrix.prepend(this.stage.worldTransformationInverted); // 120ms
     matrix.transformRect(outRect, outRect); // 250ms
     Matrix.pool.release(matrix);
 
@@ -804,7 +804,7 @@ class GameObject extends MessageDispatcher {
 
     // BEGINOF: WTF
     let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
-    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
+    this.worldTransformationInverted.transformVector(localPoint, tmpVector);
     // ENDOF: WTF
 
     if (this.mCollidersCache.length > 0) {
@@ -917,7 +917,7 @@ class GameObject extends MessageDispatcher {
    * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
-    return this.worldTransformationInversed.transformVector(globalPoint, outVector);
+    return this.worldTransformationInverted.transformVector(globalPoint, outVector);
   }
   /**
    * Gets a count of children elements.
@@ -1715,7 +1715,7 @@ class GameObject extends MessageDispatcher {
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
-    let inv = gameObject.worldTransformationInversed;
+    let inv = gameObject.worldTransformationInverted;
 
     inv.transformVector(point, tmpVector);
 
@@ -1735,7 +1735,7 @@ class GameObject extends MessageDispatcher {
 
     Vector.__cache.set();
 
-    gameObject.worldTransformationInversed.transformVector(point, Vector.__cache);
+    gameObject.worldTransformationInverted.transformVector(point, Vector.__cache);
     let contains = gameObject.localBounds.containsXY(Vector.__cache.x, Vector.__cache.y);
 
     if (contains === false)
@@ -1909,7 +1909,7 @@ const DirtyFlag = {
   CLEAN: 0,         // Object is 100% cached
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
-  WORLD_INV: 4,     // Inversed world transformation is dirty 
+  WORLD_INV: 4,     // Inverted world transformation is dirty 
   RENDER: 8,        // Object needs to be rendered 
   RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified

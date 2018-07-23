@@ -113,7 +113,7 @@ class DisplayObject extends GameObject {
     } else {
       let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
-      matrix.prepend(space.worldTransformationInversed);
+      matrix.prepend(space.worldTransformationInverted);
       matrix.transformRect(localBounds, outRect);
       Matrix.pool.release(matrix);
     }
@@ -188,7 +188,7 @@ class DisplayObject extends GameObject {
       return true;
 
     let tmpVector = Vector.pool.get();
-    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
+    this.worldTransformationInverted.transformVector(localPoint, tmpVector);
 
     let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
     Vector.pool.release(tmpVector);
@@ -219,8 +219,8 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * Gets/Sets whether this container and all it's childen should be baked into bitmap. Setting `cacheAsBitmap` onto
-   * Sprites,, TextField's or any other inhireted classes will give zero effect.
+   * Gets/Sets whether this container and all it's children should be baked into bitmap. Setting `cacheAsBitmap` onto
+   * Sprites,, TextField's or any other inherited classes will give zero effect.
    *
    * @return {boolean} 
    */
@@ -251,7 +251,7 @@ class DisplayObject extends GameObject {
 
   /**
    * Gets/Sets the opacity of the object.
-   * Baked objects may change behaviour.
+   * Baked objects may change behavior.
    *
    * @return {number}
    */

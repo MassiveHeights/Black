@@ -136,8 +136,8 @@ class Graphics extends DisplayObject {
    * Adds circle to current path.
    *
    * @public
-   * @param {number} x      The x-axis of the circles's center.
-   * @param {number} y      The y-axis of the circles's center.
+   * @param {number} x      The x-axis of the circle's center.
+   * @param {number} y      The y-axis of the circle's center.
    * @param {number} radius The radius of the circle.
    * @returns {void}
    */
@@ -257,6 +257,6 @@ class GraphicsPath {
     this.lastLineWidth = 0;
 
     /** @type {number} */
-    this.lineMult = 0.5;
+    this.lineMul = 0.5;
   }
 }

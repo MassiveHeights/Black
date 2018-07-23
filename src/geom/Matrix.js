@@ -504,7 +504,7 @@ class Matrix {
    * Compares this matrix values with given matrix and checks if they are the same.
    *
    * @param  {Matrix} matrix                   Matrix object to compare with.
-   * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+   * @param  {number} epsilon = Number.EPSILON Comparison threshold.
    * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {

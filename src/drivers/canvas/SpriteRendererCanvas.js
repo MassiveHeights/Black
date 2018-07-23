@@ -74,7 +74,7 @@ class SpriteRendererCanvas extends Renderer {
     const gridRight = sourceWidth - grid.right / texture.scale;
     const gridBottom = sourceHeight - grid.bottom / texture.scale;
 
-    // non-scalabes
+    // non-scalable
     const srcOffsetX = sourceX + sourceWidth - gridRight;
     const dstOffsetX = destX + desireWidth / texture.scale - gridRight;
 
@@ -93,7 +93,7 @@ class SpriteRendererCanvas extends Renderer {
     // bottom left
     ctx.drawImage(texture.native, sourceX, srcOffsetY, gridLeft, gridBottom, destX, dstOffsetY, gridLeft, gridBottom);
 
-    // scalables
+    // scalable
     const srcLeftOffset = sourceX + gridLeft;
     const dstLeftOffset = destX + gridLeft;
 

@@ -201,7 +201,7 @@ class Vector {
    * Linearly interpolates between two vectors.
    *
    * @param {Vector} vector The second vector to interpolate values between.
-   * @param {number} t      Interpolant.
+   * @param {number} t      Alpha value.
    * @return {Vector} This.
    */
   lerp(vector, t) {
