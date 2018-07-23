@@ -120,9 +120,30 @@ class BVGParser extends ParserBase {
           case shapeCmds.PATH:
             this.__drawPath(cmd, graphicsData);
             break;
-          case shapeCmds.RECT:
-            graphicsData.rect(args[0], args[1], args[2], args[3]);
+          case shapeCmds.RECT: {
+            const x = args[0];
+            const y = args[1];
+            const width = args[2];
+            const height = args[3];
+            const rx = (args[4] === undefined ? args[5] : args[4]) || 0;
+            const ry = (args[5] === undefined ? args[4] : args[5]) || 0;
+
+            if (rx !== 0 && ry !== 0) {
+              graphicsData.moveTo(x, y + ry);
+              graphicsData.quadraticCurveTo(x, y, x + rx, y);
+              graphicsData.lineTo(x + width - rx, y);
+              graphicsData.quadraticCurveTo(x + width, y, x + width, y + ry);
+              graphicsData.lineTo(x + width, y + height - ry);
+              graphicsData.quadraticCurveTo(x + width, y + height, x + width - rx, y + height);
+              graphicsData.lineTo(x + rx, y + height);
+              graphicsData.quadraticCurveTo(x, y + height, x, y + height - ry);
+              graphicsData.closePath();
+            } else {
+              graphicsData.rect(args[0], args[1], args[2], args[3]);
+            }
+
             break;
+          }
           case shapeCmds.CIRCLE:
             graphicsData.circle(args[0], args[1], args[2]);
             break;
