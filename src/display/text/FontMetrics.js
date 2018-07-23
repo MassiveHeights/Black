@@ -58,7 +58,7 @@ class FontMetrics {
     const height = bottom - top;
 
     /**
-     * The line upon which most letters "sit" and below which descenders extend.
+     * The line upon which most letters "sit" and below which descendent extend.
      * @public
      * @type {number}
      */

@@ -70,7 +70,7 @@ class Asset extends MessageDispatcher {
     this.abort();
 
     /**
-     * Posted when error occured during loading this asset.
+     * Posted when error occurred during loading this asset.
      * @event Asset#error
      */
     this.post(Message.ERROR);
@@ -96,7 +96,7 @@ class Asset extends MessageDispatcher {
   }
 
   /**
-   * Protected method used to notify AssetManager about completition of loading this asset.
+   * Protected method used to notify AssetManager about completion of loading this asset.
    * 
    * @protected
    * @param {Object=} data
@@ -107,7 +107,7 @@ class Asset extends MessageDispatcher {
     this.mIsReady = true;
 
     /**
-     * Posten when asset finished loading.
+     * Posted when asset finished loading.
      * @event Asset#complete
      */
     this.post(Message.COMPLETE);

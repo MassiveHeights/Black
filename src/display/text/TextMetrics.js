@@ -26,7 +26,7 @@ class TextMetricsData {
     this.strokeBounds = null;
 
     /**
-     * Bounds of text shodow.
+     * Bounds of text shadow.
      * @type {Rectangle}
      */
     this.shadowBounds = null;
@@ -83,7 +83,7 @@ class TextSegmentMetricsData {
 /* @echo EXPORT */
 class TextMetricsEx {
   constructor() {
-    throw new Error('Singlton');
+    throw new Error('Singleton');
   }
 
   /**

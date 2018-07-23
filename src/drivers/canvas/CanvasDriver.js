@@ -303,7 +303,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
     let viewport = Black.instance.viewport;
-    if (viewport.isTransperent === false) {
+    if (viewport.isTransparent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
       this.mCtx.fillRect(0, 0, viewport.size.width * this.mDPR, viewport.size.height * this.mDPR);
     } else {

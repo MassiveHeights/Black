@@ -65,7 +65,7 @@ class GraphicsData {
           let joints = cmd.getString(4);
 
           if (joints === JointStyle.MITER)
-            path.lineMult = 1;
+            path.lineMul = 1;
 
           break;
         }
@@ -82,7 +82,7 @@ class GraphicsData {
           if (path.maxLineWidth === 0)
             path.maxLineWidth = 1;
 
-          path.maxLineWidth *= path.lineMult;
+          path.maxLineWidth *= path.lineMul;
 
           let tmpBounds = Rectangle.fromPointsXY(path.points);
 
@@ -268,8 +268,8 @@ class GraphicsData {
    * Adds circle to current path.
    *
    * @public
-   * @param {number} x      The x-axis of the circles's center.
-   * @param {number} y      The y-axis of the circles's center.
+   * @param {number} x      The x-axis of the circle's center.
+   * @param {number} y      The y-axis of the circle's center.
    * @param {number} radius The radius of the circle.
    * @returns {void}
    */

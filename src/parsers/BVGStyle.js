@@ -194,10 +194,10 @@ class BVGStyle {
     this.lineAlpha = Number(this.l) * alpha;
     this.fillAlpha = Number(this.f) * alpha;
 
-    this.lineCap = {b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQAURE}[this.c];
-    this.lineJoin = {m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL}[this.j];
+    this.lineCap = { b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQUARE }[this.c];
+    this.lineJoin = { m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL }[this.j];
     this.miterLimit = Number(this.m);
-    this.fillRule = {1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD}[this.r];
+    this.fillRule = { 1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD }[this.r];
     this.lineDash = this.d.split(',').map(v => Number(v));
   }
 

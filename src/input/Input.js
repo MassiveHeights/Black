@@ -224,7 +224,7 @@ class Input extends System {
       this.mStagePosition.x = nativeEvent.x;
       this.mStagePosition.y = nativeEvent.y;
 
-      let inv = stage.worldTransformationInversed;
+      let inv = stage.worldTransformationInverted;
       inv.transformVector(this.mStagePosition, this.mStagePosition);
 
       let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];

@@ -1,5 +1,5 @@
 /**
- * The type of the messasge. 
+ * The type of the message. 
  * @cat core
  * @static
  * @constant

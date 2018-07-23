@@ -649,7 +649,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets if engine should be automatically paused when container element is blured.
+   * Gets/Sets if engine should be automatically paused when container element is blurred.
    *
    * @return {boolean}
    */
@@ -687,7 +687,7 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Retuns HTML comtainer element id.
+   * Returns HTML container element id.
    * @returns {string}
    */
   get containerElementId() {

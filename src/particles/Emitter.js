@@ -243,7 +243,7 @@ class Emitter extends DisplayObject {
     let minv = null;
 
     if (this.mIsLocal === false) {
-      minv = this.mSpace.worldTransformationInversed.clone();
+      minv = this.mSpace.worldTransformationInverted.clone();
       matrix.prepend(minv);
     }
 

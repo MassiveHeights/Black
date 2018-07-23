@@ -1,5 +1,5 @@
 /**
- * Responsible for preloading assets and manages its in memory state.
+ * Responsible for loading assets and manages its in memory state.
  *
  * @fires Message.PROGRESS
  * @fires Message.COMPLETE
@@ -225,7 +225,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * Starts preloading all enqueued assets.
+   * Starts loading all enqueued assets.
    *
    * @fires complete
    * @return {void}
@@ -328,7 +328,7 @@ class AssetManager extends MessageDispatcher {
     Debug.warn(`[AssetManager] Error loading asset '${item.name}'.`);
 
     /**
-     * Posted when error occured while loading assets.
+     * Posted when error occurred while loading assets.
      * @event AssetManager#complete
      */
     this.post(Message.ERROR, item);
@@ -517,7 +517,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets default path for preloading. Usefull when url's getting too long.
+   * Gets/Sets default path for loading. Useful when URLs getting too long.
    * The asset path will be concatenated with defaultPath.
    *
    * @return {string}
@@ -545,7 +545,7 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * Returns number of errors occured during loading.
+   * Returns number of errors occurred during loading.
    * @returns {number}
    */
   get numErrors() {

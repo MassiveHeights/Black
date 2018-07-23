@@ -159,7 +159,7 @@ class Stage extends GameObject {
     this.setTransformDirty();
 
     /**
-     * Posts everytime stage size is changed.
+     * Posts every time stage size is changed.
      * @event Stage#resize
      */
     this.post(Message.RESIZE);
@@ -268,7 +268,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets/sets whenever stage orientation should be locked. If false and orientaion is not universal stage will remain same size in both orientation.
+   * Gets/sets whenever stage orientation should be locked. If false and orientation is not universal stage will remain same size in both orientation.
    * @returns {boolean}
    */
   get orientationLock() {

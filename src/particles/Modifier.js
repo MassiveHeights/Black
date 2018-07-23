@@ -8,7 +8,7 @@ class Modifier {
   /**
    * Creates new instance.
    *
-   * @param {boolean} isInitializer Indicates whenever this modifier will be applied to particle during initialisation stage or particle lifetime.
+   * @param {boolean} isInitializer Indicates whenever this modifier will be applied to particle during initialization stage or particle lifetime.
    */
   constructor(isInitializer = true) {
 

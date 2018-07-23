@@ -31,7 +31,7 @@ class Viewport extends MessageDispatcher {
     /** @private @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
-    this.isTransperent = true;
+    this.isTransparent = true;
     this.backgroundColor = 0x222222;
 
     this.mChecksLeftSeconds = 0;
@@ -67,7 +67,7 @@ class Viewport extends MessageDispatcher {
     this.mSize.copyFrom(newSize);
 
     /**
-     * Posts everytime viewported size is changed.
+     * Posted every time viewport size has changed.
      * @event Viewport#resize
      */
     this.post(Message.RESIZE, this.mSize);
