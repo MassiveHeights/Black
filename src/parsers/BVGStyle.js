@@ -13,86 +13,86 @@ class BVGStyle {
    */
   constructor() {
 
-    /** 
+    /**
      * Stroke color
      *
      * @private @type {string} */
-    this.L = '0';
+    this.L = '-';
 
-    /** 
+    /**
      * Stroke alpha.
      *
      * @private @type {number} */
     this.l = 1;
 
-    /** 
+    /**
      * Line width.
      *
      * @private @type {number} */
     this.w = 1;
 
-    /** 
+    /**
      * Fill color.
      *
      * @private @type {string} */
     this.F = '0';
 
-    /** 
+    /**
      * Fill alpha.
      *
      * @private @type {number} */
     this.f = 1;
 
-    /** 
+    /**
      * Fill rule.
      * {nonzero: 1, evenodd: 0}
      *
      * @private @type {number} */
     this.r = 1;
 
-    /** 
+    /**
      * Line cap.
      * {butt: 'b', round: 'r', square: 's'}
      *
      * @private @type {string} */
     this.c = 'b';
 
-    /** 
+    /**
      * Line join.
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
      * @private @type {string} */
     this.j = 'm';
 
-    /** 
+    /**
      * Miter limit.
      *
      * @private @type {number} */
     this.m = 4;
 
-    /** 
+    /**
      * Global alpha.
      *
      * @private @type {number} */
     this.a = 1;
 
-    /** 
+    /**
      * Line dash.
      *
      * @private @type {string} */
     this.d = '';
 
-    /** 
+    /**
      * Fill necessity flag.
      *
      * @public @type {boolean} */
     this.needsFill = true;
 
-    /** 
+    /**
      * Stroke necessity flag.
      *
      * @public @type {boolean} */
-    this.needsStroke = true;
+    this.needsStroke = false;
 
     /** @public @type {number} */
     this.fillColor = 0;
@@ -121,7 +121,7 @@ class BVGStyle {
     /** @public @type {string} */
     this.fillRule = FillRule.NONE_ZERO;
 
-    /** 
+    /**
      * Line dash segments length, unit.
      *
      * @public @type {Array<numbers>} */
@@ -190,13 +190,14 @@ class BVGStyle {
     if (this.needsStroke)
       this.lineColor = parseInt(this.L, 16);
 
-    this.lineAlpha = this.l;
-    this.fillAlpha = this.f;
+    const alpha = Number(this.a);
+    this.lineAlpha = Number(this.l) * alpha;
+    this.fillAlpha = Number(this.f) * alpha;
 
-    this.lineCap = { b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQAURE }[this.c];
-    this.lineJoin = { m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL }[this.j];
-    this.miterLimit = this.m;
-    this.fillRule = { 1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD }[this.r];
+    this.lineCap = {b: CapsStyle.NONE, r: CapsStyle.ROUND, s: CapsStyle.SQAURE}[this.c];
+    this.lineJoin = {m: JointStyle.MITER, r: JointStyle.ROUND, b: JointStyle.BEVEL}[this.j];
+    this.miterLimit = Number(this.m);
+    this.fillRule = {1: FillRule.NONE_ZERO, 0: FillRule.EVEN_ODD}[this.r];
     this.lineDash = this.d.split(',').map(v => Number(v));
   }
 

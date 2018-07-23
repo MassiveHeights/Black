@@ -283,49 +283,11 @@ class AssetManager extends MessageDispatcher {
     else if (item.constructor === BitmapFontAsset)
       this.mBitmapFonts[item.name] = item.data;
     else if (item.constructor === BVGAsset) {
-      const parser = new BVGParser();
-      const graphicsData = parser.parse(item.data);
-      graphicsData.name = item.name;
-      this.mGraphicsData[item.name] = graphicsData;
+      this.mGraphicsData[item.name] = item.data;
 
-      if (item.mBake) {
-        const namesToBake = item.mNamesToBake;
-
-        if (item.mBakeChildren && namesToBake.length === 0) {
-          const traverse = nodes => {
-            if (nodes.length === 0) return;
-
-            for (let i = 0, l = nodes.length; i < l; i++) {
-              if (nodes[i].name) {
-                namesToBake.push(nodes[i].name);
-              }
-
-              traverse(nodes[i].mNodes);
-            }
-          };
-
-          traverse(graphicsData.mNodes);
-        }
-
-        namesToBake.unshift(graphicsData.name);
-
-        for (let i = 0, l = namesToBake.length; i < l; i++) {
-          const name = namesToBake[i];
-          const node = graphicsData.searchNode(name);
-          i !== 0 && this.__validateName(name);
-
-          if (!node) {
-            Debug.warn(`[AssetManager] GraphicsData node with id '${name}' was not found.`);
-            continue;
-          }
-
-          const graphics = new Graphics(node);
-          const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
-
-          Black.driver.render(graphics, renderTexture);
-          this.mVectorTextures[namesToBake[i]] = renderTexture;
-        }
-      }
+      const bakedTextures = item.bakeTextures();
+      Object.keys(bakedTextures).forEach(name => name !== item.name && this.__validateName(name));
+      Object.assign(this.mVectorTextures, bakedTextures);
     }
     else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);

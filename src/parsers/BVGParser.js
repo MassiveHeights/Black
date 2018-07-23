@@ -66,7 +66,7 @@ class BVGParser extends ParserBase {
    */
   __traverse(node, styles, parent, parentStyle) {
     const graphicsData = new GraphicsData();
-    const style = parentStyle.clone();
+    let style = parentStyle.clone();
     parent.mNodes.push(graphicsData);
 
     if (node.id) {
@@ -105,6 +105,7 @@ class BVGParser extends ParserBase {
         switch (name) {
           case 'S':
             const newStyle = styles[args[0]];
+            style = parentStyle.clone();
             style.merge(newStyle);
             style.compute();
 
@@ -193,7 +194,7 @@ class BVGParser extends ParserBase {
    *
    * @private
    *
-   * @returns {Array<BVGStyle>} Parsed data styles.
+   * @returns {Array<BVGStyle>|undefined} Parsed data styles.
    */
   __parseStyles() {
     const obj = this.data;
