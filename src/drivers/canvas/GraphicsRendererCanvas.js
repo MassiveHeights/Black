@@ -113,7 +113,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
         case GraphicsCommandType.FILL: {
-          ctx.fill(cmd.getNumber(0));
+          ctx.fill(cmd.getBoolean(0) === true ? 'nonzero' : 'evenodd');
           break;
         }
 

@@ -20,6 +20,9 @@ class RenderSession {
 
     /** @type {Matrix|null} */
     this.customTransform = null;
+
+    /** @type {boolean} */
+    this.isMasking = false;
   }
 
   /**

@@ -30,8 +30,8 @@ class SpriteRendererCanvas extends Renderer {
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
     this.endPassRequired = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
-    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
-    this.skipSelf = gameObject.mTexture === null || this.skipChildren === true;
+    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
+    this.skipSelf = gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
   }
 
   renderSlice9Grid(driver, texture, grid) {
@@ -132,32 +132,77 @@ class SpriteRendererCanvas extends Renderer {
 
   /** @inheritDoc */
   render(driver, session) {
+    let ctx = /** @type {CanvasDriver}*/ (driver).mCtx;
     let gameObject = /** @type {Sprite} */ (this.gameObject);
+
+    // bake left and right nodes
+    // blend them up with a source in/out bm
+    //
+
+
+    if (gameObject.mMask !== null && gameObject.mMask.mAdded && session.isMasking === false) {
+      //needRestore = true;
+      const sf = Black.stage.scaleFactor;
+
+      let leftBounds = gameObject.bounds;
+      let left = new CanvasRenderTexture(leftBounds.width, leftBounds.height, 1);
+
+      let rightBounds = gameObject.mMask.bounds;
+      let right = new CanvasRenderTexture(rightBounds.width, rightBounds.height, 1);
+
+      let leftMatrix = new Matrix();
+      leftMatrix.set(1, 0, 0, 1, ~~(-leftBounds.x * sf - Black.stage.mX), ~~(-leftBounds.y * sf - Black.stage.mY));
+
+      let rightMatrix = new Matrix();
+      rightMatrix.set(1, 0, 0, 1, ~~(-rightBounds.x * sf - Black.stage.mX), ~~(-rightBounds.y * sf - Black.stage.mY));
+
+      driver.render(gameObject, left, leftMatrix, true);
+      driver.render(gameObject.mMask, right, rightMatrix, true);
+      
+      //right.__dumpToDocument();
+      
+      // drawImage left
+      // drawImage right
+      
+      let transform = gameObject.worldTransformation;
+      
+      driver.setTransform(gameObject.mMask.worldTransformation);
+      driver.drawTexture(right);
+
+      driver.setGlobalBlendMode(BlendMode.MASK);
+      
+      driver.setTransform(transform);
+      driver.drawTexture(left);
+      
+      return;
+    }
+
 
     let texture = Renderer.getColoredTexture(gameObject.mTexture, this.color);
 
     if (gameObject.mSlice9grid !== null)
       texture = this.renderSlice9Grid(driver, texture, gameObject.mSlice9grid);
 
-    if (gameObject.mTiling === null)
-      return driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
+    if (gameObject.mTiling === null) {
+      driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
+    } else {
+      // we got some tiling
+      if (this.pattern === null || this.patternTexture !== texture) {
+        this.pattern = ctx.createPattern(texture.native, 'repeat');
+        this.patternTexture = texture;
+      }
 
-    // we got some tiling
-    let ctx = /** @type {CanvasDriver}*/ (driver).mCtx;
-    if (this.pattern === null || this.patternTexture !== texture) {
-      this.pattern = ctx.createPattern(texture.native, 'repeat');
-      this.patternTexture = texture;
+      ctx.fillStyle = this.pattern;
+
+      let dpr = driver.mDPR;
+
+      let m = gameObject.worldTransformation.clone();
+      m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr)
+      m.translate(gameObject.tiling.wrapX / dpr, gameObject.tiling.wrapY / dpr);
+      driver.setTransform(m);
+
+      // draw pattern
+      ctx.fillRect(-gameObject.tiling.wrapX, -gameObject.tiling.wrapY, gameObject.tiling.width / gameObject.tiling.scaleX, gameObject.tiling.height / gameObject.tiling.scaleY);
     }
-
-    ctx.fillStyle = this.pattern;
-
-    let dpr = driver.mDPR;
-
-    let m = gameObject.worldTransformation.clone();
-    m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr)
-    m.translate(gameObject.tiling.wrapX / dpr, gameObject.tiling.wrapY / dpr);
-    driver.setTransform(m);
-
-    ctx.fillRect(-gameObject.tiling.wrapX, -gameObject.tiling.wrapY, gameObject.tiling.width / gameObject.tiling.scaleX, gameObject.tiling.height / gameObject.tiling.scaleY);
   }
 }

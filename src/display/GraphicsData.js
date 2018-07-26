@@ -151,12 +151,10 @@ class GraphicsData {
     this.mPosX = 0;
     this.mPosY = 0;
 
-    this.mCommandQueue.length = 0;
-    this.beginPath();
+    this.mCommandQueue = [];
+    this.mNodes = [];
 
-    for (let i = 0, l = this.mCommandQueue.length; i < l; i++) {
-      this.mCommandQueue[i].clear();
-    }
+    this.beginPath();
   }
 
   /**
@@ -471,12 +469,12 @@ class GraphicsData {
    * Fills current path with the current fill style.
    *
    * @public
-   * @param {number} fillRule The algorithm by which to determine if a point is inside a path or outside a path
+   * @param {boolean} isNonZero The algorithm by which to determine if a point is inside a path or outside a path, True is for "nonzero" and False is for "evenodd".
    *
    * @returns {void}
    */
-  fill(fillRule) {
-    this.__pushCommand(GraphicsCommandType.FILL, fillRule);
+  fill(isNonZero) {
+    this.__pushCommand(GraphicsCommandType.FILL, isNonZero);
   }
 
   /**

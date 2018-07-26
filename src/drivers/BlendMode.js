@@ -25,7 +25,9 @@ const BlendMode = {
   HUE        : 'hue',
   SATURATE   : 'saturate',
   COLOR      : 'color',
-  LUMINOSITY : 'luminosity'
+  LUMINOSITY : 'luminosity',
+  MASK       : 'mask',
+  MASK_INV   : 'maskInv'
 };
 
 /** 
@@ -53,5 +55,7 @@ const CanvasBlendMode = {
   'due'        : 'hue',
   'saturate'   : 'saturate',
   'color'      : 'color',
-  'luminosity' : 'luminosity'
+  'luminosity' : 'luminosity',
+  'mask'       : 'source-in',
+  'maskInv'    : 'source-out'
 };
