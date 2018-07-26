@@ -156,7 +156,9 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * Adds single black vector graphics file to the loading queue.
+   * Adds single Black Vector Graphics file to the loading queue.
+   * 
+   * If baked both graphics data and baked texture will be stored inside this AssetManager.
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the json.
