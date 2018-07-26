@@ -232,12 +232,12 @@ class Graphics extends DisplayObject {
    * Fills current path with the current fill style.
    *
    * @public
-   * @param {number} fillRule The algorithm by which to determine if a point is inside a path or outside a path
+   * @param {boolean} isNonZero The algorithm by which to determine if a point is inside a path or outside a path, True is for "nonzero" and False is for "evenodd".
    *
    * @returns {void}
    */
-  fill(fillRule) {
-    this.mGraphicsData.fill(fillRule);
+  fill(isNonZero = true) {
+    this.mGraphicsData.fill(isNonZero);
     this.setTransformDirty();
   }
 }
