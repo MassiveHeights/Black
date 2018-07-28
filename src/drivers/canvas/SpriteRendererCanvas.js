@@ -135,47 +135,42 @@ class SpriteRendererCanvas extends Renderer {
     let ctx = /** @type {CanvasDriver}*/ (driver).mCtx;
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-    // bake left and right nodes
-    // blend them up with a source in/out bm
-    //
 
+    // if (super.checkMask(driver, session)) {
+    //   super.renderMask(driver, session);
+    //   return;
+    // }
 
-    if (gameObject.mMask !== null && gameObject.mMask.mAdded && session.isMasking === false) {
-      //needRestore = true;
-      const sf = Black.stage.scaleFactor;
+    // if (gameObject.mMask !== null && gameObject.mMask.mAdded && session.isMasking === false) {
+    //   const sf = Black.stage.scaleFactor;
 
-      let leftBounds = gameObject.bounds;
-      let left = new CanvasRenderTexture(leftBounds.width, leftBounds.height, 1);
+    //   let leftBounds = gameObject.bounds;
+    //   let left = new CanvasRenderTexture(leftBounds.width, leftBounds.height, 1);
 
-      let rightBounds = gameObject.mMask.bounds;
-      let right = new CanvasRenderTexture(rightBounds.width, rightBounds.height, 1);
+    //   let rightBounds = gameObject.mMask.bounds;
+    //   let right = new CanvasRenderTexture(rightBounds.width, rightBounds.height, 1);
 
-      let leftMatrix = new Matrix();
-      leftMatrix.set(1, 0, 0, 1, ~~(-leftBounds.x * sf - Black.stage.mX), ~~(-leftBounds.y * sf - Black.stage.mY));
+    //   let leftMatrix = new Matrix();
+    //   leftMatrix.set(1, 0, 0, 1, ~~(-leftBounds.x * sf - Black.stage.mX), ~~(-leftBounds.y * sf - Black.stage.mY));
 
-      let rightMatrix = new Matrix();
-      rightMatrix.set(1, 0, 0, 1, ~~(-rightBounds.x * sf - Black.stage.mX), ~~(-rightBounds.y * sf - Black.stage.mY));
+    //   let rightMatrix = new Matrix();
+    //   rightMatrix.set(1, 0, 0, 1, ~~(-rightBounds.x * sf - Black.stage.mX), ~~(-rightBounds.y * sf - Black.stage.mY));
 
-      driver.render(gameObject, left, leftMatrix, true);
-      driver.render(gameObject.mMask, right, rightMatrix, true);
-      
-      //right.__dumpToDocument();
-      
-      // drawImage left
-      // drawImage right
-      
-      let transform = gameObject.worldTransformation;
-      
-      driver.setTransform(gameObject.mMask.worldTransformation);
-      driver.drawTexture(right);
+    //   driver.render(gameObject, left, leftMatrix, true);
+    //   driver.render(gameObject.mMask, right, rightMatrix, true);
 
-      driver.setGlobalBlendMode(BlendMode.MASK);
-      
-      driver.setTransform(transform);
-      driver.drawTexture(left);
-      
-      return;
-    }
+    //   let transform = gameObject.worldTransformation;
+
+    //   driver.setTransform(gameObject.mMask.worldTransformation);
+    //   driver.drawTexture(right);
+
+    //   driver.setGlobalBlendMode(BlendMode.MASK);
+
+    //   driver.setTransform(transform);
+    //   driver.drawTexture(left);
+
+    //   return;
+    // }
 
 
     let texture = Renderer.getColoredTexture(gameObject.mTexture, this.color);

@@ -6,7 +6,6 @@
  */
 
 /* @echo EXPORT */
-
 class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.

@@ -46,7 +46,7 @@ class Sprite extends DisplayObject {
    *
    * @protected
    * @param {Rectangle=} outRect Rectangle to be returned.
-   * @return {Rectangle} The new Rectangle or outRect with .
+   * @return {Rectangle} The new Rectangle or outRect if it was passed as a param.
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();

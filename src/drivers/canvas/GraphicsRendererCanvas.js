@@ -66,8 +66,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     const py = node.mPivotY;
 
     transform = transform.clone().append(node.mTransform);
-    const m = transform.data;
-    ctx.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
+    driver.setTransform(transform);
 
     for (let i = 0; i < len; i++) {
       const cmd = commands[i];

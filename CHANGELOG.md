@@ -1,15 +1,50 @@
 Black Engine: Changelog
 =======================
-v0.5.1
-------
+
+# v0.5.5
+### New features
+- Added support for Black Vector Graphics (beta)
+- Added orientation lock support
+- Added Graphics to optionally accept either string or GraphicsData instance
+- Added skew via `skewX` and `skewY` properties in the `DisplayObject`
+- Added support for 9 grid slice
+- Added sprite tiling support
+- Added sprite wrapping support
+- Added [svg2bvg](https://github.com/MassiveHeights/svg2bvg) tool which converts SVG files into BVG
+- Added [bsa-gen](https://github.com/MassiveHeights/bsa-gen) tool to generate sound atlases from multiple audio files
+- Added Timer component
+- Added `GameObject#relativeTo` method to calculates GameObject's position relative to another GameObject
+- Added `Graphics#quadraticCurveTo` method
+- Added `Graphics#setLineDash` method
+- Added optional param `isNonZero` for `Graphics#fill` method to control winding order
+- Added `GraphicsData` class. Now you can have many graphics objects inside one Graphics GameObject.
+
+### Changes
+- Graphics internally changed and now supports nested graphics via GraphicsData object
+- Changed Black Texture Atlas format to support version number (internal)
+
+### Bug Fixes
+- Fixed incorrect font bounds on different platforms by changing the way how its calculated. Now it checks font height using `pixel by pixel` method. Line height is a bit smaller from now. But overall font metrics looks good and exactly the same on different browsers.
+
+### Examples & Docs
+- Added tutorial about how to use "bsa-gen" tool to generate sound atlas
+- Added tutorial about how to use "svg2bvg" tool and vector graphics in your app
+- Added tutorial about how to use texture atlases
+- Added 3 timer examples
+- Added "Vector As a Sprite"
+- Added "Orientation Lock" example
+- Added "Texture Repeat" example
+- Added "Slice 9 Grid" example
+- Added "Skew" example
+
+# v0.5.1
 - Fixed broken `visible` property
 - Fixed broken overhearing
 - Fixed missing `Stage#onUpdate` calls
 - Added `TextField#highQuality` property to control how TextField will be rendered
 - Added many tests
 
-v0.5.0
-------
+# v0.5.0
 - Added Arcade physics system
 - Added `Black.ups` property to control number of updates per second (render goes as fast as it can)
 - Added `Time.alpha` - indicates how much time has been passed since last update in range from 0 to 1
@@ -23,8 +58,7 @@ v0.5.0
 - Fixed missing onRemoved call when removing children within onRemoved method
 - Improved `getBounds` performance for clipped objects
 
-v0.4.0
-------
+# v0.4.0
 - Graphics reworked (now it has bounds and API similar to HTML canvas)
 - `AssetManager` dramatically improved
 - TextField now posts `change` message when text is changed
@@ -41,8 +75,7 @@ v0.3.5
 - Added `Input.once` method
 - Added `Glob` class
 
-v0.3.42
--------
+# v0.3.42
 - Added `Black#hasSystem` method
 - Added `GameObject.scale` property
 - Added `GameObject.getStageBounds` helper method
@@ -67,12 +100,10 @@ v0.3.42
 - Removed `VideoNullDriver.renderResolution`
 - Minor refactoring
 
-v0.3.41
--------
+# 0.3.41
 - Fixed incorrect alignPivot and alignPivotOffset
 
-v0.3.4
-------
+# 0.3.4
 - Added BitmapTextField
 - Added Audio support (spatial, audio atlas, sound effects)
 - Added Stage, stage scale modes and orientations
@@ -97,16 +128,14 @@ v0.3.4
 - Removed pivotX/pivotY, use pivotOffsetX/pivotOffsetY instead
 - Typed 95% for GCC
 
-v0.0.12a
---------
+# v0.0.12a
 - Fixed TextField align issues caused by new pivot logic
 - Fixed DOMDriver align issues caused by new pivot logic
 - Fixed `Matrix::translate` broken logic
 - Changed `VideoDriver::DrawImage` now accepts bounds
 - Minor jsdoc fixess
 
-v0.0.11a
---------
+# v0.0.11a
 - Reworked `Input`
 - Now `Input` is single target system
 - Added `pointerIn` and `pointerOut` messages
@@ -125,8 +154,7 @@ v0.0.11a
 - Updated `Viewport`, now it will automatically add missing CSS styles on start.
 
 
-v0.0.10a
---------
+# v0.0.10a
 - Added dist folder to github
 - Added `touchable` to the `Sprite`
 - Fixed package.json version mess
@@ -135,6 +163,5 @@ v0.0.10a
 - Moved examples to external repo
 - Renamed `Assert` to `Debug`
 
-v0.0.8a
-------------------------
+# v0.0.8a
 - Initial commit
