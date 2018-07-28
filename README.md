@@ -43,8 +43,8 @@ For more information about how to use Black Engine, please check the [Blacksmith
 ✔️ [Battery Efficient](https://blacksmith2d.io/Docs/Examples/Drivers/Skip%20Unchanged%20Frames)  
 ✔️ [Render Texture](https://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
 ✔️ [Arcade Physics](https://blacksmith2d.io/Docs/Examples/Arcade%20Physics/Mario)  
-✔️ [Texture Wrap and Repeat](https://blacksmith2d.io/Docs/Examples/Sprites/Texture%20Repeat)
-✔️ [Nine slice grid](https://blacksmith2d.io/Docs/Examples/Sprites/Slice%209%20Grid)
+✔️ [Texture Wrap and Repeat](https://blacksmith2d.io/Docs/Examples/Sprites/Texture%20Repeat)  
+✔️ [Nine slice grid](https://blacksmith2d.io/Docs/Examples/Sprites/Slice%209%20Grid)  
 ✔️ GCC Ready  
 
 ## GETTING STARTED
