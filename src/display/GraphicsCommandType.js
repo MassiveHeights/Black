@@ -6,18 +6,21 @@
  * @enum {string}
  */
 /* @echo EXPORT */
-const GraphicsCommandType = {  
+const GraphicsCommandType = {
   LINE_STYLE: 'lineStyle',
   FILL_STYLE: 'fillStyle',
 
-  ARC: 'arc',
-  RECT: 'rect',
-  BEZIER_CURVE_TO: 'bezierCurveTo',
-  BEGIN_PATH: 'beginPath',
-  CLOSE_PATH: 'closePath',
-  FILL: 'fill',
-  LINE_TO: 'lineTo',
-  MOVE_TO: 'moveTo',
-  STROKE: 'stroke',
-  BOUNDS: 'bounds',
+  ARC               : 'arc',
+  RECT              : 'rect',
+  BEZIER_CURVE_TO   : 'bezierCurveTo',
+  QUADRATIC_CURVE_TO: 'quadraticCurveTo',
+  BEGIN_PATH        : 'beginPath',
+  CLOSE_PATH        : 'closePath',
+  FILL              : 'fill',
+  LINE_TO           : 'lineTo',
+  MOVE_TO           : 'moveTo',
+  STROKE            : 'stroke',
+  BOUNDS            : 'bounds',
+
+  LINE_DASH: 'setLineDash',
 };

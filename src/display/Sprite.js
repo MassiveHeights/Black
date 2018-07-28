@@ -26,6 +26,12 @@ class Sprite extends DisplayObject {
     } else {
       this.mTexture = /** @type {Texture} */ (texture);
     }
+
+    /** @private @type {TilingInfo|null} */
+    this.mTiling = null;
+
+    /** @private @type {Rectangle|null} */
+    this.mSlice9grid = null;
   }
 
   /**
@@ -40,7 +46,7 @@ class Sprite extends DisplayObject {
    *
    * @protected
    * @param {Rectangle=} outRect Rectangle to be returned.
-   * @return {Rectangle} The new Rectangle or outRect with .
+   * @return {Rectangle} The new Rectangle or outRect if it was passed as a param.
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -50,6 +56,8 @@ class Sprite extends DisplayObject {
 
     if (this.mClipRect !== null)
       this.mClipRect.copyTo(outRect);
+    else if (this.tiling !== null)
+      outRect.set(0, 0, this.tiling.width, this.tiling.height);
     else
       outRect.set(0, 0, this.mTexture.displayWidth, this.mTexture.displayHeight);
 
@@ -77,7 +85,9 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTexture = texture;
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
     this.setRenderDirty();
+
   }
 
   /**
@@ -100,5 +110,49 @@ class Sprite extends DisplayObject {
 
     this.mTextureName = value;
     this.texture = AssetManager.default.getTexture(/** @type {string} */(value));
+  }
+
+  /**
+   * Gets sets tiling information.
+   * 
+   * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
+   * 
+   * @returns {TilingInfo|null}
+   */
+  get tiling() {
+    return this.mTiling;
+  }
+
+  /**
+   * @ignore
+   * @param {TilingInfo|null} value
+   */
+  set tiling(value) {
+    this.mTiling = value;
+
+    this.setRenderDirty();
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+  }
+
+  /**
+   * Gets/sets nine slice grid rectangle.
+   * 
+   * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
+   * 
+   * @returns {Rectangle|null}
+   */
+  get slice9grid() {
+    return this.mSlice9grid;
+  }
+
+  /**
+   * @ignore
+   * @param {Rectangle|null} value
+   */
+  set slice9grid(value) {
+    this.mSlice9grid = value;
+
+    this.setRenderDirty();
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 }

@@ -3,6 +3,7 @@
  *
  * @cat display.text
  */
+
 /* @echo EXPORT */
 class FontMetrics {
 
@@ -17,7 +18,12 @@ class FontMetrics {
     if (FontMetrics.__CONTEXT === null) {
       FontMetrics.__CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
       FontMetrics.__CONTEXT = FontMetrics.__CANVAS.getContext('2d');
+
+      FontMetrics.__CANVAS.width = 10;
+      FontMetrics.__CANVAS.height = 200;
     }
+
+    style.size = 100;
 
     /** @private */
     this.mCanvas = FontMetrics.__CANVAS;
@@ -28,68 +34,70 @@ class FontMetrics {
     /** @private @type {TextStyle} */
     this.mStyle = style;
 
-    /** @private @type {number} */
-    this.mPadding = style.size * 0.5;
-
-    /** @private @type {number} */
-    this.mCanvasWidth = this.mCanvas.width = style.size * 2;
-
-    /** @private @type {number} */
-    this.mCanvasHeight = this.mCanvas.height = style.size * 2 + this.mPadding;
-
-    this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
+    const drawY = Math.floor(FontMetrics.__CANVAS.height * 0.7766);
+    this.mCtx.clearRect(0, 0, this.mCanvas.width, this.mCanvas.height);
     this.mCtx.font = `${style.weight} ${style.size}px ${style.family}`;
-    this.mCtx.textBaseline = 'top';
-    this.mCtx.textAlign = 'center';
+    this.mCtx.fillText('x', 0, drawY, 1);
+
+    let data = this.mCtx.getImageData(0, 0, 1, this.mCanvas.height).data;
+
+    const xHeight = this.__getBottom(data) - this.__getTop(data);
+
+    for (let i = 65; i <= 122; i++) {
+      if (i > 90 && i < 97)
+        continue;
+
+      this.mCtx.fillText(String.fromCharCode(i), 0, drawY, 1);
+    }
+
+    data = this.mCtx.getImageData(0, 0, 1, this.mCanvas.height).data;
+
+    const top = this.__getTop(data);
+    const bottom = this.__getBottom(data);
+    const baseLine = drawY - top;
+    const height = bottom - top;
 
     /**
-     * The maximum distance below the baseline for the lowest glyph in the font at a given text size.
+     * The line upon which most letters "sit" and below which descendent extend.
      * @public
      * @type {number}
      */
-    this.bottom = this.__computeLineHeight();
+    this.baseline = baseLine;
 
     /**
-     * The height of a capital letter above the baseline.
+     * The maximum y position for the lowest glyph in the font.
      * @public
      * @type {number}
      */
-    this.capHeight = this.__measureTop(FontMetrics.CHAR_CAPITAL_HEIGHT);
+    this.bottom = height;
 
     /**
-     * The line upon which most letters "sit" and below which descenders extend.
+     * The recommended distance above the mean line (top of lower case characters) for singled spaced text.
      * @public
      * @type {number}
      */
-    this.baseline = this.__measureBottom(FontMetrics.CHAR_BASELINE);
-
-    /**
-     * The distance between the baseline and the mean line of lower-case letters.
-     * @public
-     * @type {number}
-     */
-    this.xHeight = this.__measureTop(FontMetrics.CHAR_XHEIGHT);
-
-    /**
-     * The recommended distance above the baseline for singled spaced text.
-     * @public
-     * @type {number}
-     */
-    this.ascent = this.__measureTop(FontMetrics.CHAR_ASCENT);
+    this.ascent = baseLine - xHeight;
 
     /**
      * The recommended distance below the baseline for singled spaced text.
      * @public
      * @type {number}
      */
-    this.descent = this.__measureBottom(FontMetrics.CHAR_DESCENT);
+    this.descent = height - baseLine;
 
     /**
-     * The maximum distance above the baseline for the tallest glyph in the font at a given text size.
+      * The distance between the baseline and the mean line of lower-case letters, i.e height of `x` character.
+      * @public
+      * @type {number}
+      */
+    this.xHeight = xHeight;
+
+    /**
+     * The height of a capital letter above the baseline.
      * @public
      * @type {number}
      */
-    this.top = 0;
+    this.capHeight = baseLine;
   }
 
   /**
@@ -100,7 +108,7 @@ class FontMetrics {
    * @returns {number}
    */
   get capHeightNormalized() {
-    return (this.capHeight - this.top) / this.mStyle.size;
+    return this.capHeight / this.mStyle.size;
   }
 
   /**
@@ -111,7 +119,7 @@ class FontMetrics {
    * @returns {number}
    */
   get xHeightNormalized() {
-    return (this.xHeight - this.top) / this.mStyle.size;
+    return this.xHeight / this.mStyle.size;
   }
 
   /**
@@ -122,7 +130,7 @@ class FontMetrics {
    * @returns {number}
    */
   get ascentNormalized() {
-    return (this.ascent - this.top) / this.mStyle.size;
+    return this.ascent / this.mStyle.size;
   }
 
   /**
@@ -133,7 +141,7 @@ class FontMetrics {
    * @returns {number}
    */
   get descentNormalized() {
-    return (this.descent - this.top) / this.mStyle.size;
+    return this.descent / this.mStyle.size;
   }
 
   /**
@@ -144,7 +152,7 @@ class FontMetrics {
    * @returns {number}
    */
   get baselineNormalized() {
-    return (this.baseline - this.top) / this.mStyle.size;
+    return this.baseline / this.mStyle.size;
   }
 
   /**
@@ -155,94 +163,40 @@ class FontMetrics {
    * @returns {number}
    */
   get bottomNormalized() {
-    return (this.bottom - this.top) / this.mStyle.size;
+    return this.bottom / this.mStyle.size;
   }
 
   /**
    * @ignore
    * @private
+   * @param {Uint8ClampedArray} data
    * @returns {number}
    */
-  __computeLineHeight() {
-    const letter = 'A';
-
-    let ty = this.mCanvas.height;
-    this.mCtx.setTransform(1, 0, 0, 1, 0, ty);
-    this.mCtx.textBaseline = 'bottom';
-
-    const gutter = this.mCanvas.height - this.__measureBottom(letter);
-
-    ty = 0;
-    this.mCtx.setTransform(1, 0, 0, 1, 0, ty);
-    this.mCtx.textBaseline = 'top';
-
-    return this.__measureBottom(letter) + gutter;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {string} text 
-   * @returns {CanvasPixelArray}
-   */
-  __getPixels(text) {
-    this.mCtx.clearRect(0, 0, this.mCanvas.width, this.mCanvas.height);
-    this.mCtx.fillText(text, this.mCanvas.width / 2, this.mPadding, this.mCanvas.width);
-
-    return this.mCtx.getImageData(0, 0, this.mCanvas.width, this.mCanvas.height).data;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {CanvasPixelArray} pixels
-   * @returns {number}
-   */
-  __getFirstIndex(pixels) {
-    for (let i = 3, n = pixels.length; i < n; i += 4)
-      if (pixels[i] > 0)
+  __getTop(data) {
+    for (let i = 3, n = data.length; i < n; i += 4) {
+      if (data[i] > 0) {
         return (i - 3) / 4;
+      }
+    }
 
-    return pixels.length;
+    return data.length / 4;
   }
 
   /**
    * @ignore
    * @private
-   * @param {CanvasPixelArray} pixels
+   * @param {Uint8ClampedArray} data
    * @returns {number}
    */
-  __getLastIndex(pixels) {
-    for (let i = pixels.length - 1; i >= 3; i -= 4)
-      if (pixels[i] > 0)
-        return i / 4;
+  __getBottom(data) {
+    for (let i = data.length - 1; i > 0; i -= 4) {
+      if (data[i] > 0) {
+        return (i + 1) / 4;
+      }
+    }
 
     return 0;
   }
-
-  /**
-   * @ignore
-   * @private
-   * @param {string} text 
-   * @returns {number}
-   */
-  __measureBottom(text) {
-    let pixels = this.__getPixels(text);
-    let lastIndex = this.__getLastIndex(pixels);
-    return Math.round(lastIndex / this.mCanvas.width) - this.mPadding;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {string} text 
-   * @returns {number}
-   */
-  __measureTop(text) {
-    let pixels = this.__getPixels(text);
-    let fistIndex = this.__getFirstIndex(pixels);
-    return Math.round(fistIndex / this.mCanvas.width) - this.mPadding;
-  };
 
   /**
    * Use this method instead of constructor.

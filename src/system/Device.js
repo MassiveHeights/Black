@@ -13,7 +13,7 @@ class Device {
      * @private
      * @type {Device}
      */
-    this.constructor.mInstance = this;
+    Device.mInstance = this;
 
     /**
      * @private
@@ -103,6 +103,28 @@ class Device {
     return 1;
   }
 
+  /**
+   * Returns true if device is in landscape orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  static get isLandscape() {
+    let size = Black.instance.viewport.size;
+    return size.width >= size.height;
+  }
+
+  /**
+   * Returns true if device is in portrait orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  static get isPortrait() {
+    return !Device.isLandscape;
+  }
 }
 
 /**

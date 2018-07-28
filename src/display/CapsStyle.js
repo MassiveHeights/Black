@@ -9,5 +9,5 @@
 const CapsStyle = {
   NONE: 'none',
   ROUND: 'round',
-  SQAURE: 'square'
+  SQUARE: 'square'
 };

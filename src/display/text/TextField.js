@@ -466,7 +466,7 @@ class TextField extends DisplayObject {
     this.mText = value;
 
     /**
-     * Posts eveyrtime text has been changed.
+     * Posts every time text has been changed.
      * @event TextField#change
      */
     this.post(Message.CHANGE);

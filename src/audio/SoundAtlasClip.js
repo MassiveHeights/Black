@@ -20,8 +20,8 @@ class SoundAtlasClip extends SoundClip {
     this.mClips = {};
     
     if (jsonObject !== null)
-      for (let key in jsonObject)
-        this.addSubSound(key, jsonObject[key][0], jsonObject[key][1]);
+      for (let key in jsonObject.sounds)
+        this.addSubSound(key, jsonObject.sounds[key][0], jsonObject.sounds[key][1]);
   }
 
   /**

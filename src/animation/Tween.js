@@ -90,7 +90,6 @@ class Tween extends Component {
     /** @private @type {function(number):number} */
     this.mEase = Tween.DEFAULT_EASE;
 
-    // TODO: fix ESDOC issue
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
         this[f] = /** @dict */ (this.mProperties[f]);

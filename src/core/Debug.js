@@ -29,7 +29,7 @@ class Debug {
     if (value === true)
       return;
 
-    message = message == null ? 'Assertation failed.' : message;
+    message = message == null ? 'Assertion failed.' : message;
 
     if (Debug.logOnFail)
       console.error('[ASSERT]', message);
@@ -42,7 +42,7 @@ class Debug {
     if (value === true)
       return;
 
-    message = message == null ? 'Assertation warning.' : message;
+    message = message == null ? 'Assertion warning.' : message;
     Debug.warn(message);
   }
 
@@ -50,7 +50,7 @@ class Debug {
     if (value === true)
       return;
 
-    message = message == null ? 'Assertation info.' : message;
+    message = message == null ? 'Assertion info.' : message;
     Debug.info(message);
   }
 

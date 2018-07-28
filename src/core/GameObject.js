@@ -2,8 +2,8 @@
  * Building block in Black Engine.
  *
  * @cat core
- * @unrestricted
  * @export
+ * @unrestricted
  * @extends MessageDispatcher
  */
 /* @echo EXPORT */
@@ -45,6 +45,12 @@ class GameObject extends MessageDispatcher {
     this.mPivotY = 0;
 
     /** @protected @type {number} */
+    this.mSkewX = 0;
+
+    /** @protected @type {number} */
+    this.mSkewY = 0;
+
+    /** @protected @type {number} */
     this.mAnchorX = 0;
 
     /** @protected @type {number} */
@@ -72,7 +78,7 @@ class GameObject extends MessageDispatcher {
     this.mWorldTransform = new Matrix();
 
     /** @private @type {Matrix} */
-    this.mWorldTransformInversed = new Matrix();
+    this.mWorldTransformInverted = new Matrix();
 
     /** @private @type {DirtyFlag} */
     this.mDirty = DirtyFlag.DIRTY;
@@ -403,7 +409,7 @@ class GameObject extends MessageDispatcher {
   removeComponent(instance) {
     if (!instance)
       return null;
-      
+
     Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
@@ -476,20 +482,40 @@ class GameObject extends MessageDispatcher {
     if (this.mDirty & DirtyFlag.LOCAL) {
       this.mDirty ^= DirtyFlag.LOCAL;
 
-      if (this.mRotation === 0) {
-        let tx = this.mX - this.mPivotX * this.mScaleX;
-        let ty = this.mY - this.mPivotY * this.mScaleY;
-        return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, tx, ty);
+      if (this.mSkewX === 0.0 && this.mSkewY === 0.0) {
+        if (this.mRotation === 0) {
+          return this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX - this.mPivotX * this.mScaleX, this.mY - this.mPivotY * this.mScaleY);
+        } else {
+          let cos = Math.cos(this.mRotation);
+          let sin = Math.sin(this.mRotation);
+          let a = this.mScaleX * cos;
+          let b = this.mScaleX * sin;
+          let c = this.mScaleY * -sin;
+          let d = this.mScaleY * cos;
+          let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
+          let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
+          return this.mLocalTransform.set(a, b, c, d, tx, ty);
+        }
       } else {
-        let cos = Math.cos(this.mRotation);
-        let sin = Math.sin(this.mRotation);
-        let a = this.mScaleX * cos;
-        let b = this.mScaleX * sin;
-        let c = this.mScaleY * -sin;
-        let d = this.mScaleY * cos;
-        let tx = this.mX - this.mPivotX * a - this.mPivotY * c;
-        let ty = this.mY - this.mPivotX * b - this.mPivotY * d;
-        return this.mLocalTransform.set(a, b, c, d, tx, ty);
+        this.mLocalTransform.identity();
+        this.mLocalTransform.scale(this.mScaleX, this.mScaleY);
+        this.mLocalTransform.skew(this.mSkewX, this.mSkewY);
+        this.mLocalTransform.rotate(this.mRotation);
+
+        let a = this.mLocalTransform.data[0];
+        let b = this.mLocalTransform.data[1];
+        let c = this.mLocalTransform.data[2];
+        let d = this.mLocalTransform.data[3];
+        let tx = this.mX;
+        let ty = this.mY;
+
+        if (this.mPivotX !== 0.0 || this.mPivotY !== 0.0) {
+          tx = this.mX - a * this.mPivotX - c * this.mPivotY;
+          ty = this.mY - b * this.mPivotX - d * this.mPivotY;
+        }
+
+        this.mLocalTransform.data[4] = tx;
+        this.mLocalTransform.data[5] = ty;
       }
     }
 
@@ -518,7 +544,7 @@ class GameObject extends MessageDispatcher {
    * @param {Matrix} value
    * @return {void}
    */
-  set worldTransformation(value) {
+  set localTransformation(value) {
     const PI_Q = Math.PI / 4.0;
 
     let a = value.data[0];
@@ -545,9 +571,11 @@ class GameObject extends MessageDispatcher {
 
     if (MathEx.equals(skewX, skewY)) {
       this.mRotation = skewX;
-      skewX = skewY = 0;
+      this.mSkewX = this.mSkewY = 0;
     } else {
       this.mRotation = 0;
+      this.mSkewX = skewX;
+      this.mSkewY = skewY;
     }
 
     this.setTransformDirty();
@@ -559,14 +587,14 @@ class GameObject extends MessageDispatcher {
    * @readonly
    * @return {Matrix}
    */
-  get worldTransformationInversed() {
+  get worldTransformationInverted() {
     if ((this.mDirty & DirtyFlag.WORLD_INV)) {
       this.mDirty ^= DirtyFlag.WORLD_INV;
 
-      this.worldTransformation.copyTo(this.mWorldTransformInversed).invert();
+      this.worldTransformation.copyTo(this.mWorldTransformInverted).invert();
     }
 
-    return this.mWorldTransformInversed;
+    return this.mWorldTransformInverted;
   }
 
   /**
@@ -687,7 +715,7 @@ class GameObject extends MessageDispatcher {
     } else {
       let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
-      matrix.prepend(space.worldTransformationInversed);
+      matrix.prepend(space.worldTransformationInverted);
       matrix.transformRect(outRect, outRect);
       Matrix.pool.release(matrix);
     }
@@ -714,7 +742,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Returns stage relative bounds of this object exluding it's children;
+   * Returns stage relative bounds of this object excluding it's children;
    * 
    * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
    * @returns {Rectangle} 
@@ -726,7 +754,7 @@ class GameObject extends MessageDispatcher {
 
     let matrix = Matrix.pool.get();
     matrix.copyFrom(this.worldTransformation);
-    matrix.prepend(this.stage.worldTransformationInversed); // 120ms
+    matrix.prepend(this.stage.worldTransformationInverted); // 120ms
     matrix.transformRect(outRect, outRect); // 250ms
     Matrix.pool.release(matrix);
 
@@ -740,7 +768,7 @@ class GameObject extends MessageDispatcher {
    * @return {GameObject|null}
    */
   hitTest(localPoint) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
     let touchable = c !== null && c.touchable;
     let insideMask = this.onHitTestMask(localPoint);
 
@@ -776,7 +804,7 @@ class GameObject extends MessageDispatcher {
 
     // BEGINOF: WTF
     let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
-    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
+    this.worldTransformationInverted.transformVector(localPoint, tmpVector);
     // ENDOF: WTF
 
     if (this.mCollidersCache.length > 0) {
@@ -847,6 +875,30 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Calculates GameObject's position relative to another GameObject.
+   *
+   * @param {GameObject} gameObject Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
+   */
+  relativeTo(gameObject, outVector = null) {
+    outVector = outVector || Vector.pool.get();
+    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
+    tmpVector.set(this.x, this.y);
+
+    if (this.parent == null || gameObject == null) {
+      outVector.copyFrom(tmpVector);
+      Vector.pool.release(tmpVector);
+      return outVector;
+    }
+
+    tmpVector = this.parent.localToGlobal(tmpVector, outVector);
+    tmpVector = gameObject.globalToLocal(tmpVector, outVector);
+    Vector.pool.release(tmpVector);
+    return outVector;
+  }
+
+  /**
    * Calculate global position of the object.
    *
    * @param {Vector} localPoint Coordinates vector.
@@ -865,7 +917,7 @@ class GameObject extends MessageDispatcher {
    * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
-    return this.worldTransformationInversed.transformVector(globalPoint, outVector);
+    return this.worldTransformationInverted.transformVector(globalPoint, outVector);
   }
   /**
    * Gets a count of children elements.
@@ -1173,6 +1225,33 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Gets/Sets the scale factor of this object along y-axis.
+   *
+   * @export
+   * 
+   * @return {number}
+   */
+  get scaleY() {
+    return this.mScaleY;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {number} value
+   * @return {void}
+   */
+  set scaleY(value) {
+    if (this.mScaleY == value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mScaleY = value;
+    this.setTransformDirty();
+  }
+
+  /**
    * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
    * @export
    * @returns {number}
@@ -1199,29 +1278,54 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets the scale factor of this object along y-axis.
-   *
+   * Gets/sets horizontal skew angle in radians.
    * @export
-   * 
-   * @return {number}
+   * @returns {number}
    */
-  get scaleY() {
-    return this.mScaleY;
+  get skewX() {
+    return this.mSkewX;
   }
 
   /**
    * @export
    * @ignore
    * @param {number} value
-   * @return {void}
+   * 
+   * @returns {void}
    */
-  set scaleY(value) {
-    if (this.mScaleY == value)
+  set skewX(value) {
+    if (this.mSkewX == value)
       return;
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
-    this.mScaleY = value;
+    this.mSkewX = value;
+    this.setTransformDirty();
+  }
+
+  /**
+   * Gets/sets vertical skew angle in radians.
+   * @export
+   * @returns {number}
+   */
+  get skewY() {
+    return this.mSkewY;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {number} value
+   * 
+   * @returns {void}
+   */
+  set skewY(value) {
+    if (this.mSkewY == value)
+      return;
+
+    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+    this.mSkewY = value;
     this.setTransformDirty();
   }
 
@@ -1539,7 +1643,7 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   set touchable(value) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
 
     if (value === true) {
       if (c === null)
@@ -1611,7 +1715,7 @@ class GameObject extends MessageDispatcher {
    */
   static intersects(gameObject, point) {
     let tmpVector = new Vector();
-    let inv = gameObject.worldTransformationInversed;
+    let inv = gameObject.worldTransformationInverted;
 
     inv.transformVector(point, tmpVector);
 
@@ -1631,7 +1735,7 @@ class GameObject extends MessageDispatcher {
 
     Vector.__cache.set();
 
-    gameObject.worldTransformationInversed.transformVector(point, Vector.__cache);
+    gameObject.worldTransformationInverted.transformVector(point, Vector.__cache);
     let contains = gameObject.localBounds.containsXY(Vector.__cache.x, Vector.__cache.y);
 
     if (contains === false)
@@ -1805,7 +1909,7 @@ const DirtyFlag = {
   CLEAN: 0,         // Object is 100% cached
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
-  WORLD_INV: 4,     // Inversed world transformation is dirty 
+  WORLD_INV: 4,     // Inverted world transformation is dirty 
   RENDER: 8,        // Object needs to be rendered 
   RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
   REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified

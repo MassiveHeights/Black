@@ -44,6 +44,12 @@ class DisplayObject extends GameObject {
 
     /** @protected @type {boolean} */
     this.mSnapToPixels = false;
+
+    /** @protected @type {DisplayObject|null} */
+    this.mMask = null;
+
+    /** @protected @type {boolean} */
+    this.mIsMask = false;
   }
 
   /**
@@ -113,13 +119,13 @@ class DisplayObject extends GameObject {
     } else {
       let matrix = Matrix.pool.get();
       matrix.copyFrom(this.worldTransformation);
-      matrix.prepend(space.worldTransformationInversed);
+      matrix.prepend(space.worldTransformationInverted);
       matrix.transformRect(localBounds, outRect);
       Matrix.pool.release(matrix);
     }
 
     if (space !== this) {
-      if (this.mClipRect !== null) {        
+      if (this.mClipRect !== null) {
         outRect.x += this.mPivotX;
         outRect.y += this.mPivotY;
       }
@@ -155,7 +161,7 @@ class DisplayObject extends GameObject {
    * @inheritDoc
    */
   hitTest(localPoint) {
-    let c = this.getComponent(InputComponent);
+    let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
     let touchable = c !== null && c.touchable;
     let insideMask = this.onHitTestMask(localPoint);
 
@@ -188,7 +194,7 @@ class DisplayObject extends GameObject {
       return true;
 
     let tmpVector = Vector.pool.get();
-    this.worldTransformationInversed.transformVector(localPoint, tmpVector);
+    this.worldTransformationInverted.transformVector(localPoint, tmpVector);
 
     let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
     Vector.pool.release(tmpVector);
@@ -219,8 +225,8 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * Gets/Sets whether this container and all it's childen should be baked into bitmap. Setting `cacheAsBitmap` onto
-   * Sprites,, TextField's or any other inhireted classes will give zero effect.
+   * Gets/Sets whether this container and all it's children should be baked into bitmap. Setting `cacheAsBitmap` onto
+   * Sprites,, TextField's or any other inherited classes will give zero effect.
    *
    * @return {boolean} 
    */
@@ -251,7 +257,7 @@ class DisplayObject extends GameObject {
 
   /**
    * Gets/Sets the opacity of the object.
-   * Baked objects may change behaviour.
+   * Baked objects may change behavior.
    *
    * @return {number}
    */
@@ -337,11 +343,45 @@ class DisplayObject extends GameObject {
     this.setRenderDirty();
   }
 
+  /**
+   * Gets/sets whenever this object x and y value should be rounded.
+   * @returns {boolean}
+   */
   get snapToPixels() {
     return this.mSnapToPixels;
   }
 
+  /**
+   * @ignore
+   * @param {boolean} value
+   */
   set snapToPixels(value) {
     this.mSnapToPixels = value;
+  }
+
+  /**
+   * Gets/sets a display object which will act like a mask for this display object. 
+   * Mask should be a part on the stage.
+   * @returns {DisplayObject|null}
+   */
+  get mask() {
+    return this.mMask;
+  }
+
+  /**
+   * @ignore
+   * @param {DisplayObject|null}
+   */
+  set mask(value) {
+    if (this.mMask === value)
+      return;
+
+    if (this.mMask !== null) 
+      this.mMask.mIsMask = false;
+
+    if (value !== null) 
+      value.mIsMask = true;
+
+    this.mMask = value;
   }
 }

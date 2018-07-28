@@ -159,6 +159,22 @@ class Matrix {
     return this;
   }
 
+  skew(sx, sy) {
+    let sinX = Math.sin(sx);
+    let cosX = Math.cos(sx);
+    let sinY = Math.sin(sy);
+    let cosY = Math.cos(sy);
+    let d = this.data;
+
+    this.set(
+      d[0] * cosY - d[1] * sinX,
+      d[0] * sinY + d[1] * cosX,
+      d[2] * cosY - d[3] * sinX,
+      d[2] * sinY + d[3] * cosX,
+      d[4] * cosY - d[5] * sinX,
+      d[4] * sinY + d[5] * cosX);
+  }
+
   /**
    * Resets current matrix to identity state.
    *
@@ -488,7 +504,7 @@ class Matrix {
    * Compares this matrix values with given matrix and checks if they are the same.
    *
    * @param  {Matrix} matrix                   Matrix object to compare with.
-   * @param  {number} epsilon = Number.EPSILON Comparision threshold.
+   * @param  {number} epsilon = Number.EPSILON Comparison threshold.
    * @return {boolean} True if equal.
    */
   equals(matrix, epsilon = Number.EPSILON) {

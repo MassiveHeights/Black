@@ -1,5 +1,5 @@
 /**
- * Sound file asset class responsible for preloading audio files.
+ * Sound file asset class responsible for loading audio files.
  *
  * @cat assets
  * @extends Asset
