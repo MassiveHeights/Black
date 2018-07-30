@@ -23,6 +23,8 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** @private @type {boolean} */
     this.mIsClipped = false;
+
+    this.mIsCached = false;
   }
 
   /** @inheritDoc */
@@ -33,15 +35,28 @@ class DisplayObjectRendererCanvas extends Renderer {
     this.endPassRequired = this.mIsClipped;
 
     if (gameObject.mCacheAsBitmap === true) {
-      let isStatic = gameObject.checkStatic(true);
-      if (isStatic === true && this.mCacheAsBitmapDirty === true) {
-        gameObject.setTransformDirty();
-        this.__refreshBitmapCache();
-        this.mCacheAsBitmapDirty = false;
-        this.endPassRequired = false;
-      } else if (isStatic === false) {
-        this.mCacheAsBitmapDirty = true;
-        gameObject.mDirty |= DirtyFlag.RENDER;
+      if (gameObject.mCacheAsBitmapDynamic === false) {
+        if (this.mIsCached === false) {
+          this.mIsCached = true;
+          gameObject.setTransformDirty();
+          this.__refreshBitmapCache();
+          this.mCacheAsBitmapDirty = false;
+          this.endPassRequired = false;
+        } else {
+          gameObject.mDirty |= DirtyFlag.RENDER;
+        }
+      } else {
+        let isStatic = gameObject.checkStatic(true);
+
+        if (isStatic === true && this.mCacheAsBitmapDirty === true) {
+          gameObject.setTransformDirty();
+          this.__refreshBitmapCache();
+          this.mCacheAsBitmapDirty = false;
+          this.endPassRequired = false;
+        } else if (isStatic === false) {
+          this.mCacheAsBitmapDirty = true;
+          gameObject.mDirty |= DirtyFlag.RENDER;
+        }
       }
     }
 
@@ -78,8 +93,20 @@ class DisplayObjectRendererCanvas extends Renderer {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
 
-    if (this.skipChildren === true)
+
+    if (this.skipChildren === true){
       transform = this.mCacheAsBitmapMatrixCache;
+
+      if (gameObject.mCacheAsBitmapDynamic === false) {
+        
+        
+      // here your solution
+        
+        
+      }
+    }
+
+    
 
     if (this.skipChildren === true || this.endPassRequired === true) {
       driver.setSnapToPixels(gameObject.snapToPixels);
@@ -134,7 +161,7 @@ class DisplayObjectRendererCanvas extends Renderer {
     this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
     this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
     this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
-
+    
     //this.mCacheTexture.__dumpToDocument();
   }
 }

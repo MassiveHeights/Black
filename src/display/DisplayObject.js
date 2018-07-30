@@ -28,6 +28,9 @@ class DisplayObject extends GameObject {
     this.mCacheAsBitmap = false;
 
     /** @private @type {boolean} */
+    this.mCacheAsBitmapDynamic = true;
+
+    /** @private @type {boolean} */
     this.mCacheAsBitmapDirty = true;
 
     /** @private @type {Matrix|null} */
@@ -253,6 +256,24 @@ class DisplayObject extends GameObject {
 
       this.setTransformDirty();
     }
+  }
+
+  /**
+   * Gets/sets whenever cache as bitmap should be automatically refreshed.
+   * 
+   * @returns {boolean}
+   */
+  get cacheAsBitmapDynamic() {
+    return this.mCacheAsBitmapDynamic;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set cacheAsBitmapDynamic(value) {
+    this.mCacheAsBitmapDynamic = value;
   }
 
   /**
