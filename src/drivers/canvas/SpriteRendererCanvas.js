@@ -4,6 +4,7 @@
  * @extends Renderer
  * @cat drivers.canvas
  */
+
 /* @echo EXPORT */
 class SpriteRendererCanvas extends Renderer {
   constructor() {
@@ -194,7 +195,12 @@ class SpriteRendererCanvas extends Renderer {
       //}
 
       if (this.pattern === null || this.patternTexture !== texture) {
-        this.pattern = ctx.createPattern(texture.native, 'repeat');
+        const renderCanvas = new RenderTargetCanvas(texture.width, texture.height);
+        const r = texture.region;
+        const u = texture.untrimmedRegion;
+        renderCanvas.context.drawImage(texture.native, r.x, r.y, r.width, r.height, u.x, u.y, r.width, r.height);
+
+        this.pattern = ctx.createPattern(renderCanvas.native, 'repeat');
         this.patternTexture = texture;
       }
 
@@ -203,7 +209,7 @@ class SpriteRendererCanvas extends Renderer {
       let dpr = driver.mDPR;
 
       let m = gameObject.worldTransformation.clone();
-      m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr)
+      m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr);
       m.translate(gameObject.tiling.wrapX / dpr, gameObject.tiling.wrapY / dpr);
 
       driver.setTransform(m);
