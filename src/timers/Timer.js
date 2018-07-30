@@ -1,6 +1,8 @@
 /**
  * Timer component.
  *
+ * @cat timers
+ * 
  * @fires Timer#complete
  * @fires Timer#tick
  * 
