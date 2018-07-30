@@ -59,17 +59,6 @@ class TextRenderer extends Renderer {
 
     this.mTransform = this.mUseTransformCache === true ? this.mTransformCache : this.gameObject.worldTransformation;
 
-    if (session.isBackBufferActive === false) {
-      if (session.customTransform === null) {
-        this.mTransform = this.mTransform.clone(); // TODO: too much allocations
-        this.mTransform.data[4] -= Black.stage.mX;
-        this.mTransform.data[5] -= Black.stage.mY;
-      } else {
-        this.mTransform = this.mTransform.clone(); // TODO: too much allocations
-        this.mTransform.prepend(session.customTransform);
-      }
-    }
-
     driver.setSnapToPixels(gameObject.snapToPixels);
     driver.setTransform(this.mTransform);
     driver.setGlobalAlpha(this.alpha);

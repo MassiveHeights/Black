@@ -250,18 +250,30 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
-  setTransform(m) {
-    const v = m.value;
-    Debug.isNumber(v[0], v[1], v[2], v[3], v[4], v[5]);
-
-    this.mTransform = m;
-
+  setTransform(transform) {
     let dpr = this.mDevicePixelRatio;
+    let session = this.mActiveSession;
+    
+    if (session.isBackBufferActive === false) {
+      if (session.customTransform === null) {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.data[4] -= Black.stage.mX;
+        transform.data[5] -= Black.stage.mY;
+      } else {
+        transform = transform.clone(); // TODO: too much allocations
+        transform.prepend(session.customTransform);
+      }
+    }
+    
+    this.mTransform = transform;
+
+    let mv = transform.value;
+    Debug.isNumber(mv[0], mv[1], mv[2], mv[3], mv[4], mv[5]);
 
     if (this.mSnapToPixels === true)
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], (v[4] * dpr) | 0, (v[5] * dpr) | 0);
+      this.mCtx.setTransform(mv[0], mv[1], mv[2], mv[3], (mv[4] * dpr) | 0, (mv[5] * dpr) | 0);
     else
-      this.mCtx.setTransform(v[0], v[1], v[2], v[3], v[4] * dpr, v[5] * dpr);
+      this.mCtx.setTransform(mv[0], mv[1], mv[2], mv[3], mv[4] * dpr, mv[5] * dpr);
   }
 
   /**

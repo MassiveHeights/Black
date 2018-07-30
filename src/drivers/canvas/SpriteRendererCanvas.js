@@ -16,7 +16,7 @@ class SpriteRendererCanvas extends Renderer {
     this.patternTexture = null;
 
     /** @type {Texture|null} */
-    this.sliceTexture = null;
+    this.sliceTextureCache = null;
 
     /** @type {number|null} */
     this.sizeWidthCache = null;
@@ -36,14 +36,16 @@ class SpriteRendererCanvas extends Renderer {
 
   renderSlice9Grid(driver, texture, grid) {
     const dpr = driver.mDevicePixelRatio;
-    let desireWidth = texture.width * this.gameObject.mScaleX;
-    let desireHeight = texture.height * this.gameObject.mScaleY;
+    let desiredWidth = texture.width * this.gameObject.mScaleX;
+    let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    if (this.sizeWidthCache !== null && this.sizeWidthCache === desireWidth && this.sizeHeightCache === desireHeight)
-      return this.sliceTexture;
+    // TODO: fix cache bug
+    // if (this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+    //   return this.sliceTextureCache;
+    // }
 
-    this.sizeWidthCache = desireWidth;
-    this.sizeHeightCache = desireHeight;
+    this.sizeWidthCache = desiredWidth;
+    this.sizeHeightCache = desiredHeight;
 
     const sourceX = texture.region.x;
     const sourceY = texture.region.y;
@@ -53,8 +55,12 @@ class SpriteRendererCanvas extends Renderer {
     const destX = texture.untrimmedRegion.x * dpr;
     const destY = texture.untrimmedRegion.y * dpr;
 
-    this.sliceTexture = new CanvasRenderTexture(desireWidth, desireHeight, 1 / texture.scale);
-    const ctx = this.sliceTexture.renderTarget.context;
+    if (this.sliceTextureCache === null)
+      this.sliceTextureCache = new CanvasRenderTexture(desiredWidth, desiredHeight, 1 / texture.scale);
+    else
+      this.sliceTextureCache.resize(desiredWidth, desiredHeight, 1 / texture.scale);
+
+    const ctx = this.sliceTextureCache.renderTarget.context;
 
     const data = this.gameObject.worldTransformation.data;
     const scale = Math.min(this.gameObject.scaleX, this.gameObject.scaleY);
@@ -65,8 +71,8 @@ class SpriteRendererCanvas extends Renderer {
 
     if (scale <= 1) {
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
-      desireWidth /= scale;
-      desireHeight /= scale;
+      desiredWidth /= scale;
+      desiredHeight /= scale;
     }
 
     const gridLeft = grid.x / texture.scale;
@@ -76,10 +82,10 @@ class SpriteRendererCanvas extends Renderer {
 
     // non-scalable
     const srcOffsetX = sourceX + sourceWidth - gridRight;
-    const dstOffsetX = destX + desireWidth / texture.scale - gridRight;
+    const dstOffsetX = destX + desiredWidth / texture.scale - gridRight;
 
     const srcOffsetY = sourceY + sourceHeight - gridBottom;
-    const dstOffsetY = destY + desireHeight / texture.scale - gridBottom;
+    const dstOffsetY = destY + desiredHeight / texture.scale - gridBottom;
 
     // top left
     ctx.drawImage(texture.native, sourceX, sourceY, gridLeft, gridTop, destX, destY, gridLeft, gridTop);
@@ -101,16 +107,16 @@ class SpriteRendererCanvas extends Renderer {
     const dstTopOffset = destY + gridTop;
 
     const srcRightOffset = sourceX + sourceWidth - gridRight;
-    const dstRightOffset = destX + desireWidth / texture.scale - gridRight;
+    const dstRightOffset = destX + desiredWidth / texture.scale - gridRight;
 
     const srcBottomOffset = sourceY + sourceHeight - gridBottom;
-    const dstBottomOffset = destY + desireHeight / texture.scale - gridBottom;
+    const dstBottomOffset = destY + desiredHeight / texture.scale - gridBottom;
 
     const srcCenterWidth = sourceWidth - gridLeft - gridRight;
-    const dstCenterWidth = desireWidth / texture.scale - gridLeft - gridRight;
+    const dstCenterWidth = desiredWidth / texture.scale - gridLeft - gridRight;
 
     const srcCenterHeight = sourceHeight - gridTop - gridBottom;
-    const dstCenterHeight = desireHeight / texture.scale - gridTop - gridBottom;
+    const dstCenterHeight = desiredHeight / texture.scale - gridTop - gridBottom;
 
     // top
     ctx.drawImage(texture.native, srcLeftOffset, sourceY, srcCenterWidth, gridTop, dstLeftOffset, destY, dstCenterWidth, gridTop);
@@ -127,7 +133,7 @@ class SpriteRendererCanvas extends Renderer {
     //center
     ctx.drawImage(texture.native, srcLeftOffset, srcTopOffset, srcCenterWidth, srcCenterHeight, dstLeftOffset, dstTopOffset, dstCenterWidth, dstCenterHeight);
 
-    return this.sliceTexture;
+    return this.sliceTextureCache;
   }
 
   /** @inheritDoc */
@@ -182,6 +188,12 @@ class SpriteRendererCanvas extends Renderer {
       driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
     } else {
       // we got some tiling
+
+      //let rt = new CanvasRenderTexture(desireWidth, desireHeight, 1 / texture.scale);
+      //if (gameObject.checkStatic(false) === true){
+      // render directly to backbuffer
+      //}
+
       if (this.pattern === null || this.patternTexture !== texture) {
         this.pattern = ctx.createPattern(texture.native, 'repeat');
         this.patternTexture = texture;
@@ -194,6 +206,7 @@ class SpriteRendererCanvas extends Renderer {
       let m = gameObject.worldTransformation.clone();
       m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr)
       m.translate(gameObject.tiling.wrapX / dpr, gameObject.tiling.wrapY / dpr);
+
       driver.setTransform(m);
 
       // draw pattern

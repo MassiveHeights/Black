@@ -81,17 +81,6 @@ class DisplayObjectRendererCanvas extends Renderer {
     if (this.skipChildren === true)
       transform = this.mCacheAsBitmapMatrixCache;
 
-    if (session.isBackBufferActive === false) {
-      if (session.customTransform === null) {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.data[4] -= Black.stage.mX;
-        transform.data[5] -= Black.stage.mY;
-      } else {
-        transform = transform.clone(); // TODO: too much allocations
-        transform.prepend(session.customTransform);
-      }
-    }
-
     if (this.skipChildren === true || this.endPassRequired === true) {
       driver.setSnapToPixels(gameObject.snapToPixels);
       driver.setTransform(transform);
