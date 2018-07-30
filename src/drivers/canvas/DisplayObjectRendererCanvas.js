@@ -4,6 +4,7 @@
  * @extends Renderer
  * @cat drivers.canvas
  */
+
 /* @echo EXPORT */
 class DisplayObjectRendererCanvas extends Renderer {
   constructor() {
@@ -25,6 +26,9 @@ class DisplayObjectRendererCanvas extends Renderer {
     this.mIsClipped = false;
 
     this.mIsCached = false;
+
+    /** @private @type {Matrix|null} */
+    this.mBakeInvertedMatrix = null;
   }
 
   /** @inheritDoc */
@@ -93,20 +97,17 @@ class DisplayObjectRendererCanvas extends Renderer {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
 
-
-    if (this.skipChildren === true){
+    if (this.skipChildren === true) {
       transform = this.mCacheAsBitmapMatrixCache;
 
       if (gameObject.mCacheAsBitmapDynamic === false) {
-        
-        
-      // here your solution
-        
-        
+        transform = new Matrix()
+          .append(this.gameObject.worldTransformation)
+          .append(this.mBakeInvertedMatrix)
+          .append(this.mCacheAsBitmapMatrixCache)
       }
     }
 
-    
 
     if (this.skipChildren === true || this.endPassRequired === true) {
       driver.setSnapToPixels(gameObject.snapToPixels);
@@ -161,7 +162,8 @@ class DisplayObjectRendererCanvas extends Renderer {
     this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
     this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
     this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
-    
+
+    this.mBakeInvertedMatrix = this.gameObject.worldTransformation.clone().invert();
     //this.mCacheTexture.__dumpToDocument();
   }
 }
