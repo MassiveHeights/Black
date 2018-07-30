@@ -1,6 +1,18 @@
 Black Engine: Changelog
 =======================
 
+# v0.5.6
+### New features
+- Added `Graphics#cacheAsBitmapDynamic` property allowing to disable auto refresh of bitmap cache
+
+### Bug Fixes
+- Fixed few Cache As Bitmap bugs causing Graphics and tiling sprite to render incorrectly
+- Fixed incorrect rendering of cached slice9grid texture
+- Fixed incorrect rendering of tiled texture from texture atlas
+
+### Examples & Docs
+- Added "Cache As Bitmap Dynamic" example
+
 # v0.5.5
 ### New features
 - Added support for Black Vector Graphics (beta)

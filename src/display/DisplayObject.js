@@ -28,6 +28,9 @@ class DisplayObject extends GameObject {
     this.mCacheAsBitmap = false;
 
     /** @private @type {boolean} */
+    this.mCacheAsBitmapDynamic = true;
+
+    /** @private @type {boolean} */
     this.mCacheAsBitmapDirty = true;
 
     /** @private @type {Matrix|null} */
@@ -45,11 +48,11 @@ class DisplayObject extends GameObject {
     /** @protected @type {boolean} */
     this.mSnapToPixels = false;
 
-    /** @protected @type {DisplayObject|null} */
-    this.mMask = null;
+    // /** @protected @type {DisplayObject|null} */
+    // this.mMask = null;
 
-    /** @protected @type {boolean} */
-    this.mIsMask = false;
+    // /** @protected @type {boolean} */
+    // this.mIsMask = false;
   }
 
   /**
@@ -256,6 +259,24 @@ class DisplayObject extends GameObject {
   }
 
   /**
+   * Gets/sets whenever cache as bitmap should be automatically refreshed.
+   * 
+   * @returns {boolean}
+   */
+  get cacheAsBitmapDynamic() {
+    return this.mCacheAsBitmapDynamic;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @return {void}
+   */
+  set cacheAsBitmapDynamic(value) {
+    this.mCacheAsBitmapDynamic = value;
+  }
+
+  /**
    * Gets/Sets the opacity of the object.
    * Baked objects may change behavior.
    *
@@ -359,29 +380,29 @@ class DisplayObject extends GameObject {
     this.mSnapToPixels = value;
   }
 
-  /**
-   * Gets/sets a display object which will act like a mask for this display object. 
-   * Mask should be a part on the stage.
-   * @returns {DisplayObject|null}
-   */
-  get mask() {
-    return this.mMask;
-  }
+  // /**
+  //  * Gets/sets a display object which will act like a mask for this display object. 
+  //  * Mask should be a part on the stage.
+  //  * @returns {DisplayObject|null}
+  //  */
+  // get mask() {
+  //   return this.mMask;
+  // }
 
-  /**
-   * @ignore
-   * @param {DisplayObject|null}
-   */
-  set mask(value) {
-    if (this.mMask === value)
-      return;
+  // /**
+  //  * @ignore
+  //  * @param {DisplayObject|null}
+  //  */
+  // set mask(value) {
+  //   if (this.mMask === value)
+  //     return;
 
-    if (this.mMask !== null) 
-      this.mMask.mIsMask = false;
+  //   if (this.mMask !== null) 
+  //     this.mMask.mIsMask = false;
 
-    if (value !== null) 
-      value.mIsMask = true;
+  //   if (value !== null) 
+  //     value.mIsMask = true;
 
-    this.mMask = value;
-  }
+  //   this.mMask = value;
+  // }
 }
