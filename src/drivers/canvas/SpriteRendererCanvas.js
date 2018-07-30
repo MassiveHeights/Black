@@ -39,10 +39,9 @@ class SpriteRendererCanvas extends Renderer {
     let desiredWidth = texture.width * this.gameObject.mScaleX;
     let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    // TODO: fix cache bug
-    // if (this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
-    //   return this.sliceTextureCache;
-    // }
+    if (this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+      return this.sliceTextureCache;
+    }
 
     this.sizeWidthCache = desiredWidth;
     this.sizeHeightCache = desiredHeight;
@@ -61,13 +60,7 @@ class SpriteRendererCanvas extends Renderer {
       this.sliceTextureCache.resize(desiredWidth, desiredHeight, 1 / texture.scale);
 
     const ctx = this.sliceTextureCache.renderTarget.context;
-
-    const data = this.gameObject.worldTransformation.data;
     const scale = Math.min(this.gameObject.scaleX, this.gameObject.scaleY);
-
-    const m = Matrix.pool.get().set(data[0] / this.gameObject.scaleX, data[1] / this.gameObject.scaleX, data[2] / this.gameObject.scaleY, data[3] / this.gameObject.scaleY, data[4], data[5]);
-    driver.setTransform(m);
-    Matrix.pool.release(m);
 
     if (scale <= 1) {
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
@@ -181,8 +174,14 @@ class SpriteRendererCanvas extends Renderer {
 
     let texture = Renderer.getColoredTexture(gameObject.mTexture, this.color);
 
-    if (gameObject.mSlice9grid !== null)
+    if (gameObject.mSlice9grid !== null) {
+      const data = this.gameObject.worldTransformation.data;
+      const m = Matrix.pool.get().set(data[0] / this.gameObject.scaleX, data[1] / this.gameObject.scaleX, data[2] / this.gameObject.scaleY, data[3] / this.gameObject.scaleY, data[4], data[5]);
+      driver.setTransform(m);
+      Matrix.pool.release(m);
+
       texture = this.renderSlice9Grid(driver, texture, gameObject.mSlice9grid);
+    }
 
     if (gameObject.mTiling === null) {
       driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
