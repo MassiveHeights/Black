@@ -134,7 +134,7 @@ class BVGStyle {
    * @public
    * @param {BVGStyle} style Parent style
    *
-   * @returns void
+   * @returns {void}
    */
   merge(style) {
     if (style.hasOwnProperty('F'))
@@ -176,7 +176,7 @@ class BVGStyle {
    *
    * @public
    *
-   * @returns void
+   * @returns {void}
    */
   compute() {
     this.needsFill = this.F !== '-';
