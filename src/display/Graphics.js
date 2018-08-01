@@ -18,6 +18,12 @@ class Graphics extends DisplayObject {
     /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
+    /**
+     * For internal usage
+     *
+     * @private @type {Rectangle|null} */
+    this.mLocalBounds = null;
+
     /** @private @type {GraphicsData} */
     this.mGraphicsData;
 
@@ -48,7 +54,15 @@ class Graphics extends DisplayObject {
       return outRect;
     }
 
-    return this.mGraphicsData.onGetLocalBounds(outRect, new Matrix());
+    this.mGraphicsData.onGetLocalBounds(this, new Matrix());
+
+    this.mLocalBounds && outRect.copyFrom(this.mLocalBounds);
+    this.mLocalBounds = null;
+
+    outRect.x = Math.min(0, outRect.x);
+    outRect.y = Math.min(0, outRect.y);
+
+    return outRect;
   }
 
   /**
