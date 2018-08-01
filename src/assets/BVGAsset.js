@@ -89,18 +89,8 @@ class BVGAsset extends Asset {
         continue;
       }
 
-      const graphics = new Graphics(node);
-      const bounds = graphics.mGraphicsData.onGetLocalBounds(graphics, new Matrix());
-      const tx = graphics.mGraphicsData.mTransform.data[4];
-      const ty = graphics.mGraphicsData.mTransform.data[5];
-
-      graphics.mGraphicsData.mTransform.data[4] -= bounds.x;
-      graphics.mGraphicsData.mTransform.data[5] -= bounds.y;
-
-      const renderTexture = new CanvasRenderTexture(bounds.width, bounds.height, Black.driver.renderScaleFactor);
-
-      graphics.mGraphicsData.mTransform.data[4] = tx;
-      graphics.mGraphicsData.mTransform.data[5] = ty;
+      const graphics = new Graphics(node, name !== this.mGraphicsData.name);
+      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
 
       Black.driver.render(graphics, renderTexture, new Matrix());
 

@@ -11,8 +11,9 @@ class Graphics extends DisplayObject {
    * Creates new Graphics instance.
    *
    * @param {GraphicsData|string|null} graphicsData The id of BVG object.
+   * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
    */
-  constructor(graphicsData = null) {
+  constructor(graphicsData = null, trim = false) {
     super();
 
     /** @private @type {Rectangle} */
@@ -24,8 +25,14 @@ class Graphics extends DisplayObject {
      * @private @type {Rectangle|null} */
     this.mLocalBounds = null;
 
-    /** @private @type {GraphicsData} */
-    this.mGraphicsData;
+    /** @private @type {GraphicsData|null} */
+    this.mGraphicsData = null;
+
+    /** @private @type {number} */
+    this.mDataOffsetX = 0;
+
+    /** @private @type {number} */
+    this.mDataOffsetY = 0;
 
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
@@ -33,6 +40,16 @@ class Graphics extends DisplayObject {
       this.mGraphicsData = AssetManager.default.getGraphicsData(graphicsData);
     } else {
       this.mGraphicsData = graphicsData;
+    }
+
+    if (trim) {
+      this.mGraphicsData.onGetLocalBounds(this, new Matrix());
+
+      if (this.mLocalBounds) {
+        this.mDataOffsetX = this.mLocalBounds.x;
+        this.mDataOffsetY = this.mLocalBounds.y;
+        this.mLocalBounds = null;
+      }
     }
   }
 
