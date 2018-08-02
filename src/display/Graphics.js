@@ -11,15 +11,28 @@ class Graphics extends DisplayObject {
    * Creates new Graphics instance.
    *
    * @param {GraphicsData|string|null} graphicsData The id of BVG object.
+   * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
    */
-  constructor(graphicsData = null) {
+  constructor(graphicsData = null, trim = false) {
     super();
 
     /** @private @type {Rectangle} */
     this.mBounds = new Rectangle();
 
-    /** @private @type {GraphicsData} */
-    this.mGraphicsData;
+    /**
+     * For internal usage
+     *
+     * @private @type {Rectangle|null} */
+    this.mLocalBounds = null;
+
+    /** @private @type {GraphicsData|null} */
+    this.mGraphicsData = null;
+
+    /** @private @type {number} */
+    this.mDataOffsetX = 0;
+
+    /** @private @type {number} */
+    this.mDataOffsetY = 0;
 
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
@@ -27,6 +40,16 @@ class Graphics extends DisplayObject {
       this.mGraphicsData = AssetManager.default.getGraphicsData(graphicsData);
     } else {
       this.mGraphicsData = graphicsData;
+    }
+
+    if (trim) {
+      this.mGraphicsData.onGetLocalBounds(this, new Matrix());
+
+      if (this.mLocalBounds) {
+        this.mDataOffsetX = this.mLocalBounds.x;
+        this.mDataOffsetY = this.mLocalBounds.y;
+        this.mLocalBounds = null;
+      }
     }
   }
 
@@ -48,7 +71,15 @@ class Graphics extends DisplayObject {
       return outRect;
     }
 
-    return this.mGraphicsData.onGetLocalBounds(outRect, new Matrix());
+    this.mGraphicsData.onGetLocalBounds(this, new Matrix());
+
+    this.mLocalBounds && outRect.copyFrom(this.mLocalBounds);
+    this.mLocalBounds = null;
+
+    outRect.x = Math.min(0, outRect.x);
+    outRect.y = Math.min(0, outRect.y);
+
+    return outRect;
   }
 
   /**

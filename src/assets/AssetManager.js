@@ -162,16 +162,16 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the json.
-   * @param {boolean=} [bake=false] Flag to bake full BVG as texture. If false neither root nor children will be baked.
-   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none child node will be baked.
-   * @param {Array<string>=} [namesToBake=null] Concrete nodes id which require baking. Works only if bakeChildren=true.
+   * @param {boolean=} [bakeSelf=false] Flag to bake full BVG as texture. If false root will not be baked.
+   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none children nodes will be baked.
+   * @param {Array<string>=} [namesToBake=null] Concrete nodes ids to bake. Works only if bakeChildren is set to true.
    *
    * @returns {void}
    */
-  enqueueVector(name, url, bake = false, bakeChildren = false, namesToBake = null) {
+  enqueueVector(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
     this.__validateState();
     this.__validateName(name);
-    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bake, bakeChildren, namesToBake));
+    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
   }
 
   /**
