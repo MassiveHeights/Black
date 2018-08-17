@@ -76,6 +76,8 @@ class Graphics extends DisplayObject {
     this.mLocalBounds && outRect.copyFrom(this.mLocalBounds);
     this.mLocalBounds = null;
 
+    outRect.width += Math.max(0, outRect.x);
+    outRect.height += Math.max(0, outRect.y);
     outRect.x = Math.min(0, outRect.x);
     outRect.y = Math.min(0, outRect.y);
 

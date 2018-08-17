@@ -94,6 +94,7 @@ class BVGParser extends ParserBase {
 
     if (node.cmds) {
       const cmds = node.cmds.split('$').filter(v => v).reverse();
+      let prevName = '';
 
       while (cmds.length > 0) {
         const cmd = cmds.pop();
@@ -102,6 +103,13 @@ class BVGParser extends ParserBase {
 
         graphicsData.beginPath();
 
+        if (prevName !== 'S' && name !== 'S') {
+          graphicsData.fillStyle(0x000000, 1);
+          graphicsData.lineStyle(1, 0x000000, 1, CapsStyle.NONE, JointStyle.MITER, 4);
+        }
+
+        prevName = name;
+
         switch (name) {
           case 'S':
             const newStyle = styles[args[0]];
@@ -109,12 +117,14 @@ class BVGParser extends ParserBase {
             style.merge(newStyle);
             style.compute();
 
-            if (style.needsFill === true)
+            if (style.needsFill) {
               graphicsData.fillStyle(style.fillColor, style.fillAlpha);
+            }
 
-            if (style.needsStroke === true)
+            if (style.needsStroke) {
               graphicsData.lineStyle(style.lineWidth, style.lineColor,
                 style.lineAlpha, style.lineCap, style.lineJoin, style.miterLimit);
+            }
 
             break;
           case shapeCmds.PATH:
@@ -191,10 +201,11 @@ class BVGParser extends ParserBase {
             break;
         }
 
-        if (style.needsFill === true)
+        if (style.needsFill) {
           graphicsData.fill(style.fillRule);
+        }
 
-        if (style.needsStroke === true) {
+        if (style.needsStroke) {
           graphicsData.setLineDash(style.lineDash);
           graphicsData.stroke();
         }
