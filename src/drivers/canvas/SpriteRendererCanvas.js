@@ -216,6 +216,7 @@ class SpriteRendererCanvas extends Renderer {
 
       // draw pattern
       ctx.fillRect(-gameObject.tiling.wrapX, -gameObject.tiling.wrapY, gameObject.tiling.width / gameObject.tiling.scaleX, gameObject.tiling.height / gameObject.tiling.scaleY);
+      ctx.fillStyle = 'black';
     }
   }
 }

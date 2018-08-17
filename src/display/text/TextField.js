@@ -125,7 +125,7 @@ class TextField extends DisplayObject {
    * @param {TextStyle} style 
    */
   setStyle(name, style) {
-    Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`)
+    Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`);
     style.name = name;
 
     this.mStyles[name] = style;
@@ -144,6 +144,7 @@ class TextField extends DisplayObject {
 
   /**
    * Removes style by given name.
+   * 
    * @param {string} name 
    */
   removeStyle(name) {
@@ -153,10 +154,24 @@ class TextField extends DisplayObject {
 
   /**
    * Returns text style by given name or null if not found.
+   * 
    * @param {string} name 
+   * @return {TextStyle} 
    */
   getStyle(name) {
     return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
+  }
+
+  /**
+   * Returns an array of all not default styles.
+   * 
+   * @return {Array<TextStyle>} 
+   */
+  getAllStyles() {
+    let styles = [];
+    for (let s in this.mStyles)
+      styles.push(this.mStyles[s]);
+    return styles;
   }
 
   /**
