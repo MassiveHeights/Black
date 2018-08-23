@@ -6,7 +6,6 @@ Black Engine: Changelog
 - Changed license to Simplified BSD!!!
 - Changed `Emitter#state` to be public
 - Added `TextField#getAllStyles` method which returns all styles 
-- Removed splash screen
 
 ### Bug Fixes
 - Fixed `GameObject#relativeTo` method
