@@ -1,6 +1,17 @@
 Black Engine: Changelog
 =======================
 
+# v0.5.7
+### Changes
+- Changed license to Simplified BSD!!!
+- Changed `Emitter#state` to be public
+- Added `TextField#getAllStyles` method which returns all styles 
+- Removed splash screen
+
+### Bug Fixes
+- Fixed `GameObject#relativeTo` method
+- Fixed tiling sprite causing incorrect rendering of other Graphics objects
+
 # v0.5.6
 ### New features
 - Added `Graphics#cacheAsBitmapDynamic` property allowing to disable auto refresh of bitmap cache
