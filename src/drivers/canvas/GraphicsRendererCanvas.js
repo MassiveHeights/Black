@@ -41,8 +41,12 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     ctx.save();
     ctx.beginPath();
 
-    this.__renderNode(driver, color, gameObject.mGraphicsData, gameObject.worldTransformation);
+    const transform = Matrix.pool.get().copyFrom(gameObject.worldTransformation);
+    transform.translate(-gameObject.mDataOffsetX, -gameObject.mDataOffsetY);
 
+    this.__renderNode(driver, color, gameObject.mGraphicsData, transform);
+
+    Matrix.pool.release(transform);
     ctx.restore();
   }
 

@@ -882,19 +882,14 @@ class GameObject extends MessageDispatcher {
    * @return {Vector}
    */
   relativeTo(gameObject, outVector = null) {
-    outVector = outVector || Vector.pool.get();
-    let tmpVector = /** @type {Vector}*/ (Vector.pool.get());
-    tmpVector.set(this.x, this.y);
+    outVector = outVector || new Vector();
+    outVector.set(this.x, this.y);
 
-    if (this.parent == null || gameObject == null) {
-      outVector.copyFrom(tmpVector);
-      Vector.pool.release(tmpVector);
+    if (this.parent == null || gameObject == null)
       return outVector;
-    }
 
-    tmpVector = this.parent.localToGlobal(tmpVector, outVector);
-    tmpVector = gameObject.globalToLocal(tmpVector, outVector);
-    Vector.pool.release(tmpVector);
+    this.parent.localToGlobal(outVector, outVector);
+    gameObject.globalToLocal(outVector, outVector);
     return outVector;
   }
 
