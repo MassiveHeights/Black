@@ -95,7 +95,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           let grd = gradientInfo.native;
 
           if (!grd) {
-            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x, gradientInfo.y, gradientInfo.width, gradientInfo.height);
+            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x0, gradientInfo.y0, gradientInfo.x1, gradientInfo.y1);
 
             const entries = [];
 

@@ -59,6 +59,7 @@ class BVGParser extends ParserBase {
    * @private
    * @param {Object} node BVG node.
    * @param {Array<BVGStyle>} styles Parsed BVG styles.
+   * @param {Object} defs Parsed svg definitions.
    * @param {GraphicsData} parent Parent node.
    * @param {BVGStyle} parentStyle Style for inheritance.
    *
@@ -202,7 +203,7 @@ class BVGParser extends ParserBase {
             gradientInfo.y *= lastRect.height;
             gradientInfo.width *= lastRect.width;
             gradientInfo.height *= lastRect.height;
-console.log(gradientInfo, lastRect)
+
             graphicsData.fillGrd(gradientInfo);
           } else {
             graphicsData.fillStyle(style.fillColor, style.fillAlpha);
@@ -244,33 +245,18 @@ console.log(gradientInfo, lastRect)
 
       switch (cmd) {
         case 'R': // Linear Gradient
-          let x = null, y = null, width = null, height = null;
           const pairs = def.slice(1).split(' ');
-          const entries = [];
+          const v = pairs[0].split(',').map(v => parseFloat(v));
+          const gradientInfo = new GraphicsLinearGradient(v[0], v[1], v[2], v[3]);
+          res[id] = gradientInfo;
 
-          for (let i = 0, l = pairs.length; i < l; i++) {
+          for (let i = 1, l = pairs.length; i < l; i++) {
             const pair = pairs[i];
             const values = pair.split(',');
+            const color = '#' + values[1];// hex to rgb(x,x,x,x) todo
 
-            if (values.length === 4) {
-              x = parseFloat(values[0]);
-              y = parseFloat(values[1]);
-              width = parseFloat(values[2]);
-              height = parseFloat(values[3]);
-            } else {
-              const color = '#' + values[1];// hex to rgb(x,x,x,x) todo
-              entries.push({percent: values[0], color});
-            }
+            gradientInfo.addColorStop(parseFloat(values[0]), color);
           }
-
-          const gradientInfo = new GraphicsLinearGradient(x || 0, y || 0, width || 1, height || 0);
-
-          for (let i = 0, l = entries.length; i < l; i++) {
-            const entry = entries[i];
-            gradientInfo.addColorStop(entry.percent / 100, entry.color);
-          }
-
-          res[id] = gradientInfo;
       }
 
       return res;
