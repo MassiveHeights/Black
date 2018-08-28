@@ -158,6 +158,10 @@ class GraphicsData {
     this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
   }
 
+  fillGrd(grd) {
+    this.__pushCommand(GraphicsCommandType.FILL_GRD, grd);
+  }
+
   /**
    * Clears the graphics that were drawn and resets fill and line styles.
    *

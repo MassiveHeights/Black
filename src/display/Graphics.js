@@ -112,6 +112,10 @@ class Graphics extends DisplayObject {
     this.mGraphicsData.fillStyle(color, alpha);
   }
 
+  fillGrd(grd) {
+    this.mGraphicsData.fillGrd(grd);
+  }
+
   /**
    * Clears the graphics that were drawn and resets fill and line styles.
    *
@@ -271,6 +275,10 @@ class Graphics extends DisplayObject {
   fill(isNonZero = true) {
     this.mGraphicsData.fill(isNonZero);
     this.setTransformDirty();
+  }
+
+  createLinearGradient(x, y, width, height) {
+    return new GraphicsLinearGradient(x, y, width, height);
   }
 }
 

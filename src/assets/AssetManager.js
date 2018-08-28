@@ -288,8 +288,13 @@ class AssetManager extends MessageDispatcher {
       this.mGraphicsData[item.name] = item.data;
 
       const bakedTextures = item.bakeTextures();
-      Object.keys(bakedTextures).forEach(name => name !== item.name && this.__validateName(name));
-      Object.assign(this.mVectorTextures, bakedTextures);
+
+      for (let name in bakedTextures) {
+        if (!bakedTextures.hasOwnProperty(name)) continue;
+
+        name !== item.name && this.__validateName(name);
+        this.mVectorTextures[name] = bakedTextures[name];
+      }
     }
     else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);

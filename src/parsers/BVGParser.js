@@ -50,7 +50,7 @@ class BVGParser extends ParserBase {
   parse(data) {
     super.parse(data);
 
-    return this.__traverse(data, this.__parseStyles(), new GraphicsData(), new BVGStyle());
+    return this.__traverse(data, this.__parseStyles(), this.__parseDefs(), new GraphicsData(), new BVGStyle());
   }
 
   /**
@@ -64,7 +64,7 @@ class BVGParser extends ParserBase {
    *
    * @returns {GraphicsData} Parsed data root.
    */
-  __traverse(node, styles, parent, parentStyle) {
+  __traverse(node, styles, defs, parent, parentStyle) {
     const graphicsData = new GraphicsData();
     let style = parentStyle.clone();
     parent.mNodes.push(graphicsData);
@@ -94,6 +94,7 @@ class BVGParser extends ParserBase {
 
     if (node.cmds) {
       const cmds = node.cmds.split('$').filter(v => v).reverse();
+      const lastRect = new Rectangle();
       let prevName = '';
 
       while (cmds.length > 0) {
@@ -117,15 +118,6 @@ class BVGParser extends ParserBase {
             style.merge(newStyle);
             style.compute();
 
-            if (style.needsFill) {
-              graphicsData.fillStyle(style.fillColor, style.fillAlpha);
-            }
-
-            if (style.needsStroke) {
-              graphicsData.lineStyle(style.lineWidth, style.lineColor,
-                style.lineAlpha, style.lineCap, style.lineJoin, style.miterLimit);
-            }
-
             break;
           case shapeCmds.PATH:
             this.__drawPath(cmd, graphicsData);
@@ -137,6 +129,8 @@ class BVGParser extends ParserBase {
             const height = args[3];
             const rx = (args[4] === undefined ? args[5] : args[4]) || 0;
             const ry = (args[5] === undefined ? args[4] : args[5]) || 0;
+
+            lastRect.set(x, y, width, height);
 
             if (rx !== 0 && ry !== 0) {
               graphicsData.moveTo(x, y + ry);
@@ -201,11 +195,26 @@ class BVGParser extends ParserBase {
             break;
         }
 
-        if (style.needsFill) {
+        if (style.needsFill && name !== 'S') {
+          if (this.__isRef(style.F)) {
+            const gradientInfo = defs[style.F.slice(1)].clone();
+            gradientInfo.x *= lastRect.width;
+            gradientInfo.y *= lastRect.height;
+            gradientInfo.width *= lastRect.width;
+            gradientInfo.height *= lastRect.height;
+console.log(gradientInfo, lastRect)
+            graphicsData.fillGrd(gradientInfo);
+          } else {
+            graphicsData.fillStyle(style.fillColor, style.fillAlpha);
+          }
+
           graphicsData.fill(style.fillRule);
         }
 
         if (style.needsStroke) {
+          graphicsData.lineStyle(style.lineWidth, style.lineColor,
+            style.lineAlpha, style.lineCap, style.lineJoin, style.miterLimit);
+
           graphicsData.setLineDash(style.lineDash);
           graphicsData.stroke();
         }
@@ -214,11 +223,70 @@ class BVGParser extends ParserBase {
 
     if (node.nodes) {
       node.nodes.forEach(c => {
-        this.__traverse(c, styles, graphicsData, style);
+        this.__traverse(c, styles, defs, graphicsData, style);
       });
     }
 
     return graphicsData;
+  }
+
+  __isRef(value) {
+    return value.indexOf('$') === 0;
+  }
+
+  __parseDefs() {
+    const obj = this.data;
+    const res = {};
+
+    for (let id in obj.defs) {
+      const def = obj.defs[id];
+      const cmd = def.charAt(0);
+
+      switch (cmd) {
+        case 'R': // Linear Gradient
+          let x = null, y = null, width = null, height = null;
+          const pairs = def.slice(1).split(' ');
+          const entries = [];
+
+          for (let i = 0, l = pairs.length; i < l; i++) {
+            const pair = pairs[i];
+            const values = pair.split(',');
+
+            if (values.length === 4) {
+              x = parseFloat(values[0]);
+              y = parseFloat(values[1]);
+              width = parseFloat(values[2]);
+              height = parseFloat(values[3]);
+            } else {
+              const color = '#' + values[1];// hex to rgb(x,x,x,x) todo
+              entries.push({percent: values[0], color});
+            }
+          }
+
+          const gradientInfo = new GraphicsLinearGradient(x || 0, y || 0, width || 1, height || 0);
+
+          for (let i = 0, l = entries.length; i < l; i++) {
+            const entry = entries[i];
+            gradientInfo.addColorStop(entry.percent / 100, entry.color);
+          }
+
+          res[id] = gradientInfo;
+      }
+
+      return res;
+    }
+
+    return obj.defs.map(s => {
+      const style = {};
+      const props = s.split(' ');
+
+      props.forEach(p => {
+        const cmd = p[0];
+        style[cmd] = p.slice(1);
+      });
+
+      return style;
+    });
   }
 
   /**

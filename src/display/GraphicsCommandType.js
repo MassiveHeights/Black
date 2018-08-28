@@ -23,4 +23,5 @@ const GraphicsCommandType = {
   BOUNDS            : 'bounds',
 
   LINE_DASH: 'setLineDash',
+  FILL_GRD: 'gradientFillStyle',
 };

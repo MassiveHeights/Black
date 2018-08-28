@@ -114,11 +114,11 @@ class TextMetricsEx {
         currTag = m[2];
 
       if (m[3])
-        parts.push({ tag: currTag, text: m[3], style: styles.find(x => x.name === currTag), lineIndex: lineIx });
+        parts.push({ tag: currTag, text: m[3], style: styles.filter(x => x.name === currTag)[0], lineIndex: lineIx });
     }
 
     let data = new TextMetricsData();
-    let defaultStyle = styles.find(x => x.name === 'def') || TextStyle.default;
+    let defaultStyle = styles.filter(x => x.name === 'def')[0] || TextStyle.default;
     let lineHeightPx = defaultStyle.size * lineHeight;
     let sumBounds = new Rectangle();
     let sumStrokeBounds = new Rectangle();

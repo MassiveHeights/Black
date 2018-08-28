@@ -98,7 +98,10 @@ class TextField extends DisplayObject {
         text = text.replace(/\n/g, '');
 
       let styles = [this.mDefaultStyle];
-      styles.push(...Object.keys(/** @type {!Object} */(this.mStyles)).map(n => this.mStyles[n]));
+
+      for (let key in /** @type {!Object} */(this.mStyles)) {
+        styles.push(this.mStyles[key]);
+      }
 
       this.mMetrics = TextMetricsEx.measure(text, this.mLineHeight, ...styles);
       this.mTextBounds.copyFrom(this.mMetrics.bounds);

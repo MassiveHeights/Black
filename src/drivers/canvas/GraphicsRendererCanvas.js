@@ -90,6 +90,32 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
 
+        case GraphicsCommandType.FILL_GRD: {
+          const gradientInfo = cmd.getNumber(0); // getObject todo
+          let grd = gradientInfo.native;
+
+          if (!grd) {
+            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x, gradientInfo.y, gradientInfo.width, gradientInfo.height);
+
+            const entries = [];
+
+            for (let key in gradientInfo.stops) {
+              entries.push({percent: parseFloat(key), color: gradientInfo.stops[key]});
+            }
+
+            entries.sort((a, b) => a.percent - b.percent);
+
+            for (let i = 0, l = entries.length; i < l; i++) {
+              const entry = entries[i];
+              grd.addColorStop(entry.percent, entry.color);
+            }
+          }
+
+          ctx.fillStyle = grd;
+
+          break;
+        }
+
         case GraphicsCommandType.ARC: {
           ctx.arc(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
           break;
