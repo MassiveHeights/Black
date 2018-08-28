@@ -22,6 +22,7 @@ const GraphicsCommandType = {
   STROKE            : 'stroke',
   BOUNDS            : 'bounds',
 
-  LINE_DASH: 'setLineDash',
-  FILL_GRD: 'gradientFillStyle',
+  LINE_DASH   : 'setLineDash',
+  FILL_GRD    : 'gradientFillStyle',
+  FILL_PATTERN: 'patternFillStyle',
 };

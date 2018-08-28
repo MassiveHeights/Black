@@ -89,6 +89,7 @@
     "src/display/GraphicsData.js",
     "src/display/Graphics.js",
     "src/display/GraphicsLinearGradient.js",
+    "src/display/GraphicsPattern.js",
     "src/display/GraphicsCommand.js",
     "src/display/GraphicsCommandType.js",
     "src/display/CapsStyle.js",

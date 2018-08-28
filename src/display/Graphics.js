@@ -116,6 +116,10 @@ class Graphics extends DisplayObject {
     this.mGraphicsData.fillGrd(grd);
   }
 
+  fillPattern(pattern) {
+    this.mGraphicsData.fillPattern(pattern);
+  }
+
   /**
    * Clears the graphics that were drawn and resets fill and line styles.
    *

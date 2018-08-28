@@ -116,6 +116,19 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
 
+        case GraphicsCommandType.FILL_PATTERN: {
+          const patternInfo = cmd.getNumber(0); // getObject todo
+          let pattern = patternInfo.native;
+
+          if (!pattern) {
+            pattern = patternInfo.native = ctx.createPattern(patternInfo.image, patternInfo.repetition);
+          }
+
+          ctx.fillStyle = pattern;
+
+          break;
+        }
+
         case GraphicsCommandType.ARC: {
           ctx.arc(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3), cmd.getNumber(4), cmd.getBoolean(5));
           break;

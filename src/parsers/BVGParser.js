@@ -50,7 +50,12 @@ class BVGParser extends ParserBase {
   parse(data) {
     super.parse(data);
 
-    return this.__traverse(data, this.__parseStyles(), this.__parseDefs(), new GraphicsData(), new BVGStyle());
+    const styles = this.__parseStyles(data.styles);
+
+    this._defs = {};
+    this.__parseDefs(data.defs, this._defs);
+
+    return this.__traverse(data, styles, new GraphicsData(), new BVGStyle());
   }
 
   /**
@@ -59,13 +64,13 @@ class BVGParser extends ParserBase {
    * @private
    * @param {Object} node BVG node.
    * @param {Array<BVGStyle>} styles Parsed BVG styles.
-   * @param {Object} defs Parsed svg definitions.
    * @param {GraphicsData} parent Parent node.
    * @param {BVGStyle} parentStyle Style for inheritance.
    *
    * @returns {GraphicsData} Parsed data root.
    */
-  __traverse(node, styles, defs, parent, parentStyle) {
+  __traverse(node, styles, parent, parentStyle) {
+    const defs = this._defs;
     const graphicsData = new GraphicsData();
     let style = parentStyle.clone();
     parent.mNodes.push(graphicsData);
@@ -150,6 +155,8 @@ class BVGParser extends ParserBase {
             break;
           }
           case shapeCmds.CIRCLE:
+            const d = args[2] * 2;
+            lastRect.set(0, 0, d, d);
             graphicsData.circle(args[0], args[1], args[2]);
             break;
           case shapeCmds.ELLIPSE:
@@ -198,13 +205,23 @@ class BVGParser extends ParserBase {
 
         if (style.needsFill && name !== 'S') {
           if (this.__isRef(style.F)) {
-            const gradientInfo = defs[style.F.slice(1)].clone();
-            gradientInfo.x *= lastRect.width;
-            gradientInfo.y *= lastRect.height;
-            gradientInfo.width *= lastRect.width;
-            gradientInfo.height *= lastRect.height;
+            const def = defs[style.F.slice(1)].clone();
 
-            graphicsData.fillGrd(gradientInfo);
+            if (def instanceof GraphicsPattern) {
+              graphicsData.fillPattern(def);
+            } else if (def instanceof GraphicsLinearGradient) {
+              def.x0 *= lastRect.width; // todo other units (Now for percents only)
+              def.x1 *= lastRect.width;
+              def.y0 *= lastRect.height;
+              def.y1 *= lastRect.height;
+
+              for (let key in def.stops) {
+                def.stops[key] = ColorHelper.intToRGBA(parseInt(def.stops[key].slice(1), 16), style.fillAlpha);
+              }
+
+              graphicsData.fillGrd(def);
+            }
+
           } else {
             graphicsData.fillStyle(style.fillColor, style.fillAlpha);
           }
@@ -224,7 +241,7 @@ class BVGParser extends ParserBase {
 
     if (node.nodes) {
       node.nodes.forEach(c => {
-        this.__traverse(c, styles, defs, graphicsData, style);
+        this.__traverse(c, styles, graphicsData, style);
       });
     }
 
@@ -235,44 +252,48 @@ class BVGParser extends ParserBase {
     return value.indexOf('$') === 0;
   }
 
-  __parseDefs() {
-    const obj = this.data;
-    const res = {};
-
-    for (let id in obj.defs) {
-      const def = obj.defs[id];
-      const cmd = def.charAt(0);
-
-      switch (cmd) {
-        case 'R': // Linear Gradient
-          const pairs = def.slice(1).split(' ');
-          const v = pairs[0].split(',').map(v => parseFloat(v));
-          const gradientInfo = new GraphicsLinearGradient(v[0], v[1], v[2], v[3]);
-          res[id] = gradientInfo;
-
-          for (let i = 1, l = pairs.length; i < l; i++) {
-            const pair = pairs[i];
-            const values = pair.split(',');
-            const color = '#' + values[1];// hex to rgb(x,x,x,x) todo
-
-            gradientInfo.addColorStop(parseFloat(values[0]), color);
-          }
-      }
-
+  __parseDefs(defs, res) {
+    if (!defs) {
       return res;
     }
 
-    return obj.defs.map(s => {
-      const style = {};
-      const props = s.split(' ');
+    for (let id in defs) {
+      if (!defs.hasOwnProperty(id)) continue;
 
-      props.forEach(p => {
-        const cmd = p[0];
-        style[cmd] = p.slice(1);
-      });
+      const def = defs[id];
 
-      return style;
-    });
+      if (typeof def === 'string') {
+        const cmd = def.charAt(0);
+
+        switch (cmd) {
+          case 'R': // Linear Gradient
+            const pairs = def.slice(1).split(' ');
+            const v = pairs[0].split(',').map(v => parseFloat(v));
+            const gradientInfo = new GraphicsLinearGradient(v[0], v[1], v[2], v[3]);
+            res[id] = gradientInfo;
+
+            for (let i = 1, l = pairs.length; i < l; i++) {
+              const pair = pairs[i];
+              const values = pair.split(',');
+              const color = '#' + values[1]; // hex to rgb a! todo
+
+              gradientInfo.addColorStop(parseFloat(values[0]), color);
+            }
+        }
+      } else {
+
+        // Pattern
+        const styles = this.__parseStyles(def.s);
+        const gData = this.__traverse(def, styles, new GraphicsData(), new BVGStyle());
+        const graphics = new Graphics(gData);
+        const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+        Black.driver.render(graphics, renderTexture, new Matrix());
+
+        res[id] = new GraphicsPattern(renderTexture.native, def.r);
+      }
+    }
+
+    return res;
   }
 
   /**
@@ -282,13 +303,11 @@ class BVGParser extends ParserBase {
    *
    * @returns {Array<BVGStyle>|undefined} Parsed data styles.
    */
-  __parseStyles() {
-    const obj = this.data;
-
-    if (!obj.styles)
+  __parseStyles(styles) {
+    if (!styles)
       return;
 
-    return obj.styles.map(s => {
+    return styles.map(s => {
       const style = {};
       const props = s.split(' ');
 
