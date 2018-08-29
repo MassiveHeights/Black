@@ -204,7 +204,7 @@ class SpriteRendererCanvas extends Renderer {
         this.patternTexture = texture;
       }
 
-      ctx.fillStyle = this.pattern;
+      ctx.fillStyle = /** @type {CanvasPattern} */(this.pattern);
 
       let dpr = driver.mDPR;
 

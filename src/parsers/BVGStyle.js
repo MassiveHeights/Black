@@ -109,22 +109,22 @@ class BVGStyle {
     /** @public @type {number} */
     this.lineWidth = 1;
 
-    /** @public @type {string} */
+    /** @public @type {CapsStyle} */
     this.lineCap = CapsStyle.NONE;
 
-    /** @public @type {string} */
+    /** @public @type {JointStyle} */
     this.lineJoin = JointStyle.MITER;
 
     /** @public @type {number} */
     this.miterLimit = this.m;
 
-    /** @public @type {string} */
+    /** @public @type {FillRule} */
     this.fillRule = FillRule.NONE_ZERO;
 
     /**
      * Line dash segments length, unit.
      *
-     * @public @type {Array<numbers>} */
+     * @public @type {Array<number>} */
     this.lineDash = [];
   }
 

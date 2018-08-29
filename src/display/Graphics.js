@@ -112,10 +112,26 @@ class Graphics extends DisplayObject {
     this.mGraphicsData.fillStyle(color, alpha);
   }
 
-  fillGradient(grd) {
-    this.mGraphicsData.fillGradient(grd);
+  /**
+   * Sets fill style to gradient.
+   *
+   * @public
+   * @param {GraphicsGradient} gradient Fill gradient.
+   *
+   * @returns {void}
+   */
+  fillGradient(gradient) {
+    this.mGraphicsData.fillGradient(gradient);
   }
 
+  /**
+   * Sets fill style to pattern.
+   *
+   * @public
+   * @param {GraphicsPattern} pattern Fill pattern.
+   *
+   * @returns {void}
+   */
   fillPattern(pattern) {
     this.mGraphicsData.fillPattern(pattern);
   }

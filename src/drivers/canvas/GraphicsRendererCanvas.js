@@ -32,7 +32,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @param {VideoNullDriver} driver Driver to draw.
    * @param {number|null=} [color=null] Tint.
    *
-   * @returns {BVGStyle} Created style.
+   * @return {void}
    */
   __drawCommandBuffer(driver, color = null) {
     const gameObject = /** @type {Graphics} */ (this.gameObject);
@@ -55,11 +55,11 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    *
    * @private
    * @param {VideoNullDriver} driver Driver to draw.
-   * @param {number} color Tint.
+   * @param {number|null} color Tint.
    * @param {GraphicsData} node Commands provider.
    * @param {Matrix} transform Graphics Data global transformation.
    *
-   * @returns {BVGStyle} Created style.
+   * @return {void}
    */
   __renderNode(driver, color, node, transform) {
     const commands = node.mCommandQueue;
@@ -78,7 +78,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
           ctx.lineWidth = cmd.getNumber(0) * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : color, cmd.getNumber(2));
+          ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : /** @type {number} */(color), cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
           ctx.miterLimit = cmd.getNumber(5);
@@ -86,12 +86,12 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : color, cmd.getNumber(1));
+          ctx.fillStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : /** @type {number} */(color), cmd.getNumber(1));
           break;
         }
 
         case GraphicsCommandType.FILL_GRD: {
-          const gradientInfo = cmd.getNumber(0); // getObject todo
+          const gradientInfo = /** @type {GraphicsLinearGradient} */(cmd.getObject(0));
           let grd = gradientInfo.native;
 
           if (!grd) {
@@ -111,20 +111,20 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
             }
           }
 
-          ctx.fillStyle = grd;
+          ctx.fillStyle = /** @type {CanvasGradient} */(grd);
 
           break;
         }
 
         case GraphicsCommandType.FILL_PATTERN: {
-          const patternInfo = cmd.getNumber(0); // getObject todo
+          const patternInfo = /** @type {GraphicsPattern} */(cmd.getObject(0));
           let pattern = patternInfo.native;
 
           if (!pattern) {
             pattern = patternInfo.native = ctx.createPattern(patternInfo.image, patternInfo.repetition);
           }
 
-          ctx.fillStyle = pattern;
+          ctx.fillStyle = /** @type {CanvasPattern} */(pattern);
 
           break;
         }

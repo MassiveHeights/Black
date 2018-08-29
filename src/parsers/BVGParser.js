@@ -41,6 +41,15 @@ const shapeCmds = {
 
 /* @echo EXPORT */
 class BVGParser extends ParserBase {
+  /**
+   * Creates new instance of BVGParser
+   */
+  constructor() {
+    super();
+
+    /** @type {Object} */
+    this._defs = {};
+  }
 
   /**
    * @inheritDoc
@@ -190,7 +199,7 @@ class BVGParser extends ParserBase {
             break;
           case shapeCmds.POLYLINE:
           case shapeCmds.POLYGON:
-            const points = cmd.slice(1).split(',');
+            const points = cmd.slice(1).split(',').map(v => Number(v));
             graphicsData.moveTo(points[0], points[1]);
 
             for (let i = 2, l = points.length; i < l; i += 2) {
@@ -226,7 +235,7 @@ class BVGParser extends ParserBase {
             graphicsData.fillStyle(style.fillColor, style.fillAlpha);
           }
 
-          graphicsData.fill(style.fillRule);
+          graphicsData.fill(style.fillRule === FillRule.NONE_ZERO);
         }
 
         if (style.needsStroke) {
@@ -248,10 +257,27 @@ class BVGParser extends ParserBase {
     return graphicsData;
   }
 
+  /**
+   * Determines whether color string is url to defs or simple color.
+   *
+   * @private
+   * @param {string} value Color or url.
+   *
+   * @return {boolean}
+   */
   __isRef(value) {
     return value.indexOf('$') === 0;
   }
 
+  /**
+   * Parses raw defs to this defs object.
+   *
+   * @private
+   * @param {Object} defs Raw defs.
+   * @param {Object} res  Reference to this defs.
+   *
+   * @returns {Object} res Parsed data.
+   */
   __parseDefs(defs, res) {
     if (!defs) {
       return res;
@@ -301,11 +327,11 @@ class BVGParser extends ParserBase {
    *
    * @private
    *
-   * @returns {Array<BVGStyle>|undefined} Parsed data styles.
+   * @returns {Array<BVGStyle>} Parsed data styles.
    */
   __parseStyles(styles) {
     if (!styles)
-      return;
+      return [];
 
     return styles.map(s => {
       const style = {};
@@ -327,7 +353,7 @@ class BVGParser extends ParserBase {
    * @params {string} data Path data attribute value
    * @params {GraphicsData} graphicsData Graphics data to store parsed values to.
    *
-   * @returns {Array<BVGStyle>} Parsed data styles.
+   * @return {void}
    */
   __drawPath(data, graphicsData) {
     const values = [];

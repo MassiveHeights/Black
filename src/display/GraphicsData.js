@@ -8,6 +8,9 @@
 
 /* @echo EXPORT */
 class GraphicsData {
+  /**
+   * Creates new instance of GraphicsData
+   */
   constructor() {
 
     /** @private @type {Array<GraphicsData>} */
@@ -158,10 +161,28 @@ class GraphicsData {
     this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
   }
 
-  fillGradient(grd) {
-    this.__pushCommand(GraphicsCommandType.FILL_GRD, grd);
+  /**
+   * Sets fill style to gradient.
+   *
+   * @public
+   * @param {GraphicsGradient} gradient Fill gradient.
+   *
+   * @returns {void}
+   */
+  fillGradient(gradient) {
+    if (gradient instanceof GraphicsLinearGradient) {
+      this.__pushCommand(GraphicsCommandType.FILL_GRD, /** @type {GraphicsLinearGradient} */(gradient));
+    } // radial todo
   }
 
+  /**
+   * Sets fill style to pattern.
+   *
+   * @public
+   * @param {GraphicsPattern} pattern Fill pattern.
+   *
+   * @returns {void}
+   */
   fillPattern(pattern) {
     this.__pushCommand(GraphicsCommandType.FILL_PATTERN, pattern);
   }

@@ -287,7 +287,7 @@ class AssetManager extends MessageDispatcher {
     else if (item.constructor === BVGAsset) {
       this.mGraphicsData[item.name] = item.data;
 
-      const bakedTextures = item.bakeTextures();
+      const bakedTextures = /** @type {BVGAsset} */ (item).bakeTextures();
 
       for (let name in bakedTextures) {
         if (!bakedTextures.hasOwnProperty(name)) continue;
