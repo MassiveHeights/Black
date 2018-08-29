@@ -452,13 +452,11 @@ class BVGParser extends ParserBase {
         }
         case pathCmds.SQCURVE:
         case pathCmds.SQCURVE_REL: {
-          const cpx = values.pop();
-          const cpy = values.pop();
           x = values.pop() + relX;
           y = values.pop() + relY;
-          graphicsData.quadraticCurveTo(cpx, cpy, x, y);
-          qcx = x * 2 - cpx;
-          qcy = y * 2 - cpy;
+          graphicsData.quadraticCurveTo(qcx, qcy, x, y);
+          qcx = x * 2 - qcx;
+          qcy = y * 2 - qcy;
           break;
         }
         case pathCmds.ARC:
