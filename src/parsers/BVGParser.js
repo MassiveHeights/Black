@@ -219,7 +219,7 @@ class BVGParser extends ParserBase {
                 def.stops[key] = ColorHelper.intToRGBA(parseInt(def.stops[key].slice(1), 16), style.fillAlpha);
               }
 
-              graphicsData.fillGrd(def);
+              graphicsData.fillGradient(def);
             }
 
           } else {

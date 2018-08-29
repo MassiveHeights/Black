@@ -158,7 +158,7 @@ class GraphicsData {
     this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
   }
 
-  fillGrd(grd) {
+  fillGradient(grd) {
     this.__pushCommand(GraphicsCommandType.FILL_GRD, grd);
   }
 

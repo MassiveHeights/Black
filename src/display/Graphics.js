@@ -112,8 +112,8 @@ class Graphics extends DisplayObject {
     this.mGraphicsData.fillStyle(color, alpha);
   }
 
-  fillGrd(grd) {
-    this.mGraphicsData.fillGrd(grd);
+  fillGradient(grd) {
+    this.mGraphicsData.fillGradient(grd);
   }
 
   fillPattern(pattern) {
