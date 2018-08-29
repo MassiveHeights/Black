@@ -1,0 +1,29 @@
+/**
+ * Path state holder for graphics.
+ *
+ * @ignore
+ * @cat display
+ */
+
+/* @echo EXPORT */
+class GraphicsPath {
+  /**
+   * Creates new instance of GraphicsPath
+   */
+  constructor() {
+    /** @type {Rectangle|null} */
+    this.bounds = null;
+
+    /** @type {Array<number>} */
+    this.points = [];
+
+    /** @type {number} */
+    this.maxLineWidth = 0;
+
+    /** @type {number} */
+    this.lastLineWidth = 0;
+
+    /** @type {number} */
+    this.lineMul = 0.5;
+  }
+}
