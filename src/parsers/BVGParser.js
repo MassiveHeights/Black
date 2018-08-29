@@ -219,10 +219,14 @@ class BVGParser extends ParserBase {
             if (def instanceof GraphicsPattern) {
               graphicsData.fillPattern(def);
             } else if (def instanceof GraphicsLinearGradient) {
-              def.x0 *= lastRect.width; // todo other units (Now for percents only)
-              def.x1 *= lastRect.width;
-              def.y0 *= lastRect.height;
-              def.y1 *= lastRect.height;
+              if (def.isAbsolute) {
+                //
+              } else {
+                def.x0 *= lastRect.width; // todo other units (Now for percents only)
+                def.x1 *= lastRect.width;
+                def.y0 *= lastRect.height;
+                def.y1 *= lastRect.height;
+              }
 
               for (let key in def.stops) {
                 def.stops[key] = ColorHelper.intToRGBA(parseInt(def.stops[key].slice(1), 16), style.fillAlpha);
@@ -296,12 +300,13 @@ class BVGParser extends ParserBase {
             const pairs = def.slice(1).split(' ');
             const v = pairs[0].split(',').map(v => parseFloat(v));
             const gradientInfo = new GraphicsLinearGradient(v[0], v[1], v[2], v[3]);
+            gradientInfo.isAbsolute = v[4] === 0;
             res[id] = gradientInfo;
 
             for (let i = 1, l = pairs.length; i < l; i++) {
               const pair = pairs[i];
               const values = pair.split(',');
-              const color = '#' + values[1]; // hex to rgb a! todo
+              const color = '#' + values[1];
 
               gradientInfo.addColorStop(parseFloat(values[0]), color);
             }

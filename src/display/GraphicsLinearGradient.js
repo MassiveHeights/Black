@@ -29,6 +29,9 @@ class GraphicsLinearGradient extends GraphicsGradient {
 
     /** @type {number} */
     this.y1 = y1;
+
+    /** @type {boolean} */
+    this.isAbsolute = false;
   }
 
   /**
@@ -46,6 +49,7 @@ class GraphicsLinearGradient extends GraphicsGradient {
    */
   clone() {
     const g = new GraphicsLinearGradient(this.x0, this.y0, this.x1, this.y1);
+    g.isAbsolute = this.isAbsolute;
 
     for (let key in this.stops) {
       g.stops[key] = this.stops[key];

@@ -34,6 +34,9 @@ class Graphics extends DisplayObject {
     /** @private @type {number} */
     this.mDataOffsetY = 0;
 
+    /** @private @type {boolean} */
+    this.mTrim = trim;
+
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
     } else if (typeof graphicsData === 'string') {
@@ -76,10 +79,12 @@ class Graphics extends DisplayObject {
     this.mLocalBounds && outRect.copyFrom(this.mLocalBounds);
     this.mLocalBounds = null;
 
-    outRect.width += Math.max(0, outRect.x);
-    outRect.height += Math.max(0, outRect.y);
-    outRect.x = Math.min(0, outRect.x);
-    outRect.y = Math.min(0, outRect.y);
+    if (!this.mTrim) {
+      outRect.width += Math.max(0, outRect.x);
+      outRect.height += Math.max(0, outRect.y);
+      outRect.x = Math.min(0, outRect.x);
+      outRect.y = Math.min(0, outRect.y);
+    }
 
     return outRect;
   }
