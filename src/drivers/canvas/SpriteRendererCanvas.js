@@ -198,7 +198,10 @@ class SpriteRendererCanvas extends Renderer {
         const renderCanvas = new RenderTargetCanvas(texture.width, texture.height);
         const r = texture.region;
         const u = texture.untrimmedRegion;
-        renderCanvas.context.drawImage(texture.native, r.x, r.y, r.width, r.height, u.x, u.y, r.width, r.height);
+        const dpr = 1 / driver.mDPR;
+
+        renderCanvas.context.drawImage(texture.native, r.x, r.y, r.width, r.height,
+          u.x * dpr, u.y * dpr, r.width * dpr, r.height * dpr);
 
         this.pattern = ctx.createPattern(renderCanvas.native, 'repeat');
         this.patternTexture = texture;
