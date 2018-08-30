@@ -95,9 +95,11 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           let grd = gradientInfo.native;
 
           if (!grd) {
-            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x0, gradientInfo.y0, gradientInfo.x1, gradientInfo.y1);
-
+            const dpr = Black.driver.renderScaleFactor;
             const entries = [];
+
+            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x0 * dpr, gradientInfo.y0 * dpr,
+              gradientInfo.x1 * dpr, gradientInfo.y1 * dpr);
 
             for (let key in gradientInfo.stops) {
               entries.push({percent: parseFloat(key), color: gradientInfo.stops[key]});
