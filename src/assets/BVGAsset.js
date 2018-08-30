@@ -92,9 +92,10 @@ class BVGAsset extends Asset {
       }
 
       const graphics = new Graphics(node, name !== this.mGraphicsData.name);
-      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+      const dpr = 1 / Black.driver.renderScaleFactor;
+      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, 1);
 
-      Black.driver.render(graphics, renderTexture, new Matrix());
+      Black.driver.render(graphics, renderTexture, new Matrix().scale(dpr, dpr));
 
       textures[name] = renderTexture;
     }
