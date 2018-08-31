@@ -85,12 +85,7 @@ class TextField extends DisplayObject {
    * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
-    outRect = outRect || new Rectangle();
-
-    if (this.mClipRect !== null) {
-      this.mClipRect.copyTo(outRect);
-      return outRect;
-    }
+    outRect = outRect || new Rectangle();   
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
@@ -105,6 +100,11 @@ class TextField extends DisplayObject {
 
       this.mMetrics = TextMetricsEx.measure(text, this.mLineHeight, ...styles);
       this.mTextBounds.copyFrom(this.mMetrics.bounds);
+    }
+
+    if (this.mClipRect !== null) {
+      this.mClipRect.copyTo(outRect);
+      return outRect;
     }
 
     if (this.mAutoSize === false) {

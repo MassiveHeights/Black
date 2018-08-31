@@ -41,6 +41,8 @@ class TextRenderer extends Renderer {
 
   /** @inheritDoc */
   preRender(driver, session) {
+    this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
+    
     this.skipChildren = !(this.gameObject.mAlpha > 0 && this.gameObject.mVisible === true);
     this.skipSelf = this.skipChildren === true;
   }
@@ -64,8 +66,11 @@ class TextRenderer extends Renderer {
     driver.setGlobalAlpha(this.alpha);
     driver.setGlobalBlendMode(this.blendMode);
 
-    if (this.endPassRequired === true)
+    if (this.endPassRequired === true){
       driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
+      console.log('clip');
+      
+    }
   }
 
   /**
