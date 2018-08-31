@@ -428,7 +428,11 @@ class AssetManager extends MessageDispatcher {
     // collect single textures
     for (let key in this.mTextures)
       if (re.test(key))
-        names.push({name: key, atlas: null});
+        names.push({ name: key, atlas: null, isBakedVector: false });
+
+    for (let key in this.mVectorTextures)
+      if (re.test(key))
+        names.push({ name: key, atlas: null, isBakedVector: true });
 
     // collect textures from all atlases
     for (let key in this.mAtlases) {
@@ -436,7 +440,7 @@ class AssetManager extends MessageDispatcher {
 
       for (let key2 in atlas.subTextures)
         if (re.test(key2))
-          names.push({name: key2, atlas: atlas});
+          names.push({ name: key2, atlas: atlas, isBakedVector: false });
     }
 
     AtlasTexture.naturalSort(names, 'name');
@@ -444,8 +448,12 @@ class AssetManager extends MessageDispatcher {
     for (let i = 0; i < names.length; i++) {
       let ao = names[i];
 
-      if (ao.atlas == null)
-        out.push(this.mTextures[ao.name]);
+      if (ao.atlas === null) {
+        if (ao.isBakedVector === true)
+          out.push(this.mVectorTextures[ao.name]);
+        else
+          out.push(this.mTextures[ao.name]);
+      }
       else
         out.push(ao.atlas.mSubTextures[ao.name]);
     }
