@@ -341,6 +341,25 @@ class GraphicsData {
   }
 
   /**
+   * Creates closed rounded rectangle.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   *
+   * @returns {void}
+   */
+  roundedRect(x, y, width, height, radius) {
+    Debug.isNumber(x, y, width, height, radius);
+
+    this.__pushCommand(GraphicsCommandType.ROUNDED_RECT, x, y, width, height, radius);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
+  }
+
+  /**
    * @public
    * @param {number} cp1x
    * @param {number} cp1y

@@ -140,6 +140,26 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.rect(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
           break;
         }
+
+        case GraphicsCommandType.ROUNDED_RECT: {
+          const x = cmd.getNumber(0);
+          const y = cmd.getNumber(1);
+          const width = cmd.getNumber(2);
+          const height = cmd.getNumber(3);
+          const radius = cmd.getNumber(4);
+
+          ctx.moveTo(x * r - px, (y + radius) * r - py);
+          ctx.quadraticCurveTo(x * r - px, y * r - py, (x + radius) * r - px, y * r - py);
+          ctx.lineTo((x + width - radius) * r - px, y * r - py);
+          ctx.quadraticCurveTo((x + width) * r - px, y * r - py, (x + width) * r - px, (y + radius) * r - py);
+          ctx.lineTo((x + width) * r - px, (y + height - radius) * r - py);
+          ctx.quadraticCurveTo((x + width) * r - px, y + height, (x + width - radius) * r - px, (y + height) * r - py);
+          ctx.lineTo((x + radius) * r - px, (y + height) * r - py);
+          ctx.quadraticCurveTo(x * r - px, (y + height) * r - py, x * r - px, (y + height - radius) * r - py);
+          ctx.closePath();
+          break;
+        }
+
         case GraphicsCommandType.BEZIER_CURVE_TO: {
           ctx.bezierCurveTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r - px, cmd.getNumber(3) * r - py, cmd.getNumber(4) * r - px, cmd.getNumber(5) * r - py);
           break;

@@ -222,6 +222,22 @@ class Graphics extends DisplayObject {
   }
 
   /**
+   * Creates closed rounded rectangle.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   *
+   * @returns {void}
+   */
+  roundedRect(x, y, width, height, radius) {
+    this.mGraphicsData.roundedRect(x, y, width, height, radius);
+  }
+
+  /**
    * @public
    * @param {number} cp1x
    * @param {number} cp1y

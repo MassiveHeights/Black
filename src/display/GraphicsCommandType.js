@@ -12,6 +12,7 @@ const GraphicsCommandType = {
 
   ARC               : 'arc',
   RECT              : 'rect',
+  ROUNDED_RECT      : 'roundedRect',
   BEZIER_CURVE_TO   : 'bezierCurveTo',
   QUADRATIC_CURVE_TO: 'quadraticCurveTo',
   BEGIN_PATH        : 'beginPath',
