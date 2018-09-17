@@ -381,6 +381,7 @@ class Arcade extends System {
 
     pair.mChanged = true;
     pair.set(a, b, bodyA, bodyB);
+    pair.mInCollision = false;
     this.mPairs.push(pair);
 
     this.mPairsHash[Pair.__id(a, b)] = pair;
