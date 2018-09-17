@@ -145,8 +145,8 @@ class TextMetricsEx {
 
       currentY = (lineHeightPx * part.lineIndex) + defaultBaseline - baseline;
 
-      bounds.x = currentX;
-      bounds.y = currentY;
+      bounds.x = currentX + 2;
+      bounds.y = currentY + 2;
 
       currentX += bounds.width;
 
@@ -222,7 +222,7 @@ class TextMetricsEx {
     let fontMetrics = FontMetrics.get(style.family);
     span.innerHTML = text.replace(/ /g, '&nbsp');
 
-    outBounds.set(0, (fontMetrics.baselineNormalized * style.size), span.offsetWidth, fontMetrics.bottomNormalized * style.size);
+    outBounds.set(0, fontMetrics.baselineNormalized * style.size, span.offsetWidth + 2, fontMetrics.bottomNormalized * style.size + 2);
     return outBounds;
   }
 

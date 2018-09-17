@@ -23,7 +23,7 @@ class FontMetrics {
       FontMetrics.__CANVAS.height = 200;
     }
 
-    style.size = 100;
+    style.size = 24;
 
     /** @private */
     this.mCanvas = FontMetrics.__CANVAS;
@@ -58,7 +58,7 @@ class FontMetrics {
     const height = bottom - top;
 
     /**
-     * The line upon which most letters "sit" and below which descendent extend.
+     * The line upon which most letters "sit" and below which descender extend.
      * @public
      * @type {number}
      */
