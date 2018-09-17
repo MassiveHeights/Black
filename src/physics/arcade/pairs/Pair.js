@@ -3,26 +3,27 @@
  *
  * @cat physics.arcade.pairs
  */
+
 /* @echo EXPORT */
 class Pair {
   /**
    * Creates new instance of Pair.
    */
   constructor() {
-    /** 
+    /**
      * Collider from body a.
      * @public @type {Collider|null}
      */
     this.a = null;
 
-    /** 
-     * Collider from body b. 
+    /**
+     * Collider from body b.
      * @public @type {Collider|null}
      */
     this.b = null;
 
-    /** 
-     * Parent of collider a. 
+    /**
+     * Parent of collider a.
      * @public @type {RigidBody|null}
      */
     this.bodyA = null;
@@ -45,62 +46,62 @@ class Pair {
      */
     this.mIsStatic = false;
 
-    /** 
+    /**
      * Cached normal impulse to apply in next iteration or frame if collision still exist.
      * @private @type {number}
      */
     this.mNormalImpulse = 0;
 
     /**
-     * Cached tangent impulse to apply in next iteration or frame if collision still exist. 
+     * Cached tangent impulse to apply in next iteration or frame if collision still exist.
      * @private @type {number}
      */
     this.mTangentImpulse = 0;
 
     /**
-     * Position impulse cache to use within iterations. 
+     * Position impulse cache to use within iterations.
      * @private @type {number}
      */
     this.mPositionImpulse = 0;
 
     /**
-     * This colliders cached friction. 
+     * This colliders cached friction.
      * @private @type {number}
      */
     this.mFriction = 0;
 
-    /** 
-     * This colliders cached bounce factor. 
+    /**
+     * This colliders cached bounce factor.
      * @private @type {number}
      */
     this.mBias = 0;
 
     /**
-     * This colliders cached inverse mass sum. 
+     * This colliders cached inverse mass sum.
      * @private @type {number}
      */
     this.mMass = 0;
 
     /**
-     * Offset within the colliders on preSolve to correct overlap on each iteration. 
+     * Offset within the colliders on preSolve to correct overlap on each iteration.
      * @private @type {Vector}
      */
     this.mOffset = new Vector();
 
     /**
-     * Normal collision direction from a to b. 
+     * Normal collision direction from a to b.
      * @private @type {Vector}
      */
     this.mNormal = new Vector();
 
-    /** 
-     * Positive number. Penetration within colliders. 
+    /**
+     * Positive number. Penetration within colliders.
      * @private @type {number}
      */
     this.mOverlap = 0;
 
     /**
-     * Flag to indicate this pair needs refresh. 
+     * Flag to indicate this pair needs refresh.
      * @private @type {boolean}
      */
     this.mChanged = false;
@@ -153,7 +154,8 @@ class Pair {
     const relVelY = velocityB.y - velocityA.y;
     const relVel = relVelX * normalX + relVelY * normalY;
 
-    this.mBias = relVel < -Pair.bounceTrashhold ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
+    const bounceThreshold = Pair.bounceTreshhold * Pair.unitsPerMeter * Black.stage.mScaleX;
+    this.mBias = relVel < -bounceThreshold ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
     this.mMass = 1 / (invMassA + invMassB);
     this.mFriction = Math.min(this.bodyA.friction, this.bodyB.friction);
     this.mPositionImpulse = 0;
@@ -270,20 +272,38 @@ class Pair {
   }
 }
 
-/** @ignore @type {number} */
-Pair.timeToSleep = 5; // 30 updates to start sleep if velocities is lower threshold
+/**
+ * Updates to start sleep if velocities is lower, than sleep threshold.
+ *
+ * @ignore @type {number} */
+Pair.timeToSleep = 5; //
 
-/** @ignore @type {number} */
-Pair.slop = 0.5;
+/**
+ * How many pixels colliders can overlap each other without resolve.
+ *
+ * @ignore @type {number} */
+Pair.slop = 1;
 
-/** @ignore @type {number} */
+/**
+ * Position correction koefficient. Lower is softer and with less twitches.
+ *
+ * @ignore @type {number} */
 Pair.baumgarte = 0.2;
 
-/** @ignore @type {number} */
+/**
+ * Scale koefficient to normalize physics in some local coordinates or different resolutions.
+ *
+ * @ignore @type {number} */
 Pair.unitsPerMeter = 1;
 
-/** @ignore @type {number} */
-Pair.sleepThreshold = 0.1 * Pair.unitsPerMeter;
+/**
+ * Maximum body speed to begin sleep process, if sleeping is enabled.
+ *
+ * @ignore @type {number} */
+Pair.sleepThreshold = 0.1;
 
-/** @ignore @type {number} */
-Pair.bounceTrashhold = Pair.unitsPerMeter;
+/**
+ * Minimal relative velocity within two bodies, required for bounce effect.
+ *
+ * @ignore @type {number} */
+Pair.bounceTreshhold = 1;

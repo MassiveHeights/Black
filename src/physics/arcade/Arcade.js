@@ -14,13 +14,13 @@ class Arcade extends System {
     super();
 
     /**
-     * Bodies that are on stage. 
+     * Bodies that are on stage.
      * @private @type {Array<RigidBody>}
      */
     this.mBodies = [];
 
     /**
-     * Pairs to check collisions within. With colliders which bodies are on stage. 
+     * Pairs to check collisions within. With colliders which bodies are on stage.
      * @private @type {Array<Pair>}
      */
     this.mPairs = [];
@@ -32,7 +32,7 @@ class Arcade extends System {
     this.mContacts = [];
 
     /**
-     * Broad collision test instance. 
+     * Broad collision test instance.
      * @private @type {BroadPhase}
      */
     this.mBroadPhase = new BroadPhase();
@@ -44,7 +44,7 @@ class Arcade extends System {
     this.mPairsHash = Object.create(null);
 
     /**
-     * Reference to world bounds body. 
+     * Reference to world bounds body.
      * @private @type {RigidBody|null}
      */
     this.mBoundsBody = null;
@@ -71,13 +71,13 @@ class Arcade extends System {
     this.mIterations = 5;
 
     /**
-     * Switch for sleep calculations. 
+     * Switch for sleep calculations.
      * @private @type {boolean}
      */
     this.mSleepEnabled = true;
 
     /**
-     * Update delta time, secs. 
+     * Update delta time, secs.
      * @public @type {number}
      */
     this.delta = 1 / 60;
@@ -510,11 +510,12 @@ class Arcade extends System {
       }
 
       let isSleeping = true;
+      const sleepThreshold = Pair.sleepThreshold * Pair.unitsPerMeter * Black.stage.mScaleX;
 
       for (let i = 0, l = group.length; i < l; i++) {
         const body = group[i];
         const velocity = body.mVelocity;
-        body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < Pair.sleepThreshold ? body.mSleepTime + 1 : 0;
+        body.mSleepTime = velocity.x * velocity.x + velocity.y * velocity.y < sleepThreshold ? body.mSleepTime + 1 : 0;
         isSleeping = isSleeping && body.mSleepTime > Pair.timeToSleep;
       }
 
@@ -563,6 +564,8 @@ class Arcade extends System {
       }
     }
 
+    const unitsPerMeterDt = Black.stage.mScaleX * Pair.unitsPerMeter * dt;
+
     for (let i = 0, l = bodies.length; i < l; i++) {
       const body = bodies[i];
       body.mForce.set(0, 0);
@@ -573,8 +576,8 @@ class Arcade extends System {
       const position = body.mPosition;
       const velocity = body.mVelocity;
 
-      position.x += velocity.x * dt * Pair.unitsPerMeter;
-      position.y += velocity.y * dt * Pair.unitsPerMeter;
+      position.x += velocity.x * unitsPerMeterDt;
+      position.y += velocity.y * unitsPerMeterDt;
     }
 
     for (let i = 0; i < iterations; i++) {
