@@ -24,6 +24,9 @@ class SpriteRendererCanvas extends Renderer {
 
     /** @type {number|null} */
     this.sizeHeightCache = null;
+
+    /** @type {Texture} */
+    this.textureCache = null;
   }
 
   /** @inheritDoc */
@@ -40,10 +43,11 @@ class SpriteRendererCanvas extends Renderer {
     let desiredWidth = texture.width * this.gameObject.mScaleX;
     let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    if (this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
       return this.sliceTextureCache;
     }
 
+    this.textureCache = texture;
     this.sizeWidthCache = desiredWidth;
     this.sizeHeightCache = desiredHeight;
 
