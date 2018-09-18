@@ -53,6 +53,7 @@
     "src/assets/loaders/FontFaceAssetLoader.js",
 
     "src/assets/Asset.js",
+    "src/assets/CustomAsset.js",
     "src/assets/TextureAsset.js",
     "src/assets/JSONAsset.js",
     "src/assets/XMLAsset.js",

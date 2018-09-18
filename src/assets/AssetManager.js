@@ -72,6 +72,9 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {Object.<string, BitmapFontData>} */
     this.mBitmapFonts = {};
 
+    /** @private @type {Object.<string, CustomAsset>} */
+    this.mCustomAssets = {};
+
     /** @private @type {AssetManagerState} */
     this.mState = AssetManagerState.NONE;
 
@@ -227,6 +230,16 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
+   * Adds custom asset to the loading queue.
+   * 
+   * @param {Asset} asset
+   */
+  enqueueCustomAsset(asset) {
+    this.__validateState();
+    this.mQueue.push(asset);
+  }
+
+  /**
    * Starts loading all enqueued assets.
    *
    * @fires complete
@@ -295,8 +308,9 @@ class AssetManager extends MessageDispatcher {
         name !== item.name && this.__validateName(name);
         this.mVectorTextures[name] = bakedTextures[name];
       }
-    }
-    else {
+    } else if (item instanceof CustomAsset) {
+      this.mCustomAssets[item.name] = item.data;
+    } else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
     }
 
@@ -519,6 +533,16 @@ class AssetManager extends MessageDispatcher {
    */
   getJSON(name) {
     return this.mJsons[name];
+  }
+
+  /**
+   * Returns Object parsed from `CutsomAsset` by given name.
+   *
+   * @param {string} name The name of the asset.
+   * @return {Object} Returns object or null.
+   */
+  getCustomAsset(name) {
+    return this.mCustomAssets[name];
   }
 
   __validateState() {
