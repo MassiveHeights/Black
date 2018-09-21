@@ -23,8 +23,8 @@ class ImageAssetLoader extends AssetLoader {
    */
   load() {
     this.mImageElement.src = this.mUrl;
-    this.mImageElement.onload = () => { this.onLoad(); }
-    this.mImageElement.onerror = () => { this.onError(); }
+    this.mImageElement.onload = () => this.onLoad();
+    this.mImageElement.onerror = () => this.onError();
     this.mData = this.mImageElement;
   }
 

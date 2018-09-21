@@ -74,6 +74,7 @@ class TextRenderer extends Renderer {
   /**
    * @ignore
    * @private
+   * @param {TextMetricsData} metrics
    * @param {TextSegmentMetricsData} segment
    * @param {CanvasRenderingContext2D} ctx
    * @param {VideoNullDriver} driver

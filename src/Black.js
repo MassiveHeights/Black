@@ -331,6 +331,7 @@ class Black extends MessageDispatcher {
   /**
    * @private
    * @param {number} timestamp
+   * @param {boolean} forceUpdate
    * @return {void}
    */
   __update(timestamp, forceUpdate) {

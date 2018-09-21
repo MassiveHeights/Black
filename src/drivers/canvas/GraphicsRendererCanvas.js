@@ -153,7 +153,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.lineTo((x + width - radius) * r - px, y * r - py);
           ctx.quadraticCurveTo((x + width) * r - px, y * r - py, (x + width) * r - px, (y + radius) * r - py);
           ctx.lineTo((x + width) * r - px, (y + height - radius) * r - py);
-          ctx.quadraticCurveTo((x + width) * r - px, y + height, (x + width - radius) * r - px, (y + height) * r - py);
+          ctx.quadraticCurveTo((x + width) * r - px, (y + height) * r - py, (x + width - radius) * r - px, (y + height) * r - py);
           ctx.lineTo((x + radius) * r - px, (y + height) * r - py);
           ctx.quadraticCurveTo(x * r - px, (y + height) * r - py, x * r - px, (y + height - radius) * r - py);
           ctx.closePath();

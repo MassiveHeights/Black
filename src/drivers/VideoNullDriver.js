@@ -140,7 +140,7 @@ class VideoNullDriver {
       renderer.parent = parentRenderer;
       parentRenderer = renderer;
 
-      renderer.preRender(this, false);
+      renderer.preRender(this, session);
 
       if (renderer.endPassRequired === true)
         session.endPassParentRenderers.push(renderer);

@@ -15,7 +15,7 @@ class SplashScreen extends MessageDispatcher {
     let duration = SplashScreen.duration * 0.001;
     let css = `#logo,#splash-screen{position:relative;box-sizing:border-box}#logo-inner,#logo-name{margin-left:auto;margin-right:auto}#splash-screen{z-index:999;top:0;left:0;width:100%;height:100%;display:block;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQYV2OUkpL6/+zZMwYpKSkGEM3IwMDwnwEJMBJUAQCLUhABUGRZzwAAAABJRU5ErkJggg==);opacity:1;animation:hide 0s ease-in ${duration}s forwards}@keyframes hide{to{opacity:0}}#logo{top:20%;left:50%;animation:fadein ${duration}s linear forwards}@keyframes fadein{0%{opacity:0}100%,40%{opacity:1}}#logo-name{width:100%;margin-top:108px}`;
 
-    var style = document.createElement('style');
+    let style = document.createElement('style');
     style.type = 'text/css';
     style.innerHTML = css;
     document.getElementsByTagName('head')[0].appendChild(style);
@@ -28,16 +28,16 @@ class SplashScreen extends MessageDispatcher {
     splash.id = 'splash-screen';
     container.appendChild(splash);
 
-    var logo = document.createElement('div');
+    let logo = document.createElement('div');
     logo.id = 'logo';
     splash.appendChild(logo);
 
-    var logoInner = document.createElement('div');
+    let logoInner = document.createElement('div');
     logoInner.id = 'logo-inner';
     logoInner.innerHTML = SplashScreen.SVG_LOGO;
     logo.appendChild(logoInner);
 
-    var logoName = document.createElement('div');
+    let logoName = document.createElement('div');
     logoName.id = 'logo-name';
     logoName.innerHTML = SplashScreen.SVG_TEXT;
     logo.appendChild(logoName);
@@ -96,7 +96,7 @@ class SplashScreen extends MessageDispatcher {
 
   // @ifndef SPLASH_SCREEN
   calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
     return { width: srcWidth * ratio, height: srcHeight * ratio };
   }
   // @endif

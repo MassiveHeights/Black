@@ -122,7 +122,7 @@ class TextMetricsEx {
     let lineHeightPx = defaultStyle.size * lineHeight;
     let sumBounds = new Rectangle();
     let sumStrokeBounds = new Rectangle();
-    let sumShadowBounds;
+    let sumShadowBounds = null;
 
     let lastLineIndex = -1;
     let currentX = 0;
