@@ -189,7 +189,7 @@ class SpriteRendererCanvas extends Renderer {
     }
 
     if (gameObject.mTiling === null) {
-      driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
+      driver.drawTexture(texture);
     } else {
       // we got some tiling
 
