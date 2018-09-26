@@ -100,7 +100,7 @@ class Stage extends GameObject {
   __refresh() {
     let size = Black.instance.viewport.size.clone();
 
-    if (this.mOrientationLock && this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait)
+    if (this.mOrientationLock === true && this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait)
       [size.width, size.height] = [size.height, size.width];
 
     let windowWidth = size.width;
@@ -282,6 +282,7 @@ class Stage extends GameObject {
    */
   set orientationLock(value) {
     this.mOrientationLock = value;
+    this.__refresh();
   }
 
   /**
@@ -306,6 +307,9 @@ class Stage extends GameObject {
   get localTransformation() {
     this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
 
+    if (this.mOrientationLock === false)
+      return this.mLocalTransform;
+
     // orientation lock hacks
     // chrome   window.screen.orientation.type
     // firefox  window.screen.mozOrientation
@@ -329,12 +333,16 @@ class Stage extends GameObject {
     }
 
     if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
+
       this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
+
       let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
       let y = (Black.instance.viewport.size.height * 0.5) - (this.mStageWidth * 0.5 * this.mStageScaleFactor);
 
       this.mLocalTransform.setTranslation(x, y);
+
     } else if (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
+
       this.mLocalTransform.rotate((angle + 180) * Math.PI / 180);
 
       let x = (Black.instance.viewport.size.width * 0.5) - (this.mStageHeight * 0.5 * this.mStageScaleFactor);
