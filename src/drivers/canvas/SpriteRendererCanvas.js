@@ -33,9 +33,11 @@ class SpriteRendererCanvas extends Renderer {
   preRender(driver, session) {
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-    this.endPassRequired = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
-    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
-    this.skipSelf = gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
+    const skip = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty;
+
+    this.endPassRequired = gameObject.mClipRect !== null && !gameObject.mClipRect.isEmpty;
+    this.skipChildren = skip || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
+    this.skipSelf = skip || gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
   }
 
   renderSlice9Grid(driver, texture, grid) {
