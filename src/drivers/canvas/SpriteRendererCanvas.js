@@ -210,7 +210,7 @@ class SpriteRendererCanvas extends Renderer {
 
       ctx.fillStyle = /** @type {CanvasPattern} */(this.pattern);
 
-      let dpr = driver.mDPR;
+      let dpr = driver.renderScaleFactor;
 
       let m = gameObject.worldTransformation.clone();
       m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr);

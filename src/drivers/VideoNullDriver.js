@@ -50,9 +50,6 @@ class VideoNullDriver {
     /** @protected @type {number} */
     this.mGlobalAlpha = 1;
 
-    /** @protected @type {number} */
-    this.mDPR = Device.getDevicePixelRatio();
-
     /** @protected @type {Renderer} */
     this.mStageRenderer = new Renderer();
     // this.mStageRenderer.alpha = 1;
@@ -60,6 +57,9 @@ class VideoNullDriver {
 
     /** @protected @type {Object.<string, function(new: Renderer)>} */
     this.mRendererMap = {};
+
+    /** @protected @type {number} */
+    this.mRenderScale = 0.5;
 
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
@@ -315,16 +315,15 @@ class VideoNullDriver {
     return null;
   }
 
-  /**
-   * The scale factor of stage multiplied by DPR multiplied by render resolution.
-   *
-   * @returns {number}
-   */
-  get finalScale() {
-    return this.mDPR * Black.stage.scaleFactor;
+  get renderScaleFactor() {
+    return this.mDevicePixelRatio * this.mRenderScale;
   }
 
-  get renderScaleFactor() {
+  /**
+   * Shorthand for Device.pixelRatio
+   * @returns {number}
+   */
+  get pixelRatio() {
     return this.mDevicePixelRatio;
   }
 }

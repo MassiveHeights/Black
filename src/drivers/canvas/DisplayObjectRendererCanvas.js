@@ -129,7 +129,9 @@ class DisplayObjectRendererCanvas extends Renderer {
   __refreshBitmapCache() {
     const bounds = this.gameObject.getBounds(Black.stage, true);
     const sf = Black.stage.scaleFactor;
-    const fs = Black.driver.finalScale;
+    const rsf = Black.driver.renderScaleFactor; 
+    const fs = rsf * sf;    
+    
 
     /** @type {Matrix} */
     let m = Matrix.pool.get();
@@ -159,11 +161,11 @@ class DisplayObjectRendererCanvas extends Renderer {
       this.mCacheAsBitmapMatrixCache = new Matrix();
 
     this.mCacheAsBitmapMatrixCache.copyFrom(m);
-    this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
+    this.mCacheAsBitmapMatrixCache.scale(1 / rsf, 1 / rsf);
     this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
     this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
 
     this.mBakeInvertedMatrix = this.gameObject.worldTransformation.clone().invert();
-    //this.mCacheTexture.__dumpToDocument();
+    this.mCacheTexture.__dumpToDocument();
   }
 }
