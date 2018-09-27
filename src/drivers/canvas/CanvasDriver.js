@@ -143,7 +143,7 @@ class CanvasDriver extends VideoNullDriver {
    * @return {void}
    */
   __createCanvas() {
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
 
     let cvs = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     cvs.style.position = 'absolute';
@@ -173,7 +173,7 @@ class CanvasDriver extends VideoNullDriver {
     this.mGlobalBlendMode = null;
     this.mGlobalAlpha = -1;
 
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
     this.mCtx.canvas.width = this.mClientWidth * dpr;
     this.mCtx.canvas.height = this.mClientHeight * dpr;
     this.mCtx.canvas.style.width = this.mClientWidth + 'px';
@@ -187,7 +187,7 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
@@ -209,7 +209,7 @@ class CanvasDriver extends VideoNullDriver {
     if (texture.isValid === false)
       return;
 
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
 
     let sourceX = texture.region.x;
     let sourceY = texture.region.y;
@@ -228,7 +228,7 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   beginClip(clipRect, px, py) {
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
 
     this.mCtx.save();
     this.mCtx.beginPath();
@@ -251,7 +251,7 @@ class CanvasDriver extends VideoNullDriver {
    * @inheritDoc
    */
   setTransform(transform) {
-    let dpr = this.mDevicePixelRatio * this.mRenderScale;
+    let dpr = this.mDevicePixelRatio;
     let session = this.mActiveSession;
     
     if (session.isBackBufferActive === false) {
@@ -318,9 +318,9 @@ class CanvasDriver extends VideoNullDriver {
     let viewport = Black.instance.viewport;
     if (viewport.isTransparent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
-      this.mCtx.fillRect(0, 0, viewport.size.width * this.mDevicePixelRatio * this.mRenderScale, viewport.size.height * this.mDevicePixelRatio * this.mRenderScale);
+      this.mCtx.fillRect(0, 0, viewport.size.width * this.mDevicePixelRatio, viewport.size.height * this.mDevicePixelRatio);
     } else {
-      this.mCtx.clearRect(0, 0, viewport.size.width * this.mDevicePixelRatio * this.mRenderScale, viewport.size.height * this.mDevicePixelRatio * this.mRenderScale);
+      this.mCtx.clearRect(0, 0, viewport.size.width * this.mDevicePixelRatio, viewport.size.height * this.mDevicePixelRatio);
     }
   }
 

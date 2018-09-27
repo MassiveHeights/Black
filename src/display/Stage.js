@@ -30,8 +30,12 @@ class Stage extends GameObject {
 
     /** @private @type {number} */
     this.mCacheWidth = 0;
+    
     /** @private @type {number} */
     this.mCacheHeight = 0;
+
+    /** @private @type {number} */
+    this.mDPR = Device.getDevicePixelRatio();
 
     /** @private @type {StageOrientation} */
     this.mOrientation = StageOrientation.UNIVERSAL;
@@ -137,10 +141,10 @@ class Stage extends GameObject {
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NO_SCALE) {
-      this.mStageWidth = (size.width * this.dpr);
-      this.mStageHeight = (size.height * this.dpr);
+      this.mStageWidth = (size.width * this.mDPR);
+      this.mStageHeight = (size.height * this.mDPR);
 
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.dpr;
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.mDPR;
     } else {
       Debug.error('Not supported stage scale mode.');
     }
@@ -202,17 +206,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * Device Pixel Ratio.
-   * 
-   * @public
-   * @readonly
-   * @returns {number}
-   */
-  get dpr() {
-    return Device.getDevicePixelRatio();
-  }
-
-  /**
    * Stage scale factor.
    * 
    * @public
@@ -231,7 +224,7 @@ class Stage extends GameObject {
    * @returns {number}
    */
   get renderWidth() {
-    return this.mStageWidth * this.dpr * this.mStageScaleFactor;
+    return this.mStageWidth * this.mDPR * this.mStageScaleFactor;
   }
 
   /**
@@ -242,7 +235,7 @@ class Stage extends GameObject {
    * @returns {number}
    */
   get renderHeight() {
-    return this.mStageHeight * this.dpr * this.mStageScaleFactor;
+    return this.mStageHeight * this.mDPR * this.mStageScaleFactor;
   }
 
   /**

@@ -104,10 +104,9 @@ class DisplayObjectRendererCanvas extends Renderer {
         transform = new Matrix()
           .append(this.gameObject.worldTransformation)
           .append(this.mBakeInvertedMatrix)
-          .append(this.mCacheAsBitmapMatrixCache)
+          .append(this.mCacheAsBitmapMatrixCache);
       }
     }
-
 
     if (this.skipChildren === true || this.endPassRequired === true) {
       driver.setSnapToPixels(gameObject.snapToPixels);
@@ -129,13 +128,11 @@ class DisplayObjectRendererCanvas extends Renderer {
   __refreshBitmapCache() {
     const bounds = this.gameObject.getBounds(Black.stage, true);
     const sf = Black.stage.scaleFactor;
-    const rsf = Black.driver.renderScaleFactor; 
-    const fs = rsf * sf;    
-    
+    const fs = Black.driver.renderScaleFactor * sf;
 
     /** @type {Matrix} */
     let m = Matrix.pool.get();
-    m.set(1, 0, 0, 1, ~~(-bounds.x * sf - Black.stage.mX), ~~(-bounds.y * sf - Black.stage.mY));
+    m.set(1, 0, 0, 1, (-bounds.x * sf - Black.stage.mX), (-bounds.y * sf - Black.stage.mY));
 
     if (this.mIsClipped === true && this.skipChildren === true) {
       m.data[4] += this.gameObject.mPivotX * sf;
@@ -161,11 +158,11 @@ class DisplayObjectRendererCanvas extends Renderer {
       this.mCacheAsBitmapMatrixCache = new Matrix();
 
     this.mCacheAsBitmapMatrixCache.copyFrom(m);
-    this.mCacheAsBitmapMatrixCache.scale(1 / rsf, 1 / rsf);
+    this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
     this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
     this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
 
-    this.mBakeInvertedMatrix = this.gameObject.worldTransformation.clone().invert();
-    this.mCacheTexture.__dumpToDocument();
+    this.mBakeInvertedMatrix = this.gameObject.worldTransformationInverted.clone();
+    //this.mCacheTexture.__dumpToDocument();
   }
 }

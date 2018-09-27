@@ -42,7 +42,7 @@ class VideoNullDriver {
     this.mSnapToPixels = false;
 
     /** @protected @type {number} */
-    this.mDevicePixelRatio = Device.getDevicePixelRatio();
+    this.mDevicePixelRatio = Black.instance.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
 
     /** @protected @type {BlendMode|null} */
     this.mGlobalBlendMode = BlendMode.AUTO;
@@ -52,14 +52,9 @@ class VideoNullDriver {
 
     /** @protected @type {Renderer} */
     this.mStageRenderer = new Renderer();
-    // this.mStageRenderer.alpha = 1;
-    // this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
     /** @protected @type {Object.<string, function(new: Renderer)>} */
     this.mRendererMap = {};
-
-    /** @protected @type {number} */
-    this.mRenderScale = 0.5;
 
     Black.instance.viewport.on('resize', this.__onResize, this);
   }
@@ -315,15 +310,12 @@ class VideoNullDriver {
     return null;
   }
 
-  get renderScaleFactor() {
-    return this.mDevicePixelRatio * this.mRenderScale;
-  }
-
   /**
-   * Shorthand for Device.pixelRatio
+   * Returns device pixel ratio or 1 in case high DPR support is disabled.
+   * 
    * @returns {number}
    */
-  get pixelRatio() {
+  get renderScaleFactor() {
     return this.mDevicePixelRatio;
   }
 }

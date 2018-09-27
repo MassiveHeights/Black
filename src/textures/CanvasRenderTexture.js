@@ -41,7 +41,7 @@ class CanvasRenderTexture extends Texture {
     img.style.background = '#333';
     img.style.width = '256px';
     img.style.height = 'auto';
-    img.style.border = '1px solid crimson';
+    //img.style.border = '1px solid crimson';
     img.src = /** @type {HTMLCanvasElement} */(this.mNative).toDataURL('image/png');
     document.body.appendChild(img);
   }
