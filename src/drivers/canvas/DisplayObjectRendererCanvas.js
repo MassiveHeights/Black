@@ -132,7 +132,7 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** @type {Matrix} */
     let m = Matrix.pool.get();
-    m.set(1, 0, 0, 1, (-bounds.x * sf - Black.stage.mX), (-bounds.y * sf - Black.stage.mY));
+    m.set(1, 0, 0, 1, ~~(-bounds.x * sf - Black.stage.mX), ~~(-bounds.y * sf - Black.stage.mY));
 
     if (this.mIsClipped === true && this.skipChildren === true) {
       m.data[4] += this.gameObject.mPivotX * sf;
