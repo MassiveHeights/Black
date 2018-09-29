@@ -35,7 +35,7 @@ class DisplayObjectRendererCanvas extends Renderer {
   preRender(driver, session) {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
 
-    this.mIsClipped = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
+    this.mIsClipped = gameObject.mClipRect !== null;
     this.endPassRequired = this.mIsClipped;
 
     if (gameObject.mCacheAsBitmap === true) {
@@ -64,7 +64,7 @@ class DisplayObjectRendererCanvas extends Renderer {
       }
     }
 
-    this.skipChildren = gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false;
+    this.skipChildren = gameObject.mCacheAsBitmap === true && this.mCacheAsBitmapDirty === false || this.mIsClipped && gameObject.mClipRect.isEmpty;
     this.skipSelf = false;
 
     if (this.skipChildren === true) {
@@ -80,7 +80,7 @@ class DisplayObjectRendererCanvas extends Renderer {
       this.alpha = 1;
       this.blendMode = BlendMode.NORMAL;
       this.color = null;
-      this.skipSelf = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
+      this.skipSelf = gameObject.mAlpha <= 0 || gameObject.mVisible === false || this.mIsClipped && gameObject.mClipRect.isEmpty;
     }
     else {
       this.alpha = gameObject.mAlpha * this.parent.alpha;
@@ -88,7 +88,7 @@ class DisplayObjectRendererCanvas extends Renderer {
       this.blendMode = gameObject.mBlendMode === BlendMode.AUTO ? this.parent.blendMode : gameObject.mBlendMode;
 
       this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false;
-      this.skipSelf = this.skipChildren === true || this.mIsClipped === false;
+      this.skipSelf = this.skipChildren === true || this.mIsClipped === false || this.mIsClipped && gameObject.mClipRect.isEmpty;
     }
   }
 
@@ -97,17 +97,16 @@ class DisplayObjectRendererCanvas extends Renderer {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
 
-    if (this.skipChildren === true) {
+    if (this.skipChildren === true && this.mCacheAsBitmapMatrixCache) {
       transform = this.mCacheAsBitmapMatrixCache;
 
       if (gameObject.mCacheAsBitmapDynamic === false) {
         transform = new Matrix()
           .append(this.gameObject.worldTransformation)
           .append(this.mBakeInvertedMatrix)
-          .append(this.mCacheAsBitmapMatrixCache)
+          .append(this.mCacheAsBitmapMatrixCache);
       }
     }
-
 
     if (this.skipChildren === true || this.endPassRequired === true) {
       driver.setSnapToPixels(gameObject.snapToPixels);
@@ -129,7 +128,7 @@ class DisplayObjectRendererCanvas extends Renderer {
   __refreshBitmapCache() {
     const bounds = this.gameObject.getBounds(Black.stage, true);
     const sf = Black.stage.scaleFactor;
-    const fs = Black.driver.finalScale;
+    const fs = Black.driver.renderScaleFactor * sf;
 
     /** @type {Matrix} */
     let m = Matrix.pool.get();
@@ -163,7 +162,7 @@ class DisplayObjectRendererCanvas extends Renderer {
     this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
     this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
 
-    this.mBakeInvertedMatrix = this.gameObject.worldTransformation.clone().invert();
+    this.mBakeInvertedMatrix = this.gameObject.worldTransformationInverted.clone();
     //this.mCacheTexture.__dumpToDocument();
   }
 }

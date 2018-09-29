@@ -8,6 +8,9 @@
 
 /* @echo EXPORT */
 class GraphicsData {
+  /**
+   * Creates new instance of GraphicsData
+   */
   constructor() {
 
     /** @private @type {Array<GraphicsData>} */
@@ -156,6 +159,32 @@ class GraphicsData {
   fillStyle(color = 0, alpha = 1) {
     Debug.isNumber(color, alpha);
     this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
+  }
+
+  /**
+   * Sets fill style to gradient.
+   *
+   * @public
+   * @param {GraphicsGradient} gradient Fill gradient.
+   *
+   * @returns {void}
+   */
+  fillGradient(gradient) {
+    if (gradient instanceof GraphicsLinearGradient) {
+      this.__pushCommand(GraphicsCommandType.FILL_GRD, /** @type {GraphicsLinearGradient} */(gradient));
+    } // radial todo
+  }
+
+  /**
+   * Sets fill style to pattern.
+   *
+   * @public
+   * @param {GraphicsPattern} pattern Fill pattern.
+   *
+   * @returns {void}
+   */
+  fillPattern(pattern) {
+    this.__pushCommand(GraphicsCommandType.FILL_PATTERN, pattern);
   }
 
   /**
@@ -308,6 +337,25 @@ class GraphicsData {
     Debug.isNumber(x, y, width, height);
 
     this.__pushCommand(GraphicsCommandType.RECT, x, y, width, height);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
+  }
+
+  /**
+   * Creates closed rounded rectangle.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   *
+   * @returns {void}
+   */
+  roundedRect(x, y, width, height, radius) {
+    Debug.isNumber(x, y, width, height, radius);
+
+    this.__pushCommand(GraphicsCommandType.ROUNDED_RECT, x, y, width, height, radius);
     this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
   }
 

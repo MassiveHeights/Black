@@ -114,15 +114,15 @@ class TextMetricsEx {
         currTag = m[2];
 
       if (m[3])
-        parts.push({ tag: currTag, text: m[3], style: styles.find(x => x.name === currTag), lineIndex: lineIx });
+        parts.push({ tag: currTag, text: m[3], style: styles.filter(x => x.name === currTag)[0], lineIndex: lineIx });
     }
 
     let data = new TextMetricsData();
-    let defaultStyle = styles.find(x => x.name === 'def') || TextStyle.default;
+    let defaultStyle = styles.filter(x => x.name === 'def')[0] || TextStyle.default;
     let lineHeightPx = defaultStyle.size * lineHeight;
     let sumBounds = new Rectangle();
     let sumStrokeBounds = new Rectangle();
-    let sumShadowBounds;
+    let sumShadowBounds = null;
 
     let lastLineIndex = -1;
     let currentX = 0;
@@ -145,8 +145,8 @@ class TextMetricsEx {
 
       currentY = (lineHeightPx * part.lineIndex) + defaultBaseline - baseline;
 
-      bounds.x = currentX;
-      bounds.y = currentY;
+      bounds.x = currentX + 2;
+      bounds.y = currentY + 2;
 
       currentX += bounds.width;
 
@@ -222,7 +222,7 @@ class TextMetricsEx {
     let fontMetrics = FontMetrics.get(style.family);
     span.innerHTML = text.replace(/ /g, '&nbsp');
 
-    outBounds.set(0, (fontMetrics.baselineNormalized * style.size), span.offsetWidth, fontMetrics.bottomNormalized * style.size);
+    outBounds.set(0, fontMetrics.baselineNormalized * style.size, span.offsetWidth + 2, fontMetrics.bottomNormalized * style.size + 2);
     return outBounds;
   }
 

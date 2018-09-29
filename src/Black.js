@@ -119,6 +119,9 @@ class Black extends MessageDispatcher {
     /** @private @type {Array<number>} */
     this.mFrameTimes = [];
 
+    /** @private @type {boolean} */
+    this.mUseHiDPR = Device.isMobile;
+
     this.__bootViewport();
 
     this.__update = this.__update.bind(this);
@@ -331,6 +334,7 @@ class Black extends MessageDispatcher {
   /**
    * @private
    * @param {number} timestamp
+   * @param {boolean} forceUpdate
    * @return {void}
    */
   __update(timestamp, forceUpdate) {
@@ -701,6 +705,26 @@ class Black extends MessageDispatcher {
    */
   get splashScreen() {
     return this.mSplashScreen;
+  }
+
+  
+  /**
+   * Gets/sets whenever driver should be created with high DPR support. 
+   * NOTE: Cannot be changed at runtime.
+   * 
+   * @returns {boolean}
+   */
+  get useHiDPR() {
+    return this.mUseHiDPR;
+  }
+  
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set useHiDPR(value) {
+    this.mUseHiDPR = value;
   }
 
   /**

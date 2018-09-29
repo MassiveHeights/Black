@@ -12,6 +12,7 @@ class Interpolation {
    *
    * @param {Array}  v The input array of values to interpolate between.
    * @param {number} k The percentage of interpolation, between 0 and 1.
+   * @param {function(number):number} lerpFunction Interpolation function.
    * @return {number}  The interpolated value
    */
   static linear(v, k, lerpFunction = null) {

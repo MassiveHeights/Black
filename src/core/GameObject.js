@@ -50,11 +50,11 @@ class GameObject extends MessageDispatcher {
     /** @protected @type {number} */
     this.mSkewY = 0;
 
-    /** @protected @type {number} */
-    this.mAnchorX = 0;
+    /** @protected @type {number|null} */
+    this.mAnchorX = null;
 
-    /** @protected @type {number} */
-    this.mAnchorY = 0;
+    /** @protected @type {number|null} */
+    this.mAnchorY = null;
 
     /** @protected @type {number} */
     this.mPivotOffsetX = 0;
@@ -528,6 +528,14 @@ class GameObject extends MessageDispatcher {
    * @return {Matrix}
    */
   get worldTransformation() {
+    if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
+      this.mDirty ^= DirtyFlag.ANCHOR;
+
+      this.__updatePivots(this);
+
+      this.setDirty(DirtyFlag.LOCAL | DirtyFlag.WIRB, true);
+    }
+
     if (this.mDirty & DirtyFlag.WORLD) {
       this.mDirty ^= DirtyFlag.WORLD;
 
@@ -1016,13 +1024,10 @@ class GameObject extends MessageDispatcher {
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
-    this.getBounds(this, true, Rectangle.__cache.zero());
     this.mPivotOffsetX = value;
-    this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
 
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+    this.__updatePivots(this);
+    this.setTransformDirty();
   }
 
   /**
@@ -1047,53 +1052,50 @@ class GameObject extends MessageDispatcher {
 
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
-    this.getBounds(this, true, Rectangle.__cache.zero());
     this.mPivotOffsetY = value;
-    this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+    this.__updatePivots(this);
+    this.setTransformDirty();
   }
 
   /**
+   * Gets/Sets the x-coordinate of the object's origin in its local space in percent.
+   * 
    * @export
    * @ignore
-   * @param {number} value
+   * @param {number|null} value
    * @return {void}
    */
   set anchorX(value) {
     if (this.mAnchorX === value)
       return;
 
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+    Debug.assert(value !== null && !isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorX = value;
     this.mAnchorChanged = true;
 
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+    this.setTransformDirty();
   }
 
   /**
+   * Gets/Sets the y-coordinate of the object's origin in its local space in percent.
+   * 
    * @export
    * @ignore
-   * @param {number} value
+   * @param {number|null} value
    * @return {void}
    */
   set anchorY(value) {
     if (this.mAnchorY === value)
       return;
 
-    Debug.assert(!isNaN(value), 'Value cannot be NaN');
+    Debug.assert(value !== null && !isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorY = value;
     this.mAnchorChanged = true;
 
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+    this.setTransformDirty();
   }
 
   /**
@@ -1153,11 +1155,12 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Sets anchor point to given position. 
+   * Sets anchor point to given position. See `alignPivotOffset`.
+   * 
+   * @deprecated
    *
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
-   * @deprecated
    * @return {GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5) {
@@ -1182,12 +1185,10 @@ class GameObject extends MessageDispatcher {
     this.mPivotOffsetX = (Rectangle.__cache.width * ax);
     this.mPivotOffsetY = (Rectangle.__cache.height * ay);
 
-    this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
-    this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
+    this.mPivotX = this.mAnchorX === null ? this.mPivotOffsetX + Rectangle.__cache.x : this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
+    this.mPivotY = this.mAnchorY === null ? this.mPivotOffsetY + Rectangle.__cache.y : this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
 
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
-    this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+    this.setTransformDirty();
 
     return this;
   }
@@ -1566,41 +1567,29 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @private
+   * @ignore
+   * @param {GameObject} go 
+   */
+  __updatePivots(go) {
+    go.getBounds(go, true, Rectangle.__cache.zero());
+
+    go.mPivotX = go.mAnchorX === null ? go.mPivotOffsetX + Rectangle.__cache.x : go.mPivotOffsetX + (Rectangle.__cache.width * go.mAnchorX) + Rectangle.__cache.x;
+    go.mPivotY = go.mAnchorY === null ? go.mPivotOffsetY + Rectangle.__cache.y : go.mPivotOffsetY + (Rectangle.__cache.height * go.mAnchorY) + Rectangle.__cache.y;
+  }
+
+  /**
    * Marks the GameObject's parent as dirty.
    *
    * @param {DirtyFlag} flag The flag or flag bit mask.
    * @return {void}
    */
   setParentDirty(flag) {
-    this.mDirty |= flag;
-    this.mDirtyFrameNum = Black.frameNum;
-
-    if (this.mAnchorChanged === true || this.mDirty & DirtyFlag.LOCAL || this.mDirty & DirtyFlag.BOUNDS) {
-      if (this.mAnchorX !== 0 || this.mAnchorY !== 0) {
-        this.getBounds(this, true, Rectangle.__cache.zero());
-        this.mPivotX = this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
-        this.mPivotY = this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
-        this.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
-      }
-
-      this.mAnchorChanged = false;
-    }
-
     let current = this;
-
-    while (current.mParent != null) {
-      current = current.mParent;
+    while (current != null) {
       current.mDirty |= flag;
       current.mDirtyFrameNum = Black.frameNum;
-
-      if (this.mAnchorChanged === true || current.mDirty & DirtyFlag.BOUNDS || current.mDirty & DirtyFlag.LOCAL) {
-        if (current.mAnchorX !== 0 || current.mAnchorY !== 0) {
-          current.getBounds(current, true, Rectangle.__cache.zero());
-          current.mPivotX = current.mPivotOffsetX + (Rectangle.__cache.width * current.mAnchorX) + Rectangle.__cache.x;
-          current.mPivotY = current.mPivotOffsetY + (Rectangle.__cache.height * current.mAnchorY) + Rectangle.__cache.y;
-          current.mDirty |= DirtyFlag.LOCAL | DirtyFlag.WIRB;
-        }
-      }
+      current = current.mParent;
     }
 
     Renderer.__dirty = true;
@@ -1617,7 +1606,8 @@ class GameObject extends MessageDispatcher {
 
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.BOUNDS), false);
     this.setDirty(DirtyFlag.WIRB, true);
-    this.setParentDirty(DirtyFlag.BOUNDS);
+
+    this.setParentDirty(/** @type {DirtyFlag} */(DirtyFlag.BOUNDS | DirtyFlag.ANCHOR));
   }
 
   /**
@@ -1907,7 +1897,7 @@ const DirtyFlag = {
   WORLD_INV: 4,     // Inverted world transformation is dirty 
   RENDER: 8,        // Object needs to be rendered 
   RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
-  REBAKE: 32,       // NOT USED: Baked object changed, parents will be notified
+  ANCHOR: 32,       // 
   BOUNDS: 64,       // Parent-relative bounds needs update
   DIRTY: 0xffffff,  // Everything is dirty, you, me, everything!
   WIRB: 78

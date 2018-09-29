@@ -97,12 +97,12 @@ class ColorHelper {
     let t = v * (1 - (1 - f) * s);
 
     switch (i % 6) {
-      case 0: r = v, g = t, b = p; break;
-      case 1: r = q, g = v, b = p; break;
-      case 2: r = p, g = v, b = t; break;
-      case 3: r = p, g = q, b = v; break;
-      case 4: r = t, g = p, b = v; break;
-      case 5: r = v, g = p, b = q; break;
+      case 0: r = v; g = t; b = p; break;
+      case 1: r = q; g = v; b = p; break;
+      case 2: r = p; g = v; b = t; break;
+      case 3: r = p; g = q; b = v; break;
+      case 4: r = t; g = p; b = v; break;
+      case 5: r = v; g = p; b = q; break;
     }
 
     r *= 255;
@@ -200,6 +200,7 @@ class ColorHelper {
    * Converts number color to RGBA string.
    *
    * @param {number} color The color to convert.
+   * @param {number} [alpha=1] Alpha to use in RGBA string
    * @returns {string} The resulting string.
    */
   static intToRGBA(color, alpha = 1) {

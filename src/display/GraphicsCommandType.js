@@ -12,6 +12,7 @@ const GraphicsCommandType = {
 
   ARC               : 'arc',
   RECT              : 'rect',
+  ROUNDED_RECT      : 'roundedRect',
   BEZIER_CURVE_TO   : 'bezierCurveTo',
   QUADRATIC_CURVE_TO: 'quadraticCurveTo',
   BEGIN_PATH        : 'beginPath',
@@ -22,5 +23,7 @@ const GraphicsCommandType = {
   STROKE            : 'stroke',
   BOUNDS            : 'bounds',
 
-  LINE_DASH: 'setLineDash',
+  LINE_DASH   : 'setLineDash',
+  FILL_GRD    : 'gradientFillStyle',
+  FILL_PATTERN: 'patternFillStyle',
 };

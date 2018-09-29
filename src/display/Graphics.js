@@ -34,6 +34,9 @@ class Graphics extends DisplayObject {
     /** @private @type {number} */
     this.mDataOffsetY = 0;
 
+    /** @private @type {boolean} */
+    this.mTrim = trim;
+
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
     } else if (typeof graphicsData === 'string') {
@@ -76,10 +79,12 @@ class Graphics extends DisplayObject {
     this.mLocalBounds && outRect.copyFrom(this.mLocalBounds);
     this.mLocalBounds = null;
 
-    outRect.width += Math.max(0, outRect.x);
-    outRect.height += Math.max(0, outRect.y);
-    outRect.x = Math.min(0, outRect.x);
-    outRect.y = Math.min(0, outRect.y);
+    if (!this.mTrim) {
+      outRect.width += Math.max(0, outRect.x);
+      outRect.height += Math.max(0, outRect.y);
+      outRect.x = Math.min(0, outRect.x);
+      outRect.y = Math.min(0, outRect.y);
+    }
 
     return outRect;
   }
@@ -110,6 +115,30 @@ class Graphics extends DisplayObject {
    */
   fillStyle(color = 0, alpha = 1) {
     this.mGraphicsData.fillStyle(color, alpha);
+  }
+
+  /**
+   * Sets fill style to gradient.
+   *
+   * @public
+   * @param {GraphicsGradient} gradient Fill gradient.
+   *
+   * @returns {void}
+   */
+  fillGradient(gradient) {
+    this.mGraphicsData.fillGradient(gradient);
+  }
+
+  /**
+   * Sets fill style to pattern.
+   *
+   * @public
+   * @param {GraphicsPattern} pattern Fill pattern.
+   *
+   * @returns {void}
+   */
+  fillPattern(pattern) {
+    this.mGraphicsData.fillPattern(pattern);
   }
 
   /**
@@ -193,6 +222,22 @@ class Graphics extends DisplayObject {
   }
 
   /**
+   * Creates closed rounded rectangle.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   *
+   * @returns {void}
+   */
+  roundedRect(x, y, width, height, radius) {
+    this.mGraphicsData.roundedRect(x, y, width, height, radius);
+  }
+
+  /**
    * @public
    * @param {number} cp1x
    * @param {number} cp1y
@@ -272,23 +317,8 @@ class Graphics extends DisplayObject {
     this.mGraphicsData.fill(isNonZero);
     this.setTransformDirty();
   }
-}
 
-class GraphicsPath {
-  constructor() {
-    /** @type {Rectangle|null} */
-    this.bounds = null;
-
-    /** @type {Array<number>} */
-    this.points = [];
-
-    /** @type {number} */
-    this.maxLineWidth = 0;
-
-    /** @type {number} */
-    this.lastLineWidth = 0;
-
-    /** @type {number} */
-    this.lineMul = 0.5;
+  createLinearGradient(x, y, width, height) {
+    return new GraphicsLinearGradient(x, y, width, height);
   }
 }

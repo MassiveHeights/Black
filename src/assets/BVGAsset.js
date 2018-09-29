@@ -63,6 +63,8 @@ class BVGAsset extends Asset {
 
     if (this.mBakeChildren && namesToBake.length === 0) {
       const traverse = nodes => {
+        nodes = /** @type {Array<GraphicsData>} */(nodes);
+
         if (nodes.length === 0) return;
 
         for (let i = 0, l = nodes.length; i < l; i++) {
@@ -70,7 +72,7 @@ class BVGAsset extends Asset {
             namesToBake.push(nodes[i].name);
           }
 
-          traverse(nodes[i].mNodes);
+          traverse(/** @type {Array<GraphicsData>} */(nodes[i].mNodes));
         }
       };
 
@@ -90,9 +92,10 @@ class BVGAsset extends Asset {
       }
 
       const graphics = new Graphics(node, name !== this.mGraphicsData.name);
-      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+      const dpr = 1 / Black.driver.renderScaleFactor;
+      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, 1);
 
-      Black.driver.render(graphics, renderTexture, new Matrix());
+      Black.driver.render(graphics, renderTexture, new Matrix().scale(dpr, dpr));
 
       textures[name] = renderTexture;
     }
