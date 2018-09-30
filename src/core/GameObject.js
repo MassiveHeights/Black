@@ -1102,7 +1102,7 @@ class GameObject extends MessageDispatcher {
    * Returns current anchor-x value in range from 0 to 1.
    * 
    * @export
-   * @returns {number}
+   * @returns {number|null}
    */
   get anchorX() {
     return this.mAnchorX;
@@ -1112,7 +1112,7 @@ class GameObject extends MessageDispatcher {
    * Returns current anchor-y value in range from 0 to 1.
    * 
    * @export
-   * @returns {number}
+   * @returns {number|null}
    */
   get anchorY() {
     return this.mAnchorY;
