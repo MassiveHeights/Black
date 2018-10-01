@@ -145,8 +145,6 @@
     "src/input/Input.js",
     "src/input/InputComponent.js",
 
-    "src/components/FPSComponent.js",
-
     "src/animation/Ease.js",
     "src/animation/Interpolation.js",
     "src/animation/Tween.js",
