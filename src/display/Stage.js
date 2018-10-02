@@ -104,7 +104,7 @@ class Stage extends GameObject {
   __refresh() {
     let size = Black.instance.viewport.size.clone();
 
-    if (this.mOrientationLock === true && this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait)
+    if (this.mOrientationLock === true && ((this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) || (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape)))
       [size.width, size.height] = [size.height, size.width];
 
     let windowWidth = size.width;
@@ -283,7 +283,7 @@ class Stage extends GameObject {
    */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
-    return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
+    return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.mStageWidth + 2 * this.mX / this.mStageScaleFactor, this.mStageHeight + 2 * this.mY / this.mStageScaleFactor);
   }
 
   /**

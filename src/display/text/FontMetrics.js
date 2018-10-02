@@ -43,10 +43,7 @@ class FontMetrics {
 
     const xHeight = this.__getBottom(data) - this.__getTop(data);
 
-    for (let i = 65; i <= 122; i++) {
-      if (i > 90 && i < 97)
-        continue;
-
+    for (let i = 32; i <= 126; i++) {
       this.mCtx.fillText(String.fromCharCode(i), 0, drawY, 1);
     }
 
