@@ -326,7 +326,6 @@ class Stage extends GameObject {
     }
 
     if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
-
       this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
 
       let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
@@ -335,8 +334,7 @@ class Stage extends GameObject {
       this.mLocalTransform.setTranslation(x, y);
 
     } else if (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
-
-      this.mLocalTransform.rotate((angle + 180) * Math.PI / 180);
+      this.mLocalTransform.rotate((angle - 90) * Math.PI / 180);
 
       let x = (Black.instance.viewport.size.width * 0.5) - (this.mStageHeight * 0.5 * this.mStageScaleFactor);
       let y = (Black.instance.viewport.size.height * 0.5) + (this.mStageWidth * 0.5 * this.mStageScaleFactor);
