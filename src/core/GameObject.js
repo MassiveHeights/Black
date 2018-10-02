@@ -533,7 +533,7 @@ class GameObject extends MessageDispatcher {
 
       this.__updatePivots(this);
 
-      this.setDirty(DirtyFlag.LOCAL | DirtyFlag.WIRB, true);
+      this.setDirty(/** @type {DirtyFlag} */ (DirtyFlag.LOCAL | DirtyFlag.WIRB), true);
     }
 
     if (this.mDirty & DirtyFlag.WORLD) {
