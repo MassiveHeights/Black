@@ -406,7 +406,15 @@ class Arcade extends System {
 
       if (pair.a === collider || pair.b === collider) {
         pairs.splice(i, 1);
-        pair.constructor.pool.release(pair);
+
+        if (pair instanceof BoxToBoxPair)
+          BoxToBoxPair.pool.release(pair);
+        else if (pair instanceof BoxToCirclePair)
+          BoxToCirclePair.pool.release(pair);
+        else if (pair instanceof CircleToCirclePair)
+          CircleToCirclePair.pool.release(pair);
+
+        //pair.constructor.pool.release(pair);
 
         delete pairsHash[Pair.__id(pair.a, pair.b)];
 

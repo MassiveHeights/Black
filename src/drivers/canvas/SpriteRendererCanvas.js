@@ -16,7 +16,7 @@ class SpriteRendererCanvas extends Renderer {
     /** @type {Texture|null} */
     this.patternTexture = null;
 
-    /** @type {Texture|null} */
+    /** @type {CanvasRenderTexture|null} */
     this.sliceTextureCache = null;
 
     /** @type {number|null} */
@@ -45,9 +45,8 @@ class SpriteRendererCanvas extends Renderer {
     let desiredWidth = texture.width * this.gameObject.mScaleX;
     let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight)
       return this.sliceTextureCache;
-    }
 
     this.textureCache = texture;
     this.sizeWidthCache = desiredWidth;
