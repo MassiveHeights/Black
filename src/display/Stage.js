@@ -140,6 +140,21 @@ class Stage extends GameObject {
       this.mStageHeight = this.LP(this.mHeight, this.mWidth);
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
+    } else if (this.mScaleMode === StageScaleMode.COVER) {
+      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
+      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
+      let scaleFactor = Math.min(mw / windowWidth, mh / windowHeight);
+      let width = windowWidth * scaleFactor;
+      let height = windowHeight * scaleFactor;
+
+      let two = 2 * scaleFactor;
+      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
+      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
+
+      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
+      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
+
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.max(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NO_SCALE) {
       this.mStageWidth = (size.width * this.mDPR);
       this.mStageHeight = (size.height * this.mDPR);
