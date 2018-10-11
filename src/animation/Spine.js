@@ -71,6 +71,9 @@ class Spine extends DisplayObject {
 
           if (attachment.type === 'path')
             continue;
+          
+          if (attachment.type === 'clipping')
+            continue;
 
           let textureName = entryName;
 
