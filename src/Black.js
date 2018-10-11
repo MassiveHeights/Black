@@ -191,10 +191,11 @@ class Black extends MessageDispatcher {
   __bootStage() {
     this.mStage = new Stage();
 
-    window.onblur = event => this.__onVisibilityChange(event);
-    window.onfocus = event => this.__onVisibilityChange(event);
-    window.onpagehide = event => this.__onVisibilityChange(event);
-    window.onpageshow = event => this.__onVisibilityChange(event);
+    const visibilitychange = this.visibilitychange.bind(this)
+    document.addEventListener('visibilitychange', visibilitychange, false);
+    this.on('stopped', () => {
+      document.removeEventListener('visibilitychange', visibilitychange, false);
+    });
 
     if (document.hidden && this.mPauseOnHide === true)
       this.pause();
@@ -205,15 +206,10 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __onVisibilityChange(event) {
-    let type = event.type;
-    if (type === 'blur' && this.mPauseOnBlur === true)
+    if (document.hidden && this.mPauseOnHide === true)
       this.pause();
-    else if (type === 'pagehide' && this.mPauseOnHide === true)
-      this.pause();
-    else if (type === 'focus' || type === 'pageshow') {
-      if (document.hidden === false)
-        this.resume();
-    }
+    else
+      this.resume();
   }
 
   /**
@@ -327,6 +323,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = false;
     this.mIsRunning = false;
     window.cancelAnimationFrame(this.mRAFHandle);
+    this.post('stopped');
 
     console.log('%c                        <<< BYE BYE >>>                        ', 'background: #000; color: #fff;');
   }
