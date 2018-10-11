@@ -191,25 +191,31 @@ class Black extends MessageDispatcher {
   __bootStage() {
     this.mStage = new Stage();
 
-    const visibilitychange = this.visibilitychange.bind(this)
-    document.addEventListener('visibilitychange', visibilitychange, false);
+    // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API#Example
+    let hidden, visibilityChange;
+    if (typeof document.hidden !== 'undefined') {
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      // support Android 4.4
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
+    }
+
+    const handleVisibilityChange = () => {
+      if (document[hidden] && this.mPauseOnHide === true)
+        this.pause();
+      else
+        this.resume();
+    }
+
+    document.addEventListener(visibilityChange, handleVisibilityChange, false);
     this.on('stopped', () => {
-      document.removeEventListener('visibilitychange', visibilitychange, false);
+      document.removeEventListener(visibilityChange, handleVisibilityChange, false);
     });
 
-    if (document.hidden && this.mPauseOnHide === true)
+    if (document[hidden] && this.mPauseOnHide === true)
       this.pause();
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  __onVisibilityChange(event) {
-    if (document.hidden && this.mPauseOnHide === true)
-      this.pause();
-    else
-      this.resume();
   }
 
   /**
