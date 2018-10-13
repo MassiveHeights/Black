@@ -24,15 +24,20 @@ class SpriteRendererCanvas extends Renderer {
 
     /** @type {number|null} */
     this.sizeHeightCache = null;
+
+    /** @type {Texture} */
+    this.textureCache = null;
   }
 
   /** @inheritDoc */
   preRender(driver, session) {
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-    this.endPassRequired = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
-    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
-    this.skipSelf = gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
+    const skip = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty;
+
+    this.endPassRequired = gameObject.mClipRect !== null && !gameObject.mClipRect.isEmpty;
+    this.skipChildren = skip || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
+    this.skipSelf = skip || gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
   }
 
   renderSlice9Grid(driver, texture, grid) {
@@ -40,10 +45,11 @@ class SpriteRendererCanvas extends Renderer {
     let desiredWidth = texture.width * this.gameObject.mScaleX;
     let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    if (this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
       return this.sliceTextureCache;
     }
 
+    this.textureCache = texture;
     this.sizeWidthCache = desiredWidth;
     this.sizeHeightCache = desiredHeight;
 
@@ -185,7 +191,7 @@ class SpriteRendererCanvas extends Renderer {
     }
 
     if (gameObject.mTiling === null) {
-      driver.drawTexture(Renderer.getColoredTexture(texture, this.color));
+      driver.drawTexture(texture);
     } else {
       // we got some tiling
 
@@ -204,9 +210,9 @@ class SpriteRendererCanvas extends Renderer {
         this.patternTexture = texture;
       }
 
-      ctx.fillStyle = this.pattern;
+      ctx.fillStyle = /** @type {CanvasPattern} */(this.pattern);
 
-      let dpr = driver.mDPR;
+      let dpr = driver.renderScaleFactor;
 
       let m = gameObject.worldTransformation.clone();
       m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr);
@@ -216,6 +222,7 @@ class SpriteRendererCanvas extends Renderer {
 
       // draw pattern
       ctx.fillRect(-gameObject.tiling.wrapX, -gameObject.tiling.wrapY, gameObject.tiling.width / gameObject.tiling.scaleX, gameObject.tiling.height / gameObject.tiling.scaleY);
+      ctx.fillStyle = 'black';
     }
   }
 }

@@ -17,6 +17,7 @@ class Tween extends Component {
    * @param {Object}        values            The values to tween.
    * @param {number}        [duration=0.25]   Duraction in seconds.
    * @param {Object|null}   [properties=null] Tween properties Object.
+   * @param {Object|null}   [plugins=null]    Interpolation plugins object
    */
   constructor(values, duration = 0.250, properties = null, plugins = null) {
     super();

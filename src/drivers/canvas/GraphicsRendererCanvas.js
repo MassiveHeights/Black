@@ -32,7 +32,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * @param {VideoNullDriver} driver Driver to draw.
    * @param {number|null=} [color=null] Tint.
    *
-   * @returns {BVGStyle} Created style.
+   * @return {void}
    */
   __drawCommandBuffer(driver, color = null) {
     const gameObject = /** @type {Graphics} */ (this.gameObject);
@@ -41,8 +41,12 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
     ctx.save();
     ctx.beginPath();
 
-    this.__renderNode(driver, color, gameObject.mGraphicsData, gameObject.worldTransformation);
+    const transform = Matrix.pool.get().copyFrom(gameObject.worldTransformation);
+    transform.translate(-gameObject.mDataOffsetX, -gameObject.mDataOffsetY);
 
+    this.__renderNode(driver, color, gameObject.mGraphicsData, transform);
+
+    Matrix.pool.release(transform);
     ctx.restore();
   }
 
@@ -51,11 +55,11 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    *
    * @private
    * @param {VideoNullDriver} driver Driver to draw.
-   * @param {number} color Tint.
+   * @param {number|null} color Tint.
    * @param {GraphicsData} node Commands provider.
    * @param {Matrix} transform Graphics Data global transformation.
    *
-   * @returns {BVGStyle} Created style.
+   * @return {void}
    */
   __renderNode(driver, color, node, transform) {
     const commands = node.mCommandQueue;
@@ -74,7 +78,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
       switch (cmd.type) {
         case GraphicsCommandType.LINE_STYLE: {
           ctx.lineWidth = cmd.getNumber(0) * r;
-          ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : color, cmd.getNumber(2));
+          ctx.strokeStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(1) : /** @type {number} */(color), cmd.getNumber(2));
           ctx.lineCap = cmd.getString(3);
           ctx.lineJoin = cmd.getString(4);
           ctx.miterLimit = cmd.getNumber(5);
@@ -82,7 +86,48 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
         }
 
         case GraphicsCommandType.FILL_STYLE: {
-          ctx.fillStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : color, cmd.getNumber(1));
+          ctx.fillStyle = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : /** @type {number} */(color), cmd.getNumber(1));
+          break;
+        }
+
+        case GraphicsCommandType.FILL_GRD: {
+          const gradientInfo = /** @type {GraphicsLinearGradient} */(cmd.getObject(0));
+          let grd = gradientInfo.native;
+
+          if (!grd) {
+            const dpr = Black.driver.renderScaleFactor;
+            const entries = [];
+
+            grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x0 * dpr, gradientInfo.y0 * dpr,
+              gradientInfo.x1 * dpr, gradientInfo.y1 * dpr);
+
+            for (let key in gradientInfo.stops) {
+              entries.push({percent: parseFloat(key), color: gradientInfo.stops[key]});
+            }
+
+            entries.sort((a, b) => a.percent - b.percent);
+
+            for (let i = 0, l = entries.length; i < l; i++) {
+              const entry = entries[i];
+              grd.addColorStop(entry.percent, entry.color);
+            }
+          }
+
+          ctx.fillStyle = /** @type {CanvasGradient} */(grd);
+
+          break;
+        }
+
+        case GraphicsCommandType.FILL_PATTERN: {
+          const patternInfo = /** @type {GraphicsPattern} */(cmd.getObject(0));
+          let pattern = patternInfo.native;
+
+          if (!pattern) {
+            pattern = patternInfo.native = ctx.createPattern(patternInfo.image, patternInfo.repetition);
+          }
+
+          ctx.fillStyle = /** @type {CanvasPattern} */(pattern);
+
           break;
         }
 
@@ -95,6 +140,26 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
           ctx.rect(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r, cmd.getNumber(3) * r);
           break;
         }
+
+        case GraphicsCommandType.ROUNDED_RECT: {
+          const x = cmd.getNumber(0);
+          const y = cmd.getNumber(1);
+          const width = cmd.getNumber(2);
+          const height = cmd.getNumber(3);
+          const radius = cmd.getNumber(4);
+
+          ctx.moveTo(x * r - px, (y + radius) * r - py);
+          ctx.quadraticCurveTo(x * r - px, y * r - py, (x + radius) * r - px, y * r - py);
+          ctx.lineTo((x + width - radius) * r - px, y * r - py);
+          ctx.quadraticCurveTo((x + width) * r - px, y * r - py, (x + width) * r - px, (y + radius) * r - py);
+          ctx.lineTo((x + width) * r - px, (y + height - radius) * r - py);
+          ctx.quadraticCurveTo((x + width) * r - px, (y + height) * r - py, (x + width - radius) * r - px, (y + height) * r - py);
+          ctx.lineTo((x + radius) * r - px, (y + height) * r - py);
+          ctx.quadraticCurveTo(x * r - px, (y + height) * r - py, x * r - px, (y + height - radius) * r - py);
+          ctx.closePath();
+          break;
+        }
+
         case GraphicsCommandType.BEZIER_CURVE_TO: {
           ctx.bezierCurveTo(cmd.getNumber(0) * r - px, cmd.getNumber(1) * r - py, cmd.getNumber(2) * r - px, cmd.getNumber(3) * r - py, cmd.getNumber(4) * r - px, cmd.getNumber(5) * r - py);
           break;

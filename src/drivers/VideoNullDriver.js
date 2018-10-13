@@ -42,7 +42,7 @@ class VideoNullDriver {
     this.mSnapToPixels = false;
 
     /** @protected @type {number} */
-    this.mDevicePixelRatio = Device.getDevicePixelRatio();
+    this.mDevicePixelRatio = Black.instance.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
 
     /** @protected @type {BlendMode|null} */
     this.mGlobalBlendMode = BlendMode.AUTO;
@@ -50,13 +50,8 @@ class VideoNullDriver {
     /** @protected @type {number} */
     this.mGlobalAlpha = 1;
 
-    /** @protected @type {number} */
-    this.mDPR = Device.getDevicePixelRatio();
-
     /** @protected @type {Renderer} */
     this.mStageRenderer = new Renderer();
-    // this.mStageRenderer.alpha = 1;
-    // this.mStageRenderer.blendMode = BlendMode.NORMAL;
 
     /** @protected @type {Object.<string, function(new: Renderer)>} */
     this.mRendererMap = {};
@@ -140,7 +135,7 @@ class VideoNullDriver {
       renderer.parent = parentRenderer;
       parentRenderer = renderer;
 
-      renderer.preRender(this, false);
+      renderer.preRender(this, session);
 
       if (renderer.endPassRequired === true)
         session.endPassParentRenderers.push(renderer);
@@ -316,14 +311,10 @@ class VideoNullDriver {
   }
 
   /**
-   * The scale factor of stage multiplied by DPR multiplied by render resolution.
-   *
+   * Returns device pixel ratio or 1 in case high DPR support is disabled.
+   * 
    * @returns {number}
    */
-  get finalScale() {
-    return this.mDPR * Black.stage.scaleFactor;
-  }
-
   get renderScaleFactor() {
     return this.mDevicePixelRatio;
   }

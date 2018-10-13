@@ -8,6 +8,9 @@
 
 /* @echo EXPORT */
 class GraphicsData {
+  /**
+   * Creates new instance of GraphicsData
+   */
   constructor() {
 
     /** @private @type {Array<GraphicsData>} */
@@ -33,9 +36,15 @@ class GraphicsData {
   }
 
   /**
-   * @inheritDoc
+   * Calculates trimmed local bounds.
+   *
+   * @protected
+   * @param {Object} graphics Object to store bounds by reference.
+   * @param {Matrix} transform Matrix to transform children nodes, for internal use.
+   *
+   * @return {Rectangle} Calculated local bounds.
    */
-  onGetLocalBounds(bounds, transform) {
+  onGetLocalBounds(graphics, transform) {
     let path = new GraphicsPath();
     let len = this.mCommandQueue.length;
 
@@ -49,7 +58,11 @@ class GraphicsData {
 
       switch (cmd.type) {
         case GraphicsCommandType.BEGIN_PATH: {
-          path.bounds && bounds.union(transform.transformRect(path.bounds, path.bounds));
+          if (path.bounds) {
+            transform.transformRect(path.bounds, path.bounds);
+            graphics.mLocalBounds = graphics.mLocalBounds ? graphics.mLocalBounds.union(path.bounds) : path.bounds;
+          }
+
           path = new GraphicsPath();
           break;
         }
@@ -70,8 +83,10 @@ class GraphicsData {
           break;
         }
         case GraphicsCommandType.FILL: {
-          let tmpBounds = Rectangle.fromPointsXY(path.points);
-          path.bounds = path.bounds !== null ? path.bounds.union(tmpBounds) : tmpBounds;
+          if (path.points.length !== 0) {
+            let tmpBounds = Rectangle.fromPointsXY(path.points);
+            path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+          }
 
           break;
         }
@@ -84,12 +99,14 @@ class GraphicsData {
 
           path.maxLineWidth *= path.lineMul;
 
-          let tmpBounds = Rectangle.fromPointsXY(path.points);
+          if (path.points.length !== 0) {
+            let tmpBounds = Rectangle.fromPointsXY(path.points);
 
-          if (path.points.length > 2)
-            tmpBounds.inflate(path.maxLineWidth * scaleX, path.maxLineWidth * scaleY);
+            if (path.points.length > 1)
+              tmpBounds.inflate(path.maxLineWidth * scaleX, path.maxLineWidth * scaleY);
 
-          path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+            path.bounds = path.bounds ? path.bounds.union(tmpBounds) : tmpBounds;
+          }
 
           break;
         }
@@ -99,13 +116,16 @@ class GraphicsData {
       }
     }
 
-    path.bounds && bounds.union(transform.transformRect(path.bounds, path.bounds));
-
-    for (let i = 0, l = this.mNodes.length; i < l; i++) {
-      this.mNodes[i].onGetLocalBounds(bounds, transform);
+    if (path.bounds) {
+      transform.transformRect(path.bounds, path.bounds);
+      graphics.mLocalBounds = graphics.mLocalBounds ? graphics.mLocalBounds.union(path.bounds) : path.bounds;
     }
 
-    return bounds;
+    for (let i = 0, l = this.mNodes.length; i < l; i++) {
+      this.mNodes[i].onGetLocalBounds(graphics, transform);
+    }
+
+    return graphics.mLocalBounds;
   }
 
   /**
@@ -139,6 +159,32 @@ class GraphicsData {
   fillStyle(color = 0, alpha = 1) {
     Debug.isNumber(color, alpha);
     this.__pushCommand(GraphicsCommandType.FILL_STYLE, color, alpha);
+  }
+
+  /**
+   * Sets fill style to gradient.
+   *
+   * @public
+   * @param {GraphicsGradient} gradient Fill gradient.
+   *
+   * @returns {void}
+   */
+  fillGradient(gradient) {
+    if (gradient instanceof GraphicsLinearGradient) {
+      this.__pushCommand(GraphicsCommandType.FILL_GRD, /** @type {GraphicsLinearGradient} */(gradient));
+    } // radial todo
+  }
+
+  /**
+   * Sets fill style to pattern.
+   *
+   * @public
+   * @param {GraphicsPattern} pattern Fill pattern.
+   *
+   * @returns {void}
+   */
+  fillPattern(pattern) {
+    this.__pushCommand(GraphicsCommandType.FILL_PATTERN, pattern);
   }
 
   /**
@@ -291,6 +337,25 @@ class GraphicsData {
     Debug.isNumber(x, y, width, height);
 
     this.__pushCommand(GraphicsCommandType.RECT, x, y, width, height);
+    this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
+  }
+
+  /**
+   * Creates closed rounded rectangle.
+   *
+   * @public
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
+   * @param {number} radius
+   *
+   * @returns {void}
+   */
+  roundedRect(x, y, width, height, radius) {
+    Debug.isNumber(x, y, width, height, radius);
+
+    this.__pushCommand(GraphicsCommandType.ROUNDED_RECT, x, y, width, height, radius);
     this.__pushCommand(GraphicsCommandType.BOUNDS, x, y, x + width, y + height);
   }
 

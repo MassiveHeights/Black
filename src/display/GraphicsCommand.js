@@ -4,11 +4,12 @@
  * @ignore
  * @cat display
  */
+
 /* @echo EXPORT */
 class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
-   * 
+   *
    * @param {GraphicsCommandType} type
    * @param {Array<*>} data
    */
@@ -22,7 +23,7 @@ class GraphicsCommand {
 
   /**
    * Returns value at given index as a number. Used for GCC only.
-   * @param {number} ix 
+   * @param {number} ix
    * @returns {number}
    */
   getNumber(ix) {
@@ -31,19 +32,28 @@ class GraphicsCommand {
 
   /**
    * Returns value at given index as a string. Used for GCC only.
-   * @param {number} ix 
+   * @param {number} ix
    * @returns {string}
    */
   getString(ix) {
     return /** @type {!string} */ (this.data[ix]);
   }
 
-    /**
+  /**
    * Returns value at given index as a string. Used for GCC only.
-   * @param {number} ix 
+   * @param {number} ix
    * @returns {boolean}
    */
   getBoolean(ix) {
     return /** @type {!boolean} */ (this.data[ix]);
-  }  
+  }
+
+  /**
+   * Returns value at given index as an object. Used for GCC only.
+   * @param {number} ix
+   * @returns {Object}
+   */
+  getObject(ix) {
+    return /** @type {!Object} */ (this.data[ix]);
+  }
 }

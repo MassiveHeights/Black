@@ -275,6 +275,15 @@ class Emitter extends DisplayObject {
   }
 
   /**
+   * Gets current emitter state.
+   *
+   * @return {EmitterState}
+   */
+  get state() {
+    return this.mState;
+  }
+
+  /**
    * Gets/Sets The maximum number of particles can be created.
    *
    * @return {number}

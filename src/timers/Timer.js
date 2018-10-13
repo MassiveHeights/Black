@@ -1,6 +1,8 @@
 /**
  * Timer component.
  *
+ * @cat timers
+ * 
  * @fires Timer#complete
  * @fires Timer#tick
  * 
@@ -232,7 +234,7 @@ class Timer extends Component {
 
   /**
    * @ignore
-   * @param {number} value
+   * @param {boolean} value
    * @return {void}
    */
   set startOnAdded(value) {

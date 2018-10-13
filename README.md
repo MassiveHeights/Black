@@ -10,7 +10,7 @@
 Black is a highly optimized 2D framework for web, mobile games, and playable ads.  
 
 **Most valuable when size matters**  
-All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts%20Blitz) game is only 33KB gzipped for both engine and game code.
+All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts-Blitz) game is only 33KB gzipped for both engine and game code.
 
 **Advanced scene graph and rendering pipeline**  
 Dirty flag tracks scene changes and avoids unnecessary calculations and context calls. If no changes were made to the scene since last frame, no rendering will be done. Battery efficient.
@@ -23,28 +23,28 @@ For more information about how to use Black Engine, please check the [Blacksmith
 ## FEATURES
 ✔️ [Extra lightweight](https://github.com/MassiveHeights/Black#size-and-performance-comparison)  
 ✔️ [Display Resolution Awareness](https://blacksmith2d.io/Docs/Examples/Stage/Letterbox)  
-✔️ [Advanced Particle System](https://blacksmith2d.io/Docs/Examples/Particles/Vector%20Field)  
-✔️ [Vector Graphics](https://blacksmith2d.io/Docs/Examples/Vector%20Graphics/Vector%20As%20a%20Sprite)  
-✔️ [Vector Graphics Baking](https://blacksmith2d.io/Docs/Examples/Vector%20Graphics/Vector%20As%20a%20Sprite)  
-✔️ [Smart Cache As Bitmap](https://blacksmith2d.io/Docs/Examples/Sprites/Cache%20As%20Bitmap)  
+✔️ [Advanced Particle System](https://blacksmith2d.io/Docs/Examples/Particles/Vector-Field)  
+✔️ [Vector Graphics](https://blacksmith2d.io/Docs/Examples/Vector-Graphics/Vector-As-a-Sprite)  
+✔️ [Vector Graphics Baking](https://blacksmith2d.io/Docs/Examples/Vector-Graphics/Vector-As-a-Sprite)  
+✔️ [Smart Cache As Bitmap](https://blacksmith2d.io/Docs/Examples/Sprites/Cache-As-Bitmap)  
 ✔️ [Tweens](https://blacksmith2d.io/Docs/Examples/Tweening/Chain)  
 ✔️ [Message Dispatcher](https://blacksmith2d.io/Docs/Examples/Input/Layers)  
-✔️ [Sprite Animations](https://blacksmith2d.io/Docs/Examples/Sprites/Sprite%20Animation)  
-✔️ [Asset Manager](https://blacksmith2d.io/Docs/Examples/Basics/Load%20images%20from%20atlas)  
-✔️ [Advanced Font Rendering and font metrics](https://blacksmith2d.io/Docs/Examples/Text/Having%20fun)  
-✔️ [Texture Atlas](https://blacksmith2d.io/Docs/Examples/Basics/Load%20images%20from%20atlas)  
-✔️ [Input](https://blacksmith2d.io/Docs/Examples/Input/Pointer%20Messages)  
-✔️ [Clipping Rectangle](https://blacksmith2d.io/Docs/Examples/Sprites/Clipping%20Rectangle)  
-✔️ [Component System](https://blacksmith2d.io/Docs/Examples/Input/Drag%20Sprite)  
-✔️ [Audio Support](https://blacksmith2d.io/Docs/Examples/Audio/Spatial%20Sound)  
-✔️ [Audio Atlases](https://blacksmith2d.io/Docs/Examples/Audio/Sound%20Atlas)  
-✔️ [Bitmap Fonts](https://blacksmith2d.io/Docs/Examples/Text/Bitmap%20Font)  
+✔️ [Sprite Animations](https://blacksmith2d.io/Docs/Examples/Sprites/Sprite-Animation)  
+✔️ [Asset Manager](https://blacksmith2d.io/Docs/Examples/Basics/Load-images-from-atlas)  
+✔️ [Advanced Font Rendering and font metrics](https://blacksmith2d.io/Docs/Examples/Text/Having-fun)  
+✔️ [Texture Atlas](https://blacksmith2d.io/Docs/Examples/Basics/Load-images-from-atlas)  
+✔️ [Input](https://blacksmith2d.io/Docs/Examples/Input/Pointer-Messages)  
+✔️ [Clipping Rectangle](https://blacksmith2d.io/Docs/Examples/Sprites/Clipping-Rectangle)  
+✔️ [Component System](https://blacksmith2d.io/Docs/Examples/Input/Drag-Sprite)  
+✔️ [Audio Support](https://blacksmith2d.io/Docs/Examples/Audio/Spatial-Sound)  
+✔️ [Audio Atlases](https://blacksmith2d.io/Docs/Examples/Audio/Sound-Atlas)  
+✔️ [Bitmap Fonts](https://blacksmith2d.io/Docs/Examples/Text/Bitmap-Font)  
 ✔️ [Graphics](https://blacksmith2d.io/Docs/Examples/Graphics/Bezier)  
-✔️ [Battery Efficient](https://blacksmith2d.io/Docs/Examples/Drivers/Skip%20Unchanged%20Frames)  
-✔️ [Render Texture](https://blacksmith2d.io/Docs/Examples/Drivers/Render%20Texture)  
-✔️ [Arcade Physics](https://blacksmith2d.io/Docs/Examples/Arcade%20Physics/Mario)  
-✔️ [Texture Wrap and Repeat](https://blacksmith2d.io/Docs/Examples/Sprites/Texture%20Repeat)  
-✔️ [Nine slice grid](https://blacksmith2d.io/Docs/Examples/Sprites/Slice%209%20Grid)  
+✔️ [Battery Efficient](https://blacksmith2d.io/Docs/Examples/Drivers/Skip-Unchanged-Frames)  
+✔️ [Render Texture](https://blacksmith2d.io/Docs/Examples/Drivers/Render-Texture)  
+✔️ [Arcade Physics](https://blacksmith2d.io/Docs/Examples/Arcade-Physics/Mario)  
+✔️ [Texture Wrap and Repeat](https://blacksmith2d.io/Docs/Examples/Sprites/Texture-Repeat)  
+✔️ [Nine slice grid](https://blacksmith2d.io/Docs/Examples/Sprites/Slice-9-Grid)  
 ✔️ GCC Ready  
 
 ## GETTING STARTED
@@ -78,7 +78,7 @@ Written something cool using Black Engine? Please tell us about it via <a href="
 Found a bug or issue — post them on [Issues](https://github.com/MassiveHeights/Black/issues) page.
 
 ## QUICK LINKS
-[Getting Started](http://blacksmith2d.io/Docs/Tutorials/Getting%20Started) —
+[Getting Started](http://blacksmith2d.io/Docs/Tutorials/Getting-Started) —
 [Examples](http://blacksmith2d.io/Docs/Examples) —
 [Game Template](http://github.com/MassiveHeights/Black-Template) —
 [EULA](https://github.com/MassiveHeights/Black/blob/master/LICENSE.md) 

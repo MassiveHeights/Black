@@ -53,6 +53,7 @@
     "src/assets/loaders/FontFaceAssetLoader.js",
 
     "src/assets/Asset.js",
+    "src/assets/CustomAsset.js",
     "src/assets/TextureAsset.js",
     "src/assets/JSONAsset.js",
     "src/assets/XMLAsset.js",
@@ -88,6 +89,10 @@
     "src/display/DisplayObject.js",
     "src/display/GraphicsData.js",
     "src/display/Graphics.js",
+    "src/display/GraphicsPath.js",
+    "src/display/GraphicsGradient.js",
+    "src/display/GraphicsLinearGradient.js",
+    "src/display/GraphicsPattern.js",
     "src/display/GraphicsCommand.js",
     "src/display/GraphicsCommandType.js",
     "src/display/CapsStyle.js",
@@ -139,8 +144,6 @@
     "src/input/KeyInfo.js",
     "src/input/Input.js",
     "src/input/InputComponent.js",
-
-    "src/components/FPSComponent.js",
 
     "src/animation/Ease.js",
     "src/animation/Interpolation.js",

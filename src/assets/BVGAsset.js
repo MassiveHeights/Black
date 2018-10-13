@@ -10,18 +10,19 @@ class BVGAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
-   * @param {string} name The name of asset.
-   * @param {string} url  URL to the json file.
-   * @param {boolean} bake Flag to bake full BVG as texture. If false neither root nor children will be baked.
-   * @param {boolean} bakeChildren Flag to bake each node with id to textures. If false none child node will be baked.
-   * @param {Array<string>|null} namesToBake Concrete nodes id which require baking. Works only if bakeChildren=true.
-   * @return {void}
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   * @param {boolean} bakeSelf Flag to bake full BVG as texture. If false root will not be baked.
+   * @param {boolean} bakeChildren Flag to bake each node with id to textures. If false none children nodes will be baked.
+   * @param {Array<string>} namesToBake Concrete nodes ids to bake. Works only if bakeChildren is set to true.
+   *
+   * @returns {void}
    */
-  constructor(name, url, bake, bakeChildren, namesToBake) {
+  constructor(name, url, bakeSelf, bakeChildren, namesToBake) {
     super(name);
 
     /** @private @type {boolean} */
-    this.mBake = bake;
+    this.mBakeSelf = bakeSelf;
 
     /** @private @type {boolean} */
     this.mBakeChildren = bakeChildren;
@@ -60,11 +61,10 @@ class BVGAsset extends Asset {
     const textures = {};
     const namesToBake = this.mNamesToBake;
 
-    if (!this.mBake)
-      return textures;
-
     if (this.mBakeChildren && namesToBake.length === 0) {
       const traverse = nodes => {
+        nodes = /** @type {Array<GraphicsData>} */(nodes);
+
         if (nodes.length === 0) return;
 
         for (let i = 0, l = nodes.length; i < l; i++) {
@@ -72,14 +72,15 @@ class BVGAsset extends Asset {
             namesToBake.push(nodes[i].name);
           }
 
-          traverse(nodes[i].mNodes);
+          traverse(/** @type {Array<GraphicsData>} */(nodes[i].mNodes));
         }
       };
 
       traverse(this.mGraphicsData.mNodes);
     }
 
-    namesToBake.unshift(this.mGraphicsData.name);
+    if (this.mBakeSelf)
+      namesToBake.unshift(this.mGraphicsData.name);
 
     for (let i = 0, l = namesToBake.length; i < l; i++) {
       const name = namesToBake[i];
@@ -90,10 +91,11 @@ class BVGAsset extends Asset {
         continue;
       }
 
-      const graphics = new Graphics(node);
-      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+      const graphics = new Graphics(node, name !== this.mGraphicsData.name);
+      const dpr = 1 / Black.driver.renderScaleFactor;
+      const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, 1);
 
-      Black.driver.render(graphics, renderTexture, new Matrix());
+      Black.driver.render(graphics, renderTexture, new Matrix().scale(dpr, dpr));
 
       textures[name] = renderTexture;
     }

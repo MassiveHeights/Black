@@ -72,6 +72,9 @@ class AssetManager extends MessageDispatcher {
     /** @private @type {Object.<string, BitmapFontData>} */
     this.mBitmapFonts = {};
 
+    /** @private @type {Object.<string, CustomAsset>} */
+    this.mCustomAssets = {};
+
     /** @private @type {AssetManagerState} */
     this.mState = AssetManagerState.NONE;
 
@@ -162,16 +165,16 @@ class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL of the json.
-   * @param {boolean=} [bake=false] Flag to bake full BVG as texture. If false neither root nor children will be baked.
-   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none child node will be baked.
-   * @param {Array<string>=} [namesToBake=null] Concrete nodes id which require baking. Works only if bakeChildren=true.
+   * @param {boolean=} [bakeSelf=false] Flag to bake full BVG as texture. If false root will not be baked.
+   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none children nodes will be baked.
+   * @param {Array<string>=} [namesToBake=null] Concrete nodes ids to bake. Works only if bakeChildren is set to true.
    *
    * @returns {void}
    */
-  enqueueVector(name, url, bake = false, bakeChildren = false, namesToBake = null) {
+  enqueueVector(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
     this.__validateState();
     this.__validateName(name);
-    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bake, bakeChildren, namesToBake));
+    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
   }
 
   /**
@@ -224,6 +227,16 @@ class AssetManager extends MessageDispatcher {
     this.__validateState();
     this.__validateName(name);
     this.mQueue.push(new FontAsset(name, '', false));
+  }
+
+  /**
+   * Adds custom asset to the loading queue.
+   * 
+   * @param {Asset} asset
+   */
+  enqueueCustomAsset(asset) {
+    this.__validateState();
+    this.mQueue.push(asset);
   }
 
   /**
@@ -287,11 +300,17 @@ class AssetManager extends MessageDispatcher {
     else if (item.constructor === BVGAsset) {
       this.mGraphicsData[item.name] = item.data;
 
-      const bakedTextures = item.bakeTextures();
-      Object.keys(bakedTextures).forEach(name => name !== item.name && this.__validateName(name));
-      Object.assign(this.mVectorTextures, bakedTextures);
-    }
-    else {
+      const bakedTextures = /** @type {BVGAsset} */ (item).bakeTextures();
+
+      for (let name in bakedTextures) {
+        if (!bakedTextures.hasOwnProperty(name)) continue;
+
+        name !== item.name && this.__validateName(name);
+        this.mVectorTextures[name] = bakedTextures[name];
+      }
+    } else if (item instanceof CustomAsset) {
+      this.mCustomAssets[item.name] = item.data;
+    } else {
       Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
     }
 
@@ -423,7 +442,11 @@ class AssetManager extends MessageDispatcher {
     // collect single textures
     for (let key in this.mTextures)
       if (re.test(key))
-        names.push({name: key, atlas: null});
+        names.push({ name: key, atlas: null, isBakedVector: false });
+
+    for (let key in this.mVectorTextures)
+      if (re.test(key))
+        names.push({ name: key, atlas: null, isBakedVector: true });
 
     // collect textures from all atlases
     for (let key in this.mAtlases) {
@@ -431,7 +454,7 @@ class AssetManager extends MessageDispatcher {
 
       for (let key2 in atlas.subTextures)
         if (re.test(key2))
-          names.push({name: key2, atlas: atlas});
+          names.push({ name: key2, atlas: atlas, isBakedVector: false });
     }
 
     AtlasTexture.naturalSort(names, 'name');
@@ -439,8 +462,12 @@ class AssetManager extends MessageDispatcher {
     for (let i = 0; i < names.length; i++) {
       let ao = names[i];
 
-      if (ao.atlas == null)
-        out.push(this.mTextures[ao.name]);
+      if (ao.atlas === null) {
+        if (ao.isBakedVector === true)
+          out.push(this.mVectorTextures[ao.name]);
+        else
+          out.push(this.mTextures[ao.name]);
+      }
       else
         out.push(ao.atlas.mSubTextures[ao.name]);
     }
@@ -506,6 +533,16 @@ class AssetManager extends MessageDispatcher {
    */
   getJSON(name) {
     return this.mJsons[name];
+  }
+
+  /**
+   * Returns Object parsed from `CutsomAsset` by given name.
+   *
+   * @param {string} name The name of the asset.
+   * @return {Object} Returns object or null.
+   */
+  getCustomAsset(name) {
+    return this.mCustomAssets[name];
   }
 
   __validateState() {

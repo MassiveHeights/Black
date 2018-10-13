@@ -324,7 +324,7 @@ class MessageDispatcher {
 
     message.sender = this;
 
-    if (name.startsWith('~') === true) {
+    if (name.charAt(0) === '~') {
       message.name = name.substr(1);
       message.type = MessageType.BUBBLE;
     } else {
