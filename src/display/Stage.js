@@ -5,6 +5,7 @@
  * @fires Stage#resize
  * @extends GameObject
  */
+
 /* @echo EXPORT */
 class Stage extends GameObject {
   constructor() {
@@ -30,7 +31,7 @@ class Stage extends GameObject {
 
     /** @private @type {number} */
     this.mCacheWidth = 0;
-    
+
     /** @private @type {number} */
     this.mCacheHeight = 0;
 
@@ -51,7 +52,7 @@ class Stage extends GameObject {
 
   /**
    * Gets/Sets stage orientation.
-   * 
+   *
    * @returns {StageOrientation}
    */
   get orientation() {
@@ -70,7 +71,7 @@ class Stage extends GameObject {
 
   /**
    * Sets stage size by given width and height.
-   * 
+   *
    * @param {number} width New stage width.
    * @param {number} height New stage height.
    * @returns {void}
@@ -186,7 +187,7 @@ class Stage extends GameObject {
 
   /**
    * Determines which of two numbers suits to stage orientation.
-   * 
+   *
    * @public
    * @param {number} land Landscape mode value.
    * @param {number} port Portrait mode value.
@@ -203,7 +204,7 @@ class Stage extends GameObject {
 
   /**
    * Gets/Sets stage scale mode.
-   * 
+   *
    * @return {StageScaleMode}
    */
   get scaleMode() {
@@ -222,7 +223,7 @@ class Stage extends GameObject {
 
   /**
    * Stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -233,7 +234,7 @@ class Stage extends GameObject {
 
   /**
    * Original stage width multiplied by device pixel ratio and stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -244,7 +245,7 @@ class Stage extends GameObject {
 
   /**
    * Original stage height multiplied by device pixel ratio and stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -255,7 +256,7 @@ class Stage extends GameObject {
 
   /**
    * Gets stage center coordinate along X-axis.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -266,7 +267,7 @@ class Stage extends GameObject {
 
   /**
    * Gets stage center coordinate along Y-axis.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -318,42 +319,11 @@ class Stage extends GameObject {
     if (this.mOrientationLock === false)
       return this.mLocalTransform;
 
-    // orientation lock hacks
-    // chrome   window.screen.orientation.type
-    // firefox  window.screen.mozOrientation
-    // edge     window.screen.msOrientation
-    // safari   window.orientation || 0
+    if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait || this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
+      const x = (Black.instance.viewport.size.width * 0.5) - this.mStageHeight * 0.5 * this.mStageScaleFactor;
+      const y = (Black.instance.viewport.size.height * 0.5) + this.mStageWidth * 0.5 * this.mStageScaleFactor;
 
-    let angle = 0;
-    if (window.orientation != null) {
-      angle = window.orientation;
-    } else {
-      let orientation = window.screen.msOrientation || window.screen.mozOrientation || (window.screen.orientation && window.screen.orientation.type) || '';
-      if (orientation.length === 17) { // landscape-primary
-        angle = 0;
-      } else if (orientation.length === 19) { // landscape-secondary
-        angle = 180;
-      } else if (orientation.length === 16) { // portrait-primary
-        angle = 90;
-      } else if (orientation.length === 18) { // portrait-secondary
-        angle = -90;
-      }
-    }
-
-    if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
-      this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
-
-      let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
-      let y = (Black.instance.viewport.size.height * 0.5) - (this.mStageWidth * 0.5 * this.mStageScaleFactor);
-
-      this.mLocalTransform.setTranslation(x, y);
-
-    } else if (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
-      this.mLocalTransform.rotate((angle - 90) * Math.PI / 180);
-
-      let x = (Black.instance.viewport.size.width * 0.5) - (this.mStageHeight * 0.5 * this.mStageScaleFactor);
-      let y = (Black.instance.viewport.size.height * 0.5) + (this.mStageWidth * 0.5 * this.mStageScaleFactor);
-
+      this.mLocalTransform.rotate(-Math.PI / 2);
       this.mLocalTransform.setTranslation(x, y);
     }
 
