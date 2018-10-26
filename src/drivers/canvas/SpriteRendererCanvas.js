@@ -16,7 +16,7 @@ class SpriteRendererCanvas extends Renderer {
     /** @type {Texture|null} */
     this.patternTexture = null;
 
-    /** @type {Texture|null} */
+    /** @type {CanvasRenderTexture|null} */
     this.sliceTextureCache = null;
 
     /** @type {number|null} */
@@ -33,9 +33,11 @@ class SpriteRendererCanvas extends Renderer {
   preRender(driver, session) {
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-    this.endPassRequired = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty === false;
-    this.skipChildren = gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true || (gameObject.mMask !== null && session.isMasking === true);
-    this.skipSelf = gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false || gameObject.mIsMask === true;
+    const skip = gameObject.mClipRect !== null && gameObject.mClipRect.isEmpty;
+
+    this.endPassRequired = gameObject.mClipRect !== null && !gameObject.mClipRect.isEmpty;
+    this.skipChildren = skip || gameObject.mAlpha <= 0 || gameObject.mVisible === false;
+    this.skipSelf = skip || gameObject.mTexture === null || gameObject.mAlpha <= 0 || gameObject.mVisible === false;
   }
 
   renderSlice9Grid(driver, texture, grid) {
@@ -43,9 +45,8 @@ class SpriteRendererCanvas extends Renderer {
     let desiredWidth = texture.width * this.gameObject.mScaleX;
     let desiredHeight = texture.height * this.gameObject.mScaleY;
 
-    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight) {
+    if (this.textureCache === texture && this.sizeWidthCache === desiredWidth && this.sizeHeightCache === desiredHeight)
       return this.sliceTextureCache;
-    }
 
     this.textureCache = texture;
     this.sizeWidthCache = desiredWidth;
@@ -139,44 +140,6 @@ class SpriteRendererCanvas extends Renderer {
     let ctx = /** @type {CanvasDriver}*/ (driver).mCtx;
     let gameObject = /** @type {Sprite} */ (this.gameObject);
 
-
-    // if (super.checkMask(driver, session)) {
-    //   super.renderMask(driver, session);
-    //   return;
-    // }
-
-    // if (gameObject.mMask !== null && gameObject.mMask.mAdded && session.isMasking === false) {
-    //   const sf = Black.stage.scaleFactor;
-
-    //   let leftBounds = gameObject.bounds;
-    //   let left = new CanvasRenderTexture(leftBounds.width, leftBounds.height, 1);
-
-    //   let rightBounds = gameObject.mMask.bounds;
-    //   let right = new CanvasRenderTexture(rightBounds.width, rightBounds.height, 1);
-
-    //   let leftMatrix = new Matrix();
-    //   leftMatrix.set(1, 0, 0, 1, ~~(-leftBounds.x * sf - Black.stage.mX), ~~(-leftBounds.y * sf - Black.stage.mY));
-
-    //   let rightMatrix = new Matrix();
-    //   rightMatrix.set(1, 0, 0, 1, ~~(-rightBounds.x * sf - Black.stage.mX), ~~(-rightBounds.y * sf - Black.stage.mY));
-
-    //   driver.render(gameObject, left, leftMatrix, true);
-    //   driver.render(gameObject.mMask, right, rightMatrix, true);
-
-    //   let transform = gameObject.worldTransformation;
-
-    //   driver.setTransform(gameObject.mMask.worldTransformation);
-    //   driver.drawTexture(right);
-
-    //   driver.setGlobalBlendMode(BlendMode.MASK);
-
-    //   driver.setTransform(transform);
-    //   driver.drawTexture(left);
-
-    //   return;
-    // }
-
-
     let texture = Renderer.getColoredTexture(gameObject.mTexture, this.color);
 
     if (gameObject.mSlice9grid !== null) {
@@ -192,12 +155,6 @@ class SpriteRendererCanvas extends Renderer {
       driver.drawTexture(texture);
     } else {
       // we got some tiling
-
-      //let rt = new CanvasRenderTexture(desireWidth, desireHeight, 1 / texture.scale);
-      //if (gameObject.checkStatic(false) === true){
-      // render directly to backbuffer
-      //}
-
       if (this.pattern === null || this.patternTexture !== texture) {
         const renderCanvas = new RenderTargetCanvas(texture.width, texture.height);
         const r = texture.region;
@@ -210,7 +167,7 @@ class SpriteRendererCanvas extends Renderer {
 
       ctx.fillStyle = /** @type {CanvasPattern} */(this.pattern);
 
-      let dpr = driver.mDPR;
+      let dpr = driver.renderScaleFactor;
 
       let m = gameObject.worldTransformation.clone();
       m.scale(gameObject.tiling.scaleX * dpr, gameObject.tiling.scaleY * dpr);

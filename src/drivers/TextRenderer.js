@@ -133,7 +133,7 @@ class TextRenderer extends Renderer {
         let data = this.mTransform.data;
         let gameObjectScaleX = Math.sqrt((data[0] * data[0]) + (data[2] * data[2]));
         let gameObjectScaleY = Math.sqrt((data[1] * data[1]) + (data[3] * data[3]));
-        scale = Math.max(gameObjectScaleX, gameObjectScaleY) * driver.mDPR;
+        scale = Math.max(gameObjectScaleX, gameObjectScaleY) * driver.renderScaleFactor;
       }
 
       let canvasBounds = this.mMetrics.strokeBounds.clone();

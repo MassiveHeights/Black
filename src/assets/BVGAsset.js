@@ -65,12 +65,12 @@ class BVGAsset extends Asset {
       const traverse = nodes => {
         nodes = /** @type {Array<GraphicsData>} */(nodes);
 
-        if (nodes.length === 0) return;
+        if (nodes.length === 0)
+          return;
 
         for (let i = 0, l = nodes.length; i < l; i++) {
-          if (nodes[i].name) {
-            namesToBake.push(nodes[i].name);
-          }
+          if (nodes[i].name)
+            namesToBake.push(/** @type {string} */(nodes[i].name));
 
           traverse(/** @type {Array<GraphicsData>} */(nodes[i].mNodes));
         }

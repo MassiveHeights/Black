@@ -1,6 +1,30 @@
 Black Engine: Changelog
 =======================
 
+# v0.5.8
+### New features
+- Added `useHiDPR` property to control render quality on high DPI screens
+- Added ability to draw rounded rectangle
+- Added ability to load custom asset in AssetManager using CustomAsset
+- Added gradient and pattern support for Graphics
+
+### Changes
+- Changed empty clip rectangle to clip everything instead of nothing
+- Improved anchor performance
+
+### Bug Fixes
+- Fixed Orientation Lock still works when disabled
+- Fixed many GCC comments
+- Fixed bug causing colored sprite to render incorrectly
+- Fixed slice9grid not working as expected on colored sprites
+- Fixed bug causing Arcade physics to not cleanup colliders after removing objects from stage
+- Fixed Arcade physics units to be always within stage
+- Fixed clip rect not working on TextField
+- Fixed `getTextures` returning null for backed vectors
+- Fixed BVG quadratic curve math
+- Fixed many BVG rendering bugs and glitches
+- Fixed anchors not working in some cases
+
 # v0.5.7
 ### Changes
 - Changed license to Simplified BSD!!!

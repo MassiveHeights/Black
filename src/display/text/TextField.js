@@ -85,7 +85,7 @@ class TextField extends DisplayObject {
    * @inheritDoc
    */
   onGetLocalBounds(outRect = undefined) {
-    outRect = outRect || new Rectangle();   
+    outRect = outRect || new Rectangle();
 
     if (this.mDirty & DirtyFlag.RENDER_CACHE) {
       let text = this.text;
@@ -132,7 +132,9 @@ class TextField extends DisplayObject {
     style.name = name;
 
     this.mStyles[name] = style;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -142,7 +144,9 @@ class TextField extends DisplayObject {
    */
   setDefaultStyle(style) {
     this.mDefaultStyle = style;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -152,7 +156,9 @@ class TextField extends DisplayObject {
    */
   removeStyle(name) {
     delete this.mStyles[name];
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -191,7 +197,9 @@ class TextField extends DisplayObject {
    */
   set multiline(value) {
     this.mMultiline = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -210,7 +218,9 @@ class TextField extends DisplayObject {
    */
   set lineHeight(value) {
     this.mLineHeight = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -241,7 +251,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.size = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -263,7 +275,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.family = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -285,7 +299,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.color = value;
+
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -307,7 +323,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.style = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -329,7 +347,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.weight = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -351,7 +371,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mAlign = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -373,7 +395,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mVerticalAlign = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -394,7 +418,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.strokeColor = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -417,7 +441,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.strokeThickness = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -439,7 +463,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mFieldWidth = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /** Specifies the height of the text field, if autoSize set as false
@@ -461,7 +487,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mFieldHeight = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**Text to be displayed inside this text field.
@@ -483,12 +511,14 @@ class TextField extends DisplayObject {
 
     this.mText = value;
 
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
+
     /**
      * Posts every time text has been changed.
      * @event TextField#change
      */
     this.post(Message.CHANGE);
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER | DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
   }
 
   /**
@@ -510,7 +540,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mAutoSize = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -529,7 +561,9 @@ class TextField extends DisplayObject {
    */
   set padding(value) {
     this.mPadding = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -551,7 +585,9 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.dropShadow = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 
   /**
@@ -573,7 +609,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowColor = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -595,7 +631,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowAlpha = value;
-    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -617,7 +653,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowBlur = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -639,7 +675,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowDistanceX = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -661,7 +697,7 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.shadowDistanceY = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
   /**
@@ -681,7 +717,9 @@ class TextField extends DisplayObject {
    */
   set highQuality(value) {
     this.mHighQuality = value;
-    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.BOUNDS), false);
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
   }
 }
 

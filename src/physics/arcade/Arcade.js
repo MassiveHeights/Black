@@ -406,7 +406,15 @@ class Arcade extends System {
 
       if (pair.a === collider || pair.b === collider) {
         pairs.splice(i, 1);
-        pair.constructor.pool.release(pair);
+
+        if (pair instanceof BoxToBoxPair)
+          BoxToBoxPair.pool.release(pair);
+        else if (pair instanceof BoxToCirclePair)
+          BoxToCirclePair.pool.release(pair);
+        else if (pair instanceof CircleToCirclePair)
+          CircleToCirclePair.pool.release(pair);
+
+        //pair.constructor.pool.release(pair);
 
         delete pairsHash[Pair.__id(pair.a, pair.b)];
 
@@ -599,10 +607,10 @@ class Arcade extends System {
     const bounds = Black.stage.bounds;
     const thickness = Number.MAX_SAFE_INTEGER;
 
-    this.mBoundsLeft.set(bounds.x - thickness, bounds.y, thickness, bounds.height);
-    this.mBoundsRight.set(bounds.x + bounds.width, bounds.y, thickness, bounds.height);
-    this.mBoundsTop.set(bounds.x - thickness, bounds.y - thickness, bounds.width + thickness * 2, thickness);
-    this.mBoundsBottom.set(bounds.x - thickness, bounds.y + bounds.height, bounds.width + thickness * 2, thickness);
+    this.mBoundsLeft.set(-thickness, 0, thickness, bounds.height);
+    this.mBoundsRight.set(bounds.width, 0, thickness, bounds.height);
+    this.mBoundsTop.set(-thickness, -thickness, bounds.width + thickness * 2, thickness);
+    this.mBoundsBottom.set(-thickness, bounds.height, bounds.width + thickness * 2, thickness);
   }
 
   /**

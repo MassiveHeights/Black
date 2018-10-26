@@ -3,7 +3,6 @@
  * Normally you should not work with this object, and use Graphics instead.
  *
  * @cat display
- * @extends DisplayObject
  */
 
 /* @echo EXPORT */
@@ -12,7 +11,6 @@ class GraphicsData {
    * Creates new instance of GraphicsData
    */
   constructor() {
-
     /** @private @type {Array<GraphicsData>} */
     this.mNodes = [];
 
@@ -33,6 +31,9 @@ class GraphicsData {
 
     /** @private @type {number} */
     this.mPosY = 0;
+
+    /** @private @type {string|null} */
+    this.mName = null;
   }
 
   /**
@@ -565,5 +566,25 @@ class GraphicsData {
         return node;
       }
     }
+  }
+
+  /**
+   * Gets/Sets the name of this GraphicsData instance. Used for searching elements.
+   *
+   * @export
+   * @return {string|null}
+   */
+  get name() {
+    return this.mName;
+  }
+
+  /**
+   * @export
+   * @ignore
+   * @param {string|null} value
+   * @return {void}
+   */
+  set name(value) {
+    this.mName = value;
   }
 }

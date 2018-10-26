@@ -47,12 +47,6 @@ class DisplayObject extends GameObject {
 
     /** @protected @type {boolean} */
     this.mSnapToPixels = false;
-
-    // /** @protected @type {DisplayObject|null} */
-    // this.mMask = null;
-
-    // /** @protected @type {boolean} */
-    // this.mIsMask = false;
   }
 
   /**
@@ -379,30 +373,4 @@ class DisplayObject extends GameObject {
   set snapToPixels(value) {
     this.mSnapToPixels = value;
   }
-
-  // /**
-  //  * Gets/sets a display object which will act like a mask for this display object. 
-  //  * Mask should be a part on the stage.
-  //  * @returns {DisplayObject|null}
-  //  */
-  // get mask() {
-  //   return this.mMask;
-  // }
-
-  // /**
-  //  * @ignore
-  //  * @param {DisplayObject|null}
-  //  */
-  // set mask(value) {
-  //   if (this.mMask === value)
-  //     return;
-
-  //   if (this.mMask !== null) 
-  //     this.mMask.mIsMask = false;
-
-  //   if (value !== null) 
-  //     value.mIsMask = true;
-
-  //   this.mMask = value;
-  // }
 }
