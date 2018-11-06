@@ -103,59 +103,43 @@ class Stage extends GameObject {
    * @returns {void}
    */
   __refresh() {
-    let size = Black.instance.viewport.size.clone();
+    const size = Black.instance.viewport.size.clone();
 
     if (this.mOrientationLock === true && ((this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) || (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape)))
       [size.width, size.height] = [size.height, size.width];
 
-    let windowWidth = size.width;
-    let windowHeight = size.height;
+    const windowWidth = size.width;
+    const windowHeight = size.height;
 
     if (this.mScaleMode === StageScaleMode.FIXED) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      this.mStageWidth = width;
-      this.mStageHeight = height;
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
+      const scaleFactor = Math.min(windowWidth / this.mWidth, windowHeight / this.mHeight);
+      const width = this.mWidth * scaleFactor;
+      const height = this.mHeight * scaleFactor;
+      this.mStageWidth = this.mWidth;
+      this.mStageHeight = this.mHeight;
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = scaleFactor;
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
       this.mStageWidth = size.width;
       this.mStageHeight = size.height;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
     } else if (this.mScaleMode === StageScaleMode.LETTERBOX) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      let two = 2 * scaleFactor;
-      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
-      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
-
-      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
-      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
+      const scaleFactor = Math.min(windowWidth / this.mWidth, windowHeight / this.mHeight);
+      const width = this.mWidth * scaleFactor;
+      const height = this.mHeight * scaleFactor;
+      this.mX = (windowWidth - width) / 2;
+      this.mY = (windowHeight - height) / 2;
+      this.mStageWidth = this.mWidth;
+      this.mStageHeight = this.mHeight;
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = scaleFactor;
     } else if (this.mScaleMode === StageScaleMode.COVER) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.min(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      let two = 2 * scaleFactor;
-      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
-      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
-
-      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
-      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.max(windowWidth / width, windowHeight / height);
+      const scaleFactor = Math.max(windowWidth / this.mWidth, windowHeight / this.mHeight);
+      const width = this.mWidth * scaleFactor;
+      const height = this.mHeight * scaleFactor;
+      this.mX = (windowWidth - width) / 2;
+      this.mY = (windowHeight - height) / 2;
+      this.mStageWidth = this.mWidth;
+      this.mStageHeight = this.mHeight;
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = scaleFactor;
     } else if (this.mScaleMode === StageScaleMode.NO_SCALE) {
       this.mStageWidth = (size.width * this.mDPR);
       this.mStageHeight = (size.height * this.mDPR);
@@ -183,23 +167,6 @@ class Stage extends GameObject {
      * @event Stage#resize
      */
     this.post(Message.RESIZE);
-  }
-
-  /**
-   * Determines which of two numbers suits to stage orientation.
-   *
-   * @public
-   * @param {number} land Landscape mode value.
-   * @param {number} port Portrait mode value.
-   * @returns {number}
-   */
-  LP(land, port) {
-    if (this.mOrientation == StageOrientation.LANDSCAPE)
-      return land;
-    else if (this.mOrientation == StageOrientation.PORTRAIT)
-      return port;
-
-    return Device.isLandscape ? land : port;
   }
 
   /**
@@ -320,8 +287,15 @@ class Stage extends GameObject {
       return this.mLocalTransform;
 
     if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait || this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
-      const x = (Black.instance.viewport.size.width * 0.5) - this.mStageHeight * 0.5 * this.mStageScaleFactor;
-      const y = (Black.instance.viewport.size.height * 0.5) + this.mStageWidth * 0.5 * this.mStageScaleFactor;
+      let x;
+      let y;
+      if (this.mScaleMode === StageScaleMode.LETTERBOX || this.mScaleMode === StageScaleMode.COVER) {
+        x = (Black.instance.viewport.size.width * 0.5) - this.mStageHeight * 0.5 * this.mStageScaleFactor;
+        y = (Black.instance.viewport.size.height * 0.5) + this.mStageWidth * 0.5 * this.mStageScaleFactor;
+      } else {
+        x = 0;
+        y = Black.instance.viewport.size.height;
+      }
 
       this.mLocalTransform.rotate(-Math.PI / 2);
       this.mLocalTransform.setTranslation(x, y);
