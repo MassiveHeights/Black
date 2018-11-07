@@ -214,8 +214,8 @@ class Input extends System {
 
     let stage = Black.stage;
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
+    while (this.mPointerQueue.length > 0) {
+      let nativeEvent = this.mPointerQueue.shift();
 
       // update to the latest position
       this.mPointerPosition.x = nativeEvent.x;
@@ -232,10 +232,6 @@ class Input extends System {
       this.__findTarget(this.mPointerPosition);
       this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
     }
-
-    // Erase the pointer queue
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
@@ -309,8 +305,8 @@ class Input extends System {
    * @returns {void}
    */
   __updateKeyboard() {
-    for (let i = 0; i < this.mKeyQueue.length; i++) {
-      let nativeEvent = this.mKeyQueue[i];
+    while (this.mKeyQueue.length > 0) {
+      let nativeEvent = this.mKeyQueue.shift();
 
       let ix = this.mKeyEventList.indexOf(nativeEvent.type);
       let pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);
