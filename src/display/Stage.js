@@ -103,59 +103,38 @@ class Stage extends GameObject {
    * @returns {void}
    */
   __refresh() {
-    let size = Black.instance.viewport.size.clone();
+    const size = Black.instance.viewport.size.clone();
 
-    if (this.mOrientationLock === true && ((this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) || (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape)))
+    if (this.mOrientationLock && ((this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) || (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape)))
       [size.width, size.height] = [size.height, size.width];
 
-    let windowWidth = size.width;
-    let windowHeight = size.height;
+    const windowWidth = size.width;
+    const windowHeight = size.height;
 
-    if (this.mScaleMode === StageScaleMode.FIXED) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
+    if (this.mScaleMode === StageScaleMode.FIXED || this.mScaleMode === StageScaleMode.LETTERBOX || this.mScaleMode === StageScaleMode.COVER) {
+      const mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
+      const mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
+      const scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
+      const width = windowWidth * scaleFactor;
+      const height = windowHeight * scaleFactor;
 
-      this.mStageWidth = width;
-      this.mStageHeight = height;
+      if (this.mScaleMode === StageScaleMode.FIXED) {
+        this.mStageWidth = width;
+        this.mStageHeight = height;
+      } else {
+        const two = 2 * scaleFactor;
+        this.mX = (width - this.LP(this.mWidth, this.mHeight)) / two;
+        this.mY = (height - this.LP(this.mHeight, this.mWidth)) / two;
+
+        this.mStageWidth = this.LP(this.mWidth, this.mHeight);
+        this.mStageHeight = this.LP(this.mHeight, this.mWidth);
+      }
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
       this.mStageWidth = size.width;
       this.mStageHeight = size.height;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
-    } else if (this.mScaleMode === StageScaleMode.LETTERBOX) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      let two = 2 * scaleFactor;
-      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
-      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
-
-      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
-      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
-    } else if (this.mScaleMode === StageScaleMode.COVER) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.min(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      let two = 2 * scaleFactor;
-      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
-      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
-
-      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
-      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.max(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NO_SCALE) {
       this.mStageWidth = (size.width * this.mDPR);
       this.mStageHeight = (size.height * this.mDPR);
