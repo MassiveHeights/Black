@@ -114,7 +114,7 @@ class Stage extends GameObject {
     if (this.mScaleMode === StageScaleMode.FIXED || this.mScaleMode === StageScaleMode.LETTERBOX || this.mScaleMode === StageScaleMode.COVER) {
       const mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
       const mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      const scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
+      const scaleFactor = Math[this.mScaleMode === StageScaleMode.COVER ? 'min' : 'max'](mw / windowWidth, mh / windowHeight);
       const width = windowWidth * scaleFactor;
       const height = windowHeight * scaleFactor;
 
