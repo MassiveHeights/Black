@@ -21,7 +21,7 @@ class Viewport extends MessageDispatcher {
     this.mContainerElement = containerElement;
 
     const rotateEl = document.createElement('div');
-    rotateEl.style.position = 'absolute';
+    rotateEl.style.position = 'relative';
     containerElement.appendChild(rotateEl);
 
     let style = this.mContainerElement.style;
@@ -47,11 +47,12 @@ class Viewport extends MessageDispatcher {
     this.mOrientation = Orientation.UNIVERSAL;
 
     /** @private @type {boolean} */
-    this.mOrientationLock = true;
+    this.mOrientationLock = false;
 
-    this.mIsPrimary = this.isPrimary;
+    this.mIsPrimary = this.isPrimary();
     this.mReflect = false;
 
+    this.__onResize();
     window.addEventListener('resize', x => this.__onResize());
   }
 
@@ -128,13 +129,13 @@ class Viewport extends MessageDispatcher {
     const size = this.mContainerElement.getBoundingClientRect();
     const deviceOrientation = size.width > size.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
 
-    const dispatchSize = Rectangle.__cache.copyFrom(size);
+    const dispatchSize = Rectangle.pool.get().copyFrom(size);
+    const wasPrimary = this.mIsPrimary;
+    this.mIsPrimary = this.isPrimary();
 
-    if (this.mIsPrimary !== this.isPrimary()) {
+    if (this.mIsPrimary !== wasPrimary) {
       this.mReflect = !this.mReflect;
     }
-
-    this.mIsPrimary = this.isPrimary();
 
     if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
       rotateElStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
