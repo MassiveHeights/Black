@@ -1,11 +1,12 @@
 /**
  * Manages viewport, handles DOM container resize events and updates internal data.
  * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
- * 
+ *
  * @cat core
  * @fires Viewport#resize
  * @extends MessageDispatcher
  */
+
 /* @echo EXPORT */
 class Viewport extends MessageDispatcher {
   /**
@@ -19,6 +20,10 @@ class Viewport extends MessageDispatcher {
     /** @private @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
+    const rotateEl = document.createElement('div');
+    rotateEl.style.position = 'relative';
+    containerElement.appendChild(rotateEl);
+
     let style = this.mContainerElement.style;
     style.userSelect = 'none';
     style.touchAction = 'none';
@@ -31,12 +36,75 @@ class Viewport extends MessageDispatcher {
     /** @private @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
+    this.mRotateEl = rotateEl;
+
     this.isTransparent = true;
     this.backgroundColor = 0x222222;
 
     this.mChecksLeftSeconds = 0;
 
+    /** @private @type {Orientation} */
+    this.mOrientation = Orientation.UNIVERSAL;
+
+    /** @private @type {boolean} */
+    this.mOrientationLock = false;
+
+    this.mIsPrimary = this.isPrimary();
+    this.mReflect = false;
+
+    this.__onResize();
     window.addEventListener('resize', x => this.__onResize());
+  }
+
+  isPrimary() {
+    const orientation = screen.msOrientation || (screen.orientation || screen.mozOrientation || {}).type;
+
+    if (orientation === 'landscape-primary' || orientation === 'portrait-primary') {
+      return true;
+    } else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary') {
+      return false;
+    }
+
+    console.log('The orientation API isn\'t supported in this browser');
+
+    return true;
+  }
+
+  /**
+   * Gets/Sets stage orientation.
+   *
+   * @returns {Orientation}
+   */
+  get orientation() {
+    return this.mOrientation;
+  }
+
+  /**
+   * @ignore
+   * @param {Orientation} value
+   * @returns {void}
+   */
+  set orientation(value) {
+    this.mOrientation = value;
+    this.__onResize();
+  }
+
+  /**
+   * Gets/sets whenever stage orientation should be locked. If false and orientation is not universal stage will remain same size in both orientation.
+   * @returns {boolean}
+   */
+  get orientationLock() {
+    return this.mOrientationLock;
+  }
+
+  /**
+   * @ignore
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set orientationLock(value) {
+    this.mOrientationLock = value;
+    this.__onResize();
   }
 
   /**
@@ -57,23 +125,49 @@ class Viewport extends MessageDispatcher {
    * @ignore
    */
   __onResize() {
-    let size = this.mContainerElement.getBoundingClientRect();
+    const rotateElStyle = this.mRotateEl.style;
+    const size = this.mContainerElement.getBoundingClientRect();
+    const deviceOrientation = size.width > size.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
 
-    let newSize = Rectangle.pool.get().set(size.left, size.top, size.width, size.height);
+    const dispatchSize = Rectangle.pool.get().copyFrom(size);
+    const wasPrimary = this.mIsPrimary;
+    this.mIsPrimary = this.isPrimary();
 
-    if (this.mSize.equals(newSize) === true)
+    if (this.mIsPrimary !== wasPrimary) {
+      this.mReflect = !this.mReflect;
+    }
+
+    if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
+      rotateElStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
+      rotateElStyle.left = (size.width - size.height) * 0.5 + 'px';
+      rotateElStyle.top = (size.height - size.width) * 0.5 + 'px';
+      rotateElStyle.width = size.height + 'px';
+      rotateElStyle.height = size.width + 'px';
+
+      dispatchSize.width = size.height;
+      dispatchSize.height = size.width;
+    } else {
+      this.mReflect = false;
+      rotateElStyle.transform = 'rotate(0deg)';
+      rotateElStyle.left = '0px';
+      rotateElStyle.top = '0px';
+      rotateElStyle.width = size.width + 'px';
+      rotateElStyle.height = size.height + 'px';
+    }
+
+    if (this.mSize.equals(dispatchSize) === true)
       return;
 
-    this.mSize.copyFrom(newSize);
+    this.mSize.copyFrom(dispatchSize);
 
     /**
      * Posted every time viewport size has changed.
      * @event Viewport#resize
      */
-    this.post(Message.RESIZE, this.mSize);
+    this.post(Message.RESIZE, dispatchSize);
 
     this.mChecksLeftSeconds = 1;
-    Rectangle.pool.release(newSize);
+    Rectangle.pool.release(dispatchSize);
   }
 
   /**
@@ -87,7 +181,7 @@ class Viewport extends MessageDispatcher {
 
   /**
    * nativeDOM - Returns the HTML container element the engine runs in.
-   * 
+   *
    * @return {Element}
    */
   get nativeDOM() {

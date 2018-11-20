@@ -212,10 +212,24 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
+    const viewport = Black.instance.viewport;
+    const size = Black.instance.viewport.size;
+    const rotation = viewport.mRotateEl.style.transform;
+
     let stage = Black.stage;
 
     while (this.mPointerQueue.length > 0) {
-      let nativeEvent = this.mPointerQueue.shift();
+      const nativeEvent = this.mPointerQueue.shift();
+      const x = nativeEvent.x;
+      const y = nativeEvent.y;
+
+      if (rotation === 'rotate(90deg)') {
+        nativeEvent.x = y;
+        nativeEvent.y = size.height - x;
+      } else if (rotation === 'rotate(-90deg)') {
+        nativeEvent.x = size.width - y;
+        nativeEvent.y = x;
+      }
 
       // update to the latest position
       this.mPointerPosition.x = nativeEvent.x;

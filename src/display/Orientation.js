@@ -6,7 +6,7 @@
  * @constant
  */
 /* @echo EXPORT */
-const StageOrientation = {
+const Orientation = {
   /** Automatically detects orientation and switches width and height depending on device orientation. */
   UNIVERSAL: 'universal',
   LANDSCAPE: 'landscape',
