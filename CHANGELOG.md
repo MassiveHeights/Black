@@ -1,6 +1,24 @@
 Black Engine: Changelog
 =======================
 
+# v0.5.9
+### New features
+- Added new stage scale mode - Cover! (Thanks to m31271n)
+
+### Changes
+- Orientation lock reworked. Added extra div element to control the rotation of the canvas.
+- Changed `stage.orientatin` to viewport.orientation` and `StageOrientation` to `Orientation`
+- Simplified scale logic (Thanks to m31271n)
+- Changed the way how native input events are iterated
+
+### Bug Fixes
+- Fixed incorrect no audio warning 
+- Fixed Arcade Physics not working when stage is locked is rotated 
+- Fixed matrix vector transform in case when out vector is the same as input
+- Fixed arcade physics world bound for letter box
+- Fixed spine skip clipping (Thanks to rhyzx)
+- Minor texture packer exporter improvements (Thanks to m31271n)
+
 # v0.5.8
 ### New features
 - Added `useHiDPR` property to control render quality on high DPI screens

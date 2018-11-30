@@ -20,9 +20,10 @@ class Viewport extends MessageDispatcher {
     /** @private @type {HTMLElement} */
     this.mContainerElement = containerElement;
 
-    const rotateEl = document.createElement('div');
-    rotateEl.style.position = 'relative';
-    containerElement.appendChild(rotateEl);
+    /** @private @type {HTMLElement} */
+    this.mViewportElement = document.createElement('div');
+    this.mViewportElement.style.position = 'relative';
+    containerElement.appendChild(this.mViewportElement);
 
     let style = this.mContainerElement.style;
     style.userSelect = 'none';
@@ -35,8 +36,6 @@ class Viewport extends MessageDispatcher {
 
     /** @private @type {Rectangle} */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
-
-    this.mRotateEl = rotateEl;
 
     this.isTransparent = true;
     this.backgroundColor = 0x222222;
@@ -125,7 +124,7 @@ class Viewport extends MessageDispatcher {
    * @ignore
    */
   __onResize() {
-    const rotateElStyle = this.mRotateEl.style;
+    const viewportElementStyle = this.mViewportElement.style;
     const size = this.mContainerElement.getBoundingClientRect();
     const deviceOrientation = size.width > size.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
 
@@ -138,21 +137,21 @@ class Viewport extends MessageDispatcher {
     }
 
     if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
-      rotateElStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
-      rotateElStyle.left = (size.width - size.height) * 0.5 + 'px';
-      rotateElStyle.top = (size.height - size.width) * 0.5 + 'px';
-      rotateElStyle.width = size.height + 'px';
-      rotateElStyle.height = size.width + 'px';
+      viewportElementStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
+      viewportElementStyle.left = (size.width - size.height) * 0.5 + 'px';
+      viewportElementStyle.top = (size.height - size.width) * 0.5 + 'px';
+      viewportElementStyle.width = size.height + 'px';
+      viewportElementStyle.height = size.width + 'px';
 
       dispatchSize.width = size.height;
       dispatchSize.height = size.width;
     } else {
       this.mReflect = false;
-      rotateElStyle.transform = 'rotate(0deg)';
-      rotateElStyle.left = '0px';
-      rotateElStyle.top = '0px';
-      rotateElStyle.width = size.width + 'px';
-      rotateElStyle.height = size.height + 'px';
+      viewportElementStyle.transform = 'rotate(0deg)';
+      viewportElementStyle.left = '0px';
+      viewportElementStyle.top = '0px';
+      viewportElementStyle.width = size.width + 'px';
+      viewportElementStyle.height = size.height + 'px';
     }
 
     if (this.mSize.equals(dispatchSize) === true)
@@ -180,12 +179,12 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * nativeDOM - Returns the HTML container element the engine runs in.
+   * Returns the HTML container element the viewport runs in.
    *
    * @return {Element}
    */
-  get nativeDOM() {
-    return this.mContainerElement;
+  get nativeElement() {
+    return this.mViewportElement;
   }
 
   // TODO: dispose, remove resize event

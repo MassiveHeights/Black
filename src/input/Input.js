@@ -35,7 +35,7 @@ class Input extends System {
     this.mStagePosition = new Vector();
 
     /** @private @type {Element} */
-    this.mDom = Black.instance.containerElement;
+    this.mDom = Black.instance.viewport.nativeElement;
 
     /** @private @type {Array<string>} */
     this.mEventList = null;
@@ -212,9 +212,8 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
-    const viewport = Black.instance.viewport;
     const size = Black.instance.viewport.size;
-    const rotation = viewport.mRotateEl.style.transform;
+    const rotation = this.mDom.style.transform;
 
     let stage = Black.stage;
 

@@ -262,7 +262,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootVideo() {
-    this.mVideo = new this.mVideoDriverClass(this.mViewport.mRotateEl, this.mStageWidth, this.mStageHeight);
+    this.mVideo = new this.mVideoDriverClass(this.mViewport.mViewportElement, this.mStageWidth, this.mStageHeight);
   }
 
   /**

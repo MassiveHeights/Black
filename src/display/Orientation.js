@@ -1,5 +1,5 @@
 /**
- * Stage Orientation
+ * Orientation
  * @cat display
  * @enum {string}
  * @static
