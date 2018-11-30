@@ -1,7 +1,1 @@
-{
-  "format": "bta",
-  "v": "1.0",
-  "frames":{{% for sprite in allSprites %}
-    "{{sprite.trimmedName}}":[{{sprite.frameRect.x}}, {{sprite.frameRect.y}}, {{sprite.frameRect.width}}, {{sprite.frameRect.height}}, {{sprite.sourceRect.x}}, {{sprite.sourceRect.y}}, {{sprite.untrimmedSize.width}}, {{sprite.untrimmedSize.height}}]{% if not forloop.last %},{% endif %}{% endfor %}
-  }
-}
+{"smartUpdateKey":"{{smartUpdateKey}}","format":"bta","v":"1.0","frames":{{% for sprite in allSprites %}"{{sprite.trimmedName}}":[{{sprite.frameRect.x}},{{sprite.frameRect.y}},{{sprite.frameRect.width}},{{sprite.frameRect.height}},{{sprite.sourceRect.x}},{{sprite.sourceRect.y}},{{sprite.untrimmedSize.width}},{{sprite.untrimmedSize.height}},{{sprite.pivotPointNorm.x|floatformat:3}},{{sprite.pivotPointNorm.y|floatformat:3}}{% if sprite.scale9Enabled %},{{sprite.scale9Borders.x}},{{sprite.scale9Borders.y}},{{sprite.scale9Borders.width}},{{sprite.scale9Borders.height}}{% endif %}]{% if not forloop.last %},{% endif %}{% endfor %}}}

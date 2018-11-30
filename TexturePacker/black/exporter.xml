@@ -19,4 +19,6 @@
   <supportsNPOT>true</supportsNPOT>
   <supportsTrimSpriteNames>true</supportsTrimSpriteNames>
   <supportsTextureSubPath>no</supportsTextureSubPath>
+  <supportsPivotPoint>true</supportsPivotPoint>
+  <supportsScale9>true</supportsScale9>
 </exporter>

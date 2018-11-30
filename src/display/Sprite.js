@@ -20,18 +20,18 @@ class Sprite extends DisplayObject {
     /** @private @type {string|null} */
     this.mTextureName = null;
 
-    if (texture !== null && texture.constructor === String) {
-      this.mTextureName = /** @type {string} */ (texture);
-      this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
-    } else {
-      this.mTexture = /** @type {Texture} */ (texture);
-    }
-
     /** @private @type {TilingInfo|null} */
     this.mTiling = null;
 
     /** @private @type {Rectangle|null} */
     this.mSlice9grid = null;
+
+    if (texture !== null && texture.constructor === String) {
+      this.mTextureName = /** @type {string} */ (texture);
+      this.texture = AssetManager.default.getTexture(/** @type {string} */(texture));
+    } else {
+      this.texture = /** @type {Texture} */ (texture);
+    }
   }
 
   /**
@@ -85,9 +85,15 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTexture = texture;
+
+    if (texture.mSlice9borders)
+      this.slice9grid = new Rectangle().copyFrom(texture.mSlice9borders);
+
+    this.anchorX = texture.registrationPointX;
+    this.anchorY = texture.registrationPointY;
+
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
     this.setRenderDirty();
-
   }
 
   /**
@@ -101,7 +107,7 @@ class Sprite extends DisplayObject {
 
   /**
    * Sets the current texture by its name
-   * 
+   *
    * @param {?string} value
    */
   set textureName(value) {
@@ -114,9 +120,9 @@ class Sprite extends DisplayObject {
 
   /**
    * Gets sets tiling information.
-   * 
+   *
    * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
-   * 
+   *
    * @returns {TilingInfo|null}
    */
   get tiling() {
@@ -136,9 +142,9 @@ class Sprite extends DisplayObject {
 
   /**
    * Gets/sets nine slice grid rectangle.
-   * 
+   *
    * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
-   * 
+   *
    * @returns {Rectangle|null}
    */
   get slice9grid() {

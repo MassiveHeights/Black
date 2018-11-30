@@ -23,14 +23,14 @@ class AtlasTexture extends Texture {
    * @return {void}
    */
   __parseJson(o, scale) {
-    const NEGATIVE_HALF_PI = -(Math.PI / 2);
-
     for (let key in o.frames) {
       const data = /** @type {Array<number>} */ (o.frames[key]);
       const region = new Rectangle(data[0], data[1], data[2], data[3]);
       const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
+      const registrationPoint = data[8] === undefined ? new Vector() : new Vector(data[8], data[9]);
+      const slice9borders = data[10] === undefined ? null : new Rectangle(data[10], data[11], data[12], data[13]);
 
-      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale);
+      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale, registrationPoint, slice9borders);
     }
   }
 
