@@ -27,8 +27,21 @@ class AtlasTexture extends Texture {
       const data = /** @type {Array<number>} */ (o.frames[key]);
       const region = new Rectangle(data[0], data[1], data[2], data[3]);
       const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
-      const registrationPoint = data[8] === undefined ? new Vector() : new Vector(data[8], data[9]);
-      const slice9borders = data[10] === undefined ? null : new Rectangle(data[10], data[11], data[12], data[13]);
+
+      let registrationPoint = null;
+      let slice9borders = null;
+
+      if (data.length === 8 + 2) {
+        // we got pivots
+        registrationPoint = new Vector(data[8], data[9]);
+      } else if (data.length === 8 + 4) {
+        // we got 9 slice but no pivots
+        slice9borders = new Rectangle(data[8], data[9], data[10], data[11]);
+      } else if (data.length === 8 + 6) {
+        // we got both pivots and 9 slice
+        registrationPoint = new Vector(data[8], data[9]);
+        slice9borders = new Rectangle(data[10], data[11], data[12], data[13]);
+      }
 
       this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale, registrationPoint, slice9borders);
     }

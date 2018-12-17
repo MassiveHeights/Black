@@ -51,8 +51,8 @@ class Texture {
     /** @private @type {number} */
     this.mScale = scale;
 
-    /** @private @type {Vector} */
-    this.mRegistrationPoint = /** @type {Vector} */ (registrationPoint || new Vector());
+    /** @private @type {Vector|null} */
+    this.mRegistrationPoint = registrationPoint;
 
     /** @private @type {Rectangle|null} */
     this.mSlice9borders = slice9borders;
@@ -274,23 +274,21 @@ class Texture {
   }
 
   /**
-   * Anchor X in percents
-   *
-   * @readonly
-   * @returns {number}
+   * Anchor of the texture.
+   * 
+   * @returns {Vector|null}
    */
-  get registrationPointX() {
-    return this.mRegistrationPoint.x;
+  get registrationPoint() {
+    return this.mRegistrationPoint;
   }
 
   /**
-   * Anchor Y in percents
-   *
-   * @readonly
-   * @returns {number}
+   * Returns slice 9 borders for this texture.
+   * 
+   * @returns {Rectangle|null}
    */
-  get registrationPointY() {
-    return this.mRegistrationPoint.y;
+  get slice9borders() {
+    return this.mSlice9borders;
   }
 
   /**

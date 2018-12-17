@@ -11,7 +11,7 @@ class Sprite extends DisplayObject {
    *
    * @param {Texture|string|null} texture The Texture instance or null.
    */
-  constructor(texture = null) {
+  constructor(texture = null, useTextureProps = true) {
     super();
 
     /** @private @type {Texture|null} */
@@ -25,6 +25,9 @@ class Sprite extends DisplayObject {
 
     /** @private @type {Rectangle|null} */
     this.mSlice9grid = null;
+
+    /** @private @type {Boolean} */
+    this.mUseTextureProps = useTextureProps;
 
     if (texture !== null && texture.constructor === String) {
       this.mTextureName = /** @type {string} */ (texture);
@@ -86,11 +89,13 @@ class Sprite extends DisplayObject {
 
     this.mTexture = texture;
 
-    if (texture.mSlice9borders)
-      this.slice9grid = new Rectangle().copyFrom(texture.mSlice9borders);
+    if (this.mUseTextureProps === true) {
+      if (texture.slice9borders)
+        this.slice9grid = texture.slice9borders.clone();
 
-    this.anchorX = texture.registrationPointX;
-    this.anchorY = texture.registrationPointY;
+      if (texture.registrationPoint !== null)
+        this.alignPivotOffset(texture.registrationPoint.x, texture.registrationPoint.y);
+    }
 
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
     this.setRenderDirty();

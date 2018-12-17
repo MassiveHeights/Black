@@ -4,6 +4,7 @@ Black Engine: Changelog
 # v0.5.9
 ### New features
 - Added new stage scale mode - Cover! (Thanks to m31271n)
+- Added pivot and 9 slice grid support for Texture Packer exporter
 
 ### Changes
 - Orientation lock reworked. Added extra div element to control the rotation of the canvas.
