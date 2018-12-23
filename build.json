@@ -36,7 +36,7 @@
     "src/core/Component.js",
     "src/core/GameObject.js",
     "src/display/StageScaleMode.js",
-    "src/display/StageOrientation.js",
+    "src/display/Orientation.js",
     "src/display/Stage.js",
 
     "src/colliders/Collider.js",

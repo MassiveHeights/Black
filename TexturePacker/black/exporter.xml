@@ -1,5 +1,5 @@
 <exporter version="1.0">
-  <name>black</name>
+  <name>Black</name>
   <nameAlias>blackexporter</nameAlias>
   <displayName>Black</displayName>
   <description>Exporter for Black Engine</description>
@@ -19,4 +19,6 @@
   <supportsNPOT>true</supportsNPOT>
   <supportsTrimSpriteNames>true</supportsTrimSpriteNames>
   <supportsTextureSubPath>no</supportsTextureSubPath>
+  <supportsPivotPoint>true</supportsPivotPoint>
+  <supportsScale9>true</supportsScale9>
 </exporter>

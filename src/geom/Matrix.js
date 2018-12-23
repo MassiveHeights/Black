@@ -315,12 +315,12 @@ class Matrix {
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
-    let m = this.data;
+    const m = this.data;
 
-    outVector.x = m[0] * vector.x + m[2] * vector.y + m[4];
-    outVector.y = m[1] * vector.x + m[3] * vector.y + m[5];
+    const x = m[0] * vector.x + m[2] * vector.y + m[4];
+    const y = m[1] * vector.x + m[3] * vector.y + m[5];
 
-    return outVector;
+    return outVector.set(x, y);
   }
 
   /**

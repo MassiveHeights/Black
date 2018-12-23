@@ -35,7 +35,7 @@ class Input extends System {
     this.mStagePosition = new Vector();
 
     /** @private @type {Element} */
-    this.mDom = Black.instance.containerElement;
+    this.mDom = Black.instance.viewport.nativeElement;
 
     /** @private @type {Array<string>} */
     this.mEventList = null;
@@ -212,10 +212,23 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
+    const size = Black.instance.viewport.size;
+    const rotation = this.mDom.style.transform;
+
     let stage = Black.stage;
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
+    while (this.mPointerQueue.length > 0) {
+      const nativeEvent = this.mPointerQueue.shift();
+      const x = nativeEvent.x;
+      const y = nativeEvent.y;
+
+      if (rotation === 'rotate(90deg)') {
+        nativeEvent.x = y;
+        nativeEvent.y = size.height - x;
+      } else if (rotation === 'rotate(-90deg)') {
+        nativeEvent.x = size.width - y;
+        nativeEvent.y = x;
+      }
 
       // update to the latest position
       this.mPointerPosition.x = nativeEvent.x;
@@ -232,10 +245,6 @@ class Input extends System {
       this.__findTarget(this.mPointerPosition);
       this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
     }
-
-    // Erase the pointer queue
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
@@ -309,8 +318,8 @@ class Input extends System {
    * @returns {void}
    */
   __updateKeyboard() {
-    for (let i = 0; i < this.mKeyQueue.length; i++) {
-      let nativeEvent = this.mKeyQueue[i];
+    while (this.mKeyQueue.length > 0) {
+      let nativeEvent = this.mKeyQueue.shift();
 
       let ix = this.mKeyEventList.indexOf(nativeEvent.type);
       let pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);

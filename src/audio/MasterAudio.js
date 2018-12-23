@@ -19,11 +19,14 @@ class MasterAudio extends System {
 
     try {
       this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
-      this.__unlock();
     } catch (error) {
-      Debug.warn('no audio support');
-      return;
+      if (this.mContext == null) {
+        Debug.warn('no audio support');
+        return;
+      }
     }
+
+    this.__unlock();
 
     /** @private @type {SoundListener|null} */
     this.mCurrentListener = null;
