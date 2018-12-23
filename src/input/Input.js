@@ -338,6 +338,15 @@ class Input extends System {
   }
 
   /**
+   * @inheritdoc
+   */
+  dispose() {
+    super.dispose();
+
+    Input.instance = null;
+  }
+
+  /**
    * Listens for global input event by given message name.
    *
    * @param {string} name            The name of the message to listen for.

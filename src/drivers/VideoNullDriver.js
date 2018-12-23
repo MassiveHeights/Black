@@ -302,6 +302,13 @@ class VideoNullDriver {
   clear() {
   }
 
+  /**
+   * Disposes all allocated resources.
+   */
+  dispose() {
+    VideoNullDriver.sessionPool.releaseAll();
+  }
+
   /** 
    * Returns current rendering context or null.
    * @returns {?}

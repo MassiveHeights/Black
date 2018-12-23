@@ -281,6 +281,8 @@ class Black extends MessageDispatcher {
     if (this.mIsStarted === true)
       return;
 
+    new Time();
+
     this.__bootSystems();
     this.__bootStage();
     this.__bootVideo();
@@ -302,6 +304,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
+    // TODO: is there a way to cancel first raf? no! eg pause will not work
     this.mRAFHandle = window.requestAnimationFrame(function (timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
@@ -329,6 +332,29 @@ class Black extends MessageDispatcher {
     window.cancelAnimationFrame(this.mRAFHandle);
 
     console.log('%c                        <<< BYE BYE >>>                        ', 'background: #000; color: #fff;');
+  }
+
+  /**
+   * Destroy the whole thing!
+   */
+  dispose() {
+    this.stop();
+
+    //TODO: what about bundles?
+    this.mVideo.dispose();
+    this.mViewport.dispose();
+
+    AssetManager.default.dispose();
+    AssetManager.default = new AssetManager();
+
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onPostUpdate();
+
+    Black.instance = null;
+    Input.instance = null;
+
+    Black.numUpdates = 0;
+    Black.__frameNum = 0;
   }
 
   /**
@@ -707,7 +733,7 @@ class Black extends MessageDispatcher {
     return this.mSplashScreen;
   }
 
-  
+
   /**
    * Gets/sets whenever driver should be created with high DPR support. 
    * NOTE: Cannot be changed at runtime.
@@ -717,7 +743,7 @@ class Black extends MessageDispatcher {
   get useHiDPR() {
     return this.mUseHiDPR;
   }
-  
+
   /**
    * @ignore
    * @param {boolean} value

@@ -7,6 +7,13 @@
 /* @echo EXPORT */
 class Time {
   constructor() {
+    Time.mTime = 0;
+    Time.mActualTime = 0;
+    Time.mDeltaTimeMs = 1000 / 60;
+    Time.mDeltaTime = (1000 / 60) * 0.001;
+    Time.mScale = 1;
+    Time.mAlphaTime = 0;
+    Time.mRenderOffset = 0;
   }
 
   /**

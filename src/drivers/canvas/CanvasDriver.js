@@ -253,7 +253,7 @@ class CanvasDriver extends VideoNullDriver {
   setTransform(transform) {
     let dpr = this.mDevicePixelRatio;
     let session = this.mActiveSession;
-    
+
     if (session.isBackBufferActive === false) {
       if (session.customTransform === null) {
         transform = transform.clone(); // TODO: too much allocations
@@ -264,7 +264,7 @@ class CanvasDriver extends VideoNullDriver {
         transform.prepend(session.customTransform);
       }
     }
-    
+
     this.mTransform = transform;
 
     let mv = transform.value;
@@ -329,6 +329,16 @@ class CanvasDriver extends VideoNullDriver {
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  dispose() {
+    super.dispose();
+
+    if (this.mCtx !== null)
+      this.mCtx.canvas.remove();
   }
 
   /** 

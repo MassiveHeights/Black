@@ -169,6 +169,10 @@ class Viewport extends MessageDispatcher {
     Rectangle.pool.release(dispatchSize);
   }
 
+  dispose() {
+    this.mViewportElement.remove();
+  }
+
   /**
    * Returns the size of a viewport.
    *
