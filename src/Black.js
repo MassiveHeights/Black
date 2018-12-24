@@ -338,9 +338,9 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * Destroy the whole thing!
+   * Destroys the whole thing!
    */
-  dispose() {
+  destroy() {
     this.mPendingDispose = true;
   }
 
