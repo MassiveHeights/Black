@@ -80,6 +80,32 @@ class Emitter extends DisplayObject {
 
     /** @private @type {EmitterSortOrder} */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
+
+    this.mPresimulateSeconds = 5;
+    this.mCurrentPresimulationTime = 0;
+  }
+
+  /**
+   * Simulates current emmitter for a given amount of time (seconds).
+   * @experimental
+   * 
+   * @param {number} time Time in secounds
+   * @returns {void}
+   */
+  simulate(time) {
+    Debug.isNumber(time);
+    Debug.assert(time > 0);
+
+    this.mCurrentPresimulationTime = 0;
+    this.mPresimulateSeconds = time;
+
+    while (this.mCurrentPresimulationTime <= this.mPresimulateSeconds) {
+      this.onUpdate();
+      this.mCurrentPresimulationTime += Time.delta;
+    }
+
+    this.mPresimulateSeconds = 0;
+    this.mCurrentPresimulationTime = 0;
   }
 
   /**
@@ -129,6 +155,13 @@ class Emitter extends DisplayObject {
       this.mActions.push(modifier);
 
     return modifier;
+  }
+
+  /**
+   * Hacky method which returns Time.now or presimulation time depending on a case.
+   */
+  __getTime() {
+    return Time.now;
   }
 
   /**
@@ -195,12 +228,13 @@ class Emitter extends DisplayObject {
    */
   onUpdate() {
     let dt = Time.delta;
-    
+
     // rate logic
     this.updateNextTick(dt);
 
-    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
+    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
       this.__create(this.mEmitCount.getValue());
+    }
 
     // main update login
     const alength = this.mActions.length;
@@ -443,12 +477,12 @@ class Emitter extends DisplayObject {
     this.setRenderDirty();
   }
 
-   /**
-   * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
-   * 
-   * @param {string} value
-   * @return {void}
-   */
+  /**
+  * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
+  * 
+  * @param {string} value
+  * @return {void}
+  */
   set texturesName(value) {
     this.textures = AssetManager.default.getTextures(value);
   }

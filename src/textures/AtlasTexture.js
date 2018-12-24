@@ -7,7 +7,7 @@
 /* @echo EXPORT */
 class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
-    super(nativeElement);
+    super(nativeElement, null, null, scale);
 
     /** @private @type {Object.<string, Texture>} */
     this.mSubTextures = {};
@@ -42,7 +42,7 @@ class AtlasTexture extends Texture {
         registrationPoint = new Vector(data[8], data[9]);
         slice9borders = new Rectangle(data[10], data[11], data[12], data[13]);
       }
-
+      
       this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale, registrationPoint, slice9borders);
     }
   }
