@@ -41,6 +41,12 @@ class MasterAudio extends System {
     this.mChannels['master'] = this.mMasterChannel;
   }
 
+  dispose() {
+    super.dispose();
+    
+    MasterAudio.instance = null;
+  }
+
   /**
    * @ignore
    * @private

@@ -43,6 +43,8 @@ class Input extends System {
     /** @private @type {Array<string>} */
     this.mKeyEventList = null;
 
+    this.mBoundListeners = [];
+
     this.__initListeners();
 
     /** @private @type {Array<{e: Event, x: number, y:number}>} */
@@ -95,10 +97,16 @@ class Input extends System {
     for (let i = 0; i < 3; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
+    let listener = null;
+    listener = e => this.__onPointerEventDoc(e);
+    this.mBoundListeners.push({ name: this.mEventList[Input.IX_POINTER_UP], listener: listener });
+    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], listener, false);
 
-    for (let i = 0; i < this.mKeyEventList.length; i++)
-      document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e)), false);
+    for (let i = 0; i < this.mKeyEventList.length; i++) {
+      listener = e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e));
+      this.mBoundListeners.push({ name: this.mKeyEventList[i], listener: listener });
+      document.addEventListener(this.mKeyEventList[i], listener, false);
+    }
   }
 
   /**
@@ -343,6 +351,11 @@ class Input extends System {
   dispose() {
     super.dispose();
 
+    while (this.mBoundListeners.length > 0) {
+      let keyValue = this.mBoundListeners.pop();
+      document.removeEventListener(keyValue.name, keyValue.listener);
+    }
+
     Input.instance = null;
   }
 
@@ -429,7 +442,7 @@ class Input extends System {
    * 
    * @returns {Vector}
    */
-  static get stagePosition(){
+  static get stagePosition() {
     return Input.instance.mStagePosition;
   }
 
@@ -556,12 +569,12 @@ Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
 /**
  * Posts when mouse up or touch up event happened.
  * @event Input#pointerUp
- */ 
+ */
 
 /**
  * Posts when mouse move or touch move event happened.
  * @event Input#pointerMove
- */ 
+ */
 
 /**
  * Stores additional information about pointer events.

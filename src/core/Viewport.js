@@ -52,7 +52,9 @@ class Viewport extends MessageDispatcher {
     this.mReflect = false;
 
     this.__onResize();
-    window.addEventListener('resize', x => this.__onResize());
+
+    this.mBoundResize = x => this.__onResize();
+    window.addEventListener('resize', this.mBoundResize);
   }
 
   isPrimary() {
@@ -171,6 +173,7 @@ class Viewport extends MessageDispatcher {
 
   dispose() {
     this.mViewportElement.remove();
+    window.removeEventListener('resize', this.mBoundResize);
   }
 
   /**

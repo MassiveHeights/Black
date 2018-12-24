@@ -1,3 +1,4 @@
+let ID = 0;
 /**
  * The Black class represents the core of the Black Engine.
  *
@@ -30,6 +31,8 @@ class Black extends MessageDispatcher {
    */
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
+
+    this.id = ++ID;
 
     Black.instance = this;
 
@@ -104,9 +107,6 @@ class Black extends MessageDispatcher {
     /** @private @type {function(new: GameObject)} */
     this.mGameClass = gameClass;
 
-    /** @private @type {GameObject|null} */
-    this.mGame = null;
-
     /** @private @type {Stage} */
     this.mStage = null;
 
@@ -125,6 +125,9 @@ class Black extends MessageDispatcher {
     this.__bootViewport();
 
     this.__update = this.__update.bind(this);
+
+    /** @private @type {boolean} */
+    this.mPendingDispose = false;
   }
 
   /**
@@ -338,9 +341,12 @@ class Black extends MessageDispatcher {
    * Destroy the whole thing!
    */
   dispose() {
+    this.mPendingDispose = true;
+  }
+
+  __dispose() {
     this.stop();
 
-    //TODO: what about bundles?
     this.mVideo.dispose();
     this.mViewport.dispose();
 
@@ -348,13 +354,13 @@ class Black extends MessageDispatcher {
     AssetManager.default = new AssetManager();
 
     for (let i = 0; i < this.mSystems.length; i++)
-      this.mSystems[i].onPostUpdate();
+      this.mSystems[i].dispose();
 
-    Black.instance = null;
-    Input.instance = null;
+    MessageDispatcher.mOverheardHandlers = {};
 
     Black.numUpdates = 0;
     Black.__frameNum = 0;
+    Black.instance = null;
   }
 
   /**
@@ -404,6 +410,7 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < numTicks; i++) {
       Time.mActualTime += Time.delta;
       Time.mTime = Time.mActualTime;
+
       this.__internalUpdate();
       this.__internalSystemPostUpdate();
     }
@@ -429,6 +436,9 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
+
+    if (this.mPendingDispose === true)
+      this.__dispose();
   }
 
   /**
