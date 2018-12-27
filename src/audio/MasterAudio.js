@@ -43,6 +43,10 @@ class MasterAudio extends System {
 
   dispose() {
     super.dispose();
+    if (this.mContext !== null) {
+      MasterAudio.stopAll();
+      this.mContext.close();
+    }
     
     MasterAudio.instance = null;
   }
@@ -130,7 +134,7 @@ class MasterAudio extends System {
 
     let sound = null;
     if (nameOrSound.constructor === String) {
-      sound = (AssetManager.default.getSound( /** @type {string} */ (nameOrSound)));
+      sound = (AssetManager.default.getSound( /** @type {string} */(nameOrSound)));
     }
 
     return sound.play(channel, volume, loop, pan);
