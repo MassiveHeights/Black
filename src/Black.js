@@ -351,12 +351,12 @@ class Black extends MessageDispatcher {
     this.mViewport.dispose();
 
     AssetManager.default.dispose();
-    AssetManager.default = new AssetManager();
+    AssetManager.default = null;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].dispose();
 
-    MessageDispatcher.mOverheardHandlers = {};
+    MessageDispatcher.dispose();
 
     Black.numUpdates = 0;
     Black.__frameNum = 0;

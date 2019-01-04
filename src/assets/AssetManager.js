@@ -616,6 +616,18 @@ class AssetManager extends MessageDispatcher {
   get path() {
     return 'AssetManager';
   }
+
+  /**
+   * Default instance. Sprite and other classes uses this instance to find textures by name.
+   * @static
+   * @type {AssetManager}
+   */
+  static get default() {
+    if (AssetManager.mDefault === null)
+      AssetManager.mDefault = new AssetManager();
+
+    return AssetManager.mDefault;
+  }
 }
 
 /**
@@ -623,4 +635,4 @@ class AssetManager extends MessageDispatcher {
  * @static
  * @type {AssetManager}
  */
-AssetManager.default = new AssetManager();
+AssetManager.mDefault = null;

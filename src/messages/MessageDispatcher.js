@@ -353,6 +353,10 @@ class MessageDispatcher {
 
     return binding.glob.test(path);
   }
+
+  static dispose() {
+    MessageDispatcher.mOverheardHandlers = {};
+  }
 }
 
 /**
