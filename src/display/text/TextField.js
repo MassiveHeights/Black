@@ -281,11 +281,11 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * Specifies text color as hexadecimal number eg 0xff0000 (total red)
+   * Specifies text color as hexadecimal number eg 0xff0000 (total red).
    *
    * @return {number}
    */
-  get color() {
+  get textColor() {
     return this.mDefaultStyle.color;
   }
 
@@ -294,7 +294,7 @@ class TextField extends DisplayObject {
    * @param {number} value
    * @return {void}
    */
-  set color(value) {
+  set textColor(value) {
     if (this.mDefaultStyle.color === value)
       return;
 
