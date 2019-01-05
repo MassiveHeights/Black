@@ -16,7 +16,7 @@ class Emitter extends DisplayObject {
     super();
 
     /** @private @type {Array<Texture>} */
-    this.mTextures = null;
+    this.mTextures = [];
 
     /** @private @type {Array<Particle>} */
     this.mParticles = [];
