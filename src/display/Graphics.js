@@ -286,7 +286,7 @@ class Graphics extends DisplayObject {
    * using an array of values which specify alternating lengths of lines and gaps which describe the pattern.
    *
    * @public
-   * @param segments An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
+   * @param {Array<number>} An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
    *
    * @returns {void}
    */
