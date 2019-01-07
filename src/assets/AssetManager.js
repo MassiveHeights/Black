@@ -253,8 +253,8 @@ class AssetManager extends MessageDispatcher {
       let item = this.mQueue[i];
 
       if (item.loaders.length > 0) {
-        item.on(Message.COMPLETE, this.onAssetLoaded, this);
-        item.on(Message.ERROR, this.onAssetError, this);
+        item.once(Message.COMPLETE, this.onAssetLoaded, this);
+        item.once(Message.ERROR, this.onAssetError, this);
         this.mLoadersQueue.push(...item.loaders);
 
         this.mTotalPending++;
@@ -326,6 +326,7 @@ class AssetManager extends MessageDispatcher {
       this.mState = AssetManagerState.FINISHED;
       this.mTotalLoaded = 0;
       this.mTotalErrors = 0;
+      this.mTotalPending = 0;
       this.mIsAllLoaded = true;
       this.mDictionary = {};
 
@@ -360,6 +361,7 @@ class AssetManager extends MessageDispatcher {
       this.mState = AssetManagerState.FINISHED;
       this.mTotalLoaded = 0;
       this.mTotalErrors = 0;
+      this.mTotalPending = 0;
       this.mIsAllLoaded = true;
       this.mDictionary = {};
       this.post(Message.COMPLETE);
