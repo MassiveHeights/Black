@@ -16,25 +16,43 @@ class Graphics extends DisplayObject {
   constructor(graphicsData = null, trim = false) {
     super();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private
+     * @type {Rectangle} 
+     */
     this.mBounds = new Rectangle();
 
     /**
      * For internal usage
      *
-     * @private @type {Rectangle|null} */
+     * 
+     * @private
+     * @type {Rectangle|null} 
+     */
     this.mLocalBounds = null;
 
-    /** @private @type {GraphicsData|null} */
+    /** 
+     * @private
+     * @type {GraphicsData|null} 
+     */
     this.mGraphicsData = null;
 
-    /** @private @type {number} */
+    /** 
+     * @private
+     * @type {number} 
+     */
     this.mDataOffsetX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private
+     * @type {number} 
+     */
     this.mDataOffsetY = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private
+     * @type {boolean} 
+     */
     this.mTrim = trim;
 
     if (graphicsData === null) {

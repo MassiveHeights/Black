@@ -12,16 +12,28 @@ class SoundChannel {
    */
   constructor(name) {
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = name;
 
-    /** @private @type {!GainNode} */
+    /** 
+     * @private 
+     * @type {!GainNode} 
+     */
     this.mGain = MasterAudio._newGainNode();
 
-    /** @private @type {Array<SoundInstance>} */
+    /** 
+     * @private 
+     * @type {Array<SoundInstance>} 
+     */
     this.mSounds = [];
 
-    /** @private @type {Array<SoundEffect>} */
+    /** 
+     * @private 
+     * @type {Array<SoundEffect>} 
+     */
     this.mEffects = [];
   }
 
@@ -131,7 +143,6 @@ class SoundChannel {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

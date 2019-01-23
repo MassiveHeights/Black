@@ -14,10 +14,16 @@ class Vector {
   constructor(x = 0, y = 0) {
     Debug.isNumber(x, y);
     
-    /** @export @type {number} X coordinate of a point in the space. */
+    /** 
+     * @export 
+     * @type {number} X coordinate of a point in the space. 
+     */
     this.x = x;
 
-    /** @export @type {number} Y coordinate of a point in the space. */
+    /** 
+     * @export 
+     * @type {number} Y coordinate of a point in the space. 
+     */
     this.y = y;
   }
 

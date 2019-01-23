@@ -19,7 +19,10 @@ class TextureAsset extends Asset {
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(url);
 
-    /** @private @type {ImageAssetLoader} */
+    /** 
+     * @private 
+     * @type {ImageAssetLoader} 
+     */
     this.mImageLoader = new ImageAssetLoader(url);
     this.addLoader(this.mImageLoader);
   }

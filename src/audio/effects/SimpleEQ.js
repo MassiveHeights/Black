@@ -18,7 +18,10 @@ class SimpleEQ extends SoundEffect {
     // default values from winamp
     frequencies = frequencies || [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
 
-    /** @private @type {Array<BiquadFilterNode>} */
+    /** 
+     * @private 
+     * @type {Array<BiquadFilterNode>} 
+     */
     this.mFilters = [];
 
     for (let i = 0; i < frequencies.length; i++) {
@@ -34,10 +37,16 @@ class SimpleEQ extends SoundEffect {
     this.mOutputNode = this.mFilters[this.mFilters.length - 1];
 
     // todo: determine correct max value
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mMaxGainLevel = 16; // 18
 
-    /** @private @type {Object.<string, Array<number>>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Array<number>>} 
+     */
     this.mPresets = {};
   }
 

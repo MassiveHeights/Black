@@ -18,67 +18,130 @@ class AssetManager extends MessageDispatcher {
   constructor() {
     super();
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mDefaultPath = '';
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalLoaded = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalPending = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalErrors = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsAllLoaded = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLoadingProgress = 0;
 
-    /** @private @type {Array<Asset>} */
+    /** 
+     * @private 
+     * @type {Array<Asset>} 
+     */
     this.mQueue = [];
 
-    /** @private @type {Array<AssetLoader>} */
+    /** 
+     * @private 
+     * @type {Array<AssetLoader>} 
+     */
     this.mLoadersQueue = [];
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mTextures = {};
 
-    /** @private @type {Object.<string, GraphicsData>} */
+    /** 
+     * @private 
+     * @type {Object.<string, GraphicsData>} 
+     */
     this.mGraphicsData = {};
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mVectorTextures = {};
 
-    /** @private @type {Object.<string, AtlasTexture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, AtlasTexture>} 
+     */
     this.mAtlases = {};
 
-    /** @private @type {Object.<string, JSONAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, JSONAsset>} 
+     */
     this.mJsons = {};
 
-    /** @private @type {Object.<string, XMLAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, XMLAsset>} 
+     */
     this.mXMLs = {};
 
-    /** @private @type {Object.<string, SoundClip>} */
+    /** 
+     * @private 
+     * @type {Object.<string, SoundClip>} 
+     */
     this.mSounds = {};
 
-    /** @private @type {Object.<string, SoundAtlasClip>} */
+    /** 
+     * @private 
+     * @type {Object.<string, SoundAtlasClip>} 
+     */
     this.mSoundAtlases = {};
 
-    /** @private @type {Object.<string, FontAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, FontAsset>} 
+     */
     this.mFonts = {};
 
-    /** @private @type {Object.<string, BitmapFontData>} */
+    /** 
+     * @private 
+     * @type {Object.<string, BitmapFontData>} 
+     */
     this.mBitmapFonts = {};
 
-    /** @private @type {Object.<string, CustomAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, CustomAsset>} 
+     */
     this.mCustomAssets = {};
 
-    /** @private @type {AssetManagerState} */
+    /** 
+     * @private 
+     * @type {AssetManagerState} 
+     */
     this.mState = AssetManagerState.NONE;
 
-    /** @private @type {Object.<string, boolean>} */
+    /** 
+     * @private 
+     * @type {Object.<string, boolean>} 
+     */
     this.mDictionary = {};
   }
 
@@ -574,7 +637,6 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {string} value
    * @return {void}
    */
@@ -622,7 +684,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Default instance. Sprite and other classes uses this instance to find textures by name.
    * @static
-   * @type {AssetManager}
+   * @returns {AssetManager}
    */
   static get default() {
     if (AssetManager.mDefault === null)

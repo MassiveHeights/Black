@@ -17,10 +17,16 @@ class Viewport extends MessageDispatcher {
   constructor(containerElement) {
     super();
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = containerElement;
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mViewportElement = document.createElement('div');
     this.mViewportElement.style.position = 'relative';
     containerElement.appendChild(this.mViewportElement);
@@ -34,7 +40,10 @@ class Viewport extends MessageDispatcher {
 
     let size = this.mContainerElement.getBoundingClientRect();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
     this.isTransparent = true;
@@ -42,10 +51,16 @@ class Viewport extends MessageDispatcher {
 
     this.mChecksLeftSeconds = 0;
 
-    /** @private @type {Orientation} */
+    /** 
+     * @private 
+     * @type {Orientation} 
+     */
     this.mOrientation = Orientation.UNIVERSAL;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mOrientationLock = false;
 
     this.mIsPrimary = this.isPrimary();
@@ -81,7 +96,6 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {Orientation} value
    * @returns {void}
    */
@@ -99,7 +113,6 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @returns {void}
    */
@@ -119,6 +132,13 @@ class Viewport extends MessageDispatcher {
     this.__onResize();
 
     this.mChecksLeftSeconds -= Time.delta;
+  }
+
+  /**
+   * Refreshes viewport size and posts Message.RESIZE message. Make sure to refresh stage too in case container has changed its size.
+   */
+  refresh() {
+    this.__onResize();
   }
 
   /**

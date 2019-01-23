@@ -16,115 +16,170 @@ class BVGStyle {
     /**
      * Stroke color
      *
-     * @private @export @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.L = '-';
 
     /**
      * Stroke alpha.
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.l = 1;
 
     /**
      * Line width.
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.w = 1;
 
     /**
      * Fill color.
      *
-     * @private @export @type {string}*/
+     * @private 
+     * @export 
+     * @type {string}*/
     this.F = '0';
 
     /**
      * Fill alpha.
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.f = 1;
 
     /**
      * Fill rule.
      * {nonzero: 1, evenodd: 0}
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.r = 1;
 
     /**
      * Line cap.
      * {butt: 'b', round: 'r', square: 's'}
      *
-     * @private @export @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.c = 'b';
 
     /**
      * Line join.
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
-     * @private @export @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.j = 'm';
 
     /**
      * Miter limit.
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.m = 4;
 
     /**
      * Global alpha.
      *
-     * @private @export @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.a = 1;
 
     /**
      * Line dash.
      *
-     * @private @export @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.d = '';
 
     /**
      * Fill necessity flag.
      *
-     * @public @type {boolean} */
+     * @public 
+     * @type {boolean} 
+     */
     this.needsFill = true;
 
     /**
      * Stroke necessity flag.
      *
-     * @public @type {boolean} */
+     * @public 
+     * @type {boolean} 
+     */
     this.needsStroke = false;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.fillColor = 0;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.fillAlpha = 1;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineColor = 0;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineAlpha = 1;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineWidth = 1;
 
-    /** @public @type {CapsStyle} */
+    /** 
+     * @public 
+     * @type {CapsStyle} 
+     */
     this.lineCap = CapsStyle.NONE;
 
-    /** @public @type {JointStyle} */
+    /** 
+     * @public 
+     * @type {JointStyle} 
+     */
     this.lineJoin = JointStyle.MITER;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.miterLimit = this.m;
 
-    /** @public @type {FillRule} */
+    /** 
+     * @public 
+     * @type {FillRule} 
+     */
     this.fillRule = FillRule.NONE_ZERO;
 
     /**
      * Line dash segments length, unit.
      *
-     * @public @type {Array<number>} */
+     * @public 
+     * @type {Array<number>} 
+     */
     this.lineDash = [];
   }
 

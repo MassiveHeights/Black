@@ -15,16 +15,28 @@ class SoundClip {
    */
   constructor(nativeBuffer, offset = 0, duration = NaN, isSubClip = false) {
 
-    /** @private @type {AudioBuffer} */
+    /** 
+     * @private 
+     * @type {AudioBuffer} 
+     */
     this.mNativeBuffer = nativeBuffer;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStartOffset = offset;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDuration = duration || nativeBuffer.duration;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsSubClip = isSubClip;
   }
 

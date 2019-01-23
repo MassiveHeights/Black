@@ -16,36 +16,66 @@ class FontFaceAssetLoader extends AssetLoader {
   constructor(name, url, isLocal) {
     super(url);
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = name;
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mTestingFontName = 'Courier New';
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLocal = isLocal;
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mTestingString = '~ GHBDTN,.#$Mlck';
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCheckDelay = 50;
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mTestingElement = this.__getTestingElement();
 
-    /** @private @type {FontMetrics|null} */
+    /** 
+     * @private 
+     * @type {FontMetrics|null} 
+     */
     this.metrics = null;
 
-    /** @private @type {Element} */
+    /** 
+     * @private 
+     * @type {Element} 
+     */
     this.mLoaderElement = this.__getLoaderElement(this.mIsLocal);
     this.mTestingElement.style.fontFamily = this.mTestingFontName;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
     this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTimeoutHandle = -1;
   }
 

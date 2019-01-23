@@ -127,5 +127,9 @@ TextStyle.FontVerticalAlign = {
   BOTTOM: 'bottom'
 };
 
-/** @static @readonly @type {TextStyle} */
+/** 
+ * @static 
+ * @readonly 
+ * @type {TextStyle} 
+ */
 TextStyle.default = new TextStyle('sans-serif', 0x0, 14, TextStyle.FontStyle.NORMAL, TextStyle.FontWeight.NORMAL, 0, 0x0);

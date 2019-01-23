@@ -14,10 +14,16 @@ class GraphicsCommand {
    * @param {Array<*>} data
    */
   constructor(type, data) {
-    /** @public @type {GraphicsCommandType} */
+    /** 
+     * @public 
+     * @type {GraphicsCommandType} 
+     */
     this.type = type;
 
-    /** @public @type {Array<*>} */
+    /** 
+     * @public 
+     * @type {Array<*>} 
+     */
     this.data = data;
   }
 

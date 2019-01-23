@@ -14,107 +14,209 @@ class GameObject extends MessageDispatcher {
   constructor() {
     super(true);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mId = ++GameObject.ID;
 
-    /** @private @type {string|null} */
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
     this.mName = null;
 
-    /** @private @type {Array<Component>} */
+    /** 
+     * @private 
+     * @type {Array<Component>} 
+     */
     this.mComponents = [];
 
-    /** @protected @type {Array<GameObject>} */
+    /** 
+     * @protected 
+     * @type {Array<GameObject>} 
+     */
     this.mChildren = [];
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mY = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mScaleX = 1;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mScaleY = 1;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mPivotX = 0;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mPivotY = 0;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mSkewX = 0;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mSkewY = 0;
 
-    /** @protected @type {number|null} */
+    /** 
+     * @protected 
+     * @type {number|null} 
+     */
     this.mAnchorX = null;
 
-    /** @protected @type {number|null} */
+    /** 
+     * @protected 
+     * @type {number|null} 
+     */
     this.mAnchorY = null;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mPivotOffsetX = 0;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mPivotOffsetY = 0;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mAnchorChanged = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRotation = 0;
 
-    /** @protected @type {Rectangle} */
+    /** 
+     * @protected 
+     * @type {Rectangle} 
+     */
     this.mBoundsCache = new Rectangle();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.mLocalTransform = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.mWorldTransform = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.mWorldTransformInverted = new Matrix();
 
-    /** @private @type {DirtyFlag} */
+    /** 
+     * @private 
+     * @type {DirtyFlag} 
+     */
     this.mDirty = DirtyFlag.DIRTY;
 
-    /** @protected @type {GameObject} */
+    /** 
+     * @protected 
+     * @type {GameObject} 
+     */
     this.mParent = null;
 
-    /** @private @type {string|null} */
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
     this.mTag = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mAdded = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNumChildrenRemoved = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNumComponentsRemoved = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDirtyFrameNum = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mSuspendDirty = false;
 
     // cache all colliders for fast access
-    /** @private @type {Array<Collider>} */
+    /** 
+     * @private 
+     * @type {Array<Collider>} 
+     */
     this.mCollidersCache = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mChildOrComponentBeenAdded = false;
 
-    /** @private @type {Array<GameObject>} */
+    /** 
+     * @private 
+     * @type {Array<GameObject>} 
+     */
     this.mChildrenClone = null;
 
-    /** @private @type {Array<Component>} */
+    /** 
+     * @private 
+     * @type {Array<Component>} 
+     */
     this.mComponentClone = null;
   }
 
@@ -371,33 +473,48 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Adds `Component` instance to the end of the list.
+   * Adds Component instance to the end of the list.
    *
-   * @param  {Component} component `Component` instance or instances.
-   * @return {Component} The `Component` instance you pass in the instances parameter.
    * @throws {Error}
+   * @param  {Component} component The instances of Component to be added,
+   * @return {Component} The `Component` instance you pass in the instances parameter.
    */
   addComponent(component) {
+    return this.addComponentAt(component, this.mComponents.length);
+  }
+
+  /**
+   * Adds Component to the list at given position.
+   * 
+   * @throws {Error}
+   * @param {Component} component The instances of Component to be added,
+   * @param {number} [index=0] Position in the list.
+   * @returns {Component} The `Component` instance you pass in the instances parameter.
+   */
+  addComponentAt(component, index = 0) {
     Debug.assert(component instanceof Component, 'Type error.');
 
-    let instance = component;
-
-    if (instance.gameObject)
+    if (component.gameObject)
       throw new Error('Component cannot be added to two game objects at the same time.');
 
-    this.mComponents.push(instance);
-    instance.mGameObject = this;
+    let numComponents = this.mComponents.length;
 
-    if (instance instanceof Collider)
-      this.mCollidersCache.push(instance);
+    if (index < 0 || index > numComponents)
+      throw new Error('Component index is out of bounds.');
+
+    this.mComponents.splice(index, 0, component);
+    component.mGameObject = this;
+
+    if (component instanceof Collider)
+      this.mCollidersCache.push(component);
 
     if (this.stage !== null || Black.stage === this) {
-      Black.instance.onComponentAdded(this, instance);
+      Black.instance.onComponentAdded(this, component);
     }
 
     this.mChildOrComponentBeenAdded = true;
 
-    return instance;
+    return component;
   }
 
   /**
@@ -475,7 +592,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns local transformation `Matrix`
    *
-   * @readonly
    * @return {Matrix}
    */
   get localTransformation() {
@@ -523,32 +639,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Gets/Sets cloned Matrix object which represents object orientation in world space.
-   *
-   * @return {Matrix}
-   */
-  get worldTransformation() {
-    if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
-      this.mDirty ^= DirtyFlag.ANCHOR;
-
-      this.__updatePivots(this);
-
-      this.setDirty(/** @type {DirtyFlag} */ (DirtyFlag.LOCAL | DirtyFlag.WIRB), true);
-    }
-
-    if (this.mDirty & DirtyFlag.WORLD) {
-      this.mDirty ^= DirtyFlag.WORLD;
-
-      if (this.mParent !== null)
-        this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
-      else
-        this.localTransformation.copyTo(this.mWorldTransform);
-    }
-    return this.mWorldTransform;
-  }
-
-  /**
-   * @ignore
    * @param {Matrix} value
    * @return {void}
    */
@@ -587,6 +677,31 @@ class GameObject extends MessageDispatcher {
     }
 
     this.setTransformDirty();
+  }
+
+  /**
+   * Gets cloned Matrix object which represents object orientation in world space.
+   *
+   * @return {Matrix}
+   */
+  get worldTransformation() {
+    if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
+      this.mDirty ^= DirtyFlag.ANCHOR;
+
+      this.__updatePivots(this);
+
+      this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.LOCAL | DirtyFlag.WIRB), true);
+    }
+
+    if (this.mDirty & DirtyFlag.WORLD) {
+      this.mDirty ^= DirtyFlag.WORLD;
+
+      if (this.mParent !== null)
+        this.mParent.worldTransformation.copyTo(this.mWorldTransform).append(this.localTransformation);
+      else
+        this.localTransformation.copyTo(this.mWorldTransform);
+    }
+    return this.mWorldTransform;
   }
 
   /**
@@ -802,7 +917,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @protected
    * @param {Vector} localPoint 
    * @return {boolean}
@@ -832,7 +946,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @protected
    * @param {Vector} localPoint 
    * @return {boolean}
@@ -843,6 +956,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns local bounds of this object (without children).
+   * @returns {Rectangle}
    */
   get localBounds() {
     return this.getBounds(this, false);
@@ -850,6 +964,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns parent-relative bounds (including children).
+   * @returns {Rectangle}
    */
   get bounds() {
     return this.getBounds(this.mParent, true);
@@ -943,7 +1058,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {string|null} value
    * @return {void}
    */
@@ -962,7 +1076,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -988,7 +1101,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1014,7 +1126,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1042,7 +1153,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1062,7 +1172,6 @@ class GameObject extends MessageDispatcher {
    * Gets/Sets the x-coordinate of the object's origin in its local space in percent.
    * 
    * @export
-   * @ignore
    * @param {number|null} value
    * @return {void}
    */
@@ -1082,7 +1191,6 @@ class GameObject extends MessageDispatcher {
    * Gets/Sets the y-coordinate of the object's origin in its local space in percent.
    * 
    * @export
-   * @ignore
    * @param {number|null} value
    * @return {void}
    */
@@ -1205,7 +1313,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    *
    * @return {void}
@@ -1233,7 +1340,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1258,7 +1364,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * 
    * @returns {void}
@@ -1284,7 +1389,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * 
    * @returns {void}
@@ -1310,7 +1414,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * 
    * @returns {void}
@@ -1338,7 +1441,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * @export
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1397,7 +1499,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1421,7 +1522,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -1485,7 +1585,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {string|null} value
    * @return {void}
    */
@@ -1623,7 +1722,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

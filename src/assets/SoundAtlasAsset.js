@@ -24,12 +24,18 @@ class SoundAtlasAsset extends Asset {
       return;
     }
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mAudioXHR = new XHRAssetLoader(soundUrl);
     this.mAudioXHR.responseType = 'arraybuffer';
     this.addLoader(this.mAudioXHR);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mDataXHR = new XHRAssetLoader(dataUrl);
     this.mDataXHR.mimeType = 'application/json';
     this.mDataXHR.responseType = 'json';

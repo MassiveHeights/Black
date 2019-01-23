@@ -14,7 +14,10 @@ class MasterAudio extends System {
 
     MasterAudio.instance = this;
 
-    /** @private @type {AudioContext|null} */
+    /** 
+     * @private 
+     * @type {AudioContext|null} 
+     */
     this.mContext = null;
 
     try {
@@ -28,13 +31,22 @@ class MasterAudio extends System {
 
     this.__unlock();
 
-    /** @private @type {SoundListener|null} */
+    /** 
+     * @private 
+     * @type {SoundListener|null} 
+     */
     this.mCurrentListener = null;
 
-    /** @private @type {Object<string, SoundChannel>} */
+    /** 
+     * @private 
+     * @type {Object<string, SoundChannel>} 
+     */
     this.mChannels = {};
 
-    /** @private @type {SoundChannel} */
+    /** 
+     * @private 
+     * @type {SoundChannel} 
+     */
     this.mMasterChannel = new SoundChannel('master');
 
     this.mMasterChannel._outputNode.connect(this.mContext.destination);
@@ -158,7 +170,6 @@ class MasterAudio extends System {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @returns {void}
    */
@@ -197,7 +208,6 @@ class MasterAudio extends System {
   }
 
   /**
-   * @ignore
    * @param {SoundListener} value
    * @returns {void}
    */

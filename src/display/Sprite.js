@@ -14,19 +14,34 @@ class Sprite extends DisplayObject {
   constructor(texture = null, useTextureProps = true) {
     super();
 
-    /** @private @type {Texture|null} */
+    /** 
+     * @private 
+     * @type {Texture|null} 
+     */
     this.mTexture = null;
 
-    /** @private @type {string|null} */
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
     this.mTextureName = null;
 
-    /** @private @type {TilingInfo|null} */
+    /** 
+     * @private 
+     * @type {TilingInfo|null} 
+     */
     this.mTiling = null;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} 
+     */
     this.mSlice9grid = null;
 
-    /** @private @type {Boolean} */
+    /** 
+     * @private 
+     * @type {Boolean} 
+     */
     this.mUseTextureProps = useTextureProps;
 
     if (texture !== null && texture.constructor === String) {
@@ -135,7 +150,6 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TilingInfo|null} value
    */
   set tiling(value) {
@@ -157,7 +171,6 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Rectangle|null} value
    */
   set slice9grid(value) {

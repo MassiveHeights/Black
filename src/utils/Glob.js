@@ -8,7 +8,6 @@ class Glob {
   /**
    * Creates new Glob instance.
    * 
-   * @ignore
    * @param {string} pattern 
    */
   constructor(pattern) {
@@ -16,8 +15,8 @@ class Glob {
   }
 
   /**
+   * Tests whenever string matches the glob.
    * 
-   * @ignore
    * @param {string} string 
    * @returns {boolean}
    */

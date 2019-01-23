@@ -28,54 +28,99 @@ class Input extends System {
 
     Input.instance = this;
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mPointerPosition = new Vector();
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mStagePosition = new Vector();
 
-    /** @private @type {Element} */
+    /** 
+     * @private 
+     * @type {Element} 
+     */
     this.mDom = Black.instance.viewport.nativeElement;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mEventList = null;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mKeyEventList = null;
 
     this.mBoundListeners = [];
 
     this.__initListeners();
 
-    /** @private @type {Array<{e: Event, x: number, y:number}>} */
+    /** 
+     * @private 
+     * @type {Array<{e: Event, x: number, y:number}>} 
+     */
     this.mPointerQueue = [];
 
-    /** @private @type {Array<KeyboardEvent>} */
+    /** 
+     * @private 
+     * @type {Array<KeyboardEvent>} 
+     */
     this.mKeyQueue = [];
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mPressedKeys = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPointerDown = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mNeedUpEvent = false;
 
     // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
-    /** @private @type {Map} */
+    /** 
+     * @private 
+     * @type {Map} 
+     */
     this.mInputListeners = new Map();
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mTargetComponent = null;
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mLockedTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mLastInTargetComponent = null;
   }
 
@@ -593,13 +638,22 @@ class PointerInfo {
    */
   constructor(activeObject, x, y) {
 
-    /** * @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mActiveObject = activeObject;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mX = x;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mY = y;
   }
 

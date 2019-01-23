@@ -11,28 +11,52 @@ class GraphicsData {
    * Creates new instance of GraphicsData
    */
   constructor() {
-    /** @private @type {Array<GraphicsData>} */
+    /** 
+     * @private 
+     * @type {Array<GraphicsData>} 
+     */
     this.mNodes = [];
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.mTransform = new Matrix();
 
-    /** @private @type {Array<GraphicsCommand>} */
+    /** 
+     * @private 
+     * @type {Array<GraphicsCommand>} 
+     */
     this.mCommandQueue = [];
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPivotX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPivotY = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPosX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPosY = 0;
 
-    /** @private @type {string|null} */
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
     this.mName = null;
   }
 
@@ -580,7 +604,6 @@ class GraphicsData {
 
   /**
    * @export
-   * @ignore
    * @param {string|null} value
    * @return {void}
    */

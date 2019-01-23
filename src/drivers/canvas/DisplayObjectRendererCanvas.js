@@ -10,24 +10,42 @@ class DisplayObjectRendererCanvas extends Renderer {
   constructor() {
     super();
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmapDirty = true;
 
-    /** @private @type {Matrix|null} */
+    /** 
+     * @private 
+     * @type {Matrix|null} 
+     */
     this.mCacheAsBitmapMatrixCache = null;
 
-    /** @private @type {CanvasRenderTexture|null} */
+    /** 
+     * @private 
+     * @type {CanvasRenderTexture|null} 
+     */
     this.mCacheTexture = null;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} 
+     */
     this.mCacheBounds = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsClipped = false;
 
     this.mIsCached = false;
 
-    /** @private @type {Matrix|null} */
+    /** 
+     * @private 
+     * @type {Matrix|null} 
+     */
     this.mBakeInvertedMatrix = null;
   }
 

@@ -16,7 +16,10 @@ class JSONAsset extends Asset {
   constructor(name, url) {
     super(name);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.mimeType = 'application/json';
     this.addLoader(this.mXHR);

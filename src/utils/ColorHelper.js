@@ -13,13 +13,22 @@ class RGB {
    * @param {number} b 
    */
   constructor(r = 0, g = 0, b = 0) {
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.r = r;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.g = g;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.b = b;
   }
 }
@@ -39,13 +48,22 @@ class HSV {
    * @param {number} v 
    */
   constructor(h = 0, s = 0, v = 0) {
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.h = h;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.s = s;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.v = v;
   }
 }

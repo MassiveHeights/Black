@@ -15,13 +15,15 @@ class CircleToCirclePair extends Pair {
 
     /**
      * Collider from body a. 
-     * @public @type {CircleCollider|null}
+     * @public 
+     * @type {CircleCollider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b. 
-     * @public @type {CircleCollider|null}
+     * @public 
+     * @type {CircleCollider|null}
      */
     this.b = null;
   }

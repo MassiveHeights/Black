@@ -18,43 +18,69 @@ class Texture {
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
     this.mId = ++Texture.__ID;
 
-    /** @private @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
+    /** 
+     * @private 
+     * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
     this.mNative = nativeElement;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} */
     this.mValid = false;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mRegion = new Rectangle();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mUntrimmedRegion = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mScale = scale;
 
-    /** @private @type {Vector|null} */
+    /** 
+     * @private 
+     * @type {Vector|null} */
     this.mRegistrationPoint = registrationPoint;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} */
     this.mSlice9borders = slice9borders;
 
     this.set(nativeElement, region, untrimmedRegion, scale);

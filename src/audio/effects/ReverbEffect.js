@@ -21,16 +21,28 @@ class ReverbEffect extends SoundEffect {
     /** @inheritDoc */
     this.mOutputNode = MasterAudio._newGainNode();
 
-    /** @private @type {ConvolverNode} */
+    /** 
+     * @private 
+     * @type {ConvolverNode} 
+     */
     this.mConvolver = MasterAudio.context.createConvolver();
 
-    /** @private @type {GainNode} */
+    /** 
+     * @private 
+     * @type {GainNode} 
+     */
     this.mDry = MasterAudio._newGainNode();
 
-    /** @private @type {GainNode} */
+    /** 
+     * @private 
+     * @type {GainNode} 
+     */
     this.mWet = MasterAudio._newGainNode();
 
-    /** @private @type {BiquadFilterNode} */
+    /** 
+     * @private 
+     * @type {BiquadFilterNode} 
+     */
     this.mTone = MasterAudio.context.createBiquadFilter();
 
     this.mConvolver.buffer = IRBuffer;
@@ -51,7 +63,6 @@ class ReverbEffect extends SoundEffect {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}
@@ -62,7 +73,6 @@ class ReverbEffect extends SoundEffect {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}
@@ -73,7 +83,6 @@ class ReverbEffect extends SoundEffect {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

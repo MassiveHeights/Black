@@ -38,95 +38,179 @@ class Black extends MessageDispatcher {
 
     console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mContainerElementId = containerElementId;
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @private @type {function(new: VideoNullDriver, HTMLElement, number, number)} */
+    /** 
+     * @private 
+     * @type {function(new: VideoNullDriver, HTMLElement, number, number)} 
+     */
     this.mVideoDriverClass = videoDriverClass;
 
-    /** @private @type {Array<function(new: System)>} */
+    /** 
+     * @private 
+     * @type {Array<function(new: System)>} 
+     */
     this.mSystemClasses = systemClasses;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLastUpdateTime = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLastRenderTime = 0;
 
-    /** @private @type {Array<System>} */
+    /** 
+     * @private 
+     * @type {Array<System>} 
+     */
     this.mSystems = [];
 
-    /** @private @type {GameObject|null} */
+    /** 
+     * @private 
+     * @type {GameObject|null} 
+     */
     this.mGameObject = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsRunning = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsStarted = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPanic = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRAFHandle = -1; // not sure
 
-    /** @private @type {Viewport} */
+    /** 
+     * @private 
+     * @type {Viewport} 
+     */
     this.mViewport = null;
 
-    /** @private @type {VideoNullDriver} */
+    /** 
+     * @private 
+     * @type {VideoNullDriver} 
+     */
     this.mVideo = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPaused = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mUnpausing = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPauseOnHide = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPauseOnBlur = true;
 
-    /** @private @type {Object<string, Array>} */
+    /** 
+     * @private 
+     * @type {Object<string, Array>} 
+     */
     this.mTagCache = {};
 
-    /** @private @type {function(new: GameObject)} */
+    /** 
+     * @private 
+     * @type {function(new: GameObject)} 
+     */
     this.mGameClass = gameClass;
 
-    /** @private @type {Stage} */
+    /** 
+     * @private 
+     * @type {Stage} 
+     */
     this.mStage = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mWasStopped = false;
 
-    /** @private @type {SplashScreen} */
+    /** 
+     * @private 
+     * @type {SplashScreen} 
+     */
     this.mSplashScreen = new SplashScreen();
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mFrameTimes = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mUseHiDPR = Device.isMobile;
 
     this.__bootViewport();
 
     this.__update = this.__update.bind(this);
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPendingDispose = false;
   }
 
@@ -640,7 +724,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -680,7 +763,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -698,7 +780,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -755,7 +836,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @returns {void}
    */

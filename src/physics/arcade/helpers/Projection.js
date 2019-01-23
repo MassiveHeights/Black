@@ -11,22 +11,40 @@ class Projection {
    */
   constructor() {
 
-    /** @private @type {Vector|null} Box normal */
+    /** 
+     * @private 
+     * @type {Vector|null} Box normal 
+     */
     this.axis = null;
 
-    /** @private @type {Array<Vector>|null} Box a vertices */
+    /** 
+     * @private 
+     * @type {Array<Vector>|null} Box a vertices 
+     */
     this.verticesA = null;
 
-    /** @private @type {Array<Vector>|null} Box b vertices */
+    /** 
+     * @private 
+     * @type {Array<Vector>|null} Box b vertices 
+     */
     this.verticesB = null;
 
-    /** @private @type {Range} Range from project box a vertices to axis */
+    /** 
+     * @private 
+     * @type {Range} Range from project box a vertices to axis 
+     */
     this.rangeA = new Range();
 
-    /** @private @type {Range} Range from project box b vertices to axis */
+    /** 
+     * @private 
+     * @type {Range} Range from project box b vertices to axis 
+     */
     this.rangeB = new Range();
 
-    /** @private @type {number} body a to body b offset projected on the axis */
+    /** 
+     * @private 
+     * @type {number} body a to body b offset projected on the axis 
+     */
     this.offset = 0;
   }
 
@@ -95,13 +113,15 @@ class Range {
 
     /** 
      * Min value.
-     * @public @type {number} 
+     * @public 
+     * @type {number} 
      */
     this.min = 0;
 
     /** 
      * Max value.
-     * @public @type {number} 
+     * @public 
+     * @type {number} 
      */
     this.max = 0;
   }

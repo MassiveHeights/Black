@@ -9,7 +9,10 @@ class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
     super(nativeElement, null, null, scale);
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mSubTextures = {};
 
     this.__parseJson(jsonObject, scale);

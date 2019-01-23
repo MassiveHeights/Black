@@ -15,25 +15,46 @@ class Renderer {
     /** @type {Renderer|null} */
     this.parent = null;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.skipChildren = false;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.skipSelf = false;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.endPassRequired = false;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.endPassRequiredAt = -1;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.alpha = 1;
 
-    /** @ignore @type {BlendMode} */
+    /** 
+     * @ignore 
+     * @type {BlendMode} 
+     */
     this.blendMode = BlendMode.NORMAL;
 
-    /** @ignore @type {number|null} */
+    /** 
+     * @ignore 
+     * @type {number|null} 
+     */
     this.color = null;
   }
 

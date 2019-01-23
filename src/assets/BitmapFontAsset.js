@@ -19,10 +19,16 @@ class BitmapFontAsset extends Asset {
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
-    /** @private @type {ImageAssetLoader} */
+    /** 
+     * @private 
+     * @type {ImageAssetLoader} 
+     */
     this.mImageLoader = new ImageAssetLoader(imageUrl);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(xmlUrl);
     this.mXHR.mimeType = 'text/xml';
 

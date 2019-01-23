@@ -16,7 +16,10 @@ class Matrix {
    * @param  {number} [ty=0] TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
-    /** @private @type {Float32Array} */
+    /** 
+     * @private 
+     * @type {Float32Array} 
+     */
     this.data = new Float32Array(6);
     this.set(a, b, c, d, tx, ty);
   }

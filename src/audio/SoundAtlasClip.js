@@ -16,7 +16,10 @@ class SoundAtlasClip extends SoundClip {
   constructor(nativeBuffer, jsonObject) {
     super(nativeBuffer);
 
-    /** @private @type {Object<string, SoundClip>} */
+    /** 
+     * @private 
+     * @type {Object<string, SoundClip>} 
+     */
     this.mClips = {};
     
     if (jsonObject !== null)

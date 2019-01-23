@@ -18,10 +18,16 @@ class EmitterRendererCanvas extends Renderer {
      */
     this.isLocal = false;
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpLocal = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpWorld = new Matrix();
   }
 

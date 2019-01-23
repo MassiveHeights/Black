@@ -15,70 +15,136 @@ class Emitter extends DisplayObject {
   constructor() {
     super();
 
-    /** @private @type {Array<Texture>} */
+    /** 
+     * @private 
+     * @type {Array<Texture>} 
+     */
     this.mTextures = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mParticles = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mRecycled = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mInitializers = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mActions = [];
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mSpace = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLocal = true;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mMaxParticles = 10000;
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNextUpdateAt = 0;
 
-    /** @private @type {EmitterState} */
+    /** 
+     * @private 
+     * @type {EmitterState} 
+     */
     this.mState = EmitterState.PENDING;
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpLocal = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpWorld = new Matrix();
 
-    /** @private @type {EmitterSortOrder} */
+    /** 
+     * @private 
+     * @type {EmitterSortOrder} 
+     */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
     this.mPresimulateSeconds = 5;
@@ -327,7 +393,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -348,7 +413,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -366,7 +430,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -385,7 +448,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -405,7 +467,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -425,7 +486,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -445,7 +505,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {GameObject} gameObject
    * @return {void}
    */
@@ -465,7 +524,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Array<Texture>} value
    * @return {void}
    */
@@ -497,7 +555,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {EmitterSortOrder} value
    * @return {void}
    */

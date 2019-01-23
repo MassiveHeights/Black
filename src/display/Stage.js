@@ -11,31 +11,61 @@ class Stage extends GameObject {
   constructor() {
     super();
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = 'stage';
 
-    /** @private @type {StageScaleMode} */
+    /** 
+     * @private 
+     * @type {StageScaleMode} 
+     */
     this.mScaleMode = StageScaleMode.NORMAL;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mWidth = 960;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mHeight = 640;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageWidth = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageHeight = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageScaleFactor = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDPR = Device.getDevicePixelRatio();
 
     this.mAdded = true;
@@ -70,6 +100,13 @@ class Stage extends GameObject {
 
       this.__refresh();
     }
+  }
+
+  /**
+   * Refreshes stage size. Call this method only if you are changing the size of the container manually. 
+   */
+  refresh() {
+    this.__refresh();
   }
 
   /**
@@ -150,7 +187,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {StageScaleMode} value
    * @returns {void}
    */
@@ -231,10 +267,17 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritDoc
+   * @inheritdoc
    */
   get localTransformation() {
     return this.mLocalTransform;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  set localTransformation(value) {
+    Debug.error('Not allowed.');
   }
 
   removeFromParent() { Debug.error('Not allowed.'); }
