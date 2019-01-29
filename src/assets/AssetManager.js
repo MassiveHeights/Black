@@ -623,8 +623,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Destroys all loaded resources.
    */
-  dispose() {
-  }
+  dispose() { }
 
   /**
    * Gets/Sets default path for loading. Useful when URLs getting too long.

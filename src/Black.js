@@ -435,7 +435,7 @@ class Black extends MessageDispatcher {
     this.mViewport.dispose();
 
     AssetManager.default.dispose();
-    AssetManager.default = null;
+    AssetManager.mDefault = null;
 
     for (let i = 0; i < this.mSystems.length; i++)
       this.mSystems[i].dispose();
