@@ -233,11 +233,15 @@ class Input extends System {
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+
+    const rotation = Black.instance.viewport.rotation;
+
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
+
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
-
+  
   /**
    * @ignore
    * @private
@@ -247,14 +251,15 @@ class Input extends System {
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
-
+ 
     /** @type {Touch} */
     let touch = evt.changedTouches[0]; // ios? what about android?
     let x = touch.clientX;
     let y = touch.clientY;
 
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+    const rotation = Black.instance.viewport.rotation;
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
@@ -266,7 +271,7 @@ class Input extends System {
     this.__updateKeyboard();
 
     const size = Black.instance.viewport.size;
-    const rotation = this.mDom.style.transform;
+    const rotation = Black.instance.viewport.rotation;
 
     let stage = Black.stage;
 
@@ -275,10 +280,10 @@ class Input extends System {
       const x = nativeEvent.x;
       const y = nativeEvent.y;
 
-      if (rotation === 'rotate(90deg)') {
+      if (rotation === 1) {
         nativeEvent.x = y;
         nativeEvent.y = size.height - x;
-      } else if (rotation === 'rotate(-90deg)') {
+      } else if (rotation === -1) {
         nativeEvent.x = size.width - y;
         nativeEvent.y = x;
       }
