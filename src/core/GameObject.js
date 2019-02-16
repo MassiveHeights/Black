@@ -111,12 +111,6 @@ class GameObject extends MessageDispatcher {
     this.mPivotOffsetY = 0;
 
     /** 
-     * @protected 
-     * @type {boolean} 
-     */
-    this.mAnchorChanged = false;
-
-    /** 
      * @private 
      * @type {number} 
      */
@@ -1182,7 +1176,6 @@ class GameObject extends MessageDispatcher {
     Debug.assert(value !== null && !isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorX = value;
-    this.mAnchorChanged = true;
 
     this.setTransformDirty();
   }
@@ -1201,7 +1194,6 @@ class GameObject extends MessageDispatcher {
     Debug.assert(value !== null && !isNaN(value), 'Value cannot be NaN');
 
     this.mAnchorY = value;
-    this.mAnchorChanged = true;
 
     this.setTransformDirty();
   }
@@ -1290,11 +1282,10 @@ class GameObject extends MessageDispatcher {
 
     this.getBounds(this, includeChildren, Rectangle.__cache.zero());
 
-    this.mPivotOffsetX = (Rectangle.__cache.width * ax);
-    this.mPivotOffsetY = (Rectangle.__cache.height * ay);
+    this.mPivotOffsetX = (Rectangle.__cache.width * ax) + Rectangle.__cache.x;
+    this.mPivotOffsetY = (Rectangle.__cache.height * ay) + Rectangle.__cache.y;
 
-    this.mPivotX = this.mAnchorX === null ? this.mPivotOffsetX + Rectangle.__cache.x : this.mPivotOffsetX + (Rectangle.__cache.width * this.mAnchorX) + Rectangle.__cache.x;
-    this.mPivotY = this.mAnchorY === null ? this.mPivotOffsetY + Rectangle.__cache.y : this.mPivotOffsetY + (Rectangle.__cache.height * this.mAnchorY) + Rectangle.__cache.y;
+    this.__updatePivots(this);
 
     this.setTransformDirty();
 
@@ -1673,8 +1664,8 @@ class GameObject extends MessageDispatcher {
   __updatePivots(go) {
     go.getBounds(go, true, Rectangle.__cache.zero());
 
-    go.mPivotX = go.mAnchorX === null ? go.mPivotOffsetX + Rectangle.__cache.x : go.mPivotOffsetX + (Rectangle.__cache.width * go.mAnchorX) + Rectangle.__cache.x;
-    go.mPivotY = go.mAnchorY === null ? go.mPivotOffsetY + Rectangle.__cache.y : go.mPivotOffsetY + (Rectangle.__cache.height * go.mAnchorY) + Rectangle.__cache.y;
+    go.mPivotX = go.mAnchorX === null ? go.mPivotOffsetX : go.mPivotOffsetX + (Rectangle.__cache.width * go.mAnchorX) + Rectangle.__cache.x;
+    go.mPivotY = go.mAnchorY === null ? go.mPivotOffsetY : go.mPivotOffsetY + (Rectangle.__cache.height * go.mAnchorY) + Rectangle.__cache.y;
   }
 
   /**
