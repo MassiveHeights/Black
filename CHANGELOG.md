@@ -5,12 +5,15 @@ Black Engine: Changelog
 ### New features
 - Added new stage scale mode - Cover! (Thanks to m31271n)
 - Added pivot and 9 slice grid support for Texture Packer exporter
+- Added ability to presimulate emitter
+- Added ability to dispose Black (WIP)
 
 ### Changes
 - Orientation lock reworked. Added extra div element to control the rotation of the canvas.
-- Changed `stage.orientatin` to viewport.orientation` and `StageOrientation` to `Orientation`
+- Changed `stage.orientation` to viewport.orientation` and `StageOrientation` to `Orientation`
 - Simplified scale logic (Thanks to m31271n)
 - Changed the way how native input events are iterated
+- Minor texture packer exporter improvements (Thanks to m31271n)
 
 ### Bug Fixes
 - Fixed incorrect no audio warning 
@@ -18,7 +21,8 @@ Black Engine: Changelog
 - Fixed matrix vector transform in case when out vector is the same as input
 - Fixed arcade physics world bound for letter box
 - Fixed spine skip clipping (Thanks to rhyzx)
-- Minor texture packer exporter improvements (Thanks to m31271n)
+- Fixed input not working with Orientation Lock
+- Fixed many incorrect JsDoc comments
 
 # v0.5.8
 ### New features
