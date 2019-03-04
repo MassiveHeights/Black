@@ -63,6 +63,8 @@ class Viewport extends MessageDispatcher {
      */
     this.mOrientationLock = false;
 
+    this.mRotation = 0;
+
     this.mIsPrimary = this.isPrimary();
     this.mReflect = false;
 
@@ -75,13 +77,12 @@ class Viewport extends MessageDispatcher {
   isPrimary() {
     const orientation = screen.msOrientation || (screen.orientation || screen.mozOrientation || {}).type;
 
-    if (orientation === 'landscape-primary' || orientation === 'portrait-primary') {
+    if (orientation === 'landscape-primary' || orientation === 'portrait-primary')
       return true;
-    } else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary') {
+    else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary')
       return false;
-    }
 
-    console.log('The orientation API isn\'t supported in this browser');
+    Debug.warn('The orientation API isn\'t supported in this browser');
 
     return true;
   }
@@ -154,11 +155,12 @@ class Viewport extends MessageDispatcher {
     const wasPrimary = this.mIsPrimary;
     this.mIsPrimary = this.isPrimary();
 
-    if (this.mIsPrimary !== wasPrimary) {
+    if (this.mIsPrimary !== wasPrimary)
       this.mReflect = !this.mReflect;
-    }
 
     if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
+      this.mRotation = this.mReflect ? -1 : 1;
+
       viewportElementStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
       viewportElementStyle.left = (size.width - size.height) * 0.5 + 'px';
       viewportElementStyle.top = (size.height - size.width) * 0.5 + 'px';
@@ -168,6 +170,8 @@ class Viewport extends MessageDispatcher {
       dispatchSize.width = size.height;
       dispatchSize.height = size.width;
     } else {
+      this.mRotation = 0;
+
       this.mReflect = false;
       viewportElementStyle.transform = 'rotate(0deg)';
       viewportElementStyle.left = '0px';
@@ -214,5 +218,17 @@ class Viewport extends MessageDispatcher {
     return this.mViewportElement;
   }
 
+  /**
+   * Returns viewport orientation. 
+   * 
+   * -1 is for -90 degrees
+   * 0 is for 0 degrees
+   * 1 is for 90 degrees
+   * 
+   * @returns {number}
+   */
+  get rotation() {
+    return this.mRotation;
+  }
   // TODO: dispose, remove resize event
 }
