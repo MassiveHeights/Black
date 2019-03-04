@@ -652,7 +652,8 @@ class GameObject extends MessageDispatcher {
     let tx = value.data[4];
     let ty = value.data[5];
 
-    this.mPivotX = this.mPivotX = 0;
+    this.mPivotOffsetX = this.mPivotOffsetY = 0;
+    this.mAnchorX = this.mAnchorX = null;
     this.mX = tx;
     this.mY = ty;
 
