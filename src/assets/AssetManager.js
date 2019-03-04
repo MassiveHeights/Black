@@ -704,6 +704,8 @@ class AssetManager extends MessageDispatcher {
 
 /**
  * Default instance. Sprite and other classes uses this instance to find textures by name.
+ * 
+ * @private
  * @static
  * @type {AssetManager}
  */
