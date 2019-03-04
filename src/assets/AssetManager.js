@@ -691,6 +691,15 @@ class AssetManager extends MessageDispatcher {
 
     return AssetManager.mDefault;
   }
+
+  /**
+   * Sets default instance.
+   * 
+   * @param {AssetManager} value
+   */
+  static set default(value) {
+    AssetManager.mDefault = value;
+  }
 }
 
 /**
