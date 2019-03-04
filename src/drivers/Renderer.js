@@ -15,25 +15,46 @@ class Renderer {
     /** @type {Renderer|null} */
     this.parent = null;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.skipChildren = false;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.skipSelf = false;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.endPassRequired = false;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.endPassRequiredAt = -1;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.alpha = 1;
 
-    /** @ignore @type {BlendMode} */
+    /** 
+     * @ignore 
+     * @type {BlendMode} 
+     */
     this.blendMode = BlendMode.NORMAL;
 
-    /** @ignore @type {number|null} */
+    /** 
+     * @ignore 
+     * @type {number|null} 
+     */
     this.color = null;
   }
 
@@ -101,43 +122,6 @@ class Renderer {
    */
   render(driver, session) {
   }
-
-  // checkMask(driver, session) {
-  //   let gameObject = /** @type {DisplayObject} */ (this.gameObject);
-  //   return gameObject.mMask !== null && gameObject.mMask.mAdded && session.isMasking === false;
-  // }
-
-  // renderMask(driver, session) {
-  //   let gameObject = /** @type {DisplayObject} */ (this.gameObject);
-
-  //   const sf = Black.stage.scaleFactor;
-
-  //   let leftBounds = gameObject.bounds;
-  //   let left = new CanvasRenderTexture(leftBounds.width, leftBounds.height, 1);
-
-  //   let rightBounds = gameObject.mMask.bounds;
-  //   let right = new CanvasRenderTexture(rightBounds.width, rightBounds.height, 1);
-
-  //   let leftMatrix = new Matrix();
-  //   leftMatrix.set(1, 0, 0, 1, ~~(-leftBounds.x * sf - Black.stage.mX), ~~(-leftBounds.y * sf - Black.stage.mY));
-
-  //   let rightMatrix = new Matrix();
-  //   rightMatrix.set(1, 0, 0, 1, ~~(-rightBounds.x * sf - Black.stage.mX), ~~(-rightBounds.y * sf - Black.stage.mY));
-
-  //   driver.render(gameObject, left, leftMatrix, true);
-  //   driver.render(gameObject.mMask, right, rightMatrix, true);
-
-  //   let transform = gameObject.worldTransformation;
-
-  //   driver.setTransform(gameObject.mMask.worldTransformation);
-  //   driver.drawTexture(right);
-
-  //   driver.setGlobalBlendMode(BlendMode.MASK);
-
-  //   driver.setTransform(transform);
-  //   driver.drawTexture(left);
-
-  // }
 
   /**
    * Called after all children objects got rendered.

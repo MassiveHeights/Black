@@ -1,33 +1,33 @@
 const pathCmds = {
-  MOVETO     : 'M',
-  MOVETO_REL : 'm',
-  LINETO     : 'L',
-  LINETO_REL : 'l',
-  VLINE      : 'V',
-  VLINE_REL  : 'v',
-  HLINE      : 'H',
-  HLINE_REL  : 'h',
-  CURVE      : 'C',
-  CURVE_REL  : 'c',
-  SCURVE     : 'S',
-  SCURVE_REL : 's',
-  QCURVE     : 'Q',
-  QCURVE_REL : 'q',
-  SQCURVE    : 'T',
+  MOVETO: 'M',
+  MOVETO_REL: 'm',
+  LINETO: 'L',
+  LINETO_REL: 'l',
+  VLINE: 'V',
+  VLINE_REL: 'v',
+  HLINE: 'H',
+  HLINE_REL: 'h',
+  CURVE: 'C',
+  CURVE_REL: 'c',
+  SCURVE: 'S',
+  SCURVE_REL: 's',
+  QCURVE: 'Q',
+  QCURVE_REL: 'q',
+  SQCURVE: 'T',
   SQCURVE_REL: 't',
-  ARC        : 'A',
-  ARC_REL    : 'a',
-  CLOSE_PATH : 'Z',
+  ARC: 'A',
+  ARC_REL: 'a',
+  CLOSE_PATH: 'Z',
 };
 
 const shapeCmds = {
-  RECT    : 'r',
-  CIRCLE  : 'c',
-  ELLIPSE : 'e',
-  LINE    : 'l',
+  RECT: 'r',
+  CIRCLE: 'c',
+  ELLIPSE: 'e',
+  LINE: 'l',
   POLYLINE: 's',
-  PATH    : 'p',
-  POLYGON : 'g',
+  PATH: 'p',
+  POLYGON: 'g',
   CLIPPING: 'm',
 };
 
@@ -59,10 +59,10 @@ class BVGParser extends ParserBase {
   parse(data) {
     super.parse(data);
 
-    const styles = this.__parseStyles(data.styles);
+    const styles = this.__parseStyles(data['styles']);
 
     this._defs = {};
-    this.__parseDefs(data.defs, this._defs);
+    this.__parseDefs(data['defs'], this._defs);
 
     return this.__traverse(data, styles, new GraphicsData(), new BVGStyle());
   }
@@ -84,21 +84,21 @@ class BVGParser extends ParserBase {
     let style = parentStyle.clone();
     parent.mNodes.push(graphicsData);
 
-    if (node.id) {
-      graphicsData.name = node.id;
-    }
+    if (node['id'])
+      graphicsData.name = node['id'];
 
-    if (node.t) {
-      const x = node.t[0] || 0;
-      const y = node.t[1] || 0;
-      const sx = node.t[2] || 1;
-      const sy = node.t[3] || 1;
-      const px = node.t[5] || 0;
-      const py = node.t[6] || 0;
+    let t = node['t'];
+    if (t) {
+      const x = t[0] || 0;
+      const y = t[1] || 0;
+      const sx = t[2] || 1;
+      const sy = t[3] || 1;
+      const px = t[5] || 0;
+      const py = t[6] || 0;
 
-      graphicsData.mTransform.rotate(node.t[4] || 0);
+      graphicsData.mTransform.rotate(t[4] || 0);
       graphicsData.mTransform.scale(sx, sy);
-      graphicsData.mTransform.skew(node.t[7] || 0, node.t[8] || 0);
+      graphicsData.mTransform.skew(t[7] || 0, t[8] || 0);
 
       graphicsData.mTransform.data[4] = x + px / sx;
       graphicsData.mTransform.data[5] = y + py / sy;
@@ -107,8 +107,8 @@ class BVGParser extends ParserBase {
       graphicsData.mPivotY = py;
     }
 
-    if (node.cmds) {
-      const cmds = node.cmds.split('$').filter(v => v).reverse();
+    if (node['cmds']) {
+      const cmds = node['cmds'].split('$').filter(v => v).reverse();
       const lastRect = new Rectangle();
       let prevName = '';
 
@@ -174,10 +174,10 @@ class BVGParser extends ParserBase {
             const rx = args[2];
             const ry = args[3];
 
-            const curves = [
-              ...this.__arcToBezier(x - rx, y, rx, ry, 0, 0, 0, x + rx, y),
-              ...this.__arcToBezier(x + rx, y, rx, ry, 0, 0, 0, x - rx, y),
-            ];
+            let a = /** @type {!Array<!Array<number>>} */ (this.__arcToBezier(x - rx, y, rx, ry, 0, 0, 0, x + rx, y));
+            let b = /** @type {!Array<!Array<number>>} */ (this.__arcToBezier(x + rx, y, rx, ry, 0, 0, 0, x - rx, y));
+
+            const curves = [...a, ...b];
 
             graphicsData.moveTo(x - rx, y);
 
@@ -211,7 +211,7 @@ class BVGParser extends ParserBase {
           default:
             break;
         }
-
+        
         if (style.needsFill && name !== 'S') {
           if (this.__isRef(style.F)) {
             const def = defs[style.F.slice(1)].clone();
@@ -252,8 +252,8 @@ class BVGParser extends ParserBase {
       }
     }
 
-    if (node.nodes) {
-      node.nodes.forEach(c => {
+    if (node['nodes']) {
+      node['nodes'].forEach(c => {
         this.__traverse(c, styles, graphicsData, style);
       });
     }

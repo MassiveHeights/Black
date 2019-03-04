@@ -12,97 +12,113 @@ class Pair {
   constructor() {
     /**
      * Collider from body a.
-     * @public @type {Collider|null}
+     * @public 
+     * @type {Collider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b.
-     * @public @type {Collider|null}
+     * @public 
+     * @type {Collider|null}
      */
     this.b = null;
 
     /**
      * Parent of collider a.
-     * @public @type {RigidBody|null}
+     * @public 
+     * @type {RigidBody|null}
      */
     this.bodyA = null;
 
     /**
      * Parent of collider b.
-     * @public @type {RigidBody|null}
+     * @public 
+     * @type {RigidBody|null}
      */
     this.bodyB = null;
 
     /**
      * Flag to indicate collision state.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mInCollision = false;
 
     /**
      * Flag to determine one from two bodies can move. invMass !== 0 and isSleeping === false.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mIsStatic = false;
 
     /**
      * Cached normal impulse to apply in next iteration or frame if collision still exist.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mNormalImpulse = 0;
 
     /**
      * Cached tangent impulse to apply in next iteration or frame if collision still exist.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mTangentImpulse = 0;
 
     /**
      * Position impulse cache to use within iterations.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mPositionImpulse = 0;
 
     /**
      * This colliders cached friction.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mFriction = 0;
 
     /**
      * This colliders cached bounce factor.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mBias = 0;
 
     /**
      * This colliders cached inverse mass sum.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mMass = 0;
 
     /**
      * Offset within the colliders on preSolve to correct overlap on each iteration.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mOffset = new Vector();
 
     /**
      * Normal collision direction from a to b.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mNormal = new Vector();
 
     /**
      * Positive number. Penetration within colliders.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mOverlap = 0;
 
     /**
      * Flag to indicate this pair needs refresh.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mChanged = false;
   }
@@ -275,35 +291,47 @@ class Pair {
 /**
  * Updates to start sleep if velocities is lower, than sleep threshold.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.timeToSleep = 5; //
 
 /**
  * How many pixels colliders can overlap each other without resolve.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.slop = 1;
 
 /**
  * Position correction koefficient. Lower is softer and with less twitches.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.baumgarte = 0.2;
 
 /**
  * Scale koefficient to normalize physics in some local coordinates or different resolutions.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.unitsPerMeter = 1;
 
 /**
  * Maximum body speed to begin sleep process, if sleeping is enabled.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.sleepThreshold = 0.1;
 
 /**
  * Minimal relative velocity within two bodies, required for bounce effect.
  *
- * @ignore @type {number} */
+ * @ignore 
+ * @type {number} 
+ */
 Pair.bounceTreshhold = 1;

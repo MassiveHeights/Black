@@ -13,7 +13,10 @@ class ImageAssetLoader extends AssetLoader {
   constructor(url) {
     super(url);
 
-    /** @private @type {Image} */
+    /** 
+     * @private 
+     * @type {Image} 
+     */
     this.mImageElement = new Image();
     this.mImageElement.crossOrigin = 'anonymous';
   }

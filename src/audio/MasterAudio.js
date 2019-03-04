@@ -14,28 +14,53 @@ class MasterAudio extends System {
 
     MasterAudio.instance = this;
 
-    /** @private @type {AudioContext|null} */
+    /** 
+     * @private 
+     * @type {AudioContext|null} 
+     */
     this.mContext = null;
 
     try {
       this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
-      this.__unlock();
     } catch (error) {
-      Debug.warn('no audio support');
-      return;
+      if (this.mContext == null) {
+        Debug.warn('no audio support');
+        return;
+      }
     }
 
-    /** @private @type {SoundListener|null} */
+    this.__unlock();
+
+    /** 
+     * @private 
+     * @type {SoundListener|null} 
+     */
     this.mCurrentListener = null;
 
-    /** @private @type {Object<string, SoundChannel>} */
+    /** 
+     * @private 
+     * @type {Object<string, SoundChannel>} 
+     */
     this.mChannels = {};
 
-    /** @private @type {SoundChannel} */
+    /** 
+     * @private 
+     * @type {SoundChannel} 
+     */
     this.mMasterChannel = new SoundChannel('master');
 
     this.mMasterChannel._outputNode.connect(this.mContext.destination);
     this.mChannels['master'] = this.mMasterChannel;
+  }
+
+  dispose() {
+    super.dispose();
+    if (this.mContext !== null) {
+      MasterAudio.stopAll();
+      this.mContext.close();
+    }
+    
+    MasterAudio.instance = null;
   }
 
   /**
@@ -121,7 +146,7 @@ class MasterAudio extends System {
 
     let sound = null;
     if (nameOrSound.constructor === String) {
-      sound = (AssetManager.default.getSound( /** @type {string} */ (nameOrSound)));
+      sound = (AssetManager.default.getSound( /** @type {string} */(nameOrSound)));
     }
 
     return sound.play(channel, volume, loop, pan);
@@ -145,7 +170,6 @@ class MasterAudio extends System {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @returns {void}
    */
@@ -184,7 +208,6 @@ class MasterAudio extends System {
   }
 
   /**
-   * @ignore
    * @param {SoundListener} value
    * @returns {void}
    */

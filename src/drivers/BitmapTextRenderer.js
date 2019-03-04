@@ -12,13 +12,24 @@ class BitmapTextRenderer extends Renderer {
   constructor() {
     super();
 
-    /** @ignore @private @type {HTMLCanvasElement} */
+    /** 
+     * @ignore 
+     * @private 
+     * @type {HTMLCanvasElement} 
+     */
     this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
-    /** @ignore @private @type {CanvasRenderingContext2D} */
+    /** 
+     * @ignore 
+     * @private 
+     * @type {CanvasRenderingContext2D} 
+     */
     this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
-    /** @ignore @type {Texture|null} */
+    /** 
+     * @ignore 
+     * @type {Texture|null} 
+     */
     this.texture = null;
   }
 

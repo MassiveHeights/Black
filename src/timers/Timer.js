@@ -16,25 +16,46 @@ class Timer extends Component {
     Debug.assert(interval > 0, 'the interval value must be greater than 0');
     Debug.assert(ticksCount > 0, 'the ticksCount value must be greater than 0');
     
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mStartOnAdded = startOnAdded;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mInterval = interval;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTicksCount = ticksCount;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsRunning = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTick = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mElapsedSeconds = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalElapsedSeconds = 0;
   }
 
@@ -186,7 +207,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -205,7 +225,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -233,7 +252,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

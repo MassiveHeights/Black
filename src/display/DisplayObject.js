@@ -9,50 +9,83 @@ class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mAlpha = 1;
 
-    /** @protected @type {BlendMode} */
+    /** 
+     * @protected 
+     * @type {BlendMode} 
+     */
     this.mBlendMode = BlendMode.AUTO;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mVisible = true;
 
-    /** @protected @type {Rectangle} */
+    /** 
+     * @protected 
+     * @type {Rectangle} 
+     */
     this.mClipRect = null;
 
-    /** @protected @type {Renderer|null} */
+    /** 
+     * @protected 
+     * @type {Renderer|null} 
+     */
     this.mRenderer = this.getRenderer();
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmap = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmapDynamic = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmapDirty = true;
 
-    /** @private @type {Matrix|null} */
+    /** 
+     * @private 
+     * @type {Matrix|null} 
+     */
     this.mCacheAsBitmapMatrixCache = null;
 
-    /** @private @type {CanvasRenderTexture|null} */
+    /** 
+     * @private 
+     * @type {CanvasRenderTexture|null} 
+     */
     this.mCache = null;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} 
+     */
     this.mCacheBounds = null;
 
-    /** @protected @type {?number} */
+    /** 
+     * @protected 
+     * @type {?number} 
+     */
     this.mColor = null;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mSnapToPixels = false;
-
-    // /** @protected @type {DisplayObject|null} */
-    // this.mMask = null;
-
-    // /** @protected @type {boolean} */
-    // this.mIsMask = false;
   }
 
   /**
@@ -215,7 +248,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {?number} value
    * @return {void}
    */
@@ -238,7 +270,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -268,7 +299,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -287,7 +317,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -311,7 +340,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -333,7 +361,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {BlendMode} value
    * @return {void}
    */
@@ -355,7 +382,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {Rectangle} value
    * @return {void}
    */
@@ -373,36 +399,9 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    */
   set snapToPixels(value) {
     this.mSnapToPixels = value;
   }
-
-  // /**
-  //  * Gets/sets a display object which will act like a mask for this display object. 
-  //  * Mask should be a part on the stage.
-  //  * @returns {DisplayObject|null}
-  //  */
-  // get mask() {
-  //   return this.mMask;
-  // }
-
-  // /**
-  //  * @ignore
-  //  * @param {DisplayObject|null}
-  //  */
-  // set mask(value) {
-  //   if (this.mMask === value)
-  //     return;
-
-  //   if (this.mMask !== null) 
-  //     this.mMask.mIsMask = false;
-
-  //   if (value !== null) 
-  //     value.mIsMask = true;
-
-  //   this.mMask = value;
-  // }
 }

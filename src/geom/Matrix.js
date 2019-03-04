@@ -16,7 +16,10 @@ class Matrix {
    * @param  {number} [ty=0] TY-component.
    */
   constructor(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
-    /** @private @type {Float32Array} */
+    /** 
+     * @private 
+     * @type {Float32Array} 
+     */
     this.data = new Float32Array(6);
     this.set(a, b, c, d, tx, ty);
   }
@@ -315,12 +318,12 @@ class Matrix {
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
-    let m = this.data;
+    const m = this.data;
 
-    outVector.x = m[0] * vector.x + m[2] * vector.y + m[4];
-    outVector.y = m[1] * vector.x + m[3] * vector.y + m[5];
+    const x = m[0] * vector.x + m[2] * vector.y + m[4];
+    const y = m[1] * vector.x + m[3] * vector.y + m[5];
 
-    return outVector;
+    return outVector.set(x, y);
   }
 
   /**

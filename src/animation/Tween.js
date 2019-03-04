@@ -22,73 +22,142 @@ class Tween extends Component {
   constructor(values, duration = 0.250, properties = null, plugins = null) {
     super();
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mValues = values;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDuration = duration;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mProperties = properties;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mPlugins = plugins;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPlaying = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPaused = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStartTime = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPausedTime = 0;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mValuesStart = {};
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mElapsed = 0;
 
-    /** @private @type {function (Array, number):number} */
+    /** 
+     * @private 
+     * @type {function (Array, number):number} 
+     */
     this.mInterpolation = Interpolation.linear;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDelay = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRepeatDelay = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRepeats = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mInitiated = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mStarted = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReversed = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mYoyo = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsYoyoBack = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReverseOnInit = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mRemoveOnComplete = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPlayOnAdded = true;
 
-    /** @private @type {function(number):number} */
+    /** 
+     * @private 
+     * @type {function(number):number} 
+     */
     this.mEase = Tween.DEFAULT_EASE;
 
     if (this.mProperties !== null) {
@@ -108,7 +177,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {function(number):number} value The easing function.
    * @return {void}
    */
@@ -126,7 +194,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {function(Array, number):number} value The interpolation function.
    * @return {void}
    */
@@ -154,7 +221,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Seconds to wait.
    * @return {void}
    */
@@ -172,7 +238,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Number of times.
    * @return {void}
    */
@@ -190,7 +255,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Seconds to wait.
    * @return {void}
    */
@@ -208,7 +272,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -226,7 +289,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -244,7 +306,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -262,7 +323,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -280,7 +340,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -298,7 +357,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {Object} value
    * @return {void}
    */
@@ -406,7 +464,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @private
    * @return {void} Description
    */

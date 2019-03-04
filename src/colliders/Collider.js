@@ -17,25 +17,33 @@ class Collider extends Component {
 
     /**
      * Dirty flag.
-     * @private @type {boolean}
+     * 
+     * @private 
+     * @type {boolean}
      */
     this.mChanged = true;
 
     /**
      * Global in stage coordinates center.
-     * @private @type {Vector}
+     * 
+     * @private 
+     * @type {Vector}
      */
     this.mCenter = new Vector();
 
     /**
      * Global in stage coordinates min x and y vertex.
-     * @private @type {Vector}
+     * 
+     * @private 
+     * @type {Vector}
      */
     this.mMin = new Vector();
 
     /**
      * Global in stage coordinates max x and y vertex. 
-     * @private @type {Vector} */
+     * 
+     * @private 
+     * @type {Vector} */
     this.mMax = new Vector();
   }
 

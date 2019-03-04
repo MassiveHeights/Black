@@ -14,13 +14,22 @@ class Circle {
    */
   constructor(x = 0, y = 0, r = 1) {
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.x = x;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.y = y;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.r = r;
   }
 

@@ -16,12 +16,18 @@ class CanvasDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @private @type {CanvasRenderingContext2D|null} */
+    /** 
+     * @private 
+     * @type {CanvasRenderingContext2D|null} 
+     */
     this.mCtx = null;
 
     this.__createCanvas();
 
-    /** @inheritDoc */
+    /**
+     * @private 
+     * @inheritDoc 
+     */
     this.mRendererMap = {
       'DisplayObject': DisplayObjectRendererCanvas,
       'Sprite': SpriteRendererCanvas,
@@ -253,7 +259,7 @@ class CanvasDriver extends VideoNullDriver {
   setTransform(transform) {
     let dpr = this.mDevicePixelRatio;
     let session = this.mActiveSession;
-    
+
     if (session.isBackBufferActive === false) {
       if (session.customTransform === null) {
         transform = transform.clone(); // TODO: too much allocations
@@ -264,7 +270,7 @@ class CanvasDriver extends VideoNullDriver {
         transform.prepend(session.customTransform);
       }
     }
-    
+
     this.mTransform = transform;
 
     let mv = transform.value;
@@ -329,6 +335,16 @@ class CanvasDriver extends VideoNullDriver {
    */
   getTextureFromCanvas(canvas) {
     return new Texture(canvas);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  dispose() {
+    super.dispose();
+
+    if (this.mCtx !== null)
+      this.mCtx.canvas.remove();
   }
 
   /** 

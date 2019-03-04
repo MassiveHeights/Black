@@ -13,13 +13,22 @@ class Component extends MessageDispatcher {
   constructor() {
     super(true);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mId = ++Component.ID;
 
-    /** @private @type {GameObject|null} */
+    /** 
+     * @private 
+     * @type {GameObject|null} 
+     */
     this.mGameObject = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mAdded = false;
   }
 

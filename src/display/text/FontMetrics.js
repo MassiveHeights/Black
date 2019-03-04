@@ -31,7 +31,10 @@ class FontMetrics {
     /** @private */
     this.mCtx = FontMetrics.__CONTEXT;
 
-    /** @private @type {TextStyle} */
+    /** 
+     * @private 
+     * @type {TextStyle} 
+     */
     this.mStyle = style;
 
     const drawY = Math.floor(FontMetrics.__CANVAS.height * 0.7766);
@@ -43,10 +46,7 @@ class FontMetrics {
 
     const xHeight = this.__getBottom(data) - this.__getTop(data);
 
-    for (let i = 65; i <= 122; i++) {
-      if (i > 90 && i < 97)
-        continue;
-
+    for (let i = 32; i <= 126; i++) {
       this.mCtx.fillText(String.fromCharCode(i), 0, drawY, 1);
     }
 
@@ -218,26 +218,59 @@ class FontMetrics {
   }
 }
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CACHE = {};
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.__CONTEXT = null;
 
-/** @ignore @static @private @type {HTMLCanvasElement}*/
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ * @type {HTMLCanvasElement}
+ */
 FontMetrics.__CANVAS = null;
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CHAR_CAPITAL_HEIGHT = 's';
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CHAR_BASELINE = 'a';
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CHAR_XHEIGHT = 'x';
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CHAR_DESCENT = 'p';
 
-/** @ignore @static @private */
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
 FontMetrics.CHAR_ASCENT = 'h';

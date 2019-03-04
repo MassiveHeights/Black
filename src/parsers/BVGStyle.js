@@ -16,115 +16,170 @@ class BVGStyle {
     /**
      * Stroke color
      *
-     * @private @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.L = '-';
 
     /**
      * Stroke alpha.
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.l = 1;
 
     /**
      * Line width.
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.w = 1;
 
     /**
      * Fill color.
      *
-     * @private @type {string} */
+     * @private 
+     * @export 
+     * @type {string}*/
     this.F = '0';
 
     /**
      * Fill alpha.
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.f = 1;
 
     /**
      * Fill rule.
      * {nonzero: 1, evenodd: 0}
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.r = 1;
 
     /**
      * Line cap.
      * {butt: 'b', round: 'r', square: 's'}
      *
-     * @private @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.c = 'b';
 
     /**
      * Line join.
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
-     * @private @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.j = 'm';
 
     /**
      * Miter limit.
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.m = 4;
 
     /**
      * Global alpha.
      *
-     * @private @type {number} */
+     * @private 
+     * @export 
+     * @type {number} */
     this.a = 1;
 
     /**
      * Line dash.
      *
-     * @private @type {string} */
+     * @private 
+     * @export 
+     * @type {string} */
     this.d = '';
 
     /**
      * Fill necessity flag.
      *
-     * @public @type {boolean} */
+     * @public 
+     * @type {boolean} 
+     */
     this.needsFill = true;
 
     /**
      * Stroke necessity flag.
      *
-     * @public @type {boolean} */
+     * @public 
+     * @type {boolean} 
+     */
     this.needsStroke = false;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.fillColor = 0;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.fillAlpha = 1;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineColor = 0;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineAlpha = 1;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.lineWidth = 1;
 
-    /** @public @type {CapsStyle} */
+    /** 
+     * @public 
+     * @type {CapsStyle} 
+     */
     this.lineCap = CapsStyle.NONE;
 
-    /** @public @type {JointStyle} */
+    /** 
+     * @public 
+     * @type {JointStyle} 
+     */
     this.lineJoin = JointStyle.MITER;
 
-    /** @public @type {number} */
+    /** 
+     * @public 
+     * @type {number} 
+     */
     this.miterLimit = this.m;
 
-    /** @public @type {FillRule} */
+    /** 
+     * @public 
+     * @type {FillRule} 
+     */
     this.fillRule = FillRule.NONE_ZERO;
 
     /**
      * Line dash segments length, unit.
      *
-     * @public @type {Array<number>} */
+     * @public 
+     * @type {Array<number>} 
+     */
     this.lineDash = [];
   }
 
@@ -137,37 +192,37 @@ class BVGStyle {
    * @returns {void}
    */
   merge(style) {
-    if (style.hasOwnProperty('F'))
+    if (style.F)
       this.F = style.F;
 
-    if (style.hasOwnProperty('L'))
+    if (style.L)
       this.L = style.L;
 
-    if (style.hasOwnProperty('w'))
+    if (style.w)
       this.w = style.w;
 
-    if (style.hasOwnProperty('l'))
+    if (style.l)
       this.l *= style.l;
 
-    if (style.hasOwnProperty('f'))
+    if (style.f)
       this.f *= style.f;
 
-    if (style.hasOwnProperty('r'))
+    if (style.r)
       this.r = style.r;
 
-    if (style.hasOwnProperty('c'))
+    if (style.c)
       this.c = style.c;
 
-    if (style.hasOwnProperty('j'))
+    if (style.j)
       this.j = style.j;
 
-    if (style.hasOwnProperty('m'))
+    if (style.m)
       this.m = style.m;
 
-    if (style.hasOwnProperty('a'))
+    if (style.a)
       this.a = style.a;
 
-    if (style.hasOwnProperty('d'))
+    if (style.d)
       this.d = style.d;
   }
 

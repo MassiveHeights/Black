@@ -32,7 +32,6 @@ const BlendMode = {
 
 /** 
  * @export
- * @ignore 
  * @static 
  * @constant 
  * @dict

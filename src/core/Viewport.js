@@ -1,11 +1,12 @@
 /**
  * Manages viewport, handles DOM container resize events and updates internal data.
  * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
- * 
+ *
  * @cat core
  * @fires Viewport#resize
  * @extends MessageDispatcher
  */
+
 /* @echo EXPORT */
 class Viewport extends MessageDispatcher {
   /**
@@ -16,8 +17,19 @@ class Viewport extends MessageDispatcher {
   constructor(containerElement) {
     super();
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = containerElement;
+
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
+    this.mViewportElement = document.createElement('div');
+    this.mViewportElement.style.position = 'relative';
+    containerElement.appendChild(this.mViewportElement);
 
     let style = this.mContainerElement.style;
     style.userSelect = 'none';
@@ -28,7 +40,10 @@ class Viewport extends MessageDispatcher {
 
     let size = this.mContainerElement.getBoundingClientRect();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
     this.isTransparent = true;
@@ -36,7 +51,75 @@ class Viewport extends MessageDispatcher {
 
     this.mChecksLeftSeconds = 0;
 
-    window.addEventListener('resize', x => this.__onResize());
+    /** 
+     * @private 
+     * @type {Orientation} 
+     */
+    this.mOrientation = Orientation.UNIVERSAL;
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mOrientationLock = false;
+
+    this.mRotation = 0;
+
+    this.mIsPrimary = this.isPrimary();
+    this.mReflect = false;
+
+    this.__onResize();
+
+    this.mBoundResize = x => this.__onResize();
+    window.addEventListener('resize', this.mBoundResize);
+  }
+
+  isPrimary() {
+    const orientation = screen.msOrientation || (screen.orientation || screen.mozOrientation || {}).type;
+
+    if (orientation === 'landscape-primary' || orientation === 'portrait-primary')
+      return true;
+    else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary')
+      return false;
+
+    Debug.warn('The orientation API isn\'t supported in this browser');
+
+    return true;
+  }
+
+  /**
+   * Gets/Sets stage orientation.
+   *
+   * @returns {Orientation}
+   */
+  get orientation() {
+    return this.mOrientation;
+  }
+
+  /**
+   * @param {Orientation} value
+   * @returns {void}
+   */
+  set orientation(value) {
+    this.mOrientation = value;
+    this.__onResize();
+  }
+
+  /**
+   * Gets/sets whenever stage orientation should be locked. If false and orientation is not universal stage will remain same size in both orientation.
+   * @returns {boolean}
+   */
+  get orientationLock() {
+    return this.mOrientationLock;
+  }
+
+  /**
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set orientationLock(value) {
+    this.mOrientationLock = value;
+    this.__onResize();
   }
 
   /**
@@ -53,27 +136,68 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
+   * Refreshes viewport size and posts Message.RESIZE message. Make sure to refresh stage too in case container has changed its size.
+   */
+  refresh() {
+    this.__onResize();
+  }
+
+  /**
    * @private
    * @ignore
    */
   __onResize() {
-    let size = this.mContainerElement.getBoundingClientRect();
+    const viewportElementStyle = this.mViewportElement.style;
+    const size = this.mContainerElement.getBoundingClientRect();
+    const deviceOrientation = size.width > size.height ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
 
-    let newSize = Rectangle.pool.get().set(size.left, size.top, size.width, size.height);
+    const dispatchSize = Rectangle.pool.get().copyFrom(size);
+    const wasPrimary = this.mIsPrimary;
+    this.mIsPrimary = this.isPrimary();
 
-    if (this.mSize.equals(newSize) === true)
+    if (this.mIsPrimary !== wasPrimary)
+      this.mReflect = !this.mReflect;
+
+    if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
+      this.mRotation = this.mReflect ? -1 : 1;
+
+      viewportElementStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
+      viewportElementStyle.left = (size.width - size.height) * 0.5 + 'px';
+      viewportElementStyle.top = (size.height - size.width) * 0.5 + 'px';
+      viewportElementStyle.width = size.height + 'px';
+      viewportElementStyle.height = size.width + 'px';
+
+      dispatchSize.width = size.height;
+      dispatchSize.height = size.width;
+    } else {
+      this.mRotation = 0;
+
+      this.mReflect = false;
+      viewportElementStyle.transform = 'rotate(0deg)';
+      viewportElementStyle.left = '0px';
+      viewportElementStyle.top = '0px';
+      viewportElementStyle.width = size.width + 'px';
+      viewportElementStyle.height = size.height + 'px';
+    }
+
+    if (this.mSize.equals(dispatchSize) === true)
       return;
 
-    this.mSize.copyFrom(newSize);
+    this.mSize.copyFrom(dispatchSize);
 
     /**
      * Posted every time viewport size has changed.
      * @event Viewport#resize
      */
-    this.post(Message.RESIZE, this.mSize);
+    this.post(Message.RESIZE, dispatchSize);
 
     this.mChecksLeftSeconds = 1;
-    Rectangle.pool.release(newSize);
+    Rectangle.pool.release(dispatchSize);
+  }
+
+  dispose() {
+    this.mViewportElement.remove();
+    window.removeEventListener('resize', this.mBoundResize);
   }
 
   /**
@@ -86,13 +210,25 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * nativeDOM - Returns the HTML container element the engine runs in.
-   * 
+   * Returns the HTML container element the viewport runs in.
+   *
    * @return {Element}
    */
-  get nativeDOM() {
-    return this.mContainerElement;
+  get nativeElement() {
+    return this.mViewportElement;
   }
 
+  /**
+   * Returns viewport orientation. 
+   * 
+   * -1 is for -90 degrees
+   * 0 is for 0 degrees
+   * 1 is for 90 degrees
+   * 
+   * @returns {number}
+   */
+  get rotation() {
+    return this.mRotation;
+  }
   // TODO: dispose, remove resize event
 }

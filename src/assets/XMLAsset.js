@@ -16,7 +16,10 @@ class XMLAsset extends Asset {
   constructor(name, url) {
     super(name);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.mimeType = 'text/xml';
     this.addLoader(this.mXHR);

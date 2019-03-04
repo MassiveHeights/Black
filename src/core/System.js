@@ -80,4 +80,9 @@ class System extends MessageDispatcher {
    * @return {void}
    */
   onComponentRemoved(child, component) { }
+
+  /**
+   * Disposes all allocated resources.
+   */
+  dispose() { }
 }

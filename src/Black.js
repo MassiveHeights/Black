@@ -1,3 +1,4 @@
+let ID = 0;
 /**
  * The Black class represents the core of the Black Engine.
  *
@@ -31,100 +32,186 @@ class Black extends MessageDispatcher {
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
 
+    this.id = ++ID;
+
     Black.instance = this;
 
     console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mContainerElementId = containerElementId;
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
 
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
-    /** @private @type {function(new: VideoNullDriver, HTMLElement, number, number)} */
+    /** 
+     * @private 
+     * @type {function(new: VideoNullDriver, HTMLElement, number, number)} 
+     */
     this.mVideoDriverClass = videoDriverClass;
 
-    /** @private @type {Array<function(new: System)>} */
+    /** 
+     * @private 
+     * @type {Array<function(new: System)>} 
+     */
     this.mSystemClasses = systemClasses;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageWidth = this.mContainerElement.clientWidth;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageHeight = this.mContainerElement.clientHeight;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLastUpdateTime = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLastRenderTime = 0;
 
-    /** @private @type {Array<System>} */
+    /** 
+     * @private 
+     * @type {Array<System>} 
+     */
     this.mSystems = [];
 
-    /** @private @type {GameObject|null} */
+    /** 
+     * @private 
+     * @type {GameObject|null} 
+     */
     this.mGameObject = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsRunning = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsStarted = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPanic = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRAFHandle = -1; // not sure
 
-    /** @private @type {Viewport} */
+    /** 
+     * @private 
+     * @type {Viewport} 
+     */
     this.mViewport = null;
 
-    /** @private @type {VideoNullDriver} */
+    /** 
+     * @private 
+     * @type {VideoNullDriver} 
+     */
     this.mVideo = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPaused = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mUnpausing = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPauseOnHide = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPauseOnBlur = true;
 
-    /** @private @type {Object<string, Array>} */
+    /** 
+     * @private 
+     * @type {Object<string, Array>} 
+     */
     this.mTagCache = {};
 
-    /** @private @type {function(new: GameObject)} */
+    /** 
+     * @private 
+     * @type {function(new: GameObject)} 
+     */
     this.mGameClass = gameClass;
 
-    /** @private @type {GameObject|null} */
-    this.mGame = null;
-
-    /** @private @type {Stage} */
+    /** 
+     * @private 
+     * @type {Stage} 
+     */
     this.mStage = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mWasStopped = false;
 
-    /** @private @type {SplashScreen} */
+    /** 
+     * @private 
+     * @type {SplashScreen} 
+     */
     this.mSplashScreen = new SplashScreen();
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mFrameTimes = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mUseHiDPR = Device.isMobile;
 
     this.__bootViewport();
 
     this.__update = this.__update.bind(this);
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mPendingDispose = false;
   }
 
   /**
@@ -262,7 +349,7 @@ class Black extends MessageDispatcher {
    * @returns {void}
    */
   __bootVideo() {
-    this.mVideo = new this.mVideoDriverClass(this.mContainerElement, this.mStageWidth, this.mStageHeight);
+    this.mVideo = new this.mVideoDriverClass(this.mViewport.mViewportElement, this.mStageWidth, this.mStageHeight);
   }
 
   /**
@@ -280,6 +367,8 @@ class Black extends MessageDispatcher {
 
     if (this.mIsStarted === true)
       return;
+
+    new Time();
 
     this.__bootSystems();
     this.__bootStage();
@@ -302,6 +391,7 @@ class Black extends MessageDispatcher {
     this.mIsStarted = true;
     this.mVideo.start();
 
+    // TODO: is there a way to cancel first raf? no! eg pause will not work
     this.mRAFHandle = window.requestAnimationFrame(function (timestamp) {
       // TODO: do first update here
       self.mIsRunning = true;
@@ -329,6 +419,32 @@ class Black extends MessageDispatcher {
     window.cancelAnimationFrame(this.mRAFHandle);
 
     console.log('%c                        <<< BYE BYE >>>                        ', 'background: #000; color: #fff;');
+  }
+
+  /**
+   * Destroys the whole thing!
+   */
+  destroy() {
+    this.mPendingDispose = true;
+  }
+
+  __dispose() {
+    this.stop();
+
+    this.mVideo.dispose();
+    this.mViewport.dispose();
+
+    AssetManager.default.dispose();
+    AssetManager.mDefault = null;
+
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].dispose();
+
+    MessageDispatcher.dispose();
+
+    Black.numUpdates = 0;
+    Black.__frameNum = 0;
+    Black.instance = null;
   }
 
   /**
@@ -378,6 +494,7 @@ class Black extends MessageDispatcher {
     for (let i = 0; i < numTicks; i++) {
       Time.mActualTime += Time.delta;
       Time.mTime = Time.mActualTime;
+
       this.__internalUpdate();
       this.__internalSystemPostUpdate();
     }
@@ -403,6 +520,9 @@ class Black extends MessageDispatcher {
     Renderer.__dirty = false;
 
     this.mLastRenderTime = timestamp;
+
+    if (this.mPendingDispose === true)
+      this.__dispose();
   }
 
   /**
@@ -604,7 +724,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -644,7 +763,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -662,7 +780,6 @@ class Black extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -707,7 +824,7 @@ class Black extends MessageDispatcher {
     return this.mSplashScreen;
   }
 
-  
+
   /**
    * Gets/sets whenever driver should be created with high DPR support. 
    * NOTE: Cannot be changed at runtime.
@@ -717,9 +834,8 @@ class Black extends MessageDispatcher {
   get useHiDPR() {
     return this.mUseHiDPR;
   }
-  
+
   /**
-   * @ignore
    * @param {boolean} value
    * @returns {void}
    */

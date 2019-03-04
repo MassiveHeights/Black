@@ -74,23 +74,51 @@ class Message {
  */
 Message.pool = new ObjectPool(Message);
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.PROGRESS = 'progress';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.COMPLETE = 'complete';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.ERROR = 'error';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.CHANGE = 'change';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.READY = 'ready';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.UPDATE = 'update';
 
-/** @const @public @type {string} */
+/** 
+ * @const 
+ * @public 
+ * @type {string} 
+ */
 Message.RESIZE = 'resize';

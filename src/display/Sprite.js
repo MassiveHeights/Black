@@ -11,27 +11,45 @@ class Sprite extends DisplayObject {
    *
    * @param {Texture|string|null} texture The Texture instance or null.
    */
-  constructor(texture = null) {
+  constructor(texture = null, useTextureProps = true) {
     super();
 
-    /** @private @type {Texture|null} */
+    /** 
+     * @private 
+     * @type {Texture|null} 
+     */
     this.mTexture = null;
 
-    /** @private @type {string|null} */
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
     this.mTextureName = null;
+
+    /** 
+     * @private 
+     * @type {TilingInfo|null} 
+     */
+    this.mTiling = null;
+
+    /** 
+     * @private 
+     * @type {Rectangle|null} 
+     */
+    this.mSlice9grid = null;
+
+    /** 
+     * @private 
+     * @type {Boolean} 
+     */
+    this.mUseTextureProps = useTextureProps;
 
     if (texture !== null && texture.constructor === String) {
       this.mTextureName = /** @type {string} */ (texture);
-      this.mTexture = AssetManager.default.getTexture(/** @type {string} */(texture));
+      this.texture = AssetManager.default.getTexture(/** @type {string} */(texture));
     } else {
-      this.mTexture = /** @type {Texture} */ (texture);
+      this.texture = /** @type {Texture} */ (texture);
     }
-
-    /** @private @type {TilingInfo|null} */
-    this.mTiling = null;
-
-    /** @private @type {Rectangle|null} */
-    this.mSlice9grid = null;
   }
 
   /**
@@ -85,9 +103,17 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTexture = texture;
+
+    if (this.mUseTextureProps === true) {
+      if (texture.slice9borders)
+        this.slice9grid = texture.slice9borders.clone();
+
+      if (texture.registrationPoint !== null)
+        this.alignPivotOffset(texture.registrationPoint.x, texture.registrationPoint.y);
+    }
+
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
     this.setRenderDirty();
-
   }
 
   /**
@@ -101,7 +127,7 @@ class Sprite extends DisplayObject {
 
   /**
    * Sets the current texture by its name
-   * 
+   *
    * @param {?string} value
    */
   set textureName(value) {
@@ -114,9 +140,9 @@ class Sprite extends DisplayObject {
 
   /**
    * Gets sets tiling information.
-   * 
+   *
    * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
-   * 
+   *
    * @returns {TilingInfo|null}
    */
   get tiling() {
@@ -124,7 +150,6 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TilingInfo|null} value
    */
   set tiling(value) {
@@ -136,9 +161,9 @@ class Sprite extends DisplayObject {
 
   /**
    * Gets/sets nine slice grid rectangle.
-   * 
+   *
    * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
-   * 
+   *
    * @returns {Rectangle|null}
    */
   get slice9grid() {
@@ -146,7 +171,6 @@ class Sprite extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Rectangle|null} value
    */
   set slice9grid(value) {

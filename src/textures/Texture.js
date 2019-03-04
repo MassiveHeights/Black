@@ -12,42 +12,76 @@ class Texture {
    * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
    * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
    * @param {number=} [scale=1]                                                 Inverted scale factor.
+   * @param {Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
+   * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
    */
-  constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1) {
+  constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
     this.mId = ++Texture.__ID;
 
-    /** @private @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
+    /** 
+     * @private 
+     * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
     this.mNative = nativeElement;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} */
     this.mValid = false;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mRegion = new Rectangle();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mUntrimmedRegion = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mScale = scale;
+
+    /** 
+     * @private 
+     * @type {Vector|null} */
+    this.mRegistrationPoint = registrationPoint;
+
+    /** 
+     * @private 
+     * @type {Rectangle|null} */
+    this.mSlice9borders = slice9borders;
 
     this.set(nativeElement, region, untrimmedRegion, scale);
   }
@@ -263,6 +297,24 @@ class Texture {
    */
   get isValid() {
     return this.mValid;
+  }
+
+  /**
+   * Anchor of the texture.
+   * 
+   * @returns {Vector|null}
+   */
+  get registrationPoint() {
+    return this.mRegistrationPoint;
+  }
+
+  /**
+   * Returns slice 9 borders for this texture.
+   * 
+   * @returns {Rectangle|null}
+   */
+  get slice9borders() {
+    return this.mSlice9borders;
   }
 
   /**

@@ -20,28 +20,52 @@ class BitmapTextField extends DisplayObject {
     else
       this.mData = /** @type {BitmapFontData} */ (font);
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mText = text;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mAutoSize = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mMultiline = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLineHeight = 1.2;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mBounds = new Rectangle();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mTextBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mFieldHeight = 0;
   }
 
@@ -83,7 +107,6 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -102,7 +125,6 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -130,7 +152,6 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -152,7 +173,6 @@ class BitmapTextField extends DisplayObject {
 
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -173,7 +193,6 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {string} value
    * @return {void}
    */
@@ -195,7 +214,6 @@ class BitmapTextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

@@ -15,71 +15,163 @@ class Emitter extends DisplayObject {
   constructor() {
     super();
 
-    /** @private @type {Array<Texture>} */
-    this.mTextures = null;
+    /** 
+     * @private 
+     * @type {Array<Texture>} 
+     */
+    this.mTextures = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mParticles = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mRecycled = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mInitializers = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mActions = [];
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mSpace = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLocal = true;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mMaxParticles = 10000;
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNextUpdateAt = 0;
 
-    /** @private @type {EmitterState} */
+    /** 
+     * @private 
+     * @type {EmitterState} 
+     */
     this.mState = EmitterState.PENDING;
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpLocal = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpWorld = new Matrix();
 
-    /** @private @type {EmitterSortOrder} */
+    /** 
+     * @private 
+     * @type {EmitterSortOrder} 
+     */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
+
+    this.mPresimulateSeconds = 5;
+    this.mCurrentPresimulationTime = 0;
+  }
+
+  /**
+   * Simulates current emmitter for a given amount of time (seconds).
+   * @experimental
+   * 
+   * @param {number} time Time in secounds
+   * @returns {void}
+   */
+  simulate(time) {
+    Debug.isNumber(time);
+    Debug.assert(time > 0);
+
+    this.mCurrentPresimulationTime = 0;
+    this.mPresimulateSeconds = time;
+
+    while (this.mCurrentPresimulationTime <= this.mPresimulateSeconds) {
+      this.onUpdate();
+      this.mCurrentPresimulationTime += Time.delta;
+    }
+
+    this.mPresimulateSeconds = 0;
+    this.mCurrentPresimulationTime = 0;
   }
 
   /**
@@ -129,6 +221,13 @@ class Emitter extends DisplayObject {
       this.mActions.push(modifier);
 
     return modifier;
+  }
+
+  /**
+   * Hacky method which returns Time.now or presimulation time depending on a case.
+   */
+  __getTime() {
+    return Time.now;
   }
 
   /**
@@ -195,12 +294,13 @@ class Emitter extends DisplayObject {
    */
   onUpdate() {
     let dt = Time.delta;
-    
+
     // rate logic
     this.updateNextTick(dt);
 
-    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING)
+    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
       this.__create(this.mEmitCount.getValue());
+    }
 
     // main update login
     const alength = this.mActions.length;
@@ -293,7 +393,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -314,7 +413,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -332,7 +430,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -351,7 +448,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -371,7 +467,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -391,7 +486,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -411,7 +505,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {GameObject} gameObject
    * @return {void}
    */
@@ -431,7 +524,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Array<Texture>} value
    * @return {void}
    */
@@ -443,12 +535,12 @@ class Emitter extends DisplayObject {
     this.setRenderDirty();
   }
 
-   /**
-   * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
-   * 
-   * @param {string} value
-   * @return {void}
-   */
+  /**
+  * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
+  * 
+  * @param {string} value
+  * @return {void}
+  */
   set texturesName(value) {
     this.textures = AssetManager.default.getTextures(value);
   }
@@ -463,7 +555,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {EmitterSortOrder} value
    * @return {void}
    */

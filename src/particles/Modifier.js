@@ -12,7 +12,10 @@ class Modifier {
    */
   constructor(isInitializer = true) {
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsInitializer = isInitializer;
 
     /** @type {Scatter} Modifier's object to get values from.  */

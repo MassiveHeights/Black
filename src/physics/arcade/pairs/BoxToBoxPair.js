@@ -14,13 +14,17 @@ class BoxToBoxPair extends Pair {
 
     /**
      * Collider from body a.
-     * @public @type {BoxCollider|null}
+     * 
+     * @public 
+     * @type {BoxCollider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b. 
-     * @public @type {BoxCollider|null}
+     * 
+     * @public 
+     * @type {BoxCollider|null}
      */
     this.b = null;
 
@@ -32,7 +36,8 @@ class BoxToBoxPair extends Pair {
 
     /**
      * Projection keeps range of projected vertices. For each normal from both the colliders.
-     * @private @type {Array<Projection>}
+     * @private 
+     * @type {Array<Projection>}
      */
     this.mProjections = projections;
   }

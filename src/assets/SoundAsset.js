@@ -23,7 +23,10 @@ class SoundAsset extends Asset {
       return;
     }
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.responseType = 'arraybuffer';
     this.addLoader(this.mXHR);

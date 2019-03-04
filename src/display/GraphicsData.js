@@ -3,7 +3,6 @@
  * Normally you should not work with this object, and use Graphics instead.
  *
  * @cat display
- * @extends DisplayObject
  */
 
 /* @echo EXPORT */
@@ -12,27 +11,53 @@ class GraphicsData {
    * Creates new instance of GraphicsData
    */
   constructor() {
-
-    /** @private @type {Array<GraphicsData>} */
+    /** 
+     * @private 
+     * @type {Array<GraphicsData>} 
+     */
     this.mNodes = [];
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.mTransform = new Matrix();
 
-    /** @private @type {Array<GraphicsCommand>} */
+    /** 
+     * @private 
+     * @type {Array<GraphicsCommand>} 
+     */
     this.mCommandQueue = [];
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPivotX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPivotY = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPosX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPosY = 0;
+
+    /** 
+     * @private 
+     * @type {string|null} 
+     */
+    this.mName = null;
   }
 
   /**
@@ -512,7 +537,7 @@ class GraphicsData {
    * using an array of values which specify alternating lengths of lines and gaps which describe the pattern.
    *
    * @public
-   * @param segments An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
+   * @param {Array<number>} segments An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
    *
    * @returns {void}
    */
@@ -565,5 +590,24 @@ class GraphicsData {
         return node;
       }
     }
+  }
+
+  /**
+   * Gets/Sets the name of this GraphicsData instance. Used for searching elements.
+   *
+   * @export
+   * @return {string|null}
+   */
+  get name() {
+    return this.mName;
+  }
+
+  /**
+   * @export
+   * @param {string|null} value
+   * @return {void}
+   */
+  set name(value) {
+    this.mName = value;
   }
 }

@@ -21,19 +21,34 @@ class BVGAsset extends Asset {
   constructor(name, url, bakeSelf, bakeChildren, namesToBake) {
     super(name);
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mBakeSelf = bakeSelf;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mBakeChildren = bakeChildren;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mNamesToBake = /** @type {Array<string>} */ (bakeChildren && namesToBake ? namesToBake : []);
 
-    /** @private @type {GraphicsData|null} */
+    /** 
+     * @private 
+     * @type {GraphicsData|null} 
+     */
     this.mGraphicsData = null;
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.mimeType = 'application/json';
     this.addLoader(this.mXHR);
@@ -65,12 +80,12 @@ class BVGAsset extends Asset {
       const traverse = nodes => {
         nodes = /** @type {Array<GraphicsData>} */(nodes);
 
-        if (nodes.length === 0) return;
+        if (nodes.length === 0)
+          return;
 
         for (let i = 0, l = nodes.length; i < l; i++) {
-          if (nodes[i].name) {
-            namesToBake.push(nodes[i].name);
-          }
+          if (nodes[i].name)
+            namesToBake.push(/** @type {string} */(nodes[i].name));
 
           traverse(/** @type {Array<GraphicsData>} */(nodes[i].mNodes));
         }

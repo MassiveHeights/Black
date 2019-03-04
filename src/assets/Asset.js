@@ -17,19 +17,34 @@ class Asset extends MessageDispatcher {
   constructor(name) {
     super();
 
-    /** @protected @type {string} */
+    /** 
+     * @protected 
+     * @type {string} 
+     */
     this.mName = name;
 
-    /** @protected @type {Object|undefined} */
+    /** 
+     * @protected 
+     * @type {Object|undefined} 
+     */
     this.mData = null;
 
-    /** @protected @type {Array<AssetLoader>} */
+    /** 
+     * @protected 
+     * @type {Array<AssetLoader>} 
+     */
     this.mLoaders = [];
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNumLoaded = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsReady = false;
   }
 

@@ -16,37 +16,43 @@ class BoxToCirclePair extends Pair {
 
      /**
       * Collider from body a. 
-      * @public @type {BoxCollider|null}
+      * @public 
+      * @type {BoxCollider|null}
       */
      this.a = null;
 
      /**
       * Collider from body a. 
-      * @public @type {CircleCollider|null}
+      * @public 
+      * @type {CircleCollider|null}
       */
      this.b = null;
 
     /** 
      * Cached half width of box in stage coordinates.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mBoxHalfWidth = 0;
 
     /** 
      * Cached half height of box in stage coordinates,
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mBoxHalfHeight = 0;
 
     /**
      * Cached cos and sin from box game object world transformation without scale, to rotate.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mBoxRotate = new Vector();
 
     /**
      * Tmp point to rotate. 
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mCircleCenter = new Vector();
   }

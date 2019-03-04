@@ -13,49 +13,94 @@ class SoundInstance extends MessageDispatcher {
   constructor(sound) {
     super();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mId = ++SoundInstance.ID;
 
-    /** @private @type {SoundClip} */
+    /** 
+     * @private 
+     * @type {SoundClip} 
+     */
     this.mSound = sound;
 
-    /** @private @type {SoundState} */
+    /** 
+     * @private 
+     * @type {SoundState} 
+     */
     this.mState = SoundState.NEWBORN;
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mChannel = 'master';
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mVolume = 1;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mLoop = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStartTime = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPausePosition = 0;
 
-    /** @private @type {AudioBufferSourceNode} */
+    /** 
+     * @private 
+     * @type {AudioBufferSourceNode} 
+     */
     this.mSrc = null;
 
-    /** @private @type {GainNode} */
+    /** 
+     * @private 
+     * @type {GainNode} 
+     */
     this.mGainNode = MasterAudio._newGainNode();
 
-    /** @private @type {AudioNode} The node to connect audio source */
+    /** 
+     * @private 
+     * @type {AudioNode} The node to connect audio source 
+     */
     this.mFirstNode = this.mGainNode;
     
-    /** @private @type {AudioNode} The node the source is connected to */
+    /** 
+     * @private 
+     * @type {AudioNode} The node the source is connected to 
+     */
     this.mPlayNode = null;
 
-    /** @private @type {PannerNode} */
+    /** 
+     * @private 
+     * @type {PannerNode} 
+     */
     this.mSpatialPanner = null;
 
-    /** @private @type {StereoPanner} */
+    /** 
+     * @private 
+     * @type {StereoPanner} 
+     */
     this.mStereoPanner = null;
 
-    /** @private @type {AnalyserNode} */
+    /** 
+     * @private 
+     * @type {AnalyserNode} 
+     */
     this.mAnalyser = null;
   }
 
@@ -272,7 +317,6 @@ class SoundInstance extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @public
    * @param {string} value
    * @returns {void}
@@ -297,7 +341,6 @@ class SoundInstance extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}
@@ -318,7 +361,6 @@ class SoundInstance extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @public
    * @param {boolean} value
    * @returns {void}
@@ -338,7 +380,6 @@ class SoundInstance extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

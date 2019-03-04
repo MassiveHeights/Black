@@ -7,9 +7,12 @@
 /* @echo EXPORT */
 class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
-    super(nativeElement);
+    super(nativeElement, null, null, scale);
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mSubTextures = {};
 
     this.__parseJson(jsonObject, scale);
@@ -23,14 +26,27 @@ class AtlasTexture extends Texture {
    * @return {void}
    */
   __parseJson(o, scale) {
-    const NEGATIVE_HALF_PI = -(Math.PI / 2);
-
     for (let key in o.frames) {
       const data = /** @type {Array<number>} */ (o.frames[key]);
       const region = new Rectangle(data[0], data[1], data[2], data[3]);
       const untrimmedRect = new Rectangle(data[4], data[5], data[6], data[7]);
 
-      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale);
+      let registrationPoint = null;
+      let slice9borders = null;
+
+      if (data.length === 8 + 2) {
+        // we got pivots
+        registrationPoint = new Vector(data[8], data[9]);
+      } else if (data.length === 8 + 4) {
+        // we got 9 slice but no pivots
+        slice9borders = new Rectangle(data[8], data[9], data[10], data[11]);
+      } else if (data.length === 8 + 6) {
+        // we got both pivots and 9 slice
+        registrationPoint = new Vector(data[8], data[9]);
+        slice9borders = new Rectangle(data[10], data[11], data[12], data[13]);
+      }
+      
+      this.mSubTextures[key] = new Texture(this.native, region, untrimmedRect, scale, registrationPoint, slice9borders);
     }
   }
 

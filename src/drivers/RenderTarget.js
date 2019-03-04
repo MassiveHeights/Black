@@ -12,10 +12,16 @@ class RenderTarget {
    * @param {number} height The height of the surface.
    */
   constructor(width, height) {
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mWidth = Math.ceil(width);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mHeight = Math.ceil(height);
   }
 
@@ -46,7 +52,6 @@ class RenderTarget {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @returns {void}
    */
@@ -64,7 +69,6 @@ class RenderTarget {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @returns {void}
    */

@@ -17,28 +17,52 @@ class Sound extends Component {
   constructor(name, channel = 'master', spatialEffect = false, rolloff = 100) {
     super();
 
-    /** @private @type {SoundClip} */
+    /** 
+     * @private 
+     * @type {SoundClip} 
+     */
     this.mSoundClip = AssetManager.default.getSound(name);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRolloff = rolloff;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPlayOnAdded = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mStopOnRemove = true;
 
-    /** @private @type {SoundInstance} */
+    /** 
+     * @private 
+     * @type {SoundInstance} 
+     */
     this.mSoundInstance = null;
 
-    /** @private @type {MessageBinding|null}  */
+    /** 
+     * @private 
+     * @type {MessageBinding|null}  
+     */
     this.mCompleteBinding = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mSpatialEffect = spatialEffect;
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mChannelName = channel;
   }
 
@@ -116,7 +140,7 @@ class Sound extends Component {
   }
 
   /**
-   * @ignore
+
    * @param {boolean} value
    * @return {void}
    */
@@ -134,7 +158,6 @@ class Sound extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -152,7 +175,6 @@ class Sound extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

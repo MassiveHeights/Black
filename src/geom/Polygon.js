@@ -10,16 +10,28 @@ class Polygon {
    */
   constructor(vertices = []) {
 
-    /** @private @type {Array<Vector>} */
+    /** 
+     * @private 
+     * @type {Array<Vector>} 
+     */
     this.mVertices = vertices;
 
-    /** @private @type {Array<Line>} */
+    /** 
+     * @private 
+     * @type {Array<Line>} 
+     */
     this.mLines = [];
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mBounds = new Rectangle();
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mCenter = new Vector();
 
     if (vertices.length > 2)

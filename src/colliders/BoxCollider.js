@@ -29,35 +29,47 @@ class BoxCollider extends Collider {
 
     /**
      * Local to gameObject. 
-     * @private @type {Rectangle}
+     * 
+     * @private 
+     * @type {Rectangle}
      */
     this.mRect = new Rectangle();
 
     /**
      * Local to rigid body normals. 
-     * @private @type {Array<Vector>}
+     * 
+     * @private 
+     * @type {Array<Vector>}
      */
     this.mNormals = normals;
 
     /**
      * Local to rigid body vertices. 
-     * @private @type {Array<Vector>} */
+     * 
+     * @private 
+     * @type {Array<Vector>} */
     this.mVertices = vertices;
 
     /**
      * Local to rigid body min x and y vertex. 
-     * @private @type {Vector} */
+     * 
+     * @private 
+     * @type {Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
-     * @private @type {Vector}
+     * 
+     * @private 
+     * @type {Vector}
      */
     this.mLocalMax = new Vector();
 
     /**
      * Local to rigid body center  
-     * @private @type {Vector}
+     * 
+     * @private 
+     * @type {Vector}
      */
     this.mLocalCenter = new Vector();
 

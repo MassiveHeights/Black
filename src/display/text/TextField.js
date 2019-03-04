@@ -22,55 +22,106 @@ class TextField extends DisplayObject {
   constructor(text = '', family = 'sans-serif', color = 0x000000, size = 14, style = TextStyle.FontStyle.NORMAL, weight = TextStyle.FontWeight.NORMAL, strokeThickness = 0, strokeColor = 0xffffff) {
     super();
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mText = text;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mCacheBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTextWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTextHeight = 0;
 
-    /** @private @type {TextStyle} */
+    /** 
+     * @private 
+     * @type {TextStyle} 
+     */
     this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
-    /** @private @type {Object.<string,TextStyle>} */
+    /** 
+     * @private 
+     * @type {Object.<string,TextStyle>} 
+     */
     this.mStyles = {};
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mAutoSize = true;
 
-    /** @private @type {TextStyle.FontAlign} */
+    /** 
+     * @private 
+     * @type {TextStyle.FontAlign} 
+     */
     this.mAlign = TextStyle.FontAlign.LEFT;
 
-    /** @private @type {TextStyle.FontVerticalAlign} */
+    /** 
+     * @private 
+     * @type {TextStyle.FontVerticalAlign} 
+     */
     this.mVerticalAlign = TextStyle.FontVerticalAlign.MIDDLE;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mMultiline = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLineHeight = 1.2;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mTextBounds = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mFieldWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mFieldHeight = 0;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mPadding = new Rectangle(0, 0, 0, 0);
 
-    /** @private @type {TextMetricsData|null} */
+    /** 
+     * @private 
+     * @type {TextMetricsData|null} 
+     */
     this.mMetrics = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mHighQuality = false;
   }
 
@@ -191,7 +242,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -212,7 +262,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -242,7 +291,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -266,7 +314,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {string} value
    * @return {void}
    */
@@ -281,20 +328,19 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * Specifies text color as hexadecimal number eg 0xff0000 (total red)
+   * Specifies text color as hexadecimal number eg 0xff0000 (total red).
    *
    * @return {number}
    */
-  get color() {
+  get textColor() {
     return this.mDefaultStyle.color;
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
-  set color(value) {
+  set textColor(value) {
     if (this.mDefaultStyle.color === value)
       return;
 
@@ -314,7 +360,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TextStyle.FontStyle} value
    * @return {void}
    */
@@ -338,7 +383,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TextStyle.FontWeight} value
    * @return {void}
    */
@@ -362,7 +406,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TextStyle.FontAlign} value
    * @return {void}
    */
@@ -386,7 +429,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {TextStyle.FontVerticalAlign} value
    * @return {void}
    */
@@ -409,7 +451,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -432,7 +473,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -454,7 +494,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -478,7 +517,6 @@ class TextField extends DisplayObject {
 
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -501,7 +539,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {string} value
    * @return {void}
    */
@@ -531,7 +568,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -555,7 +591,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Rectangle} value
    * @return {void}
    */
@@ -576,7 +611,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -600,7 +634,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -622,7 +655,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -644,7 +676,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -666,7 +697,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -688,7 +718,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -711,7 +740,6 @@ class TextField extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

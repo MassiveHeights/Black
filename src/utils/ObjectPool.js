@@ -11,13 +11,22 @@ class ObjectPool {
    * @param {number} capacity 
    */
   constructor(type, capacity = 100) {
-    /** @ignore @type {Array<*>} */
+    /** 
+     * @ignore
+     * @type {Array<*>} 
+     */
     this.mReleased = [];
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.mCapacity = capacity;
 
-    /** @ignore @type {Function} */
+    /** 
+     * @ignore 
+     * @type {Function} 
+     */
     this.mType = type;
   }
 
@@ -31,7 +40,6 @@ class ObjectPool {
   }
 
   /**
-   * @ignore
    * @param {number} value
    */
   set capacity(value) {

@@ -178,7 +178,6 @@ class AnimationInfo {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -201,7 +200,6 @@ class AnimationInfo {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

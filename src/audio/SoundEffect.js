@@ -11,10 +11,16 @@ class SoundEffect {
    */
   constructor() {
 
-    /** @ignore @protected @type {AudioNode} */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = null;
 
-    /** @ignore @protected @type {AudioNode} */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = null;
   }
 

@@ -28,52 +28,99 @@ class Input extends System {
 
     Input.instance = this;
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mPointerPosition = new Vector();
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mStagePosition = new Vector();
 
-    /** @private @type {Element} */
-    this.mDom = Black.instance.containerElement;
+    /** 
+     * @private 
+     * @type {Element} 
+     */
+    this.mDom = Black.instance.viewport.nativeElement;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mEventList = null;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mKeyEventList = null;
+
+    this.mBoundListeners = [];
 
     this.__initListeners();
 
-    /** @private @type {Array<{e: Event, x: number, y:number}>} */
+    /** 
+     * @private 
+     * @type {Array<{e: Event, x: number, y:number}>} 
+     */
     this.mPointerQueue = [];
 
-    /** @private @type {Array<KeyboardEvent>} */
+    /** 
+     * @private 
+     * @type {Array<KeyboardEvent>} 
+     */
     this.mKeyQueue = [];
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mPressedKeys = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPointerDown = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mNeedUpEvent = false;
 
     // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
-    /** @private @type {Map} */
+    /** 
+     * @private 
+     * @type {Map} 
+     */
     this.mInputListeners = new Map();
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mTargetComponent = null;
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mLockedTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mLastInTargetComponent = null;
   }
 
@@ -95,10 +142,16 @@ class Input extends System {
     for (let i = 0; i < 3; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], e => this.__onPointerEventDoc(e), false);
+    let listener = null;
+    listener = e => this.__onPointerEventDoc(e);
+    this.mBoundListeners.push({ name: this.mEventList[Input.IX_POINTER_UP], listener: listener });
+    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], listener, false);
 
-    for (let i = 0; i < this.mKeyEventList.length; i++)
-      document.addEventListener(this.mKeyEventList[i], e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e)), false);
+    for (let i = 0; i < this.mKeyEventList.length; i++) {
+      listener = e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e));
+      this.mBoundListeners.push({ name: this.mKeyEventList[i], listener: listener });
+      document.addEventListener(this.mKeyEventList[i], listener, false);
+    }
   }
 
   /**
@@ -180,11 +233,15 @@ class Input extends System {
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+
+    const rotation = Black.instance.viewport.rotation;
+
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
+
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
-
+  
   /**
    * @ignore
    * @private
@@ -194,14 +251,15 @@ class Input extends System {
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
-
+ 
     /** @type {Touch} */
     let touch = evt.changedTouches[0]; // ios? what about android?
     let x = touch.clientX;
     let y = touch.clientY;
 
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+    const rotation = Black.instance.viewport.rotation;
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
@@ -212,10 +270,23 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
+    const size = Black.instance.viewport.size;
+    const rotation = Black.instance.viewport.rotation;
+
     let stage = Black.stage;
 
-    for (let i = 0; i < this.mPointerQueue.length; i++) {
-      let nativeEvent = this.mPointerQueue[i];
+    while (this.mPointerQueue.length > 0) {
+      const nativeEvent = this.mPointerQueue.shift();
+      const x = nativeEvent.x;
+      const y = nativeEvent.y;
+
+      if (rotation === 1) {
+        nativeEvent.x = y;
+        nativeEvent.y = size.height - x;
+      } else if (rotation === -1) {
+        nativeEvent.x = size.width - y;
+        nativeEvent.y = x;
+      }
 
       // update to the latest position
       this.mPointerPosition.x = nativeEvent.x;
@@ -232,10 +303,6 @@ class Input extends System {
       this.__findTarget(this.mPointerPosition);
       this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
     }
-
-    // Erase the pointer queue
-    this.mPointerQueue.splice(0, this.mPointerQueue.length);
-    this.mKeyQueue.splice(0, this.mKeyQueue.length);
   }
 
   /**
@@ -309,8 +376,8 @@ class Input extends System {
    * @returns {void}
    */
   __updateKeyboard() {
-    for (let i = 0; i < this.mKeyQueue.length; i++) {
-      let nativeEvent = this.mKeyQueue[i];
+    while (this.mKeyQueue.length > 0) {
+      let nativeEvent = this.mKeyQueue.shift();
 
       let ix = this.mKeyEventList.indexOf(nativeEvent.type);
       let pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);
@@ -326,6 +393,20 @@ class Input extends System {
 
       this.post(fnName, new KeyInfo(nativeEvent), nativeEvent);
     }
+  }
+
+  /**
+   * @inheritdoc
+   */
+  dispose() {
+    super.dispose();
+
+    while (this.mBoundListeners.length > 0) {
+      let keyValue = this.mBoundListeners.pop();
+      document.removeEventListener(keyValue.name, keyValue.listener);
+    }
+
+    Input.instance = null;
   }
 
   /**
@@ -411,7 +492,7 @@ class Input extends System {
    * 
    * @returns {Vector}
    */
-  static get stagePosition(){
+  static get stagePosition() {
     return Input.instance.mStagePosition;
   }
 
@@ -538,12 +619,12 @@ Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
 /**
  * Posts when mouse up or touch up event happened.
  * @event Input#pointerUp
- */ 
+ */
 
 /**
  * Posts when mouse move or touch move event happened.
  * @event Input#pointerMove
- */ 
+ */
 
 /**
  * Stores additional information about pointer events.
@@ -562,13 +643,22 @@ class PointerInfo {
    */
   constructor(activeObject, x, y) {
 
-    /** * @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mActiveObject = activeObject;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mX = x;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mY = y;
   }
 

@@ -15,70 +15,84 @@ class Arcade extends System {
 
     /**
      * Bodies that are on stage.
-     * @private @type {Array<RigidBody>}
+     * @private 
+     * @type {Array<RigidBody>}
      */
     this.mBodies = [];
 
     /**
      * Pairs to check collisions within. With colliders which bodies are on stage.
-     * @private @type {Array<Pair>}
+     * @private 
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
     /**
      * Pairs which are in collision per frame.
-     * @private @type {Array<Pair>}
+     * @private 
+     * @type {Array<Pair>}
      */
     this.mContacts = [];
 
     /**
      * Broad collision test instance.
-     * @private @type {BroadPhase}
+     * @private 
+     * @type {BroadPhase}
      */
     this.mBroadPhase = new BroadPhase();
 
     /**
      * Object to store pairs by their id. For quick search in collision callbacks.
-     * @private @type {Object}
+     * @private 
+     * @type {Object}
      */
     this.mPairsHash = Object.create(null);
 
     /**
      * Reference to world bounds body.
-     * @private @type {RigidBody|null}
+     * @private 
+     * @type {RigidBody|null}
      */
     this.mBoundsBody = null;
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Vector} */
+    /** @private 
+     * @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
     /**
      * Bigger value gives better resolver result, but require more calculations.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mIterations = 5;
 
     /**
      * Switch for sleep calculations.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mSleepEnabled = true;
 
     /**
      * Update delta time, secs.
-     * @public @type {number}
+     * @public
+     * @type {number}
      */
     this.delta = 1 / 60;
   }
@@ -406,7 +420,15 @@ class Arcade extends System {
 
       if (pair.a === collider || pair.b === collider) {
         pairs.splice(i, 1);
-        pair.constructor.pool.release(pair);
+
+        if (pair instanceof BoxToBoxPair)
+          BoxToBoxPair.pool.release(pair);
+        else if (pair instanceof BoxToCirclePair)
+          BoxToCirclePair.pool.release(pair);
+        else if (pair instanceof CircleToCirclePair)
+          CircleToCirclePair.pool.release(pair);
+
+        //pair.constructor.pool.release(pair);
 
         delete pairsHash[Pair.__id(pair.a, pair.b)];
 
@@ -599,10 +621,10 @@ class Arcade extends System {
     const bounds = Black.stage.bounds;
     const thickness = Number.MAX_SAFE_INTEGER;
 
-    this.mBoundsLeft.set(bounds.x - thickness, bounds.y, thickness, bounds.height);
-    this.mBoundsRight.set(bounds.x + bounds.width, bounds.y, thickness, bounds.height);
-    this.mBoundsTop.set(bounds.x - thickness, bounds.y - thickness, bounds.width + thickness * 2, thickness);
-    this.mBoundsBottom.set(bounds.x - thickness, bounds.y + bounds.height, bounds.width + thickness * 2, thickness);
+    this.mBoundsLeft.set(-thickness, 0, thickness, bounds.height);
+    this.mBoundsRight.set(bounds.width, 0, thickness, bounds.height);
+    this.mBoundsTop.set(-thickness, -thickness, bounds.width + thickness * 2, thickness);
+    this.mBoundsBottom.set(-thickness, bounds.height, bounds.width + thickness * 2, thickness);
   }
 
   /**

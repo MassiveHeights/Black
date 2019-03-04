@@ -17,13 +17,22 @@ class AtlasTextureAsset extends Asset {
   constructor(name, imageUrl, dataUrl) {
     super(name);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
-    /** @private @type {ImageAssetLoader} */
+    /** 
+     * @private 
+     * @type {ImageAssetLoader} 
+     */
     this.mImageLoader = new ImageAssetLoader(imageUrl);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(dataUrl);
     this.mXHR.mimeType = 'application/json';
 

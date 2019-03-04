@@ -5,43 +5,68 @@
  * @fires Stage#resize
  * @extends GameObject
  */
+
 /* @echo EXPORT */
 class Stage extends GameObject {
   constructor() {
     super();
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = 'stage';
 
-    /** @private @type {StageScaleMode} */
+    /** 
+     * @private 
+     * @type {StageScaleMode} 
+     */
     this.mScaleMode = StageScaleMode.NORMAL;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mWidth = 960;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mHeight = 640;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageWidth = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageHeight = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageScaleFactor = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheWidth = 0;
-    
-    /** @private @type {number} */
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDPR = Device.getDevicePixelRatio();
-
-    /** @private @type {StageOrientation} */
-    this.mOrientation = StageOrientation.UNIVERSAL;
-
-    /** @private @type {boolean} */
-    this.mOrientationLock = true;
 
     this.mAdded = true;
 
@@ -50,27 +75,8 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets/Sets stage orientation.
-   * 
-   * @returns {StageOrientation}
-   */
-  get orientation() {
-    return this.mOrientation;
-  }
-
-  /**
-   * @ignore
-   * @param {StageOrientation} value
-   * @returns {void}
-   */
-  set orientation(value) {
-    this.mOrientation = value;
-    this.__refresh();
-  }
-
-  /**
    * Sets stage size by given width and height.
-   * 
+   *
    * @param {number} width New stage width.
    * @param {number} height New stage height.
    * @returns {void}
@@ -97,52 +103,52 @@ class Stage extends GameObject {
   }
 
   /**
+   * Refreshes stage size. Call this method only if you are changing the size of the container manually. 
+   */
+  refresh() {
+    this.__refresh();
+  }
+
+  /**
    * @private
    * @ignore
    * @returns {void}
    */
   __refresh() {
-    let size = Black.instance.viewport.size.clone();
-
-    if (this.mOrientationLock === true && this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait)
-      [size.width, size.height] = [size.height, size.width];
-
-    let windowWidth = size.width;
-    let windowHeight = size.height;
+    const size = Black.instance.viewport.size;
+    const windowWidth = size.width;
+    const windowHeight = size.height;
 
     if (this.mScaleMode === StageScaleMode.FIXED) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
+      const mw = windowWidth * this.mHeight / windowHeight;
+      const mh = windowHeight * this.mWidth / windowWidth;
+      const sc = Math.max(mw / windowWidth, mh / windowHeight);
+      const width = windowWidth * sc;
+      const height = windowHeight * sc;
 
       this.mStageWidth = width;
       this.mStageHeight = height;
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
+    } else if (this.mScaleMode === StageScaleMode.LETTERBOX || this.mScaleMode === StageScaleMode.COVER) {
+      const sc = this.mScaleMode === StageScaleMode.COVER ?
+        Math.max(windowWidth / this.mWidth, windowHeight / this.mHeight) :
+        Math.min(windowWidth / this.mWidth, windowHeight / this.mHeight);
+
+      this.mX = (windowWidth - this.mWidth * sc) / 2;
+      this.mY = (windowHeight - this.mHeight * sc) / 2;
+
+      this.mStageWidth = this.mWidth;
+      this.mStageHeight = this.mHeight;
+
+      this.mScaleX = this.mScaleY = this.mStageScaleFactor = sc;
     } else if (this.mScaleMode === StageScaleMode.NORMAL) {
-      this.mStageWidth = size.width;
-      this.mStageHeight = size.height;
+      this.mStageWidth = windowWidth;
+      this.mStageHeight = windowHeight;
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1;
-    } else if (this.mScaleMode === StageScaleMode.LETTERBOX) {
-      let mw = this.LP(windowWidth * this.mHeight / windowHeight, windowWidth * this.mWidth / windowHeight);
-      let mh = this.LP(windowHeight * this.mWidth / windowWidth, windowHeight * this.mHeight / windowWidth);
-      let scaleFactor = Math.max(mw / windowWidth, mh / windowHeight);
-      let width = windowWidth * scaleFactor;
-      let height = windowHeight * scaleFactor;
-
-      let two = 2 * scaleFactor;
-      this.mX = width / two - (this.LP(this.mWidth, this.mHeight) / two);
-      this.mY = height / two - (this.LP(this.mHeight, this.mWidth) / two);
-
-      this.mStageWidth = this.LP(this.mWidth, this.mHeight);
-      this.mStageHeight = this.LP(this.mHeight, this.mWidth);
-
-      this.mScaleX = this.mScaleY = this.mStageScaleFactor = Math.min(windowWidth / width, windowHeight / height);
     } else if (this.mScaleMode === StageScaleMode.NO_SCALE) {
-      this.mStageWidth = (size.width * this.mDPR);
-      this.mStageHeight = (size.height * this.mDPR);
+      this.mStageWidth = (windowWidth * this.mDPR);
+      this.mStageHeight = (windowHeight * this.mDPR);
 
       this.mScaleX = this.mScaleY = this.mStageScaleFactor = 1 / this.mDPR;
     } else {
@@ -167,28 +173,13 @@ class Stage extends GameObject {
      * @event Stage#resize
      */
     this.post(Message.RESIZE);
-  }
 
-  /**
-   * Determines which of two numbers suits to stage orientation.
-   * 
-   * @public
-   * @param {number} land Landscape mode value.
-   * @param {number} port Portrait mode value.
-   * @returns {number}
-   */
-  LP(land, port) {
-    if (this.mOrientation == StageOrientation.LANDSCAPE)
-      return land;
-    else if (this.mOrientation == StageOrientation.PORTRAIT)
-      return port;
-
-    return Device.isLandscape ? land : port;
+    this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
   }
 
   /**
    * Gets/Sets stage scale mode.
-   * 
+   *
    * @return {StageScaleMode}
    */
   get scaleMode() {
@@ -196,7 +187,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {StageScaleMode} value
    * @returns {void}
    */
@@ -207,7 +197,7 @@ class Stage extends GameObject {
 
   /**
    * Stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -218,7 +208,7 @@ class Stage extends GameObject {
 
   /**
    * Original stage width multiplied by device pixel ratio and stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -229,7 +219,7 @@ class Stage extends GameObject {
 
   /**
    * Original stage height multiplied by device pixel ratio and stage scale factor.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -240,7 +230,7 @@ class Stage extends GameObject {
 
   /**
    * Gets stage center coordinate along X-axis.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -251,7 +241,7 @@ class Stage extends GameObject {
 
   /**
    * Gets stage center coordinate along Y-axis.
-   * 
+   *
    * @public
    * @readonly
    * @returns {number}
@@ -261,29 +251,11 @@ class Stage extends GameObject {
   }
 
   /**
-   * Gets/sets whenever stage orientation should be locked. If false and orientation is not universal stage will remain same size in both orientation.
-   * @returns {boolean}
-   */
-  get orientationLock() {
-    return this.mOrientationLock;
-  }
-
-  /**
-   * @ignore
-   * @param {boolean} value
-   * @returns {void}
-   */
-  set orientationLock(value) {
-    this.mOrientationLock = value;
-    this.__refresh();
-  }
-
-  /**
    * @inheritDoc
    */
   getBounds(space = undefined, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
-    return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.width + 2 * this.mX / this.mStageScaleFactor, this.height + 2 * this.mY / this.mStageScaleFactor);
+    return outRect.set(-this.mX / this.mStageScaleFactor, -this.mY / this.mStageScaleFactor, this.mStageWidth + 2 * this.mX / this.mStageScaleFactor, this.mStageHeight + 2 * this.mY / this.mStageScaleFactor);
   }
 
   /**
@@ -295,56 +267,17 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritDoc
+   * @inheritdoc
    */
   get localTransformation() {
-    this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
-
-    if (this.mOrientationLock === false)
-      return this.mLocalTransform;
-
-    // orientation lock hacks
-    // chrome   window.screen.orientation.type
-    // firefox  window.screen.mozOrientation
-    // edge     window.screen.msOrientation
-    // safari   window.orientation || 0
-
-    let angle = 0;
-    if (window.orientation != null) {
-      angle = window.orientation;
-    } else {
-      let orientation = window.screen.msOrientation || window.screen.mozOrientation || (window.screen.orientation && window.screen.orientation.type) || '';
-      if (orientation.length === 17) { // landscape-primary
-        angle = 0;
-      } else if (orientation.length === 19) { // landscape-secondary
-        angle = 180;
-      } else if (orientation.length === 16) { // portrait-primary
-        angle = 90;
-      } else if (orientation.length === 18) { // portrait-secondary
-        angle = -90;
-      }
-    }
-
-    if (this.mOrientation === StageOrientation.LANDSCAPE && Device.isPortrait) {
-
-      this.mLocalTransform.rotate((angle + 90) * Math.PI / 180);
-
-      let x = (Black.instance.viewport.size.width * 0.5) + (this.mStageHeight * 0.5 * this.mStageScaleFactor);
-      let y = (Black.instance.viewport.size.height * 0.5) - (this.mStageWidth * 0.5 * this.mStageScaleFactor);
-
-      this.mLocalTransform.setTranslation(x, y);
-
-    } else if (this.mOrientation === StageOrientation.PORTRAIT && Device.isLandscape) {
-
-      this.mLocalTransform.rotate((angle + 180) * Math.PI / 180);
-
-      let x = (Black.instance.viewport.size.width * 0.5) - (this.mStageHeight * 0.5 * this.mStageScaleFactor);
-      let y = (Black.instance.viewport.size.height * 0.5) + (this.mStageWidth * 0.5 * this.mStageScaleFactor);
-
-      this.mLocalTransform.setTranslation(x, y);
-    }
-
     return this.mLocalTransform;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  set localTransformation(value) {
+    Debug.error('Not allowed.');
   }
 
   removeFromParent() { Debug.error('Not allowed.'); }

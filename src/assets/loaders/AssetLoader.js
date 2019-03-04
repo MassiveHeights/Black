@@ -14,16 +14,28 @@ class AssetLoader extends MessageDispatcher {
   constructor(url) {
     super();
 
-    /** @protected @type {string} */
+    /** 
+     * @protected 
+     * @type {string} 
+     */
     this.mUrl = url;
 
-    /** @protected @type {?|null} */
+    /** 
+     * @protected 
+     * @type {?|null} 
+     */
     this.mData = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLoaded = false;
 
-    /** @private @type {Asset} */
+    /** 
+     * @private 
+     * @type {Asset} 
+     */
     this.mOwner = null;
   }
 
