@@ -369,6 +369,9 @@ class Generator {
       if (x.ignore)
         return;
 
+      if (x.params && x.params[0])
+        return;
+
       let access = '';
 
       if (x.access) {
