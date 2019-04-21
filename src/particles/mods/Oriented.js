@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Rotates particle along velocity vector.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class Oriented extends Modifier {
+export class Oriented extends Modifier {
   /**
    * Creates new instance of oriented modifier.
    */

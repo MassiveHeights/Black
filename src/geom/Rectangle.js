@@ -1,10 +1,14 @@
+import { Debug } from "../core/Debug";
+import { ObjectPool } from "../utils/ObjectPool";
+import { Vector } from "./Vector";
+import { Line } from "./Line";
+
 /**
  * Mathematical representation of a rectangle.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Rectangle {
+export class Rectangle {
   /**
    * Creates new instance of Rectangle.
    *
@@ -16,16 +20,28 @@ class Rectangle {
   constructor(x = 0, y = 0, w = 0, h = 0) {
     Debug.isNumber(x, y, w, h);
 
-    /** @export @type {number} The x coordinate of the rectangle. */
+    /** 
+     * @export 
+     * @type {number} The x coordinate of the rectangle. 
+     */
     this.x = x;
 
-    /** @export @type {number} The y coordinate of the rectangle. */
+    /** 
+     * @export 
+     * @type {number} The y coordinate of the rectangle. 
+     */
     this.y = y;
 
-    /** @export @type {number} The width of the rectangle. */
+    /** 
+     * @export 
+     * @type {number} The width of the rectangle. 
+     */
     this.width = w;
 
-    /** @export @type {number} The height of the rectangle. */
+    /** 
+     * @export 
+     * @type {number} The height of the rectangle. 
+     */
     this.height = h;
   }
 
@@ -89,7 +105,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {number} left
    */
   set left(left) {
@@ -107,7 +122,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {number} right
    */
   set right(right) {
@@ -125,7 +139,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {number} top
    */
   set top(top) {
@@ -143,7 +156,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {number} bottom
    */
   set bottom(bottom) {
@@ -162,7 +174,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {Vector} vector
    */
   set topLeft(vector) {
@@ -180,7 +191,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {Vector} vector
    */
   set topRight(vector) {
@@ -198,7 +208,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {Vector} vector
    */
   set bottomRight(vector) {
@@ -216,7 +225,6 @@ class Rectangle {
   }
 
   /**
-   * @ignore
    * @param {Vector} vector
    */
   set bottomLeft(vector) {

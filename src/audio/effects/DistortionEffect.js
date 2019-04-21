@@ -1,11 +1,14 @@
+import { SoundEffect } from "../SoundEffect";
+import { Black } from "../../Black";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Distortion sound effect.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class DistortionEffect extends SoundEffect {
+export class DistortionEffect extends SoundEffect {
 
   /**
    * Creates new instance of DistortionEffect
@@ -15,8 +18,11 @@ class DistortionEffect extends SoundEffect {
   constructor(value = 0.5) {
     super();
 
-    /** @private @type {WaveShaperNode} */
-    this.mWaveShaperNode = MasterAudio.context.createWaveShaper();
+    /** 
+     * @private 
+     * @type {WaveShaperNode} 
+     */
+    this.mWaveShaperNode = Black.audio.context.createWaveShaper();
 
     /** @inheritDoc */
     this.mInputNode = this.mWaveShaperNode;
@@ -24,20 +30,28 @@ class DistortionEffect extends SoundEffect {
     /** @inheritDoc */
     this.mOutputNode = this.mWaveShaperNode;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mSamples = 44100;
 
-    /** @private @type {Float32Array} */
+    /** 
+     * @private 
+     * @type {Float32Array} 
+     */
     this.mCurve = new Float32Array(this.mSamples);
 
-    /** @private @type {number}*/
+    /** 
+     * @private 
+     * @type {number}
+     */
     this.mValue = value;
 
     this.distortion = value;
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

@@ -1,3 +1,12 @@
+import { DisplayObject } from "./DisplayObject";
+import { Rectangle } from "../geom/Rectangle";
+import { Black } from "../Black";
+import { GraphicsLinearGradient } from "./GraphicsLinearGradient";
+import { CapsStyle } from "./CapsStyle";
+import { GraphicsData } from "./GraphicsData";
+import { JointStyle } from "./JointStyle";
+import { Matrix } from "../geom/Matrix";
+
 /**
  * A basic utility class for drawing shapes.
  *
@@ -5,8 +14,7 @@
  * @extends DisplayObject
  */
 
-/* @echo EXPORT */
-class Graphics extends DisplayObject {
+export class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.
    *
@@ -16,31 +24,49 @@ class Graphics extends DisplayObject {
   constructor(graphicsData = null, trim = false) {
     super();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private
+     * @type {Rectangle} 
+     */
     this.mBounds = new Rectangle();
 
     /**
      * For internal usage
      *
-     * @private @type {Rectangle|null} */
+     * 
+     * @private
+     * @type {Rectangle|null} 
+     */
     this.mLocalBounds = null;
 
-    /** @private @type {GraphicsData|null} */
+    /** 
+     * @private
+     * @type {GraphicsData|null} 
+     */
     this.mGraphicsData = null;
 
-    /** @private @type {number} */
+    /** 
+     * @private
+     * @type {number} 
+     */
     this.mDataOffsetX = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private
+     * @type {number} 
+     */
     this.mDataOffsetY = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private
+     * @type {boolean} 
+     */
     this.mTrim = trim;
 
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
     } else if (typeof graphicsData === 'string') {
-      this.mGraphicsData = AssetManager.default.getGraphicsData(graphicsData);
+      this.mGraphicsData = Black.assets.getGraphicsData(graphicsData);
     } else {
       this.mGraphicsData = graphicsData;
     }
@@ -286,7 +312,7 @@ class Graphics extends DisplayObject {
    * using an array of values which specify alternating lengths of lines and gaps which describe the pattern.
    *
    * @public
-   * @param segments An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
+   * @param {Array<number>} An Array of numbers which specify distances to alternately draw a line and a gap (in coordinate space units).
    *
    * @returns {void}
    */

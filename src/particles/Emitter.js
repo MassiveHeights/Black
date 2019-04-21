@@ -1,3 +1,16 @@
+import { DisplayObject } from "../display/DisplayObject";
+import { FloatScatter } from "../scatters/FloatScatter";
+import { EmitterState } from "./EmitterState";
+import { Matrix } from "../geom/Matrix";
+import { EmitterSortOrder } from "./EmitterSortOrder";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { Modifier } from "./Modifier";
+import { Particle } from "./Particle";
+import { Vector } from "../geom/Vector";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { Message } from "../messages/Message";
+
 // TODO: pretty much the emitter is always dirty and caching should not be applied onto it.
 // TODO: q/a every property
 
@@ -7,78 +20,143 @@
  * @cat particles
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class Emitter extends DisplayObject {
+export class Emitter extends DisplayObject {
   /**
    * Creates new Emitter instance.
    */
   constructor() {
     super();
 
-    /** @private @type {Array<Texture>} */
-    this.mTextures = null;
+    /** 
+     * @private 
+     * @type {Array<Texture>} 
+     */
+    this.mTextures = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mParticles = [];
 
-    /** @private @type {Array<Particle>} */
+    /** 
+     * @private 
+     * @type {Array<Particle>} 
+     */
     this.mRecycled = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mInitializers = [];
 
-    /** @private @type {Array<Modifier>} */
+    /** 
+     * @private 
+     * @type {Array<Modifier>} 
+     */
     this.mActions = [];
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mSpace = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLocal = true;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mMaxParticles = 10000;
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitCount = new FloatScatter(10);
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitNumRepeats = new FloatScatter(Infinity);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDurationLeft = this.mEmitDuration.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitIntervalLeft = this.mEmitInterval.getValue();
 
-    /** @private @type {FloatScatter} */
+    /** 
+     * @private 
+     * @type {FloatScatter} 
+     */
     this.mEmitDelay = new FloatScatter(1);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mEmitDelayLeft = this.mEmitDelay.getValue();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mNextUpdateAt = 0;
 
-    /** @private @type {EmitterState} */
+    /** 
+     * @private 
+     * @type {EmitterState} 
+     */
     this.mState = EmitterState.PENDING;
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpLocal = new Matrix();
 
-    /** @private @type {Matrix} */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     */
     this.__tmpWorld = new Matrix();
 
-    /** @private @type {EmitterSortOrder} */
+    /** 
+     * @private 
+     * @type {EmitterSortOrder} 
+     */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
     this.mPresimulateSeconds = 5;
@@ -87,7 +165,6 @@ class Emitter extends DisplayObject {
 
   /**
    * Simulates current emmitter for a given amount of time (seconds).
-   * @experimental
    * 
    * @param {number} time Time in secounds
    * @returns {void}
@@ -101,7 +178,7 @@ class Emitter extends DisplayObject {
 
     while (this.mCurrentPresimulationTime <= this.mPresimulateSeconds) {
       this.onUpdate();
-      this.mCurrentPresimulationTime += Time.delta;
+      this.mCurrentPresimulationTime += Black.time.delta;
     }
 
     this.mPresimulateSeconds = 0;
@@ -158,10 +235,10 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * Hacky method which returns Time.now or presimulation time depending on a case.
+   * Hacky method which returns time now or presimulation time depending on a case.
    */
   __getTime() {
-    return Time.now;
+    return Black.time.now;
   }
 
   /**
@@ -172,7 +249,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   updateNextTick(dt = 0) {
-    let t = Time.now;
+    let t = Black.time.now;
     let firstEmit = false;
 
     if (this.mState === EmitterState.PENDING) {
@@ -227,12 +304,12 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onUpdate() {
-    let dt = Time.delta;
+    let dt = Black.time.delta;
 
     // rate logic
     this.updateNextTick(dt);
 
-    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
+    if (Black.time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
       this.__create(this.mEmitCount.getValue());
     }
 
@@ -327,7 +404,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -348,7 +424,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -366,7 +441,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -385,7 +459,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -405,7 +478,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -425,7 +497,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {FloatScatter} value
    * @return {void}
    */
@@ -445,7 +516,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {GameObject} gameObject
    * @return {void}
    */
@@ -465,7 +535,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {Array<Texture>} value
    * @return {void}
    */
@@ -484,7 +553,7 @@ class Emitter extends DisplayObject {
   * @return {void}
   */
   set texturesName(value) {
-    this.textures = AssetManager.default.getTextures(value);
+    this.textures = Black.assets.getTextures(value);
   }
 
   /**
@@ -497,7 +566,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * @ignore
    * @param {EmitterSortOrder} value
    * @return {void}
    */

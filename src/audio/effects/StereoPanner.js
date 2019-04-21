@@ -1,36 +1,53 @@
+import { SoundEffect } from "../SoundEffect";
+import { Black } from "../../Black";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Allows to distribute sound between left and right channel.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class StereoPanner extends SoundEffect {
-
+export class StereoPanner extends SoundEffect {
   /**
    * Creates new instance of StereoPan.
    */
   constructor() {
     super();
 
-    /** @private @type {GainNode} */
-    this.mGainL = MasterAudio._newGainNode();
+    /** 
+     * @private 
+     * @type {GainNode} 
+     */
+    this.mGainL = Black.audio._newGainNode();
 
-    /** @private @type {GainNode} */
-    this.mGainR = MasterAudio._newGainNode();
+    /** 
+     * @private 
+     * @type {GainNode} 
+     */
+    this.mGainR = Black.audio._newGainNode();
 
-    /** @private @type {ChannelSplitterNode} */
-    this.mSplitter = MasterAudio.context.createChannelSplitter(2);
+    /** 
+     * @private 
+     * @type {ChannelSplitterNode} 
+     */
+    this.mSplitter = Black.audio.context.createChannelSplitter(2);
     
-    /** @private @type {ChannelMergerNode} */
-    this.mMerger = MasterAudio.context.createChannelMerger(2);
+    /** 
+     * @private 
+     * @type {ChannelMergerNode} 
+     */
+    this.mMerger = Black.audio.context.createChannelMerger(2);
 
     this.mSplitter.connect(this.mGainL, 0);
     this.mSplitter.connect(this.mGainR, 1);
     this.mGainL.connect(this.mMerger, 0, 0);
     this.mGainR.connect(this.mMerger, 0, 1);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mValue = 0;
 
     /** @inheritDoc */
@@ -41,7 +58,6 @@ class StereoPanner extends SoundEffect {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

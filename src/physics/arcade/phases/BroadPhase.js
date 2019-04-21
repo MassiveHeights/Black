@@ -3,8 +3,7 @@
  *
  * @cat physics.arcade.phases
  */
-/* @echo EXPORT */
-class BroadPhase {
+export class BroadPhase {
   /**
    * Creates new instance of BroadPhase.
    */

@@ -1,11 +1,12 @@
+import { Scatter } from "./Scatter";
+
 /**
  * A number scatter for defining a range in 1D space.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class FloatScatter extends Scatter {
+export class FloatScatter extends Scatter {
   /**
    * Creates new FloatScatter instance.
    *

@@ -1,11 +1,14 @@
+import { Scatter } from "./Scatter";
+import { Curve } from "../geom/Curve";
+import { Vector } from "../geom/Vector";
+
 /**
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class FloatCurveScatter extends Scatter {
+export class FloatCurveScatter extends Scatter {
   /**
    * Creates new FloatCurveScatter instance.
    *
@@ -14,12 +17,18 @@ class FloatCurveScatter extends Scatter {
   constructor(...points) {
     super();
 
-    /** @private @type {Curve} */
+    /** 
+     * @private 
+     * @type {Curve} 
+     */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mCache = new Vector();
   }
 

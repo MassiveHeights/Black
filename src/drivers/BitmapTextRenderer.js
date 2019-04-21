@@ -1,24 +1,38 @@
+import { Renderer } from "./Renderer";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { Texture } from "../textures/Texture";
+
 /**
  * Responsible for rendering `BitmapTextField` objects by different drivers.
  *
  * @extends Renderer
  * @cat drivers
  */
-/* @echo EXPORT */
-class BitmapTextRenderer extends Renderer {
+export class BitmapTextRenderer extends Renderer {
   /**
    * Creates new instance of BitmapTextRenderer.
    */
   constructor() {
     super();
 
-    /** @ignore @private @type {HTMLCanvasElement} */
+    /** 
+     * @ignore 
+     * @private 
+     * @type {HTMLCanvasElement} 
+     */
     this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
-    /** @ignore @private @type {CanvasRenderingContext2D} */
+    /** 
+     * @ignore 
+     * @private 
+     * @type {CanvasRenderingContext2D} 
+     */
     this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
-    /** @ignore @type {Texture|null} */
+    /** 
+     * @ignore 
+     * @type {Texture|null} 
+     */
     this.texture = null;
   }
 
@@ -71,6 +85,11 @@ class BitmapTextRenderer extends Renderer {
 
         const w = texture.width;
         const h = texture.height;
+
+        // skip empty char (space for example)
+        if (w === 0 || h === 0)
+          continue
+
         const ox = texture.untrimmedRegion.x + charData.xOffset + cx;
         const oy = texture.untrimmedRegion.y + charData.yOffset + cy;
 
@@ -83,7 +102,7 @@ class BitmapTextRenderer extends Renderer {
       if (this.texture === null)
         this.texture = new Texture(cvs);
       else
-        this.texture.set(cvs);      
+        this.texture.set(cvs);
     }
   }
 }

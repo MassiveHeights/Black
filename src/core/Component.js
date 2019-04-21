@@ -1,3 +1,11 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+
+/**
+ * @ignore
+ * @type {number}
+ */
+let ID = 0;
+
 /**
  * A base class for custom components.
  *
@@ -5,21 +13,29 @@
  * @unrestricted
  * @extends MessageDispatcher
  */
-/* @echo EXPORT */
-class Component extends MessageDispatcher {
+export class Component extends MessageDispatcher {
   /**
    * Creates new Component instance.
    */
   constructor() {
     super(true);
 
-    /** @private @type {number} */
-    this.mId = ++Component.ID;
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.mId = ++ID;
 
-    /** @private @type {GameObject|null} */
+    /** 
+     * @private 
+     * @type {GameObject|null} 
+     */
     this.mGameObject = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mAdded = false;
   }
 
@@ -117,10 +133,3 @@ class Component extends MessageDispatcher {
     return this.constructor.name;
   }
 }
-
-/**
- * @ignore
- * @type {number}
- * @nocollapse
- */
-Component.ID = 0;

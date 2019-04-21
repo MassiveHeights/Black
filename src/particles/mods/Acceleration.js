@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { VectorScatter } from "../../scatters/VectorScatter";
+
 /**
  * Adds acceleration to particles along given direction.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class Acceleration extends Modifier {
+export class Acceleration extends Modifier {
   /**
    * Creates new Acceleration instance.
    *

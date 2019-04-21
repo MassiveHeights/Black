@@ -1,11 +1,12 @@
+import { Component } from "../core/Component";
+
 /**
  * This component will allow you to subscribe for some input messages.
  *
  * @cat input
  * @extends Component
  */
-/* @echo EXPORT */
-class InputComponent extends Component {
+export class InputComponent extends Component {
   /**
    * @return {void}
    */
@@ -16,7 +17,10 @@ class InputComponent extends Component {
     this.touchable = true;
 
     /* INTERNAL */
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.mPointerInDispatched = false;
   }
 }

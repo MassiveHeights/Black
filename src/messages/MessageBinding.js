@@ -1,10 +1,12 @@
+import { BindingType } from './BindingType';
+import { Glob } from '../utils/Glob';
+
 /**
  * A bridge between callback and context.
  * 
  * @cat core
  */
-/* @echo EXPORT */
-class MessageBinding {
+export class MessageBinding {
   /**
    * @param {MessageDispatcher} owner                The owner of this binding.
    * @param {string} name                            Name of the message.
@@ -15,28 +17,52 @@ class MessageBinding {
    * @param {?string} [pathPattern=null]             Glob pattern to filter sender by name.
    */
   constructor(owner, name, callback, isOnce, context = null, type = BindingType.REGULAR, pathPattern = null) {
-    /** @ignore @type {MessageDispatcher} */
+    /** 
+     * @ignore 
+     * @type {MessageDispatcher} 
+     */
     this.owner = owner;
 
-    /** @ignore @type {string} */
+    /** 
+     * @ignore 
+     * @type {string} 
+     */
     this.name = name;
 
-    /** @ignore @type {Function} */
+    /** 
+     * @ignore 
+     * @type {Function} 
+     */
     this.callback = callback;
 
-    /** @ignore @type {boolean} */
+    /** 
+     * @ignore 
+     * @type {boolean} 
+     */
     this.isOnce = isOnce;
 
-    /** @ignore @type {*} */
+    /** 
+     * @ignore 
+     * @type {*} 
+     */
     this.context = context;
 
-    /** @ignore @type {?string} */
+    /** 
+     * @ignore 
+     * @type {?string} 
+     */
     this.pathPattern = pathPattern;
 
-    /** @ignore @type {Glob|null} */
+    /** 
+     * @ignore 
+     * @type {Glob|null} 
+     */
     this.glob = pathPattern == null ? null : new Glob(pathPattern);
 
-    /** @ignore @type {BindingType} */
+    /** 
+     * @ignore 
+     * @type {BindingType} 
+     */
     this.type = type;
   }
 

@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { VectorScatter } from "../../scatters/VectorScatter";
+
 /**
  * Sets initial particle velocity vector.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialVelocity extends Modifier {
+export class InitialVelocity extends Modifier {
   /**
    * Creates new InitialVelocity instance.
    *

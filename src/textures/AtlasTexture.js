@@ -1,15 +1,22 @@
+import { Texture } from "./Texture";
+import { Rectangle } from "../geom/Rectangle";
+import { Vector } from "../geom/Vector";
+import { Debug } from "../core/Debug";
+
 /**
  * A texture atlas.
  *
  * @cat textures
  * @extends Texture
  */
-/* @echo EXPORT */
-class AtlasTexture extends Texture {
+export class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
     super(nativeElement, null, null, scale);
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mSubTextures = {};
 
     this.__parseJson(jsonObject, scale);

@@ -3,8 +3,7 @@
  *
  * @cat particles
  */
-/* @echo EXPORT */
-class Modifier {
+export class Modifier {
   /**
    * Creates new instance.
    *
@@ -12,7 +11,10 @@ class Modifier {
    */
   constructor(isInitializer = true) {
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsInitializer = isInitializer;
 
     /** @type {Scatter} Modifier's object to get values from.  */
@@ -58,18 +60,3 @@ class Modifier {
     return this.mIsInitializer;
   }
 }
-
-
-// Acceleration (vel += acc * dt;)
-// InitialPosition (box)
-// InitialCirclePosition
-// InitialGameObjectPosition
-// InitialPolygonPosition
-// InitialSpineBonePosition
-// RotationOverLife
-// RotationOverProperty
-// InitialSize
-// SizeOverLife
-// vector field
-// InitialVelocity
-// VelocityOverLife/Property

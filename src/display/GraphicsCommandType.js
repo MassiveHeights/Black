@@ -5,8 +5,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const GraphicsCommandType = {
+export const GraphicsCommandType = {
   LINE_STYLE: 'lineStyle',
   FILL_STYLE: 'fillStyle',
 

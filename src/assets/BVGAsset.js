@@ -1,3 +1,13 @@
+import { Asset } from "./Asset";
+import { GraphicsData } from "../display/GraphicsData";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { BVGParser } from "../parsers/BVGParser";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { CanvasRenderTexture } from "../textures/CanvasRenderTexture";
+import { Matrix } from "../geom/Matrix";
+import { Graphics } from "../display/Graphics";
+
 /**
  * Single JSON file asset class responsible for loading json file.
  *
@@ -5,8 +15,7 @@
  * @extends Asset
  */
 
-/* @echo EXPORT */
-class BVGAsset extends Asset {
+export class BVGAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
@@ -21,19 +30,34 @@ class BVGAsset extends Asset {
   constructor(name, url, bakeSelf, bakeChildren, namesToBake) {
     super(name);
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mBakeSelf = bakeSelf;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mBakeChildren = bakeChildren;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mNamesToBake = /** @type {Array<string>} */ (bakeChildren && namesToBake ? namesToBake : []);
 
-    /** @private @type {GraphicsData|null} */
+    /** 
+     * @private 
+     * @type {GraphicsData|null} 
+     */
     this.mGraphicsData = null;
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.mimeType = 'application/json';
     this.addLoader(this.mXHR);

@@ -1,3 +1,16 @@
+import { System } from "../../core/System";
+import { BroadPhase } from "./phases/BroadPhase";
+import { BoxCollider } from "../../colliders/BoxCollider";
+import { Vector } from "../../geom/Vector";
+import { GameObject } from "../../core/GameObject";
+import { Collider } from "../../colliders/Collider";
+import { RigidBody } from "../RigidBody";
+import { Black } from "../../Black";
+import { BoxToCirclePair } from "./pairs/BoxToCirclePair";
+import { CircleToCirclePair } from "./pairs/CircleToCirclePair";
+import { BoxToBoxPair } from "./pairs/BoxToBoxPair";
+import { Pair } from "./pairs/Pair";
+
 /**
  * Simple AABB physics engine (beta).
  *
@@ -5,8 +18,7 @@
  * @extends System
  */
 
-/* @echo EXPORT */
-class Arcade extends System {
+export class Arcade extends System {
   /**
    * Creates new Arcade instance.
    */
@@ -15,70 +27,84 @@ class Arcade extends System {
 
     /**
      * Bodies that are on stage.
-     * @private @type {Array<RigidBody>}
+     * @private 
+     * @type {Array<RigidBody>}
      */
     this.mBodies = [];
 
     /**
      * Pairs to check collisions within. With colliders which bodies are on stage.
-     * @private @type {Array<Pair>}
+     * @private 
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
     /**
      * Pairs which are in collision per frame.
-     * @private @type {Array<Pair>}
+     * @private 
+     * @type {Array<Pair>}
      */
     this.mContacts = [];
 
     /**
      * Broad collision test instance.
-     * @private @type {BroadPhase}
+     * @private 
+     * @type {BroadPhase}
      */
     this.mBroadPhase = new BroadPhase();
 
     /**
      * Object to store pairs by their id. For quick search in collision callbacks.
-     * @private @type {Object}
+     * @private 
+     * @type {Object}
      */
     this.mPairsHash = Object.create(null);
 
     /**
      * Reference to world bounds body.
-     * @private @type {RigidBody|null}
+     * @private 
+     * @type {RigidBody|null}
      */
     this.mBoundsBody = null;
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {BoxCollider} */
+    /** @private 
+     * @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
-    /** @private @type {Vector} */
+    /** @private 
+     * @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
     /**
      * Bigger value gives better resolver result, but require more calculations.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mIterations = 5;
 
     /**
      * Switch for sleep calculations.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mSleepEnabled = true;
 
     /**
      * Update delta time, secs.
-     * @public @type {number}
+     * @public
+     * @type {number}
      */
     this.delta = 1 / 60;
   }

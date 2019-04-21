@@ -3,8 +3,7 @@
  *
  * @cat scatters
  */
-/* @echo EXPORT */
-class Scatter {
+export class Scatter {
   /**
    * Creates new Scatter instance.
    */

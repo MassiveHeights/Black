@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets particle's rotation value according to its energy value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class RotationOverLife extends Modifier {
+export class RotationOverLife extends Modifier {
   /**
    * Creates new RotationOverLife instance.
    *

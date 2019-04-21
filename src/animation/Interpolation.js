@@ -1,11 +1,12 @@
+import { MathEx } from "../math/MathEx";
+
 /**
  * Interpolation functions.
  *
  * @cat animation
  * @static
  */
-/* @echo EXPORT */
-class Interpolation {
+export class Interpolation {
 
   /**
    * Linear interpolation.

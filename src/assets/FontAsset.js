@@ -1,3 +1,6 @@
+import { Asset } from "./Asset";
+import { FontFaceAssetLoader } from "./loaders/FontFaceAssetLoader";
+
 /**
  * Font file asset class responsible for loading local font files.
  *
@@ -6,8 +9,7 @@
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class FontAsset extends Asset {
+export class FontAsset extends Asset {
   /**
    * Creates new instance of FontAsset.
    *

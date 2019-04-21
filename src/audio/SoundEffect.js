@@ -1,20 +1,27 @@
+import { Debug } from "../core/Debug";
+
 /**
  * The sound effect interface. Implementations can be attached to sound channel.
  * 
  * @cat audio
  */
-/* @echo EXPORT */
-class SoundEffect {
+export class SoundEffect {
 
   /**
    * Creates new instance of SoundEffect.
    */
   constructor() {
 
-    /** @ignore @protected @type {AudioNode} */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = null;
 
-    /** @ignore @protected @type {AudioNode} */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = null;
   }
 

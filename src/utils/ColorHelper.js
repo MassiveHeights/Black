@@ -3,8 +3,7 @@
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class RGB {
+export class RGB {
   /**
    * Creates new RGB instance.
    * 
@@ -13,13 +12,22 @@ class RGB {
    * @param {number} b 
    */
   constructor(r = 0, g = 0, b = 0) {
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.r = r;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.g = g;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     * */
     this.b = b;
   }
 }
@@ -29,8 +37,7 @@ class RGB {
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class HSV {
+export class HSV {
   /**
    * Creates new HSV instance.
    * 
@@ -39,13 +46,22 @@ class HSV {
    * @param {number} v 
    */
   constructor(h = 0, s = 0, v = 0) {
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.h = h;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.s = s;
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.v = v;
   }
 }
@@ -56,8 +72,7 @@ class HSV {
  * @cat utils
  * @static
 */
-/* @echo EXPORT */
-class ColorHelper {
+export class ColorHelper {
   /**
    * Converts number color to RGB object.
    *

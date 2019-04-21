@@ -1,3 +1,14 @@
+import { GameObject } from "../core/GameObject";
+import { StageScaleMode } from "./StageScaleMode";
+import { Device } from "../system/Device";
+import { Black } from "../Black";
+import { InputComponent } from "../input/InputComponent";
+import { Input } from "../input/Input";
+import { Rectangle } from "../geom/Rectangle";
+import { Message } from "../messages/Message";
+import { Debug } from "../core/Debug";
+
+
 /**
  * The root container for all renderable objects
  *
@@ -5,42 +16,70 @@
  * @fires Stage#resize
  * @extends GameObject
  */
-
-/* @echo EXPORT */
-class Stage extends GameObject {
+export class Stage extends GameObject {
   constructor() {
     super();
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = 'stage';
 
-    /** @private @type {StageScaleMode} */
+    /** 
+     * @private 
+     * @type {StageScaleMode} 
+     */
     this.mScaleMode = StageScaleMode.NORMAL;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mWidth = 960;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mHeight = 640;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageWidth = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageHeight = 0;
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStageScaleFactor = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mCacheHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDPR = Device.getDevicePixelRatio();
 
     this.mAdded = true;
 
-    if (Black.instance.hasSystem(Input))
+    if (Black.engine.hasSystem(Input))
       this.addComponent(new InputComponent());
   }
 
@@ -62,7 +101,7 @@ class Stage extends GameObject {
    * @inheritDoc
    */
   onUpdate() {
-    let size = Black.instance.viewport.size;
+    let size = Black.engine.viewport.size;
 
     if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
       this.mCacheWidth = size.width;
@@ -73,12 +112,19 @@ class Stage extends GameObject {
   }
 
   /**
+   * Refreshes stage size. Call this method only if you are changing the size of the container manually. 
+   */
+  refresh() {
+    this.__refresh();
+  }
+
+  /**
    * @private
    * @ignore
    * @returns {void}
    */
   __refresh() {
-    const size = Black.instance.viewport.size;
+    const size = Black.engine.viewport.size;
     const windowWidth = size.width;
     const windowHeight = size.height;
 
@@ -150,7 +196,6 @@ class Stage extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {StageScaleMode} value
    * @returns {void}
    */
@@ -223,7 +268,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritDoc
+   * @override
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -231,10 +276,17 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritDoc
+   * @override
    */
   get localTransformation() {
     return this.mLocalTransform;
+  }
+
+  /**
+   * @override
+   */
+  set localTransformation(value) {
+    Debug.error('Not allowed.');
   }
 
   removeFromParent() { Debug.error('Not allowed.'); }

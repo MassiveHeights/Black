@@ -1,11 +1,15 @@
+import { Component } from "../core/Component";
+import { Debug } from "../core/Debug";
+import { AnimationInfo } from "./AnimationInfo";
+import { Sprite } from "../display/Sprite";
+
 /**
  * A Component which allows to play sprite animations.
  *
  * @cat animation
  * @extends Component
  */
-/* @echo EXPORT */
-class AnimationController extends Component {
+export class AnimationController extends Component {
   /**
    * Creates an instance of AnimationController
    */

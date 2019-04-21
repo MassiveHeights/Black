@@ -1,10 +1,12 @@
+import { Modifier } from "../Modifier";
+import { Vector } from "../../geom/Vector";
+
 /**
  * @ignore
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class VectorField extends Modifier {
+export class VectorField extends Modifier {
   /**
    * Creates new instance of VectorField.
    *

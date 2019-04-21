@@ -1,27 +1,43 @@
+import { Vector } from "./Vector";
+
 /**
  * Mathematical representation of a bezier curve.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Curve {
+export class Curve {
   /**
    * Creates new Curve instance.
    */
   constructor() {
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mPoints = [];
 
-    /** @private @type {Array<Vector>} */
+    /** 
+     * @private 
+     * @type {Array<Vector>} 
+     */
     this.mLookup = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mBaked = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStep = 1 / 60;
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mEachT = [];
   }
 
@@ -53,7 +69,6 @@ class Curve {
   }
 
   /**
-   * @ignore
    * @param  {boolean} label
    */
   set baked(label) {
@@ -67,7 +82,6 @@ class Curve {
   /**
    * Wides points array. Sets first point for next bezier same as last of previous.
    *
-   * @ignore
    * @private
    * @param  {Array<number>} points Array of points coordinates.
    * @return {Array<number>} Points coordinates array.
@@ -85,7 +99,6 @@ class Curve {
   /**
    * Refresh cache (lookup) for fast interpolations.
    *
-   * @ignore
    * @private
    * @return {Curve} This curve.
    */

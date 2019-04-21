@@ -1,23 +1,27 @@
 /**
+ * @private
+ * @ignore
+ */
+const patterns = { '*': '[^/]+', '**': '.+/?[^/]+', '**/': '.+/?' };
+
+/**
  * Helper glob matching class.
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class Glob {
+export class Glob {
   /**
    * Creates new Glob instance.
    * 
-   * @ignore
    * @param {string} pattern 
    */
   constructor(pattern) {
-    this.mRegExp = new RegExp(`^${pattern.replace(/\./g, '\\.').replace(/\*\*$/g, '.+').replace(/(?:\*\*\/|\*\*|\*)/g, s => { return Glob.mPatterns[s]; })}$`);
+    this.mRegExp = new RegExp(`^${pattern.replace(/\./g, '\\.').replace(/\*\*$/g, '.+').replace(/(?:\*\*\/|\*\*|\*)/g, s => { return patterns[s]; })}$`);
   }
 
   /**
+   * Tests whenever string matches the glob.
    * 
-   * @ignore
    * @param {string} string 
    * @returns {boolean}
    */
@@ -25,5 +29,3 @@ class Glob {
     return this.mRegExp.test(string);
   }
 }
-
-Glob.mPatterns = { '*': '[^/]+', '**': '.+/?[^/]+', '**/': '.+/?' };

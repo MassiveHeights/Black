@@ -1,3 +1,10 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+import { Rectangle } from "../geom/Rectangle";
+import { Orientation } from "../display/Orientation";
+import { Debug } from "./Debug";
+import { Message } from "../messages/Message";
+import { Black } from "../Black";
+
 /**
  * Manages viewport, handles DOM container resize events and updates internal data.
  * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
@@ -6,9 +13,7 @@
  * @fires Viewport#resize
  * @extends MessageDispatcher
  */
-
-/* @echo EXPORT */
-class Viewport extends MessageDispatcher {
+export class Viewport extends MessageDispatcher {
   /**
    * constructor
    * @param {HTMLElement} containerElement The native HTML element.
@@ -17,10 +22,16 @@ class Viewport extends MessageDispatcher {
   constructor(containerElement) {
     super();
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = containerElement;
 
-    /** @private @type {HTMLElement} */
+    /** 
+     * @private 
+     * @type {HTMLElement} 
+     */
     this.mViewportElement = document.createElement('div');
     this.mViewportElement.style.position = 'relative';
     containerElement.appendChild(this.mViewportElement);
@@ -34,7 +45,10 @@ class Viewport extends MessageDispatcher {
 
     let size = this.mContainerElement.getBoundingClientRect();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} 
+     */
     this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
 
     this.isTransparent = true;
@@ -42,11 +56,19 @@ class Viewport extends MessageDispatcher {
 
     this.mChecksLeftSeconds = 0;
 
-    /** @private @type {Orientation} */
+    /** 
+     * @private 
+     * @type {Orientation} 
+     */
     this.mOrientation = Orientation.UNIVERSAL;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mOrientationLock = false;
+
+    this.mRotation = 0;
 
     this.mIsPrimary = this.isPrimary();
     this.mReflect = false;
@@ -60,13 +82,12 @@ class Viewport extends MessageDispatcher {
   isPrimary() {
     const orientation = screen.msOrientation || (screen.orientation || screen.mozOrientation || {}).type;
 
-    if (orientation === 'landscape-primary' || orientation === 'portrait-primary') {
+    if (orientation === 'landscape-primary' || orientation === 'portrait-primary')
       return true;
-    } else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary') {
+    else if (orientation === 'landscape-secondary' || orientation === 'portrait-secondary')
       return false;
-    }
 
-    console.log('The orientation API isn\'t supported in this browser');
+    Debug.warn('The orientation API isn\'t supported in this browser');
 
     return true;
   }
@@ -81,7 +102,6 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {Orientation} value
    * @returns {void}
    */
@@ -99,7 +119,6 @@ class Viewport extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @returns {void}
    */
@@ -118,7 +137,14 @@ class Viewport extends MessageDispatcher {
 
     this.__onResize();
 
-    this.mChecksLeftSeconds -= Time.delta;
+    this.mChecksLeftSeconds -= Black.time.delta;
+  }
+
+  /**
+   * Refreshes viewport size and posts Message.RESIZE message. Make sure to refresh stage too in case container has changed its size.
+   */
+  refresh() {
+    this.__onResize();
   }
 
   /**
@@ -134,11 +160,12 @@ class Viewport extends MessageDispatcher {
     const wasPrimary = this.mIsPrimary;
     this.mIsPrimary = this.isPrimary();
 
-    if (this.mIsPrimary !== wasPrimary) {
+    if (this.mIsPrimary !== wasPrimary)
       this.mReflect = !this.mReflect;
-    }
 
     if (this.mOrientationLock && this.mOrientation !== deviceOrientation) {
+      this.mRotation = this.mReflect ? -1 : 1;
+
       viewportElementStyle.transform = this.mReflect ? 'rotate(-90deg)' : 'rotate(90deg)';
       viewportElementStyle.left = (size.width - size.height) * 0.5 + 'px';
       viewportElementStyle.top = (size.height - size.width) * 0.5 + 'px';
@@ -148,6 +175,8 @@ class Viewport extends MessageDispatcher {
       dispatchSize.width = size.height;
       dispatchSize.height = size.width;
     } else {
+      this.mRotation = 0;
+
       this.mReflect = false;
       viewportElementStyle.transform = 'rotate(0deg)';
       viewportElementStyle.left = '0px';
@@ -194,5 +223,17 @@ class Viewport extends MessageDispatcher {
     return this.mViewportElement;
   }
 
+  /**
+   * Returns viewport orientation. 
+   * 
+   * -1 is for -90 degrees
+   * 0 is for 0 degrees
+   * 1 is for 90 degrees
+   * 
+   * @returns {number}
+   */
+  get rotation() {
+    return this.mRotation;
+  }
   // TODO: dispose, remove resize event
 }

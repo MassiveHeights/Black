@@ -5,8 +5,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const BindingType = {
+export const BindingType = {
   REGULAR: 'regular',
   OVERHEARD: 'overheard'
 };

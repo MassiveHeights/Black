@@ -1,11 +1,12 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+
 /**
  * Base class for custom systems. System is used to listen scene changes.
  *
  * @cat core
  * @extends MessageDispatcher
  */
-/* @echo EXPORT */
-class System extends MessageDispatcher {
+export class System extends MessageDispatcher {
   constructor() {
     super();
   }

@@ -1,27 +1,20 @@
+import { Black } from "../Black";
+
+/**
+ * @type {number|null}
+ */
+let mPixelRatioCache = null;
+
 /**
  * Contains system functions.
  * @static
  * @cat system
  */
-/* @echo EXPORT */
-class Device {
+export class Device {
   /**
    * Static class.
    */
   constructor() {
-    /**
-     * @private
-     * @type {Device}
-     */
-    Device.mInstance = this;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.mPixelRatio = 0;
-
-    Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
   }
 
   /**
@@ -75,7 +68,10 @@ class Device {
    * @return {number}
    */
   static get pixelRatio() {
-    return Device.mInstance.mPixelRatio;
+    if (mPixelRatioCache === null)
+      mPixelRatioCache = Device.getDevicePixelRatio();
+
+    return mPixelRatioCache;
   }
 
   /**
@@ -111,7 +107,7 @@ class Device {
    * @returns {boolean}
    */
   static get isLandscape() {
-    let size = Black.instance.viewport.size;
+    let size = Black.engine.viewport.size;
     return size.width >= size.height;
   }
 
@@ -126,10 +122,3 @@ class Device {
     return !Device.isLandscape;
   }
 }
-
-/**
- * @private
- * @type {Device}
- * @nocollapse
- */
-Device.mInstance = null;

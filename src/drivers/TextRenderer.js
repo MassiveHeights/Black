@@ -1,11 +1,17 @@
+import { Matrix } from "../geom/Matrix";
+import { Renderer } from "./Renderer";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { ColorHelper } from "../utils/ColorHelper";
+import { FontMetrics } from "../display/text/FontMetrics";
+import { Texture } from "../textures/Texture";
+
 /**
  * Responsible for rendering `TextField` objects by different drivers.
  *
  * @extends Renderer
  * @cat drivers
  */
-/* @echo EXPORT */
-class TextRenderer extends Renderer {
+export class TextRenderer extends Renderer {
   /**
    * Creates new instance of TextRenderer.
    */
@@ -14,19 +20,37 @@ class TextRenderer extends Renderer {
 
     this.texture = null;
 
-    /** @private @type {Matrix} @ignore */
+    /** 
+     * @private 
+     * @type {Matrix} 
+     * @ignore 
+     */
     this.mTransformCache = new Matrix();
 
-    /** @private @type {Matrix|null} @ignore */
+    /** 
+     * @private 
+     * @type {Matrix|null} 
+     * @ignore 
+     */
     this.mTransform = null;
 
-    /** @private @type {boolean} @ignore */
+    /** 
+     * @private 
+     * @type {boolean} 
+     * @ignore 
+     */
     this.mUseTransformCache = false;
 
-    /** @private @type {HTMLCanvasElement} */
+    /** 
+     * @private 
+     * @type {HTMLCanvasElement} 
+     */
     this.mCanvas = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
 
-    /** @private @type {CanvasRenderingContext2D} */
+    /** 
+     * @private 
+     * @type {CanvasRenderingContext2D} 
+     */
     this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
     /** */
@@ -35,7 +59,10 @@ class TextRenderer extends Renderer {
     /** */
     this.mContext.miterLimit = 2;
 
-    /** @private @type {TextMetricsData|null} */
+    /** 
+     * @private 
+     * @type {TextMetricsData|null} 
+     */
     this.mMetrics = null;
   }
 
@@ -66,7 +93,7 @@ class TextRenderer extends Renderer {
     driver.setGlobalAlpha(this.alpha);
     driver.setGlobalBlendMode(this.blendMode);
 
-    if (this.endPassRequired === true){
+    if (this.endPassRequired === true) {
       driver.beginClip(gameObject.mClipRect, gameObject.mPivotX, gameObject.mPivotY);
     }
   }
@@ -115,7 +142,7 @@ class TextRenderer extends Renderer {
   /** @inheritDoc */
   render(driver, session) {
     let gameObject = /** @type {TextField} */ (this.gameObject);
-    
+
     if (gameObject.mHighQuality === true && gameObject.mDirty & DirtyFlag.RENDER) {
       gameObject.mDirty ^= DirtyFlag.RENDER;
       gameObject.mDirty |= DirtyFlag.RENDER_CACHE;
@@ -123,7 +150,7 @@ class TextRenderer extends Renderer {
 
     if (gameObject.mDirty & DirtyFlag.RENDER_CACHE) {
       gameObject.mDirty ^= DirtyFlag.RENDER_CACHE;
-      
+
       const cvs = this.mCanvas;
       const ctx = this.mContext;
       let scale = 1;

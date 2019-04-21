@@ -1,3 +1,26 @@
+import { SoundAtlasClip } from "../audio/SoundAtlasClip";
+import { SoundClip } from "../audio/SoundClip";
+import { GraphicsData } from "../display/GraphicsData";
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+import { AtlasTexture } from "../textures/AtlasTexture";
+import { Texture } from "../textures/Texture";
+import { Asset } from "./Asset";
+import { AssetManagerState } from "./AssetManagerState";
+import { AtlasTextureAsset } from "./AtlasTextureAsset";
+import { BitmapFontAsset, BitmapFontData } from "./BitmapFontAsset";
+import { BVGAsset } from "./BVGAsset";
+import { CustomAsset } from "./CustomAsset";
+import { FontAsset } from "./FontAsset";
+import { JSONAsset } from "./JSONAsset";
+import { AssetLoader } from "./loaders/AssetLoader";
+import { SoundAtlasAsset } from "./SoundAtlasAsset";
+import { TextureAsset } from "./TextureAsset";
+import { XMLAsset } from "./XMLAsset";
+import { Message } from "../messages/Message";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { SoundAsset } from "./SoundAsset";
+
 /**
  * Responsible for loading assets and manages its in memory state.
  *
@@ -8,9 +31,7 @@
  * @cat assets
  * @extends MessageDispatcher
  */
-
-/* @echo EXPORT */
-class AssetManager extends MessageDispatcher {
+export class AssetManager extends MessageDispatcher {
   /**
    * Creates new AssetManager instance. AssetManager exposes static property
    * called 'default' and many internal classes uses default instance.
@@ -18,67 +39,133 @@ class AssetManager extends MessageDispatcher {
   constructor() {
     super();
 
-    /** @private @type {string} */
+    if (Black.assets === null)
+      Black.assets = this;
+
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mDefaultPath = '';
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalLoaded = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalPending = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalErrors = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsAllLoaded = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mLoadingProgress = 0;
 
-    /** @private @type {Array<Asset>} */
+    /** 
+     * @private 
+     * @type {Array<Asset>} 
+     */
     this.mQueue = [];
 
-    /** @private @type {Array<AssetLoader>} */
+    /** 
+     * @private 
+     * @type {Array<AssetLoader>} 
+     */
     this.mLoadersQueue = [];
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mTextures = {};
 
-    /** @private @type {Object.<string, GraphicsData>} */
+    /** 
+     * @private 
+     * @type {Object.<string, GraphicsData>} 
+     */
     this.mGraphicsData = {};
 
-    /** @private @type {Object.<string, Texture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Texture>} 
+     */
     this.mVectorTextures = {};
 
-    /** @private @type {Object.<string, AtlasTexture>} */
+    /** 
+     * @private 
+     * @type {Object.<string, AtlasTexture>} 
+     */
     this.mAtlases = {};
 
-    /** @private @type {Object.<string, JSONAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, JSONAsset>} 
+     */
     this.mJsons = {};
 
-    /** @private @type {Object.<string, XMLAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, XMLAsset>} 
+     */
     this.mXMLs = {};
 
-    /** @private @type {Object.<string, SoundClip>} */
+    /** 
+     * @private 
+     * @type {Object.<string, SoundClip>} 
+     */
     this.mSounds = {};
 
-    /** @private @type {Object.<string, SoundAtlasClip>} */
+    /** 
+     * @private 
+     * @type {Object.<string, SoundAtlasClip>} 
+     */
     this.mSoundAtlases = {};
 
-    /** @private @type {Object.<string, FontAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, FontAsset>} 
+     */
     this.mFonts = {};
 
-    /** @private @type {Object.<string, BitmapFontData>} */
+    /** 
+     * @private 
+     * @type {Object.<string, BitmapFontData>} 
+     */
     this.mBitmapFonts = {};
 
-    /** @private @type {Object.<string, CustomAsset>} */
+    /** 
+     * @private 
+     * @type {Object.<string, CustomAsset>} 
+     */
     this.mCustomAssets = {};
 
-    /** @private @type {AssetManagerState} */
+    /** 
+     * @private 
+     * @type {AssetManagerState} 
+     */
     this.mState = AssetManagerState.NONE;
 
-    /** @private @type {Object.<string, boolean>} */
+    /** 
+     * @private 
+     * @type {Object.<string, boolean>} 
+     */
     this.mDictionary = {};
   }
 
@@ -253,8 +340,8 @@ class AssetManager extends MessageDispatcher {
       let item = this.mQueue[i];
 
       if (item.loaders.length > 0) {
-        item.on(Message.COMPLETE, this.onAssetLoaded, this);
-        item.on(Message.ERROR, this.onAssetError, this);
+        item.once(Message.COMPLETE, this.onAssetLoaded, this);
+        item.once(Message.ERROR, this.onAssetError, this);
         this.mLoadersQueue.push(...item.loaders);
 
         this.mTotalPending++;
@@ -326,6 +413,7 @@ class AssetManager extends MessageDispatcher {
       this.mState = AssetManagerState.FINISHED;
       this.mTotalLoaded = 0;
       this.mTotalErrors = 0;
+      this.mTotalPending = 0;
       this.mIsAllLoaded = true;
       this.mDictionary = {};
 
@@ -360,6 +448,7 @@ class AssetManager extends MessageDispatcher {
       this.mState = AssetManagerState.FINISHED;
       this.mTotalLoaded = 0;
       this.mTotalErrors = 0;
+      this.mTotalPending = 0;
       this.mIsAllLoaded = true;
       this.mDictionary = {};
       this.post(Message.COMPLETE);
@@ -558,8 +647,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Destroys all loaded resources.
    */
-  dispose() {
-  }
+  dispose() { }
 
   /**
    * Gets/Sets default path for loading. Useful when URLs getting too long.
@@ -572,7 +660,6 @@ class AssetManager extends MessageDispatcher {
   }
 
   /**
-   * @ignore
    * @param {string} value
    * @return {void}
    */
@@ -616,23 +703,4 @@ class AssetManager extends MessageDispatcher {
   get path() {
     return 'AssetManager';
   }
-
-  /**
-   * Default instance. Sprite and other classes uses this instance to find textures by name.
-   * @static
-   * @type {AssetManager}
-   */
-  static get default() {
-    if (AssetManager.mDefault === null)
-      AssetManager.mDefault = new AssetManager();
-
-    return AssetManager.mDefault;
-  }
 }
-
-/**
- * Default instance. Sprite and other classes uses this instance to find textures by name.
- * @static
- * @type {AssetManager}
- */
-AssetManager.mDefault = null;

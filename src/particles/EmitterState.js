@@ -5,8 +5,7 @@
  * @constant
  * @enum {number}
  */
-/* @echo EXPORT */
-const EmitterState = {
+export const EmitterState = {
   PENDING: 0,
   EMITTING: 1,
   FINISHED: 2

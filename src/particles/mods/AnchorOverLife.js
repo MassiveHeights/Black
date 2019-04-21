@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { VectorScatter } from "../../scatters/VectorScatter";
+
 /**
  * Changes particle alpha according to its life.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class AnchorOverLife extends Modifier {
+export class AnchorOverLife extends Modifier {
   /**
    * Creates new Acceleration instance.
    *

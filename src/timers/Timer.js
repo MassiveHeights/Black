@@ -1,3 +1,7 @@
+import { Component } from "../core/Component";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+
 /**
  * Timer component.
  *
@@ -8,33 +12,53 @@
  * 
  * @extends Component
  */
-/* @echo EXPORT */
-class Timer extends Component {
+export class Timer extends Component {
   constructor(interval = 1, ticksCount = 1, startOnAdded = true) {
     super();
     
     Debug.assert(interval > 0, 'the interval value must be greater than 0');
     Debug.assert(ticksCount > 0, 'the ticksCount value must be greater than 0');
     
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mStartOnAdded = startOnAdded;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mInterval = interval;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTicksCount = ticksCount;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsRunning = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTick = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mElapsedSeconds = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mTotalElapsedSeconds = 0;
   }
 
@@ -53,13 +77,13 @@ class Timer extends Component {
     if (this.mIsRunning === false)
       return;
 
-    this.mElapsedSeconds += Time.delta;
-    this.mTotalElapsedSeconds += Time.delta;
+    this.mElapsedSeconds += Black.time.delta;
+    this.mTotalElapsedSeconds += Black.time.delta;
 
     if (this.mElapsedSeconds >= this.mInterval) {
       this.mElapsedSeconds = 0;
 
-      const ticksPerUpdate = Math.max(1, ~~(Time.delta / this.mInterval));
+      const ticksPerUpdate = Math.max(1, ~~(Black.time.delta / this.mInterval));
       for (let i = 0; i < ticksPerUpdate; i++) {
         this.mTick++;
 
@@ -186,7 +210,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -205,7 +228,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -233,7 +255,6 @@ class Timer extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */

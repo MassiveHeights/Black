@@ -1,12 +1,15 @@
+import { SoundEffect } from "../SoundEffect";
+import { Debug } from "../../core/Debug";
+import { Black } from "../../Black";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Equalizer.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class SimpleEQ extends SoundEffect {
-
+export class SimpleEQ extends SoundEffect {
   /**
    * Creates new instance of equalizer.
    * 
@@ -18,7 +21,10 @@ class SimpleEQ extends SoundEffect {
     // default values from winamp
     frequencies = frequencies || [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
 
-    /** @private @type {Array<BiquadFilterNode>} */
+    /** 
+     * @private 
+     * @type {Array<BiquadFilterNode>} 
+     */
     this.mFilters = [];
 
     for (let i = 0; i < frequencies.length; i++) {
@@ -34,10 +40,16 @@ class SimpleEQ extends SoundEffect {
     this.mOutputNode = this.mFilters[this.mFilters.length - 1];
 
     // todo: determine correct max value
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mMaxGainLevel = 16; // 18
 
-    /** @private @type {Object.<string, Array<number>>} */
+    /** 
+     * @private 
+     * @type {Object.<string, Array<number>>} 
+     */
     this.mPresets = {};
   }
 
@@ -48,7 +60,7 @@ class SimpleEQ extends SoundEffect {
    * @returns {BiquadFilterNode}
    */
   __createFilter(freq) {
-    let f = MasterAudio.context.createBiquadFilter();
+    let f = Black.audio.context.createBiquadFilter();
     f.type = 'peaking';
     f.frequency.setValueAtTime(freq, 0);
     f.Q.setValueAtTime(1, 0);

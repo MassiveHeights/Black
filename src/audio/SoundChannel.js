@@ -1,10 +1,15 @@
+import { SoundInstance } from "./SoundInstance";
+import { SoundEffect } from "./SoundEffect";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { Message } from "../messages/Message";
+
 /**
  * Sound channel
  * 
  * @cat audio
  */
-/* @echo EXPORT */
-class SoundChannel {
+export class SoundChannel {
   /**
    * Creates instance of SoundChannel with specific name
    * 
@@ -12,16 +17,28 @@ class SoundChannel {
    */
   constructor(name) {
 
-    /** @private @type {string} */
+    /** 
+     * @private 
+     * @type {string} 
+     */
     this.mName = name;
 
-    /** @private @type {!GainNode} */
-    this.mGain = MasterAudio._newGainNode();
+    /** 
+     * @private 
+     * @type {!GainNode} 
+     */
+    this.mGain = Black.audio._newGainNode();
 
-    /** @private @type {Array<SoundInstance>} */
+    /** 
+     * @private 
+     * @type {Array<SoundInstance>} 
+     */
     this.mSounds = [];
 
-    /** @private @type {Array<SoundEffect>} */
+    /** 
+     * @private 
+     * @type {Array<SoundEffect>} 
+     */
     this.mEffects = [];
   }
 
@@ -131,7 +148,6 @@ class SoundChannel {
   }
 
   /**
-   * @ignore
    * @public
    * @param {number} value
    * @returns {void}

@@ -1,11 +1,13 @@
+import { MessageDispatcher } from "../../messages/MessageDispatcher";
+import { Message } from "../../messages/Message";
+
 /**
  * Base class for loaders.
  *
  * @cat assets.loaders
  * @extends MessageDispatcher
  */
-/* @echo EXPORT */
-class AssetLoader extends MessageDispatcher {
+export class AssetLoader extends MessageDispatcher {
   /**
    * Creates new AssetLoader instance.
    * 
@@ -14,16 +16,28 @@ class AssetLoader extends MessageDispatcher {
   constructor(url) {
     super();
 
-    /** @protected @type {string} */
+    /** 
+     * @protected 
+     * @type {string} 
+     */
     this.mUrl = url;
 
-    /** @protected @type {?|null} */
+    /** 
+     * @protected 
+     * @type {?|null} 
+     */
     this.mData = null;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsLoaded = false;
 
-    /** @private @type {Asset} */
+    /** 
+     * @private 
+     * @type {Asset} 
+     */
     this.mOwner = null;
   }
 

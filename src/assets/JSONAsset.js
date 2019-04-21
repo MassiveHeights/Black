@@ -1,11 +1,13 @@
+import { Asset } from "./Asset";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+
 /**
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class JSONAsset extends Asset {
+export class JSONAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
@@ -16,7 +18,10 @@ class JSONAsset extends Asset {
   constructor(name, url) {
     super(name);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(url);
     this.mXHR.mimeType = 'application/json';
     this.addLoader(this.mXHR);

@@ -1,3 +1,11 @@
+import { System } from "../core/System";
+import { Debug } from "../core/Debug";
+import { Vector } from "../geom/Vector";
+import { Black } from "../Black";
+import { InputComponent } from "./InputComponent";
+import { KeyInfo } from "./KeyInfo";
+import { Device } from "../system/Device";
+
 /**
  * A input system class is responsible for mouse, touch and keyboard input events.
  * Pointer events works for a single target only.
@@ -16,8 +24,7 @@
  * @fires Input#pointerUp
  * @extends System
  */
-/* @echo EXPORT */
-class Input extends System {
+export class Input extends System {
   /**
    * Private constructor.
    */
@@ -26,56 +33,101 @@ class Input extends System {
 
     Debug.assert(this.constructor.instance == null, 'Only single instance is allowed');
 
-    Input.instance = this;
+    Black.input = this;
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mPointerPosition = new Vector();
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mStagePosition = new Vector();
 
-    /** @private @type {Element} */
-    this.mDom = Black.instance.viewport.nativeElement;
+    /** 
+     * @private 
+     * @type {Element} 
+     */
+    this.mDom = Black.engine.viewport.nativeElement;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mEventList = null;
 
-    /** @private @type {Array<string>} */
+    /** 
+     * @private 
+     * @type {Array<string>} 
+     */
     this.mKeyEventList = null;
 
     this.mBoundListeners = [];
 
     this.__initListeners();
 
-    /** @private @type {Array<{e: Event, x: number, y:number}>} */
+    /** 
+     * @private 
+     * @type {Array<{e: Event, x: number, y:number}>} 
+     */
     this.mPointerQueue = [];
 
-    /** @private @type {Array<KeyboardEvent>} */
+    /** 
+     * @private 
+     * @type {Array<KeyboardEvent>} 
+     */
     this.mKeyQueue = [];
 
-    /** @private @type {Array<number>} */
+    /** 
+     * @private 
+     * @type {Array<number>} 
+     */
     this.mPressedKeys = [];
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPointerDown = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mNeedUpEvent = false;
 
     // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
-    /** @private @type {Map} */
+    /** 
+     * @private 
+     * @type {Map} 
+     */
     this.mInputListeners = new Map();
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mTargetComponent = null;
 
-    /** @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mLockedTarget = null;
 
-    /** @private @type {Component} */
+    /** 
+     * @private 
+     * @type {Component} 
+     */
     this.mLastInTargetComponent = null;
   }
 
@@ -85,22 +137,22 @@ class Input extends System {
    * @returns {void}
    */
   __initListeners() {
-    this.mKeyEventList = Input.mKeyEventList;
+    this.mKeyEventList = mKeyEventList;
 
     if (window.PointerEvent)
-      this.mEventList = Input.mPointerEventList;
+      this.mEventList = mPointerEventList;
     else if (Device.isTouch && Device.isMobile)
-      this.mEventList = Input.mTouchEventList;
+      this.mEventList = mTouchEventList;
     else
-      this.mEventList = Input.mMouseEventList;
+      this.mEventList = mMouseEventList;
 
     for (let i = 0; i < 3; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
     let listener = null;
     listener = e => this.__onPointerEventDoc(e);
-    this.mBoundListeners.push({ name: this.mEventList[Input.IX_POINTER_UP], listener: listener });
-    document.addEventListener(this.mEventList[Input.IX_POINTER_UP], listener, false);
+    this.mBoundListeners.push({ name: this.mEventList[IX_POINTER_UP], listener: listener });
+    document.addEventListener(this.mEventList[IX_POINTER_UP], listener, false);
 
     for (let i = 0; i < this.mKeyEventList.length; i++) {
       listener = e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e));
@@ -116,7 +168,7 @@ class Input extends System {
    * @returns {boolean}
    */
   __onKeyEvent(e) {
-    if (Black.instance.isPaused === true)
+    if (Black.engine.isPaused === true)
       return false;
 
     this.mKeyQueue.push(e);
@@ -130,7 +182,7 @@ class Input extends System {
    * @returns {void}
    */
   __onPointerEventDoc(e) {
-    if (Black.instance.isPaused === true)
+    if (Black.engine.isPaused === true)
       return;
 
     // dirty check
@@ -149,7 +201,7 @@ class Input extends System {
    * @returns {boolean}
    */
   __onPointerEvent(e) {
-    if (Black.instance.isPaused === true)
+    if (Black.engine.isPaused === true)
       return false;
 
     e.preventDefault();
@@ -188,8 +240,12 @@ class Input extends System {
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+
+    const rotation = Black.engine.viewport.rotation;
+
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
+
     return new Vector((evt.clientX - rect.left) * scaleX, (evt.clientY - rect.top) * scaleY);
   }
 
@@ -208,8 +264,9 @@ class Input extends System {
     let x = touch.clientX;
     let y = touch.clientY;
 
-    let scaleX = canvas.clientWidth / rect.width;
-    let scaleY = canvas.clientHeight / rect.height;
+    const rotation = Black.engine.viewport.rotation;
+    let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
+    let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
@@ -220,8 +277,8 @@ class Input extends System {
     // omg, who gave you keyboard?
     this.__updateKeyboard();
 
-    const size = Black.instance.viewport.size;
-    const rotation = this.mDom.style.transform;
+    const size = Black.engine.viewport.size;
+    const rotation = Black.engine.viewport.rotation;
 
     let stage = Black.stage;
 
@@ -230,10 +287,10 @@ class Input extends System {
       const x = nativeEvent.x;
       const y = nativeEvent.y;
 
-      if (rotation === 'rotate(90deg)') {
+      if (rotation === 1) {
         nativeEvent.x = y;
         nativeEvent.y = size.height - x;
-      } else if (rotation === 'rotate(-90deg)') {
+      } else if (rotation === -1) {
         nativeEvent.x = size.width - y;
         nativeEvent.y = x;
       }
@@ -248,7 +305,7 @@ class Input extends System {
       let inv = stage.worldTransformationInverted;
       inv.transformVector(this.mStagePosition, this.mStagePosition);
 
-      let eventType = Input.mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
+      let eventType = mInputEventsLookup[this.mEventList.indexOf(nativeEvent.e.type)];
 
       this.__findTarget(this.mPointerPosition);
       this.__processNativeEvent(nativeEvent, this.mPointerPosition, eventType);
@@ -331,7 +388,7 @@ class Input extends System {
 
       let ix = this.mKeyEventList.indexOf(nativeEvent.type);
       let pIx = this.mPressedKeys.indexOf(nativeEvent.keyCode);
-      let fnName = Input.mKeyEventsLookup[ix];
+      let fnName = mKeyEventsLookup[ix];
 
       if (fnName === 'keyUp' && pIx !== -1)
         this.mPressedKeys.splice(pIx, 1);
@@ -346,7 +403,7 @@ class Input extends System {
   }
 
   /**
-   * @inheritdoc
+   * @override
    */
   dispose() {
     super.dispose();
@@ -356,31 +413,7 @@ class Input extends System {
       document.removeEventListener(keyValue.name, keyValue.listener);
     }
 
-    Input.instance = null;
-  }
-
-  /**
-   * Listens for global input event by given message name.
-   *
-   * @param {string} name            The name of the message to listen for.
-   * @param {Function} callback      The callback function that will be called when message received.
-   * @param {Object=} [context=null] Optional context.
-   * @returns {MessageBinding}
-   */
-  static on(name, callback, context = null) {
-    return Input.instance.on(name, callback, context);
-  }
-
-  /**
-   * Listens for one single global input event by given message name.
-   *
-   * @param {string} name            The name of the message to listen for.
-   * @param {Function} callback      The callback function that will be called when message received.
-   * @param {Object=} [context=null] Optional context.
-   * @returns {MessageBinding}
-   */
-  static once(name, callback, context = null) {
-    return Input.instance.once(name, callback, context);
+    Black.input = null;
   }
 
   /**
@@ -388,8 +421,8 @@ class Input extends System {
    *
    * @returns {boolean}
    */
-  static get isPointerDown() {
-    return Input.instance.mIsPointerDown;
+  get isPointerDown() {
+    return this.mIsPointerDown;
   }
 
   /**
@@ -397,8 +430,8 @@ class Input extends System {
    *
    * @returns {number}
    */
-  static get pointerX() {
-    return Input.instance.mPointerPosition.x;
+  get pointerX() {
+    return this.mPointerPosition.x;
   }
 
   /**
@@ -406,8 +439,8 @@ class Input extends System {
    *
    * @returns {number} Description
    */
-  static get pointerY() {
-    return Input.instance.mPointerPosition.y;
+  get pointerY() {
+    return this.mPointerPosition.y;
   }
 
   /**
@@ -415,8 +448,8 @@ class Input extends System {
    *
    * @returns {number}
    */
-  static get stageX() {
-    return Input.instance.mStagePosition.x;
+  get stageX() {
+    return this.mStagePosition.x;
   }
 
   /**
@@ -424,8 +457,8 @@ class Input extends System {
    *
    * @returns {number} Description
    */
-  static get stageY() {
-    return Input.instance.mStagePosition.y;
+  get stageY() {
+    return this.mStagePosition.y;
   }
 
   /**
@@ -433,8 +466,8 @@ class Input extends System {
    *
    * @returns {Vector}
    */
-  static get pointerPosition() {
-    return Input.instance.mPointerPosition;
+  get pointerPosition() {
+    return this.mPointerPosition;
   }
 
   /**
@@ -442,8 +475,8 @@ class Input extends System {
    * 
    * @returns {Vector}
    */
-  static get stagePosition() {
-    return Input.instance.mStagePosition;
+  get stagePosition() {
+    return this.mStagePosition;
   }
 
   /**
@@ -451,115 +484,92 @@ class Input extends System {
    *
    * @returns {Array<number>}
    */
-  static get pressedKeys() {
-    return Input.instance.mPressedKeys;
+  get pressedKeys() {
+    return this.mPressedKeys;
   }
+
+  /**
+   * @type {string}
+   * @const
+   */
+  static get POINTER_DOWN() { return 'pointerDown'; }
+
+  /**
+   * @type {string}
+   * @const
+   */
+  static get POINTER_MOVE() { return 'pointerMove'; }
+
+  /**
+   * @type {string}
+   * @const
+   */
+  static get POINTER_UP() { return 'pointerUp'; }
 }
 
-/**
- * @private
- * @type {string}
- * @const
- */
-Input.POINTER_DOWN = 'pointerDown';
-
-/**
- * @private
- * @type {string}
- * @const
- */
-Input.POINTER_MOVE = 'pointerMove';
-
-/**
- * @private
- * @type {string}
- * @const
- */
-Input.POINTER_UP = 'pointerUp';
-
-/**
- * Only instance of Input.
- *
- * @type {Input}
- * @static
- * @nocollapse
- */
-Input.instance = null;
 
 /**
  * @private
  * @type {number}
  * @const
  */
-Input.IX_POINTER_MOVE = 0;
+const IX_POINTER_MOVE = 0;
 
 /**
  * @private
  * @type {number}
  * @const
  */
-Input.IX_POINTER_DOWN = 1;
+const IX_POINTER_DOWN = 1;
 
 /**
  * @private
  * @type {number}
  * @const
  */
-Input.IX_POINTER_UP = 2;
-
-// /**
-//  * @type {number}
-//  * @const
-//  */
-// Input.IX_POINTER_IN = 3;
-//
-// /**
-//  * @type {number}
-//  * @const
-//  */
-// Input.IX_POINTER_OUT = 4;
+const IX_POINTER_UP = 2;
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mKeyEventList = ['keydown', 'keyup'];
+const mKeyEventList = ['keydown', 'keyup'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
+const mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
+const mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
+const mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+const mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
+const mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 'touchleave'];
 
 /**
  * Posts when mouse down or touch down event happened.
@@ -582,7 +592,6 @@ Input.mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
  * @ignore
  * @cat input
  */
-/* @echo EXPORT */
 class PointerInfo {
   /**
    * Creates new PointerInfo instance. For internal use only.
@@ -593,13 +602,22 @@ class PointerInfo {
    */
   constructor(activeObject, x, y) {
 
-    /** * @private @type {GameObject} */
+    /** 
+     * @private 
+     * @type {GameObject} 
+     */
     this.mActiveObject = activeObject;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mX = x;
 
-    /** * @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mY = y;
   }
 

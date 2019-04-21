@@ -1,11 +1,16 @@
+import { Asset } from "./Asset";
+import { Texture } from "../textures/Texture";
+import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { Rectangle } from "../geom/Rectangle";
+
 /**
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
  *
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class BitmapFontAsset extends Asset {
+export class BitmapFontAsset extends Asset {
   /**
    * Creates new AtlasTextureAsset instance.
    *
@@ -19,10 +24,16 @@ class BitmapFontAsset extends Asset {
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
-    /** @private @type {ImageAssetLoader} */
+    /** 
+     * @private 
+     * @type {ImageAssetLoader} 
+     */
     this.mImageLoader = new ImageAssetLoader(imageUrl);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(xmlUrl);
     this.mXHR.mimeType = 'text/xml';
 
@@ -101,8 +112,7 @@ class BitmapFontAsset extends Asset {
   }
 }
 
-/* @echo EXPORT */
-class BitmapFontData {
+export class BitmapFontData {
   constructor() {
     /** @type {Texture} */
     this.texture = null;
@@ -127,8 +137,7 @@ class BitmapFontData {
   }
 }
 
-/* @echo EXPORT */
-class BitmapFontCharData {
+export class BitmapFontCharData {
   constructor() {
     /** @type {Texture} */
     this.texture = null;

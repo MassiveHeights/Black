@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets initial particle texture.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialTexture extends Modifier {
+export class InitialTexture extends Modifier {
   /**
    * Creates new InitialTexture instance.
    *

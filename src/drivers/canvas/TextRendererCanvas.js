@@ -1,11 +1,13 @@
+import { TextRenderer } from "../TextRenderer";
+import { Renderer } from "../Renderer";
+
 /**
  * Renders `TextField` objects on canvas.
  *
  * @extends TextRenderer
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class TextRendererCanvas extends TextRenderer {
+export class TextRendererCanvas extends TextRenderer {
   /** @inheritDoc */
   render(driver, session) {
     super.render(driver, session);

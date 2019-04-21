@@ -1,3 +1,10 @@
+import { Component } from "../core/Component";
+import { BoxCollider } from "../colliders/BoxCollider";
+import { Vector } from "../geom/Vector";
+import { Matrix } from "../geom/Matrix";
+import { Black } from "../Black";
+import { DisplayObject } from "../display/DisplayObject";
+
 /**
  * RigidBody is used to describe physics properties of game object colliders
  *
@@ -5,8 +12,7 @@
  * @extends Component
  */
 
-/* @echo EXPORT */
-class RigidBody extends Component {
+export class RigidBody extends Component {
   /**
    * Creates new instance of RigidBody.
    */
@@ -15,109 +21,129 @@ class RigidBody extends Component {
 
     /** 
      * Default collider. Used in case no any custom colliders provided by user.
-     * @private @type {BoxCollider}
+     * @private 
+     * @type {BoxCollider}
      */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
     /** 
      * For internal usage. To mark this body is in island.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mInGroup = false;
 
     /**
      * Flag to mark this body is in rest.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mIsSleeping = false;
 
     /** 
      * Internal counter. How many times (updates) this body has velocity lower than `Pair.sleepThreshold`.
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mSleepTime = 0;
 
     /** 
      * All colliding pairs this body participates in.
-     * @private @type {Array<Pair>} 
+     * @private 
+     * @type {Array<Pair>} 
      */
     this.mContacts = [];
 
     /**
      * Game object pivot. To track changes and update default collider if needed.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mPivot = new Vector(Number.MAX_VALUE);
 
     /**  
      * Game bounds position. To track changes and update this position, if object was moved without physics.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mCachedPosition = new Vector();
 
     /** 
      * All pairs this body participates in.
-     * @public @type {Array<Pair>}
+     * @public 
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
     /** 
      * Flag to indicate immovable body.
-     * @private @type {boolean}
+     * @private 
+     * @type {boolean}
      */
     this.mIsStatic = false;
 
     /** 
      * This position in stage coordinates.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mPosition = new Vector();
 
     /** 
      * This velocity to integrate.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mVelocity = new Vector();
 
     /** 
      * Force accumulator.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mForce = new Vector();
 
     /** 
      * Game object transform. To track changes and update this colliders.
-     * @private @type {Matrix}
+     * @private 
+     * @type {Matrix}
      */
     this.mTransform = new Matrix(Number.MAX_VALUE);
 
     /**
      * Cached mass
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mMass = 1;
 
     /**
      * Inverted mass or zero if body is static. 
-     * @ignore @type {number} 
+     * 
+     * @private
+     * @ignore 
+     * @type {number} 
      */
     this.mInvMass = 1;
 
     /** 
      * Velocity damper.
-     * @public @type {number}
+     * @public 
+     * @type {number}
      */
     this.frictionAir = 0.01;
 
     /**
      * Friction for collision solving.
-     * @public @type {number}
+     * @public 
+     * @type {number}
      */
     this.friction = 0.1;
 
     /**
      * Bounce for collision solving. 
-     * @public @type {number}
+     * @public 
+     * @type {number}
      */
     this.bounce = 0.1;
   }

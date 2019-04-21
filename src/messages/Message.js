@@ -1,10 +1,12 @@
+import { MessageType } from "./MessageType";
+import { ObjectPool } from "./../utils/ObjectPool";
+
 /**
  * Message holds all information about dispatched event. This is a pooled object.
  *
  * @cat core
  */
-/* @echo EXPORT */
-class Message {
+export class Message {
   constructor() {
     /** @type {MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
     this.sender = null;
@@ -41,12 +43,7 @@ class Message {
    * @return {string}
    */
   toString() {
-    let name = '';
-
-    let isGameObject = this.sender instanceof GameObject;
-    if (isGameObject === true)
-      name = /** @type {GameObject}*/ (this.sender).name;
-
+    let name = this.sender.name !== undefined ? this.sender.name : '';
     return `MESSAGE: { name: '${this.name}', sender: '${name}', target: '${this.target.name}', path: '${this.path}' }`;
   }
   // @endif
@@ -63,6 +60,73 @@ class Message {
     this.type = MessageType.DIRECT;
     return this;
   }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get PROGRESS() {
+    return 'progress';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get COMPLETE() {
+    return 'complete';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get ERROR() {
+    return 'error';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get CHANGE() {
+    return 'change';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get READY() {
+    return 'ready';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get UPDATE() {
+    return 'update';
+  }
+
+  /** 
+   * @const 
+   * @public 
+   * @type {string} 
+   */
+  static get RESIZE() {
+    return 'resize';
+  }
+
+  static get pool() {
+    return pool;
+  }
 }
 
 /**
@@ -72,25 +136,4 @@ class Message {
  * @nocollapse
  *
  */
-Message.pool = new ObjectPool(Message);
-
-/** @const @public @type {string} */
-Message.PROGRESS = 'progress';
-
-/** @const @public @type {string} */
-Message.COMPLETE = 'complete';
-
-/** @const @public @type {string} */
-Message.ERROR = 'error';
-
-/** @const @public @type {string} */
-Message.CHANGE = 'change';
-
-/** @const @public @type {string} */
-Message.READY = 'ready';
-
-/** @const @public @type {string} */
-Message.UPDATE = 'update';
-
-/** @const @public @type {string} */
-Message.RESIZE = 'resize';
+const pool = new ObjectPool(Message);

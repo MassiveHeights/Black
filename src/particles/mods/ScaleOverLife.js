@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets particle's scale value according to its energy value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class ScaleOverLife extends Modifier {
+export class ScaleOverLife extends Modifier {
   /**
    * Creates new ScaleOverTime instance.
    *

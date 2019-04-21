@@ -1,3 +1,9 @@
+import { Asset } from "./Asset";
+import { Texture } from "../textures/Texture";
+import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { AtlasTexture } from "../textures/AtlasTexture";
+
 /**
  * Texture Atlas asset responsible for loading Image file and corresponding Json
  * file.
@@ -5,8 +11,7 @@
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class AtlasTextureAsset extends Asset {
+export class AtlasTextureAsset extends Asset {
   /**
    * Creates new AtlasTextureAsset instance.
    *
@@ -17,13 +22,22 @@ class AtlasTextureAsset extends Asset {
   constructor(name, imageUrl, dataUrl) {
     super(name);
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
-    /** @private @type {ImageAssetLoader} */
+    /** 
+     * @private 
+     * @type {ImageAssetLoader} 
+     */
     this.mImageLoader = new ImageAssetLoader(imageUrl);
 
-    /** @private @type {XHRAssetLoader} */
+    /** 
+     * @private 
+     * @type {XHRAssetLoader} 
+     */
     this.mXHR = new XHRAssetLoader(dataUrl);
     this.mXHR.mimeType = 'application/json';
 

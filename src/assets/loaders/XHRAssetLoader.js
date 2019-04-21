@@ -1,21 +1,29 @@
+import { AssetLoader } from "./AssetLoader";
+
 /**
  * XHRAssetLoader responsible for loading data via XMLHttpRequest.
  *
  * @cat assets.loaders
  * @extends AssetLoader
  */
-/* @echo EXPORT */
-class XHRAssetLoader extends AssetLoader {
+export class XHRAssetLoader extends AssetLoader {
   constructor(url) {
     super(url);
 
-    /** @protected @type {XMLHttpRequest} */
+    /** 
+     * @protected 
+     * @type {XMLHttpRequest} 
+     */
     this.mRequest = new XMLHttpRequest();
 
-    /** @type {string|undefined} */
+    /** 
+     * @type {string|undefined} 
+     */
     this.mimeType = undefined;
 
-    /** @type {string} */
+    /** 
+     * @type {string} 
+     */
     this.responseType = '';
   }
 

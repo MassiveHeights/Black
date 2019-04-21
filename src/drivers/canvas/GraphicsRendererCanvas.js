@@ -1,3 +1,11 @@
+import { GraphicsRenderer } from "../GraphicsRenderer";
+import { Graphics } from "../../display/Graphics";
+import { Debug } from "../../core/Debug";
+import { Black } from "../../Black";
+import { ColorHelper } from "../../utils/ColorHelper";
+import { GraphicsCommandType } from "../../display/GraphicsCommandType";
+import { Matrix } from "../../geom/Matrix";
+
 /**
  * Renders `Graphics` objects on canvas.
  *
@@ -5,8 +13,7 @@
  * @cat drivers.canvas
  */
 
-/* @echo EXPORT */
-class GraphicsRendererCanvas extends GraphicsRenderer {
+export class GraphicsRendererCanvas extends GraphicsRenderer {
   /**
    * Creates new instance of GraphicsRendererCanvas.
    */
@@ -102,7 +109,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
               gradientInfo.x1 * dpr, gradientInfo.y1 * dpr);
 
             for (let key in gradientInfo.stops) {
-              entries.push({percent: parseFloat(key), color: gradientInfo.stops[key]});
+              entries.push({ percent: parseFloat(key), color: gradientInfo.stops[key] });
             }
 
             entries.sort((a, b) => a.percent - b.percent);

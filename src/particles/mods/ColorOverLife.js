@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { ColorScatter } from "../../scatters/ColorScatter";
+
 /**
  * Sets particle's color value according to its energy value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class ColorOverLife extends Modifier {
+export class ColorOverLife extends Modifier {
   /**
    * Creates new ColorOverLife instance.
    *

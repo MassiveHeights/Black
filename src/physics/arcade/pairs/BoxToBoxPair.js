@@ -1,11 +1,16 @@
+import { Pair } from "./Pair";
+import { ObjectPool } from "../../../utils/ObjectPool";
+import { Projection } from "../helpers/Projection";
+
+let pool;
+
 /**
  * BoxToBoxPair is used to test collision within boxes
  *
  * @cat physics.arcade.pairs
  * @extends Pair
  */
-/* @echo EXPORT */
-class BoxToBoxPair extends Pair {
+export class BoxToBoxPair extends Pair {
   /**
    * Creates new instance of BoxToBoxPair.
    */
@@ -14,13 +19,17 @@ class BoxToBoxPair extends Pair {
 
     /**
      * Collider from body a.
-     * @public @type {BoxCollider|null}
+     * 
+     * @public 
+     * @type {BoxCollider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b. 
-     * @public @type {BoxCollider|null}
+     * 
+     * @public 
+     * @type {BoxCollider|null}
      */
     this.b = null;
 
@@ -32,7 +41,8 @@ class BoxToBoxPair extends Pair {
 
     /**
      * Projection keeps range of projected vertices. For each normal from both the colliders.
-     * @private @type {Array<Projection>}
+     * @private 
+     * @type {Array<Projection>}
      */
     this.mProjections = projections;
   }
@@ -148,6 +158,11 @@ class BoxToBoxPair extends Pair {
 
     return this.mInCollision = true;
   }
-}
 
-BoxToBoxPair.pool = new ObjectPool(BoxToBoxPair, 100);
+  static get pool() {
+    if (pool === null)
+      pool = new ObjectPool(BoxToBoxPair, 100);
+
+    return pool;
+  }
+}

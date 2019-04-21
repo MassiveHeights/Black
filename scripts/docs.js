@@ -88,6 +88,9 @@ class Generator {
       return '';
 
 
+	if (!item.properties)
+		return '';
+  
     if (item.properties.length == 0)
       return '';
 
@@ -367,6 +370,9 @@ class Generator {
 
     this.data.forEach(x => {
       if (x.ignore)
+        return;
+
+      if (x.params && x.params[0])
         return;
 
       let access = '';

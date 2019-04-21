@@ -1,12 +1,14 @@
+import { Collider } from "./Collider";
+import { Circle } from "../geom/Circle";
+import { Vector } from "../geom/Vector";
+
 /**
  * Collider with circle shape.
  *
  * @cat colliders
  * @extends Collider
  */
-
-/* @echo EXPORT */
-class CircleCollider extends Collider {
+export class CircleCollider extends Collider {
 
   /**
    * Creates new instance of CircleCollider.
@@ -18,29 +20,35 @@ class CircleCollider extends Collider {
   constructor(x, y, radius) {
     super();
 
-    /** @private @type {Circle} */
+    /** 
+     * @private 
+     * @type {Circle} */
     this.mCircle = new Circle(x, y, radius);  // local to sprite
 
     /**
      * Local to rigid body center.
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mLocalCenter = new Vector();
 
     /**
      * Local to rigid body min x and y vertex.
-     * @private @type {Vector} */
+     * @private 
+     * @type {Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
-     * @private @type {Vector}
+     * @private 
+     * @type {Vector}
      */
     this.mLocalMax = new Vector();
 
     /**
      * Global in stage coordinates radius 
-     * @private @type {number}
+     * @private 
+     * @type {number}
      */
     this.mRadius = 0;
 

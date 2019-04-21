@@ -1,11 +1,14 @@
+import { Scatter } from "./Scatter";
+import { Curve } from "../geom/Curve";
+import { Vector } from "../geom/Vector";
+
 /**
  * Sets particle's starting velocity.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class VectorCurveScatter extends Scatter {
+export class VectorCurveScatter extends Scatter {
   /**
    * Creates new VectorCurveScatter instance.
    *
@@ -14,12 +17,18 @@ class VectorCurveScatter extends Scatter {
   constructor(...points) {
     super();
 
-    /** @private @type {Curve} */
+    /** 
+     * @private 
+     * @type {Curve} 
+     */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
-    /** @private @type {Vector} */
+    /** 
+     * @private 
+     * @type {Vector} 
+     */
     this.mCache = new Vector();
   }
 

@@ -1,3 +1,5 @@
+import { Asset } from "./Asset";
+
 /**
  * This is abstract class for custom user assets. For example CustomAsset can be used to load video or other data files.
  *
@@ -7,5 +9,4 @@
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class CustomAsset extends Asset { }
+export class CustomAsset extends Asset { }

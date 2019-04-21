@@ -1,10 +1,12 @@
+import { Texture } from "./Texture";
+import { RenderTargetCanvas } from "../drivers/canvas/RenderTargetCanvas";
+
 /**
  * A texture allowing game objects to be rendered onto it.
  *
  * @cat textures
  */
-/* @echo EXPORT */
-class CanvasRenderTexture extends Texture {
+export class CanvasRenderTexture extends Texture {
   /**
    * Creates new CanvasRenderTexture instance with given size and scale.
    *

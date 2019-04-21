@@ -1,3 +1,12 @@
+import { Component } from "../core/Component";
+import { Interpolation } from "./Interpolation";
+import { Time } from "../core/Time";
+import { Message } from "../messages/Message";
+import { Ease } from "./Ease";
+import { Black } from "../Black";
+
+var defaultEase = Ease.smootherStep;
+
 /**
  * A tweening component.
  *
@@ -10,8 +19,7 @@
  * @unrestricted
  * @extends Component
  */
-/* @echo EXPORT */
-class Tween extends Component {
+export class Tween extends Component {
   /**
    * Creates new instance of Tween Component.
    * @param {Object}        values            The values to tween.
@@ -22,74 +30,143 @@ class Tween extends Component {
   constructor(values, duration = 0.250, properties = null, plugins = null) {
     super();
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mValues = values;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDuration = duration;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mProperties = properties;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mPlugins = plugins;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPlaying = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsPaused = false;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mStartTime = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mPausedTime = 0;
 
-    /** @private @dict */
+    /** 
+     * @private 
+     * @dict 
+     */
     this.mValuesStart = {};
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mElapsed = 0;
 
-    /** @private @type {function (Array, number):number} */
+    /** 
+     * @private 
+     * @type {function (Array, number):number} 
+     */
     this.mInterpolation = Interpolation.linear;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mDelay = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRepeatDelay = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRepeats = 0;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mInitiated = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mStarted = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReversed = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mYoyo = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mIsYoyoBack = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReverseOnInit = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mRemoveOnComplete = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mPlayOnAdded = true;
 
-    /** @private @type {function(number):number} */
-    this.mEase = Tween.DEFAULT_EASE;
+    /** 
+     * @private 
+     * @type {function(number):number} 
+     */
+    this.mEase = defaultEase;
 
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
@@ -108,7 +185,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {function(number):number} value The easing function.
    * @return {void}
    */
@@ -126,7 +202,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {function(Array, number):number} value The interpolation function.
    * @return {void}
    */
@@ -154,7 +229,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Seconds to wait.
    * @return {void}
    */
@@ -172,7 +246,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Number of times.
    * @return {void}
    */
@@ -190,7 +263,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {number} value Seconds to wait.
    * @return {void}
    */
@@ -208,7 +280,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -226,7 +297,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -244,7 +314,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -262,7 +331,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -280,7 +348,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -298,7 +365,6 @@ class Tween extends Component {
   }
 
   /**
-   * @ignore
    * @param {Object} value
    * @return {void}
    */
@@ -341,7 +407,7 @@ class Tween extends Component {
    */
   play() {
     if (!this.mIsPaused) {
-      this.__start(Time.now);
+      this.__start(Black.time.now);
     } else {
       this.__resume();
     }
@@ -400,13 +466,12 @@ class Tween extends Component {
       return this;
 
     this.mIsPaused = true;
-    this.mPausedTime = Time.now;
+    this.mPausedTime = Black.time.now;
 
     return this;
   }
 
   /**
-   * @ignore
    * @private
    * @return {void} Description
    */
@@ -415,7 +480,7 @@ class Tween extends Component {
       return;
 
     this.mIsPaused = false;
-    this.mStartTime += Time.now - this.mPausedTime;
+    this.mStartTime += Black.time.now - this.mPausedTime;
   }
 
 
@@ -454,7 +519,7 @@ class Tween extends Component {
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
-      this.__start(Time.now);
+      this.__start(Black.time.now);
     }
   }
 
@@ -510,10 +575,10 @@ class Tween extends Component {
   }
 
   onRender() {
-    if (Black.numUpdates !== 0)
+    if (Black.engine.numUpdates !== 0)
       return;
 
-    let time = Time.now;
+    let time = Black.time.now;
 
     if (time < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;
@@ -547,7 +612,7 @@ class Tween extends Component {
    * @inheritDoc
    */
   onUpdate() {
-    let t = Time.now;
+    let t = Black.time.now;
 
     if (t < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;
@@ -639,15 +704,22 @@ class Tween extends Component {
 
       this.mInitiated = true;
     }
+  }
 
+  /**
+   * Ease to be used in all tweens, if another ease is not specified. `Ease.smootherStep` is used.
+   *
+   * @returns {function(number):number}
+   */
+  static get defaultEase() {
+    return defaultEase;
+  }
+
+  /**
+   * @param {function(number):number} value The defaykt easing function.
+   * @returns {void}
+   */
+  static set defaultEase(value) {
+    defaultEase = value;
   }
 }
-
-/**
- * Ease to be used in all tweens, if another ease is not specified. `Ease.smootherStep`.
- *
- * @public
- * @type {function(number):number}
- * @nocollapse
- */
-Tween.DEFAULT_EASE = Ease.smootherStep;

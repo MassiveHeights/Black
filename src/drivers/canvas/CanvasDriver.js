@@ -1,11 +1,26 @@
+import { VideoNullDriver } from "../VideoNullDriver";
+import { Renderer } from "../Renderer";
+import { BlendMode, CanvasBlendMode } from "../BlendMode";
+import { RenderSession } from "../RenderSession";
+import { GameObject } from "../../core/GameObject";
+import { Debug } from "../../core/Debug";
+import { Black } from "../../Black";
+import { DisplayObjectRendererCanvas } from "./DisplayObjectRendererCanvas";
+import { SpriteRendererCanvas } from "./SpriteRendererCanvas";
+import { EmitterRendererCanvas } from "./EmitterRendererCanvas";
+import { TextRendererCanvas } from "./TextRendererCanvas";
+import { BitmapTextRendererCanvas } from "./BitmapTextRendererCanvas";
+import { GraphicsRendererCanvas } from "./GraphicsRendererCanvas";
+import { Texture } from "../../textures/Texture";
+import { ColorHelper } from "../../utils/ColorHelper";
+
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
  *
  * @extends VideoNullDriver
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class CanvasDriver extends VideoNullDriver {
+export class CanvasDriver extends VideoNullDriver {
   /**
    * Creates new instance of CanvasDriver
    *
@@ -16,12 +31,18 @@ class CanvasDriver extends VideoNullDriver {
   constructor(containerElement, width, height) {
     super(containerElement, width, height);
 
-    /** @private @type {CanvasRenderingContext2D|null} */
+    /** 
+     * @private 
+     * @type {CanvasRenderingContext2D|null} 
+     */
     this.mCtx = null;
 
     this.__createCanvas();
 
-    /** @inheritDoc */
+    /**
+     * @private 
+     * @inheritDoc 
+     */
     this.mRendererMap = {
       'DisplayObject': DisplayObjectRendererCanvas,
       'Sprite': SpriteRendererCanvas,
@@ -315,7 +336,7 @@ class CanvasDriver extends VideoNullDriver {
     // TODO: clear only changed region
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
-    let viewport = Black.instance.viewport;
+    let viewport = Black.engine.viewport;
     if (viewport.isTransparent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
       this.mCtx.fillRect(0, 0, viewport.size.width * this.mDevicePixelRatio, viewport.size.height * this.mDevicePixelRatio);
@@ -332,7 +353,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @override
    */
   dispose() {
     super.dispose();

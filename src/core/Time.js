@@ -1,19 +1,54 @@
+import { Debug } from "./Debug";
+
 /**
  * Provides time related methods.
  *
  * @cat core
  * @static
  */
-/* @echo EXPORT */
-class Time {
+export class Time {
   constructor() {
-    Time.mTime = 0;
-    Time.mActualTime = 0;
-    Time.mDeltaTimeMs = 1000 / 60;
-    Time.mDeltaTime = (1000 / 60) * 0.001;
-    Time.mScale = 1;
-    Time.mAlphaTime = 0;
-    Time.mRenderOffset = 0;
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mTime = 0;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mActualTime = 0;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mDeltaTimeMs = 1000 / 60;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mDeltaTime = (1000 / 60) * 0.001;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mScale = 1;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mAlphaTime = 0;
+
+    /** 
+     * @private
+     * @type {number} 
+     */
+    this.mRenderOffset = 0;
   }
 
   /**
@@ -22,8 +57,8 @@ class Time {
    * @static
    * @returns {number}
    */
-  static get now() {
-    return Time.mTime;
+  get now() {
+    return this.mTime;
   }
 
   /**
@@ -32,8 +67,8 @@ class Time {
    * @static
    * @returns {number}
    */
-  static get dt() {
-    return Time.mDeltaTime * Time.mScale;
+  get dt() {
+    return this.mDeltaTime * this.mScale;
   }
 
   /**
@@ -42,8 +77,8 @@ class Time {
    * @static
    * @returns {number}
    */
-  static get alpha() {
-    return Time.mAlphaTime;
+  get alpha() {
+    return this.mAlphaTime;
   }
 
   /**
@@ -52,8 +87,8 @@ class Time {
    * @static
    * @returns {number}
    */
-  static get delta() {
-    return Time.mDeltaTime * Time.mScale;
+  get delta() {
+    return this.mDeltaTime * this.mScale;
   }
 
   /**
@@ -61,38 +96,16 @@ class Time {
    * 
    * @returns {number}
    */
-  static get scale() {
-    return Time.mScale;
+  get scale() {
+    return this.mScale;
   }
 
   /**
-   * @ignore
    * @param {number} value
    */
-  static set scale(value) {
-    Debug.assert(value >= 0, 'Time.scale must be >= 0.');
+  set scale(value) {
+    Debug.assert(value >= 0, 'Time scale must be >= 0.');
 
-    Time.mScale = value;
+    this.mScale = value;
   }
 }
-
-/** @ignore @type {number} */
-Time.mTime = 0;
-
-/** @ignore @type {number} */
-Time.mActualTime = 0;
-
-/** @ignore @type {number} */
-Time.mDeltaTimeMs = 1000 / 60;
-
-/** @ignore @type {number} */
-Time.mDeltaTime = (1000 / 60) * 0.001;
-
-/** @ignore @type {number} */
-Time.mScale = 1;
-
-/** @ignore @type {number} */
-Time.mAlphaTime = 0;
-
-/** @ignore @type {number} */
-Time.mRenderOffset = 0;

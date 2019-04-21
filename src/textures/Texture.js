@@ -1,10 +1,20 @@
+import { Rectangle } from "../geom/Rectangle";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+
+/**
+ * @private
+ * @type {number}
+ * @nocollapse
+ */
+let __ID = 0;
+
 /**
  * A base texture class.
  *
  * @cat textures
  */
-/* @echo EXPORT */
-class Texture {
+export class Texture {
   /**
    * Creates new instance of texture.
    *
@@ -16,45 +26,71 @@ class Texture {
    * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
    */
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
-    this.mId = ++Texture.__ID;
+    this.mId = ++__ID;
 
-    /** @private @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
+    /** 
+     * @private 
+     * @type {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} */
     this.mNative = nativeElement;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} */
     this.mValid = false;
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mRegion = new Rectangle();
 
-    /** @private @type {Rectangle} */
+    /** 
+     * @private 
+     * @type {Rectangle} */
     this.mUntrimmedRegion = new Rectangle();
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mNativeHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mDisplayHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderWidth = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mRenderHeight = 0;
 
-    /** @private @type {number} */
+    /** 
+     * @private 
+     * @type {number} */
     this.mScale = scale;
 
-    /** @private @type {Vector|null} */
+    /** 
+     * @private 
+     * @type {Vector|null} */
     this.mRegistrationPoint = registrationPoint;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} */
     this.mSlice9borders = slice9borders;
 
     this.set(nativeElement, region, untrimmedRegion, scale);
@@ -305,24 +341,3 @@ class Texture {
     return this.mId;
   }
 }
-
-/**
- * @private
- * @type {number}
- * @nocollapse
- */
-Texture.__ID = 0;
-
-/**
- * @private
- * @type {HTMLImageElement|null}
- * @nocollapse
- */
-Texture.MISSING_IMAGE_CACHE = null;
-
-/**
- * @private
- * @type {number}
- * @nocollapse
- */
-Texture.MAX_SIZE = 2048;

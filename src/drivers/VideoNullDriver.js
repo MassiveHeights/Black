@@ -1,10 +1,17 @@
+import { Black } from "../Black";
+import { BlendMode } from "./BlendMode";
+import { Renderer } from "./Renderer";
+import { RenderSession } from "./RenderSession";
+import { Device } from "../system/Device";
+import { ObjectPool } from "../utils/ObjectPool";
+import { Matrix } from "../geom/Matrix";
+
 /**
  * Base class for custom video drivers. VideoDriver is used to render things onto the screen.
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class VideoNullDriver {
+export class VideoNullDriver {
   /**
    * Creates new instance of VideoNullDriver.
    *
@@ -14,49 +21,91 @@ class VideoNullDriver {
    */
   constructor(containerElement, width, height) {
 
-    /** @protected @type {HTMLElement} */
+    /** 
+     * @protected 
+     * @type {HTMLElement} 
+     */
     this.mContainerElement = containerElement;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mClientWidth = width;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mClientHeight = height;
 
-    /** @protected @type {Matrix} Actual object - do not change */
+    /** 
+     * @protected 
+     * @type {Matrix} Actual object - do not change 
+     */
     this.mTransform = new Matrix();
 
-    /** @protected @type {Matrix} */
+    /** 
+     * @protected 
+     * @type {Matrix} 
+     */
     this.mIdentityMatrix = new Matrix();
 
-    /** @protected @type {RenderSession} */
+    /** 
+     * @protected 
+     * @type {RenderSession} 
+     */
     this.mActiveSession = new RenderSession();
 
-    /** @protected @type {Array<RenderSession>} */
+    /** 
+     * @protected 
+     * @type {Array<RenderSession>} 
+     */
     this.mSessions = [];
 
-    /** @protected @type {?} */
+    /** 
+     * @protected 
+     * @type {?} 
+     */
     this.mLastRenderTexture = null;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mSnapToPixels = false;
 
-    /** @protected @type {number} */
-    this.mDevicePixelRatio = Black.instance.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
+    /** 
+     * @protected 
+     * @type {number} 
+     */
+    this.mDevicePixelRatio = Black.engine.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
 
-    /** @protected @type {BlendMode|null} */
+    /** 
+     * @protected 
+     * @type {BlendMode|null} 
+     */
     this.mGlobalBlendMode = BlendMode.AUTO;
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mGlobalAlpha = 1;
 
-    /** @protected @type {Renderer} */
+    /** 
+     * @protected 
+     * @type {Renderer} 
+     */
     this.mStageRenderer = new Renderer();
 
-    /** @protected @type {Object.<string, function(new: Renderer)>} */
+    /** 
+     * @protected 
+     * @type {Object.<string, function(new: Renderer)>} 
+     */
     this.mRendererMap = {};
 
-    Black.instance.viewport.on('resize', this.__onResize, this);
+    Black.engine.viewport.on('resize', this.__onResize, this);
   }
 
   /**
@@ -206,7 +255,6 @@ class VideoNullDriver {
   }
 
   /**
-   * @ignore
    * @param {HTMLCanvasElement} canvas
    * @return {?Texture}
    */
@@ -245,7 +293,6 @@ class VideoNullDriver {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -263,7 +310,6 @@ class VideoNullDriver {
   }
 
   /**
-   * @ignore
    * @param {?BlendMode} value
    * @return {void}
    */

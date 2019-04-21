@@ -1,51 +1,100 @@
+import { GameObject } from "../core/GameObject";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { BlendMode } from "../drivers/BlendMode";
+import { Black } from "../Black";
+import { Rectangle } from "../geom/Rectangle";
+import { Matrix } from "../geom/Matrix";
+import { InputComponent } from "../input/InputComponent";
+import { Vector } from "../geom/Vector";
+import { Debug } from "../core/Debug";
+import { MathEx } from "../math/MathEx";
+
 /**
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
  * @extends GameObject
  */
-/* @echo EXPORT */
-class DisplayObject extends GameObject {
+export class DisplayObject extends GameObject {
   constructor() {
     super();
 
-    /** @protected @type {number} */
+    /** 
+     * @protected 
+     * @type {number} 
+     */
     this.mAlpha = 1;
 
-    /** @protected @type {BlendMode} */
+    /** 
+     * @protected 
+     * @type {BlendMode} 
+     */
     this.mBlendMode = BlendMode.AUTO;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mVisible = true;
 
-    /** @protected @type {Rectangle} */
+    /** 
+     * @protected 
+     * @type {Rectangle} 
+     */
     this.mClipRect = null;
 
-    /** @protected @type {Renderer|null} */
+    /** 
+     * @protected 
+     * @type {Renderer|null} 
+     */
     this.mRenderer = this.getRenderer();
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmap = false;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmapDynamic = true;
 
-    /** @private @type {boolean} */
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mCacheAsBitmapDirty = true;
 
-    /** @private @type {Matrix|null} */
+    /** 
+     * @private 
+     * @type {Matrix|null} 
+     */
     this.mCacheAsBitmapMatrixCache = null;
 
-    /** @private @type {CanvasRenderTexture|null} */
+    /** 
+     * @private 
+     * @type {CanvasRenderTexture|null} 
+     */
     this.mCache = null;
 
-    /** @private @type {Rectangle|null} */
+    /** 
+     * @private 
+     * @type {Rectangle|null} 
+     */
     this.mCacheBounds = null;
 
-    /** @protected @type {?number} */
+    /** 
+     * @protected 
+     * @type {?number} 
+     */
     this.mColor = null;
 
-    /** @protected @type {boolean} */
+    /** 
+     * @protected 
+     * @type {boolean} 
+     */
     this.mSnapToPixels = false;
   }
 
@@ -209,7 +258,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {?number} value
    * @return {void}
    */
@@ -232,7 +280,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -262,7 +309,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -281,7 +327,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {number} value
    * @return {void}
    */
@@ -305,7 +350,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    * @return {void}
    */
@@ -327,7 +371,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {BlendMode} value
    * @return {void}
    */
@@ -349,7 +392,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {Rectangle} value
    * @return {void}
    */
@@ -367,7 +409,6 @@ class DisplayObject extends GameObject {
   }
 
   /**
-   * @ignore
    * @param {boolean} value
    */
   set snapToPixels(value) {

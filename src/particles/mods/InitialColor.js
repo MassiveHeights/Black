@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { ColorScatter } from "../../scatters/ColorScatter";
+
 /**
  * Sets initial particle color value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialColor extends Modifier {
+export class InitialColor extends Modifier {
   /**
    * Creates new InitialLife instance.
    *

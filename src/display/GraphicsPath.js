@@ -5,8 +5,7 @@
  * @cat display
  */
 
-/* @echo EXPORT */
-class GraphicsPath {
+export class GraphicsPath {
   /**
    * Creates new instance of GraphicsPath
    */

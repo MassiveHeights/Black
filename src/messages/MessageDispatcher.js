@@ -1,3 +1,10 @@
+import { BindingType } from './BindingType';
+import { Message } from './Message';
+import { MessageType } from './MessageType';
+import { MessageBinding } from './MessageBinding';
+import { Debug } from '../core/Debug';
+import { Black } from '../Black';
+
 /**
  * The MessageDispatcher class is the base class for all classes that posts messages.
  *
@@ -5,8 +12,7 @@
  *
  * @cat core
  */
-/* @echo EXPORT */
-class MessageDispatcher {
+export class MessageDispatcher {
   /**
    * Creates new MessageDispatcher instance
    * @param {boolean} [checkForStage=false]

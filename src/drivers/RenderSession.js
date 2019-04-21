@@ -1,10 +1,12 @@
+import { Renderer } from "./Renderer";
+import { Matrix } from "../geom/Matrix";
+
 /**
  * A RenderSession object holds state of current frame renderers.
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class RenderSession {
+export class RenderSession {
   /**
    * Creates new instance of RenderSession.
    */

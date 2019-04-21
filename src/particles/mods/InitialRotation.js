@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets initial particle rotation value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialRotation extends Modifier {
+export class InitialRotation extends Modifier {
   /**
    * Creates new InitialRotation instance.
    *

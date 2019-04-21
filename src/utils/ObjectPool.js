@@ -1,23 +1,33 @@
+import { Debug } from "../core/Debug";
+
 /**
  * A simple object pool class. Used to avoid GC.
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class ObjectPool {
+export class ObjectPool {
   /**
    * Creates new ObjectPool instance.
    * @param {Function} type 
    * @param {number} capacity 
    */
   constructor(type, capacity = 100) {
-    /** @ignore @type {Array<*>} */
+    /** 
+     * @ignore
+     * @type {Array<*>} 
+     */
     this.mReleased = [];
 
-    /** @ignore @type {number} */
+    /** 
+     * @ignore 
+     * @type {number} 
+     */
     this.mCapacity = capacity;
 
-    /** @ignore @type {Function} */
+    /** 
+     * @ignore 
+     * @type {Function} 
+     */
     this.mType = type;
   }
 
@@ -31,7 +41,6 @@ class ObjectPool {
   }
 
   /**
-   * @ignore
    * @param {number} value
    */
   set capacity(value) {
