@@ -49,9 +49,9 @@ export class Input extends System {
 
     /** 
      * @private 
-     * @type {Element} 
+     * @type {Element|null} 
      */
-    this.mDom = Black.engine.viewport.nativeElement;
+    this.mDom = null;
 
     /** 
      * @private 
@@ -65,9 +65,11 @@ export class Input extends System {
      */
     this.mKeyEventList = null;
 
+    /** 
+     * @private 
+     * @type {Array<{name: String, listener: Function}>} 
+     */
     this.mBoundListeners = [];
-
-    this.__initListeners();
 
     /** 
      * @private 
@@ -129,6 +131,17 @@ export class Input extends System {
      * @type {Component} 
      */
     this.mLastInTargetComponent = null;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    this.mDom = Black.engine.viewport.nativeElement;
+
+    this.__initListeners();
   }
 
   /**

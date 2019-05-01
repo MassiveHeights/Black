@@ -607,7 +607,6 @@ export class GraphicsData {
   /**
    * Gets/Sets the name of this GraphicsData instance. Used for searching elements.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -615,7 +614,6 @@ export class GraphicsData {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */

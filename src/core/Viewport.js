@@ -16,44 +16,46 @@ import { Black } from "../Black";
 export class Viewport extends MessageDispatcher {
   /**
    * constructor
-   * @param {HTMLElement} containerElement The native HTML element.
+   * @param {HTMLElement|null} containerElement The native HTML element.
    * @return {void}
    */
-  constructor(containerElement) {
+  constructor(containerElement = null) {
     super();
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
     this.mContainerElement = containerElement;
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
-    this.mViewportElement = document.createElement('div');
-    this.mViewportElement.style.position = 'relative';
-    containerElement.appendChild(this.mViewportElement);
-
-    let style = this.mContainerElement.style;
-    style.userSelect = 'none';
-    style.touchAction = 'none';
-    //style.overflow = 'hidden';
-    style.cursor = 'auto';
-    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
-
-    let size = this.mContainerElement.getBoundingClientRect();
+    this.mViewportElement = null;
 
     /** 
      * @private 
      * @type {Rectangle} 
      */
-    this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+    this.mSize = new Rectangle();
 
+     /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.isTransparent = true;
-    this.backgroundColor = 0x222222;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.backgroundColor = 0x000000;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mChecksLeftSeconds = 0;
 
     /** 
@@ -68,10 +70,45 @@ export class Viewport extends MessageDispatcher {
      */
     this.mOrientationLock = false;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRotation = 0;
 
-    this.mIsPrimary = this.isPrimary();
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mIsPrimary = false;
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReflect = false;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    this.mViewportElement = document.createElement('div');
+    this.mViewportElement.style.position = 'relative';
+    this.mContainerElement.appendChild(this.mViewportElement);
+
+    let style = this.mContainerElement.style;
+    style.userSelect = 'none';
+    style.touchAction = 'none';
+    style.cursor = 'auto';
+    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+
+    let size = this.mContainerElement.getBoundingClientRect();
+    this.mSize.set(size.left, size.top, size.width, size.height);
+
+    this.mIsPrimary = this.isPrimary();
 
     this.__onResize();
 

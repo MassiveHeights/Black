@@ -20,7 +20,6 @@ export class BVGStyle {
      * Stroke color
      *
      * @private 
-     * @export 
      * @type {string} */
     this.L = '-';
 
@@ -28,7 +27,6 @@ export class BVGStyle {
      * Stroke alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.l = 1;
 
@@ -36,7 +34,6 @@ export class BVGStyle {
      * Line width.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.w = 1;
 
@@ -44,7 +41,6 @@ export class BVGStyle {
      * Fill color.
      *
      * @private 
-     * @export 
      * @type {string}*/
     this.F = '0';
 
@@ -52,7 +48,6 @@ export class BVGStyle {
      * Fill alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.f = 1;
 
@@ -61,7 +56,6 @@ export class BVGStyle {
      * {nonzero: 1, evenodd: 0}
      *
      * @private 
-     * @export 
      * @type {number} */
     this.r = 1;
 
@@ -70,7 +64,6 @@ export class BVGStyle {
      * {butt: 'b', round: 'r', square: 's'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.c = 'b';
 
@@ -79,7 +72,6 @@ export class BVGStyle {
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.j = 'm';
 
@@ -87,7 +79,6 @@ export class BVGStyle {
      * Miter limit.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.m = 4;
 
@@ -95,7 +86,6 @@ export class BVGStyle {
      * Global alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.a = 1;
 
@@ -103,7 +93,6 @@ export class BVGStyle {
      * Line dash.
      *
      * @private 
-     * @export 
      * @type {string} */
     this.d = '';
 

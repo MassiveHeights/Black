@@ -17,7 +17,6 @@ let ID = 0;
  * Building block in Black Engine.
  *
  * @cat core
- * @export
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -1057,7 +1056,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the name of this GameObject instance.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -1065,7 +1063,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */
@@ -1075,7 +1072,6 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Gets/Sets the x coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
-   * @export
    * @return {number}
    */
   get x() {
@@ -1083,7 +1079,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1100,7 +1095,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
    *
-   * @export
    * @return {number}
    */
   get y() {
@@ -1108,7 +1102,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1125,7 +1118,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetX() {
@@ -1133,7 +1125,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1152,7 +1143,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetY() {
@@ -1160,7 +1150,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1179,7 +1168,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -1197,7 +1185,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -1215,7 +1202,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-x value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorX() {
@@ -1225,7 +1211,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-y value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorY() {
@@ -1309,7 +1294,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along x-axis.
    *
-   * @export
    * @return {number}
    */
   get scaleX() {
@@ -1317,7 +1301,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    *
    * @return {void}
@@ -1335,7 +1318,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along y-axis.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -1344,7 +1326,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1360,7 +1341,6 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
-   * @export
    * @returns {number}
    */
   get scale() {
@@ -1368,7 +1348,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1385,7 +1364,6 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets horizontal skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewX() {
@@ -1393,7 +1371,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1410,7 +1387,6 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets vertical skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewY() {
@@ -1418,7 +1394,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1436,7 +1411,6 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets rotation in radians.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -1445,7 +1419,6 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
