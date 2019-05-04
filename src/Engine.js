@@ -20,7 +20,6 @@ let ID = 0;
  * @fires Black#ready
  * @fires Black#looped
  *
- * @export
  * @extends MessageDispatcher
  */
 export class Engine extends MessageDispatcher {
@@ -48,8 +47,6 @@ export class Engine extends MessageDispatcher {
 
     Black.engine = this;
 
-    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
-
     /** 
      * @private 
      * @type {string} 
@@ -58,12 +55,9 @@ export class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
-    this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
-
-    if (!this.mContainerElement)
-      throw new Error('Container element was not found');
+    this.mContainerElement = null;
 
     /** 
      * @private 
@@ -81,13 +75,13 @@ export class Engine extends MessageDispatcher {
      * @private 
      * @type {number} 
      */
-    this.mStageWidth = this.mContainerElement.clientWidth;
+    this.mStageWidth = 0;
 
     /** 
      * @private 
      * @type {number} 
      */
-    this.mStageHeight = this.mContainerElement.clientHeight;
+    this.mStageHeight = 0;
 
     /** 
      * @private 
@@ -225,16 +219,34 @@ export class Engine extends MessageDispatcher {
      * @private 
      * @type {boolean} 
      */
-    this.mUseHiDPR = Device.isMobile;
-
-    this.__bootViewport();
-    this.__update = this.__update.bind(this);
+    this.mUseHiDPR = false;
 
     /** 
      * @private 
      * @type {boolean} 
      */
     this.mPendingDispose = false;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
+
+    this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
+
+    if (!this.mContainerElement)
+      throw new Error('Container element was not found');
+
+    this.mStageWidth = this.mContainerElement.clientWidth;
+    this.mStageHeight = this.mContainerElement.clientHeight;
+    this.mUseHiDPR = Device.isMobile;
+
+    this.__bootViewport();
+    this.__update = this.__update.bind(this);
   }
 
   /**
@@ -511,7 +523,7 @@ export class Engine extends MessageDispatcher {
       numTicks = Black.mMaxUpdatesPerFrame;
     }
 
-    
+
     Black.mNumUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
       time.mActualTime += time.delta;

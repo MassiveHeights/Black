@@ -28,17 +28,6 @@ export class MasterAudio extends System {
      */
     this.mContext = null;
 
-    try {
-      this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
-    } catch (error) {
-      if (this.mContext == null) {
-        Debug.warn('no audio support');
-        return;
-      }
-    }
-
-    this.__unlock();
-
     /** 
      * @private 
      * @type {SoundListener|null} 
@@ -53,8 +42,28 @@ export class MasterAudio extends System {
 
     /** 
      * @private 
-     * @type {SoundChannel} 
+     * @type {SoundChannel|null} 
      */
+    this.mMasterChannel = null;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    try {
+      this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
+    } catch (error) {
+      if (this.mContext == null) {
+        Debug.warn('no audio support');
+        return;
+      }
+    }
+
+    this.__unlock();
+
     this.mMasterChannel = new SoundChannel('master');
 
     this.mMasterChannel._outputNode.connect(this.mContext.destination);

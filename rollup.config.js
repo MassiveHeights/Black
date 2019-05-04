@@ -6,11 +6,11 @@ export default {
     {
       format: 'umd',
       name: 'black-engine',
-      file: 'dist/black.js'
+      file: 'dist/black-engine.js'
     },
     {
       format: 'es',
-      file: 'dist/black.module.js'
+      file: 'dist/black-engine.module.js'
     }
   ]
 };

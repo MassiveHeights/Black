@@ -21,25 +21,21 @@ export class Rectangle {
     Debug.isNumber(x, y, w, h);
 
     /** 
-     * @export 
      * @type {number} The x coordinate of the rectangle. 
      */
     this.x = x;
 
     /** 
-     * @export 
      * @type {number} The y coordinate of the rectangle. 
      */
     this.y = y;
 
     /** 
-     * @export 
      * @type {number} The width of the rectangle. 
      */
     this.width = w;
 
     /** 
-     * @export 
      * @type {number} The height of the rectangle. 
      */
     this.height = h;
