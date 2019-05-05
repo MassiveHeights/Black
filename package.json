@@ -9,8 +9,7 @@
   "directories": {},
   "scripts": {
     "start": "npm run build",
-    "build": "rollup -c",
-    "build-closure": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black.js --js_output_file dist/black.min.js",
+    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black.js --js_output_file dist/black.min.js",
     "docs": "node scripts/docs.js"
   },
   "repository": {
@@ -24,6 +23,7 @@
     "jsdoc": "^3.4.3",
     "jsdoc-to-markdown": "^4.0.1",
     "jsdom": "^11.11.0",
-    "rollup": "^1.10.0"
+    "rollup": "^1.10.0",
+    "rollup-plugin-license": "^0.8.1"
   }
 }

@@ -1,10 +1,3 @@
-// const Black = {};
-// Black.engine = null;
-// Black.input = null;
-// Black.audio = null;
-// Black.stage = null;
-// Black.driver = null;
-
 class Black {
   constructor() {
     /**
@@ -56,7 +49,7 @@ class Black {
   get driver() {
     return this.engine.mVideo;
   }
-  
+
   /**
    * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
    * 
@@ -67,7 +60,6 @@ class Black {
     return Math.random();
   }
 }
-
 
 const black = new Black();
 export { black as Black };
