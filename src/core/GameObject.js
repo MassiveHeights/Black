@@ -776,22 +776,6 @@ export class GameObject extends MessageDispatcher {
   onUpdate() { }
 
   /**
-   * Called every time `GameObject` has to be rendered. Doesn't render itself. Collects render data to be processed by 
-   * video driver after. 
-   * 
-   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
-   *
-   * @protected
-   * @param {VideoNullDriver} driver Current registered video driver.
-   * @param {Renderer} parentRenderer Renderer of parent `GameObject` if there is one.
-   * @param {boolean=} [isBackBufferActive=false] Specifies if render to backBuffer.
-   * @return {Renderer}
-   */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    return null;
-  }
-
-  /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
    *
    * @protected
