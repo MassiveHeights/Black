@@ -1,3 +1,36 @@
+/**
+ * @preserve
+ * Blacksmith 2D v0.5.10
+ * SIMPLIFIED BSD LICENSE
+ * ======================
+ * 
+ * Copyright 2019 Borna Technology Ltd. All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list
+ * of conditions and the following disclaimer in the documentation and/or other materials
+ * provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY BORNA TECHNOLOGY "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BORNA TECHNOLOGY OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * The views and conclusions contained in the software and documentation are those of the
+ * authors and should not be interpreted as representing official policies, either expressed
+ * or implied, of Borna Technology.
+ */
+
 // @ifdef DEBUG
 /**
  * Utility class for logging and debugging.
@@ -775,13 +808,11 @@ class Vector {
     Debug.isNumber(x, y);
     
     /** 
-     * @export 
      * @type {number} X coordinate of a point in the space. 
      */
     this.x = x;
 
     /** 
-     * @export 
      * @type {number} Y coordinate of a point in the space. 
      */
     this.y = y;
@@ -1484,25 +1515,21 @@ class Rectangle {
     Debug.isNumber(x, y, w, h);
 
     /** 
-     * @export 
      * @type {number} The x coordinate of the rectangle. 
      */
     this.x = x;
 
     /** 
-     * @export 
      * @type {number} The y coordinate of the rectangle. 
      */
     this.y = y;
 
     /** 
-     * @export 
      * @type {number} The width of the rectangle. 
      */
     this.width = w;
 
     /** 
-     * @export 
      * @type {number} The height of the rectangle. 
      */
     this.height = h;
@@ -3955,13 +3982,6 @@ class MessageBinding {
   }
 }
 
-// const Black = {};
-// Black.engine = null;
-// Black.input = null;
-// Black.audio = null;
-// Black.stage = null;
-// Black.driver = null;
-
 class Black {
   constructor() {
     /**
@@ -5263,44 +5283,46 @@ const Orientation = {
 class Viewport extends MessageDispatcher {
   /**
    * constructor
-   * @param {HTMLElement} containerElement The native HTML element.
+   * @param {HTMLElement|null} containerElement The native HTML element.
    * @return {void}
    */
-  constructor(containerElement) {
+  constructor(containerElement = null) {
     super();
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
     this.mContainerElement = containerElement;
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
-    this.mViewportElement = document.createElement('div');
-    this.mViewportElement.style.position = 'relative';
-    containerElement.appendChild(this.mViewportElement);
-
-    let style = this.mContainerElement.style;
-    style.userSelect = 'none';
-    style.touchAction = 'none';
-    //style.overflow = 'hidden';
-    style.cursor = 'auto';
-    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
-
-    let size = this.mContainerElement.getBoundingClientRect();
+    this.mViewportElement = null;
 
     /** 
      * @private 
      * @type {Rectangle} 
      */
-    this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+    this.mSize = new Rectangle();
 
+     /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.isTransparent = true;
-    this.backgroundColor = 0x222222;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.backgroundColor = 0x000000;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mChecksLeftSeconds = 0;
 
     /** 
@@ -5315,10 +5337,45 @@ class Viewport extends MessageDispatcher {
      */
     this.mOrientationLock = false;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRotation = 0;
 
-    this.mIsPrimary = this.isPrimary();
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mIsPrimary = false;
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReflect = false;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    this.mViewportElement = document.createElement('div');
+    this.mViewportElement.style.position = 'relative';
+    this.mContainerElement.appendChild(this.mViewportElement);
+
+    let style = this.mContainerElement.style;
+    style.userSelect = 'none';
+    style.touchAction = 'none';
+    style.cursor = 'auto';
+    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+
+    let size = this.mContainerElement.getBoundingClientRect();
+    this.mSize.set(size.left, size.top, size.width, size.height);
+
+    this.mIsPrimary = this.isPrimary();
 
     this.__onResize();
 
@@ -5651,7 +5708,6 @@ const BlendMode = {
 };
 
 /** 
- * @export
  * @static 
  * @constant 
  * @dict
@@ -6505,7 +6561,6 @@ let ID$1 = 0;
  * Building block in Black Engine.
  *
  * @cat core
- * @export
  * @unrestricted
  * @extends MessageDispatcher
  */
@@ -7543,7 +7598,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the name of this GameObject instance.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -7551,7 +7605,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */
@@ -7561,7 +7614,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/Sets the x coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
-   * @export
    * @return {number}
    */
   get x() {
@@ -7569,7 +7621,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -7586,7 +7637,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
    *
-   * @export
    * @return {number}
    */
   get y() {
@@ -7594,7 +7644,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -7611,7 +7660,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetX() {
@@ -7619,7 +7667,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -7638,7 +7685,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetY() {
@@ -7646,7 +7692,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -7665,7 +7710,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -7683,7 +7727,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -7701,7 +7744,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-x value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorX() {
@@ -7711,7 +7753,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-y value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorY() {
@@ -7795,7 +7836,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along x-axis.
    *
-   * @export
    * @return {number}
    */
   get scaleX() {
@@ -7803,7 +7843,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    *
    * @return {void}
@@ -7821,7 +7860,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along y-axis.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -7830,7 +7868,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -7846,7 +7883,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
-   * @export
    * @returns {number}
    */
   get scale() {
@@ -7854,7 +7890,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -7871,7 +7906,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets horizontal skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewX() {
@@ -7879,7 +7913,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -7896,7 +7929,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets vertical skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewY() {
@@ -7904,7 +7936,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -7922,7 +7953,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets rotation in radians.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -7931,7 +7961,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -8680,9 +8709,9 @@ class Input extends System {
 
     /** 
      * @private 
-     * @type {Element} 
+     * @type {Element|null} 
      */
-    this.mDom = black.engine.viewport.nativeElement;
+    this.mDom = null;
 
     /** 
      * @private 
@@ -8696,9 +8725,11 @@ class Input extends System {
      */
     this.mKeyEventList = null;
 
+    /** 
+     * @private 
+     * @type {Array<{name: String, listener: Function}>} 
+     */
     this.mBoundListeners = [];
-
-    this.__initListeners();
 
     /** 
      * @private 
@@ -8760,6 +8791,17 @@ class Input extends System {
      * @type {Component} 
      */
     this.mLastInTargetComponent = null;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    this.mDom = black.engine.viewport.nativeElement;
+
+    this.__initListeners();
   }
 
   /**
@@ -12024,17 +12066,6 @@ class MasterAudio extends System {
      */
     this.mContext = null;
 
-    try {
-      this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
-    } catch (error) {
-      if (this.mContext == null) {
-        Debug.warn('no audio support');
-        return;
-      }
-    }
-
-    this.__unlock();
-
     /** 
      * @private 
      * @type {SoundListener|null} 
@@ -12049,8 +12080,28 @@ class MasterAudio extends System {
 
     /** 
      * @private 
-     * @type {SoundChannel} 
+     * @type {SoundChannel|null} 
      */
+    this.mMasterChannel = null;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    try {
+      this.mContext = new (window['AudioContext'] || window['webkitAudioContext'])();
+    } catch (error) {
+      if (this.mContext == null) {
+        Debug.warn('no audio support');
+        return;
+      }
+    }
+
+    this.__unlock();
+
     this.mMasterChannel = new SoundChannel('master');
 
     this.mMasterChannel._outputNode.connect(this.mContext.destination);
@@ -13193,7 +13244,6 @@ class GraphicsData {
   /**
    * Gets/Sets the name of this GraphicsData instance. Used for searching elements.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -13201,7 +13251,6 @@ class GraphicsData {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */
@@ -13296,7 +13345,6 @@ class BVGStyle {
      * Stroke color
      *
      * @private 
-     * @export 
      * @type {string} */
     this.L = '-';
 
@@ -13304,7 +13352,6 @@ class BVGStyle {
      * Stroke alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.l = 1;
 
@@ -13312,7 +13359,6 @@ class BVGStyle {
      * Line width.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.w = 1;
 
@@ -13320,7 +13366,6 @@ class BVGStyle {
      * Fill color.
      *
      * @private 
-     * @export 
      * @type {string}*/
     this.F = '0';
 
@@ -13328,7 +13373,6 @@ class BVGStyle {
      * Fill alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.f = 1;
 
@@ -13337,7 +13381,6 @@ class BVGStyle {
      * {nonzero: 1, evenodd: 0}
      *
      * @private 
-     * @export 
      * @type {number} */
     this.r = 1;
 
@@ -13346,7 +13389,6 @@ class BVGStyle {
      * {butt: 'b', round: 'r', square: 's'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.c = 'b';
 
@@ -13355,7 +13397,6 @@ class BVGStyle {
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.j = 'm';
 
@@ -13363,7 +13404,6 @@ class BVGStyle {
      * Miter limit.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.m = 4;
 
@@ -13371,7 +13411,6 @@ class BVGStyle {
      * Global alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.a = 1;
 
@@ -13379,7 +13418,6 @@ class BVGStyle {
      * Line dash.
      *
      * @private 
-     * @export 
      * @type {string} */
     this.d = '';
 
@@ -25760,7 +25798,6 @@ let ID$3 = 0;
  * @fires Black#ready
  * @fires Black#looped
  *
- * @export
  * @extends MessageDispatcher
  */
 class Engine extends MessageDispatcher {
@@ -25788,8 +25825,6 @@ class Engine extends MessageDispatcher {
 
     black.engine = this;
 
-    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
-
     /** 
      * @private 
      * @type {string} 
@@ -25798,12 +25833,9 @@ class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
-    this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
-
-    if (!this.mContainerElement)
-      throw new Error('Container element was not found');
+    this.mContainerElement = null;
 
     /** 
      * @private 
@@ -25821,13 +25853,13 @@ class Engine extends MessageDispatcher {
      * @private 
      * @type {number} 
      */
-    this.mStageWidth = this.mContainerElement.clientWidth;
+    this.mStageWidth = 0;
 
     /** 
      * @private 
      * @type {number} 
      */
-    this.mStageHeight = this.mContainerElement.clientHeight;
+    this.mStageHeight = 0;
 
     /** 
      * @private 
@@ -25965,16 +25997,34 @@ class Engine extends MessageDispatcher {
      * @private 
      * @type {boolean} 
      */
-    this.mUseHiDPR = Device.isMobile;
-
-    this.__bootViewport();
-    this.__update = this.__update.bind(this);
+    this.mUseHiDPR = false;
 
     /** 
      * @private 
      * @type {boolean} 
      */
     this.mPendingDispose = false;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    console.log('%c                         >>> BLACK <<<                         ', 'background: #000; color: #fff;');
+
+    this.mContainerElement = /** @type {!HTMLElement} */ (document.getElementById(this.mContainerElementId));
+
+    if (!this.mContainerElement)
+      throw new Error('Container element was not found');
+
+    this.mStageWidth = this.mContainerElement.clientWidth;
+    this.mStageHeight = this.mContainerElement.clientHeight;
+    this.mUseHiDPR = Device.isMobile;
+
+    this.__bootViewport();
+    this.__update = this.__update.bind(this);
   }
 
   /**
@@ -26251,7 +26301,7 @@ class Engine extends MessageDispatcher {
       numTicks = black.mMaxUpdatesPerFrame;
     }
 
-    
+
     black.mNumUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
       time.mActualTime += time.delta;

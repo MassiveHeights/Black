@@ -1,7 +1,17 @@
+const path = require('path');
+const fs = require('fs');
+const license = require('rollup-plugin-license');
+
+let lic = fs.readFileSync('LICENSE.md').toString();
+
 export default {
   input: 'src/index.js',
-  plugins: [
-  ],
+  plugins: [license({
+    banner: `@preserve
+             Blacksmith 2D v<%= pkg.version %>
+             
+             ${lic}`
+  }),],
   output: [
     {
       format: 'umd',
@@ -14,3 +24,5 @@ export default {
     }
   ]
 };
+
+
