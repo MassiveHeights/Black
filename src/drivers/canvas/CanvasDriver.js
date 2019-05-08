@@ -62,7 +62,7 @@ export class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
-  render(gameObject, renderTexture = null, customTransform = null, isMasking = false) {
+  render(gameObject, renderTexture = null, customTransform = null) {
     let isBackBufferActive = renderTexture === null;
 
     if (Renderer.skipUnchangedFrames === true && isBackBufferActive === true && Renderer.__dirty === false)
@@ -71,7 +71,6 @@ export class CanvasDriver extends VideoNullDriver {
     let session = this.__saveSession();
     session.isBackBufferActive = isBackBufferActive;
     session.customTransform = customTransform;
-    session.isMasking = isMasking;
 
     let parentRenderer = this.mStageRenderer;
 
@@ -141,7 +140,7 @@ export class CanvasDriver extends VideoNullDriver {
 
       renderer.begin(this, session);
 
-      if (renderer.skipSelf === false || session.isMasking === true) {
+      if (renderer.skipSelf === false) {
         renderer.upload(this, session);
         renderer.render(this, session);
       }
@@ -149,7 +148,7 @@ export class CanvasDriver extends VideoNullDriver {
       skipChildren = renderer.skipChildren;
     }
 
-    if (skipChildren === false || session.isMasking === true) {
+    if (skipChildren === false) {
       for (let i = 0; i < child.mChildren.length; i++)
         this.renderObject(child.mChildren[i], session, renderer || parentRenderer);
     }
