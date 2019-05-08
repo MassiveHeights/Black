@@ -3,13 +3,13 @@
   "version": "0.5.10",
   "description": "",
   "main": "src/index.js",
-  "module": "dist/black.module.js",
-  "jsnext:main": "src/black.module.js",
-  "browser": "dist/black.min.js",
+  "module": "dist/black-engine.module.js",
+  "jsnext:main": "src/black-engine.module.js",
+  "browser": "dist/black-engine.min.js",
   "directories": {},
   "scripts": {
     "start": "npm run build",
-    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black.js --js_output_file dist/black.min.js",
+    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black-engine.js --js_output_file dist/black-engine.min.js",
     "docs": "node scripts/docs.js"
   },
   "repository": {
