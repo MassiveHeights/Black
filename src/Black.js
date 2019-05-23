@@ -24,6 +24,11 @@ class Black {
     this.time = null;
 
     /**
+     * @type {Device}
+     */
+    this.device = null;
+
+    /**
      * Default instance. Sprite and other classes uses this instance to find textures by name.
      * 
      * @private

@@ -241,9 +241,11 @@ export class Engine extends MessageDispatcher {
     if (!this.mContainerElement)
       throw new Error('Container element was not found');
 
+    Black.device = new Device();
+
     this.mStageWidth = this.mContainerElement.clientWidth;
     this.mStageHeight = this.mContainerElement.clientHeight;
-    this.mUseHiDPR = Device.isMobile;
+    this.mUseHiDPR = Black.device.isMobile;
 
     this.__bootViewport();
     this.__update = this.__update.bind(this);

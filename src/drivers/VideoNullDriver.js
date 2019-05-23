@@ -79,7 +79,7 @@ export class VideoNullDriver {
      * @protected 
      * @type {number} 
      */
-    this.mDevicePixelRatio = Black.engine.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
+    this.mDevicePixelRatio = Black.engine.useHiDPR === true ? Black.device.getDevicePixelRatio() : 1;
 
     /** 
      * @protected 

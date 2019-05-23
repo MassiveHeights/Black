@@ -4,7 +4,6 @@ import { Debug } from "../core/Debug";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { MasterAudio } from "../audio/MasterAudio";
 import { SoundClip } from "../audio/SoundClip";
-import { Device } from "../system/Device";
 
 /**
  * Sound file asset class responsible for loading audio files.
@@ -22,7 +21,7 @@ export class SoundAsset extends Asset {
   constructor(name, url) {
     super(name);
 
-    if (Device.webAudioSupported === false)
+    if (Black.device.webAudioSupported === false)
       return;
 
     if (Black.engine.hasSystem(MasterAudio) === false) {

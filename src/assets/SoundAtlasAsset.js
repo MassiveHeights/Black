@@ -1,5 +1,4 @@
 import { Asset } from "./Asset";
-import { Device } from "../system/Device";
 import { Black } from "../Black";
 import { Debug } from "../core/Debug";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
@@ -23,7 +22,7 @@ export class SoundAtlasAsset extends Asset {
   constructor(name, soundUrl, dataUrl) {
     super(name);
 
-    if (Device.webAudioSupported === false)
+    if (Black.device.webAudioSupported === false)
       return;
 
     if (Black.engine.hasSystem(MasterAudio) === false) {

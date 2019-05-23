@@ -1,6 +1,5 @@
 import { GameObject } from "../core/GameObject";
 import { StageScaleMode } from "./StageScaleMode";
-import { Device } from "../system/Device";
 import { Black } from "../Black";
 import { InputComponent } from "../input/InputComponent";
 import { Input } from "../input/Input";
@@ -75,7 +74,7 @@ export class Stage extends GameObject {
      * @private 
      * @type {number} 
      */
-    this.mDPR = Device.getDevicePixelRatio();
+    this.mDPR = Black.device.getDevicePixelRatio();
 
     this.mAdded = true;
 

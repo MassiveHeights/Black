@@ -273,4 +273,26 @@ export class Viewport extends MessageDispatcher {
     return this.mRotation;
   }
   // TODO: dispose, remove resize event
+
+  /**
+   * Returns true if device is in landscape orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  get isLandscape() {
+    return this.size.width >= this.size.height;
+  }
+
+  /**
+   * Returns true if device is in portrait orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  get isPortrait() {
+    return !this.isLandscape;
+  }
 }

@@ -154,7 +154,7 @@ export class Input extends System {
 
     if (window.PointerEvent)
       this.mEventList = mPointerEventList;
-    else if (Device.isTouch && Device.isMobile)
+    else if (Black.device.isTouch && Black.device.isMobile)
       this.mEventList = mTouchEventList;
     else
       this.mEventList = mMouseEventList;
