@@ -1,3 +1,6 @@
+/**
+ * Connects all the dots.
+ */
 class Black {
   constructor() {
     /**
