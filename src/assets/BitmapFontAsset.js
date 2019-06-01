@@ -3,6 +3,7 @@ import { Texture } from "../textures/Texture";
 import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { Rectangle } from "../geom/Rectangle";
+import { AssetType } from "./AssetType";
 
 /**
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
@@ -19,7 +20,7 @@ export class BitmapFontAsset extends Asset {
    * @param {string} xmlUrl   XML URL.
    */
   constructor(name, imageUrl, xmlUrl) {
-    super(name);
+    super(AssetType.BITMAP_FONT, name);
 
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);

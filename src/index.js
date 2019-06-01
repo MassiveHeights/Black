@@ -47,7 +47,6 @@ export { XHRAssetLoader } from './assets/loaders/XHRAssetLoader';
 export { FontFaceAssetLoader } from './assets/loaders/FontFaceAssetLoader';
 
 export { Asset } from './assets/Asset';
-export { CustomAsset } from './assets/CustomAsset';
 export { TextureAsset } from './assets/TextureAsset';
 export { JSONAsset } from './assets/JSONAsset';
 export { XMLAsset } from './assets/XMLAsset';

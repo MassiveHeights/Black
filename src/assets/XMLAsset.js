@@ -1,5 +1,6 @@
 import { Asset } from "./Asset";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { AssetType } from "./AssetType";
 
 /**
  * Single JSON file asset class responsible for loading json file.
@@ -16,7 +17,7 @@ export class XMLAsset extends Asset {
    * @return {void}
    */
   constructor(name, url) {
-    super(name);
+    super(AssetType.XML, name);
 
     /** 
      * @private 

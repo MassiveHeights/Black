@@ -36,9 +36,9 @@ export class AssetLoader extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Asset} 
+     * @type {number} 
      */
-    this.mOwner = null;
+    this.mNumOwners = 0;
   }
 
   /**
@@ -51,9 +51,19 @@ export class AssetLoader extends MessageDispatcher {
   /**
    * When overridden aborts loading process. Should not be called directly.
    * 
-   * @public
+   * @returns {true}
    */
-  abort() { }
+  abort() {
+    // more than one owner means this loader was used by two assets, eg two assets has same url.
+    if (this.mNumOwners > 1)
+      return;
+
+    this.onAbort();
+  }
+
+  onAbort() {
+
+  }
 
   /**
    * @protected
@@ -78,14 +88,5 @@ export class AssetLoader extends MessageDispatcher {
    */
   get data() {
     return this.mData;
-  }
-
-  /**
-   * Returns the Asset owning this loader.
-   * 
-   * @returns {Asset}
-   */
-  get owner() {
-    return this.mOwner;
   }
 }

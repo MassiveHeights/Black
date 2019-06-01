@@ -1,0 +1,19 @@
+/**
+ * Asset type enum.
+ * @cat assets
+ * @static
+ * @constant
+ * @enum {string}
+ */
+export const AssetType = {
+  TEXTURE              : 'texture',
+  TEXTURE_ATLAS        : 'textureAtlas',
+  VECTOR_TEXTURE_ATLAS : 'vectorTextureAtlas',
+  FONT                 : 'font',
+  BITMAP_FONT          : 'bitmapFont',
+  XML                  : 'xml',
+  JSON                 : 'json',
+  VECTOR_GRAPHICS      : 'vectorGraphics',
+  SOUND                : 'sound',
+  SOUND_ATLAS          : 'soundAtlas'
+};

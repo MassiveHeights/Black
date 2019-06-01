@@ -4,6 +4,7 @@ import { Debug } from "../core/Debug";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { MasterAudio } from "../audio/MasterAudio";
 import { SoundAtlasClip } from "../audio/SoundAtlasClip";
+import { AssetType } from "./AssetType";
 
 /**
  * Sound file asset class responsible for loading audio atlas files.
@@ -20,7 +21,7 @@ export class SoundAtlasAsset extends Asset {
    * @param {string} dataUrl  URL to load atlas data from.
    */
   constructor(name, soundUrl, dataUrl) {
-    super(name);
+    super(AssetType.SOUND_ATLAS, name);
 
     if (Black.device.webAudioSupported === false)
       return;

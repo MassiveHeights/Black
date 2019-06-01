@@ -1,8 +1,10 @@
 import { MessageDispatcher } from "../messages/MessageDispatcher";
 import { AssetLoader } from "./loaders/AssetLoader";
 import { Message } from "../messages/Message";
+import { MessageBinding } from "../messages/MessageBinding";
 
 /**
+ * This is abstract class for custom assets. For example Asset can be used to load video or other data files.
  * Holds information about external assets.
  *
  * @fires Asset#error
@@ -17,8 +19,14 @@ export class Asset extends MessageDispatcher {
    *
    * @param  {string} name Name of asset.
    */
-  constructor(name) {
+  constructor(type, name) {
     super();
+
+    /** 
+     * @protected 
+     * @type {string} 
+     */
+    this.mType = type;
 
     /** 
      * @protected 
@@ -49,19 +57,38 @@ export class Asset extends MessageDispatcher {
      * @type {boolean} 
      */
     this.mIsReady = false;
+
+    /** 
+     * @private 
+     * @type {Array<MessageBinding>} 
+     */
+    this.mBindings = [];
   }
 
   /**
    * Adds given loader to the list. Loader cannot be added to multiply Assets.
    * 
    * @param {AssetLoader} loader Loader to add.
+   * @returns {AssetLoader}
    */
   addLoader(loader) {
-    loader.mOwner = this;
     this.mLoaders.push(loader);
 
-    loader.on(Message.COMPLETE, this.__onLoaderComplete, this);
-    loader.on(Message.ERROR, this.__onLoaderError, this);
+    loader.mNumOwners++;
+
+    this.mBindings.push(loader.on(Message.COMPLETE, this.__onLoaderComplete, this));
+    this.mBindings.push(loader.on(Message.ERROR, this.__onLoaderError, this));
+
+    return loader;
+  }
+
+  removeLoader(loader) {
+    const index = this.mLoaders.indexOf(loader);
+
+    if (index !== -1) {
+      loader.mNumOwners--;
+      this.mLoaders.splice(index, 1);
+    }
   }
 
   /**
@@ -73,10 +100,11 @@ export class Asset extends MessageDispatcher {
     this.mNumLoaded++;
 
     if (this.mNumLoaded === this.mLoaders.length) {
-      for (let i = 0; i < this.mLoaders.length; i++)
-        this.mLoaders[i].off(Message.COMPLETE, Message.ERROR);
+      this.mBindings.forEach(x => x.off());
 
       this.onAllLoaded();
+
+      this.removeLoader(m.sender);
     }
   }
 
@@ -88,7 +116,7 @@ export class Asset extends MessageDispatcher {
     this.abort();
 
     /**
-     * Posted when error occurred during loading this asset.
+     * Posted when error occurred during loading this asset. 
      * @event Asset#error
      */
     this.post(Message.ERROR);
@@ -97,7 +125,7 @@ export class Asset extends MessageDispatcher {
   /**
    * @protected
    */
-  onAllLoaded() {}
+  onAllLoaded() { }
 
   /**
    * Aborts loading of this asset.
@@ -106,9 +134,10 @@ export class Asset extends MessageDispatcher {
   abort() {
     this.mNumLoaded = 0;
 
+    this.mBindings.forEach(x => x.off());
+
     for (let i = 0; i < this.mLoaders.length; i++) {
       const loader = this.mLoaders[i];
-      loader.off(Message.COMPLETE, Message.ERROR);
       loader.abort();
     }
   }
@@ -129,6 +158,15 @@ export class Asset extends MessageDispatcher {
      * @event Asset#complete
      */
     this.post(Message.COMPLETE);
+  }
+
+  /**
+   * Returns the type of this asset.
+   *
+   * @return {string}
+   */
+  get type() {
+    return this.mType;
   }
 
   /**

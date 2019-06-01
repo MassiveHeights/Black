@@ -3,6 +3,7 @@ import { Texture } from "../textures/Texture";
 import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { AtlasTexture } from "../textures/AtlasTexture";
+import { AssetType } from "./AssetType";
 
 /**
  * Texture Atlas asset responsible for loading Image file and corresponding Json
@@ -20,7 +21,7 @@ export class AtlasTextureAsset extends Asset {
    * @param {string} dataUrl  Json URL.
    */
   constructor(name, imageUrl, dataUrl) {
-    super(name);
+    super(AssetType.TEXTURE_ATLAS, name);
 
     /** 
      * @private 

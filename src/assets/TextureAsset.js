@@ -1,6 +1,7 @@
 import { Asset } from "./Asset";
 import { Texture } from "../textures/Texture";
 import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
+import { AssetType } from "./AssetType";
 
 /**
  * Single Texture file asset class responsible for loading images file and
@@ -17,7 +18,7 @@ export class TextureAsset extends Asset {
    * @param {string} url  URL to load image from.
    */
   constructor(name, url) {
-    super(name);
+    super(AssetType.TEXTURE, name);
 
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(url);
@@ -28,6 +29,13 @@ export class TextureAsset extends Asset {
      */
     this.mImageLoader = new ImageAssetLoader(url);
     this.addLoader(this.mImageLoader);
+
+    //...x.getLoader('image')
+  }
+
+  onLoaderRequested(factory) {
+    this.mImageLoader = factory.get('image');
+    this.mImageLoader.on('complete')
   }
 
   /**

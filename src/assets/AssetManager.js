@@ -9,7 +9,6 @@ import { AssetManagerState } from "./AssetManagerState";
 import { AtlasTextureAsset } from "./AtlasTextureAsset";
 import { BitmapFontAsset, BitmapFontData } from "./BitmapFontAsset";
 import { BVGAsset } from "./BVGAsset";
-import { CustomAsset } from "./CustomAsset";
 import { FontAsset } from "./FontAsset";
 import { JSONAsset } from "./JSONAsset";
 import { AssetLoader } from "./loaders/AssetLoader";
@@ -20,6 +19,18 @@ import { Message } from "../messages/Message";
 import { Debug } from "../core/Debug";
 import { Black } from "../Black";
 import { SoundAsset } from "./SoundAsset";
+import { FontFaceAssetLoader } from "./loaders/FontFaceAssetLoader";
+import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
+import { VectorTextureAsset } from "./VectorTextureAsset";
+
+class LoaderFactory {
+  addLoader(type, url) {
+    return 
+  }
+}
 
 /**
  * Responsible for loading assets and manages its in memory state.
@@ -92,81 +103,76 @@ export class AssetManager extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Object.<string, Texture>} 
-     */
-    this.mTextures = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, GraphicsData>} 
-     */
-    this.mGraphicsData = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, Texture>} 
-     */
-    this.mVectorTextures = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, AtlasTexture>} 
-     */
-    this.mAtlases = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, JSONAsset>} 
-     */
-    this.mJsons = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, XMLAsset>} 
-     */
-    this.mXMLs = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, SoundClip>} 
-     */
-    this.mSounds = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, SoundAtlasClip>} 
-     */
-    this.mSoundAtlases = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, FontAsset>} 
-     */
-    this.mFonts = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, BitmapFontData>} 
-     */
-    this.mBitmapFonts = {};
-
-    /** 
-     * @private 
-     * @type {Object.<string, CustomAsset>} 
-     */
-    this.mCustomAssets = {};
-
-    /** 
-     * @private 
      * @type {AssetManagerState} 
      */
     this.mState = AssetManagerState.NONE;
 
-    /** 
-     * @private 
-     * @type {Object.<string, boolean>} 
-     */
-    this.mDictionary = {};
+    this.mAssets = {};
+    this.mAssetTypeMap = {};
+    this.mLoaderTypeMap = {};
+
+    this.registerDefaultTypes();
+  }
+
+  registerDefaultTypes() {
+    // Textures
+    this.mAssetTypeMap[AssetType.TEXTURE] = TextureAsset;
+    this.mAssetTypeMap[AssetType.TEXTURE_ATLAS] = AtlasTextureAsset;
+
+    // Vector
+    this.mAssetTypeMap[AssetType.VECTOR_GRAPHICS] = BVGAsset;
+
+    // Vector textures 
+    this.mAssetTypeMap[AssetType.VECTOR_TEXTURE_ATLAS] = AtlasTextureAsset;
+    this.mAssetTypeMap[AssetType.VECTOR_TEXTURE] = AtlasTextureAsset;
+    this.mAssetTypeMap[AssetType.VECTOR_TEXTURE_ATLAS] = VectorTextureAsset;
+
+    // Fonts
+    this.mAssetTypeMap[AssetType.FONT] = FontAsset;
+    this.mAssetTypeMap[AssetType.BITMAP_FONT] = BitmapFontAsset;
+
+    // JSON & XML
+    this.mAssetTypeMap[AssetType.XML] = XMLAsset;
+    this.mAssetTypeMap[AssetType.JSON] = JSONAsset;
+
+    // Sounds
+    this.mAssetTypeMap[AssetType.SOUND] = SoundAsset;
+    this.mAssetTypeMap[AssetType.SOUND_ATLAS] = SoundAtlasAsset;
+
+    // Loaders
+    this.mLoaderTypeMap[LoaderType.FONT_FACE] = FontFaceAssetLoader;
+    this.mLoaderTypeMap[LoaderType.IMAGE] = ImageAssetLoader;
+    this.mLoaderTypeMap[LoaderType.XHR] = XHRAssetLoader;
+  }
+
+  getLoader(type, url) {
+
+  }
+
+  setAssetType(name, type) {
+    this.mAssetTypeMap[name] = type;
+  }
+
+  setLoaderType(name, type) {
+    this.mLoaderTypeMap[name] = type;
+  }
+
+  /**
+   * Adds asset into the loading queue.
+   * 
+   * @param {string} name 
+   * @param {Asset} asset 
+   * @returns {void}
+   */
+  enqueueAsset(name, asset) {
+    this.__validateState();
+    this.__validateName(asset.type, name);
+
+    this.mQueue.push(asset);
+  }
+
+  __getAsset(type, ...args) {
+    return new this.mAssetTypeMap[type](...args);
   }
 
   /**
@@ -186,9 +192,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueImage(name, url) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
+    this.enqueueAsset(this.__getAsset(AssetType.TEXTURE, name, this.mDefaultPath + url));
   }
 
   /**
@@ -200,9 +204,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueAtlas(name, imageUrl, dataUrl) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
+    this.enqueueAsset(this.__getAsset(AssetType.TEXTURE_ATLAS, name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
   }
 
   /**
@@ -214,9 +216,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueBitmapFont(name, imageUrl, xmlUrl) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new BitmapFontAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
+    this.enqueueAsset(this.__getAsset(AssetType.BITMAP_FONT, name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
   }
 
   /**
@@ -227,9 +227,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueXML(name, url) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new XMLAsset(name, this.mDefaultPath + url));
+    this.enqueueAsset(this.__getAsset(AssetType.XML, name, this.mDefaultPath + url));
   }
 
   /**
@@ -240,13 +238,23 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueJSON(name, url) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
+    this.enqueueAsset(this.__getAsset(AssetType.JSON, name, this.mDefaultPath + url));
   }
 
   /**
    * Adds single Black Vector Graphics file to the loading queue.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   *
+   * @returns {void}
+   */
+  enqueueVector(name, url) {
+    this.enqueueAsset(this.__getAsset(AssetType.VECTOR_GRAPHICS, name, this.mDefaultPath + url));
+  }
+
+  /**
+   * Adds single Black Vector Graphics file to the loading queue and bakes it into the Texture.
    * 
    * If baked both graphics data and baked texture will be stored inside this AssetManager.
    *
@@ -258,10 +266,27 @@ export class AssetManager extends MessageDispatcher {
    *
    * @returns {void}
    */
-  enqueueVector(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
+  enqueueVectorTexture(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
+    if (bakeSelf === true || bakeChildren === true)
+      this.enqueueAsset(this.__getAsset(AssetType.VECTOR_TEXTURE, name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
+  }
+
+  /**
+   * Adds single Black Vector Graphics file to the loading queue and bakes it into the AtlasTexture.
+   * 
+   * If baked both graphics data and baked texture will be stored inside this AssetManager.
+   *
+   * @param {string} name Name of the asset.
+   * @param {string} url  The URL of the json.
+   * @param {boolean=} [bakeSelf=false] Flag to bake full BVG as texture. If false root will not be baked.
+   * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none children nodes will be baked.
+   * @param {Array<string>=} [namesToBake=null] Concrete nodes ids to bake. Works only if bakeChildren is set to true.
+   *
+   * @returns {void}
+   */
+  enqueueVectorAtlas(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
+    if (bakeSelf === true || bakeChildren === true)
+      this.enqueueAsset(this.__getAsset(AssetType.VECTOR_TEXTURE_ATLAS, name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
   }
 
   /**
@@ -272,9 +297,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueSound(name, url) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
+    this.enqueueAsset(this.__getAsset(AssetType.SOUND, name, this.mDefaultPath + url));
   }
 
   /**
@@ -286,9 +309,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueSoundAtlas(name, soundUrl, dataUrl) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new SoundAtlasAsset(name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
+    this.enqueueAsset(this.__getAsset(AssetType.SOUND_ATLAS, name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
   }
 
   /**
@@ -299,9 +320,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueFont(name, url) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
+    this.enqueueAsset(this.__getAsset(AssetType.FONT, name, this.mDefaultPath + url, true));
   }
 
   /**
@@ -311,19 +330,7 @@ export class AssetManager extends MessageDispatcher {
    * @returns {void}
    */
   enqueueGoogleFont(name) {
-    this.__validateState();
-    this.__validateName(name);
-    this.mQueue.push(new FontAsset(name, '', false));
-  }
-
-  /**
-   * Adds custom asset to the loading queue.
-   * 
-   * @param {Asset} asset
-   */
-  enqueueCustomAsset(asset) {
-    this.__validateState();
-    this.mQueue.push(asset);
+    this.enqueueAsset(this.__getAsset(AssetType.FONT, name, '', false));
   }
 
   /**
@@ -338,6 +345,8 @@ export class AssetManager extends MessageDispatcher {
 
     for (let i = 0; i < this.mQueue.length; i++) {
       let item = this.mQueue[i];
+
+      item.onLoaderRequested();
 
       if (item.loaders.length > 0) {
         item.once(Message.COMPLETE, this.onAssetLoaded, this);
@@ -368,38 +377,43 @@ export class AssetManager extends MessageDispatcher {
     let item = /** @type {Asset}*/ (msg.sender);
     item.off(Message.COMPLETE, Message.ERROR);
 
-    if (item.constructor === TextureAsset)
-      this.mTextures[item.name] = item.data;
-    else if (item.constructor === AtlasTextureAsset)
-      this.mAtlases[item.name] = item.data;
-    else if (item.constructor === JSONAsset)
-      this.mJsons[item.name] = item.data;
-    else if (item.constructor === SoundAsset)
-      this.mSounds[item.name] = item.data;
-    else if (item.constructor === SoundAtlasAsset)
-      this.mSoundAtlases[item.name] = item.data;
-    else if (item.constructor === FontAsset)
-      this.mFonts[item.name] = item.data;
-    else if (item.constructor === XMLAsset)
-      this.mXMLs[item.name] = item.data;
-    else if (item.constructor === BitmapFontAsset)
-      this.mBitmapFonts[item.name] = item.data;
-    else if (item.constructor === BVGAsset) {
-      this.mGraphicsData[item.name] = item.data;
+    //if (item.type)
+    this.mAssets[item.type][item.name] = item.data;
 
-      const bakedTextures = /** @type {BVGAsset} */ (item).bakeTextures();
+    // if (item.constructor === TextureAsset)
+    //   this.mTextures[item.name] = item.data;
+    // else if (item.constructor === AtlasTextureAsset)
+    //   this.mAtlases[item.name] = item.data;
+    // else if (item.constructor === JSONAsset)
+    //   this.mJsons[item.name] = item.data;
+    // else if (item.constructor === SoundAsset)
+    //   this.mSounds[item.name] = item.data;
+    // else if (item.constructor === SoundAtlasAsset)
+    //   this.mSoundAtlases[item.name] = item.data;
+    // else if (item.constructor === FontAsset)
+    //   this.mFonts[item.name] = item.data;
+    // else if (item.constructor === XMLAsset)
+    //   this.mXMLs[item.name] = item.data;
+    // else if (item.constructor === BitmapFontAsset)
+    //   this.mBitmapFonts[item.name] = item.data;
+    // else if (item.constructor === BVGAsset) {
+    //this.mGraphicsData[item.name] = item.data;
 
-      for (let name in bakedTextures) {
-        if (!bakedTextures.hasOwnProperty(name)) continue;
+    // const bakedTextures = /** @type {Object.<string, CanvasRenderTexture>} */ (item).bakeTextures();
 
-        name !== item.name && this.__validateName(name);
-        this.mVectorTextures[name] = bakedTextures[name];
-      }
-    } else if (item instanceof CustomAsset) {
-      this.mCustomAssets[item.name] = item.data;
-    } else {
-      Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
-    }
+    // for (let name in bakedTextures) {
+    //   if (!bakedTextures.hasOwnProperty(name))
+    //     continue;
+
+    //   name !== item.name && this.__validateName(name);
+    //   this.mVectorTextures[name] = bakedTextures[name];
+    // }
+    // } else if (item instanceof CustomAsset) {
+    //   this.mCustomAssets[item.name] = item.data;
+    // } else {
+    //   Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
+    // }
+
 
     /**
      * Posted when loading progress is changed.
@@ -415,7 +429,6 @@ export class AssetManager extends MessageDispatcher {
       this.mTotalErrors = 0;
       this.mTotalPending = 0;
       this.mIsAllLoaded = true;
-      this.mDictionary = {};
 
       /**
        * Posted when all assets finished loading.
@@ -450,7 +463,6 @@ export class AssetManager extends MessageDispatcher {
       this.mTotalErrors = 0;
       this.mTotalPending = 0;
       this.mIsAllLoaded = true;
-      this.mDictionary = {};
       this.post(Message.COMPLETE);
     }
   }
@@ -480,13 +492,14 @@ export class AssetManager extends MessageDispatcher {
    */
   getTexture(name) {
     /** @type {Texture} */
-    let t = this.mTextures[name] || this.mVectorTextures[name];
+    let t = this.mAssets[AssetType.TEXTURE][name];
 
     if (t != null)
       return t;
 
-    for (let key in this.mAtlases) {
-      t = this.mAtlases[key].subTextures[name];
+    let textureAtlases = this.mAssets[AssetType.TEXTURE_ATLAS];
+    for (let key in textureAtlases) {
+      t = textureAtlases[key].subTextures[name];
 
       if (t)
         return t;
@@ -638,10 +651,9 @@ export class AssetManager extends MessageDispatcher {
     Debug.assert(this.mState === AssetManagerState.NONE || this.mState === AssetManagerState.FINISHED, 'Illegal state.');
   }
 
-  __validateName(name) {
-    Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
-
-    this.mDictionary[name] = true;
+  __validateName(type, name) {
+    if (this.mAssets[type] && this.mAssets[type][name])
+      Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
   }
 
   /**

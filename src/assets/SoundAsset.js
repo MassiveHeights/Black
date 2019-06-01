@@ -4,6 +4,7 @@ import { Debug } from "../core/Debug";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { MasterAudio } from "../audio/MasterAudio";
 import { SoundClip } from "../audio/SoundClip";
+import { AssetType } from "./AssetType";
 
 /**
  * Sound file asset class responsible for loading audio files.
@@ -19,7 +20,7 @@ export class SoundAsset extends Asset {
    * @param {string} url  URL to load audio from.
    */
   constructor(name, url) {
-    super(name);
+    super(AssetType.SOUND, name);
 
     if (Black.device.webAudioSupported === false)
       return;

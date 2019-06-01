@@ -1,5 +1,6 @@
 import { Asset } from "./Asset";
 import { FontFaceAssetLoader } from "./loaders/FontFaceAssetLoader";
+import { AssetType } from "./AssetType";
 
 /**
  * Font file asset class responsible for loading local font files.
@@ -18,7 +19,7 @@ export class FontAsset extends Asset {
    * @param {boolean} isLocal Pass `true` if font is local otherwise Google Fonts service is used.
    */
   constructor(name, url, isLocal) {
-    super(name);
+    super(AssetType.FONT, name);
 
     if (isLocal === false)
       url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');

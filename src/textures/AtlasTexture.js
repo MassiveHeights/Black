@@ -19,7 +19,7 @@ export class AtlasTexture extends Texture {
      */
     this.mSubTextures = {};
 
-    this.__parseJson(jsonObject, scale);
+    this.__parseAtlasData(jsonObject, scale);
   }
 
   /**
@@ -29,7 +29,7 @@ export class AtlasTexture extends Texture {
    * @param {number} scale
    * @return {void}
    */
-  __parseJson(o, scale) {
+  __parseAtlasData(o, scale) {
     for (let key in o.frames) {
       const data = /** @type {Array<number>} */ (o.frames[key]);
       const region = new Rectangle(data[0], data[1], data[2], data[3]);
