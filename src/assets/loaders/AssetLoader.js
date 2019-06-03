@@ -61,9 +61,11 @@ export class AssetLoader extends MessageDispatcher {
     this.onAbort();
   }
 
-  onAbort() {
-
-  }
+  /**
+   * @protected
+   * @returns {void}
+   */
+  onAbort() { }
 
   /**
    * @protected
@@ -88,5 +90,9 @@ export class AssetLoader extends MessageDispatcher {
    */
   get data() {
     return this.mData;
+  }
+
+  get url() {
+    return this.mUrl;
   }
 }

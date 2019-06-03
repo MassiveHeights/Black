@@ -56,6 +56,7 @@ export { BitmapFontAsset, BitmapFontCharData, BitmapFontData } from './assets/Bi
 export { SoundAsset } from './assets/SoundAsset';
 export { SoundAtlasAsset } from './assets/SoundAtlasAsset';
 export { BVGAsset } from './assets/BVGAsset';
+export { VectorTextureAsset } from './assets/VectorTextureAsset';
 export { AssetManagerState } from './assets/AssetManagerState';
 export { AssetManager } from './assets/AssetManager';
 

@@ -5,6 +5,7 @@ import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { MasterAudio } from "../audio/MasterAudio";
 import { SoundAtlasClip } from "../audio/SoundAtlasClip";
 import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
 
 /**
  * Sound file asset class responsible for loading audio atlas files.
@@ -23,6 +24,18 @@ export class SoundAtlasAsset extends Asset {
   constructor(name, soundUrl, dataUrl) {
     super(AssetType.SOUND_ATLAS, name);
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mSoundUrl = soundUrl;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mDataUrl = dataUrl;
+
     if (Black.device.webAudioSupported === false)
       return;
 
@@ -33,17 +46,26 @@ export class SoundAtlasAsset extends Asset {
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mAudioXHR = new XHRAssetLoader(soundUrl);
-    this.mAudioXHR.responseType = 'arraybuffer';
-    this.addLoader(this.mAudioXHR);
+    this.mAudioXHR = null;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mDataXHR = new XHRAssetLoader(dataUrl);
+    this.mDataXHR = null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mAudioXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
+    this.mAudioXHR.mimeType = 'arraybuffer';
+    this.addLoader(this.mAudioXHR);
+
+    this.mDataXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
     this.mDataXHR.mimeType = 'application/json';
     this.mDataXHR.responseType = 'json';
     this.addLoader(this.mDataXHR);

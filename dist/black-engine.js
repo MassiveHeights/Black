@@ -9996,7 +9996,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mSubTextures = {};
 
-      this.__parseJson(jsonObject, scale);
+      this.__parseAtlasData(jsonObject, scale);
     }
 
     /**
@@ -10006,7 +10006,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} scale
      * @return {void}
      */
-    __parseJson(o, scale) {
+    __parseAtlasData(o, scale) {
       for (let key in o.frames) {
         const data = /** @type {Array<number>} */ (o.frames[key]);
         const region = new Rectangle(data[0], data[1], data[2], data[3]);
@@ -10172,9 +10172,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Asset} 
+       * @type {number} 
        */
-      this.mOwner = null;
+      this.mNumOwners = 0;
     }
 
     /**
@@ -10187,9 +10187,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * When overridden aborts loading process. Should not be called directly.
      * 
-     * @public
+     * @returns {true}
      */
-    abort() { }
+    abort() {
+      // more than one owner means this loader was used by two assets, eg two assets has same url.
+      if (this.mNumOwners > 1)
+        return;
+
+      this.onAbort();
+    }
+
+    /**
+     * @protected
+     * @returns {void}
+     */
+    onAbort() { }
 
     /**
      * @protected
@@ -10216,13 +10228,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       return this.mData;
     }
 
-    /**
-     * Returns the Asset owning this loader.
-     * 
-     * @returns {Asset}
-     */
-    get owner() {
-      return this.mOwner;
+    get url() {
+      return this.mUrl;
     }
   }
 
@@ -10263,7 +10270,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @inheritDoc
      */
-    abort() {
+    onAbort() {
       this.mImageElement.onload = this.mImageElement.onabort = this.mImageElement.onerror = function () { };
       this.mImageElement.src = alternativeUrl;
     }
@@ -10329,7 +10336,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @inheritDoc
      */
-    abort() {
+    onAbort() {
       this.mRequest.abort();
     }
   }
@@ -10423,7 +10430,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.__checkLoadingStatus();
     }
 
-    abort() {
+    onAbort() {
       clearTimeout(this.mTimeoutHandle);
       this.mTestingElement.parentNode.removeChild(this.mTestingElement);
     }
@@ -10479,6 +10486,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
+   * This is abstract class for custom assets. For example Asset can be used to load video or other data files.
    * Holds information about external assets.
    *
    * @fires Asset#error
@@ -10493,8 +10501,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @param  {string} name Name of asset.
      */
-    constructor(name) {
+    constructor(type, name) {
       super();
+
+      /** 
+       * @protected 
+       * @type {string} 
+       */
+      this.mType = type;
 
       /** 
        * @protected 
@@ -10525,20 +10539,36 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @type {boolean} 
        */
       this.mIsReady = false;
+
+      /** 
+       * @private 
+       * @type {Array<MessageBinding>} 
+       */
+      this.mBindings = [];
     }
 
     /**
      * Adds given loader to the list. Loader cannot be added to multiply Assets.
      * 
      * @param {AssetLoader} loader Loader to add.
+     * @returns {AssetLoader}
      */
     addLoader(loader) {
-      loader.mOwner = this;
       this.mLoaders.push(loader);
 
-      loader.on(Message.COMPLETE, this.__onLoaderComplete, this);
-      loader.on(Message.ERROR, this.__onLoaderError, this);
+      loader.mNumOwners++;
+
+      this.mBindings.push(loader.on(Message.COMPLETE, this.__onLoaderComplete, this));
+      this.mBindings.push(loader.on(Message.ERROR, this.__onLoaderError, this));
+
+      return loader;
     }
+
+    /**
+     * Called when AssetManager is about to request loaders for this asset.
+     * @param {LoaderFactory} factory 
+     */
+    onLoaderRequested(factory) { }
 
     /**
      * @private
@@ -10549,8 +10579,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mNumLoaded++;
 
       if (this.mNumLoaded === this.mLoaders.length) {
-        for (let i = 0; i < this.mLoaders.length; i++)
-          this.mLoaders[i].off(Message.COMPLETE, Message.ERROR);
+        this.mBindings.forEach(x => x.off());
 
         this.onAllLoaded();
       }
@@ -10564,7 +10593,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.abort();
 
       /**
-       * Posted when error occurred during loading this asset.
+       * Posted when error occurred during loading this asset. 
        * @event Asset#error
        */
       this.post(Message.ERROR);
@@ -10573,7 +10602,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @protected
      */
-    onAllLoaded() {}
+    onAllLoaded() { }
 
     /**
      * Aborts loading of this asset.
@@ -10582,9 +10611,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     abort() {
       this.mNumLoaded = 0;
 
+      this.mBindings.forEach(x => x.off());
+
       for (let i = 0; i < this.mLoaders.length; i++) {
         const loader = this.mLoaders[i];
-        loader.off(Message.COMPLETE, Message.ERROR);
         loader.abort();
       }
     }
@@ -10605,6 +10635,15 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @event Asset#complete
        */
       this.post(Message.COMPLETE);
+    }
+
+    /**
+     * Returns the type of this asset.
+     *
+     * @return {string}
+     */
+    get type() {
+      return this.mType;
     }
 
     /**
@@ -10645,15 +10684,38 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
-   * This is abstract class for custom user assets. For example CustomAsset can be used to load video or other data files.
-   *
-   * @fires Asset#error
-   * @fires Asset#complete
-   * 
+   * Asset type enum.
    * @cat assets
-   * @extends Asset
+   * @static
+   * @constant
+   * @enum {string}
    */
-  class CustomAsset extends Asset { }
+  const AssetType = {
+    TEXTURE              : 'texture',
+    TEXTURE_ATLAS        : 'textureAtlas',
+    VECTOR_TEXTURE       : 'vectorTexture',
+    VECTOR_TEXTURE_ATLAS : 'vectorTextureAtlas',
+    FONT                 : 'font',
+    BITMAP_FONT          : 'bitmapFont',
+    XML                  : 'xml',
+    JSON                 : 'json',
+    VECTOR_GRAPHICS      : 'vectorGraphics',
+    SOUND                : 'sound',
+    SOUND_ATLAS          : 'soundAtlas'
+  };
+
+  /**
+   * Loader type enum.
+   * @cat assets
+   * @static
+   * @constant
+   * @enum {string}
+   */
+  const LoaderType = {
+    FONT_FACE : 'fontFace',
+    IMAGE     : 'image',
+    XHR       : 'xhr'
+  };
 
   /**
    * Single Texture file asset class responsible for loading images file and
@@ -10670,16 +10732,29 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} url  URL to load image from.
      */
     constructor(name, url) {
-      super(name);
+      super(AssetType.TEXTURE, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
 
       /** @type {number} */
       this.mScale = 1 / Texture.getScaleFactorFromName(url);
 
       /** 
        * @private 
-       * @type {ImageAssetLoader} 
+       * @type {ImageAssetLoader|null} 
        */
-      this.mImageLoader = new ImageAssetLoader(url);
+      this.mImageLoader = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mImageLoader = factory.get(LoaderType.IMAGE, this.mUrl);
       this.addLoader(this.mImageLoader);
     }
 
@@ -10706,14 +10781,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {void}
      */
     constructor(name, url) {
-      super(name);
+      super(AssetType.JSON, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(url);
+      this.mXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
       this.mXHR.mimeType = 'application/json';
+      this.mXHR.responseType = 'json';
       this.addLoader(this.mXHR);
     }
 
@@ -10740,13 +10829,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {void}
      */
     constructor(name, url) {
-      super(name);
+      super(AssetType.XML, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(url);
+      this.mXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
       this.mXHR.mimeType = 'text/xml';
       this.addLoader(this.mXHR);
     }
@@ -10776,14 +10878,31 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {boolean} isLocal Pass `true` if font is local otherwise Google Fonts service is used.
      */
     constructor(name, url, isLocal) {
-      super(name);
+      super(AssetType.FONT, name);
 
       if (isLocal === false)
         url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');
 
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
+
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.mIsLocal = isLocal;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
       // We are not doing actual loading since loading is handled by browser. Just fake it.
-      this.mLoader = new FontFaceAssetLoader(name, url, isLocal);
-      this.addLoader(this.mLoader);
+      const loader = factory.get(LoaderType.FONT_FACE, this.mUrl, this.mIsLocal);
+      this.addLoader(loader);
     }
 
     /**
@@ -10810,7 +10929,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} dataUrl  Json URL.
      */
     constructor(name, imageUrl, dataUrl) {
-      super(name);
+      super(AssetType.TEXTURE_ATLAS, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mImageUrl = imageUrl;
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mDataUrl = dataUrl;
 
       /** 
        * @private 
@@ -10820,18 +10951,27 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {ImageAssetLoader} 
+       * @type {ImageAssetLoader|null} 
        */
-      this.mImageLoader = new ImageAssetLoader(imageUrl);
+      this.mImageLoader = null;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(dataUrl);
-      this.mXHR.mimeType = 'application/json';
+      this.mXHR = null;
+    }
 
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mImageLoader = factory.get(LoaderType.IMAGE, this.mImageUrl);
       this.addLoader(this.mImageLoader);
+
+      this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
+      this.mXHR.mimeType = 'application/json';
+      this.mXHR.responseType = 'json';
       this.addLoader(this.mXHR);
     }
 
@@ -10858,25 +10998,45 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} xmlUrl   XML URL.
      */
     constructor(name, imageUrl, xmlUrl) {
-      super(name);
+      super(AssetType.BITMAP_FONT, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mImageUrl = imageUrl;
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mXmlUrl = xmlUrl;
 
       /** @type {number} */
       this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
       /** 
        * @private 
-       * @type {ImageAssetLoader} 
+       * @type {ImageAssetLoader|null}
        */
-      this.mImageLoader = new ImageAssetLoader(imageUrl);
+      this.mImageLoader = null;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(xmlUrl);
-      this.mXHR.mimeType = 'text/xml';
+      this.mXHR = null;
+    }
 
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mImageLoader = factory.get(LoaderType.IMAGE, this.mImageUrl);
       this.addLoader(this.mImageLoader);
+
+      this.mXHR = factory.get(LoaderType.XHR, this.mXmlUrl);
+      this.mXHR.mimeType = 'text/xml';
       this.addLoader(this.mXHR);
     }
 
@@ -12314,7 +12474,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} url  URL to load audio from.
      */
     constructor(name, url) {
-      super(name);
+      super(AssetType.SOUND, name);
 
       if (black.device.webAudioSupported === false)
         return;
@@ -12324,11 +12484,24 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return;
       }
 
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
+
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(url);
+      this.mXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
       this.mXHR.responseType = 'arraybuffer';
       this.addLoader(this.mXHR);
     }
@@ -12359,7 +12532,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} dataUrl  URL to load atlas data from.
      */
     constructor(name, soundUrl, dataUrl) {
-      super(name);
+      super(AssetType.SOUND_ATLAS, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mSoundUrl = soundUrl;
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mDataUrl = dataUrl;
 
       if (black.device.webAudioSupported === false)
         return;
@@ -12371,17 +12556,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mAudioXHR = new XHRAssetLoader(soundUrl);
-      this.mAudioXHR.responseType = 'arraybuffer';
-      this.addLoader(this.mAudioXHR);
+      this.mAudioXHR = null;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mDataXHR = new XHRAssetLoader(dataUrl);
+      this.mDataXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mAudioXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
+      this.mAudioXHR.mimeType = 'arraybuffer';
+      this.addLoader(this.mAudioXHR);
+
+      this.mDataXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
       this.mDataXHR.mimeType = 'application/json';
       this.mDataXHR.responseType = 'json';
       this.addLoader(this.mDataXHR);
@@ -15034,6 +15228,67 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @param {string} name Name of the asset.
      * @param {string} url  The URL of the json.
+     *
+     * @returns {void}
+     */
+    constructor(name, url) {
+      super(AssetType.VECTOR_GRAPHICS, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
+
+      /** 
+       * @private 
+       * @type {GraphicsData|null} 
+       */
+      this.mGraphicsData = null;
+
+      /** 
+       * @private 
+       * @type {XHRAssetLoader|null} 
+       */
+      this.mXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
+      this.mXHR.mimeType = 'application/json';
+      this.addLoader(this.mXHR);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onAllLoaded() {
+      const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+      const parser = new BVGParser();
+
+      this.mGraphicsData = parser.parse(data);
+      this.mGraphicsData.name = this.name;
+
+      super.ready(this.mGraphicsData);
+    }
+  }
+
+  /**
+   * Single JSON file asset class responsible for loading json file.
+   *
+   * @cat assets
+   * @extends Asset
+   */
+
+  class VectorTextureAsset extends Asset {
+    /**
+     * Creates new JSONAsset instance.
+     *
+     * @param {string} name Name of the asset.
+     * @param {string} url  The URL of the json.
      * @param {boolean} bakeSelf Flag to bake full BVG as texture. If false root will not be baked.
      * @param {boolean} bakeChildren Flag to bake each node with id to textures. If false none children nodes will be baked.
      * @param {Array<string>} namesToBake Concrete nodes ids to bake. Works only if bakeChildren is set to true.
@@ -15041,7 +15296,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     constructor(name, url, bakeSelf, bakeChildren, namesToBake) {
-      super(name);
+      super(AssetType.VECTOR_TEXTURE, name);
+
+      /**
+       * @private
+       * @type {string}
+       */
+      this.mUrl = url;
 
       /** 
        * @private 
@@ -15069,9 +15330,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader} 
+       * @type {XHRAssetLoader|null} 
        */
-      this.mXHR = new XHRAssetLoader(url);
+      this.mXHR = null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoaderRequested(factory) {
+      this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
       this.mXHR.mimeType = 'application/json';
       this.addLoader(this.mXHR);
     }
@@ -15086,7 +15354,17 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mGraphicsData = parser.parse(data);
       this.mGraphicsData.name = this.name;
 
-      super.ready(this.mGraphicsData);
+      const bakedTextures = this.bakeTextures();
+      const ret = [];
+
+      for (let name in bakedTextures) {
+        if (!bakedTextures.hasOwnProperty(name))
+          continue;
+
+        ret.push({ name: name, data: bakedTextures[name] });
+      }
+
+      super.ready(ret);
     }
 
     /**
@@ -15156,6 +15434,38 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   };
 
   /**
+   * A factory object used to get or create a loader.
+   */
+  class LoaderFactory {
+    /**
+     * 
+     * @param {AssetManager} assetManager 
+     */
+    constructor(assetManager) {
+      this.mAssetManager = assetManager;
+    }
+
+    /**
+     * Returns an existing instance of the loader if url is already in queue or creates new instance if not.
+     * 
+     * @param {string} type 
+     * @param {string|LoaderType} url 
+     * @param {...any}
+     * 
+     * @returns {AssetLoader}
+     */
+    get(type, url, ...args) {
+      let am = this.mAssetManager;
+      let loader = am.mLoadersQueue[url];
+
+      if (loader != undefined)
+        return loader;
+
+      return new am.mLoaderTypeMap[type](url, ...args);
+    }
+  }
+
+  /**
    * Responsible for loading assets and manages its in memory state.
    *
    * @fires Message.PROGRESS
@@ -15220,75 +15530,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<AssetLoader>} 
+       * @type {Object.<string, AssetLoader>} 
        */
-      this.mLoadersQueue = [];
-
-      /** 
-       * @private 
-       * @type {Object.<string, Texture>} 
-       */
-      this.mTextures = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, GraphicsData>} 
-       */
-      this.mGraphicsData = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, Texture>} 
-       */
-      this.mVectorTextures = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, AtlasTexture>} 
-       */
-      this.mAtlases = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, JSONAsset>} 
-       */
-      this.mJsons = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, XMLAsset>} 
-       */
-      this.mXMLs = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, SoundClip>} 
-       */
-      this.mSounds = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, SoundAtlasClip>} 
-       */
-      this.mSoundAtlases = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, FontAsset>} 
-       */
-      this.mFonts = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, BitmapFontData>} 
-       */
-      this.mBitmapFonts = {};
-
-      /** 
-       * @private 
-       * @type {Object.<string, CustomAsset>} 
-       */
-      this.mCustomAssets = {};
+      this.mLoadersQueue = {};
 
       /** 
        * @private 
@@ -15296,11 +15540,88 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mState = AssetManagerState.NONE;
 
-      /** 
-       * @private 
-       * @type {Object.<string, boolean>} 
-       */
-      this.mDictionary = {};
+      this.mLoaderFactory = new LoaderFactory(this);
+
+      this.mAssets = {};
+      this.mAssetTypeMap = {};
+      this.mLoaderTypeMap = {};
+
+      this.registerDefaultTypes();
+    }
+
+    registerDefaultTypes() {
+      // Textures
+      this.mAssetTypeMap[AssetType.TEXTURE] = TextureAsset;
+      this.mAssetTypeMap[AssetType.TEXTURE_ATLAS] = AtlasTextureAsset;
+
+      // Vector
+      this.mAssetTypeMap[AssetType.VECTOR_GRAPHICS] = BVGAsset;
+
+      // Vector textures 
+      this.mAssetTypeMap[AssetType.VECTOR_TEXTURE] = VectorTextureAsset;
+      //this.mAssetTypeMap[AssetType.VECTOR_TEXTURE_ATLAS] = VectorTextureAsset;
+
+      // Fonts
+      this.mAssetTypeMap[AssetType.FONT] = FontAsset;
+      this.mAssetTypeMap[AssetType.BITMAP_FONT] = BitmapFontAsset;
+
+      // JSON & XML
+      this.mAssetTypeMap[AssetType.XML] = XMLAsset;
+      this.mAssetTypeMap[AssetType.JSON] = JSONAsset;
+
+      // Sounds
+      this.mAssetTypeMap[AssetType.SOUND] = SoundAsset;
+      this.mAssetTypeMap[AssetType.SOUND_ATLAS] = SoundAtlasAsset;
+
+      // Loaders
+      this.mLoaderTypeMap[LoaderType.FONT_FACE] = FontFaceAssetLoader;
+      this.mLoaderTypeMap[LoaderType.IMAGE] = ImageAssetLoader;
+      this.mLoaderTypeMap[LoaderType.XHR] = XHRAssetLoader;
+    }
+
+    /**
+     * Sets asset type. You can use this method to override Asset with your own.
+     * 
+     * @param {string} name 
+     * @param {string} type 
+     */
+    setAssetType(name, type) {
+      this.mAssetTypeMap[name] = type;
+    }
+
+    /**
+     * Sets loader type. Use this method to override default loaders with custom ones.
+     * 
+     * @param {string} name 
+     * @param {string} type 
+     */
+    setLoaderType(name, type) {
+      this.mLoaderTypeMap[name] = type;
+    }
+
+    /**
+     * Adds asset into the loading queue.
+     * 
+     * @param {string} name 
+     * @param {Asset} asset 
+     * @returns {void}
+     */
+    enqueueAsset(name, asset) {
+      this.__validateState();
+      this.__validateName(asset.type, name);
+
+      this.mQueue.push(asset);
+    }
+
+    /**
+     * Returns new asset instance by given type.
+     * 
+     * @private
+     * @param {string|AssetType} type 
+     * @param  {...any} args 
+     */
+    __getAsset(type, ...args) {
+      return new this.mAssetTypeMap[type](...args);
     }
 
     /**
@@ -15320,9 +15641,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueImage(name, url) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new TextureAsset(name, this.mDefaultPath + url));
+      this.enqueueAsset(name, this.__getAsset(AssetType.TEXTURE, name, this.mDefaultPath + url));
     }
 
     /**
@@ -15334,9 +15653,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueAtlas(name, imageUrl, dataUrl) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new AtlasTextureAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
+      this.enqueueAsset(name, this.__getAsset(AssetType.TEXTURE_ATLAS, name, this.mDefaultPath + imageUrl, this.mDefaultPath + dataUrl));
     }
 
     /**
@@ -15348,9 +15665,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueBitmapFont(name, imageUrl, xmlUrl) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new BitmapFontAsset(name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
+      this.enqueueAsset(name, this.__getAsset(AssetType.BITMAP_FONT, name, this.mDefaultPath + imageUrl, this.mDefaultPath + xmlUrl));
     }
 
     /**
@@ -15361,9 +15676,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueXML(name, url) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new XMLAsset(name, this.mDefaultPath + url));
+      this.enqueueAsset(name, this.__getAsset(AssetType.XML, name, this.mDefaultPath + url));
     }
 
     /**
@@ -15374,13 +15687,23 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueJSON(name, url) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new JSONAsset(name, this.mDefaultPath + url));
+      this.enqueueAsset(name, this.__getAsset(AssetType.JSON, name, this.mDefaultPath + url));
     }
 
     /**
      * Adds single Black Vector Graphics file to the loading queue.
+     *
+     * @param {string} name Name of the asset.
+     * @param {string} url  The URL of the json.
+     *
+     * @returns {void}
+     */
+    enqueueVector(name, url) {
+      this.enqueueAsset(name, this.__getAsset(AssetType.VECTOR_GRAPHICS, name, this.mDefaultPath + url));
+    }
+
+    /**
+     * Adds single Black Vector Graphics file to the loading queue and bakes it into the Texture.
      * 
      * If baked both graphics data and baked texture will be stored inside this AssetManager.
      *
@@ -15392,11 +15715,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @returns {void}
      */
-    enqueueVector(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new BVGAsset(name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
+    enqueueVectorTexture(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
+      if (bakeSelf === true || bakeChildren === true)
+        this.enqueueAsset(name, this.__getAsset(AssetType.VECTOR_TEXTURE, name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
     }
+
+    // /**
+    //  * Adds single Black Vector Graphics file to the loading queue and bakes it into the AtlasTexture.
+    //  * 
+    //  * If baked both graphics data and baked texture will be stored inside this AssetManager.
+    //  *
+    //  * @param {string} name Name of the asset.
+    //  * @param {string} url  The URL of the json.
+    //  * @param {boolean=} [bakeSelf=false] Flag to bake full BVG as texture. If false root will not be baked.
+    //  * @param {boolean=} [bakeChildren=false] Flag to bake each node with id to textures. If false none children nodes will be baked.
+    //  * @param {Array<string>=} [namesToBake=null] Concrete nodes ids to bake. Works only if bakeChildren is set to true.
+    //  *
+    //  * @returns {void}
+    //  */
+    // enqueueVectorAtlas(name, url, bakeSelf = false, bakeChildren = false, namesToBake = null) {
+    //   if (bakeSelf === true || bakeChildren === true)
+    //     this.enqueueAsset(name, this.__getAsset(AssetType.VECTOR_TEXTURE_ATLAS, name, this.mDefaultPath + url, bakeSelf, bakeChildren, namesToBake));
+    // }
 
     /**
      * Adds single sound to the loading queue.
@@ -15406,9 +15746,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueSound(name, url) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new SoundAsset(name, this.mDefaultPath + url));
+      this.enqueueAsset(name, this.__getAsset(AssetType.SOUND, name, this.mDefaultPath + url));
     }
 
     /**
@@ -15420,9 +15758,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueSoundAtlas(name, soundUrl, dataUrl) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new SoundAtlasAsset(name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
+      this.enqueueAsset(name, this.__getAsset(AssetType.SOUND_ATLAS, name, this.mDefaultPath + soundUrl, this.mDefaultPath + dataUrl));
     }
 
     /**
@@ -15433,9 +15769,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueFont(name, url) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new FontAsset(name, this.mDefaultPath + url, true));
+      this.enqueueAsset(name, this.__getAsset(AssetType.FONT, name, this.mDefaultPath + url, true));
     }
 
     /**
@@ -15445,19 +15779,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     enqueueGoogleFont(name) {
-      this.__validateState();
-      this.__validateName(name);
-      this.mQueue.push(new FontAsset(name, '', false));
-    }
-
-    /**
-     * Adds custom asset to the loading queue.
-     * 
-     * @param {Asset} asset
-     */
-    enqueueCustomAsset(asset) {
-      this.__validateState();
-      this.mQueue.push(asset);
+      this.enqueueAsset(name, this.__getAsset(AssetType.FONT, name, '', false));
     }
 
     /**
@@ -15473,19 +15795,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       for (let i = 0; i < this.mQueue.length; i++) {
         let item = this.mQueue[i];
 
+        item.onLoaderRequested(this.mLoaderFactory);
+
         if (item.loaders.length > 0) {
           item.once(Message.COMPLETE, this.onAssetLoaded, this);
           item.once(Message.ERROR, this.onAssetError, this);
-          this.mLoadersQueue.push(...item.loaders);
+
+          item.loaders.forEach(x => {
+            this.mLoadersQueue[x.url] = x;
+          });
 
           this.mTotalPending++;
         }
       }
 
       // Loader will notify Asset when its ready. Asset will notify AssetManager.
-      for (let i = 0; i < this.mLoadersQueue.length; i++) {
-        let loader = this.mLoadersQueue[i];
-        loader.load();
+      for (const key in this.mLoadersQueue) {
+        if (this.mLoadersQueue.hasOwnProperty(key)) {
+          const loader = this.mLoadersQueue[key];
+          loader.load();
+        }
       }
     }
 
@@ -15502,38 +15831,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let item = /** @type {Asset}*/ (msg.sender);
       item.off(Message.COMPLETE, Message.ERROR);
 
-      if (item.constructor === TextureAsset)
-        this.mTextures[item.name] = item.data;
-      else if (item.constructor === AtlasTextureAsset)
-        this.mAtlases[item.name] = item.data;
-      else if (item.constructor === JSONAsset)
-        this.mJsons[item.name] = item.data;
-      else if (item.constructor === SoundAsset)
-        this.mSounds[item.name] = item.data;
-      else if (item.constructor === SoundAtlasAsset)
-        this.mSoundAtlases[item.name] = item.data;
-      else if (item.constructor === FontAsset)
-        this.mFonts[item.name] = item.data;
-      else if (item.constructor === XMLAsset)
-        this.mXMLs[item.name] = item.data;
-      else if (item.constructor === BitmapFontAsset)
-        this.mBitmapFonts[item.name] = item.data;
-      else if (item.constructor === BVGAsset) {
-        this.mGraphicsData[item.name] = item.data;
+      if (this.mAssets[item.type] == null)
+        this.mAssets[item.type] = {};
 
-        const bakedTextures = /** @type {BVGAsset} */ (item).bakeTextures();
+      if (Array.isArray(item.data)) {
+        let objects = (item.data);
 
-        for (let name in bakedTextures) {
-          if (!bakedTextures.hasOwnProperty(name)) continue;
-
-          name !== item.name && this.__validateName(name);
-          this.mVectorTextures[name] = bakedTextures[name];
-        }
-      } else if (item instanceof CustomAsset) {
-        this.mCustomAssets[item.name] = item.data;
-      } else {
-        Debug.error(`[AssetManager] Unable to handle asset type ${item}.`);
+        objects.forEach(x => {
+          this.__validateName(x.name);
+          this.mAssets[item.type][x.name] = x.data;
+        });
       }
+      else
+        this.mAssets[item.type][item.name] = item.data;
 
       /**
        * Posted when loading progress is changed.
@@ -15543,13 +15853,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       if (this.mTotalLoaded === this.mTotalPending) {
         this.mQueue.splice(0, this.mQueue.length);
-        this.mLoadersQueue.splice(0, this.mLoadersQueue.length);
+        this.mLoadersQueue = {};
         this.mState = AssetManagerState.FINISHED;
         this.mTotalLoaded = 0;
         this.mTotalErrors = 0;
         this.mTotalPending = 0;
         this.mIsAllLoaded = true;
-        this.mDictionary = {};
 
         /**
          * Posted when all assets finished loading.
@@ -15578,13 +15887,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       if (total === this.mTotalPending) {
         this.mQueue.splice(0, this.mQueue.length);
-        this.mLoadersQueue.splice(0, this.mLoadersQueue.length);
+        this.mLoadersQueue = {};
         this.mState = AssetManagerState.FINISHED;
         this.mTotalLoaded = 0;
         this.mTotalErrors = 0;
         this.mTotalPending = 0;
         this.mIsAllLoaded = true;
-        this.mDictionary = {};
         this.post(Message.COMPLETE);
       }
     }
@@ -15613,32 +15921,66 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {Texture|null} Returns a Texture if found or null.
      */
     getTexture(name) {
-      /** @type {Texture} */
-      let t = this.mTextures[name] || this.mVectorTextures[name];
+      let textures = this.mAssets[AssetType.TEXTURE];
+      if (textures != null) {
+        /** @type {Texture} */
+        let t = textures[name];
 
-      if (t != null)
-        return t;
-
-      for (let key in this.mAtlases) {
-        t = this.mAtlases[key].subTextures[name];
-
-        if (t)
+        if (t != null)
           return t;
+      }
+
+      let textureAtlases = this.mAssets[AssetType.TEXTURE_ATLAS];
+      if (textureAtlases != null) {
+        for (let key in textureAtlases) {
+          let t = textureAtlases[key].subTextures[name];
+
+          if (t != null)
+            return t;
+        }
+      }
+
+      let vectorTextures = this.mAssets[AssetType.VECTOR_TEXTURE];
+      if (vectorTextures != null) {
+        let t = vectorTextures[name];
+
+        if (t != null)
+          return t;
+      }
+
+      let vectorTextureAtlases = this.mAssets[AssetType.VECTOR_TEXTURE_ATLAS];
+      if (vectorTextureAtlases != null) {
+        for (let key in vectorTextureAtlases) {
+          let t = vectorTextureAtlases[key].subTextures[name];
+
+          if (t != null)
+            return t;
+        }
       }
 
       Debug.warn(`[AssetManager] Texture '${name}' was not found.`);
       return null;
     }
 
+    /**
+     * Returns Graphics data by given name.
+     * @param {string} name 
+     * @returns {GraphicsData}
+     */
     getGraphicsData(name) {
+      let vectors = this.mAssets[AssetType.VECTOR_GRAPHICS];
+
+      if (vectors == null)
+        return null;
+
       /** @type {GraphicsData} */
-      let data = this.mGraphicsData[name];
+      let data = vectors[name];
 
       if (data)
         return data;
 
-      for (let key in this.mGraphicsData) {
-        data = this.mGraphicsData[key].searchNode(name);
+      for (let key in vectors) {
+        data = vectors[key].searchNode(name);
 
         if (data) {
           return data;
@@ -15657,27 +15999,50 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {Array<Texture>|null}
      */
     getTextures(nameMask) {
+
+      let textures = this.mAssets[AssetType.TEXTURE];
+      let textureAtlases = this.mAssets[AssetType.TEXTURE_ATLAS];
+      let vectorTextures = this.mAssets[AssetType.VECTOR_TEXTURE];
+      let vectorTextureAtlases = this.mAssets[AssetType.VECTOR_TEXTURE_ATLAS];
+
       let out = [];
       let names = [];
 
       let re = new RegExp('^' + nameMask.split('*').join('.*') + '$');
 
       // collect single textures
-      for (let key in this.mTextures)
-        if (re.test(key))
-          names.push({ name: key, atlas: null, isBakedVector: false });
+      if (textures != null) {
+        for (let key in textures)
+          if (re.test(key))
+            names.push({ name: key, atlas: null, isBakedVector: false });
+      }
 
-      for (let key in this.mVectorTextures)
-        if (re.test(key))
-          names.push({ name: key, atlas: null, isBakedVector: true });
+      if (vectorTextures != null) {
+        for (let key in vectorTextures)
+          if (re.test(key))
+            names.push({ name: key, atlas: null, isBakedVector: true });
+      }
 
       // collect textures from all atlases
-      for (let key in this.mAtlases) {
-        let atlas = this.mAtlases[key];
+      if (textureAtlases != null) {
+        for (let key in textureAtlases) {
+          let atlas = textureAtlases[key];
 
-        for (let key2 in atlas.subTextures)
-          if (re.test(key2))
-            names.push({ name: key2, atlas: atlas, isBakedVector: false });
+          for (let key2 in atlas.subTextures)
+            if (re.test(key2))
+              names.push({ name: key2, atlas: atlas, isBakedVector: false });
+        }
+      }
+
+      // collect texture from vector atlases
+      if (vectorTextureAtlases != null) {
+        for (let key in vectorTextureAtlases) {
+          let atlas = vectorTextureAtlases[key];
+
+          for (let key2 in atlas.subTextures)
+            if (re.test(key2))
+              names.push({ name: key2, atlas: atlas, isBakedVector: true });
+        }
       }
 
       AtlasTexture.naturalSort(names, 'name');
@@ -15687,9 +16052,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         if (ao.atlas === null) {
           if (ao.isBakedVector === true)
-            out.push(this.mVectorTextures[ao.name]);
+            out.push(vectorTextures[ao.name]);
           else
-            out.push(this.mTextures[ao.name]);
+            out.push(textures[ao.name]);
         }
         else
           out.push(ao.atlas.mSubTextures[ao.name]);
@@ -15708,8 +16073,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {AtlasTexture|null} Returns atlas or null.
      */
     getAtlas(name) {
-      if (this.mAtlases[name] != null)
-        return this.mAtlases[name];
+      let atlasses = this.mAssets[AssetType.TEXTURE_ATLAS];
+      if (atlasses == null)
+        return null;
+
+      if (atlasses[name] != null)
+        return atlasses[name];
 
       Debug.warn(`[AssetManager] Atlas '${name}' was not found.`);
       return null;
@@ -15722,16 +16091,23 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {SoundClip} Returns sound or null.
      */
     getSound(name) {
-      /** @type {SoundClip} */
-      let t = this.mSounds[name];
+      let sounds = this.mAssets[AssetType.SOUND];
+      let soundAtlases = this.mAssets[AssetType.SOUND_ATLAS];
 
-      if (t != null)
-        return t;
+      if (sounds != null) {
+        /** @type {SoundClip} */
+        let s = sounds[name];
 
-      for (let key in this.mSoundAtlases) {
-        t = this.mSoundAtlases[key].subSounds[name];
-        if (t != null)
-          return t;
+        if (s != null)
+          return s;
+      }
+
+      if (soundAtlases != null) {
+        for (let key in soundAtlases) {
+          let s = soundAtlases[key].subSounds[name];
+          if (s != null)
+            return s;
+        }
       }
 
       Debug.warn(`[AssetManager] Sound '${name}' was not found.`);
@@ -15745,7 +16121,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {SoundClip} Returns sound or null.
      */
     getSoundAtlas(name) {
-      return this.mSoundAtlases[name];
+      if (this.mAssets[AssetType.SOUND_ATLAS] == null)
+        return null;
+
+      return this.mAssets[AssetType.SOUND_ATLAS][name];
     }
 
     /**
@@ -15755,33 +16134,44 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {Object} Returns object or null.
      */
     getJSON(name) {
-      return this.mJsons[name];
+      if (this.mAssets[AssetType.JSON] == null)
+        return null;
+
+      return this.mAssets[AssetType.JSON][name];
     }
 
     /**
      * Returns Object parsed from `CutsomAsset` by given name.
      *
+     * @param {string} type The type of the asset.
      * @param {string} name The name of the asset.
-     * @return {Object} Returns object or null.
+     * @return {Object|null} Returns object or null.
      */
-    getCustomAsset(name) {
-      return this.mCustomAssets[name];
+    getCustomAsset(type, name) {
+      if (this.mAssets[type] == null)
+        return null;
+
+      return this.mAssets[type][name];
     }
 
     __validateState() {
       Debug.assert(this.mState === AssetManagerState.NONE || this.mState === AssetManagerState.FINISHED, 'Illegal state.');
     }
 
-    __validateName(name) {
-      Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
-
-      this.mDictionary[name] = true;
+    __validateName(type, name) {
+      if (this.mAssets[type] && this.mAssets[type][name])
+        Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
     }
 
     /**
      * Destroys all loaded resources.
      */
-    dispose() { }
+    dispose() {
+      // todo: for each asset call abort
+      this.mQueue.forEach(x => {
+        x.abort();
+      });
+    }
 
     /**
      * Gets/Sets default path for loading. Useful when URLs getting too long.
@@ -26709,7 +27099,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.ColorScatter = ColorScatter;
   exports.Component = Component;
   exports.Curve = Curve;
-  exports.CustomAsset = CustomAsset;
   exports.Debug = Debug;
   exports.Device = Device;
   exports.DisplayObject = DisplayObject;
@@ -26829,6 +27218,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.VectorCurveScatter = VectorCurveScatter;
   exports.VectorField = VectorField;
   exports.VectorScatter = VectorScatter;
+  exports.VectorTextureAsset = VectorTextureAsset;
   exports.VideoNullDriver = VideoNullDriver;
   exports.Viewport = Viewport;
   exports.XHRAssetLoader = XHRAssetLoader;

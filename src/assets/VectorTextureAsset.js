@@ -7,6 +7,8 @@ import { Black } from "../Black";
 import { CanvasRenderTexture } from "../textures/CanvasRenderTexture";
 import { Matrix } from "../geom/Matrix";
 import { Graphics } from "../display/Graphics";
+import { LoaderType } from "./LoaderType";
+import { AssetType } from "./AssetType";
 
 /**
  * Single JSON file asset class responsible for loading json file.
@@ -28,7 +30,13 @@ export class VectorTextureAsset extends Asset {
    * @returns {void}
    */
   constructor(name, url, bakeSelf, bakeChildren, namesToBake) {
-    super('vectorTexture', name);
+    super(AssetType.VECTOR_TEXTURE, name);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mUrl = url;
 
     /** 
      * @private 
@@ -56,9 +64,16 @@ export class VectorTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(url);
+    this.mXHR = null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
     this.addLoader(this.mXHR);
   }
@@ -73,7 +88,17 @@ export class VectorTextureAsset extends Asset {
     this.mGraphicsData = parser.parse(data);
     this.mGraphicsData.name = this.name;
 
-    super.ready(this.mGraphicsData);
+    const bakedTextures = this.bakeTextures();
+    const ret = [];
+
+    for (let name in bakedTextures) {
+      if (!bakedTextures.hasOwnProperty(name))
+        continue;
+
+      ret.push({ name: name, data: bakedTextures[name] });
+    }
+
+    super.ready(ret);
   }
 
   /**

@@ -37,7 +37,7 @@ export class ImageAssetLoader extends AssetLoader {
   /**
    * @inheritDoc
    */
-  abort() {
+  onAbort() {
     this.mImageElement.onload = this.mImageElement.onabort = this.mImageElement.onerror = function () { };
     this.mImageElement.src = alternativeUrl;
   }

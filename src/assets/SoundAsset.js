@@ -5,6 +5,7 @@ import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { MasterAudio } from "../audio/MasterAudio";
 import { SoundClip } from "../audio/SoundClip";
 import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
 
 /**
  * Sound file asset class responsible for loading audio files.
@@ -30,11 +31,24 @@ export class SoundAsset extends Asset {
       return;
     }
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mUrl = url;
+
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(url);
+    this.mXHR = null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.responseType = 'arraybuffer';
     this.addLoader(this.mXHR);
   }

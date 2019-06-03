@@ -82,14 +82,11 @@ export class Asset extends MessageDispatcher {
     return loader;
   }
 
-  removeLoader(loader) {
-    const index = this.mLoaders.indexOf(loader);
-
-    if (index !== -1) {
-      loader.mNumOwners--;
-      this.mLoaders.splice(index, 1);
-    }
-  }
+  /**
+   * Called when AssetManager is about to request loaders for this asset.
+   * @param {LoaderFactory} factory 
+   */
+  onLoaderRequested(factory) { }
 
   /**
    * @private
@@ -103,8 +100,6 @@ export class Asset extends MessageDispatcher {
       this.mBindings.forEach(x => x.off());
 
       this.onAllLoaded();
-
-      this.removeLoader(m.sender);
     }
   }
 

@@ -8,6 +8,7 @@
 export const AssetType = {
   TEXTURE              : 'texture',
   TEXTURE_ATLAS        : 'textureAtlas',
+  VECTOR_TEXTURE       : 'vectorTexture',
   VECTOR_TEXTURE_ATLAS : 'vectorTextureAtlas',
   FONT                 : 'font',
   BITMAP_FONT          : 'bitmapFont',

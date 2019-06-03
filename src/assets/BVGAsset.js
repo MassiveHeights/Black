@@ -2,12 +2,8 @@ import { Asset } from "./Asset";
 import { GraphicsData } from "../display/GraphicsData";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { BVGParser } from "../parsers/BVGParser";
-import { Debug } from "../core/Debug";
-import { Black } from "../Black";
-import { CanvasRenderTexture } from "../textures/CanvasRenderTexture";
-import { Matrix } from "../geom/Matrix";
-import { Graphics } from "../display/Graphics";
 import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
 
 /**
  * Single JSON file asset class responsible for loading json file.
@@ -28,6 +24,10 @@ export class BVGAsset extends Asset {
   constructor(name, url) {
     super(AssetType.VECTOR_GRAPHICS, name);
 
+    /**
+     * @private
+     * @type {string}
+     */
     this.mUrl = url;
 
     /** 
@@ -38,20 +38,18 @@ export class BVGAsset extends Asset {
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(url);
-    this.mXHR.mimeType = 'application/json';
-    this.addLoader(this.mXHR);
+    this.mXHR = null;
   }
 
   /**
-   * 
-   * @param {*} factory 
+   * @inheritDoc
    */
   onLoaderRequested(factory) {
-    let loader = factory.addLoader('xhr', this.mUrl);
-    loader.mimeType = 'application/json';
+    this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
+    this.mXHR.mimeType = 'application/json';
+    this.addLoader(this.mXHR);
   }
 
   /**

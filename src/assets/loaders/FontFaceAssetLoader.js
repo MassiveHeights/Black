@@ -90,7 +90,7 @@ export class FontFaceAssetLoader extends AssetLoader {
     this.__checkLoadingStatus();
   }
 
-  abort() {
+  onAbort() {
     clearTimeout(this.mTimeoutHandle);
     this.mTestingElement.parentNode.removeChild(this.mTestingElement);
   }

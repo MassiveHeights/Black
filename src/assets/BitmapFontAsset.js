@@ -4,6 +4,7 @@ import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
 import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
 import { Rectangle } from "../geom/Rectangle";
 import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
 
 /**
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
@@ -22,23 +23,43 @@ export class BitmapFontAsset extends Asset {
   constructor(name, imageUrl, xmlUrl) {
     super(AssetType.BITMAP_FONT, name);
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mImageUrl = imageUrl;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mXmlUrl = xmlUrl;
+
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(imageUrl);
 
     /** 
      * @private 
-     * @type {ImageAssetLoader} 
+     * @type {ImageAssetLoader|null}
      */
-    this.mImageLoader = new ImageAssetLoader(imageUrl);
+    this.mImageLoader = null;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(xmlUrl);
-    this.mXHR.mimeType = 'text/xml';
+    this.mXHR = null;
+  }
 
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mImageLoader = factory.get(LoaderType.IMAGE, this.mImageUrl);
     this.addLoader(this.mImageLoader);
+
+    this.mXHR = factory.get(LoaderType.XHR, this.mXmlUrl);
+    this.mXHR.mimeType = 'text/xml';
     this.addLoader(this.mXHR);
   }
 

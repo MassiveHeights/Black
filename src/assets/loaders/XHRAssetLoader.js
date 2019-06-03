@@ -60,7 +60,7 @@ export class XHRAssetLoader extends AssetLoader {
   /**
    * @inheritDoc
    */
-  abort() {
+  onAbort() {
     this.mRequest.abort();
   }
 }

@@ -2,6 +2,7 @@ import { Asset } from "./Asset";
 import { Texture } from "../textures/Texture";
 import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
 import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
 
 /**
  * Single Texture file asset class responsible for loading images file and
@@ -20,22 +21,28 @@ export class TextureAsset extends Asset {
   constructor(name, url) {
     super(AssetType.TEXTURE, name);
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mUrl = url;
+
     /** @type {number} */
     this.mScale = 1 / Texture.getScaleFactorFromName(url);
 
     /** 
      * @private 
-     * @type {ImageAssetLoader} 
+     * @type {ImageAssetLoader|null} 
      */
-    this.mImageLoader = new ImageAssetLoader(url);
-    this.addLoader(this.mImageLoader);
-
-    //...x.getLoader('image')
+    this.mImageLoader = null;
   }
 
+  /**
+   * @inheritDoc
+   */
   onLoaderRequested(factory) {
-    this.mImageLoader = factory.get('image');
-    this.mImageLoader.on('complete')
+    this.mImageLoader = factory.get(LoaderType.IMAGE, this.mUrl);
+    this.addLoader(this.mImageLoader);
   }
 
   /**
