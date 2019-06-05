@@ -3,25 +3,13 @@
  * @static
  * @cat system
  */
-/* @echo EXPORT */
-class Device {
-  /**
-   * Static class.
-   */
+export class Device {
   constructor() {
     /**
+     * @type {number|null}
      * @private
-     * @type {Device}
      */
-    Device.mInstance = this;
-
-    /**
-     * @private
-     * @type {number}
-     */
-    this.mPixelRatio = 0;
-
-    Device.mInstance.mPixelRatio = Device.getDevicePixelRatio();
+    this.mPixelRatioCache = null;
   }
 
   /**
@@ -29,7 +17,7 @@ class Device {
    * 
    * @return {string}
    */
-  static get os() {
+  get os() {
     let userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
     if (/windows phone/i.test(userAgent))
@@ -49,7 +37,7 @@ class Device {
    *
    * @return {boolean}
    */
-  static get isTouch() {
+  get isTouch() {
     let hasEvent = 'ontouchstart' in window;
     if (hasEvent)
       return true;
@@ -65,7 +53,7 @@ class Device {
    *
    * @return {boolean}
    */
-  static get isMobile() {
+  get isMobile() {
     return /Mobi/.test(navigator.userAgent);
   }
 
@@ -74,8 +62,11 @@ class Device {
    *
    * @return {number}
    */
-  static get pixelRatio() {
-    return Device.mInstance.mPixelRatio;
+  get pixelRatio() {
+    if (this.mPixelRatioCache === null)
+      this.mPixelRatioCache = this.getDevicePixelRatio();
+
+    return this.mPixelRatioCache;
   }
 
   /**
@@ -83,18 +74,17 @@ class Device {
    *
    * @return {boolean}
    */
-  static get webAudioSupported() {
+  get webAudioSupported() {
     return window['AudioContext'] != null || window['webkitAudioContext'] != null;
   }
 
   /**
    * Returns device pixel ratio.
    *
-   * @static
    * @suppress {missingProperties}
    * @return {number} Description
    */
-  static getDevicePixelRatio() {
+  getDevicePixelRatio() {
     if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined && window.screen.systemXDPI > window.screen.logicalXDPI)
       return window.screen.systemXDPI / window.screen.logicalXDPI;
     else if (window.devicePixelRatio !== undefined)
@@ -102,34 +92,4 @@ class Device {
 
     return 1;
   }
-
-  /**
-   * Returns true if device is in landscape orientation.
-   * 
-   * @public
-   * @readonly
-   * @returns {boolean}
-   */
-  static get isLandscape() {
-    let size = Black.instance.viewport.size;
-    return size.width >= size.height;
-  }
-
-  /**
-   * Returns true if device is in portrait orientation.
-   * 
-   * @public
-   * @readonly
-   * @returns {boolean}
-   */
-  static get isPortrait() {
-    return !Device.isLandscape;
-  }
 }
-
-/**
- * @private
- * @type {Device}
- * @nocollapse
- */
-Device.mInstance = null;

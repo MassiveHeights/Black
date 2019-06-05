@@ -1,5 +1,4 @@
-/* @echo EXPORT */
-class ParserBase {
+export class ParserBase {
   constructor() {
     /** 
      * Input data to parse

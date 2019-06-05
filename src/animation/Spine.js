@@ -1,3 +1,7 @@
+import { Black } from "../Black";
+import { DisplayObject } from "../display/DisplayObject";
+import { Time } from "../core/Time";
+
 function addTexture(name, texture) {
   if (!texture)
     return null;
@@ -38,15 +42,14 @@ function addTexture(name, texture) {
  * @nocompile
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class Spine extends DisplayObject {
+export class Spine extends DisplayObject {
   /**
    * Creates new instance of Spine.
    */
   constructor(name, texturesPath = '') {
     super();
 
-    let json = AssetManager.default.getJSON(name);
+    let json = Black.assets.getJSON(name);
 
     let fakeLoader = function (path, loaderFunction, callback) {
       console.log('FAKE LOADER', path);
@@ -83,7 +86,7 @@ class Spine extends DisplayObject {
           if (regions[textureName])
             continue;
 
-          regions[textureName] = spineAtlas.addTexture(textureName, AssetManager.default.getTexture(texturesPath + textureName));
+          regions[textureName] = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
         }
       }
     }
@@ -156,7 +159,7 @@ class Spine extends DisplayObject {
   }
 
   onUpdate() {
-    let dt = Time.delta;
+    let dt = Black.time.delta;
     this.mState.update(dt);
     this.mState.apply(this.mSkeleton);
     this.mSkeleton.updateWorldTransform();

@@ -1,10 +1,20 @@
+import { Rectangle } from "../geom/Rectangle";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+
+/**
+ * @private
+ * @type {number}
+ * @nocollapse
+ */
+let __ID = 0;
+
 /**
  * A base texture class.
  *
  * @cat textures
  */
-/* @echo EXPORT */
-class Texture {
+export class Texture {
   /**
    * Creates new instance of texture.
    *
@@ -16,7 +26,7 @@ class Texture {
    * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
    */
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
-    this.mId = ++Texture.__ID;
+    this.mId = ++__ID;
 
     /** 
      * @private 
@@ -331,24 +341,3 @@ class Texture {
     return this.mId;
   }
 }
-
-/**
- * @private
- * @type {number}
- * @nocollapse
- */
-Texture.__ID = 0;
-
-/**
- * @private
- * @type {HTMLImageElement|null}
- * @nocollapse
- */
-Texture.MISSING_IMAGE_CACHE = null;
-
-/**
- * @private
- * @type {number}
- * @nocollapse
- */
-Texture.MAX_SIZE = 2048;

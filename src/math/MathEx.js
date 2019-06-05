@@ -3,8 +3,7 @@
  *
  * @cat core
  */
-/* @echo EXPORT */
-class MathEx {
+export class MathEx {
   /**
    * Generates a random number in given range.
    *

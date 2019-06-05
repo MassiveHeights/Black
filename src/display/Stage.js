@@ -1,3 +1,13 @@
+import { GameObject } from "../core/GameObject";
+import { StageScaleMode } from "./StageScaleMode";
+import { Black } from "../Black";
+import { InputComponent } from "../input/InputComponent";
+import { Input } from "../input/Input";
+import { Rectangle } from "../geom/Rectangle";
+import { Message } from "../messages/Message";
+import { Debug } from "../core/Debug";
+
+
 /**
  * The root container for all renderable objects
  *
@@ -5,9 +15,7 @@
  * @fires Stage#resize
  * @extends GameObject
  */
-
-/* @echo EXPORT */
-class Stage extends GameObject {
+export class Stage extends GameObject {
   constructor() {
     super();
 
@@ -66,11 +74,11 @@ class Stage extends GameObject {
      * @private 
      * @type {number} 
      */
-    this.mDPR = Device.getDevicePixelRatio();
+    this.mDPR = Black.device.getDevicePixelRatio();
 
     this.mAdded = true;
 
-    if (Black.instance.hasSystem(Input))
+    if (Black.engine.hasSystem(Input))
       this.addComponent(new InputComponent());
   }
 
@@ -92,7 +100,7 @@ class Stage extends GameObject {
    * @inheritDoc
    */
   onUpdate() {
-    let size = Black.instance.viewport.size;
+    let size = Black.engine.viewport.size;
 
     if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
       this.mCacheWidth = size.width;
@@ -115,7 +123,7 @@ class Stage extends GameObject {
    * @returns {void}
    */
   __refresh() {
-    const size = Black.instance.viewport.size;
+    const size = Black.engine.viewport.size;
     const windowWidth = size.width;
     const windowHeight = size.height;
 
@@ -259,7 +267,7 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritDoc
+   * @override
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -267,14 +275,14 @@ class Stage extends GameObject {
   }
 
   /**
-   * @inheritdoc
+   * @override
    */
   get localTransformation() {
     return this.mLocalTransform;
   }
 
   /**
-   * @inheritdoc
+   * @override
    */
   set localTransformation(value) {
     Debug.error('Not allowed.');

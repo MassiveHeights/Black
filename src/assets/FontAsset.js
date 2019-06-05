@@ -1,3 +1,8 @@
+import { Asset } from "./Asset";
+import { FontFaceAssetLoader } from "./loaders/FontFaceAssetLoader";
+import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
+
 /**
  * Font file asset class responsible for loading local font files.
  *
@@ -6,8 +11,7 @@
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class FontAsset extends Asset {
+export class FontAsset extends Asset {
   /**
    * Creates new instance of FontAsset.
    *
@@ -16,14 +20,31 @@ class FontAsset extends Asset {
    * @param {boolean} isLocal Pass `true` if font is local otherwise Google Fonts service is used.
    */
   constructor(name, url, isLocal) {
-    super(name);
+    super(AssetType.FONT, name);
 
     if (isLocal === false)
       url = 'https://fonts.googleapis.com/css?family=' + name.replace(new RegExp(' ', 'g'), '+');
 
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mUrl = url;
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mIsLocal = isLocal;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
     // We are not doing actual loading since loading is handled by browser. Just fake it.
-    this.mLoader = new FontFaceAssetLoader(name, url, isLocal);
-    this.addLoader(this.mLoader);
+    const loader = factory.get(LoaderType.FONT_FACE, this.mUrl, this.mIsLocal);
+    this.addLoader(loader);
   }
 
   /**

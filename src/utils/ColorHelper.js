@@ -3,8 +3,7 @@
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class RGB {
+export class RGB {
   /**
    * Creates new RGB instance.
    * 
@@ -38,8 +37,7 @@ class RGB {
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class HSV {
+export class HSV {
   /**
    * Creates new HSV instance.
    * 
@@ -74,8 +72,7 @@ class HSV {
  * @cat utils
  * @static
 */
-/* @echo EXPORT */
-class ColorHelper {
+export class ColorHelper {
   /**
    * Converts number color to RGB object.
    *

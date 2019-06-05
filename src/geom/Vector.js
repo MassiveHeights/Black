@@ -1,10 +1,13 @@
+import { Debug } from "../core/Debug";
+import { ObjectPool } from "../utils/ObjectPool";
+import { MathEx } from "../math/MathEx";
+
 /**
  * Mathematical representation of a vector.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Vector {
+export class Vector {
   /**
    * Creates new Vector instance.
    *
@@ -15,13 +18,11 @@ class Vector {
     Debug.isNumber(x, y);
     
     /** 
-     * @export 
      * @type {number} X coordinate of a point in the space. 
      */
     this.x = x;
 
     /** 
-     * @export 
      * @type {number} Y coordinate of a point in the space. 
      */
     this.y = y;

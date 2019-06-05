@@ -5,8 +5,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const BlendMode = {
+export const BlendMode = {
   /** Inherits blend mode from parent display object */
   AUTO       : 'auto',
   NORMAL     : 'normal',
@@ -31,12 +30,11 @@ const BlendMode = {
 };
 
 /** 
- * @export
  * @static 
  * @constant 
  * @dict
  */
-const CanvasBlendMode = {
+export const CanvasBlendMode = {
   'auto'       : 'auto',
   'normal'     : 'source-over',
   'add'        : 'lighter',

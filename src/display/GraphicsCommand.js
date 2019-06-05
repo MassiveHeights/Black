@@ -1,3 +1,5 @@
+import { GraphicsCommandType } from "./GraphicsCommandType";
+
 /**
  * A helper class for Graphics.
  *
@@ -5,8 +7,7 @@
  * @cat display
  */
 
-/* @echo EXPORT */
-class GraphicsCommand {
+export class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
    *

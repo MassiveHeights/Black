@@ -88,6 +88,9 @@ class Generator {
       return '';
 
 
+	if (!item.properties)
+		return '';
+  
     if (item.properties.length == 0)
       return '';
 

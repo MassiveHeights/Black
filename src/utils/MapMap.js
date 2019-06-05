@@ -2,8 +2,7 @@
  * A double key map.
  * @cat utils
  */
-/* @echo EXPORT */
-class MapMap {
+export class MapMap {
   constructor() {
     this.mMap = new Map();
   }

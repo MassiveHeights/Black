@@ -1,11 +1,13 @@
+import { AssetLoader } from "./AssetLoader";
+import { FontMetrics } from "../../display/text/FontMetrics";
+
 /**
  * Responsible for loading local or Google fonts.
  *
  * @cat assets.loaders
  * @extends AssetLoader
  */
-/* @echo EXPORT */
-class FontFaceAssetLoader extends AssetLoader {
+export class FontFaceAssetLoader extends AssetLoader {
   /**
    * Creates new FontFaceAssetLoader instance.
    *
@@ -88,7 +90,7 @@ class FontFaceAssetLoader extends AssetLoader {
     this.__checkLoadingStatus();
   }
 
-  abort() {
+  onAbort() {
     clearTimeout(this.mTimeoutHandle);
     this.mTestingElement.parentNode.removeChild(this.mTestingElement);
   }

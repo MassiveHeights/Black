@@ -1,3 +1,16 @@
+import { DisplayObject } from "../display/DisplayObject";
+import { FloatScatter } from "../scatters/FloatScatter";
+import { EmitterState } from "./EmitterState";
+import { Matrix } from "../geom/Matrix";
+import { EmitterSortOrder } from "./EmitterSortOrder";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { Modifier } from "./Modifier";
+import { Particle } from "./Particle";
+import { Vector } from "../geom/Vector";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { Message } from "../messages/Message";
+
 // TODO: pretty much the emitter is always dirty and caching should not be applied onto it.
 // TODO: q/a every property
 
@@ -7,8 +20,7 @@
  * @cat particles
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class Emitter extends DisplayObject {
+export class Emitter extends DisplayObject {
   /**
    * Creates new Emitter instance.
    */
@@ -153,7 +165,6 @@ class Emitter extends DisplayObject {
 
   /**
    * Simulates current emmitter for a given amount of time (seconds).
-   * @experimental
    * 
    * @param {number} time Time in secounds
    * @returns {void}
@@ -167,7 +178,7 @@ class Emitter extends DisplayObject {
 
     while (this.mCurrentPresimulationTime <= this.mPresimulateSeconds) {
       this.onUpdate();
-      this.mCurrentPresimulationTime += Time.delta;
+      this.mCurrentPresimulationTime += Black.time.delta;
     }
 
     this.mPresimulateSeconds = 0;
@@ -224,10 +235,10 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * Hacky method which returns Time.now or presimulation time depending on a case.
+   * Hacky method which returns time now or presimulation time depending on a case.
    */
   __getTime() {
-    return Time.now;
+    return Black.time.now;
   }
 
   /**
@@ -238,7 +249,7 @@ class Emitter extends DisplayObject {
    * @return {void}
    */
   updateNextTick(dt = 0) {
-    let t = Time.now;
+    let t = Black.time.now;
     let firstEmit = false;
 
     if (this.mState === EmitterState.PENDING) {
@@ -293,12 +304,12 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onUpdate() {
-    let dt = Time.delta;
+    let dt = Black.time.delta;
 
     // rate logic
     this.updateNextTick(dt);
 
-    if (Time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
+    if (Black.time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
       this.__create(this.mEmitCount.getValue());
     }
 
@@ -542,7 +553,7 @@ class Emitter extends DisplayObject {
   * @return {void}
   */
   set texturesName(value) {
-    this.textures = AssetManager.default.getTextures(value);
+    this.textures = Black.assets.getTextures(value);
   }
 
   /**

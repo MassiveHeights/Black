@@ -5,8 +5,7 @@
  * @cat audio
  * @enum {string}
  */
-/* @echo EXPORT */
-const SoundState = {
+export const SoundState = {
   NEWBORN: 'newborn',
   PLAYING: 'playing',
   PAUSED: 'paused',

@@ -3,9 +3,7 @@
  *
  * @cat physics.arcade.helpers
  */
-/* @echo EXPORT */
-class Projection {
-
+export class Projection {
   /**
    * Creates new instance of Projection.
    */
@@ -105,7 +103,7 @@ class Projection {
  *
  * @cat physics.arcade.helpers
  */
-class Range {
+export class Range {
   /**
    * Creates new instance of Range.
    */

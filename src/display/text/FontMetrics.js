@@ -1,12 +1,34 @@
+import { TextStyle } from "./TextStyle";
+
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
+let CACHE = {};
+
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ */
+let CONTEXT = null;
+
+/** 
+ * @ignore 
+ * @static 
+ * @private
+ * @type {HTMLCanvasElement}
+ */
+let CANVAS = null;
+
+
 /**
  * Font measurement tools.
  *
  * @cat display.text
  */
-
-/* @echo EXPORT */
-class FontMetrics {
-
+export class FontMetrics {
   /**
    * Creates new instance of FontMetrics. Do not use constructor directly instead use {@link FontMetrics#get} method.
    *
@@ -15,21 +37,21 @@ class FontMetrics {
    * @param {TextStyle} style Default text info with 24 font size.
    */
   constructor(style) {
-    if (FontMetrics.__CONTEXT === null) {
-      FontMetrics.__CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
-      FontMetrics.__CONTEXT = FontMetrics.__CANVAS.getContext('2d');
+    if (CONTEXT === null) {
+      CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
+      CONTEXT = CANVAS.getContext('2d');
 
-      FontMetrics.__CANVAS.width = 10;
-      FontMetrics.__CANVAS.height = 200;
+      CANVAS.width = 10;
+      CANVAS.height = 200;
     }
 
     style.size = 24;
 
     /** @private */
-    this.mCanvas = FontMetrics.__CANVAS;
+    this.mCanvas = CANVAS;
 
     /** @private */
-    this.mCtx = FontMetrics.__CONTEXT;
+    this.mCtx = CONTEXT;
 
     /** 
      * @private 
@@ -37,7 +59,7 @@ class FontMetrics {
      */
     this.mStyle = style;
 
-    const drawY = Math.floor(FontMetrics.__CANVAS.height * 0.7766);
+    const drawY = Math.floor(CANVAS.height * 0.7766);
     this.mCtx.clearRect(0, 0, this.mCanvas.width, this.mCanvas.height);
     this.mCtx.font = `${style.weight} ${style.size}px ${style.family}`;
     this.mCtx.fillText('x', 0, drawY, 1);
@@ -206,71 +228,14 @@ class FontMetrics {
    * @returns {FontMetrics}
    */
   static get(fontName) {
-    let cache = FontMetrics.CACHE[fontName];
+    let cache = CACHE[fontName];
 
     if (cache == null) {
       let style = new TextStyle(fontName, 0, 24);
       cache = new FontMetrics(style);
-      FontMetrics.CACHE[fontName] = cache;
+      CACHE[fontName] = cache;
     }
 
     return cache;
   }
 }
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CACHE = {};
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.__CONTEXT = null;
-
-/** 
- * @ignore 
- * @static 
- * @private
- * @type {HTMLCanvasElement}
- */
-FontMetrics.__CANVAS = null;
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CHAR_CAPITAL_HEIGHT = 's';
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CHAR_BASELINE = 'a';
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CHAR_XHEIGHT = 'x';
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CHAR_DESCENT = 'p';
-
-/** 
- * @ignore 
- * @static 
- * @private
- */
-FontMetrics.CHAR_ASCENT = 'h';

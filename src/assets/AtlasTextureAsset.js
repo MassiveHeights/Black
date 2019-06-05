@@ -1,3 +1,11 @@
+import { Asset } from "./Asset";
+import { Texture } from "../textures/Texture";
+import { ImageAssetLoader } from "./loaders/ImageAssetLoader";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { AtlasTexture } from "../textures/AtlasTexture";
+import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
+
 /**
  * Texture Atlas asset responsible for loading Image file and corresponding Json
  * file.
@@ -5,8 +13,7 @@
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class AtlasTextureAsset extends Asset {
+export class AtlasTextureAsset extends Asset {
   /**
    * Creates new AtlasTextureAsset instance.
    *
@@ -15,7 +22,19 @@ class AtlasTextureAsset extends Asset {
    * @param {string} dataUrl  Json URL.
    */
   constructor(name, imageUrl, dataUrl) {
-    super(name);
+    super(AssetType.TEXTURE_ATLAS, name);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mImageUrl = imageUrl;
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mDataUrl = dataUrl;
 
     /** 
      * @private 
@@ -25,18 +44,27 @@ class AtlasTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {ImageAssetLoader} 
+     * @type {ImageAssetLoader|null} 
      */
-    this.mImageLoader = new ImageAssetLoader(imageUrl);
+    this.mImageLoader = null;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(dataUrl);
-    this.mXHR.mimeType = 'application/json';
+    this.mXHR = null;
+  }
 
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mImageLoader = factory.get(LoaderType.IMAGE, this.mImageUrl);
     this.addLoader(this.mImageLoader);
+
+    this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
+    this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 

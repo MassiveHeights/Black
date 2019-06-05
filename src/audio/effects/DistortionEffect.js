@@ -1,11 +1,14 @@
+import { SoundEffect } from "../SoundEffect";
+import { Black } from "../../Black";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Distortion sound effect.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class DistortionEffect extends SoundEffect {
+export class DistortionEffect extends SoundEffect {
 
   /**
    * Creates new instance of DistortionEffect
@@ -19,7 +22,7 @@ class DistortionEffect extends SoundEffect {
      * @private 
      * @type {WaveShaperNode} 
      */
-    this.mWaveShaperNode = MasterAudio.context.createWaveShaper();
+    this.mWaveShaperNode = Black.audio.context.createWaveShaper();
 
     /** @inheritDoc */
     this.mInputNode = this.mWaveShaperNode;

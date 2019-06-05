@@ -1,10 +1,15 @@
+import { BlendMode } from "./BlendMode";
+import { Texture } from "../textures/Texture";
+import { ColorHelper } from "../utils/ColorHelper";
+import { MapMap } from "../utils/MapMap";
+import { RenderTargetCanvas } from "./canvas/RenderTargetCanvas";
+
 /**
  * A render unit. Base class for all renderables.
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class Renderer {
+export class Renderer {
   /**
    * Creates new instance of Renderer.
    */

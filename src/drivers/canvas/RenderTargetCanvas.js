@@ -1,11 +1,12 @@
+import { RenderTarget } from "../RenderTarget";
+
 /**
  * Canvas rendering surface.
  *
  * @extends RenderTarget
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class RenderTargetCanvas extends RenderTarget {
+export class RenderTargetCanvas extends RenderTarget {
   /**
    * Creates new instance of RenderTargetCanvas.
    *

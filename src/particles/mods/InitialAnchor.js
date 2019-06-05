@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { VectorScatter } from "../../scatters/VectorScatter";
+
 /**
  * Sets initial particle scale value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialAnchor extends Modifier {
+export class InitialAnchor extends Modifier {
   /**
    * Creates new InitialScale instance.
    *

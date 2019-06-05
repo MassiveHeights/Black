@@ -1,12 +1,15 @@
+import { SoundEffect } from "../SoundEffect";
+import { Debug } from "../../core/Debug";
+import { Black } from "../../Black";
+import { MathEx } from "../../math/MathEx";
+
 /**
  * Equalizer.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class SimpleEQ extends SoundEffect {
-
+export class SimpleEQ extends SoundEffect {
   /**
    * Creates new instance of equalizer.
    * 
@@ -57,7 +60,7 @@ class SimpleEQ extends SoundEffect {
    * @returns {BiquadFilterNode}
    */
   __createFilter(freq) {
-    let f = MasterAudio.context.createBiquadFilter();
+    let f = Black.audio.context.createBiquadFilter();
     f.type = 'peaking';
     f.frequency.setValueAtTime(freq, 0);
     f.Q.setValueAtTime(1, 0);

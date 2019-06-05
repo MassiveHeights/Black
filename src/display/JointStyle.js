@@ -5,8 +5,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const JointStyle = {
+export const JointStyle = {
   BEVEL: 'bevel',
   MITER: 'miter',
   ROUND: 'round'

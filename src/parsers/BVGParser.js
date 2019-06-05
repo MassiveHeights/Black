@@ -1,3 +1,19 @@
+import { ParserBase } from "./ParserBase";
+import { GraphicsData } from "../display/GraphicsData";
+import { GraphicsPattern } from "../display/GraphicsPattern";
+import { CanvasRenderTexture } from "../textures/CanvasRenderTexture";
+import { Matrix } from "../geom/Matrix";
+import { Black } from "../Black";
+import { BVGStyle } from "./BVGStyle";
+import { ColorHelper } from "../utils/ColorHelper";
+import { Graphics } from "../display/Graphics";
+import { GraphicsLinearGradient } from "../display/GraphicsLinearGradient";
+import { JointStyle } from "../display/JointStyle";
+import { Rectangle } from "../geom/Rectangle";
+import { FillRule } from "../display/FillRule";
+import { MathEx } from "../math/MathEx";
+import { CapsStyle } from "../display/CapsStyle";
+
 const pathCmds = {
   MOVETO: 'M',
   MOVETO_REL: 'm',
@@ -39,8 +55,7 @@ const shapeCmds = {
  * @extends ParserBase
  */
 
-/* @echo EXPORT */
-class BVGParser extends ParserBase {
+export class BVGParser extends ParserBase {
   /**
    * Creates new instance of BVGParser
    */
@@ -355,8 +370,8 @@ class BVGParser extends ParserBase {
    * BVG path data parser.
    *
    * @private
-   * @params {string} data Path data attribute value
-   * @params {GraphicsData} graphicsData Graphics data to store parsed values to.
+   * @param {string} data Path data attribute value
+   * @param {GraphicsData} graphicsData Graphics data to store parsed values to.
    *
    * @return {void}
    */
@@ -537,8 +552,8 @@ class BVGParser extends ParserBase {
    * Approximate curve corner. Single bezier shouldn't be longer than 90 degrees.
    *
    * @private
-   * @params {number} theta Start angle.
-   * @params {number} deltaTheta Angle from start to end.
+   * @param {number} theta Start angle.
+   * @param {number} deltaTheta Angle from start to end.
    *
    * @returns {Array<number>} Center.
    */
@@ -568,16 +583,16 @@ class BVGParser extends ParserBase {
    * Find arc center.
    *
    * @private
-   * @params {number} x1 Context current position x.
-   * @params {number} y1 Context current position y.
-   * @params {number} x2 Context target (next) position x.
-   * @params {number} y2 Context target (next) position y.
-   * @params {number} fa Flag to determine which arc to draw.
-   * @params {number} fs Another flag to determine which arc to draw.
-   * @params {number} rx Arc radius x.
-   * @params {number} ry Arc radius y.
-   * @params {number} sinPhi Sin of x axis rotation.
-   * @params {number} cosPhi Cos of x axis rotation.
+   * @param {number} x1 Context current position x.
+   * @param {number} y1 Context current position y.
+   * @param {number} x2 Context target (next) position x.
+   * @param {number} y2 Context target (next) position y.
+   * @param {number} fa Flag to determine which arc to draw.
+   * @param {number} fs Another flag to determine which arc to draw.
+   * @param {number} rx Arc radius x.
+   * @param {number} ry Arc radius y.
+   * @param {number} sinPhi Sin of x axis rotation.
+   * @param {number} cosPhi Cos of x axis rotation.
    *
    * @returns {Array<number>} Center.
    */
@@ -623,15 +638,15 @@ class BVGParser extends ParserBase {
    * BVG path data parser.
    *
    * @private
-   * @params {number} px Context current position x.
-   * @params {number} py Context current position y.
-   * @params {number} rx Arc radius x.
-   * @params {number} ry Arc radius y.
-   * @params {number} xAxisRotation Rotation in degrees.
-   * @params {number} largeFlag Flag to determine which arc to draw.
-   * @params {number} sweepFlag Another flag to determine which arc to draw.
-   * @params {number} x Context target (next) position x.
-   * @params {number} y Context target (next) position y.
+   * @param {number} px Context current position x.
+   * @param {number} py Context current position y.
+   * @param {number} rx Arc radius x.
+   * @param {number} ry Arc radius y.
+   * @param {number} xAxisRotation Rotation in degrees.
+   * @param {number} largeFlag Flag to determine which arc to draw.
+   * @param {number} sweepFlag Another flag to determine which arc to draw.
+   * @param {number} x Context target (next) position x.
+   * @param {number} y Context target (next) position y.
    *
    * @returns {Array<Array<number>>|undefined} Array of bezier curves attributes.
    */

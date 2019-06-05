@@ -3,8 +3,7 @@
  * @enum {number}
  * @cat input
  */
-/* @echo EXPORT */
-const Key = {
+export const Key = {
   /**
    * @type {number}
    */

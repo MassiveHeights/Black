@@ -1,10 +1,14 @@
+import { Rectangle } from "../../geom/Rectangle";
+import { TextStyle } from "./TextStyle";
+import { FontMetrics } from "./FontMetrics";
+import { Debug } from "../../core/Debug";
+
 /**
  * Object representing text measurement result.
  * 
  * @cat display.text
  */
-/* @echo EXPORT */
-class TextMetricsData {
+export class TextMetricsData {
   constructor() {
 
     /**
@@ -44,8 +48,7 @@ class TextMetricsData {
  * 
  * @cat display.text
  */
-/* @echo EXPORT */
-class TextSegmentMetricsData {
+export class TextSegmentMetricsData {
   constructor(text, style, lineIndex, bounds) {
 
     /**
@@ -74,14 +77,23 @@ class TextSegmentMetricsData {
   }
 }
 
+
+/**
+ * @ignore
+ * @private
+ * @static
+ * @type {HTMLElement|null}
+ */
+let spanElement = null;
+
+
 /**
  * Provides native text measurement tools
  * 
  * @cat display.text
  * @static
  */
-/* @echo EXPORT */
-class TextMetricsEx {
+export class TextMetricsEx {
   constructor() {
     throw new Error('Singleton');
   }
@@ -192,11 +204,11 @@ class TextMetricsEx {
     outBounds = outBounds || new Rectangle();
     outBounds.zero();
 
-    let span = TextMetricsEx.__span;
+    let span = spanElement;
 
-    if (TextMetricsEx.__span === null) {
-      TextMetricsEx.__span = /** @type {HTMLElement} */ (document.createElement('span'));
-      span = /** @type {HTMLElement} */ (TextMetricsEx.__span);
+    if (spanElement === null) {
+      spanElement = /** @type {HTMLElement} */ (document.createElement('span'));
+      span = /** @type {HTMLElement} */ (spanElement);
       span.id = 'font';
       span.style.position = 'absolute';
       span.style.width = 'auto';
@@ -275,18 +287,3 @@ class TextMetricsEx {
     return outBounds.set(0, 0, maxWidth, maxHeight);
   }
 }
-
-/**
- * @ignore
- * @private
- * @static
- * @type {HTMLElement|null}
- */
-TextMetricsEx.__span = null;
-
-/**
- * @ignore
- * @private
- * @static
- */
-TextMetricsEx.NEWLINE_REGEX = /\r?\n/;

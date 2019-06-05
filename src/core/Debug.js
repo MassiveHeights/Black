@@ -4,8 +4,7 @@
  *
  * @cat core
  */
-/* @echo EXPORT */
-class Debug {
+export class Debug {
   constructor() {
     Debug.assert(false, 'Static class.');
   }

@@ -3,8 +3,7 @@
  *
  * @cat particles
  */
-/* @echo EXPORT */
-class Particle {
+export class Particle {
   constructor() {
 
     /** @type {number} The index of a texture. */

@@ -1,3 +1,10 @@
+import { Pair } from "./Pair";
+import { Vector } from "../../../geom/Vector";
+import { MathEx } from "../../../math/MathEx";
+import { ObjectPool } from "../../../utils/ObjectPool";
+
+let pool;
+
 /**
  * BoxToCirclePair is used to test collision within box - circle colliders.
  *
@@ -5,8 +12,7 @@
  * @extends Pair
  */
 
-/* @echo EXPORT */
-class BoxToCirclePair extends Pair {
+export class BoxToCirclePair extends Pair {
 
   /**
    * Creates new instance of BoxToBoxPair.
@@ -180,6 +186,11 @@ class BoxToCirclePair extends Pair {
 
     return this.mInCollision = true;
   }
-}
 
-BoxToCirclePair.pool = new ObjectPool(BoxToCirclePair, 100);
+  static get pool() {
+    if (pool === null)
+      pool = new ObjectPool(BoxToCirclePair, 100);
+
+    return pool;
+  }
+}

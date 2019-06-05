@@ -5,8 +5,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const FillRule = {
+export const FillRule = {
   NONE_ZERO: 'nonzero',
   EVEN_ODD : 'evenodd',
 };

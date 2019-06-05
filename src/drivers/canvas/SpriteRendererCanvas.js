@@ -1,3 +1,9 @@
+import { Renderer } from "../Renderer";
+import { CanvasRenderTexture } from "../../textures/CanvasRenderTexture";
+import { Texture } from "../../textures/Texture";
+import { RenderTargetCanvas } from "./RenderTargetCanvas";
+import { Matrix } from "../../geom/Matrix";
+
 /**
  * Renders `Sprite` objects on canvas.
  *
@@ -5,8 +11,7 @@
  * @cat drivers.canvas
  */
 
-/* @echo EXPORT */
-class SpriteRendererCanvas extends Renderer {
+export class SpriteRendererCanvas extends Renderer{
   constructor() {
     super();
 

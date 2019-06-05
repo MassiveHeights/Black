@@ -1,10 +1,12 @@
+import { BindingType } from './BindingType';
+import { Glob } from '../utils/Glob';
+
 /**
  * A bridge between callback and context.
  * 
  * @cat core
  */
-/* @echo EXPORT */
-class MessageBinding {
+export class MessageBinding {
   /**
    * @param {MessageDispatcher} owner                The owner of this binding.
    * @param {string} name                            Name of the message.

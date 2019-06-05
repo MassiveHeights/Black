@@ -1,10 +1,11 @@
+import { Vector } from "./Vector";
+
 /**
  * Mathematical representation of a circle.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Circle {
+export class Circle {
   /**
    * Creates new Circle instance.
    * 

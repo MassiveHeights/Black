@@ -5,8 +5,7 @@
  * @cat display
  */
 
-/* @echo EXPORT */
-class GraphicsPattern {
+export class GraphicsPattern {
   /**
    * Creates new instance of GraphicsPattern
    */

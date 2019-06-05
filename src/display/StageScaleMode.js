@@ -11,8 +11,7 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
-const StageScaleMode = {
+export const StageScaleMode = {
   /** The stage size will be the same no matter what DPI is */
   NORMAL: 'normal',
   /** The stage size will be affected by dpi */

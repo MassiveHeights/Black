@@ -1,11 +1,13 @@
+import { Scatter } from "./Scatter";
+import { Vector } from "../geom/Vector";
+
 /**
  * A number scatter for defining a range in 2D space.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class VectorScatter extends Scatter {
+export class VectorScatter extends Scatter {
   /**
    * Creates new VectorScatter instance.
    *

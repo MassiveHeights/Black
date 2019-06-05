@@ -1,10 +1,11 @@
+import { SoundInstance } from "./SoundInstance";
+
 /**
  * The class which stores audio buffer and its all sounds data.
  * 
  * @cat audio
  */
-/* @echo EXPORT */
-class SoundClip {
+export class SoundClip {
   /**
    * Creates new instance of SoundClip.
    * 

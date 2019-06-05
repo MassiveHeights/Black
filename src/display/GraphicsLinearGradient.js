@@ -1,3 +1,5 @@
+import { GraphicsGradient } from "./GraphicsGradient";
+
 /**
  * Linear gradient fill style for graphics.
  *
@@ -5,8 +7,7 @@
  * @cat display
  */
 
-/* @echo EXPORT */
-class GraphicsLinearGradient extends GraphicsGradient {
+export class GraphicsLinearGradient extends GraphicsGradient {
   /**
    * Creates new instance of GraphicsLinearGradient
    *

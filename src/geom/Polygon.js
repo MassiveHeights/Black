@@ -1,8 +1,11 @@
+import { Vector } from "./Vector";
+import { Rectangle } from "./Rectangle";
+import { Line } from "./Line";
+
 /**
  * @cat geom
  */
-/* @echo EXPORT */
-class Polygon {
+export class Polygon {
   /**
    * Creates new Polygon instance.
    *

@@ -1,3 +1,12 @@
+import { Component } from "../core/Component";
+import { Interpolation } from "./Interpolation";
+import { Time } from "../core/Time";
+import { Message } from "../messages/Message";
+import { Ease } from "./Ease";
+import { Black } from "../Black";
+
+var defaultEase = Ease.smootherStep;
+
 /**
  * A tweening component.
  *
@@ -10,8 +19,7 @@
  * @unrestricted
  * @extends Component
  */
-/* @echo EXPORT */
-class Tween extends Component {
+export class Tween extends Component {
   /**
    * Creates new instance of Tween Component.
    * @param {Object}        values            The values to tween.
@@ -158,7 +166,7 @@ class Tween extends Component {
      * @private 
      * @type {function(number):number} 
      */
-    this.mEase = Tween.DEFAULT_EASE;
+    this.mEase = defaultEase;
 
     if (this.mProperties !== null) {
       for (let f in this.mProperties) {
@@ -399,7 +407,7 @@ class Tween extends Component {
    */
   play() {
     if (!this.mIsPaused) {
-      this.__start(Time.now);
+      this.__start(Black.time.now);
     } else {
       this.__resume();
     }
@@ -458,7 +466,7 @@ class Tween extends Component {
       return this;
 
     this.mIsPaused = true;
-    this.mPausedTime = Time.now;
+    this.mPausedTime = Black.time.now;
 
     return this;
   }
@@ -472,7 +480,7 @@ class Tween extends Component {
       return;
 
     this.mIsPaused = false;
-    this.mStartTime += Time.now - this.mPausedTime;
+    this.mStartTime += Black.time.now - this.mPausedTime;
   }
 
 
@@ -511,7 +519,7 @@ class Tween extends Component {
    */
   onAdded(gameObject) {
     if (this.mPlayOnAdded) {
-      this.__start(Time.now);
+      this.__start(Black.time.now);
     }
   }
 
@@ -567,10 +575,10 @@ class Tween extends Component {
   }
 
   onRender() {
-    if (Black.numUpdates !== 0)
+    if (Black.engine.numUpdates !== 0)
       return;
 
-    let time = Time.now;
+    let time = Black.time.now;
 
     if (time < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;
@@ -604,7 +612,7 @@ class Tween extends Component {
    * @inheritDoc
    */
   onUpdate() {
-    let t = Time.now;
+    let t = Black.time.now;
 
     if (t < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
       return;
@@ -696,15 +704,22 @@ class Tween extends Component {
 
       this.mInitiated = true;
     }
+  }
 
+  /**
+   * Ease to be used in all tweens, if another ease is not specified. `Ease.smootherStep` is used.
+   *
+   * @returns {function(number):number}
+   */
+  static get defaultEase() {
+    return defaultEase;
+  }
+
+  /**
+   * @param {function(number):number} value The defaykt easing function.
+   * @returns {void}
+   */
+  static set defaultEase(value) {
+    defaultEase = value;
   }
 }
-
-/**
- * Ease to be used in all tweens, if another ease is not specified. `Ease.smootherStep`.
- *
- * @public
- * @type {function(number):number}
- * @nocollapse
- */
-Tween.DEFAULT_EASE = Ease.smootherStep;

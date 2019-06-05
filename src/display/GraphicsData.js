@@ -1,3 +1,16 @@
+import { Matrix } from "../geom/Matrix";
+import { GraphicsCommand } from "./GraphicsCommand";
+import { GraphicsPath } from "./GraphicsPath";
+import { GraphicsCommandType } from "./GraphicsCommandType";
+import { Rectangle } from "../geom/Rectangle";
+import { Vector } from "../geom/Vector";
+import { Debug } from "../core/Debug";
+import { JointStyle } from "./JointStyle";
+import { GraphicsLinearGradient } from "./GraphicsLinearGradient";
+import { Circle } from "../geom/Circle";
+import { CapsStyle } from "./CapsStyle";
+import { MathEx } from "../math/MathEx";
+
 /**
  * Structure object for graphics. Stores parsed layered data, ready for render.
  * Normally you should not work with this object, and use Graphics instead.
@@ -5,8 +18,7 @@
  * @cat display
  */
 
-/* @echo EXPORT */
-class GraphicsData {
+export class GraphicsData {
   /**
    * Creates new instance of GraphicsData
    */
@@ -595,7 +607,6 @@ class GraphicsData {
   /**
    * Gets/Sets the name of this GraphicsData instance. Used for searching elements.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -603,7 +614,6 @@ class GraphicsData {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */

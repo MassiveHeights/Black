@@ -3,8 +3,7 @@
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class RenderTarget {
+export class RenderTarget {
   /**
    * Creates new instance fo RenderTarget.
    *

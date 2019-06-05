@@ -1,11 +1,13 @@
+import { SoundClip } from "./SoundClip";
+import { SoundInstance } from "./SoundInstance";
+
 /**
  * The class which stores audio buffer of sound atlas and information about sub sound clips.
  * 
  * @cat audio
  * @extends SoundClip
  */
-/* @echo EXPORT */
-class SoundAtlasClip extends SoundClip {
+export class SoundAtlasClip extends SoundClip {
 
   /**
    * Creates instance of SoundAtlas.

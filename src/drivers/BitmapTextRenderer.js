@@ -1,11 +1,14 @@
+import { Renderer } from "./Renderer";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { Texture } from "../textures/Texture";
+
 /**
  * Responsible for rendering `BitmapTextField` objects by different drivers.
  *
  * @extends Renderer
  * @cat drivers
  */
-/* @echo EXPORT */
-class BitmapTextRenderer extends Renderer {
+export class BitmapTextRenderer extends Renderer {
   /**
    * Creates new instance of BitmapTextRenderer.
    */

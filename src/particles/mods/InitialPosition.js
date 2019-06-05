@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { VectorScatter } from "../../scatters/VectorScatter";
+
 /**
  * Sets initial particle position.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialPosition extends Modifier {
+export class InitialPosition extends Modifier {
   /**
    * Creates new InitialPosition instance.
    *

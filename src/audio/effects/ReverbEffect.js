@@ -1,12 +1,14 @@
+import { SoundEffect } from "../SoundEffect";
+import { MathEx } from "../../math/MathEx";
+import { Black } from "../../Black";
+
 /**
  * Reverberation sound effect.
  * 
  * @cat audio.effects
  * @extends {SoundEffect}
  */
-/* @echo EXPORT */
-class ReverbEffect extends SoundEffect {
-
+export class ReverbEffect extends SoundEffect {
   /**
    * Creates instance of ReverbEffect.
    * 
@@ -16,34 +18,34 @@ class ReverbEffect extends SoundEffect {
     super();
 
     /** @inheritDoc */
-    this.mInputNode = MasterAudio._newGainNode();
+    this.mInputNode = Black.audio._newGainNode();
 
     /** @inheritDoc */
-    this.mOutputNode = MasterAudio._newGainNode();
+    this.mOutputNode = Black.audio._newGainNode();
 
     /** 
      * @private 
      * @type {ConvolverNode} 
      */
-    this.mConvolver = MasterAudio.context.createConvolver();
+    this.mConvolver = Black.audio.context.createConvolver();
 
     /** 
      * @private 
      * @type {GainNode} 
      */
-    this.mDry = MasterAudio._newGainNode();
+    this.mDry = Black.audio._newGainNode();
 
     /** 
      * @private 
      * @type {GainNode} 
      */
-    this.mWet = MasterAudio._newGainNode();
+    this.mWet = Black.audio._newGainNode();
 
     /** 
      * @private 
      * @type {BiquadFilterNode} 
      */
-    this.mTone = MasterAudio.context.createBiquadFilter();
+    this.mTone = Black.audio.context.createBiquadFilter();
 
     this.mConvolver.buffer = IRBuffer;
 
@@ -88,7 +90,7 @@ class ReverbEffect extends SoundEffect {
    * @returns {void}
    */
   set tone(value) {
-    value = MathEx.clamp(value, 10, MasterAudio.context.sampleRate / 2);
+    value = MathEx.clamp(value, 10, Black.audio.context.sampleRate / 2);
     this.mTone.frequency.setValueAtTime(value, 0);
   }
 
