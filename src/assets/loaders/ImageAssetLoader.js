@@ -28,10 +28,11 @@ export class ImageAssetLoader extends AssetLoader {
    * @inheritDoc
    */
   load() {
-    this.mImageElement.src = this.mUrl;
+    this.mData = this.mImageElement;
+    
     this.mImageElement.onload = () => this.onLoad();
     this.mImageElement.onerror = () => this.onError();
-    this.mData = this.mImageElement;
+    this.mImageElement.src = this.mUrl;
   }
 
   /**
