@@ -72,6 +72,6 @@ export class AtlasTextureAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    super.ready(new AtlasTexture(this.mImageLoader.data, /** @type {{meta: *, frames: Array<Object<Array<number>>>}} */(JSON.parse(this.mXHR.data)), this.mScale));
+    super.ready(new AtlasTexture(this.mImageLoader.data, this.mXHR.data, this.mScale));
   }
 }

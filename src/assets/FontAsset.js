@@ -43,7 +43,7 @@ export class FontAsset extends Asset {
    */
   onLoaderRequested(factory) {
     // We are not doing actual loading since loading is handled by browser. Just fake it.
-    const loader = factory.get(LoaderType.FONT_FACE, this.mUrl, this.mIsLocal);
+    const loader = factory.get(LoaderType.FONT_FACE, this.mName, this.mUrl, this.mIsLocal);
     this.addLoader(loader);
   }
 
