@@ -3,7 +3,7 @@ import { Vector } from "../../../geom/Vector";
 import { MathEx } from "../../../math/MathEx";
 import { ObjectPool } from "../../../utils/ObjectPool";
 
-let pool;
+var pool = null;
 
 /**
  * BoxToCirclePair is used to test collision within box - circle colliders.
@@ -20,19 +20,19 @@ export class BoxToCirclePair extends Pair {
   constructor() {
     super();
 
-     /**
-      * Collider from body a. 
-      * @public 
-      * @type {BoxCollider|null}
-      */
-     this.a = null;
+    /**
+     * Collider from body a. 
+     * @public 
+     * @type {BoxCollider|null}
+     */
+    this.a = null;
 
-     /**
-      * Collider from body a. 
-      * @public 
-      * @type {CircleCollider|null}
-      */
-     this.b = null;
+    /**
+     * Collider from body a. 
+     * @public 
+     * @type {CircleCollider|null}
+     */
+    this.b = null;
 
     /** 
      * Cached half width of box in stage coordinates.

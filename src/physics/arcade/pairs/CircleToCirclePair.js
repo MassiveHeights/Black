@@ -1,7 +1,7 @@
 import { Pair } from "./Pair";
 import { ObjectPool } from "../../../utils/ObjectPool";
 
-let pool;
+var pool = null;
 
 /**
  * CircleToCirclePair is used to test collision within circles colliders.

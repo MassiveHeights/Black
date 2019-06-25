@@ -2,7 +2,7 @@ import { Pair } from "./Pair";
 import { ObjectPool } from "../../../utils/ObjectPool";
 import { Projection } from "../helpers/Projection";
 
-let pool;
+var pool = null;
 
 /**
  * BoxToBoxPair is used to test collision within boxes

@@ -467,10 +467,10 @@ export class AssetManager extends MessageDispatcher {
    */
   getBitmapFont(name) {
     /** @type {BitmapFontData} */
-    let t = this.mBitmapFonts[name];
+    let font = this.mAssets[AssetType.BITMAP_FONT][name];
 
-    if (t != null)
-      return t;
+    if (font != null)
+      return font;
 
     Debug.warn(`[AssetManager] BitmapFontData '${name}' was not found.`);
     return null;
