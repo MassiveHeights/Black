@@ -6379,17 +6379,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let gameObject = /** @type {DisplayObject} */ (this.gameObject);
       let transform = gameObject.worldTransformation;
 
-      // if (session.isBackBufferActive === false) {
-      //   if (session.customTransform === null) {
-      //     transform = transform.clone(); // TODO: too much allocations
-      //     transform.data[4] -= Black.stage.mX;
-      //     transform.data[5] -= Black.stage.mY;
-      //   } else {
-      //     transform = transform.clone(); // TODO: too much allocations
-      //     transform.prepend(session.customTransform);
-      //   }
-      // }
-
       driver.setSnapToPixels(gameObject.snapToPixels);
       driver.setGlobalAlpha(this.alpha);
       driver.setGlobalBlendMode(this.blendMode);
@@ -10261,10 +10250,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     load() {
-      this.mImageElement.src = this.mUrl;
+      this.mData = this.mImageElement;
+      
       this.mImageElement.onload = () => this.onLoad();
       this.mImageElement.onerror = () => this.onError();
-      this.mData = this.mImageElement;
+      this.mImageElement.src = this.mUrl;
     }
 
     /**
@@ -10901,7 +10891,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     onLoaderRequested(factory) {
       // We are not doing actual loading since loading is handled by browser. Just fake it.
-      const loader = factory.get(LoaderType.FONT_FACE, this.mUrl, this.mIsLocal);
+      const loader = factory.get(LoaderType.FONT_FACE, this.mName, this.mUrl, this.mIsLocal);
       this.addLoader(loader);
     }
 
@@ -10979,7 +10969,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     onAllLoaded() {
-      super.ready(new AtlasTexture(this.mImageLoader.data, /** @type {{meta: *, frames: Array<Object<Array<number>>>}} */(JSON.parse(this.mXHR.data)), this.mScale));
+      super.ready(new AtlasTexture(this.mImageLoader.data, this.mXHR.data, this.mScale));
     }
   }
 
@@ -15905,10 +15895,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     getBitmapFont(name) {
       /** @type {BitmapFontData} */
-      let t = this.mBitmapFonts[name];
+      let font = this.mAssets[AssetType.BITMAP_FONT][name];
 
-      if (t != null)
-        return t;
+      if (font != null)
+        return font;
 
       Debug.warn(`[AssetManager] BitmapFontData '${name}' was not found.`);
       return null;
@@ -24594,7 +24584,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     static set bounceTreshhold(value) { bounceTreshhold = value; }
   }
 
-  let pool$1;
+  var pool$1 = null;
 
   /**
    * BoxToBoxPair is used to test collision within boxes
@@ -24759,7 +24749,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
-  let pool$2;
+  var pool$2 = null;
 
   /**
    * BoxToCirclePair is used to test collision within box - circle colliders.
@@ -24776,19 +24766,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor() {
       super();
 
-       /**
-        * Collider from body a. 
-        * @public 
-        * @type {BoxCollider|null}
-        */
-       this.a = null;
+      /**
+       * Collider from body a. 
+       * @public 
+       * @type {BoxCollider|null}
+       */
+      this.a = null;
 
-       /**
-        * Collider from body a. 
-        * @public 
-        * @type {CircleCollider|null}
-        */
-       this.b = null;
+      /**
+       * Collider from body a. 
+       * @public 
+       * @type {CircleCollider|null}
+       */
+      this.b = null;
 
       /** 
        * Cached half width of box in stage coordinates.
@@ -24951,7 +24941,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
-  let pool$3;
+  var pool$3 = null;
 
   /**
    * CircleToCirclePair is used to test collision within circles colliders.
@@ -26465,6 +26455,22 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.__addSystem(new this.mSystemClasses[i]());
     }
 
+    __checkVisibility() {
+      if (typeof document.hidden === 'undefined') {
+        // lets fake hidden if there is no support for Page Visibility API
+        document.hidden = false;
+        document.visibilityState = 'visible';
+
+        window.onpagehide = event => this.__onVisibilityChangeFallback(event);
+        window.onpageshow = event => this.__onVisibilityChangeFallback(event);
+      } else {
+        document.addEventListener('visibilitychange', event => this.__onVisibilityChange(event), false);
+      }
+
+      window.onblur = event => this.__onVisibilityChangeFallback(event);
+      window.onfocus = event => this.__onVisibilityChangeFallback(event);
+    }
+
     /**
      * @private
      * @returns {void}
@@ -26472,10 +26478,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     __bootStage() {
       this.mStage = new Stage();
 
-      window.onblur = event => this.__onVisibilityChange(event);
-      window.onfocus = event => this.__onVisibilityChange(event);
-      window.onpagehide = event => this.__onVisibilityChange(event);
-      window.onpageshow = event => this.__onVisibilityChange(event);
+      this.__checkVisibility();
 
       if (document.hidden && this.mPauseOnHide === true)
         this.pause();
@@ -26485,8 +26488,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @private
      * @returns {void}
      */
-    __onVisibilityChange(event) {
+    __onVisibilityChangeFallback(event) {
       let type = event.type;
+
       if (type === 'blur' && this.mPauseOnBlur === true)
         this.pause();
       else if (type === 'pagehide' && this.mPauseOnHide === true)
@@ -26495,6 +26499,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         if (document.hidden === false)
           this.resume();
       }
+    }
+
+    __onVisibilityChange() {
+      if (this.mPauseOnHide === true && document.visibilityState === 'hidden')
+        this.pause();
+      else if (document.visibilityState === 'visible')
+        this.resume();
     }
 
     /**
