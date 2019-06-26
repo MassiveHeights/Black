@@ -55,19 +55,7 @@ cd Black-Template
 npm install
 npm start
 ```
-Then open `http://127.0.0.1:4245` in browser!
-
-## SIZE AND PERFORMANCE COMPARISON
-A Piggy Mark was made to compare basic sprite rendering performance and build size.
-
-**Engine**|**60 FPS**|**50 FPS**|**40 FPS**|**30 FPS**|**Size kB**|**Load Time sec.***
-:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:
-Black|**3855**|**4870**|**5920**|**8605**|**41**|**2,3**
-Phaser v2|2975|3475|4525|5995|207|17.7
-Phaser v3|2680|3185|4040|5700|217|17.8
-
-All tests are made on iPhone 6s Safari.  
-\* How much time it takes to load a test. Tested using [UPTRENDS](https://www.uptrends.com) on iPhone 8 with bandwidth of 3G.
+Then open `http://127.0.0.1:3000` in browser!
 
 ## SUPPORT
 Feel free to chat with developers directly on [Facebook](https://www.facebook.com/Blacksmith2D/), [Discord](https://discord.gg/HWzzCcy) or [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ). Have other questions? Feel free to contact support by <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.
