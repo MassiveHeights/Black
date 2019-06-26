@@ -98,17 +98,6 @@ export class Renderer {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
 
-    // if (session.isBackBufferActive === false) {
-    //   if (session.customTransform === null) {
-    //     transform = transform.clone(); // TODO: too much allocations
-    //     transform.data[4] -= Black.stage.mX;
-    //     transform.data[5] -= Black.stage.mY;
-    //   } else {
-    //     transform = transform.clone(); // TODO: too much allocations
-    //     transform.prepend(session.customTransform);
-    //   }
-    // }
-
     driver.setSnapToPixels(gameObject.snapToPixels);
     driver.setGlobalAlpha(this.alpha);
     driver.setGlobalBlendMode(this.blendMode);

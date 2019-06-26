@@ -13,6 +13,7 @@ Black Engine: Changelog
 - Changed Engine, MasterAudio, Input, Viewport to use `__initialize` method for initialization so constructor can be overriden
 - Changed `Device` to `Black.device`
 - Changed `Device#isLandscape` to `Black.viewport.isLandscape`, same for `isPortrait`.
+- Changed `TextField#color` to `TextField#textColor`
 
 ### Bug Fixes
 - Fixed all circular dependencies
