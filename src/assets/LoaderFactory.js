@@ -3,6 +3,7 @@ import { LoaderType } from "./LoaderType";
 
 /**
  * A factory object used to get or create a loader.
+ * @cat assets
  */
 export class LoaderFactory {
   /**

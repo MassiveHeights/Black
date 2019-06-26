@@ -2,7 +2,7 @@
  * @cat core
  * @enum {number}
  */
-export const DirtyFlag = {
+const DirtyFlag = {
   CLEAN: 0,         // Object is 100% cached
   LOCAL: 1,         // Local transformation is dirty 
   WORLD: 2,         // World transformation is dirty 
@@ -14,3 +14,5 @@ export const DirtyFlag = {
   DIRTY: 0xffffff,  // Everything is dirty, you, me, everything!
   WIRB: 78
 };
+
+export { DirtyFlag };

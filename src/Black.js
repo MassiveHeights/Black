@@ -5,31 +5,37 @@ class Black {
   constructor() {
     /**
      * @type {Engine}
+     * Returns current instance of Black Engine.
      */
     this.engine = null;
 
     /**
      * @type {Input}
+     * Returns current instance of Input system.
      */
     this.input = null;
 
     /**
      * @type {MasterAudio}
+     * Returns current instance of MasterAudio system.
      */
     this.audio = null;
 
     /**
      * @type {Time}
+     * Returns current instance of Time.
      */
     this.time = null;
 
     /**
      * @type {Device}
+     * Returns current instance of Device.
      */
     this.device = null;
 
     /**
      * Default instance. Sprite and other classes uses this instance to find textures by name.
+     * It will be automatically assigned when new AssetManager is created.
      * 
      * @private
      * @static
@@ -59,8 +65,6 @@ class Black {
   }
 
   /**
-   * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
-   * 
    * @readonly
    * @returns {number}
    */

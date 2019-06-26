@@ -5,8 +5,10 @@
  * @constant
  * @enum {string}
  */
-export const JointStyle = {
+const JointStyle = {
   BEVEL: 'bevel',
   MITER: 'miter',
   ROUND: 'round'
 };
+
+export { JointStyle };

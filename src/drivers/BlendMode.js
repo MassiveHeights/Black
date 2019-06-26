@@ -5,7 +5,7 @@
  * @constant
  * @enum {string}
  */
-export const BlendMode = {
+const BlendMode = {
   /** Inherits blend mode from parent display object */
   AUTO       : 'auto',
   NORMAL     : 'normal',
@@ -33,8 +33,9 @@ export const BlendMode = {
  * @static 
  * @constant 
  * @dict
+ * @private
  */
-export const CanvasBlendMode = {
+const CanvasBlendMode = {
   'auto'       : 'auto',
   'normal'     : 'source-over',
   'add'        : 'lighter',
@@ -56,3 +57,5 @@ export const CanvasBlendMode = {
   'mask'       : 'source-in',
   'maskInv'    : 'source-out'
 };
+
+export { BlendMode, CanvasBlendMode };

@@ -5,7 +5,9 @@
  * @constant
  * @enum {string}
  */
-export const FillRule = {
+const FillRule = {
   NONE_ZERO: 'nonzero',
   EVEN_ODD : 'evenodd',
 };
+
+export { FillRule };

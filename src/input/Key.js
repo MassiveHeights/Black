@@ -3,7 +3,7 @@
  * @enum {number}
  * @cat input
  */
-export const Key = {
+const Key = {
   /**
    * @type {number}
    */
@@ -401,3 +401,5 @@ export const Key = {
    */
   SPACE: 32
 };
+
+export { Key };

@@ -5,8 +5,10 @@
  * @constant
  * @enum {string}
  */
-export const LoaderType = {
+const LoaderType = {
   FONT_FACE : 'fontFace',
   IMAGE     : 'image',
   XHR       : 'xhr'
 };
+
+export { LoaderType };

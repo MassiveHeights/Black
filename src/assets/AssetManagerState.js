@@ -6,8 +6,10 @@
  * @constant
  * @enum {string}
  */
-export const AssetManagerState = {
+const AssetManagerState = {
   NONE     : 'none',
   LOADING  : 'loading',
   FINISHED : 'finished'
 };
+
+export { AssetManagerState };

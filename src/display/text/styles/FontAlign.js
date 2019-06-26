@@ -4,9 +4,11 @@
  * @constant
  * @enum {string}
  */
-export const FontAlign = {
+const FontAlign = {
   NONE: 'none',
   LEFT: 'left',
   RIGHT: 'right',
   CENTER: 'center'
 };
+
+export { FontAlign };

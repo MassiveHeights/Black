@@ -4,8 +4,10 @@
  * @constant
  * @enum {string}
  */
-export const FontVerticalAlign = {
+const FontVerticalAlign = {
   TOP: 'top',
   MIDDLE: 'middle',
   BOTTOM: 'bottom'
 };
+
+export { FontVerticalAlign };

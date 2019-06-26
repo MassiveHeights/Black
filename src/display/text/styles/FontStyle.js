@@ -4,7 +4,9 @@
  * @constant
  * @enum {string}
  */
-export const FontStyle = {
+const FontStyle = {
   NORMAL: 'normal',
   ITALIC: 'italic'
 };
+
+export { FontStyle };

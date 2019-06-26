@@ -5,7 +5,9 @@
  * @constant
  * @enum {string}
  */
-export const MessageType = {
+const MessageType = {
   DIRECT: 'direct',
   BUBBLE: 'bubble'
 };
+
+export { MessageType };

@@ -3,7 +3,9 @@
  * @cat particles
  * @enum {string}
  */
-export const EmitterSortOrder = {
+const EmitterSortOrder = {
   FRONT_TO_BACK: 'frontToBack',
   BACK_TO_FRONT: 'backToFront'
 };
+
+export { EmitterSortOrder };

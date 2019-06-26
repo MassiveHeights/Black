@@ -5,7 +5,7 @@
  * @constant
  * @enum {string}
  */
-export const AssetType = {
+const AssetType = {
   TEXTURE              : 'texture',
   TEXTURE_ATLAS        : 'textureAtlas',
   VECTOR_TEXTURE       : 'vectorTexture',
@@ -18,3 +18,5 @@ export const AssetType = {
   SOUND                : 'sound',
   SOUND_ATLAS          : 'soundAtlas'
 };
+
+export { AssetType };

@@ -5,8 +5,10 @@
  * @constant
  * @enum {string}
  */
-export const CapsStyle = {
+const CapsStyle = {
   NONE: 'none',
   ROUND: 'round',
   SQUARE: 'square'
 };
+
+export { CapsStyle };

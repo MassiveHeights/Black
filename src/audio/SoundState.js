@@ -5,10 +5,12 @@
  * @cat audio
  * @enum {string}
  */
-export const SoundState = {
+const SoundState = {
   NEWBORN: 'newborn',
   PLAYING: 'playing',
   PAUSED: 'paused',
   STOPPED: 'stopped',
   COMPLETED: 'completed'
 };
+
+export { SoundState };

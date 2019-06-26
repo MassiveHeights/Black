@@ -4,7 +4,9 @@
  * @constant
  * @enum {string}
  */
-export const FontWeight = {
+const FontWeight = {
   NORMAL: '400',
   BOLD: '700'
 };
+
+export { FontWeight };
