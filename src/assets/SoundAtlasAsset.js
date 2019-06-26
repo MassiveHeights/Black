@@ -62,10 +62,10 @@ export class SoundAtlasAsset extends Asset {
    */
   onLoaderRequested(factory) {
     this.mAudioXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
-    this.mAudioXHR.mimeType = 'arraybuffer';
+    this.mAudioXHR.responseType = 'arraybuffer';
     this.addLoader(this.mAudioXHR);
 
-    this.mDataXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
+    this.mDataXHR = factory.get(LoaderType.XHR, this.mDataUrl);
     this.mDataXHR.mimeType = 'application/json';
     this.mDataXHR.responseType = 'json';
     this.addLoader(this.mDataXHR);

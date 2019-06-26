@@ -3990,31 +3990,37 @@ class Black {
   constructor() {
     /**
      * @type {Engine}
+     * Returns current instance of Black Engine.
      */
     this.engine = null;
 
     /**
      * @type {Input}
+     * Returns current instance of Input system.
      */
     this.input = null;
 
     /**
      * @type {MasterAudio}
+     * Returns current instance of MasterAudio system.
      */
     this.audio = null;
 
     /**
      * @type {Time}
+     * Returns current instance of Time.
      */
     this.time = null;
 
     /**
      * @type {Device}
+     * Returns current instance of Device.
      */
     this.device = null;
 
     /**
      * Default instance. Sprite and other classes uses this instance to find textures by name.
+     * It will be automatically assigned when new AssetManager is created.
      * 
      * @private
      * @static
@@ -4044,8 +4050,6 @@ class Black {
   }
 
   /**
-   * `Black.magic`! Got it? Got it?!?! Same as `Math.random()` but much cooler.
-   * 
    * @readonly
    * @returns {number}
    */
@@ -5741,6 +5745,7 @@ const BlendMode = {
  * @static 
  * @constant 
  * @dict
+ * @private
  */
 const CanvasBlendMode = {
   'auto'       : 'auto',
@@ -12556,10 +12561,10 @@ class SoundAtlasAsset extends Asset {
    */
   onLoaderRequested(factory) {
     this.mAudioXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
-    this.mAudioXHR.mimeType = 'arraybuffer';
+    this.mAudioXHR.responseType = 'arraybuffer';
     this.addLoader(this.mAudioXHR);
 
-    this.mDataXHR = factory.get(LoaderType.XHR, this.mSoundUrl);
+    this.mDataXHR = factory.get(LoaderType.XHR, this.mDataUrl);
     this.mDataXHR.mimeType = 'application/json';
     this.mDataXHR.responseType = 'json';
     this.addLoader(this.mDataXHR);
@@ -15419,6 +15424,7 @@ const AssetManagerState = {
 
 /**
  * A factory object used to get or create a loader.
+ * @cat assets
  */
 class LoaderFactory {
   /**
