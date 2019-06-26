@@ -16,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/MassiveHeights/Black.git"
   },
-  "author": "Borna Technology Ltd.",
+  "author": "Massive Heights",
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "google-closure-compiler": "^20190415.0.0",
