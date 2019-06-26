@@ -1,10 +1,11 @@
+import { Vector } from "./Vector";
+
 /**
  * Mathematical representation of a bezier curve.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Line {
+export class Line {
   /**
    * Creates new Line instance.
    * @param  {Vector} start Start point.

@@ -1,5 +1,4 @@
-/* @echo EXPORT */
-class Perlin {
+export class Perlin {
   constructor(repeat = 0) {
     this.mRepeat = 0;
     this.mPerm = [];

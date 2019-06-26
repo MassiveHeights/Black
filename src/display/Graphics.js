@@ -1,3 +1,12 @@
+import { DisplayObject } from "./DisplayObject";
+import { Rectangle } from "../geom/Rectangle";
+import { Black } from "../Black";
+import { GraphicsLinearGradient } from "./GraphicsLinearGradient";
+import { CapsStyle } from "./CapsStyle";
+import { GraphicsData } from "./GraphicsData";
+import { JointStyle } from "./JointStyle";
+import { Matrix } from "../geom/Matrix";
+
 /**
  * A basic utility class for drawing shapes.
  *
@@ -5,8 +14,7 @@
  * @extends DisplayObject
  */
 
-/* @echo EXPORT */
-class Graphics extends DisplayObject {
+export class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.
    *
@@ -58,7 +66,7 @@ class Graphics extends DisplayObject {
     if (graphicsData === null) {
       this.mGraphicsData = new GraphicsData();
     } else if (typeof graphicsData === 'string') {
-      this.mGraphicsData = AssetManager.default.getGraphicsData(graphicsData);
+      this.mGraphicsData = Black.assets.getGraphicsData(graphicsData);
     } else {
       this.mGraphicsData = graphicsData;
     }

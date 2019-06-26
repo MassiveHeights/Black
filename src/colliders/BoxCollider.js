@@ -1,3 +1,7 @@
+import { Collider } from "./Collider";
+import { Vector } from "../geom/Vector";
+import { Rectangle } from "../geom/Rectangle";
+
 /**
  * Collider with rectangle shape.
  *
@@ -5,9 +9,7 @@
  * @extends Collider
  */
 
-/* @echo EXPORT */
-class BoxCollider extends Collider {
-
+export class BoxCollider extends Collider {
   /**
    * Creates instance of BoxCollider.
    *

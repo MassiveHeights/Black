@@ -11,7 +11,6 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
 const StageScaleMode = {
   /** The stage size will be the same no matter what DPI is */
   NORMAL: 'normal',
@@ -24,3 +23,6 @@ const StageScaleMode = {
   /** The stage size will be equal to requested size, position will be centered, and cover the viewport */
   COVER: 'cover'
 };
+
+
+export { StageScaleMode };

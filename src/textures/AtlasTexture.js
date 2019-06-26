@@ -1,11 +1,15 @@
+import { Texture } from "./Texture";
+import { Rectangle } from "../geom/Rectangle";
+import { Vector } from "../geom/Vector";
+import { Debug } from "../core/Debug";
+
 /**
  * A texture atlas.
  *
  * @cat textures
  * @extends Texture
  */
-/* @echo EXPORT */
-class AtlasTexture extends Texture {
+export class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
     super(nativeElement, null, null, scale);
 
@@ -15,7 +19,7 @@ class AtlasTexture extends Texture {
      */
     this.mSubTextures = {};
 
-    this.__parseJson(jsonObject, scale);
+    this.__parseAtlasData(jsonObject, scale);
   }
 
   /**
@@ -25,7 +29,7 @@ class AtlasTexture extends Texture {
    * @param {number} scale
    * @return {void}
    */
-  __parseJson(o, scale) {
+  __parseAtlasData(o, scale) {
     for (let key in o.frames) {
       const data = /** @type {Array<number>} */ (o.frames[key]);
       const region = new Rectangle(data[0], data[1], data[2], data[3]);

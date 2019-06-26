@@ -1,10 +1,14 @@
+import { ObjectPool } from "../utils/ObjectPool";
+import { Debug } from "../core/Debug";
+import { Rectangle } from "./Rectangle";
+import { Vector } from "./Vector";
+
 /**
  * A 2x3 matrix allows you to transform objects in space.
  *
  * @cat geom
  */
-/* @echo EXPORT */
-class Matrix {
+export class Matrix {
   /**
    * Creates new Matrix instance.
    *

@@ -1,11 +1,14 @@
+import { Scatter } from "./Scatter";
+import { Curve } from "../geom/Curve";
+import { Vector } from "../geom/Vector";
+
 /**
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class FloatCurveScatter extends Scatter {
+export class FloatCurveScatter extends Scatter {
   /**
    * Creates new FloatCurveScatter instance.
    *

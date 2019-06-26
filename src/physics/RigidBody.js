@@ -1,3 +1,10 @@
+import { Component } from "../core/Component";
+import { BoxCollider } from "../colliders/BoxCollider";
+import { Vector } from "../geom/Vector";
+import { Matrix } from "../geom/Matrix";
+import { Black } from "../Black";
+import { DisplayObject } from "../display/DisplayObject";
+
 /**
  * RigidBody is used to describe physics properties of game object colliders
  *
@@ -5,8 +12,7 @@
  * @extends Component
  */
 
-/* @echo EXPORT */
-class RigidBody extends Component {
+export class RigidBody extends Component {
   /**
    * Creates new instance of RigidBody.
    */

@@ -1,13 +1,26 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+import { Component } from "./Component";
+import { Renderer } from "../drivers/Renderer";
+import { Rectangle } from "../geom/Rectangle";
+import { Matrix } from "../geom/Matrix";
+import { Collider } from "../colliders/Collider";
+import { Debug } from "./Debug";
+import { Black } from "../Black";
+import { InputComponent } from "../input/InputComponent";
+import { Vector } from "../geom/Vector";
+import { DirtyFlag } from "./DirtyFlag";
+import { MathEx } from "../math/MathEx";
+
+let ID = 0;
+
 /**
  * Building block in Black Engine.
  *
  * @cat core
- * @export
  * @unrestricted
  * @extends MessageDispatcher
  */
-/* @echo EXPORT */
-class GameObject extends MessageDispatcher {
+export class GameObject extends MessageDispatcher {
   /**
    * Creates new instance of GameObject.
    */
@@ -18,7 +31,7 @@ class GameObject extends MessageDispatcher {
      * @private 
      * @type {number} 
      */
-    this.mId = ++GameObject.ID;
+    this.mId = ++ID;
 
     /** 
      * @private 
@@ -249,11 +262,11 @@ class GameObject extends MessageDispatcher {
    */
   checkStatic(includeChildren = true) {
     if (includeChildren === false)
-      return this.mDirtyFrameNum < Black.frameNum;
+      return this.mDirtyFrameNum < Black.engine.frameNum;
 
     let isDynamic = false;
     GameObject.forEach(this, x => {
-      if (x.mDirtyFrameNum >= Black.frameNum) {
+      if (x.mDirtyFrameNum >= Black.engine.frameNum) {
         isDynamic = true;
         return true;
       }
@@ -331,8 +344,7 @@ class GameObject extends MessageDispatcher {
     child.removeFromParent();
     child.__setParent(this);
 
-    if (this.root instanceof Stage)
-      Black.instance.onChildrenAdded(child);
+    Black.engine.onChildrenAdded(child, this);
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -380,7 +392,7 @@ class GameObject extends MessageDispatcher {
     this.mChildren.splice(index, 0, child);
 
     if (this.stage !== null)
-      Black.instance.onChildrenChanged(child);
+      Black.engine.onChildrenChanged(child);
 
     this.setTransformDirty();
 
@@ -448,7 +460,7 @@ class GameObject extends MessageDispatcher {
     this.mChildren.splice(index, 1);
 
     if (hadRoot)
-      Black.instance.onChildrenRemoved(child);
+      Black.engine.onChildrenRemoved(child);
 
     this.setTransformDirty();
     this.mNumChildrenRemoved++;
@@ -503,7 +515,7 @@ class GameObject extends MessageDispatcher {
       this.mCollidersCache.push(component);
 
     if (this.stage !== null || Black.stage === this) {
-      Black.instance.onComponentAdded(this, component);
+      Black.engine.onComponentAdded(this, component);
     }
 
     this.mChildOrComponentBeenAdded = true;
@@ -537,7 +549,7 @@ class GameObject extends MessageDispatcher {
     }
 
     if (this.stage !== null || Black.stage === this) {
-      Black.instance.onComponentRemoved(this, instance);
+      Black.engine.onComponentRemoved(this, instance);
     }
 
     this.mNumComponentsRemoved++;
@@ -762,22 +774,6 @@ class GameObject extends MessageDispatcher {
    * @return {void}
    */
   onUpdate() { }
-
-  /**
-   * Called every time `GameObject` has to be rendered. Doesn't render itself. Collects render data to be processed by 
-   * video driver after. 
-   * 
-   * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
-   *
-   * @protected
-   * @param {VideoNullDriver} driver Current registered video driver.
-   * @param {Renderer} parentRenderer Renderer of parent `GameObject` if there is one.
-   * @param {boolean=} [isBackBufferActive=false] Specifies if render to backBuffer.
-   * @return {Renderer}
-   */
-  onCollectRenderables(driver, parentRenderer, isBackBufferActive = false) {
-    return null;
-  }
 
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
@@ -1044,7 +1040,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the name of this GameObject instance.
    *
-   * @export
    * @return {string|null}
    */
   get name() {
@@ -1052,7 +1047,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {string|null} value
    * @return {void}
    */
@@ -1062,7 +1056,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/Sets the x coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
-   * @export
    * @return {number}
    */
   get x() {
@@ -1070,7 +1063,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1087,7 +1079,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the GameObject instance relative to the local coordinates of the parent GameObject.
    *
-   * @export
    * @return {number}
    */
   get y() {
@@ -1095,7 +1086,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1112,7 +1102,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetX() {
@@ -1120,7 +1109,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1139,7 +1127,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y coordinate of the object's origin in its local space in pixels.
    *
-   * @export
    * @return {number}
    */
   get pivotOffsetY() {
@@ -1147,7 +1134,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1166,7 +1152,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the x-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -1184,7 +1169,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the y-coordinate of the object's origin in its local space in percent.
    * 
-   * @export
    * @param {number|null} value
    * @return {void}
    */
@@ -1202,7 +1186,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-x value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorX() {
@@ -1212,7 +1195,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns current anchor-y value in range from 0 to 1.
    * 
-   * @export
    * @returns {number|null}
    */
   get anchorY() {
@@ -1296,7 +1278,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along x-axis.
    *
-   * @export
    * @return {number}
    */
   get scaleX() {
@@ -1304,7 +1285,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    *
    * @return {void}
@@ -1322,7 +1302,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets the scale factor of this object along y-axis.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -1331,7 +1310,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1347,7 +1325,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets both `scaleX` and `scaleY`. Getter will return `scaleX` value;
-   * @export
    * @returns {number}
    */
   get scale() {
@@ -1355,7 +1332,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1372,7 +1348,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets horizontal skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewX() {
@@ -1380,7 +1355,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1397,7 +1371,6 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Gets/sets vertical skew angle in radians.
-   * @export
    * @returns {number}
    */
   get skewY() {
@@ -1405,7 +1378,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * 
    * @returns {void}
@@ -1423,7 +1395,6 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/Sets rotation in radians.
    *
-   * @export
    * 
    * @return {number}
    */
@@ -1432,7 +1403,6 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @export
    * @param {number} value
    * @return {void}
    */
@@ -1589,7 +1559,7 @@ class GameObject extends MessageDispatcher {
     this.mTag = value;
 
     if (this.mAdded)
-      Black.instance.onTagUpdated(this, old, value);
+      Black.engine.onTagUpdated(this, old, value);
   }
 
   /**
@@ -1647,11 +1617,11 @@ class GameObject extends MessageDispatcher {
     if (includeChildren) {
       GameObject.forEach(this, x => {
         x.mDirty |= flag;
-        x.mDirtyFrameNum = Black.frameNum;
+        x.mDirtyFrameNum = Black.engine.frameNum;
       });
     } else {
       this.mDirty |= flag;
-      this.mDirtyFrameNum = Black.frameNum;
+      this.mDirtyFrameNum = Black.engine.frameNum;
     }
 
     Renderer.__dirty = true;
@@ -1679,7 +1649,7 @@ class GameObject extends MessageDispatcher {
     let current = this;
     while (current != null) {
       current.mDirty |= flag;
-      current.mDirtyFrameNum = Black.frameNum;
+      current.mDirtyFrameNum = Black.engine.frameNum;
       current = current.mParent;
     }
 
@@ -1857,10 +1827,10 @@ class GameObject extends MessageDispatcher {
    * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
-    if (Black.instance.mTagCache.hasOwnProperty(tag) === false)
+    if (Black.engine.mTagCache.hasOwnProperty(tag) === false)
       return null;
 
-    return Black.instance.mTagCache[tag];
+    return Black.engine.mTagCache[tag];
   }
 
   /**
@@ -1967,28 +1937,3 @@ class GameObject extends MessageDispatcher {
     return null;
   }
 }
-
-/**
- * @private
- * @type {number}
- * @nocollapse
- */
-GameObject.ID = 0;
-
-/**
- * @cat core
- * @enum {number}
- */
-/* @echo EXPORT */
-const DirtyFlag = {
-  CLEAN: 0,         // Object is 100% cached
-  LOCAL: 1,         // Local transformation is dirty 
-  WORLD: 2,         // World transformation is dirty 
-  WORLD_INV: 4,     // Inverted world transformation is dirty 
-  RENDER: 8,        // Object needs to be rendered 
-  RENDER_CACHE: 16, // In case object renders to bitmap internally, bitmap needs to be updated
-  ANCHOR: 32,       // 
-  BOUNDS: 64,       // Parent-relative bounds needs update
-  DIRTY: 0xffffff,  // Everything is dirty, you, me, everything!
-  WIRB: 78
-};

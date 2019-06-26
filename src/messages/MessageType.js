@@ -5,8 +5,9 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
 const MessageType = {
   DIRECT: 'direct',
   BUBBLE: 'bubble'
 };
+
+export { MessageType };

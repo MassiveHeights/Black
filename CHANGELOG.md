@@ -1,6 +1,26 @@
 Black Engine: Changelog
 =======================
 
+# v0.5.10
+### Changes
+- Changed API: all static classes are moved into Black class
+- Changed `Input` to `Black.input`
+- Changed `MasterAudio` to `Black.audio`
+- Changed `Time` to `Black.time`
+- Changed `AssetManager.default` to `Black.assets`
+- Changed `Black` to `Black.engine
+- Changed bundler to Rollup
+- Changed Engine, MasterAudio, Input, Viewport to use `__initialize` method for initialization so constructor can be overriden
+- Changed `Device` to `Black.device`
+- Changed `Device#isLandscape` to `Black.viewport.isLandscape`, same for `isPortrait`.
+- Changed `TextField#color` to `TextField#textColor`
+
+### Bug Fixes
+- Fixed all circular dependencies
+- Fixed clipRect is not working for emitter
+- Fixed AssetManager dispose logic
+- Code and JsDoc cleanup
+
 # v0.5.9
 ### New features
 - Added new stage scale mode - Cover! (Thanks to m31271n)

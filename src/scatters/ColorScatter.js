@@ -1,5 +1,7 @@
-/* @echo EXPORT */
-class ColorScatter extends Scatter {
+import { Scatter } from "./Scatter";
+import { ColorHelper } from "../utils/ColorHelper";
+
+export class ColorScatter extends Scatter {
   
   constructor(color1, color2 = NaN, ease = null) {
     super();

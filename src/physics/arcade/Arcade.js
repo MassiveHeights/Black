@@ -1,3 +1,16 @@
+import { System } from "../../core/System";
+import { BroadPhase } from "./phases/BroadPhase";
+import { BoxCollider } from "../../colliders/BoxCollider";
+import { Vector } from "../../geom/Vector";
+import { GameObject } from "../../core/GameObject";
+import { Collider } from "../../colliders/Collider";
+import { RigidBody } from "../RigidBody";
+import { Black } from "../../Black";
+import { BoxToCirclePair } from "./pairs/BoxToCirclePair";
+import { CircleToCirclePair } from "./pairs/CircleToCirclePair";
+import { BoxToBoxPair } from "./pairs/BoxToBoxPair";
+import { Pair } from "./pairs/Pair";
+
 /**
  * Simple AABB physics engine (beta).
  *
@@ -5,8 +18,7 @@
  * @extends System
  */
 
-/* @echo EXPORT */
-class Arcade extends System {
+export class Arcade extends System {
   /**
    * Creates new Arcade instance.
    */

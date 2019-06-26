@@ -1,10 +1,15 @@
+import { BlendMode } from "./BlendMode";
+import { Texture } from "../textures/Texture";
+import { ColorHelper } from "../utils/ColorHelper";
+import { MapMap } from "../utils/MapMap";
+import { RenderTargetCanvas } from "./canvas/RenderTargetCanvas";
+
 /**
  * A render unit. Base class for all renderables.
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class Renderer {
+export class Renderer {
   /**
    * Creates new instance of Renderer.
    */
@@ -92,17 +97,6 @@ class Renderer {
   upload(driver, session) {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
     let transform = gameObject.worldTransformation;
-
-    // if (session.isBackBufferActive === false) {
-    //   if (session.customTransform === null) {
-    //     transform = transform.clone(); // TODO: too much allocations
-    //     transform.data[4] -= Black.stage.mX;
-    //     transform.data[5] -= Black.stage.mY;
-    //   } else {
-    //     transform = transform.clone(); // TODO: too much allocations
-    //     transform.prepend(session.customTransform);
-    //   }
-    // }
 
     driver.setSnapToPixels(gameObject.snapToPixels);
     driver.setGlobalAlpha(this.alpha);

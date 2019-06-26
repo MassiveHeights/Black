@@ -1,3 +1,11 @@
+import { Renderer } from "../Renderer";
+import { CanvasRenderTexture } from "../../textures/CanvasRenderTexture";
+import { Rectangle } from "../../geom/Rectangle";
+import { Black } from "../../Black";
+import { Matrix } from "../../geom/Matrix";
+import { BlendMode } from "../BlendMode";
+import { DirtyFlag } from "../../core/DirtyFlag";
+
 /**
  * Renders `DisplayObject` objects on canvas.
  *
@@ -5,8 +13,7 @@
  * @cat drivers.canvas
  */
 
-/* @echo EXPORT */
-class DisplayObjectRendererCanvas extends Renderer {
+export class DisplayObjectRendererCanvas extends Renderer {
   constructor() {
     super();
 

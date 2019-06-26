@@ -5,9 +5,10 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
 const CapsStyle = {
   NONE: 'none',
   ROUND: 'round',
   SQUARE: 'square'
 };
+
+export { CapsStyle };

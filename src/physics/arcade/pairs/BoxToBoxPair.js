@@ -1,11 +1,16 @@
+import { Pair } from "./Pair";
+import { ObjectPool } from "../../../utils/ObjectPool";
+import { Projection } from "../helpers/Projection";
+
+var pool = null;
+
 /**
  * BoxToBoxPair is used to test collision within boxes
  *
  * @cat physics.arcade.pairs
  * @extends Pair
  */
-/* @echo EXPORT */
-class BoxToBoxPair extends Pair {
+export class BoxToBoxPair extends Pair {
   /**
    * Creates new instance of BoxToBoxPair.
    */
@@ -153,6 +158,11 @@ class BoxToBoxPair extends Pair {
 
     return this.mInCollision = true;
   }
-}
 
-BoxToBoxPair.pool = new ObjectPool(BoxToBoxPair, 100);
+  static get pool() {
+    if (pool === null)
+      pool = new ObjectPool(BoxToBoxPair, 100);
+
+    return pool;
+  }
+}

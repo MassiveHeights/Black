@@ -4,8 +4,7 @@
  * @cat animation
  * @static
  */
-/* @echo EXPORT */
-class Ease {
+export class Ease {
   /**
    * linear
    * 

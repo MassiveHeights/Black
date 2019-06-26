@@ -1,10 +1,11 @@
+import { Debug } from "../core/Debug";
+
 /**
  * A simple object pool class. Used to avoid GC.
  * 
  * @cat utils
  */
-/* @echo EXPORT */
-class ObjectPool {
+export class ObjectPool {
   /**
    * Creates new ObjectPool instance.
    * @param {Function} type 

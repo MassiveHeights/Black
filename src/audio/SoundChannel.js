@@ -1,10 +1,15 @@
+import { SoundInstance } from "./SoundInstance";
+import { SoundEffect } from "./SoundEffect";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+import { Message } from "../messages/Message";
+
 /**
  * Sound channel
  * 
  * @cat audio
  */
-/* @echo EXPORT */
-class SoundChannel {
+export class SoundChannel {
   /**
    * Creates instance of SoundChannel with specific name
    * 
@@ -22,7 +27,7 @@ class SoundChannel {
      * @private 
      * @type {!GainNode} 
      */
-    this.mGain = MasterAudio._newGainNode();
+    this.mGain = Black.audio._newGainNode();
 
     /** 
      * @private 

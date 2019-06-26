@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets initial particle mass value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialMass extends Modifier {
+export class InitialMass extends Modifier {
   /**
    * Creates new InitialMass instance.
    *

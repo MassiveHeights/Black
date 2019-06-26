@@ -2,8 +2,7 @@
  * Class that holds information about tiling,
  * @cat display
  */
-/* @echo EXPORT */
-class TilingInfo {
+export class TilingInfo {
   /**
    * Creates new TilingInfo instance.
    * 

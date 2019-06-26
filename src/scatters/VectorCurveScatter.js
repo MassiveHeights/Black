@@ -1,11 +1,14 @@
+import { Scatter } from "./Scatter";
+import { Curve } from "../geom/Curve";
+import { Vector } from "../geom/Vector";
+
 /**
  * Sets particle's starting velocity.
  *
  * @cat scatters
  * @extends Scatter
  */
-/* @echo EXPORT */
-class VectorCurveScatter extends Scatter {
+export class VectorCurveScatter extends Scatter {
   /**
    * Creates new VectorCurveScatter instance.
    *

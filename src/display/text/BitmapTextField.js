@@ -1,11 +1,18 @@
+import { DisplayObject } from "../DisplayObject";
+import { AssetManager } from "../../assets/AssetManager";
+import { BitmapFontData } from "../../assets/BitmapFontAsset";
+import { Rectangle } from "../../geom/Rectangle";
+import { Black } from "../../Black";
+import { DirtyFlag } from "../../core/DirtyFlag";
+import { TextMetricsEx } from "./TextMetrics";
+
 /**
  * This class is used to create display text.
  *
  * @cat display.text
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class BitmapTextField extends DisplayObject {
+export class BitmapTextField extends DisplayObject {
   /**
    * Create new instance of BitmapTextField.
    *
@@ -16,7 +23,7 @@ class BitmapTextField extends DisplayObject {
     super();
 
     if (font !== null && font.constructor === String)
-      this.mData = AssetManager.default.getBitmapFont(/** @type {string} */(font));
+      this.mData = Black.assets.getBitmapFont(/** @type {string} */(font));
     else
       this.mData = /** @type {BitmapFontData} */ (font);
 
@@ -225,10 +232,3 @@ class BitmapTextField extends DisplayObject {
     this.setDirty(DirtyFlag.RENDER_CACHE, false);
   }
 }
-
-/**
- * @ignore
- * @static
- * @private
- */
-TextField.__cache = null;

@@ -1,11 +1,15 @@
+import { Debug } from "../core/Debug";
+import { Message } from "../messages/Message";
+import { Time } from "../core/Time";
+import { Black } from "../Black";
+
 /**
  * Holds details about sprite animation.
  *
  * @fires AnimationInfo#complete
  * @cat animation
  */
-/* @echo EXPORT */
-class AnimationInfo {
+export class AnimationInfo {
   /**
    * Creates an instance of Animation class
    *
@@ -106,7 +110,7 @@ class AnimationInfo {
     this.mStopped = false;
     this.mCompleted = false;
 
-    this.mNextFrameAt = Time.now + this.mFrameDuration - this.mElapsed;
+    this.mNextFrameAt = Black.time.now + this.mFrameDuration - this.mElapsed;
     this.mElapsed = 0;
 
     return this.mFrames[this.mCurrentFrame];
@@ -131,7 +135,7 @@ class AnimationInfo {
    */
   __pause() {
     this.mPaused = true;
-    this.mElapsed = this.mNextFrameAt - Time.now;
+    this.mElapsed = this.mNextFrameAt - Black.time.now;
   }
 
   /**
@@ -139,8 +143,8 @@ class AnimationInfo {
    * @return {Texture|null}
    */
   __update() {
-    let t = Time.now;
-    let dt = Time.dt;
+    let t = Black.time.now;
+    let dt = Black.time.dt;
     
     if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
       return null;
@@ -164,7 +168,7 @@ class AnimationInfo {
       }
     }
 
-    this.mNextFrameAt = Time.now + this.mFrameDuration;
+    this.mNextFrameAt = Black.time.now + this.mFrameDuration;
     return this.mFrames[this.mCurrentFrame];
   }
 
@@ -188,7 +192,7 @@ class AnimationInfo {
     this.mFrameDuration = 1 / this.mFPS;
 
     // update next frame start time
-    this.mNextFrameAt += this.mNextFrameAt - Time.now;
+    this.mNextFrameAt += this.mNextFrameAt - Black.time.now;
   }
 
   /**

@@ -1,12 +1,15 @@
+import { Pair } from "./Pair";
+import { ObjectPool } from "../../../utils/ObjectPool";
+
+var pool = null;
+
 /**
  * CircleToCirclePair is used to test collision within circles colliders.
  *
  * @cat physics.arcade.pairs
  * @extends Pair
  */
-/* @echo EXPORT */
-class CircleToCirclePair extends Pair {
-
+export class CircleToCirclePair extends Pair {
   /**
    * Creates new instance of CircleToCirclePair.
    */
@@ -79,6 +82,11 @@ class CircleToCirclePair extends Pair {
 
     return this.mInCollision = true;
   }
-}
 
-CircleToCirclePair.pool = new ObjectPool(CircleToCirclePair, 100);
+  static get pool() {
+    if (pool === null)
+      pool = new ObjectPool(CircleToCirclePair, 100);
+
+    return pool;
+  }
+}

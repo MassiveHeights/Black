@@ -1,50 +1,29 @@
 {
   "name": "black-engine",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "",
-  "main": "dist/black-es6-module.js",
+  "main": "src/index.js",
+  "module": "dist/black-engine.module.js",
+  "jsnext:main": "src/black-engine.module.js",
+  "browser": "dist/black-engine.min.js",
   "directories": {},
   "scripts": {
-    "start": "gulp",
-    "docs": "node scripts/docs.js",
-    "watch-es5": "gulp watch-es5",
-    "watch-es6": "gulp watch-es6",
-    "watch-es6-module": "gulp watch-es6-module",
-    "watch-test": "gulp watch-test",
-    "postinstall": "gulp",
-    "test": "jest --config jest.config.json --runInBand --silent",
-    "test-watch": "jest --config jest.config.json --runInBand --watch",
-    "coverage": "jest --coverage --config jest.config.json --runInBand --silent",
-    "examples": "gulp examples",
-    "template": "gulp template"
+    "start": "npm run build",
+    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black-engine.js --js_output_file dist/black-engine.min.js",
+    "docs": "node scripts/docs.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MassiveHeights/Black.git"
   },
-  "author": "Massive Heights",
+  "author": "Borna Technology Ltd.",
   "license": "SEE LICENSE IN LICENSE.md",
-  "dependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-concat": "^1.0.3",
-    "babel-core": "^6.5.2",
-    "babel-plugin-root-import": "^5.1.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "browser-sync": "^2.18.12",
-    "google-closure-compiler": "^20161024.3.0",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-concat": "^2.6.0",
-    "gulp-preprocess": "^2.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.6.1",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-template": "^4.0.0",
-    "gulp-watch": "^4.3.5",
-    "jest": "^22.4.2",
+  "devDependencies": {
+    "google-closure-compiler": "^20190415.0.0",
     "jsdoc": "^3.4.3",
-    "jsdoc-to-markdown": "^3.0.0",
-    "jsdom": "^11.11.0"
+    "jsdoc-to-markdown": "^4.0.1",
+    "jsdom": "^11.11.0",
+    "rollup": "^1.10.0",
+    "rollup-plugin-license": "^0.8.1"
   }
 }

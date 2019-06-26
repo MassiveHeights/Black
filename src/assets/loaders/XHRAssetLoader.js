@@ -1,11 +1,12 @@
+import { AssetLoader } from "./AssetLoader";
+
 /**
  * XHRAssetLoader responsible for loading data via XMLHttpRequest.
  *
  * @cat assets.loaders
  * @extends AssetLoader
  */
-/* @echo EXPORT */
-class XHRAssetLoader extends AssetLoader {
+export class XHRAssetLoader extends AssetLoader {
   constructor(url) {
     super(url);
 
@@ -59,7 +60,7 @@ class XHRAssetLoader extends AssetLoader {
   /**
    * @inheritDoc
    */
-  abort() {
+  onAbort() {
     this.mRequest.abort();
   }
 }

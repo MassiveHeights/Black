@@ -1,11 +1,15 @@
+import { Asset } from "./Asset";
+import { XHRAssetLoader } from "./loaders/XHRAssetLoader";
+import { AssetType } from "./AssetType";
+import { LoaderType } from "./LoaderType";
+
 /**
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
  * @extends Asset
  */
-/* @echo EXPORT */
-class JSONAsset extends Asset {
+export class JSONAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
    *
@@ -14,14 +18,28 @@ class JSONAsset extends Asset {
    * @return {void}
    */
   constructor(name, url) {
-    super(name);
+    super(AssetType.JSON, name);
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.mUrl = url;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader} 
+     * @type {XHRAssetLoader|null} 
      */
-    this.mXHR = new XHRAssetLoader(url);
+    this.mXHR = null;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onLoaderRequested(factory) {
+    this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 

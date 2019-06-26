@@ -1,11 +1,16 @@
+import { DisplayObject } from "./DisplayObject";
+import { Texture } from "../textures/Texture";
+import { Black } from "../Black";
+import { Rectangle } from "../geom/Rectangle";
+import { DirtyFlag } from "../core/DirtyFlag";
+
 /**
  * Sprite is used to render Texture onto screen.
  *
  * @cat display
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class Sprite extends DisplayObject {
+export class Sprite extends DisplayObject {
   /**
    * Creates a new Sprite instance.
    *
@@ -46,7 +51,7 @@ class Sprite extends DisplayObject {
 
     if (texture !== null && texture.constructor === String) {
       this.mTextureName = /** @type {string} */ (texture);
-      this.texture = AssetManager.default.getTexture(/** @type {string} */(texture));
+      this.texture = Black.assets.getTexture(/** @type {string} */(texture));
     } else {
       this.texture = /** @type {Texture} */ (texture);
     }
@@ -93,7 +98,7 @@ class Sprite extends DisplayObject {
 
   /**
    * Sets the Texture on this sprite by name.
-   * Only AssetManager.default is used.
+   * Only Black.assets is used.
    *
    * @param {Texture|null} texture Texture to apply on.
    * @return {void}
@@ -135,7 +140,7 @@ class Sprite extends DisplayObject {
       return;
 
     this.mTextureName = value;
-    this.texture = AssetManager.default.getTexture(/** @type {string} */(value));
+    this.texture = Black.assets.getTexture(/** @type {string} */(value));
   }
 
   /**

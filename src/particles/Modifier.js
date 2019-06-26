@@ -3,8 +3,7 @@
  *
  * @cat particles
  */
-/* @echo EXPORT */
-class Modifier {
+export class Modifier {
   /**
    * Creates new instance.
    *
@@ -61,18 +60,3 @@ class Modifier {
     return this.mIsInitializer;
   }
 }
-
-
-// Acceleration (vel += acc * dt;)
-// InitialPosition (box)
-// InitialCirclePosition
-// InitialGameObjectPosition
-// InitialPolygonPosition
-// InitialSpineBonePosition
-// RotationOverLife
-// RotationOverProperty
-// InitialSize
-// SizeOverLife
-// vector field
-// InitialVelocity
-// VelocityOverLife/Property

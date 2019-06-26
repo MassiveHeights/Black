@@ -1,11 +1,13 @@
+import { BitmapTextRenderer } from "../BitmapTextRenderer";
+import { Renderer } from "../Renderer";
+
 /**
  * Renders `BitmapTextField` objects on canvas.
  *
  * @extends BitmapTextRenderer
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class BitmapTextRendererCanvas extends BitmapTextRenderer {
+export class BitmapTextRendererCanvas extends BitmapTextRenderer {
   /** @inheritDoc */
   render(driver, session) {
     super.render(driver, session);

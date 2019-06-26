@@ -1,3 +1,10 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+import { Rectangle } from "../geom/Rectangle";
+import { Orientation } from "../display/Orientation";
+import { Debug } from "./Debug";
+import { Message } from "../messages/Message";
+import { Black } from "../Black";
+
 /**
  * Manages viewport, handles DOM container resize events and updates internal data.
  * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
@@ -6,49 +13,49 @@
  * @fires Viewport#resize
  * @extends MessageDispatcher
  */
-
-/* @echo EXPORT */
-class Viewport extends MessageDispatcher {
+export class Viewport extends MessageDispatcher {
   /**
    * constructor
-   * @param {HTMLElement} containerElement The native HTML element.
+   * @param {HTMLElement|null} containerElement The native HTML element.
    * @return {void}
    */
-  constructor(containerElement) {
+  constructor(containerElement = null) {
     super();
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
     this.mContainerElement = containerElement;
 
     /** 
      * @private 
-     * @type {HTMLElement} 
+     * @type {HTMLElement|null} 
      */
-    this.mViewportElement = document.createElement('div');
-    this.mViewportElement.style.position = 'relative';
-    containerElement.appendChild(this.mViewportElement);
-
-    let style = this.mContainerElement.style;
-    style.userSelect = 'none';
-    style.touchAction = 'none';
-    //style.overflow = 'hidden';
-    style.cursor = 'auto';
-    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
-
-    let size = this.mContainerElement.getBoundingClientRect();
+    this.mViewportElement = null;
 
     /** 
      * @private 
      * @type {Rectangle} 
      */
-    this.mSize = new Rectangle(size.left, size.top, size.width, size.height);
+    this.mSize = new Rectangle();
 
+     /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.isTransparent = true;
-    this.backgroundColor = 0x222222;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.backgroundColor = 0x000000;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mChecksLeftSeconds = 0;
 
     /** 
@@ -63,10 +70,45 @@ class Viewport extends MessageDispatcher {
      */
     this.mOrientationLock = false;
 
+    /** 
+     * @private 
+     * @type {number} 
+     */
     this.mRotation = 0;
 
-    this.mIsPrimary = this.isPrimary();
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mIsPrimary = false;
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
     this.mReflect = false;
+
+    this.__initialize();
+  }
+
+  /**
+   * @ignore
+   */
+  __initialize() {
+    this.mViewportElement = document.createElement('div');
+    this.mViewportElement.style.position = 'relative';
+    this.mContainerElement.appendChild(this.mViewportElement);
+
+    let style = this.mContainerElement.style;
+    style.userSelect = 'none';
+    style.touchAction = 'none';
+    style.cursor = 'auto';
+    style.WebkitTapHighlightColor = 'rgba(0, 0, 0, 0)';
+
+    let size = this.mContainerElement.getBoundingClientRect();
+    this.mSize.set(size.left, size.top, size.width, size.height);
+
+    this.mIsPrimary = this.isPrimary();
 
     this.__onResize();
 
@@ -132,7 +174,7 @@ class Viewport extends MessageDispatcher {
 
     this.__onResize();
 
-    this.mChecksLeftSeconds -= Time.delta;
+    this.mChecksLeftSeconds -= Black.time.delta;
   }
 
   /**
@@ -231,4 +273,26 @@ class Viewport extends MessageDispatcher {
     return this.mRotation;
   }
   // TODO: dispose, remove resize event
+
+  /**
+   * Returns true if device is in landscape orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  get isLandscape() {
+    return this.size.width >= this.size.height;
+  }
+
+  /**
+   * Returns true if device is in portrait orientation.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  get isPortrait() {
+    return !this.isLandscape;
+  }
 }

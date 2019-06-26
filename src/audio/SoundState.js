@@ -5,7 +5,6 @@
  * @cat audio
  * @enum {string}
  */
-/* @echo EXPORT */
 const SoundState = {
   NEWBORN: 'newborn',
   PLAYING: 'playing',
@@ -13,3 +12,5 @@ const SoundState = {
   STOPPED: 'stopped',
   COMPLETED: 'completed'
 };
+
+export { SoundState };

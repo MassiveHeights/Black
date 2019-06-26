@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets particle's texture according to its energy value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class TextureOverLife extends Modifier {
+export class TextureOverLife extends Modifier {
   /**
    * Creates new TextureOverLife instance.
    *

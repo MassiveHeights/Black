@@ -1,11 +1,26 @@
+import { VideoNullDriver } from "../VideoNullDriver";
+import { Renderer } from "../Renderer";
+import { BlendMode, CanvasBlendMode } from "../BlendMode";
+import { RenderSession } from "../RenderSession";
+import { GameObject } from "../../core/GameObject";
+import { Debug } from "../../core/Debug";
+import { Black } from "../../Black";
+import { DisplayObjectRendererCanvas } from "./DisplayObjectRendererCanvas";
+import { SpriteRendererCanvas } from "./SpriteRendererCanvas";
+import { EmitterRendererCanvas } from "./EmitterRendererCanvas";
+import { TextRendererCanvas } from "./TextRendererCanvas";
+import { BitmapTextRendererCanvas } from "./BitmapTextRendererCanvas";
+import { GraphicsRendererCanvas } from "./GraphicsRendererCanvas";
+import { Texture } from "../../textures/Texture";
+import { ColorHelper } from "../../utils/ColorHelper";
+
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
  *
  * @extends VideoNullDriver
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class CanvasDriver extends VideoNullDriver {
+export class CanvasDriver extends VideoNullDriver {
   /**
    * Creates new instance of CanvasDriver
    *
@@ -47,7 +62,7 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @inheritDoc
    */
-  render(gameObject, renderTexture = null, customTransform = null, isMasking = false) {
+  render(gameObject, renderTexture = null, customTransform = null) {
     let isBackBufferActive = renderTexture === null;
 
     if (Renderer.skipUnchangedFrames === true && isBackBufferActive === true && Renderer.__dirty === false)
@@ -56,7 +71,6 @@ class CanvasDriver extends VideoNullDriver {
     let session = this.__saveSession();
     session.isBackBufferActive = isBackBufferActive;
     session.customTransform = customTransform;
-    session.isMasking = isMasking;
 
     let parentRenderer = this.mStageRenderer;
 
@@ -126,7 +140,7 @@ class CanvasDriver extends VideoNullDriver {
 
       renderer.begin(this, session);
 
-      if (renderer.skipSelf === false || session.isMasking === true) {
+      if (renderer.skipSelf === false) {
         renderer.upload(this, session);
         renderer.render(this, session);
       }
@@ -134,7 +148,7 @@ class CanvasDriver extends VideoNullDriver {
       skipChildren = renderer.skipChildren;
     }
 
-    if (skipChildren === false || session.isMasking === true) {
+    if (skipChildren === false) {
       for (let i = 0; i < child.mChildren.length; i++)
         this.renderObject(child.mChildren[i], session, renderer || parentRenderer);
     }
@@ -321,7 +335,7 @@ class CanvasDriver extends VideoNullDriver {
     // TODO: clear only changed region
     this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
-    let viewport = Black.instance.viewport;
+    let viewport = Black.engine.viewport;
     if (viewport.isTransparent === false) {
       this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
       this.mCtx.fillRect(0, 0, viewport.size.width * this.mDevicePixelRatio, viewport.size.height * this.mDevicePixelRatio);
@@ -338,7 +352,7 @@ class CanvasDriver extends VideoNullDriver {
   }
 
   /**
-   * @inheritdoc
+   * @override
    */
   dispose() {
     super.dispose();

@@ -5,7 +5,6 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
 const GraphicsCommandType = {
   LINE_STYLE: 'lineStyle',
   FILL_STYLE: 'fillStyle',
@@ -27,3 +26,5 @@ const GraphicsCommandType = {
   FILL_GRD    : 'gradientFillStyle',
   FILL_PATTERN: 'patternFillStyle',
 };
+
+export { GraphicsCommandType };

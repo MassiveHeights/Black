@@ -3,8 +3,7 @@
  *
  * @cat input
  */
-/* @echo EXPORT */
-class KeyInfo {
+export class KeyInfo {
 
   /**
    * Create new instance of KeyInfo

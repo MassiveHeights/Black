@@ -1,11 +1,22 @@
+import { MessageDispatcher } from "../messages/MessageDispatcher";
+import { SoundState } from "./SoundState";
+import { Black } from "../Black";
+import { StereoPanner } from "./effects/StereoPanner";
+import { Message } from "../messages/Message";
+
+/**
+ * @ignore
+ * @private
+ */
+let ID = 0;
+
 /**
  * The sound
  * 
  * @cat audio
  * @extends {MessageDispatcher}
  */
-/* @echo EXPORT */
-class SoundInstance extends MessageDispatcher {
+export class SoundInstance extends MessageDispatcher {
   /**
    * Creates instance
    * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
@@ -17,7 +28,7 @@ class SoundInstance extends MessageDispatcher {
      * @private 
      * @type {number} 
      */
-    this.mId = ++SoundInstance.ID;
+    this.mId = ++ID;
 
     /** 
      * @private 
@@ -71,7 +82,7 @@ class SoundInstance extends MessageDispatcher {
      * @private 
      * @type {GainNode} 
      */
-    this.mGainNode = MasterAudio._newGainNode();
+    this.mGainNode = Black.audio._newGainNode();
 
     /** 
      * @private 
@@ -112,7 +123,7 @@ class SoundInstance extends MessageDispatcher {
    */
   enableSpacePan() {
     if (this.mSpatialPanner == null) {
-      this.mSpatialPanner = MasterAudio.context.createPanner();
+      this.mSpatialPanner = Black.audio.context.createPanner();
       if (this.mFirstNode) {
         this.mSpatialPanner.connect(this.mFirstNode);
         this.mFirstNode = this.mSpatialPanner;
@@ -148,7 +159,7 @@ class SoundInstance extends MessageDispatcher {
    */
   enableAnalyser() {
     if (this.mAnalyser == null) {
-      this.mAnalyser = MasterAudio.context.createAnalyser();
+      this.mAnalyser = Black.audio.context.createAnalyser();
       if (this.mFirstNode) {
         this.mAnalyser.connect(this.mFirstNode);
         this.mFirstNode = this.mAnalyser;
@@ -184,21 +195,21 @@ class SoundInstance extends MessageDispatcher {
     let duration = this.mSound.isSubClip && !this.mLoop ? this.mSound.duration - this.mPausePosition : undefined;
     this.mGainNode.gain.setValueAtTime(this.mVolume, 0);
 
-    let src = MasterAudio.context.createBufferSource();
+    let src = Black.audio.context.createBufferSource();
     src.buffer = this.mSound.native;
     src.loop = this.mLoop;
     src.onended = () => this.__onComplete();
     this.mFirstNode && src.connect(this.mFirstNode);
     this.mPlayNode = this.mFirstNode;
-    this.mStartTime = MasterAudio.context.currentTime - this.mPausePosition;
+    this.mStartTime = Black.audio.context.currentTime - this.mPausePosition;
 
     if (this.mLoop && this.mSound.isSubClip) {
       src.loopStart = this.mSound.offset;
       src.loopEnd = this.mSound.offset + this.mSound.duration;
     }
 
-    src.start(MasterAudio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
-    MasterAudio._resolveChannel(this);
+    src.start(Black.audio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
+    Black.audio._resolveChannel(this);
     this.mSrc = src;
 
     return this;
@@ -214,7 +225,7 @@ class SoundInstance extends MessageDispatcher {
   stop(duration = 0) {
     if (this.mState === SoundState.PLAYING) {
       this.mGainNode.gain.cancelScheduledValues(0);
-      this.mSrc.stop(MasterAudio.context.currentTime + duration);
+      this.mSrc.stop(Black.audio.context.currentTime + duration);
     }
   }
 
@@ -258,9 +269,9 @@ class SoundInstance extends MessageDispatcher {
     } else {
       this.mGainNode.gain.setValueAtTime(from, 0);
       if (type === 'exp')
-        this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), MasterAudio.context.currentTime + duration);
+        this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), Black.audio.context.currentTime + duration);
       else
-        this.mGainNode.gain.linearRampToValueAtTime(to, MasterAudio.context.currentTime + duration);
+        this.mGainNode.gain.linearRampToValueAtTime(to, Black.audio.context.currentTime + duration);
     }
   }
 
@@ -288,7 +299,7 @@ class SoundInstance extends MessageDispatcher {
   get currentPosition() {
     switch (this.mState) {
       case SoundState.PLAYING:
-        return (MasterAudio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
+        return (Black.audio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
       case SoundState.PAUSED:
         return this.mPausePosition;
       case SoundState.COMPLETED:
@@ -326,7 +337,7 @@ class SoundInstance extends MessageDispatcher {
       return;
     this.mChannel = value;
     if (this.mState === SoundState.PLAYING) {
-      MasterAudio._resolveChannel(this);
+      Black.audio._resolveChannel(this);
     }
   }
 
@@ -414,10 +425,3 @@ class SoundInstance extends MessageDispatcher {
     return this.mSound.duration;
   }
 }
-
-/**
- * @ignore
- * @private
- * @static
- */
-SoundInstance.ID = 0;

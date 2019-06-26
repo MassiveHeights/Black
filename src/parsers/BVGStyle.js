@@ -1,3 +1,7 @@
+import { CapsStyle } from "../display/CapsStyle";
+import { JointStyle } from "../display/JointStyle";
+import { FillRule } from "../display/FillRule";
+
 /**
  * Black Vector Graphics style
  * Helper class for BVG style parse
@@ -5,8 +9,7 @@
  * @cat parsers
  */
 
-/* @echo EXPORT */
-class BVGStyle {
+export class BVGStyle {
 
   /**
    * Creates new instance of BVGStyle.
@@ -17,7 +20,6 @@ class BVGStyle {
      * Stroke color
      *
      * @private 
-     * @export 
      * @type {string} */
     this.L = '-';
 
@@ -25,7 +27,6 @@ class BVGStyle {
      * Stroke alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.l = 1;
 
@@ -33,7 +34,6 @@ class BVGStyle {
      * Line width.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.w = 1;
 
@@ -41,7 +41,6 @@ class BVGStyle {
      * Fill color.
      *
      * @private 
-     * @export 
      * @type {string}*/
     this.F = '0';
 
@@ -49,7 +48,6 @@ class BVGStyle {
      * Fill alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.f = 1;
 
@@ -58,7 +56,6 @@ class BVGStyle {
      * {nonzero: 1, evenodd: 0}
      *
      * @private 
-     * @export 
      * @type {number} */
     this.r = 1;
 
@@ -67,7 +64,6 @@ class BVGStyle {
      * {butt: 'b', round: 'r', square: 's'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.c = 'b';
 
@@ -76,7 +72,6 @@ class BVGStyle {
      * {miter: 'm', round: 'r', bevel: 'b'}
      *
      * @private 
-     * @export 
      * @type {string} */
     this.j = 'm';
 
@@ -84,7 +79,6 @@ class BVGStyle {
      * Miter limit.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.m = 4;
 
@@ -92,7 +86,6 @@ class BVGStyle {
      * Global alpha.
      *
      * @private 
-     * @export 
      * @type {number} */
     this.a = 1;
 
@@ -100,7 +93,6 @@ class BVGStyle {
      * Line dash.
      *
      * @private 
-     * @export 
      * @type {string} */
     this.d = '';
 

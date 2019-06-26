@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets particle's alpha value according to its energy value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class AlphaOverLife extends Modifier {
+export class AlphaOverLife extends Modifier {
   /**
    * Creates new AlphaOverLife instance.
    *

@@ -1,11 +1,12 @@
+import { VectorScatter } from "./VectorScatter";
+
 /**
  * A number scatter for defining a range in a circular shape.
  *
  * @cat scatters
  * @extends VectorScatter
  */
-/* @echo EXPORT */
-class RadialScatter extends VectorScatter {
+export class RadialScatter extends VectorScatter {
   /**
    * Creates new VectorScatter instance.
    *

@@ -1,15 +1,22 @@
+import { Component } from "../core/Component";
+import { SoundClip } from "./SoundClip";
+import { SoundInstance } from "./SoundInstance";
+import { MessageBinding } from "../messages/MessageBinding";
+import { Black } from "../Black";
+import { Vector } from "../geom/Vector";
+import { Message } from "../messages/Message";
+
 /**
  * The sound component.
  * 
  * @cat audio
  * @extends {Component}
  */
-/* @echo EXPORT */
-class Sound extends Component {
+export class Sound extends Component {
   /**
    * Creates new instance of SoundComponent.
    * 
-   * @param {string} name                    The name of sound. Uses AssetManager.default only.
+   * @param {string} name                    The name of sound. Uses Black.assets only.
    * @param {string=} [channel='master']     The name of channel, to play sound on.
    * @param {boolean=} [spatialEffect=false] Specifies if spatial effect is enabled.
    * @param {number=} [rolloff=100]          Determines how far from the listener the volume reduces.
@@ -21,7 +28,7 @@ class Sound extends Component {
      * @private 
      * @type {SoundClip} 
      */
-    this.mSoundClip = AssetManager.default.getSound(name);
+    this.mSoundClip = Black.assets.getSound(name);
 
     /** 
      * @private 

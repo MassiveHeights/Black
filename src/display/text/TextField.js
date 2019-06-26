@@ -1,3 +1,16 @@
+import { DisplayObject } from "../DisplayObject";
+import { Rectangle } from "../../geom/Rectangle";
+import { TextStyle } from "./TextStyle";
+import { Black } from "../../Black";
+import { DirtyFlag } from "../../core/DirtyFlag";
+import { Debug } from "../../core/Debug";
+import { FontStyle } from "./styles/FontStyle";
+import { FontWeight } from "./styles/FontWeight";
+import { FontVerticalAlign } from "./styles/FontVerticalAlign";
+import { FontAlign } from "./styles/FontAlign";
+import { TextMetricsEx } from "./TextMetrics";
+import { Message } from "../../messages/Message";
+
 /**
  * This class is used to create display text.
  *
@@ -5,8 +18,7 @@
  * @fires TextField#change
  * @extends DisplayObject
  */
-/* @echo EXPORT */
-class TextField extends DisplayObject {
+export class TextField extends DisplayObject {
   /**
    * Creates new instance of TextField
    * 
@@ -14,12 +26,12 @@ class TextField extends DisplayObject {
    * @param  {string=} family                                             Font name
    * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
    * @param  {number=} [size=14]                                          Text size
-   * @param  {TextStyle.FontStyle=} [style=TextStyle.FontStyle.NORMAL]    Text style eg italic
-   * @param  {TextStyle.FontWeight=} [weight=TextStyle.FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {FontStyle=} [style=FontStyle.NORMAL]    Text style eg italic
+   * @param  {FontWeight=} [weight=FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
    * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
    * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
-  constructor(text = '', family = 'sans-serif', color = 0x000000, size = 14, style = TextStyle.FontStyle.NORMAL, weight = TextStyle.FontWeight.NORMAL, strokeThickness = 0, strokeColor = 0xffffff) {
+  constructor(text = '', family = 'sans-serif', color = 0x000000, size = 14, style = FontStyle.NORMAL, weight = FontWeight.NORMAL, strokeThickness = 0, strokeColor = 0xffffff) {
     super();
 
     /** 
@@ -66,15 +78,15 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {TextStyle.FontAlign} 
+     * @type {FontAlign} 
      */
-    this.mAlign = TextStyle.FontAlign.LEFT;
+    this.mAlign = FontAlign.LEFT;
 
     /** 
      * @private 
-     * @type {TextStyle.FontVerticalAlign} 
+     * @type {FontVerticalAlign} 
      */
-    this.mVerticalAlign = TextStyle.FontVerticalAlign.MIDDLE;
+    this.mVerticalAlign = FontVerticalAlign.MIDDLE;
 
     /** 
      * @private 
@@ -353,14 +365,14 @@ class TextField extends DisplayObject {
   /**
    * Get/Set text style.
    *
-   * @return {TextStyle.FontStyle}
+   * @return {FontStyle}
    */
   get fontStyle() {
     return this.mDefaultStyle.style;
   }
 
   /**
-   * @param {TextStyle.FontStyle} value
+   * @param {FontStyle} value
    * @return {void}
    */
   set fontStyle(value) {
@@ -376,14 +388,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @return {TextStyle.FontWeight}
+   * @return {FontWeight}
    */
   get weight() {
     return this.mDefaultStyle.weight;
   }
 
   /**
-   * @param {TextStyle.FontWeight} value
+   * @param {FontWeight} value
    * @return {void}
    */
   set weight(value) {
@@ -399,14 +411,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the horizontal alignment of the text (left | center | right).
    *
-   * @return {TextStyle.FontAlign}
+   * @return {FontAlign}
    */
   get align() {
     return this.mAlign;
   }
 
   /**
-   * @param {TextStyle.FontAlign} value
+   * @param {FontAlign} value
    * @return {void}
    */
   set align(value) {
@@ -422,14 +434,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the vertical alignment of the text (top | middle | bottom).
    *
-   * @return {TextStyle.FontVerticalAlign}
+   * @return {FontVerticalAlign}
    */
   get vAlign() {
     return this.mVerticalAlign;
   }
 
   /**
-   * @param {TextStyle.FontVerticalAlign} value
+   * @param {FontVerticalAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -750,10 +762,3 @@ class TextField extends DisplayObject {
     this.setTransformDirty();
   }
 }
-
-/**
- * @ignore
- * @private
- * @static
- */
-TextField.__cache = null;

@@ -1,11 +1,62 @@
+import { Vector } from "../../../geom/Vector";
+import { MathEx } from "../../../math/MathEx";
+import { Black } from "../../../Black";
+
+/**
+ * Updates to start sleep if velocities is lower, than sleep threshold.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let timeToSleep = 5; //
+
+/**
+ * How many pixels colliders can overlap each other without resolve.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let slop = 1;
+
+/**
+ * Position correction koefficient. Lower is softer and with less twitches.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let baumgarte = 0.2;
+
+/**
+ * Scale koefficient to normalize physics in some local coordinates or different resolutions.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let unitsPerMeter = 1;
+
+/**
+ * Maximum body speed to begin sleep process, if sleeping is enabled.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let sleepThreshold = 0.1;
+
+/**
+ * Minimal relative velocity within two bodies, required for bounce effect.
+ *
+ * @ignore 
+ * @type {number} 
+ */
+let bounceTreshhold = 1;
+
 /**
  * Pair is used for narrow test, and resolve collision within two colliders.
  *
  * @cat physics.arcade.pairs
  */
 
-/* @echo EXPORT */
-class Pair {
+export class Pair {
   /**
    * Creates new instance of Pair.
    */
@@ -286,52 +337,52 @@ class Pair {
   static __id(a, b) {
     return a.mId > b.mId ? `${a.mId}&${b.mId}` : `${b.mId}&${a.mId}`;
   }
+
+  /**
+   * Updates to start sleep if velocities is lower, than sleep threshold.
+   *
+   * @type {number} 
+   */
+  static get timeToSleep() { return timeToSleep; }
+  static set timeToSleep(value) { timeToSleep = value; }
+
+  /**
+   * How many pixels colliders can overlap each other without resolve.
+   *  
+   * @type {number} 
+   */
+  static get slop() { return slop; }
+  static set slop(value) { slop = value; }
+
+  /**
+   * Position correction koefficient. Lower is softer and with less twitches.
+   *  
+   * @type {number} 
+   */
+  static get baumgarte() { return baumgarte; };
+  static set baumgarte(value) { baumgarte = value; };
+
+  /**
+   * Scale koefficient to normalize physics in some local coordinates or different resolutions.
+   *  
+   * @type {number} 
+   */
+  static get unitsPerMeter() { return unitsPerMeter; }
+  static set unitsPerMeter(value) { unitsPerMeter = value; }
+
+  /**
+   * Maximum body speed to begin sleep process, if sleeping is enabled.
+   *  
+   * @type {number} 
+   */
+  static get sleepThreshold() { return sleepThreshold; };
+  static set sleepThreshold(value) { sleepThreshold = value; };
+
+  /**
+   * Minimal relative velocity within two bodies, required for bounce effect.
+   *  
+   * @type {number} 
+   */
+  static get bounceTreshhold() { return bounceTreshhold; }
+  static set bounceTreshhold(value) { bounceTreshhold = value; }
 }
-
-/**
- * Updates to start sleep if velocities is lower, than sleep threshold.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.timeToSleep = 5; //
-
-/**
- * How many pixels colliders can overlap each other without resolve.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.slop = 1;
-
-/**
- * Position correction koefficient. Lower is softer and with less twitches.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.baumgarte = 0.2;
-
-/**
- * Scale koefficient to normalize physics in some local coordinates or different resolutions.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.unitsPerMeter = 1;
-
-/**
- * Maximum body speed to begin sleep process, if sleeping is enabled.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.sleepThreshold = 0.1;
-
-/**
- * Minimal relative velocity within two bodies, required for bounce effect.
- *
- * @ignore 
- * @type {number} 
- */
-Pair.bounceTreshhold = 1;

@@ -1,11 +1,13 @@
+import { Modifier } from "../Modifier";
+import { FloatScatter } from "../../scatters/FloatScatter";
+
 /**
  * Sets initial particle life value.
  *
  * @cat particles.modifiers
  * @extends Modifier
  */
-/* @echo EXPORT */
-class InitialLife extends Modifier {
+export class InitialLife extends Modifier {
   /**
    * Creates new InitialLife instance.
    *

@@ -1,10 +1,17 @@
+import { Black } from "../Black";
+import { BlendMode } from "./BlendMode";
+import { Renderer } from "./Renderer";
+import { RenderSession } from "./RenderSession";
+import { Device } from "../system/Device";
+import { ObjectPool } from "../utils/ObjectPool";
+import { Matrix } from "../geom/Matrix";
+
 /**
  * Base class for custom video drivers. VideoDriver is used to render things onto the screen.
  *
  * @cat drivers
  */
-/* @echo EXPORT */
-class VideoNullDriver {
+export class VideoNullDriver {
   /**
    * Creates new instance of VideoNullDriver.
    *
@@ -72,7 +79,7 @@ class VideoNullDriver {
      * @protected 
      * @type {number} 
      */
-    this.mDevicePixelRatio = Black.instance.useHiDPR === true ? Device.getDevicePixelRatio() : 1;
+    this.mDevicePixelRatio = Black.engine.useHiDPR === true ? Black.device.getDevicePixelRatio() : 1;
 
     /** 
      * @protected 
@@ -98,7 +105,7 @@ class VideoNullDriver {
      */
     this.mRendererMap = {};
 
-    Black.instance.viewport.on('resize', this.__onResize, this);
+    Black.engine.viewport.on('resize', this.__onResize, this);
   }
 
   /**

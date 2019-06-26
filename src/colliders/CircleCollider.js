@@ -1,12 +1,14 @@
+import { Collider } from "./Collider";
+import { Circle } from "../geom/Circle";
+import { Vector } from "../geom/Vector";
+
 /**
  * Collider with circle shape.
  *
  * @cat colliders
  * @extends Collider
  */
-
-/* @echo EXPORT */
-class CircleCollider extends Collider {
+export class CircleCollider extends Collider {
 
   /**
    * Creates new instance of CircleCollider.

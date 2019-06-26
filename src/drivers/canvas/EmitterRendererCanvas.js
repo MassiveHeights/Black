@@ -1,11 +1,15 @@
+import { Renderer } from "../Renderer";
+import { Matrix } from "../../geom/Matrix";
+import { Emitter } from "../../particles/Emitter";
+import { EmitterSortOrder } from "../../particles/EmitterSortOrder";
+
 /**
  * Renders `Particle` objects on canvas.
  *
  * @extends Renderer
  * @cat drivers.canvas
  */
-/* @echo EXPORT */
-class EmitterRendererCanvas extends Renderer {
+export class EmitterRendererCanvas extends Renderer {
   /**
    * Creates new instance of EmitterRendererCanvas.
    */
@@ -35,6 +39,7 @@ class EmitterRendererCanvas extends Renderer {
   preRender(driver, session) {
     let gameObject = /** @type {Emitter} */ (this.gameObject);
 
+    this.endPassRequired = this.gameObject.mClipRect !== null && this.gameObject.mClipRect.isEmpty === false;
     this.skipChildren = !(gameObject.mAlpha > 0 && gameObject.mTextures.length > 0 && gameObject.mVisible === true);
     this.skipSelf = !(gameObject.mTextures.length > 0 && gameObject.mParticles.length > 0);
   }

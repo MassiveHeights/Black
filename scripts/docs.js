@@ -87,6 +87,8 @@ class Generator {
     if (access == 'private')
       return '';
 
+    if (!item.properties)
+      return '';
 
     if (item.properties.length == 0)
       return '';
@@ -243,7 +245,7 @@ class Generator {
 
       if (x.memberof == item.name && (x.kind == 'function' || x.kind == 'constructor')) {
         text += '\n<div class="method-info">\n';
-        let name = x.name;
+        let name = x.name.replace('exports.', '');
         let sscope = '';
         let scopes = [];
         // if (x.scope && x.scope == 'static')

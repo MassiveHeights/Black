@@ -1,12 +1,15 @@
+import { Component } from "../core/Component";
+import { Vector } from "../geom/Vector";
+import { Matrix } from "../geom/Matrix";
+import { Debug } from "../core/Debug";
+
 /**
  * Base class for collider component.
  *
  * @cat colliders
  * @extends Component
  */
-
-/* @echo EXPORT */
-class Collider extends Component {
+export class Collider extends Component {
   /**
    * Creates new instance for Collider.
    *

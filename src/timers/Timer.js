@@ -1,3 +1,7 @@
+import { Component } from "../core/Component";
+import { Debug } from "../core/Debug";
+import { Black } from "../Black";
+
 /**
  * Timer component.
  *
@@ -8,8 +12,7 @@
  * 
  * @extends Component
  */
-/* @echo EXPORT */
-class Timer extends Component {
+export class Timer extends Component {
   constructor(interval = 1, ticksCount = 1, startOnAdded = true) {
     super();
     
@@ -74,13 +77,13 @@ class Timer extends Component {
     if (this.mIsRunning === false)
       return;
 
-    this.mElapsedSeconds += Time.delta;
-    this.mTotalElapsedSeconds += Time.delta;
+    this.mElapsedSeconds += Black.time.delta;
+    this.mTotalElapsedSeconds += Black.time.delta;
 
     if (this.mElapsedSeconds >= this.mInterval) {
       this.mElapsedSeconds = 0;
 
-      const ticksPerUpdate = Math.max(1, ~~(Time.delta / this.mInterval));
+      const ticksPerUpdate = Math.max(1, ~~(Black.time.delta / this.mInterval));
       for (let i = 0; i < ticksPerUpdate; i++) {
         this.mTick++;
 

@@ -1,11 +1,21 @@
+import { GameObject } from "../core/GameObject";
+import { DirtyFlag } from "../core/DirtyFlag";
+import { BlendMode } from "../drivers/BlendMode";
+import { Black } from "../Black";
+import { Rectangle } from "../geom/Rectangle";
+import { Matrix } from "../geom/Matrix";
+import { InputComponent } from "../input/InputComponent";
+import { Vector } from "../geom/Vector";
+import { Debug } from "../core/Debug";
+import { MathEx } from "../math/MathEx";
+
 /**
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
  * @extends GameObject
  */
-/* @echo EXPORT */
-class DisplayObject extends GameObject {
+export class DisplayObject extends GameObject {
   constructor() {
     super();
 

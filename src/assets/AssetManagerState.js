@@ -6,9 +6,10 @@
  * @constant
  * @enum {string}
  */
-/* @echo EXPORT */
 const AssetManagerState = {
   NONE     : 'none',
   LOADING  : 'loading',
   FINISHED : 'finished'
 };
+
+export { AssetManagerState };
