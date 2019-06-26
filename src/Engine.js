@@ -308,6 +308,22 @@ export class Engine extends MessageDispatcher {
       this.__addSystem(new this.mSystemClasses[i]());
   }
 
+  __checkVisibility() {
+    if (typeof document.hidden === 'undefined') {
+      // lets fake hidden if there is no support for Page Visibility API
+      document.hidden = false;
+      document.visibilityState = 'visible';
+
+      window.onpagehide = event => this.__onVisibilityChangeFallback(event);
+      window.onpageshow = event => this.__onVisibilityChangeFallback(event);
+    } else {
+      document.addEventListener('visibilitychange', event => this.__onVisibilityChange(event), false);
+    }
+
+    window.onblur = event => this.__onVisibilityChangeFallback(event);
+    window.onfocus = event => this.__onVisibilityChangeFallback(event);
+  }
+
   /**
    * @private
    * @returns {void}
@@ -315,10 +331,7 @@ export class Engine extends MessageDispatcher {
   __bootStage() {
     this.mStage = new Stage();
 
-    window.onblur = event => this.__onVisibilityChange(event);
-    window.onfocus = event => this.__onVisibilityChange(event);
-    window.onpagehide = event => this.__onVisibilityChange(event);
-    window.onpageshow = event => this.__onVisibilityChange(event);
+    this.__checkVisibility();
 
     if (document.hidden && this.mPauseOnHide === true)
       this.pause();
@@ -328,8 +341,9 @@ export class Engine extends MessageDispatcher {
    * @private
    * @returns {void}
    */
-  __onVisibilityChange(event) {
+  __onVisibilityChangeFallback(event) {
     let type = event.type;
+
     if (type === 'blur' && this.mPauseOnBlur === true)
       this.pause();
     else if (type === 'pagehide' && this.mPauseOnHide === true)
@@ -338,6 +352,13 @@ export class Engine extends MessageDispatcher {
       if (document.hidden === false)
         this.resume();
     }
+  }
+
+  __onVisibilityChange() {
+    if (this.mPauseOnHide === true && document.visibilityState === 'hidden')
+      this.pause();
+    else if (document.visibilityState === 'visible')
+      this.resume();
   }
 
   /**
