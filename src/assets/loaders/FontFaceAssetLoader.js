@@ -83,7 +83,7 @@ export class FontFaceAssetLoader extends AssetLoader {
 
   load() {
     if (this.mIsLocal)
-      this.mLoaderElement.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+      this.mLoaderElement.innerHTML += (`\n @font-face { font-family: ${this.mName}; src: url(${this.mUrl});}`);
     else
       this.mLoaderElement.href = this.mUrl;
 

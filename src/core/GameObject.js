@@ -1876,12 +1876,12 @@ export class GameObject extends MessageDispatcher {
       gameObject = Black.stage;
 
     let r = action(gameObject);
-    if (r == true)
+    if (r === true)
       return;
 
     for (let i = 0; i < gameObject.mChildren.length; i++) {
       r = GameObject.forEach(gameObject.mChildren[i], action);
-      if (r == true)
+      if (r === true)
         return;
     }
   }

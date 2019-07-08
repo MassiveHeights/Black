@@ -328,10 +328,11 @@ export class AssetManager extends MessageDispatcher {
    *
    * @param {string} name Name of the asset.
    * @param {string} url  The URL to the font.
+   * @param {boolean} useAdvanceMetrics Indicates whenever or not font should be parsed using opentype.js library for better rendering.
    * @returns {void}
    */
-  enqueueFont(name, url) {
-    this.enqueueAsset(name, this.__getAsset(AssetType.FONT, name, this.mDefaultPath + url, true));
+  enqueueFont(name, url, useAdvanceMetrics = false) {
+    this.enqueueAsset(name, this.__getAsset(AssetType.FONT, name, this.mDefaultPath + url, true, useAdvanceMetrics));
   }
 
   /**
