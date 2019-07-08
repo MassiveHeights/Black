@@ -83,6 +83,7 @@ export class FontAsset extends Asset {
   onAllLoaded() {
     if (this.mUseAdvanceMetrics === true) {
       let arrayBuffer = this.mXHR.data;
+      
       let base64String = btoa([].reduce.call(new Uint8Array(arrayBuffer), function (p, c) { return p + String.fromCharCode(c) }, ''));
       this.__createElement(base64String);
 
