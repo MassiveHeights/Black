@@ -2,6 +2,7 @@ import { Rectangle } from "../../geom/Rectangle";
 import { TextStyle } from "./TextStyle";
 import { FontMetrics } from "./FontMetrics";
 import { Debug } from "../../core/Debug";
+import { FontStyle } from "./styles/FontStyle";
 
 /**
  * Object representing text measurement result.
@@ -84,8 +85,9 @@ export class TextSegmentMetricsData {
  * @static
  * @type {HTMLElement|null}
  */
-let spanElement = null;
-
+let canvasElement = null;
+let context = null;
+let useOffscreenCanvas = false;
 
 /**
  * Provides native text measurement tools
@@ -96,6 +98,22 @@ let spanElement = null;
 export class TextMetricsEx {
   constructor() {
     throw new Error('Singleton');
+  }
+
+  /**
+   * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
+   * @returns {boolean}
+   */
+  get useOffscreenCanvas() {
+    return useOffscreenCanvas;
+  }
+
+  /**
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set useOffscreenCanvas(value) {
+    useOffscreenCanvas = value;
   }
 
   /**
@@ -204,38 +222,27 @@ export class TextMetricsEx {
     outBounds = outBounds || new Rectangle();
     outBounds.zero();
 
-    let span = spanElement;
+    let fontMetrics = FontMetrics.get(style.family);
 
-    if (spanElement === null) {
-      spanElement = /** @type {HTMLElement} */ (document.createElement('span'));
-      span = /** @type {HTMLElement} */ (spanElement);
-      span.id = 'font';
-      span.style.position = 'absolute';
-      span.style.width = 'auto';
-      span.style.height = 'auto';
-      span.style.top = '0px';
-      span.style.left = '0px';
-      span.style.display = 'inline-block';
-      span.style.border = '1px solid green';
-      span.style.color = '#00ff00';
-      span.style.verticalAlign = 'baseline';
-      span.style.whiteSpace = 'nowrap'; //pre
-      span.style.lineHeight = 'normal';
-      span.style.top = '-9999px';
-      span.style.left = '-9999px';
-      document.body.appendChild(span);
+    if (canvasElement === null) {
+      if (typeof OffscreenCanvas !== 'undefined' && TextMetricsEx.useOffscreenCanvas === true) {
+        // this is only for worker
+        canvasElement = OffscreenCanvas(0, 0);
+        context = canvasElement.getContext('2d');
+      } else {
+        canvasElement = document.createElement('canvas');
+        context = canvasElement.getContext('2d');
+      }
     }
 
-    span.style.fontFamily = style.family;
-    span.style.fontSize = `${style.size}px`;
-    span.style.fontWeight = style.weight;
-    span.style.fontStyle = style.style;
+    let extraX = 0;
+    if (style.style === FontStyle.ITALIC)
+      extraX = (fontMetrics.bottomNormalized * style.size) / 4;
 
-    let fontMetrics = FontMetrics.get(style.family);
-    span.innerHTML = text.replace(/ /g, '&nbsp');
+    context.font = `${style.weight} ${style.style} ${style.size}px ${style.family}`;
+    let width = Math.ceil(context.measureText(text).width);
 
-    outBounds.set(0, fontMetrics.baselineNormalized * style.size, span.offsetWidth + 2, fontMetrics.bottomNormalized * style.size + 2);
-    return outBounds;
+    return outBounds.set(0, fontMetrics.baselineNormalized * style.size, width + 2 + extraX, fontMetrics.bottomNormalized * style.size + 2);
   }
 
   /**
