@@ -41,6 +41,9 @@ export { Texture } from './textures/Texture';
 export { CanvasRenderTexture } from './textures/CanvasRenderTexture';
 export { AtlasTexture } from './textures/AtlasTexture';
 
+export { AssetType } from './assets/AssetType';
+export { LoaderType } from './assets/LoaderType';
+
 export { AssetLoader } from './assets/loaders/AssetLoader';
 export { ImageAssetLoader } from './assets/loaders/ImageAssetLoader';
 export { XHRAssetLoader } from './assets/loaders/XHRAssetLoader';
