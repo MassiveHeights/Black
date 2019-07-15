@@ -107,6 +107,15 @@ export class Sprite extends DisplayObject {
     if (this.mTexture === texture)
       return;
 
+    if (texture === null) {
+      this.mTexture = null;
+      this.mTextureName = null;
+
+      this.setDirty(DirtyFlag.RENDER_CACHE, false);
+      this.setRenderDirty();
+      return;
+    }
+
     this.mTexture = texture;
 
     if (this.mUseTextureProps === true) {
@@ -138,6 +147,11 @@ export class Sprite extends DisplayObject {
   set textureName(value) {
     if (this.mTextureName === value)
       return;
+
+    if (value === null) {
+      this.texture = null;
+      return;
+    }
 
     this.mTextureName = value;
     this.texture = Black.assets.getTexture(/** @type {string} */(value));
