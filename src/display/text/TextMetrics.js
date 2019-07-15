@@ -87,7 +87,6 @@ export class TextSegmentMetricsData {
  */
 let canvasElement = null;
 let context = null;
-let useOffscreenCanvas = false;
 
 /**
  * Provides native text measurement tools
@@ -98,22 +97,6 @@ let useOffscreenCanvas = false;
 export class TextMetricsEx {
   constructor() {
     throw new Error('Singleton');
-  }
-
-  /**
-   * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
-   * @returns {boolean}
-   */
-  get useOffscreenCanvas() {
-    return useOffscreenCanvas;
-  }
-
-  /**
-   * @param {boolean} value
-   * @returns {void}
-   */
-  set useOffscreenCanvas(value) {
-    useOffscreenCanvas = value;
   }
 
   /**
@@ -225,9 +208,9 @@ export class TextMetricsEx {
     let fontMetrics = FontMetrics.get(style.family);
 
     if (canvasElement === null) {
-      if (typeof OffscreenCanvas !== 'undefined' && TextMetricsEx.useOffscreenCanvas === true) {
+      if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
         // this is only for worker
-        canvasElement = OffscreenCanvas(0, 0);
+        canvasElement = new OffscreenCanvas(0, 0);
         context = canvasElement.getContext('2d');
       } else {
         canvasElement = document.createElement('canvas');

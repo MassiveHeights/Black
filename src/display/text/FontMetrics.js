@@ -22,6 +22,7 @@ let CONTEXT = null;
  */
 let CANVAS = null;
 
+let useOffscreenCanvas = false;
 
 /**
  * Font measurement tools.
@@ -38,11 +39,16 @@ export class FontMetrics {
    */
   constructor(style) {
     if (CONTEXT === null) {
-      CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
-      CONTEXT = CANVAS.getContext('2d');
+      if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
+        CANVAS = new OffscreenCanvas(10, 200);
+        CONTEXT = CANVAS.getContext('2d');
+      } else {
+        CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
+        CONTEXT = CANVAS.getContext('2d');
 
-      CANVAS.width = 10;
-      CANVAS.height = 200;
+        CANVAS.width = 10;
+        CANVAS.height = 200;
+      }
     }
 
     style.size = 24;
@@ -120,6 +126,22 @@ export class FontMetrics {
      * @type {number}
      */
     this.capHeight = baseLine;
+  }
+
+  /**
+   * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
+   * @returns {boolean}
+   */
+  get useOffscreenCanvas() {
+    return useOffscreenCanvas;
+  }
+
+  /**
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set useOffscreenCanvas(value) {
+    useOffscreenCanvas = value;
   }
 
   /**
