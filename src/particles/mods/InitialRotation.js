@@ -11,12 +11,12 @@ export class InitialRotation extends Modifier {
   /**
    * Creates new InitialRotation instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values in radians.
+   * @param {...(number|FloatScatterBase)} values Min and max values in radians.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

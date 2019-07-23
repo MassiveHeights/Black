@@ -561,7 +561,6 @@ export class AssetManager extends MessageDispatcher {
    * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
-
     let textures = this.mAssets[AssetType.TEXTURE];
     let textureAtlases = this.mAssets[AssetType.TEXTURE_ATLAS];
     let vectorTextures = this.mAssets[AssetType.VECTOR_TEXTURE];

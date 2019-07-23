@@ -14,9 +14,7 @@ export class Scatter {
    *
    * @return {?} Any object.
    */
-  getValue() {
-    return this.getValueAt(Math.random());
-  }
+  getValue() {}
 
   /**
    * Returns value at given position.

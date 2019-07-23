@@ -159,7 +159,22 @@ export class Emitter extends DisplayObject {
      */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-    this.mPresimulateSeconds = 5;
+    /**
+     * @private
+     * @type {Array<string>|null}
+     */
+    this.mTextureNames = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mPresimulateSeconds = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentPresimulationTime = 0;
   }
 
@@ -547,13 +562,23 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-  * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
-  * 
-  * @param {string} value
-  * @return {void}
-  */
-  set texturesName(value) {
-    this.textures = Black.assets.getTextures(value);
+   * Returns list of textures used by this emitter.
+   * @returns {Array<string>}
+   */
+  get textureNames() {
+    return this.mTextureNames;
+  }
+
+  /**
+    * Sets the list of textures with given string. It uses AssetManager to find textures.
+    * 
+    * @param {Array<string>} value
+    * @return {void}
+    */
+  set textureNames(value) {
+    this.mTextureNames = value;
+
+    this.textures = value.map(x => Black.assets.getTexture(x));
   }
 
   /**

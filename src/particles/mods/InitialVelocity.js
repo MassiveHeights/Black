@@ -11,12 +11,12 @@ export class InitialVelocity extends Modifier {
   /**
    * Creates new InitialVelocity instance.
    *
-   * @param {...(number|VectorScatter)} values Min and max vectors.
+   * @param {...(number|VectorScatterBase)} values Min and max vectors.
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

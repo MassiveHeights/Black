@@ -11,12 +11,12 @@ export class InitialLife extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values in seconds.
+   * @param {...(number|FloatScatterBase)} values Min and max values in seconds.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

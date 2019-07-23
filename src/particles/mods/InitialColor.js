@@ -11,12 +11,12 @@ export class InitialColor extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|ColorScatter)} values Two color values.
+   * @param {...(number|ColorScatterBase)} values Two color values.
    */
   constructor(...values) {
     super();
 
-    /** @type {ColorScatter} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 

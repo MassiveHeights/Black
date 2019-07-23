@@ -1,4 +1,4 @@
-import { Scatter } from "./Scatter";
+import { FloatScatterBase } from "./FloatScatterBase";
 import { Curve } from "../geom/Curve";
 import { Vector } from "../geom/Vector";
 
@@ -6,9 +6,9 @@ import { Vector } from "../geom/Vector";
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends FloatScatterBase
  */
-export class FloatCurveScatter extends Scatter {
+export class FloatCurveScatter extends FloatScatterBase {
   /**
    * Creates new FloatCurveScatter instance.
    *
@@ -25,11 +25,35 @@ export class FloatCurveScatter extends Scatter {
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.mPointsCache = points;
+
     /** 
      * @private 
      * @type {Vector} 
      */
     this.mCache = new Vector();
+  }
+
+  /**
+   * Updates curve with new array of points.
+   * 
+   * @param {Array<number>} value
+   */
+  set points(value) {
+    this.mPointsCache = value;
+    this.mCurve.set(...value);
+  }
+
+  /**
+   * Returns list of points.
+   * @returns {Array<number>}
+   */
+  get points() {
+    return this.mPointsCache;
   }
 
   /**
@@ -41,6 +65,8 @@ export class FloatCurveScatter extends Scatter {
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
-    return this.mCache.y;
+
+    this.value = this.mCache.y;
+    return this.value;
   }
 }

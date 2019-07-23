@@ -11,12 +11,12 @@ export class RotationOverLife extends Modifier {
   /**
    * Creates new RotationOverLife instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

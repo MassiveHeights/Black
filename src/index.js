@@ -110,6 +110,10 @@ export { BitmapTextField } from './display/text/BitmapTextField';
 export { Device } from './system/Device';
 
 export { Scatter } from './scatters/Scatter';
+export { FloatScatterBase } from './scatters/FloatScatterBase';
+export { VectorScatterBase } from './scatters/VectorScatterBase';
+export { ColorScatterBase } from './scatters/ColorScatterBase';
+
 export { FloatScatter } from './scatters/FloatScatter';
 export { ColorScatter } from './scatters/ColorScatter';
 export { VectorScatter } from './scatters/VectorScatter';

@@ -11,12 +11,12 @@ export class InitialAnchor extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|VectorScatter)} values
+   * @param {...(number|VectorScatterBase)} values
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

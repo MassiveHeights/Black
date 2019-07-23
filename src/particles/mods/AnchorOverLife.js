@@ -11,12 +11,12 @@ export class AnchorOverLife extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|VectorScatter)} values An VectorScatter which defines acceleration direction.
+   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

@@ -11,12 +11,12 @@ export class InitialTexture extends Modifier {
   /**
    * Creates new InitialTexture instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max indexes from texture list.
+   * @param {...(number|FloatScatterBase)} values Min and max indexes from texture list.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

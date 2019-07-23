@@ -1,65 +1,71 @@
-import { Scatter } from "./Scatter";
+import { VectorScatterBase } from "./VectorScatterBase";
 import { Vector } from "../geom/Vector";
 
 /**
- * A number scatter for defining a range in 2D space.
+ * A vector scatter for defining a range in 2D space.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends VectorScatterBase
  */
-export class VectorScatter extends Scatter {
+export class VectorScatter extends VectorScatterBase {
   /**
    * Creates new VectorScatter instance.
    *
-   * @param {number} minX The min value along x-axis.
-   * @param {number} minY The min value along y-axis.
-   * @param {number=} [maxX=NaN] The max value along x-axis.
-   * @param {number=} [maxY=NaN] The max value along y-axis.
+   * @param {number}  [minX=0]                     The min value along x-axis.
+   * @param {number}  [minY=0]                     The min value along y-axis.
+   * @param {number=} [maxX=null]                  The max value along x-axis.
+   * @param {number=} [maxY=null]                  The max value along y-axis.
+   * @param {?function(number):number} [ease=null] Easing function. If null linear function is used as default.
    */
-  constructor(minX, minY, maxX = NaN, maxY = NaN) {
+  constructor(minX = 0, minY = 0, maxX = null, maxY = null, ease = null) {
     super();
 
     /**
      * A min value along x-axis.
+     * 
      * @type {number}
      */
     this.minX = minX;
 
     /**
      * A min value along y-axis.
+     * 
      * @type {number}
      */
     this.minY = minY;
 
     /**
      * A max value along x-axis.
+     * 
      * @type {number}
      */
-    this.maxX = isNaN(maxX) ? minX : maxX;
+    this.maxX = maxX === null ? minX : maxX;
 
     /**
      * A max value along y-axis.
+     * 
      * @type {number}
      */
-    this.maxY = isNaN(maxY) ? minY : maxY;
+    this.maxY = maxY === null ? minY : maxY;
 
     /**
-     * Cached last value of `getValueAt` result.
-     * @readonly
-     * @type {Vector}
+     * Optional easing function.
+     * 
+     * @type {?function(Vector):Vector}
      */
-    this.value = new Vector();
+    this.ease = ease;
   }
 
   /**
-  * Returns a random Vector object at given position within a range specified in the constructor.
+   * Returns a random Vector object at given position within a specified range.
    *
-  * @override
-  * @return {Vector} Vector object with random values withing defined range.
-  */
+   * @override
+   * @return {Vector} Vector object with random values withing defined range.
+   */
   getValue() {
     this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
     this.value.y = Math.random() * (this.maxY - this.minY) + this.minY;
+
     return this.value;
   }
 
@@ -71,20 +77,24 @@ export class VectorScatter extends Scatter {
    * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
+    if (this.ease !== null)
+      t = this.ease(t);
+
     this.value.x = this.minX + t * (this.maxX - this.minX);
     this.value.y = this.minY + t * (this.maxY - this.minY);
+
     return this.value;
   }
 
   /**
-   * Creates new FloatScatter from a set of numbers.
+   * Creates new VectorScatter from a set of numbers.
    *
-   * @param {...number|VectorScatter} values Set of values.
-   * @returns {VectorScatter}
+   * @param {...number|VectorScatterBase} values Set of values.
+   * @returns {VectorScatterBase}
    */
   static fromObject(...values) {
-    if (values[0] instanceof Scatter)
-      return /** @type {VectorScatter} */ (values[0]);
+    if (values[0] instanceof VectorScatterBase)
+      return /** @type {VectorScatterBase} */ (values[0]);
 
     return new VectorScatter(...values);
   }

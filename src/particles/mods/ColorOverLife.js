@@ -11,12 +11,12 @@ export class ColorOverLife extends Modifier {
   /**
    * Creates new ColorOverLife instance.
    *
-   * @param {...(number|ColorScatter)} values A starting and ending values of color property.
+   * @param {...(number|ColorScatterBase)} values A starting and ending values of color property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {ColorScatter} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 
