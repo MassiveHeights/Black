@@ -37,7 +37,7 @@ export class JSONAsset extends Asset {
    * @inheritDoc
    */
   onLoaderRequested(factory) {
-    this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
+    this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
     this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
@@ -47,6 +47,6 @@ export class JSONAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    super.ready(/** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data))));
+    super.ready(/** @type {!Object}*/(this.mXHR.data));
   }
 }

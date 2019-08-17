@@ -85,7 +85,7 @@ export class Emitter extends DisplayObject {
      * @private 
      * @type {FloatScatter} 
      */
-    this.mEmitNumRepeats = new FloatScatter(Infinity);
+    this.mEmitNumRepeats = new FloatScatter(0, Number.MAX_SAFE_INTEGER);
 
     /** 
      * @private 
@@ -179,6 +179,43 @@ export class Emitter extends DisplayObject {
   }
 
   /**
+   * Starts emitting particles. By default emitter will start emitting automatically.
+   */
+  play() {
+    console.log(this.mState);
+    
+    if (this.mState === EmitterState.EMITTING)
+      return;
+
+    // resume or restart
+    if (this.mState !== EmitterState.PAUSED) {
+      this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+      this.mEmitDurationLeft = this.mEmitDuration.getValue();
+      this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+      this.mEmitDelayLeft = this.mEmitDelay.getValue();
+
+      this.mState = EmitterState.PENDING;
+    }
+  }
+
+  /**
+   * Pauses the emitting process.
+   */
+  pause() {
+    this.mState = EmitterState.PAUSED;
+  }
+
+  /** 
+   * Stops emitting process and destroys all particles.
+   */
+  stop() {
+    this.mParticles = [];
+    this.mRecycled = [];
+
+    this.mState = EmitterState.FINISHED;
+  }
+
+  /**
    * Simulates current emmitter for a given amount of time (seconds).
    * 
    * @param {number} time Time in secounds
@@ -208,15 +245,6 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Sets the internal state to `EmitterState.PENDING`. Use this when you need to restart emitting.
-   *
-   * @returns {void}
-   */
-  resetState() {
-    this.mState = EmitterState.PENDING;
-  }
-
-  /**
    * A helper method for quick adding modifiers.
    *
    * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
@@ -235,7 +263,7 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Adds Modifier to the end of the list.
+   * Adds modifier to the end of the list.
    *
    * @param {Modifier} modifier Modifier to add.
    * @return {Modifier}
@@ -247,6 +275,27 @@ export class Emitter extends DisplayObject {
       this.mActions.push(modifier);
 
     return modifier;
+  }
+
+  /**
+   * Removes given modifier.
+   *
+   * @param {Modifier} modifier Modifier to remove.
+   * @return {boolean} True if modifier was removed.
+   */
+  removeModifier(modifier) {
+    let array = this.mActions;
+
+    if (modifier.isInitializer)
+      array = this.mInitializers;
+
+    let ix = array.indexOf(modifier);
+    if (ix >= 0) {
+      array.splice(ix, 1);
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -319,6 +368,9 @@ export class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onUpdate() {
+    if (this.mState === EmitterState.PAUSED)
+      return;
+
     let dt = Black.time.delta;
 
     // rate logic
@@ -333,7 +385,8 @@ export class Emitter extends DisplayObject {
     const plength = this.mParticles.length;
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].preUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].preUpdate(dt);
 
     let particle;
 
@@ -342,7 +395,8 @@ export class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt);
+        if (this.mActions[k].isActive === true)
+          this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -353,7 +407,8 @@ export class Emitter extends DisplayObject {
     }
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].postUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
     if (this.mVisible === true && this.mAlpha > 0)
@@ -388,7 +443,8 @@ export class Emitter extends DisplayObject {
       p.reset();
 
       for (let k = 0; k < this.mInitializers.length; k++)
-        this.mInitializers[k].update(this, p, 0);
+        if (this.mInitializers[k].isActive === true)
+          this.mInitializers[k].update(this, p, 0);
 
       if (this.mIsLocal === false) {
         matrix.transformXY(p.x, p.y, Vector.__cache);
@@ -447,7 +503,7 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Gets/Sets the number of "durations" to to repeat. Use `Infinity` to emit particles endlessly.
+   * Gets/Sets the number of "durations" to to repeat.
    *
    * @return {FloatScatter}
    */

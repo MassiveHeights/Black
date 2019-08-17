@@ -15,10 +15,10 @@ let ID = 0;
 /**
  * The Black class represents the core of the Black Engine.
  *
- * @fires Black#paused
- * @fires Black#unpaused
- * @fires Black#ready
- * @fires Black#looped
+ * @fires Engine#paused
+ * @fires Engine#unpaused
+ * @fires Engine#ready
+ * @fires Engine#looped
  *
  * @extends MessageDispatcher
  */
@@ -262,7 +262,7 @@ export class Engine extends MessageDispatcher {
     /**
      * Posted after engine entered paused state.
      *
-     * @event Black#paused
+     * @event Engine#paused
      */
     this.post('paused');
   }
@@ -283,7 +283,7 @@ export class Engine extends MessageDispatcher {
     /**
      * Posted after engine is unpaused.
      *
-     * @event Black#unpaused
+     * @event Engine#unpaused
      */
     this.post('unpaused');
   }
@@ -437,7 +437,7 @@ export class Engine extends MessageDispatcher {
     /**
      * Posted when all systems, stage and driver ready to be used. 
      *
-     * @event Black#ready
+     * @event Engine#ready
      */
     this.post(Message.READY);
 
@@ -538,7 +538,7 @@ export class Engine extends MessageDispatcher {
        * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
        * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
        *
-       * @event Black#looped
+       * @event Engine#looped
        */
       this.post('looped', numTicks);
       Debug.warn(`Unable to catch up ${numTicks} update(s).`);

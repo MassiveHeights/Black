@@ -37,6 +37,12 @@ export class Component extends MessageDispatcher {
      * @type {boolean} 
      */
     this.mAdded = false;
+
+    /**
+     * Indicates whenever this modifier is active or not.
+     * @type {boolean}
+     */
+    this.isActive = true;
   }
 
   /**

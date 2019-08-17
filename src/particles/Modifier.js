@@ -10,15 +10,23 @@ export class Modifier {
    * @param {boolean} isInitializer Indicates whenever this modifier will be applied to particle during initialization stage or particle lifetime.
    */
   constructor(isInitializer = true) {
-
     /** 
      * @private 
      * @type {boolean} 
      */
     this.mIsInitializer = isInitializer;
 
-    /** @type {Scatter} Modifier's object to get values from.  */
+    /** 
+     * Modifier's object to get values from. 
+     * @type {Scatter}
+     */
     this.scatter = null;
+
+    /**
+     * Indicates whenever this modifier is active or not.
+     * @type {boolean}
+     */
+    this.isActive = true;
   }
 
   /**

@@ -402,13 +402,14 @@ export class GameObject extends MessageDispatcher {
   /**
    * Removes this `GameObject` instance from its parent.
    *
-   * @return {void}
+   * @return {GameObject}
    */
   removeFromParent() {
     if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     this.setTransformDirty();
+    return this;
   }
 
   /**
@@ -514,9 +515,8 @@ export class GameObject extends MessageDispatcher {
     if (component instanceof Collider)
       this.mCollidersCache.push(component);
 
-    if (this.stage !== null || Black.stage === this) {
+    if (this.stage !== null || Black.stage === this)
       Black.engine.onComponentAdded(this, component);
-    }
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -747,8 +747,8 @@ export class GameObject extends MessageDispatcher {
 
         let c = this.mComponentClone[k];
 
-        if (c.mAdded === false)
-          break;
+        if (c.mAdded === false || c.isActive === false)
+          continue;
 
         c.onUpdate();
       }

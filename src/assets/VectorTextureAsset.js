@@ -75,6 +75,7 @@ export class VectorTextureAsset extends Asset {
   onLoaderRequested(factory) {
     this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 
@@ -82,7 +83,7 @@ export class VectorTextureAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    const data = /** @type {!Object}*/(this.mXHR.data);
     const parser = new BVGParser();
 
     this.mGraphicsData = parser.parse(data);
