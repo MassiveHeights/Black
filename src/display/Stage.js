@@ -78,8 +78,12 @@ export class Stage extends GameObject {
 
     this.mAdded = true;
 
-    if (Black.engine.hasSystem(Input))
-      this.addComponent(new InputComponent());
+    // Fake 
+    if (Black.engine.hasSystem(Input)){
+      let c = new InputComponent()
+      c.mAdded = true;
+      this.addComponent(c);
+    }
   }
 
   /**
