@@ -12,6 +12,22 @@ export class System extends MessageDispatcher {
   }
 
   /**
+   * Called when engine is paused.
+   *
+   * @public
+   * @return {void} 
+   */
+  onPause() { }
+
+  /**
+   * Called when engine is resumed.
+   *
+   * @public
+   * @return {void} 
+   */
+  onResume() { }
+
+  /**
    * onUpdate
    *
    * @protected

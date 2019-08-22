@@ -446,27 +446,36 @@ export class GameObject extends MessageDispatcher {
   /**
    * Removes `GameObjects` instance from specified index.
    *
-   * @param {number} index Index of child.
-   * @return {GameObject} The removed `GameObject` instance.
+   * @param {number} index Index of child. Negative index will remove object from it end.
+   * @return {GameObject|null} The removed `GameObject` instance or null if not found.
    */
   removeChildAt(index) {
-    if (index < 0 || index > this.numChildren)
-      throw new Error('Child index is out of bounds.');
+    let child = this.mChildren.splice(index, 1)[0];
+    if (child == null)
+      return null;
 
     let hadRoot = this.stage !== null;
 
-    let child = this.mChildren[index];
     child.__setParent(null);
 
-    this.mChildren.splice(index, 1);
-
-    if (hadRoot)
+    if (hadRoot === true)
       Black.engine.onChildrenRemoved(child);
 
     this.setTransformDirty();
     this.mNumChildrenRemoved++;
 
     return child;
+  }
+
+  /**
+   * Removes all children objects.
+   * @returns {GameObject} Returns this.
+   */
+  removeAllChildren() {
+    while (this.mChildren.length > 0)
+      this.removeChildAt(0);
+
+    return this;
   }
 
   /**
@@ -524,37 +533,62 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Removes component at given index.
+   * 
+   * @param {number} index Negative index will remove component from the end.
+   * @returns {Component|null} Returns removed component of null.
+   */
+  removeComponentAt(index) {
+    let instance = this.mComponents.splice(index, 1)[0];
+
+    if (instance == null)
+      return null;
+
+    // detach game object after or before?
+    instance.mGameObject = null;
+
+    if (instance instanceof Collider) {
+      let colliderIx = this.mCollidersCache.indexOf(instance);
+      if (colliderIx > -1)
+        this.mCollidersCache.splice(colliderIx, 1);
+    }
+
+    if (this.stage !== null || Black.stage === this)
+      Black.engine.onComponentRemoved(this, instance);
+
+    this.mNumComponentsRemoved++;
+
+    return instance;
+  }
+
+  /**
    * Remove specified component.
    *
    * @param {Component} instance The `Component` instance.
-   * @return {Component|null}
+   * @returns {Component|null} Returns removed component of null.
    */
   removeComponent(instance) {
-    if (!instance)
+    if (instance == null)
       return null;
 
     Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
     if (index > -1)
-      this.mComponents.splice(index, 1);
+      return this.removeComponentAt(index);
 
-    // detach game object after or before?
-    instance.mGameObject = null;
+    return null;
+  }
 
-    if (instance instanceof Collider) {
-      let index = this.mCollidersCache.indexOf(instance);
-      if (index > -1)
-        this.mCollidersCache.splice(index, 1);
-    }
+  /**
+   * Removes all components.
+   * @returns {GameObject} Returns this.
+   */
+  removeAllComponents() {
+    while (this.mComponents.length > 0)
+      this.removeComponentAt(0);
 
-    if (this.stage !== null || Black.stage === this) {
-      Black.engine.onComponentRemoved(this, instance);
-    }
-
-    this.mNumComponentsRemoved++;
-
-    return instance;
+    return this;
   }
 
   /**

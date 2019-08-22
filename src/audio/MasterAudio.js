@@ -50,6 +50,28 @@ export class MasterAudio extends System {
   }
 
   /**
+   * @inheritDoc
+   */
+  onPause() {
+    if (this.mContext === null)
+      return;
+
+    if (this.mContext.state === 'running')
+      this.mContext.suspend();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onResume() {
+    if (this.mContext === null)
+      return;
+
+    if (this.mContext.state === 'suspended')
+      this.mContext.resume();
+  }
+
+  /**
    * @ignore
    */
   __initialize() {
@@ -166,9 +188,8 @@ export class MasterAudio extends System {
     Debug.assert(nameOrSound != null, `Param 'nameOrSound' cannot be null.`);
 
     let sound = null;
-    if (nameOrSound.constructor === String) {
+    if (nameOrSound.constructor === String)
       sound = (Black.assets.getSound( /** @type {string} */(nameOrSound)));
-    }
 
     return sound.play(channel, volume, loop, pan);
   }
@@ -177,17 +198,45 @@ export class MasterAudio extends System {
    * Stops all sound on specific channel.
    * 
    * @public
-   * @param {string} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
+   * @param {string|null} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
    * @returns {void} 
    */
-  stopAll(channelName = '') {
-    if (channelName === '') {
-      for (let chName in this.mChannels) {
+  stopAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
         this.mChannels[chName].stopAll();
-      }
-    } else {
+    else
       this.getChannel(channelName).stopAll();
-    }
+  }
+
+  /**
+   * Pauses all the sounds on specific channel.
+   * 
+   * @public
+   * @param {string|null} channelName The name of channel to pause sounds on. If empty, pauses all the sounds on all channels.
+   * @returns {void}
+   */
+  pauseAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
+        this.mChannels[chName].pauseAll();
+    else
+      this.getChannel(channelName).pauseAll();
+  }
+
+  /**
+   * Resumes all the sounds on specific channel.
+   * 
+   * @public
+   * @param {string|null} channelName The name of channel to resume sounds on. If empty, resumes all the sounds on all channels.
+   * @returns {void}
+   */
+  resumeAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
+        this.mChannels[chName].resumeAll();
+    else
+      this.getChannel(channelName).resumeAll();
   }
 
   /**

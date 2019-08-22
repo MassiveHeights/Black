@@ -4570,6 +4570,7 @@ let CONTEXT = null;
  */
 let CANVAS = null;
 
+let useOffscreenCanvas = false;
 
 /**
  * Font measurement tools.
@@ -4586,11 +4587,16 @@ class FontMetrics {
    */
   constructor(style) {
     if (CONTEXT === null) {
-      CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
-      CONTEXT = CANVAS.getContext('2d');
+      if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
+        CANVAS = new OffscreenCanvas(10, 200);
+        CONTEXT = CANVAS.getContext('2d');
+      } else {
+        CANVAS = /** @type {HTMLCanvasElement} */(document.createElement('canvas'));
+        CONTEXT = CANVAS.getContext('2d');
 
-      CANVAS.width = 10;
-      CANVAS.height = 200;
+        CANVAS.width = 10;
+        CANVAS.height = 200;
+      }
     }
 
     style.size = 24;
@@ -4668,6 +4674,22 @@ class FontMetrics {
      * @type {number}
      */
     this.capHeight = baseLine;
+  }
+
+  /**
+   * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
+   * @returns {boolean}
+   */
+  get useOffscreenCanvas() {
+    return useOffscreenCanvas;
+  }
+
+  /**
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set useOffscreenCanvas(value) {
+    useOffscreenCanvas = value;
   }
 
   /**
@@ -4869,8 +4891,8 @@ class TextSegmentMetricsData {
  * @static
  * @type {HTMLElement|null}
  */
-let spanElement = null;
-
+let canvasElement = null;
+let context = null;
 
 /**
  * Provides native text measurement tools
@@ -4988,38 +5010,27 @@ class TextMetricsEx {
     outBounds = outBounds || new Rectangle();
     outBounds.zero();
 
-    let span = spanElement;
+    let fontMetrics = FontMetrics.get(style.family);
 
-    if (spanElement === null) {
-      spanElement = /** @type {HTMLElement} */ (document.createElement('span'));
-      span = /** @type {HTMLElement} */ (spanElement);
-      span.id = 'font';
-      span.style.position = 'absolute';
-      span.style.width = 'auto';
-      span.style.height = 'auto';
-      span.style.top = '0px';
-      span.style.left = '0px';
-      span.style.display = 'inline-block';
-      span.style.border = '1px solid green';
-      span.style.color = '#00ff00';
-      span.style.verticalAlign = 'baseline';
-      span.style.whiteSpace = 'nowrap'; //pre
-      span.style.lineHeight = 'normal';
-      span.style.top = '-9999px';
-      span.style.left = '-9999px';
-      document.body.appendChild(span);
+    if (canvasElement === null) {
+      if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
+        // this is only for worker
+        canvasElement = new OffscreenCanvas(0, 0);
+        context = canvasElement.getContext('2d');
+      } else {
+        canvasElement = document.createElement('canvas');
+        context = canvasElement.getContext('2d');
+      }
     }
 
-    span.style.fontFamily = style.family;
-    span.style.fontSize = `${style.size}px`;
-    span.style.fontWeight = style.weight;
-    span.style.fontStyle = style.style;
+    let extraX = 0;
+    if (style.style === FontStyle.ITALIC)
+      extraX = (fontMetrics.bottomNormalized * style.size) / 4;
 
-    let fontMetrics = FontMetrics.get(style.family);
-    span.innerHTML = text.replace(/ /g, '&nbsp');
+    context.font = `${style.weight} ${style.style} ${style.size}px ${style.family}`;
+    let width = Math.ceil(context.measureText(text).width);
 
-    outBounds.set(0, fontMetrics.baselineNormalized * style.size, span.offsetWidth + 2, fontMetrics.bottomNormalized * style.size + 2);
-    return outBounds;
+    return outBounds.set(0, fontMetrics.baselineNormalized * style.size, width + 2 + extraX, fontMetrics.bottomNormalized * style.size + 2);
   }
 
   /**
@@ -5192,6 +5203,22 @@ class System extends MessageDispatcher {
   constructor() {
     super();
   }
+
+  /**
+   * Called when engine is paused.
+   *
+   * @public
+   * @return {void} 
+   */
+  onPause() { }
+
+  /**
+   * Called when engine is resumed.
+   *
+   * @public
+   * @return {void} 
+   */
+  onResume() { }
 
   /**
    * onUpdate
@@ -5613,6 +5640,12 @@ class Component extends MessageDispatcher {
      * @type {boolean} 
      */
     this.mAdded = false;
+
+    /**
+     * Indicates whenever this modifier is active or not.
+     * @type {boolean}
+     */
+    this.isActive = true;
   }
 
   /**
@@ -6970,13 +7003,14 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes this `GameObject` instance from its parent.
    *
-   * @return {void}
+   * @return {GameObject}
    */
   removeFromParent() {
     if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     this.setTransformDirty();
+    return this;
   }
 
   /**
@@ -7013,27 +7047,36 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes `GameObjects` instance from specified index.
    *
-   * @param {number} index Index of child.
-   * @return {GameObject} The removed `GameObject` instance.
+   * @param {number} index Index of child. Negative index will remove object from it end.
+   * @return {GameObject|null} The removed `GameObject` instance or null if not found.
    */
   removeChildAt(index) {
-    if (index < 0 || index > this.numChildren)
-      throw new Error('Child index is out of bounds.');
+    let child = this.mChildren.splice(index, 1)[0];
+    if (child == null)
+      return null;
 
     let hadRoot = this.stage !== null;
 
-    let child = this.mChildren[index];
     child.__setParent(null);
 
-    this.mChildren.splice(index, 1);
-
-    if (hadRoot)
+    if (hadRoot === true)
       black.engine.onChildrenRemoved(child);
 
     this.setTransformDirty();
     this.mNumChildrenRemoved++;
 
     return child;
+  }
+
+  /**
+   * Removes all children objects.
+   * @returns {GameObject} Returns this.
+   */
+  removeAllChildren() {
+    while (this.mChildren.length > 0)
+      this.removeChildAt(0);
+
+    return this;
   }
 
   /**
@@ -7082,9 +7125,8 @@ class GameObject extends MessageDispatcher {
     if (component instanceof Collider)
       this.mCollidersCache.push(component);
 
-    if (this.stage !== null || black.stage === this) {
+    if (this.stage !== null || black.stage === this)
       black.engine.onComponentAdded(this, component);
-    }
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -7092,37 +7134,62 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Removes component at given index.
+   * 
+   * @param {number} index Negative index will remove component from the end.
+   * @returns {Component|null} Returns removed component of null.
+   */
+  removeComponentAt(index) {
+    let instance = this.mComponents.splice(index, 1)[0];
+
+    if (instance == null)
+      return null;
+
+    // detach game object after or before?
+    instance.mGameObject = null;
+
+    if (instance instanceof Collider) {
+      let colliderIx = this.mCollidersCache.indexOf(instance);
+      if (colliderIx > -1)
+        this.mCollidersCache.splice(colliderIx, 1);
+    }
+
+    if (this.stage !== null || black.stage === this)
+      black.engine.onComponentRemoved(this, instance);
+
+    this.mNumComponentsRemoved++;
+
+    return instance;
+  }
+
+  /**
    * Remove specified component.
    *
    * @param {Component} instance The `Component` instance.
-   * @return {Component|null}
+   * @returns {Component|null} Returns removed component of null.
    */
   removeComponent(instance) {
-    if (!instance)
+    if (instance == null)
       return null;
 
     Debug.assert(instance instanceof Component, 'Type error.');
 
     let index = this.mComponents.indexOf(instance);
     if (index > -1)
-      this.mComponents.splice(index, 1);
+      return this.removeComponentAt(index);
 
-    // detach game object after or before?
-    instance.mGameObject = null;
+    return null;
+  }
 
-    if (instance instanceof Collider) {
-      let index = this.mCollidersCache.indexOf(instance);
-      if (index > -1)
-        this.mCollidersCache.splice(index, 1);
-    }
+  /**
+   * Removes all components.
+   * @returns {GameObject} Returns this.
+   */
+  removeAllComponents() {
+    while (this.mComponents.length > 0)
+      this.removeComponentAt(0);
 
-    if (this.stage !== null || black.stage === this) {
-      black.engine.onComponentRemoved(this, instance);
-    }
-
-    this.mNumComponentsRemoved++;
-
-    return instance;
+    return this;
   }
 
   /**
@@ -7315,8 +7382,8 @@ class GameObject extends MessageDispatcher {
 
         let c = this.mComponentClone[k];
 
-        if (c.mAdded === false)
-          break;
+        if (c.mAdded === false || c.isActive === false)
+          continue;
 
         c.onUpdate();
       }
@@ -8440,12 +8507,12 @@ class GameObject extends MessageDispatcher {
       gameObject = black.stage;
 
     let r = action(gameObject);
-    if (r == true)
+    if (r === true)
       return;
 
     for (let i = 0; i < gameObject.mChildren.length; i++) {
       r = GameObject.forEach(gameObject.mChildren[i], action);
-      if (r == true)
+      if (r === true)
         return;
     }
   }
@@ -9361,8 +9428,12 @@ class Stage extends GameObject {
 
     this.mAdded = true;
 
-    if (black.engine.hasSystem(Input))
-      this.addComponent(new InputComponent());
+    // Fake 
+    if (black.engine.hasSystem(Input)){
+      let c = new InputComponent();
+      c.mAdded = true;
+      this.addComponent(c);
+    }
   }
 
   /**
@@ -10126,6 +10197,40 @@ class AtlasTexture extends Texture {
 }
 
 /**
+ * Asset type enum.
+ * @cat assets
+ * @static
+ * @constant
+ * @enum {string}
+ */
+const AssetType = {
+  TEXTURE              : 'texture',
+  TEXTURE_ATLAS        : 'textureAtlas',
+  VECTOR_TEXTURE       : 'vectorTexture',
+  VECTOR_TEXTURE_ATLAS : 'vectorTextureAtlas',
+  FONT                 : 'font',
+  BITMAP_FONT          : 'bitmapFont',
+  XML                  : 'xml',
+  JSON                 : 'json',
+  VECTOR_GRAPHICS      : 'vectorGraphics',
+  SOUND                : 'sound',
+  SOUND_ATLAS          : 'soundAtlas'
+};
+
+/**
+ * Loader type enum.
+ * @cat assets
+ * @static
+ * @constant
+ * @enum {string}
+ */
+const LoaderType = {
+  FONT_FACE : 'fontFace',
+  IMAGE     : 'image',
+  XHR       : 'xhr'
+};
+
+/**
  * Base class for loaders.
  *
  * @cat assets.loaders
@@ -10673,40 +10778,6 @@ class Asset extends MessageDispatcher {
 }
 
 /**
- * Asset type enum.
- * @cat assets
- * @static
- * @constant
- * @enum {string}
- */
-const AssetType = {
-  TEXTURE              : 'texture',
-  TEXTURE_ATLAS        : 'textureAtlas',
-  VECTOR_TEXTURE       : 'vectorTexture',
-  VECTOR_TEXTURE_ATLAS : 'vectorTextureAtlas',
-  FONT                 : 'font',
-  BITMAP_FONT          : 'bitmapFont',
-  XML                  : 'xml',
-  JSON                 : 'json',
-  VECTOR_GRAPHICS      : 'vectorGraphics',
-  SOUND                : 'sound',
-  SOUND_ATLAS          : 'soundAtlas'
-};
-
-/**
- * Loader type enum.
- * @cat assets
- * @static
- * @constant
- * @enum {string}
- */
-const LoaderType = {
-  FONT_FACE : 'fontFace',
-  IMAGE     : 'image',
-  XHR       : 'xhr'
-};
-
-/**
  * Single Texture file asset class responsible for loading images file and
  * converting them into Textures.
  *
@@ -10789,7 +10860,7 @@ class JSONAsset extends Asset {
    * @inheritDoc
    */
   onLoaderRequested(factory) {
-    this.mXHR = factory.get(LoaderType.XHR, this.mDataUrl);
+    this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
     this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
@@ -10799,7 +10870,7 @@ class JSONAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    super.ready(/** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data))));
+    super.ready(/** @type {!Object}*/(this.mXHR.data));
   }
 }
 
@@ -11371,7 +11442,7 @@ class SoundInstance extends MessageDispatcher {
      * @type {AudioNode} The node to connect audio source 
      */
     this.mFirstNode = this.mGainNode;
-    
+
     /** 
      * @private 
      * @type {AudioNode} The node the source is connected to 
@@ -11520,6 +11591,7 @@ class SoundInstance extends MessageDispatcher {
   pause() {
     if (this.mState === SoundState.PLAYING) {
       this.stop();
+
       this.mPausePosition = this.currentPosition;
       this.mState = SoundState.PAUSED;
     }
@@ -11532,9 +11604,8 @@ class SoundInstance extends MessageDispatcher {
    * @returns {void}
    */
   resume() {
-    if (this.mState === SoundState.PAUSED) {
+    if (this.mState === SoundState.PAUSED)
       this._play();
-    }
   }
 
   /**
@@ -11564,6 +11635,7 @@ class SoundInstance extends MessageDispatcher {
    */
   __onComplete() {
     this.mSrc = null;
+
     if (this.mState !== SoundState.PAUSED) {
       this.mStartTime = 0;
       this.mState = SoundState.COMPLETED;
@@ -11678,9 +11750,9 @@ class SoundInstance extends MessageDispatcher {
    * @returns {void}
    */
   set pan(value) {
-    if (value !== 0 && this.mStereoPanner == null) 
+    if (value !== 0 && this.mStereoPanner == null)
       this.enableStereoPan();
-    
+
     if (this.mStereoPanner)
       this.mStereoPanner.pan = value;
   }
@@ -11774,7 +11846,7 @@ class SoundChannel {
    */
   detachSound(soundInstance) {
     Debug.assert(soundInstance != null, 'Sound cannot be null');
-    
+
     let ix = this.mSounds.indexOf(soundInstance);
     if (ix > -1) {
       this.mSounds.splice(ix, 1);
@@ -11792,6 +11864,28 @@ class SoundChannel {
     for (let snd = this.mSounds[0]; this.mSounds.length; snd = this.mSounds.shift()) {
       snd.stop();
     }
+  }
+
+  /**
+   * Pauses all sounds on this channel.
+   * 
+   * @public
+   * @returns {void}
+   */
+  pauseAll() {
+    for (let i = 0; i < this.mSounds.length; i++)
+      this.mSounds[i].pause();
+  }
+
+  /**
+   * Resumes all paused sounds on this channel.
+   * 
+   * @public
+   * @returns {void}
+   */
+  resumeAll() {
+    for (let i = 0; i < this.mSounds.length; i++)
+      this.mSounds[i].resume();
   }
 
   /**
@@ -12230,6 +12324,28 @@ class MasterAudio extends System {
   }
 
   /**
+   * @inheritDoc
+   */
+  onPause() {
+    if (this.mContext === null)
+      return;
+
+    if (this.mContext.state === 'running')
+      this.mContext.suspend();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onResume() {
+    if (this.mContext === null)
+      return;
+
+    if (this.mContext.state === 'suspended')
+      this.mContext.resume();
+  }
+
+  /**
    * @ignore
    */
   __initialize() {
@@ -12346,9 +12462,8 @@ class MasterAudio extends System {
     Debug.assert(nameOrSound != null, `Param 'nameOrSound' cannot be null.`);
 
     let sound = null;
-    if (nameOrSound.constructor === String) {
+    if (nameOrSound.constructor === String)
       sound = (black.assets.getSound( /** @type {string} */(nameOrSound)));
-    }
 
     return sound.play(channel, volume, loop, pan);
   }
@@ -12357,17 +12472,45 @@ class MasterAudio extends System {
    * Stops all sound on specific channel.
    * 
    * @public
-   * @param {string} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
+   * @param {string|null} channelName The name of channel to stop sounds on. If empty, stops sounds on all channels.
    * @returns {void} 
    */
-  stopAll(channelName = '') {
-    if (channelName === '') {
-      for (let chName in this.mChannels) {
+  stopAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
         this.mChannels[chName].stopAll();
-      }
-    } else {
+    else
       this.getChannel(channelName).stopAll();
-    }
+  }
+
+  /**
+   * Pauses all the sounds on specific channel.
+   * 
+   * @public
+   * @param {string|null} channelName The name of channel to pause sounds on. If empty, pauses all the sounds on all channels.
+   * @returns {void}
+   */
+  pauseAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
+        this.mChannels[chName].pauseAll();
+    else
+      this.getChannel(channelName).pauseAll();
+  }
+
+  /**
+   * Resumes all the sounds on specific channel.
+   * 
+   * @public
+   * @param {string|null} channelName The name of channel to resume sounds on. If empty, resumes all the sounds on all channels.
+   * @returns {void}
+   */
+  resumeAll(channelName = null) {
+    if (channelName === null)
+      for (let chName in this.mChannels)
+        this.mChannels[chName].resumeAll();
+    else
+      this.getChannel(channelName).resumeAll();
   }
 
   /**
@@ -15248,6 +15391,7 @@ class BVGAsset extends Asset {
   onLoaderRequested(factory) {
     this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 
@@ -15255,7 +15399,7 @@ class BVGAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    const data = /** @type {!Object}*/(this.mXHR.data);
     const parser = new BVGParser();
 
     this.mGraphicsData = parser.parse(data);
@@ -15330,6 +15474,7 @@ class VectorTextureAsset extends Asset {
   onLoaderRequested(factory) {
     this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 
@@ -15337,7 +15482,7 @@ class VectorTextureAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    const data = /** @type {!Object}*/(this.mXHR.data);
     const parser = new BVGParser();
 
     this.mGraphicsData = parser.parse(data);
@@ -15446,10 +15591,13 @@ class LoaderFactory {
    */
   get(type, url, ...args) {
     let am = this.mAssetManager;
-    let loader = am.mLoadersQueue[url];
+    // TODO: idea is to not create new loader each time it is requested.
+    // But the problem that for example XHR can have different responseTypes.
 
-    if (loader != undefined)
-      return loader;
+    // let loader = am.mLoadersQueue[url];
+
+    // if (loader != undefined)
+    //   return loader;
 
     return new am.mLoaderTypeMap[type](url, ...args);
   }
@@ -15989,7 +16137,6 @@ class AssetManager extends MessageDispatcher {
    * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
-
     let textures = this.mAssets[AssetType.TEXTURE];
     let textureAtlases = this.mAssets[AssetType.TEXTURE_ATLAS];
     let vectorTextures = this.mAssets[AssetType.VECTOR_TEXTURE];
@@ -16847,9 +16994,7 @@ class Scatter {
    *
    * @return {?} Any object.
    */
-  getValue() {
-    return this.getValueAt(Math.random());
-  }
+  getValue() {}
 
   /**
    * Returns value at given position.
@@ -16861,46 +17006,74 @@ class Scatter {
 }
 
 /**
- * A number scatter for defining a range in 1D space.
+ * A base class for number scatters.
  *
  * @cat scatters
  * @extends Scatter
  */
-class FloatScatter extends Scatter {
+class FloatScatterBase extends Scatter {
+  /**
+   * Creates new FloatScatter instance.
+   */
+  constructor() {
+    super();
+
+    /**
+     * Cached last value of `getValueAt` result.
+     * 
+     * @readonly
+     * @type {number}
+     */
+    this.value = 0;
+  }
+  
+  /**
+   * Returns random value.
+   *
+   * @return {number}
+   */
+  getValue() {
+    return this.getValueAt(Math.random());
+  }
+}
+
+/**
+ * A number scatter for defining a range in 1D space.
+ *
+ * @cat scatters
+ * @extends FloatScatterBase
+ */
+class FloatScatter extends FloatScatterBase {
   /**
    * Creates new FloatScatter instance.
    *
-   * @param {number}      min             The min value along x-axis.
-   * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {?function(number):number} [ease=null]     Easing function.
+   * @param {number}                   [min=0]  The min value along x-axis.
+   * @param {number}                   [max=null]  The max value along x-axis.
+   * @param {?function(number):number} [ease=null] Easing function. If null linear function is used as default.
    */
-  constructor(min, max = NaN, ease = null) {
+  constructor(min = 0, max = null, ease = null) {
     super();
 
     /**
      * A min value.
+     * 
      * @type {number}
      */
     this.min = min;
 
     /**
      * A max value.
+     * 
      * @type {number}
      */
-    this.max = isNaN(max) ? min : max;
+    this.max = max === null ? min : max;
 
     /**
      * Optional easing function.
+     * 
      * @type {?function(number):number}
      */
     this.ease = ease;
-
-    /**
-     * Cached last value of `getValueAt` result.
-     * @readonly
-     * @type {number}
-     */
-    this.value = 0;
   }
 
   /**
@@ -16915,19 +17088,20 @@ class FloatScatter extends Scatter {
       t = this.ease(t);
 
     this.value = this.min + t * (this.max - this.min);
+
     return this.value;
   }
 
   /**
-   * Creates new FloatScatter from a set of numbers.
+   * Creates new FloatScatterBase from a set of numbers.
    *
-   * @param {...number|FloatScatter} values Set of values.
-   * @returns {FloatScatter}
+   * @param {...number|FloatScatterBase} values Set of values.
+   * @returns {FloatScatterBase}
    */
   static fromObject(...values) {
-    if (values[0] instanceof FloatScatter)
-      return /** @type {FloatScatter} */ (values[0]);
-    
+    if (values[0] instanceof FloatScatterBase)
+      return /** @type {FloatScatterBase} */ (values[0]);
+
     return new FloatScatter(...values);
   }
 }
@@ -16942,7 +17116,8 @@ class FloatScatter extends Scatter {
 const EmitterState = {
   PENDING: 0,
   EMITTING: 1,
-  FINISHED: 2
+  PAUSED: 2,
+  FINISHED: 3,
 };
 
 /**
@@ -16967,15 +17142,23 @@ class Modifier {
    * @param {boolean} isInitializer Indicates whenever this modifier will be applied to particle during initialization stage or particle lifetime.
    */
   constructor(isInitializer = true) {
-
     /** 
      * @private 
      * @type {boolean} 
      */
     this.mIsInitializer = isInitializer;
 
-    /** @type {Scatter} Modifier's object to get values from.  */
+    /** 
+     * Modifier's object to get values from. 
+     * @type {Scatter}
+     */
     this.scatter = null;
+
+    /**
+     * Indicates whenever this modifier is active or not.
+     * @type {boolean}
+     */
+    this.isActive = true;
   }
 
   /**
@@ -17199,7 +17382,7 @@ class Emitter extends DisplayObject {
      * @private 
      * @type {FloatScatter} 
      */
-    this.mEmitNumRepeats = new FloatScatter(Infinity);
+    this.mEmitNumRepeats = new FloatScatter(0, Number.MAX_SAFE_INTEGER);
 
     /** 
      * @private 
@@ -17273,8 +17456,60 @@ class Emitter extends DisplayObject {
      */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-    this.mPresimulateSeconds = 5;
+    /**
+     * @private
+     * @type {Array<string>|null}
+     */
+    this.mTextureNames = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mPresimulateSeconds = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentPresimulationTime = 0;
+  }
+
+  /**
+   * Starts emitting particles. By default emitter will start emitting automatically.
+   */
+  play() {
+    console.log(this.mState);
+    
+    if (this.mState === EmitterState.EMITTING)
+      return;
+
+    // resume or restart
+    if (this.mState !== EmitterState.PAUSED) {
+      this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+      this.mEmitDurationLeft = this.mEmitDuration.getValue();
+      this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+      this.mEmitDelayLeft = this.mEmitDelay.getValue();
+
+      this.mState = EmitterState.PENDING;
+    }
+  }
+
+  /**
+   * Pauses the emitting process.
+   */
+  pause() {
+    this.mState = EmitterState.PAUSED;
+  }
+
+  /** 
+   * Stops emitting process and destroys all particles.
+   */
+  stop() {
+    this.mParticles = [];
+    this.mRecycled = [];
+
+    this.mState = EmitterState.FINISHED;
   }
 
   /**
@@ -17307,15 +17542,6 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * Sets the internal state to `EmitterState.PENDING`. Use this when you need to restart emitting.
-   *
-   * @returns {void}
-   */
-  resetState() {
-    this.mState = EmitterState.PENDING;
-  }
-
-  /**
    * A helper method for quick adding modifiers.
    *
    * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
@@ -17334,7 +17560,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * Adds Modifier to the end of the list.
+   * Adds modifier to the end of the list.
    *
    * @param {Modifier} modifier Modifier to add.
    * @return {Modifier}
@@ -17346,6 +17572,27 @@ class Emitter extends DisplayObject {
       this.mActions.push(modifier);
 
     return modifier;
+  }
+
+  /**
+   * Removes given modifier.
+   *
+   * @param {Modifier} modifier Modifier to remove.
+   * @return {boolean} True if modifier was removed.
+   */
+  removeModifier(modifier) {
+    let array = this.mActions;
+
+    if (modifier.isInitializer)
+      array = this.mInitializers;
+
+    let ix = array.indexOf(modifier);
+    if (ix >= 0) {
+      array.splice(ix, 1);
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -17418,6 +17665,9 @@ class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onUpdate() {
+    if (this.mState === EmitterState.PAUSED)
+      return;
+
     let dt = black.time.delta;
 
     // rate logic
@@ -17432,7 +17682,8 @@ class Emitter extends DisplayObject {
     const plength = this.mParticles.length;
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].preUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].preUpdate(dt);
 
     let particle;
 
@@ -17441,7 +17692,8 @@ class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt);
+        if (this.mActions[k].isActive === true)
+          this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -17452,7 +17704,8 @@ class Emitter extends DisplayObject {
     }
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].postUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
     if (this.mVisible === true && this.mAlpha > 0)
@@ -17487,7 +17740,8 @@ class Emitter extends DisplayObject {
       p.reset();
 
       for (let k = 0; k < this.mInitializers.length; k++)
-        this.mInitializers[k].update(this, p, 0);
+        if (this.mInitializers[k].isActive === true)
+          this.mInitializers[k].update(this, p, 0);
 
       if (this.mIsLocal === false) {
         matrix.transformXY(p.x, p.y, Vector.__cache);
@@ -17546,7 +17800,7 @@ class Emitter extends DisplayObject {
   }
 
   /**
-   * Gets/Sets the number of "durations" to to repeat. Use `Infinity` to emit particles endlessly.
+   * Gets/Sets the number of "durations" to to repeat.
    *
    * @return {FloatScatter}
    */
@@ -17661,13 +17915,23 @@ class Emitter extends DisplayObject {
   }
 
   /**
-  * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
-  * 
-  * @param {string} value
-  * @return {void}
-  */
-  set texturesName(value) {
-    this.textures = black.assets.getTextures(value);
+   * Returns list of textures used by this emitter.
+   * @returns {Array<string>}
+   */
+  get textureNames() {
+    return this.mTextureNames;
+  }
+
+  /**
+    * Sets the list of textures with given string. It uses AssetManager to find textures.
+    * 
+    * @param {Array<string>} value
+    * @return {void}
+    */
+  set textureNames(value) {
+    this.mTextureNames = value;
+
+    this.textures = value.map(x => black.assets.getTexture(x));
   }
 
   /**
@@ -19086,6 +19350,15 @@ class Sprite extends DisplayObject {
     if (this.mTexture === texture)
       return;
 
+    if (texture === null) {
+      this.mTexture = null;
+      this.mTextureName = null;
+
+      this.setDirty(DirtyFlag.RENDER_CACHE, false);
+      this.setRenderDirty();
+      return;
+    }
+
     this.mTexture = texture;
 
     if (this.mUseTextureProps === true) {
@@ -19117,6 +19390,11 @@ class Sprite extends DisplayObject {
   set textureName(value) {
     if (this.mTextureName === value)
       return;
+
+    if (value === null) {
+      this.texture = null;
+      return;
+    }
 
     this.mTextureName = value;
     this.texture = black.assets.getTexture(/** @type {string} */(value));
@@ -20169,83 +20447,23 @@ class BitmapTextField extends DisplayObject {
   }
 }
 
-class ColorScatter extends Scatter {
-  
-  constructor(color1, color2 = NaN, ease = null) {
-    super();
-
-    this.color1 = color1;
-    this.color2 = isNaN(color2) ? color1 : color2;
-    this.ease = ease;
-    this.value = color1;
-  }
-
-  getValueAt(t) {
-    if (this.ease !== null)
-      t = this.ease(t);
-
-    this.value = this.color1 === this.color2 ? this.color1 : ColorHelper.lerpHSV(this.color1, this.color2, t);
-    return this.value;
-  }
-
-  /**
-   * Creates new ColorScatter from a set of numbers.
-   *
-   * @param {...number|ColorScatter} values Set of values.
-   * @returns {ColorScatter}
-   */
-  static fromObject(...values) {
-    if (values[0] instanceof ColorScatter)
-      return /** @type {ColorScatter} */ (values[0]);
-    
-    return new ColorScatter(...values);
-  }
-}
-
 /**
- * A number scatter for defining a range in 2D space.
+ * A base class for Vector scatters.
  *
  * @cat scatters
  * @extends Scatter
  */
-class VectorScatter extends Scatter {
+class VectorScatterBase extends Scatter {
   /**
    * Creates new VectorScatter instance.
-   *
-   * @param {number} minX The min value along x-axis.
-   * @param {number} minY The min value along y-axis.
-   * @param {number=} [maxX=NaN] The max value along x-axis.
-   * @param {number=} [maxY=NaN] The max value along y-axis.
    */
-  constructor(minX, minY, maxX = NaN, maxY = NaN) {
+  constructor() {
     super();
 
     /**
-     * A min value along x-axis.
-     * @type {number}
-     */
-    this.minX = minX;
-
-    /**
-     * A min value along y-axis.
-     * @type {number}
-     */
-    this.minY = minY;
-
-    /**
-     * A max value along x-axis.
-     * @type {number}
-     */
-    this.maxX = isNaN(maxX) ? minX : maxX;
-
-    /**
-     * A max value along y-axis.
-     * @type {number}
-     */
-    this.maxY = isNaN(maxY) ? minY : maxY;
-
-    /**
      * Cached last value of `getValueAt` result.
+     * 
+     * @public
      * @readonly
      * @type {Vector}
      */
@@ -20253,14 +20471,171 @@ class VectorScatter extends Scatter {
   }
 
   /**
-  * Returns a random Vector object at given position within a range specified in the constructor.
+   * Returns random value.
    *
-  * @override
-  * @return {Vector} Vector object with random values withing defined range.
-  */
+   * @return {Vector}.
+   */
+  getValue() {
+    return this.getValueAt(Math.random());
+  }
+}
+
+/**
+ * A base class for color scatters.
+ *
+ * @cat scatters
+ * @extends Scatter
+ */
+class ColorScatterBase extends Scatter {  
+  constructor() {
+    super();
+
+    /**
+     * Cached last value of `getValueAt` result.
+     * 
+     * @readonly
+     * @type {number}
+     */
+    this.value = 0;
+  }
+    
+  /**
+   * Returns random value.
+   *
+   * @return {number}
+   */
+  getValue() {
+    return this.getValueAt(Math.random());
+  }
+}
+
+/**
+ * A color scatter.
+ *
+ * @cat scatters
+ * @extends FloatScatterBase
+ */
+class ColorScatter extends ColorScatterBase {
+  /**
+   * Creates new ColorScatter instance.
+   * 
+   * @param {number} [startColor=0]
+   * @param {number} [endColor=null]
+   * @param {?function(number):number} [ease=null] Easing function. If null linear function is used as default.
+   */
+  constructor(startColor, endColor = null, ease = null) {
+    super();
+
+    /**
+     * Defines starting color
+     * 
+     * @type {number}
+     */
+    this.startColor = startColor;
+
+    /**
+     * Defines ending color
+     * 
+     * @type {number}
+     */
+    this.endColor = endColor === null ? startColor : endColor;
+
+    /**
+     * Optional easing function.
+     * 
+     * @type {number}
+     */
+    this.ease = ease;
+  }
+
+  getValueAt(t) {
+    if (this.ease !== null)
+      t = this.ease(t);
+
+    this.value = this.startColor === this.endColor ? this.startColor : ColorHelper.lerpHSV(this.startColor, this.endColor, t);
+
+    return this.value;
+  }
+
+  /**
+   * Creates new ColorScatterBase from a set of numbers.
+   *
+   * @param {...number|ColorScatterBase} values Set of values.
+   * @returns {ColorScatterBase}
+   */
+  static fromObject(...values) {
+    if (values[0] instanceof ColorScatterBase)
+      return /** @type {ColorScatterBase} */ (values[0]);
+
+    return new ColorScatter(...values);
+  }
+}
+
+/**
+ * A vector scatter for defining a range in 2D space.
+ *
+ * @cat scatters
+ * @extends VectorScatterBase
+ */
+class VectorScatter extends VectorScatterBase {
+  /**
+   * Creates new VectorScatter instance.
+   *
+   * @param {number}  [minX=0]                     The min value along x-axis.
+   * @param {number}  [minY=0]                     The min value along y-axis.
+   * @param {number=} [maxX=null]                  The max value along x-axis.
+   * @param {number=} [maxY=null]                  The max value along y-axis.
+   * @param {?function(number):number} [ease=null] Easing function. If null linear function is used as default.
+   */
+  constructor(minX = 0, minY = 0, maxX = null, maxY = null, ease = null) {
+    super();
+
+    /**
+     * A min value along x-axis.
+     * 
+     * @type {number}
+     */
+    this.minX = minX;
+
+    /**
+     * A min value along y-axis.
+     * 
+     * @type {number}
+     */
+    this.minY = minY;
+
+    /**
+     * A max value along x-axis.
+     * 
+     * @type {number}
+     */
+    this.maxX = maxX === null ? minX : maxX;
+
+    /**
+     * A max value along y-axis.
+     * 
+     * @type {number}
+     */
+    this.maxY = maxY === null ? minY : maxY;
+
+    /**
+     * Optional easing function.
+     * 
+     * @type {?function(Vector):Vector}
+     */
+    this.ease = ease;
+  }
+
+  /**
+   * Returns a random Vector object at given position within a specified range.
+   *
+   * @override
+   * @return {Vector} Vector object with random values withing defined range.
+   */
   getValue() {
     this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
     this.value.y = Math.random() * (this.maxY - this.minY) + this.minY;
+
     return this.value;
   }
 
@@ -20272,20 +20647,24 @@ class VectorScatter extends Scatter {
    * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
+    if (this.ease !== null)
+      t = this.ease(t);
+
     this.value.x = this.minX + t * (this.maxX - this.minX);
     this.value.y = this.minY + t * (this.maxY - this.minY);
+
     return this.value;
   }
 
   /**
-   * Creates new FloatScatter from a set of numbers.
+   * Creates new VectorScatter from a set of numbers.
    *
-   * @param {...number|VectorScatter} values Set of values.
-   * @returns {VectorScatter}
+   * @param {...number|VectorScatterBase} values Set of values.
+   * @returns {VectorScatterBase}
    */
   static fromObject(...values) {
-    if (values[0] instanceof Scatter)
-      return /** @type {VectorScatter} */ (values[0]);
+    if (values[0] instanceof VectorScatterBase)
+      return /** @type {VectorScatterBase} */ (values[0]);
 
     return new VectorScatter(...values);
   }
@@ -20295,9 +20674,9 @@ class VectorScatter extends Scatter {
  * Sets particle's starting velocity.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends VectorScatterBase
  */
-class VectorCurveScatter extends Scatter {
+class VectorCurveScatter extends VectorScatterBase {
   /**
    * Creates new VectorCurveScatter instance.
    *
@@ -20314,11 +20693,35 @@ class VectorCurveScatter extends Scatter {
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.mPointsCache = points;
+
     /** 
      * @private 
      * @type {Vector} 
      */
     this.mCache = new Vector();
+  }
+
+  /**
+   * Updates curve with new array of points.
+   * 
+   * @param {Array<number>} value
+   */
+  set points(value) {
+    this.mPointsCache = value;
+    this.mCurve.set(...value);
+  }
+
+  /**
+   * Returns list of points.
+   * @returns {Array<number>}
+   */
+  get points() {
+    return this.mPointsCache;
   }
 
   /**
@@ -20330,6 +20733,7 @@ class VectorCurveScatter extends Scatter {
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
+
     return this.mCache;
   }
 }
@@ -20338,19 +20742,47 @@ class VectorCurveScatter extends Scatter {
  * A number scatter for defining a range in a circular shape.
  *
  * @cat scatters
- * @extends VectorScatter
+ * @extends VectorScatterBase
  */
-class RadialScatter extends VectorScatter {
+class RadialScatter extends VectorScatterBase {
   /**
    * Creates new VectorScatter instance.
    *
    * @param {number} x The center of a circle along x-axis.
    * @param {number} y The center of a circle along y-axis.
    * @param {number} minRadius The min radius value.
-   * @param {number} [maxRadius=NaN] The max radius value.
+   * @param {number} [maxRadius=null] The max radius value.
    */
-  constructor(x, y, minRadius, maxRadius = NaN) {
-    super(x, y, minRadius, maxRadius);
+  constructor(x = 0, y = 0, minRadius = 0, maxRadius = null) {
+    super();
+
+    /**
+     * A min value along x-axis.
+     * 
+     * @type {number}
+     */
+    this.x = x;
+
+    /**
+     * A min value along y-axis.
+     * 
+     * @type {number}
+     */
+    this.y = y;
+
+    /**
+     * A max value along x-axis.
+     * 
+     * @type {number}
+     */
+    this.minRadius = minRadius;
+
+    /**
+     * A max value along y-axis.
+     * 
+     * @type {number}
+     */
+    this.maxRadius = maxRadius === null ? minRadius : maxRadius;
   }
 
   /**
@@ -20371,13 +20803,12 @@ class RadialScatter extends VectorScatter {
    * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
-    // pick random radius
-    const r = this.maxX + t * (this.maxY - this.maxX);
+    const r = this.minRadius + t * (this.maxRadius - this.minRadius);
 
     const angle = Math.random() * 2 * Math.PI; // MathEx.PI2?
     const rSq = r * r;
-    const rx = this.minX + (Math.sqrt(rSq) * Math.cos(angle));
-    const ry = this.minY + (Math.sqrt(rSq) * Math.sin(angle));
+    const rx = this.x + (Math.sqrt(rSq) * Math.cos(angle));
+    const ry = this.y + (Math.sqrt(rSq) * Math.sin(angle));
 
     this.value.x = rx;
     this.value.y = ry;
@@ -20390,9 +20821,9 @@ class RadialScatter extends VectorScatter {
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends FloatScatterBase
  */
-class FloatCurveScatter extends Scatter {
+class FloatCurveScatter extends FloatScatterBase {
   /**
    * Creates new FloatCurveScatter instance.
    *
@@ -20409,11 +20840,35 @@ class FloatCurveScatter extends Scatter {
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.mPointsCache = points;
+
     /** 
      * @private 
      * @type {Vector} 
      */
     this.mCache = new Vector();
+  }
+
+  /**
+   * Updates curve with new array of points.
+   * 
+   * @param {Array<number>} value
+   */
+  set points(value) {
+    this.mPointsCache = value;
+    this.mCurve.set(...value);
+  }
+
+  /**
+   * Returns list of points.
+   * @returns {Array<number>}
+   */
+  get points() {
+    return this.mPointsCache;
   }
 
   /**
@@ -20425,7 +20880,9 @@ class FloatCurveScatter extends Scatter {
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
-    return this.mCache.y;
+
+    this.value = this.mCache.y;
+    return this.value;
   }
 }
 
@@ -20439,12 +20896,14 @@ class Acceleration extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|VectorScatter)} values An VectorScatter which defines acceleration direction.
+   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** 
+     * @type {VectorScatterBase} Modifier's object to get values from.
+     */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -20469,12 +20928,12 @@ class AlphaOverLife extends Modifier {
   /**
    * Creates new AlphaOverLife instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20496,12 +20955,12 @@ class ColorOverLife extends Modifier {
   /**
    * Creates new ColorOverLife instance.
    *
-   * @param {...(number|ColorScatter)} values A starting and ending values of color property.
+   * @param {...(number|ColorScatterBase)} values A starting and ending values of color property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {ColorScatter} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 
@@ -20523,12 +20982,12 @@ class ScaleOverLife extends Modifier {
   /**
    * Creates new ScaleOverTime instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of scale property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of scale property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20550,12 +21009,12 @@ class RotationOverLife extends Modifier {
   /**
    * Creates new RotationOverLife instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20577,12 +21036,12 @@ class TextureOverLife extends Modifier {
   /**
    * Creates new TextureOverLife instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of textureIndex property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of textureIndex property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20604,12 +21063,12 @@ class AnchorOverLife extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|VectorScatter)} values An VectorScatter which defines acceleration direction.
+   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -20636,14 +21095,18 @@ class Oriented extends Modifier {
    */
   constructor(angleShift = 0) {
     super(false);
-    this.mAngleShift = angleShift;
+
+    /**
+     * @type {number}
+     */
+    this.angleShift = angleShift;
   }
 
   /**
    * @inheritDoc
    */
   update(emitter, particle, dt) {
-    particle.r = (Math.atan2(particle.vy, particle.vx) * MathEx.RAD2DEG - (90 + this.mAngleShift)) * dt;
+    particle.r = (Math.atan2(particle.vy, particle.vx) * MathEx.RAD2DEG - (90 + this.angleShift)) * dt;
   }
 }
 
@@ -20748,12 +21211,12 @@ class InitialLife extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values in seconds.
+   * @param {...(number|FloatScatterBase)} values Min and max values in seconds.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20775,12 +21238,12 @@ class InitialMass extends Modifier {
   /**
    * Creates new InitialMass instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values.
+   * @param {...(number|FloatScatterBase)} values Min and max values.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20802,12 +21265,12 @@ class InitialScale extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values.
+   * @param {...(number|FloatScatterBase)} values Min and max values.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20829,12 +21292,12 @@ class InitialVelocity extends Modifier {
   /**
    * Creates new InitialVelocity instance.
    *
-   * @param {...(number|VectorScatter)} values Min and max vectors.
+   * @param {...(number|VectorScatterBase)} values Min and max vectors.
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -20859,12 +21322,12 @@ class InitialPosition extends Modifier {
   /**
    * Creates new InitialPosition instance.
    *
-   * @param {...(number|VectorScatter)} values Rectangle coordinates, its width and height.
+   * @param {...(number|VectorScatterBase)} values Rectangle coordinates, its width and height.
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -20888,12 +21351,12 @@ class InitialRotation extends Modifier {
   /**
    * Creates new InitialRotation instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values in radians.
+   * @param {...(number|FloatScatterBase)} values Min and max values in radians.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20915,12 +21378,12 @@ class InitialTexture extends Modifier {
   /**
    * Creates new InitialTexture instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max indexes from texture list.
+   * @param {...(number|FloatScatterBase)} values Min and max indexes from texture list.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -20942,12 +21405,12 @@ class InitialColor extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|ColorScatter)} values Two color values.
+   * @param {...(number|ColorScatterBase)} values Two color values.
    */
   constructor(...values) {
     super();
 
-    /** @type {ColorScatter} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 
@@ -20969,12 +21432,12 @@ class InitialAnchor extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|VectorScatter)} values
+   * @param {...(number|VectorScatterBase)} values
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -23581,6 +24044,7 @@ class Sound extends Component {
       const pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
       const px = (pos.x - stage.centerX) / stage.width * 2;
       const py = (pos.y - stage.centerY) / stage.height * 2;
+
       this.mSoundInstance.mSpatialPanner.setPosition(px, py, 0);
     }
   }
@@ -23626,6 +24090,7 @@ class Sound extends Component {
    */
   set spatialEffect(value) {
     this.mSpatialEffect = value;
+
     if (value && this.mSoundInstance != null && this.mSoundInstance.isPlaying === true) {
       let p = this.mSoundInstance.enableSpacePan();
       p.rolloffFactor = this.mRolloff;
@@ -26162,10 +26627,10 @@ let ID$3 = 0;
 /**
  * The Black class represents the core of the Black Engine.
  *
- * @fires Black#paused
- * @fires Black#unpaused
- * @fires Black#ready
- * @fires Black#looped
+ * @fires Engine#paused
+ * @fires Engine#unpaused
+ * @fires Engine#ready
+ * @fires Engine#looped
  *
  * @extends MessageDispatcher
  */
@@ -26406,10 +26871,13 @@ class Engine extends MessageDispatcher {
   pause() {
     this.mPaused = true;
 
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onPause();
+
     /**
      * Posted after engine entered paused state.
      *
-     * @event Black#paused
+     * @event Engine#paused
      */
     this.post('paused');
   }
@@ -26427,10 +26895,13 @@ class Engine extends MessageDispatcher {
   __setUnpaused() {
     this.mPaused = false;
 
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onResume();
+
     /**
      * Posted after engine is unpaused.
      *
-     * @event Black#unpaused
+     * @event Engine#unpaused
      */
     this.post('unpaused');
   }
@@ -26584,7 +27055,7 @@ class Engine extends MessageDispatcher {
     /**
      * Posted when all systems, stage and driver ready to be used. 
      *
-     * @event Black#ready
+     * @event Engine#ready
      */
     this.post(Message.READY);
 
@@ -26685,7 +27156,7 @@ class Engine extends MessageDispatcher {
        * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
        * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
        *
-       * @event Black#looped
+       * @event Engine#looped
        */
       this.post('looped', numTicks);
       Debug.warn(`Unable to catch up ${numTicks} update(s).`);
@@ -27070,4 +27541,4 @@ class Engine extends MessageDispatcher {
   }
 }
 
-export { Acceleration, AlphaOverLife, AnchorOverLife, AnimationController, AnimationInfo, Arcade, Asset, AssetLoader, AssetManager, AssetManagerState, AtlasTexture, AtlasTextureAsset, BVGAsset, BVGParser, BVGStyle, BindingType, BitmapFontAsset, BitmapFontCharData, BitmapFontData, BitmapTextField, BitmapTextRenderer, BitmapTextRendererCanvas, black as Black, BlendMode, BoxCollider, BoxToBoxPair, BoxToCirclePair, BroadPhase, CanvasDriver, CanvasRenderTexture, CapsStyle, Circle, CircleCollider, CircleToCirclePair, Collider, ColorHelper, ColorOverLife, ColorScatter, Component, Curve, Debug, Device, DisplayObject, DisplayObjectRendererCanvas, DistortionEffect, Ease, Emitter, EmitterRendererCanvas, EmitterSortOrder, EmitterState, Engine, FillRule, FloatCurveScatter, FloatScatter, FontAlign, FontAsset, FontFaceAssetLoader, FontMetrics, FontStyle, FontVerticalAlign, FontWeight, GameObject, Glob, Graphics, GraphicsCommand, GraphicsCommandType, GraphicsData, GraphicsGradient, GraphicsLinearGradient, GraphicsPath, GraphicsPattern, GraphicsRenderer, GraphicsRendererCanvas, HSV, ImageAssetLoader, InitialAnchor, InitialColor, InitialLife, InitialMass, InitialPosition, InitialRotation, InitialScale, InitialTexture, InitialVelocity, Input, InputComponent, Interpolation, JSONAsset, JointStyle, Key, KeyInfo, Line, MapMap, MasterAudio, MathEx, Matrix, Message, MessageBinding, MessageDispatcher, MessageType, Modifier, ObjectPool, Orientation, Oriented, Pair, ParserBase, Particle, Perlin, Polygon, Projection, RGB, RadialScatter, Range, Rectangle, RenderSession, RenderTarget, RenderTargetCanvas, Renderer, ReverbEffect, RigidBody, RotationOverLife, ScaleOverLife, Scatter, SimpleEQ, Sound, SoundAsset, SoundAtlasAsset, SoundAtlasClip, SoundChannel, SoundClip, SoundEffect, SoundInstance, SoundListener, SoundState, SplashScreen, Sprite, SpriteRendererCanvas, Stage, StageScaleMode, StereoPanner, System, TextField, TextMetricsData, TextMetricsEx, TextRenderer, TextRendererCanvas, TextSegmentMetricsData, TextStyle, Texture, TextureAsset, TextureOverLife, TilingInfo, Time, Timer, Tween, Vector, VectorCurveScatter, VectorField, VectorScatter, VectorTextureAsset, VideoNullDriver, Viewport, XHRAssetLoader, XMLAsset };
+export { Acceleration, AlphaOverLife, AnchorOverLife, AnimationController, AnimationInfo, Arcade, Asset, AssetLoader, AssetManager, AssetManagerState, AssetType, AtlasTexture, AtlasTextureAsset, BVGAsset, BVGParser, BVGStyle, BindingType, BitmapFontAsset, BitmapFontCharData, BitmapFontData, BitmapTextField, BitmapTextRenderer, BitmapTextRendererCanvas, black as Black, BlendMode, BoxCollider, BoxToBoxPair, BoxToCirclePair, BroadPhase, CanvasDriver, CanvasRenderTexture, CapsStyle, Circle, CircleCollider, CircleToCirclePair, Collider, ColorHelper, ColorOverLife, ColorScatter, ColorScatterBase, Component, Curve, Debug, Device, DisplayObject, DisplayObjectRendererCanvas, DistortionEffect, Ease, Emitter, EmitterRendererCanvas, EmitterSortOrder, EmitterState, Engine, FillRule, FloatCurveScatter, FloatScatter, FloatScatterBase, FontAlign, FontAsset, FontFaceAssetLoader, FontMetrics, FontStyle, FontVerticalAlign, FontWeight, GameObject, Glob, Graphics, GraphicsCommand, GraphicsCommandType, GraphicsData, GraphicsGradient, GraphicsLinearGradient, GraphicsPath, GraphicsPattern, GraphicsRenderer, GraphicsRendererCanvas, HSV, ImageAssetLoader, InitialAnchor, InitialColor, InitialLife, InitialMass, InitialPosition, InitialRotation, InitialScale, InitialTexture, InitialVelocity, Input, InputComponent, Interpolation, JSONAsset, JointStyle, Key, KeyInfo, Line, LoaderType, MapMap, MasterAudio, MathEx, Matrix, Message, MessageBinding, MessageDispatcher, MessageType, Modifier, ObjectPool, Orientation, Oriented, Pair, ParserBase, Particle, Perlin, Polygon, Projection, RGB, RadialScatter, Range, Rectangle, RenderSession, RenderTarget, RenderTargetCanvas, Renderer, ReverbEffect, RigidBody, RotationOverLife, ScaleOverLife, Scatter, SimpleEQ, Sound, SoundAsset, SoundAtlasAsset, SoundAtlasClip, SoundChannel, SoundClip, SoundEffect, SoundInstance, SoundListener, SoundState, SplashScreen, Sprite, SpriteRendererCanvas, Stage, StageScaleMode, StereoPanner, System, TextField, TextMetricsData, TextMetricsEx, TextRenderer, TextRendererCanvas, TextSegmentMetricsData, TextStyle, Texture, TextureAsset, TextureOverLife, TilingInfo, Time, Timer, Tween, Vector, VectorCurveScatter, VectorField, VectorScatter, VectorScatterBase, VectorTextureAsset, VideoNullDriver, Viewport, XHRAssetLoader, XMLAsset };

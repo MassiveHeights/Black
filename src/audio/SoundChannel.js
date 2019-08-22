@@ -70,7 +70,7 @@ export class SoundChannel {
    */
   detachSound(soundInstance) {
     Debug.assert(soundInstance != null, 'Sound cannot be null');
-    
+
     let ix = this.mSounds.indexOf(soundInstance);
     if (ix > -1) {
       this.mSounds.splice(ix, 1);
@@ -88,6 +88,28 @@ export class SoundChannel {
     for (let snd = this.mSounds[0]; this.mSounds.length; snd = this.mSounds.shift()) {
       snd.stop();
     }
+  }
+
+  /**
+   * Pauses all sounds on this channel.
+   * 
+   * @public
+   * @returns {void}
+   */
+  pauseAll() {
+    for (let i = 0; i < this.mSounds.length; i++)
+      this.mSounds[i].pause();
+  }
+
+  /**
+   * Resumes all paused sounds on this channel.
+   * 
+   * @public
+   * @returns {void}
+   */
+  resumeAll() {
+    for (let i = 0; i < this.mSounds.length; i++)
+      this.mSounds[i].resume();
   }
 
   /**

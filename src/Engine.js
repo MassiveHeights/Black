@@ -259,6 +259,9 @@ export class Engine extends MessageDispatcher {
   pause() {
     this.mPaused = true;
 
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onPause();
+
     /**
      * Posted after engine entered paused state.
      *
@@ -279,6 +282,9 @@ export class Engine extends MessageDispatcher {
 
   __setUnpaused() {
     this.mPaused = false;
+
+    for (let i = 0; i < this.mSystems.length; i++)
+      this.mSystems[i].onResume();
 
     /**
      * Posted after engine is unpaused.

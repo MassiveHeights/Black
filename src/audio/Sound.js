@@ -142,6 +142,7 @@ export class Sound extends Component {
       const pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
       const px = (pos.x - stage.centerX) / stage.width * 2;
       const py = (pos.y - stage.centerY) / stage.height * 2;
+
       this.mSoundInstance.mSpatialPanner.setPosition(px, py, 0);
     }
   }
@@ -187,6 +188,7 @@ export class Sound extends Component {
    */
   set spatialEffect(value) {
     this.mSpatialEffect = value;
+
     if (value && this.mSoundInstance != null && this.mSoundInstance.isPlaying === true) {
       let p = this.mSoundInstance.enableSpacePan();
       p.rolloffFactor = this.mRolloff;

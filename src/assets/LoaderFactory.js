@@ -25,10 +25,13 @@ export class LoaderFactory {
    */
   get(type, url, ...args) {
     let am = this.mAssetManager;
-    let loader = am.mLoadersQueue[url];
+    // TODO: idea is to not create new loader each time it is requested.
+    // But the problem that for example XHR can have different responseTypes.
 
-    if (loader != undefined)
-      return loader;
+    // let loader = am.mLoadersQueue[url];
+
+    // if (loader != undefined)
+    //   return loader;
 
     return new am.mLoaderTypeMap[type](url, ...args);
   }
