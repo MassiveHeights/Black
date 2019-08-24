@@ -347,6 +347,14 @@ export class Vector {
     outVector = outVector || new Vector();
     return outVector.set(Math.cos(angle), Math.sin(angle));
   }
+  
+  /**
+   * Returns random number within this rectangle.
+   * @returns {number}
+   */
+  get random() {
+    return MathEx.randomBetween(this.x, this.y);
+  }
 
   /**
    * @ignore

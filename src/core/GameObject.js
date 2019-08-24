@@ -1132,6 +1132,32 @@ export class GameObject extends MessageDispatcher {
     this.mY = value;
     this.setTransformDirty();
   }
+  
+  /**
+   * Gets/sets object position.
+   * 
+   * NOTE: setting individual values on this vector will give zero results.
+   * @returns {Vector}
+   */
+  get xy() {
+    return new Vector(this.mX, this.mY);
+  }
+
+  /**
+   * Gets/sets object position.
+   * 
+   * @param {Vector} value
+   * @returns {void}
+   */
+  set xy(value) {
+    if (this.mX === value.x && this.mY === value.y)
+      return;
+
+    this.mX = value.x;
+    this.mY = value.y;
+
+    this.setTransformDirty();
+  }
 
   /**
    * Gets/Sets the x coordinate of the object's origin in its local space in pixels.

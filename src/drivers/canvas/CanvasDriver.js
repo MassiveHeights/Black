@@ -13,6 +13,7 @@ import { BitmapTextRendererCanvas } from "./BitmapTextRendererCanvas";
 import { GraphicsRendererCanvas } from "./GraphicsRendererCanvas";
 import { Texture } from "../../textures/Texture";
 import { ColorHelper } from "../../utils/ColorHelper";
+import { Camera } from "../../display/Camera";
 
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
@@ -283,6 +284,11 @@ export class CanvasDriver extends VideoNullDriver {
         transform = transform.clone(); // TODO: too much allocations
         transform.prepend(session.customTransform);
       }
+    }
+
+    if (Camera.active !== null) {
+      transform = transform.clone();
+      transform.prepend(Camera.active.worldTransformationInverted);
     }
 
     this.mTransform = transform;

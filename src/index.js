@@ -84,6 +84,7 @@ export { VideoNullDriver } from './drivers/VideoNullDriver';
 export { CanvasDriver } from './drivers/canvas/CanvasDriver';
 
 export { DisplayObject } from './display/DisplayObject';
+export { Camera } from './display/Camera';
 export { GraphicsData } from './display/GraphicsData';
 export { Graphics } from './display/Graphics';
 export { GraphicsPath } from './display/GraphicsPath';

@@ -2,6 +2,7 @@ import { Debug } from "../core/Debug";
 import { ObjectPool } from "../utils/ObjectPool";
 import { Vector } from "./Vector";
 import { Line } from "./Line";
+import { MathEx } from "../math/MathEx";
 
 /**
  * Mathematical representation of a rectangle.
@@ -492,6 +493,17 @@ export class Rectangle {
       new Line(this.bottomRight, this.bottomLeft),
       new Line(this.bottomLeft, this.topLeft)
     ];
+  }
+
+  /**
+   * Returns random number within this rectangle.
+   * @returns {number}
+   */
+  get random() {
+    const rx = MathEx.randomBetween(this.x, this.width);
+    const ry = MathEx.randomBetween(this.y, this.height);
+
+    return new Vector(rx, ry);
   }
 
   /**
