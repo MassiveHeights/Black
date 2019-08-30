@@ -208,6 +208,17 @@ export class GraphicsRendererCanvas extends GraphicsRenderer {
           break;
         }
 
+        case GraphicsCommandType.SHADOW_BLUR: {
+          ctx.shadowBlur = cmd.getNumber(0) * r;
+          break;
+        }
+
+        case GraphicsCommandType.SHADOW_COLOR: {
+          let stringColor = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : /** @type {number} */(color), cmd.getNumber(1));
+          ctx.shadowColor = stringColor;
+          break;
+        }
+
         case GraphicsCommandType.BOUNDS: {
           break;
         }
@@ -218,8 +229,7 @@ export class GraphicsRendererCanvas extends GraphicsRenderer {
       }
     }
 
-    for (let i = 0, l = node.mNodes.length; i < l; i++) {
+    for (let i = 0, l = node.mNodes.length; i < l; i++)
       this.__renderNode(driver, color, node.mNodes[i], transform);
-    }
   }
 }

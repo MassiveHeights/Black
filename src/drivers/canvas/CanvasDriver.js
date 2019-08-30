@@ -286,9 +286,9 @@ export class CanvasDriver extends VideoNullDriver {
       }
     }
 
-    if (Camera.active !== null) {
+    if (Black.camera !== null) {
       transform = transform.clone();
-      transform.prepend(Camera.active.worldTransformationInverted);
+      transform.prepend(Black.camera.worldTransformationInverted);
     }
 
     this.mTransform = transform;

@@ -186,6 +186,31 @@ export class GraphicsData {
   }
 
   /**
+   * Sets shadow blur level.
+   * 
+   * @param {number} level 
+   * @returns {void}
+   */
+  shadowBlur(level) {
+    Debug.isNumber(level);
+
+    this.__pushCommand(GraphicsCommandType.SHADOW_BLUR, level);
+  }
+
+  /**
+   * Sets shadow color.
+   * 
+   * @param {number} color 
+   * @param {number} alpha 
+   * @returns {void}
+   */
+  shadowColor(color, alpha) {
+    Debug.isNumber(color, alpha);
+
+    this.__pushCommand(GraphicsCommandType.SHADOW_COLOR, color, alpha);
+  }
+  
+  /**
    * Sets fill style
    *
    * @public

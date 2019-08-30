@@ -39,10 +39,11 @@ export class Component extends MessageDispatcher {
     this.mAdded = false;
 
     /**
-     * Indicates whenever this modifier is active or not.
+     * Indicates whenever this modifier is enabled or not.
+     * 
      * @type {boolean}
      */
-    this.isActive = true;
+    this.enabled = true;
   }
 
   /**

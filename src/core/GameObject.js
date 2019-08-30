@@ -781,7 +781,7 @@ export class GameObject extends MessageDispatcher {
 
         let c = this.mComponentClone[k];
 
-        if (c.mAdded === false || c.isActive === false)
+        if (c.mAdded === false || c.enabled === false)
           continue;
 
         c.onUpdate();

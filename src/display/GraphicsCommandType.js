@@ -6,8 +6,8 @@
  * @enum {string}
  */
 const GraphicsCommandType = {
-  LINE_STYLE: 'lineStyle',
-  FILL_STYLE: 'fillStyle',
+  LINE_STYLE        : 'lineStyle',
+  FILL_STYLE        : 'fillStyle',
 
   ARC               : 'arc',
   RECT              : 'rect',
@@ -21,6 +21,9 @@ const GraphicsCommandType = {
   MOVE_TO           : 'moveTo',
   STROKE            : 'stroke',
   BOUNDS            : 'bounds',
+
+  SHADOW_COLOR      : 'shadowColor',
+  SHADOW_BLUR       : 'shadowBlur',
 
   LINE_DASH   : 'setLineDash',
   FILL_GRD    : 'gradientFillStyle',

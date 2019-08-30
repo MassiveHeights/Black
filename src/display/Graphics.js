@@ -132,6 +132,27 @@ export class Graphics extends DisplayObject {
   }
 
   /**
+   * Sets shadow blur level.
+   * 
+   * @param {number} level 
+   * @returns {void}
+   */
+  shadowBlur(level) {
+    this.mGraphicsData.shadowBlur(level);
+  }
+
+  /**
+   * Sets shadow color.
+   * 
+   * @param {number} color 
+   * @param {number} alpha 
+   * @returns {void}
+   */
+  shadowColor(color, alpha = 1) {
+    this.mGraphicsData.shadowColor(color, alpha);
+  }
+
+  /**
    * Sets fill style
    *
    * @public

@@ -217,11 +217,10 @@ export class Input extends System {
       return;
 
     if (e.type === 'wheel') {
-      this.__pushEvent(e);
+      if (e.path.indexOf(Black.engine.containerElement) !== -1)
+        this.__pushEvent(e);
     } else {
-      // else pointerUp?
-      // dirty check
-      let over = e.target == this.mDom || /** @type {Node})*/ (e.target).parentElement == this.mDom;
+      const over = e.path.indexOf(this.mDom) !== -1;
 
       if (over === false && this.mNeedUpEvent === true) {
         this.mNeedUpEvent = false;
@@ -334,8 +333,8 @@ export class Input extends System {
 
       this.mViewportPosition.copyFrom(this.mPointerPosition);
 
-      if (Camera.active !== null)
-        Camera.active.worldTransformationInverted.transformVector(this.mPointerPosition, this.mPointerPosition);
+      if (Black.camera !== null)
+        Black.camera.worldTransformation.transformVector(this.mPointerPosition, this.mPointerPosition);
 
       this.mStagePosition.copyFrom(this.mPointerPosition);
 
@@ -381,6 +380,7 @@ export class Input extends System {
     }
     else if (type === Input.POINTER_UP) {
       this.mIsPointerDown = false;
+      this.mNeedUpEvent = false;
     }
 
     let delta = 0;

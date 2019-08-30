@@ -4,32 +4,37 @@
 class Black {
   constructor() {
     /**
-     * @type {Engine}
      * Returns current instance of Black Engine.
+     * 
+     * @type {Engine}
      */
     this.engine = null;
 
     /**
-     * @type {Input}
      * Returns current instance of Input system.
+     * 
+     * @type {Input}
      */
     this.input = null;
 
     /**
-     * @type {MasterAudio}
      * Returns current instance of MasterAudio system.
+     * 
+     * @type {MasterAudio}
      */
     this.audio = null;
 
     /**
-     * @type {Time}
      * Returns current instance of Time.
+     * 
+     * @type {Time}
      */
     this.time = null;
 
     /**
-     * @type {Device}
      * Returns current instance of Device.
+     * 
+     * @type {Device}
      */
     this.device = null;
 
@@ -37,11 +42,17 @@ class Black {
      * Default instance. Sprite and other classes uses this instance to find textures by name.
      * It will be automatically assigned when new AssetManager is created.
      * 
-     * @private
-     * @static
      * @type {AssetManager}
      */
     this.assets = null;
+
+    /**
+     * Active camera instance.
+     * 
+     * @private
+     * @type {Camera}
+     */
+    this.mCamera = null;
   }
 
   /**
@@ -62,6 +73,18 @@ class Black {
    */
   get driver() {
     return this.engine.mVideo;
+  }
+
+  /**
+   * Returns active camera instance.
+   * 
+   * @returns {Camera}
+   */
+  get camera() {
+    if (this.mCamera !== null && this.mCamera.mAdded === true)
+      return this.mCamera;
+
+    return null;
   }
 
   /**
