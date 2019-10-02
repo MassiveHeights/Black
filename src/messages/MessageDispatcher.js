@@ -172,6 +172,7 @@ export class MessageDispatcher {
   }
 
   /**
+   * @private
    * @ignore
    * @param {MessageBinding} binding 
    */

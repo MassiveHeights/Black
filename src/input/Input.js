@@ -102,12 +102,6 @@ export class Input extends System {
      */
     this.mIsPointerDown = false;
 
-    /** 
-     * @private 
-     * @type {boolean} 
-     */
-    this.mNeedUpEvent = false;
-
     // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
     /** 
      * @private 
@@ -182,6 +176,7 @@ export class Input extends System {
       target.addEventListener(name, listener);
     };
 
+    addBoundsListener(document, this.mEventList[IX_POINTER_MOVE], this.__onPointerEventDoc);
     addBoundsListener(document, this.mEventList[IX_POINTER_UP], this.__onPointerEventDoc);
 
     if (isMouseDevice === true)
@@ -216,16 +211,14 @@ export class Input extends System {
     if (Black.engine.isPaused === true)
       return;
 
+    const over = e.path.indexOf(this.mDom) !== -1;
+
     if (e.type === 'wheel') {
-      if (e.path.indexOf(Black.engine.containerElement) !== -1)
+      if (over === true)
         this.__pushEvent(e);
     } else {
-      const over = e.path.indexOf(this.mDom) !== -1;
-
-      if (over === false && this.mNeedUpEvent === true) {
-        this.mNeedUpEvent = false;
+      if (over === false && this.mIsPointerDown === true)
         this.__pushEvent(e);
-      }
     }
   }
 
@@ -376,11 +369,9 @@ export class Input extends System {
   __processNativeEvent(nativeEvent, pos, type) {
     if (type === Input.POINTER_DOWN) {
       this.mIsPointerDown = true;
-      this.mNeedUpEvent = true;
     }
     else if (type === Input.POINTER_UP) {
       this.mIsPointerDown = false;
-      this.mNeedUpEvent = false;
     }
 
     let delta = 0;

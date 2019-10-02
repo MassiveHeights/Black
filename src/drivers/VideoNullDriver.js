@@ -65,7 +65,7 @@ export class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {?} 
+     * @type {*} 
      */
     this.mLastRenderTexture = null;
 
@@ -357,7 +357,7 @@ export class VideoNullDriver {
 
   /** 
    * Returns current rendering context or null.
-   * @returns {?}
+   * @returns {*}
    */
   get context() {
     return null;

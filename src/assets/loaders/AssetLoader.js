@@ -24,7 +24,7 @@ export class AssetLoader extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {?|null} 
+     * @type {*|null} 
      */
     this.mData = null;
 
@@ -86,7 +86,7 @@ export class AssetLoader extends MessageDispatcher {
   /**
    * Returns native loaded data object associated with this loader.
    *
-   * @return {?}
+   * @return {*}
    */
   get data() {
     return this.mData;

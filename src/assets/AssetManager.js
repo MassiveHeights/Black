@@ -352,6 +352,12 @@ export class AssetManager extends MessageDispatcher {
    */
   loadQueue() {
     this.__validateState();
+
+    if (this.mQueue.length === 0) {
+      this.post(Message.COMPLETE);
+      return;
+    }
+
     this.mState = AssetManagerState.LOADING;
 
     for (let i = 0; i < this.mQueue.length; i++) {

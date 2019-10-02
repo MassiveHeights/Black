@@ -185,5 +185,6 @@ Renderer.__dirty = true;
 
 /**
  * Indicates whenever engine should render the stage if nothing were changed in this frame. Default is false.
+ * @type {boolean}
  */
 Renderer.skipUnchangedFrames = false;

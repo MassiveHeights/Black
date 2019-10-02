@@ -176,7 +176,7 @@ export class Asset extends MessageDispatcher {
   /**
    * Returns loaded data object associated with this asset.
    *
-   * @return {?}
+   * @return {*}
    */
   get data() {
     return this.mData;

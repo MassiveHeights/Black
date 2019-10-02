@@ -53,10 +53,14 @@ export class TextRenderer extends Renderer {
      */
     this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
-    /** */
+    /** 
+     * @ignore
+     */
     this.mContext.lineJoin = 'round';
 
-    /** */
+    /** 
+     * @ignore
+     */
     this.mContext.miterLimit = 2;
 
     /** 
