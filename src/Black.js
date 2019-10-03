@@ -221,7 +221,5 @@ class Black {
   }
 }
 
-console.log('aaaaa');
-
 new Black();
 export { Black };
