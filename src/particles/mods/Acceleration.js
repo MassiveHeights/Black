@@ -5,19 +5,19 @@ import { VectorScatter } from "../../scatters/VectorScatter";
  * Adds acceleration to particles along given direction.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class Acceleration extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
+   * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
     /** 
-     * @type {VectorScatterBase} Modifier's object to get values from.
+     * @type {black-engine~VectorScatterBase} Modifier's object to get values from.
      */
     this.scatter = VectorScatter.fromObject(...values);
   }

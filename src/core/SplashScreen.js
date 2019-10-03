@@ -3,7 +3,7 @@ import { Black } from "../Black";
 import { Message } from "../messages/Message";
 
 /**
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  * @cat core
  */
 export class SplashScreen extends MessageDispatcher {

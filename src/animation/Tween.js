@@ -17,11 +17,12 @@ var defaultEase = Ease.smootherStep;
  * 
  * @cat animation
  * @unrestricted
- * @extends Component
+ * @extends black-engine~Component
  */
 export class Tween extends Component {
   /**
    * Creates new instance of Tween Component.
+   * 
    * @param {Object}        values            The values to tween.
    * @param {number}        [duration=0.25]   Duraction in seconds.
    * @param {Object|null}   [properties=null] Tween properties Object.
@@ -403,7 +404,7 @@ export class Tween extends Component {
   /**
    * Starts tweening.
    *
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   play() {
     if (!this.mIsPaused) {
@@ -418,7 +419,7 @@ export class Tween extends Component {
   /**
    * Stops current tween.
    *
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   stop() {
     if (!this.mIsPlaying)
@@ -432,7 +433,7 @@ export class Tween extends Component {
   /**
    * Resets current tween.
    *
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   reset() {
     this.mElapsed = 0;
@@ -447,7 +448,7 @@ export class Tween extends Component {
    *
    * @param {Object} values Values to tween.
    * @param {number} [duration=0.25] Duration in seconds.
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   to(values = {}, duration = 0.250) {
     this.mValues = values;
@@ -459,7 +460,7 @@ export class Tween extends Component {
   /**
    * Pauses current tween.
    *
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   pause() {
     if (!this.mIsPlaying)
@@ -473,7 +474,7 @@ export class Tween extends Component {
 
   /**
    * @private
-   * @return {void} Description
+   * @return {void}
    */
   __resume() {
     if (!this.mIsPaused)
@@ -482,7 +483,6 @@ export class Tween extends Component {
     this.mIsPaused = false;
     this.mStartTime += Black.time.now - this.mPausedTime;
   }
-
 
   /**
    * @inheritDoc
@@ -497,7 +497,7 @@ export class Tween extends Component {
   /**
    * Add specified tween object into the queue. The specified tween will be executed after completion of this tween,
    *
-   * @return {Tween} Returns tween to chain.
+   * @return {black-engine~Tween} Returns tween to chain.
    */
   chain(tween) {
     if (!tween) {
@@ -549,7 +549,7 @@ export class Tween extends Component {
    * Switches end values with start values.
    *
    * @param {boolean} asYoyo Indicates wether easing function should be also reversed.
-   * @return {Tween} Returns this.
+   * @return {black-engine~Tween} Returns this.
    */
   reverse(asYoyo = false) {
     if (this.mInitiated) {
@@ -642,7 +642,7 @@ export class Tween extends Component {
 
     /**
      * Posted on every tween update. 
-     * Note: tween can update object values inside `onRender` method without posting `Tween#update` message.
+     * Note: tween can update object values inside `onRender` method without posting `black-engine~Tween#update` message.
      * @event Tween#update
      */
     this.post(Message.UPDATE, this.gameObject);

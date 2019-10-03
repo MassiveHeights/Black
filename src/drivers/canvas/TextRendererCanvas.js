@@ -4,7 +4,7 @@ import { Renderer } from "../Renderer";
 /**
  * Renders `TextField` objects on canvas.
  *
- * @extends TextRenderer
+ * @extends black-engine~TextRenderer
  * @cat drivers.canvas
  */
 export class TextRendererCanvas extends TextRenderer {

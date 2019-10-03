@@ -11,7 +11,7 @@ import { LoaderType } from "./LoaderType";
  * Sound file asset class responsible for loading audio atlas files.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
 export class SoundAtlasAsset extends Asset {
   /**
@@ -46,13 +46,13 @@ export class SoundAtlasAsset extends Asset {
 
     /** 
      * @private 
-     * @type {XHRAssetLoader|null} 
+     * @type {black-engine~XHRAssetLoader|null} 
      */
     this.mAudioXHR = null;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader|null} 
+     * @type {black-engine~XHRAssetLoader|null} 
      */
     this.mDataXHR = null;
   }

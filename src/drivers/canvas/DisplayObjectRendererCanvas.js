@@ -9,10 +9,9 @@ import { DirtyFlag } from "../../core/DirtyFlag";
 /**
  * Renders `DisplayObject` objects on canvas.
  *
- * @extends Renderer
+ * @extends black-engine~Renderer
  * @cat drivers.canvas
  */
-
 export class DisplayObjectRendererCanvas extends Renderer {
   constructor() {
     super();
@@ -25,19 +24,19 @@ export class DisplayObjectRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {Matrix|null} 
+     * @type {black-engine~Matrix|null} 
      */
     this.mCacheAsBitmapMatrixCache = null;
 
     /** 
      * @private 
-     * @type {CanvasRenderTexture|null} 
+     * @type {black-engine~CanvasRenderTexture|null} 
      */
     this.mCacheTexture = null;
 
     /** 
      * @private 
-     * @type {Rectangle|null} 
+     * @type {black-engine~Rectangle|null} 
      */
     this.mCacheBounds = null;
 
@@ -51,7 +50,7 @@ export class DisplayObjectRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {Matrix|null} 
+     * @type {black-engine~Matrix|null} 
      */
     this.mBakeInvertedMatrix = null;
   }

@@ -13,9 +13,9 @@ export class AnimationInfo {
   /**
    * Creates an instance of Animation class
    *
-   * @param {AnimationController}    controller  Animation controller
+   * @param {black-engine~AnimationController}    controller  Animation controller
    * @param {string}                 name        The name of animation
-   * @param {Array<Texture>}         frames      Array of Textures for this animation
+   * @param {Array<black-engine~Texture>}         frames      Array of Textures for this animation
    * @param {number}                 [fps=14]    Frame rate
    * @param {boolean}                [loop=true] Is animations should be looped
    */
@@ -24,7 +24,7 @@ export class AnimationInfo {
 
     /**
      * @private
-     * @type {AnimationController}
+     * @type {black-engine~AnimationController}
      */
     this.mController = controller;
 
@@ -36,7 +36,7 @@ export class AnimationInfo {
 
     /**
      * @private
-     * @type {Array<Texture>}
+     * @type {Array<black-engine~Texture>}
      */
     this.mFrames = frames;
 
@@ -98,7 +98,7 @@ export class AnimationInfo {
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
    * @ignore
-   * @return {Texture} Returns the current frame Texture.
+   * @return {black-engine~Texture} Returns the current frame Texture.
    */
   __play() {
     if (this.mCompleted === true) {
@@ -140,7 +140,7 @@ export class AnimationInfo {
 
   /**
    * @ignore
-   * @return {Texture|null}
+   * @return {black-engine~Texture|null}
    */
   __update() {
     let t = Black.time.now;
@@ -214,7 +214,7 @@ export class AnimationInfo {
   /**
    * Gets array of Texture.
    *
-   * @return {Array<Texture>}
+   * @return {Array<black-engine~Texture>}
    */
   get frames() {
     return this.mFrames;

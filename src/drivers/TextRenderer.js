@@ -8,7 +8,7 @@ import { Texture } from "../textures/Texture";
 /**
  * Responsible for rendering `TextField` objects by different drivers.
  *
- * @extends Renderer
+ * @extends black-engine~Renderer
  * @cat drivers
  */
 export class TextRenderer extends Renderer {
@@ -22,14 +22,14 @@ export class TextRenderer extends Renderer {
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      * @ignore 
      */
     this.mTransformCache = new Matrix();
 
     /** 
      * @private 
-     * @type {Matrix|null} 
+     * @type {black-engine~Matrix|null} 
      * @ignore 
      */
     this.mTransform = null;
@@ -65,7 +65,7 @@ export class TextRenderer extends Renderer {
 
     /** 
      * @private 
-     * @type {TextMetricsData|null} 
+     * @type {black-engine~TextMetricsData|null} 
      */
     this.mMetrics = null;
   }
@@ -105,11 +105,11 @@ export class TextRenderer extends Renderer {
   /**
    * @ignore
    * @private
-   * @param {TextMetricsData} metrics
-   * @param {TextSegmentMetricsData} segment
+   * @param {black-engine~TextMetricsData} metrics
+   * @param {black-engine~TextSegmentMetricsData} segment
    * @param {CanvasRenderingContext2D} ctx
-   * @param {VideoNullDriver} driver
-   * @param {FontMetrics} fontMetrics
+   * @param {black-engine~VideoNullDriver} driver
+   * @param {black-engine~FontMetrics} fontMetrics
    * @param {boolean} isStroke
    */
   renderSegment(metrics, segment, ctx, driver, fontMetrics, isStroke) {

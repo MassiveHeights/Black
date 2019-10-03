@@ -4,13 +4,12 @@
  * @ignore
  * @cat display
  */
-
 export class GraphicsPath {
   /**
    * Creates new instance of GraphicsPath
    */
   constructor() {
-    /** @type {Rectangle|null} */
+    /** @type {Recblack-engine~tangle|null} */
     this.bounds = null;
 
     /** @type {Array<number>} */

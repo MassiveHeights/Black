@@ -4,7 +4,6 @@
  * @ignore
  * @cat display
  */
-
 export class GraphicsGradient {
   /**
    * Creates new instance of GraphicsGradient

@@ -8,18 +8,18 @@ import { Glob } from '../utils/Glob';
  */
 export class MessageBinding {
   /**
-   * @param {MessageDispatcher} owner                The owner of this binding.
+   * @param {black-engine~MessageDispatcher} owner                The owner of this binding.
    * @param {string} name                            Name of the message.
    * @param {Function} callback                      Callback function.
    * @param {boolean} isOnce                         Indicates whenever this binding should be auto destroyed after first execution.
    * @param {*=} [context=null]                      Optional context (usually this).
-   * @param {BindingType} [type=BindingType.REGULAR] Type of the binding.
+   * @param {black-engine~BindingType} [type=BindingType.REGULAR] Type of the binding.
    * @param {?string} [pathPattern=null]             Glob pattern to filter sender by name.
    */
   constructor(owner, name, callback, isOnce, context = null, type = BindingType.REGULAR, pathPattern = null) {
     /** 
      * @ignore 
-     * @type {MessageDispatcher} 
+     * @type {black-engine~MessageDispatcher} 
      */
     this.owner = owner;
 
@@ -55,13 +55,13 @@ export class MessageBinding {
 
     /** 
      * @ignore 
-     * @type {Glob|null} 
+     * @type {black-engine~Glob|null} 
      */
     this.glob = pathPattern == null ? null : new Glob(pathPattern);
 
     /** 
      * @ignore 
-     * @type {BindingType} 
+     * @type {black-engine~BindingType} 
      */
     this.type = type;
   }
@@ -75,7 +75,7 @@ export class MessageBinding {
 
   /**
    * @ignore
-   * @returns {MessageBinding}
+   * @returns {black-engine~MessageBinding}
    */
   __reset() {
     this.owner = null;

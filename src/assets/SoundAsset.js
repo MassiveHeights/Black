@@ -11,7 +11,7 @@ import { LoaderType } from "./LoaderType";
  * Sound file asset class responsible for loading audio files.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
 export class SoundAsset extends Asset {
   /**
@@ -39,7 +39,7 @@ export class SoundAsset extends Asset {
 
     /** 
      * @private 
-     * @type {XHRAssetLoader|null} 
+     * @type {black-engine~XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }

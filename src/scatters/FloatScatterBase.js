@@ -4,7 +4,7 @@ import { Scatter } from "./Scatter";
  * A base class for number scatters.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends black-engine~Scatter
  */
 export class FloatScatterBase extends Scatter {
   /**

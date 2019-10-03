@@ -11,7 +11,7 @@ import { Black } from "./../Black";
  * The main class, which is responsible for audio support.
  * 
  * @cat audio
- * @extends {System}
+ * @extends {black-engine~System}
  */
 export class MasterAudio extends System {
   /**
@@ -30,19 +30,19 @@ export class MasterAudio extends System {
 
     /** 
      * @private 
-     * @type {SoundListener|null} 
+     * @type {black-engine~SoundListener|null} 
      */
     this.mCurrentListener = null;
 
     /** 
      * @private 
-     * @type {Object<string, SoundChannel>} 
+     * @type {Object<string, black-engine~SoundChannel>} 
      */
     this.mChannels = {};
 
     /** 
      * @private 
-     * @type {SoundChannel|null} 
+     * @type {black-engine~SoundChannel|null} 
      */
     this.mMasterChannel = null;
 
@@ -135,7 +135,7 @@ export class MasterAudio extends System {
    * Creates or returns the channel with specific name.
    * 
    * @param {string} name The name of channel to create.
-   * @returns {SoundChannel}
+   * @returns {black-engine~SoundChannel}
    */
   createChannel(name) {
     if (this.mChannels[name] == null) {
@@ -151,7 +151,7 @@ export class MasterAudio extends System {
    * Gets the channel with specific name.
    * 
    * @param {string} name The name of channel to get.
-   * @returns {SoundChannel|null}
+   * @returns {black-engine~SoundChannel|null}
    */
   getChannel(name) {
     return this.mChannels[name];
@@ -159,8 +159,8 @@ export class MasterAudio extends System {
 
   /**
    * @ignore
-   * @param {SoundInstance} snd 
-   * @returns {SoundChannel}
+   * @param {black-engine~SoundInstance} snd 
+   * @returns {black-engine~SoundChannel}
    */
   _resolveChannel(snd) {
     for (let chName in this.mChannels)
@@ -177,7 +177,7 @@ export class MasterAudio extends System {
    * Plays sound on specific channel.
    * 
    * @public
-   * @param {string|SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
+   * @param {string|black-engine~SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
    * @param {string=} [channel='master']       The name of channel to play on.
    * @param {number=} [volume=1]               Volume level.
    * @param {boolean=} [loop=false]            Defines if sound will loop.
@@ -271,14 +271,14 @@ export class MasterAudio extends System {
    * Gets the master channel.
    * 
    * @readonly
-   * @returns {SoundChannel}
+   * @returns {black-engine~SoundChannel}
    */
   get masterChannel() {
     return this.mMasterChannel;
   }
 
   /**
-   * @param {SoundListener} value
+   * @param {black-engine~SoundListener} value
    * @returns {void}
    */
   set currentListener(value) {
@@ -289,7 +289,7 @@ export class MasterAudio extends System {
    * Gets/Sets current listener for spatial sound effects.
    * 
    * @public
-   * @returns {SoundListener}
+   * @returns {black-engine~SoundListener}
    */
   get currentListener() {
     return this.mCurrentListener;

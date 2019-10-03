@@ -5,7 +5,7 @@ import { Vector } from "../geom/Vector";
  * A base class for Vector scatters.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends black-engine~Scatter
  */
 export class VectorScatterBase extends Scatter {
   /**
@@ -19,7 +19,7 @@ export class VectorScatterBase extends Scatter {
      * 
      * @public
      * @readonly
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.value = new Vector();
   }
@@ -27,7 +27,7 @@ export class VectorScatterBase extends Scatter {
   /**
    * Returns random value.
    *
-   * @return {Vector}.
+   * @return {black-engine~Vector}.
    */
   getValue() {
     return this.getValueAt(Math.random());

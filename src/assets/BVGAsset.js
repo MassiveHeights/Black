@@ -9,9 +9,8 @@ import { LoaderType } from "./LoaderType";
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
-
 export class BVGAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
@@ -32,7 +31,7 @@ export class BVGAsset extends Asset {
 
     /** 
      * @private 
-     * @type {GraphicsData|null} 
+     * @type {black-engine~GraphicsData|null} 
      */
     this.mGraphicsData = null;
 

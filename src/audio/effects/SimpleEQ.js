@@ -7,7 +7,7 @@ import { MathEx } from "../../math/MathEx";
  * Equalizer.
  * 
  * @cat audio.effects
- * @extends {SoundEffect}
+ * @extends {black-engine~SoundEffect}
  */
 export class SimpleEQ extends SoundEffect {
   /**
@@ -33,10 +33,16 @@ export class SimpleEQ extends SoundEffect {
         this.mFilters[i - 1].connect(/** @type {!AudioNode} */ (this.mFilters[i]));
     }
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = this.mFilters[0];
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = this.mFilters[this.mFilters.length - 1];
 
     // todo: determine correct max value

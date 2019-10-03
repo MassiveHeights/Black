@@ -9,9 +9,8 @@ import { DisplayObject } from "../display/DisplayObject";
  * RigidBody is used to describe physics properties of game object colliders
  *
  * @cat physics
- * @extends Component
+ * @extends black-engine~Component
  */
-
 export class RigidBody extends Component {
   /**
    * Creates new instance of RigidBody.
@@ -22,7 +21,7 @@ export class RigidBody extends Component {
     /** 
      * Default collider. Used in case no any custom colliders provided by user.
      * @private 
-     * @type {BoxCollider}
+     * @type {black-engine~BoxCollider}
      */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
@@ -50,28 +49,28 @@ export class RigidBody extends Component {
     /** 
      * All colliding pairs this body participates in.
      * @private 
-     * @type {Array<Pair>} 
+     * @type {Array<black-engine~Pair>} 
      */
     this.mContacts = [];
 
     /**
      * Game object pivot. To track changes and update default collider if needed.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mPivot = new Vector(Number.MAX_VALUE);
 
     /**  
      * Game bounds position. To track changes and update this position, if object was moved without physics.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mCachedPosition = new Vector();
 
     /** 
      * All pairs this body participates in.
      * @public 
-     * @type {Array<Pair>}
+     * @type {Array<black-engine~Pair>}
      */
     this.mPairs = [];
 
@@ -85,28 +84,28 @@ export class RigidBody extends Component {
     /** 
      * This position in stage coordinates.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mPosition = new Vector();
 
     /** 
      * This velocity to integrate.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mVelocity = new Vector();
 
     /** 
      * Force accumulator.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mForce = new Vector();
 
     /** 
      * Game object transform. To track changes and update this colliders.
      * @private 
-     * @type {Matrix}
+     * @type {black-engine~Matrix}
      */
     this.mTransform = new Matrix(Number.MAX_VALUE);
 

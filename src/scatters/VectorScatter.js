@@ -5,7 +5,7 @@ import { Vector } from "../geom/Vector";
  * A vector scatter for defining a range in 2D space.
  *
  * @cat scatters
- * @extends VectorScatterBase
+ * @extends black-engine~VectorScatterBase
  */
 export class VectorScatter extends VectorScatterBase {
   /**
@@ -60,7 +60,7 @@ export class VectorScatter extends VectorScatterBase {
    * Returns a random Vector object at given position within a specified range.
    *
    * @override
-   * @return {Vector} Vector object with random values withing defined range.
+   * @return {black-engine~Vector} Vector object with random values withing defined range.
    */
   getValue() {
     this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
@@ -74,7 +74,7 @@ export class VectorScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {Vector} Vector object representing values in a range at given position.
+   * @return {black-engine~Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
     if (this.ease !== null)
@@ -89,8 +89,8 @@ export class VectorScatter extends VectorScatterBase {
   /**
    * Creates new VectorScatter from a set of numbers.
    *
-   * @param {...number|VectorScatterBase} values Set of values.
-   * @returns {VectorScatterBase}
+   * @param {...number|black-engine~VectorScatterBase} values Set of values.
+   * @returns {black-engine~VectorScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof VectorScatterBase)

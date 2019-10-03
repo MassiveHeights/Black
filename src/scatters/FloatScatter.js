@@ -4,7 +4,7 @@ import { FloatScatterBase } from "./FloatScatterBase";
  * A number scatter for defining a range in 1D space.
  *
  * @cat scatters
- * @extends FloatScatterBase
+ * @extends black-engine~FloatScatterBase
  */
 export class FloatScatter extends FloatScatterBase {
   /**
@@ -58,8 +58,8 @@ export class FloatScatter extends FloatScatterBase {
   /**
    * Creates new FloatScatterBase from a set of numbers.
    *
-   * @param {...number|FloatScatterBase} values Set of values.
-   * @returns {FloatScatterBase}
+   * @param {...number|black-engine~FloatScatterBase} values Set of values.
+   * @returns {black-engine~FloatScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof FloatScatterBase)

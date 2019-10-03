@@ -6,7 +6,7 @@ import { MathEx } from "../../math/MathEx";
  * Distortion sound effect.
  * 
  * @cat audio.effects
- * @extends {SoundEffect}
+ * @extends {black-engine~SoundEffect}
  */
 export class DistortionEffect extends SoundEffect {
 
@@ -24,10 +24,16 @@ export class DistortionEffect extends SoundEffect {
      */
     this.mWaveShaperNode = Black.audio.context.createWaveShaper();
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = this.mWaveShaperNode;
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = this.mWaveShaperNode;
 
     /** 

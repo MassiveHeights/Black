@@ -5,18 +5,18 @@ import { ColorScatter } from "../../scatters/ColorScatter";
  * Sets initial particle color value.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class InitialColor extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|ColorScatterBase)} values Two color values.
+   * @param {...(number|black-engine~ColorScatterBase)} values Two color values.
    */
   constructor(...values) {
     super();
 
-    /** @type {ColorScatterBase} Modifier's object to get values from.  */
+    /** @type {black-engine~ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 

@@ -9,7 +9,7 @@ import { Matrix } from "../../geom/Matrix";
 /**
  * Renders `Graphics` objects on canvas.
  *
- * @extends GraphicsRenderer
+ * @extends black-engine~GraphicsRenderer
  * @cat drivers.canvas
  */
 
@@ -36,7 +36,7 @@ export class GraphicsRendererCanvas extends GraphicsRenderer {
    * Prepare context to draw.
    *
    * @private
-   * @param {VideoNullDriver} driver Driver to draw.
+   * @param {black-engine~VideoNullDriver} driver Driver to draw.
    * @param {number|null=} [color=null] Tint.
    *
    * @return {void}
@@ -61,10 +61,10 @@ export class GraphicsRendererCanvas extends GraphicsRenderer {
    * Recursively draws each node of GraphicsData.
    *
    * @private
-   * @param {VideoNullDriver} driver Driver to draw.
+   * @param {black-engine~VideoNullDriver} driver Driver to draw.
    * @param {number|null} color Tint.
-   * @param {GraphicsData} node Commands provider.
-   * @param {Matrix} transform Graphics Data global transformation.
+   * @param {black-engine~GraphicsData} node Commands provider.
+   * @param {black-engine~Matrix} transform Graphics Data global transformation.
    *
    * @return {void}
    */

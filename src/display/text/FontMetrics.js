@@ -35,7 +35,7 @@ export class FontMetrics {
    *
    * @ignore
    * @private
-   * @param {TextStyle} style Default text info with 24 font size.
+   * @param {black-engine~TextStyle} style Default text info with 24 font size.
    */
   constructor(style) {
     if (CONTEXT === null) {
@@ -61,7 +61,7 @@ export class FontMetrics {
 
     /** 
      * @private 
-     * @type {TextStyle} 
+     * @type {black-engine~TextStyle} 
      */
     this.mStyle = style;
 
@@ -247,7 +247,7 @@ export class FontMetrics {
    *
    * @static
    * @param {string} fontName Name of font.
-   * @returns {FontMetrics}
+   * @returns {black-engine~FontMetrics}
    */
   static get(fontName) {
     let cache = CACHE[fontName];

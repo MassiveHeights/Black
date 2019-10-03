@@ -5,18 +5,18 @@ import { FloatScatter } from "../../scatters/FloatScatter";
  * Sets initial particle texture.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class InitialTexture extends Modifier {
   /**
    * Creates new InitialTexture instance.
    *
-   * @param {...(number|FloatScatterBase)} values Min and max indexes from texture list.
+   * @param {...(number|black-engine~FloatScatterBase)} values Min and max indexes from texture list.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

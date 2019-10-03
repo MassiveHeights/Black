@@ -8,9 +8,7 @@ import { FillRule } from "../display/FillRule";
  *
  * @cat parsers
  */
-
 export class BVGStyle {
-
   /**
    * Creates new instance of BVGStyle.
    */
@@ -144,13 +142,13 @@ export class BVGStyle {
 
     /** 
      * @public 
-     * @type {CapsStyle} 
+     * @type {black-engine~CapsStyle} 
      */
     this.lineCap = CapsStyle.NONE;
 
     /** 
      * @public 
-     * @type {JointStyle} 
+     * @type {black-engine~JointStyle} 
      */
     this.lineJoin = JointStyle.MITER;
 
@@ -162,7 +160,7 @@ export class BVGStyle {
 
     /** 
      * @public 
-     * @type {FillRule} 
+     * @type {black-engine~FillRule} 
      */
     this.fillRule = FillRule.NONE_ZERO;
 
@@ -179,7 +177,7 @@ export class BVGStyle {
    * Merge parent style to this.
    *
    * @public
-   * @param {BVGStyle} style Parent style
+   * @param {black-engine~BVGStyle} style Parent style
    *
    * @returns {void}
    */
@@ -253,7 +251,7 @@ export class BVGStyle {
    *
    * @public
    *
-   * @returns {BVGStyle} Created style.
+   * @returns {black-engine~BVGStyle} Created style.
    */
   clone() {
     let s = new BVGStyle();

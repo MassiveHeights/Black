@@ -11,7 +11,7 @@ let ID = 0;
  *
  * @cat core
  * @unrestricted
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  */
 export class Component extends MessageDispatcher {
   /**
@@ -28,7 +28,7 @@ export class Component extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {GameObject|null} 
+     * @type {black-engine~GameObject|null} 
      */
     this.mGameObject = null;
 
@@ -50,7 +50,7 @@ export class Component extends MessageDispatcher {
    * Called when attached to GameObject.
    *
    * @protected
-   * @param  {GameObject} gameObject The owner of this component.
+   * @param  {black-engine~GameObject} gameObject The owner of this component.
    * @return {void}
    */
   onAdded(gameObject) { }
@@ -59,7 +59,7 @@ export class Component extends MessageDispatcher {
    * Called when detached from GameObject.
    *
    * @protected
-   * @param  {GameObject} gameObject The owner of this component.
+   * @param  {black-engine~GameObject} gameObject The owner of this component.
    * @return {void}
    */
   onRemoved(gameObject) { }
@@ -97,7 +97,7 @@ export class Component extends MessageDispatcher {
    * Returns owner of this component.
    *
    * @readonly
-   * @returns {GameObject}
+   * @returns {black-engine~GameObject}
    */
   get gameObject() {
     return this.mGameObject;
@@ -106,7 +106,7 @@ export class Component extends MessageDispatcher {
   /**
    * Returns this Component owner GameObject.
    * @readonly
-   * @return {GameObject|null}
+   * @return {black-engine~GameObject|null}
    */
   get parent() {
     return this.mGameObject;
@@ -117,7 +117,7 @@ export class Component extends MessageDispatcher {
    *
    * @override
    * @readonly
-   * @return {Stage|null}
+   * @return {black-engine~Stage|null}
    */
   get stage() {
     if (this.mGameObject === null)

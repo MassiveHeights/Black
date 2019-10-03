@@ -617,7 +617,7 @@
      * Converts number color to RGB object.
      *
      * @param {number} hex The color to convert.
-     * @returns {RGB} The resulting string.
+     * @returns {black-engine~RGB} The resulting string.
      */
     static hex2rgb(hex) {
       return new RGB(hex >> 16 & 255, hex >> 8 & 255, hex & 255);
@@ -626,7 +626,7 @@
     /**
      * Converts RGB object into number color.
      *
-     * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+     * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
      * @returns {number} The resulting uint.
      */
     static rgb2hex(rgb) {
@@ -636,8 +636,8 @@
     /**
      * Converts HSV object into RGB object.
      *
-     * @param {HSV} hsv The object, which contains 'h', 's' and 'v' properties.
-     * @returns {RGB} The resulting RGB object.
+     * @param {black-engine~HSV} hsv The object, which contains 'h', 's' and 'v' properties.
+     * @returns {black-engine~RGB} The resulting RGB object.
      */
     static hsv2rgb(hsv) {
       let { h, s, v } = hsv;
@@ -670,8 +670,8 @@
     /**
      * Converts RGB object into HSV object.
      *
-     * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
-     * @returns {HSV} The resulting HSV object.
+     * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+     * @returns {black-engine~HSV} The resulting HSV object.
      */
     static rgb2hsv(rgb) {
       let { r, g, b } = rgb;
@@ -830,7 +830,7 @@
      *
      * @param {number=} [x=0] X-component.
      * @param {number=} [y=0] y-component
-     * @return {Vector} This.
+     * @return {black-engine~Vector} This.
      */
     set(x = 0, y = 0) {
       Debug.isNumber(x, y);
@@ -844,8 +844,8 @@
     /**
      * Adds two vectors.
      *
-     * @param {Vector} vector The vector object to be added to this.
-     * @return {Vector} This.
+     * @param {black-engine~Vector} vector The vector object to be added to this.
+     * @return {black-engine~Vector} This.
      */
     add(vector) {
       this.x += vector.x;
@@ -857,8 +857,8 @@
     /**
      * Subtract two vectors.
      *
-     * @param {Vector} vector The vector object to be subtracted.
-     * @return {Vector} This.
+     * @param {black-engine~Vector} vector The vector object to be subtracted.
+     * @return {black-engine~Vector} This.
      */
     subtract(vector) {
       this.x -= vector.x;
@@ -870,7 +870,7 @@
     /**
      * Returns distance between two vectors.
      *
-     * @param {Vector} vector Second vector to check distance with.
+     * @param {black-engine~Vector} vector Second vector to check distance with.
      * @return {number} The distance between two vectors.
      */
     distance(vector) {
@@ -883,7 +883,7 @@
     /**
      * Returns the squared distance between two vectors.
      *
-     * @param {Vector} vector Second vector to check distance with.
+     * @param {black-engine~Vector} vector Second vector to check distance with.
      * @return {number} The distance between two vectors.
      */
     distanceSqr(vector) {
@@ -896,8 +896,8 @@
     /**
      * Multiplies two vectors.
      *
-     * @param {Vector} vector A second vector to multiply with.
-     * @return {Vector} This.
+     * @param {black-engine~Vector} vector A second vector to multiply with.
+     * @return {black-engine~Vector} This.
      */
     multiply(vector) {
       this.x *= vector.x;
@@ -910,7 +910,7 @@
      * Multiplies this vector by scalar value.
      *
      * @param {number} scalar The values to mul by.
-     * @return {Vector} This.
+     * @return {black-engine~Vector} This.
      */
     multiplyScalar(scalar) {
       Debug.isNumber(scalar);
@@ -924,7 +924,7 @@
     /**
      * Find dot product between two vectors.
      *
-     * @param {Vector} vector Second vector to find angle with.
+     * @param {black-engine~Vector} vector Second vector to find angle with.
      * @return {number} A scalar value representing dot product.
      */
     dot(vector) {
@@ -952,7 +952,7 @@
     /**
      * Creates unit vector out of this one.
      *
-     * @returns {Vector} This.
+     * @returns {black-engine~Vector} This.
      */
     normalize() {
       let sum = this.lengthSqr();
@@ -974,7 +974,7 @@
      *
      * @param {number} min Min value.
      * @param {number} max Max value.
-     * @return {Vector} This.
+     * @return {black-engine~Vector} This.
      */
     clamp(min, max) {
       Debug.isNumber(min, max);
@@ -990,7 +990,7 @@
      *
      * @param {number} min Min value.
      * @param {number} max Max value.
-     * @return {Vector} This.
+     * @return {black-engine~Vector} This.
      */
     clampLength(min, max) {
       Debug.isNumber(min, max);
@@ -1004,9 +1004,9 @@
     /**
      * Linearly interpolates between two vectors.
      *
-     * @param {Vector} vector The second vector to interpolate values between.
+     * @param {black-engine~Vector} vector The second vector to interpolate values between.
      * @param {number} t      Alpha value.
-     * @return {Vector} This.
+     * @return {black-engine~Vector} This.
      */
     lerp(vector, t) {
       Debug.isNumber(t);
@@ -1020,8 +1020,8 @@
     /**
      * Copies this vector values into given vector.
      *
-     * @param {Vector} vector The vector to store values in.
-     * @return {Vector} Given vector.
+     * @param {black-engine~Vector} vector The vector to store values in.
+     * @return {black-engine~Vector} Given vector.
      */
     copyTo(vector) {
       vector.x = this.x;
@@ -1033,8 +1033,8 @@
     /**
      * Copies values from given vector into this.
      *
-     * @param {Vector} vector The vector to copy values from.
-     * @return {Vector} This.
+     * @param {black-engine~Vector} vector The vector to copy values from.
+     * @return {black-engine~Vector} This.
      */
     copyFrom(vector) {
       this.x = vector.x;
@@ -1046,7 +1046,7 @@
     /**
      * Clones this vector object.
      *
-     * @return {Vector} New Vector instance.
+     * @return {black-engine~Vector} New Vector instance.
      */
     clone() {
       return new Vector(this.x, this.y);
@@ -1055,7 +1055,7 @@
     /**
      * Compares two vectors for equality.
      *
-     * @param {Vector} vector Second vector to compare with.
+     * @param {black-engine~Vector} vector Second vector to compare with.
      * @param {number=} epsilon Threshold.
      * @return {boolean} True if equal.
      */
@@ -1075,9 +1075,9 @@
     /**
      * Rotates this vector around specified point.
      *
-     * @param {Vector} vector Center vector.
+     * @param {black-engine~Vector} vector Center vector.
      * @param {number} rotation Angle in radians.
-     * @return {Vector} This rotated vector.
+     * @return {black-engine~Vector} This rotated vector.
      */
     setRotationFrom(vector, rotation) {
       Debug.isNumber(rotation);
@@ -1092,7 +1092,7 @@
      *  Rotates this vector around zero vector.
      *
      * @param {number} rotation Angle in radians.
-     * @return {Vector} This rotated vector.
+     * @return {black-engine~Vector} This rotated vector.
      */
     setRotation(rotation) {
       Debug.isNumber(rotation);
@@ -1106,7 +1106,7 @@
     /**
      * Calculates angle in radians within this and specified vectors.
      *
-     * @param {Vector} vector Second vector.
+     * @param {black-engine~Vector} vector Second vector.
      * @return {number} Angle in radians.
      */
     angleBetween(vector) {
@@ -1125,7 +1125,7 @@
     /**
      * Rotates this vector to normal.
      *
-     * @return {Vector} This vector.
+     * @return {black-engine~Vector} This vector.
      */
     perp() {
       return this.set(this.y, -this.x);
@@ -1135,8 +1135,8 @@
      * Creates new Vector from given angle in radians.
      *
      * @param {number} angle Angle.
-     * @param {Vector=} outVector Vector to be returned.
-     * @return {Vector} New Vector object.
+     * @param {black-engine~Vector=} outVector Vector to be returned.
+     * @return {black-engine~Vector} New Vector object.
      */
     static fromAngle(angle, outVector) {
       Debug.isNumber(angle);
@@ -1144,13 +1144,21 @@
       outVector = outVector || new Vector();
       return outVector.set(Math.cos(angle), Math.sin(angle));
     }
+    
+    /**
+     * Returns random number within this rectangle.
+     * @returns {number}
+     */
+    get random() {
+      return MathEx.randomBetween(this.x, this.y);
+    }
 
     /**
      * @ignore
-     * @param {Vector} vectorMin
-     * @param {Vector} vectorMax
-     * @param {Vector=} outVector
-     * @return {Vector}
+     * @param {black-engine~Vector} vectorMin
+     * @param {black-engine~Vector} vectorMax
+     * @param {black-engine~Vector=} outVector
+     * @return {black-engine~Vector}
      */
     static randomRange(vectorMin, vectorMax, outVector) {
       outVector = outVector || new Vector();
@@ -1175,7 +1183,7 @@
 
   /**
    * @ignore
-   * @type {Vector}
+   * @type {black-engine~Vector}
    * @nocollapse
    */
   Vector.__cache = new Vector();
@@ -1183,7 +1191,7 @@
   /**
    * Recycled vectors pool.
    *
-   * @type {ObjectPool}
+   * @type {black-engine~ObjectPool}
    * @nocollapse
    */
   Vector.pool = new ObjectPool(Vector);
@@ -1196,24 +1204,24 @@
   class Line {
     /**
      * Creates new Line instance.
-     * @param  {Vector} start Start point.
-     * @param  {Vector} end End point.
+     * @param  {black-engine~Vector} start Start point.
+     * @param  {black-engine~Vector} end End point.
      */
     constructor(start, end) {
-      /** @type {Vector} The start point coordinates */
+      /** @type {black-engine~Vector} The start point coordinates */
       this.start = start;
 
-      /** @type {Vector} The end point coordinates */
+      /** @type {black-engine~Vector} The end point coordinates */
       this.end = end;
     }
 
     /**
      * set - Sets new line properties
      *
-     * @param  {Vector} start Start point.
-     * @param  {Vector} end End point.
+     * @param  {black-engine~Vector} start Start point.
+     * @param  {black-engine~Vector} end End point.
      *
-     * @return {Line} This circle.
+     * @return {black-engine~Line} This circle.
      */
     set(start, end) {
       this.start = start;
@@ -1223,40 +1231,40 @@
     }
 
     /**
-     * clone - Clones this line.
+     * Clones this line.
      *
-     * @return {Line} Created line.
+     * @return {black-engine~Line} Created line.
      */
     clone() {
       return new Line(this.start.clone(), this.end.clone());
     }
 
     /**
-     * copyTo - Copy this properties to another line.
+     * Copy this properties to another line.
      *
-     * @param {Line} line Object to copy to.
+     * @param {black-engine~Line} line Object to copy to.
      *
-     * @return {Line} Passed line.
+     * @return {black-engine~Line} Passed line.
      */
     copyTo(line) {
       return line.set(this.start.clone(), this.end.clone());
     }
 
     /**
-     * copyFrom - Copy another line properties to this.
+     * Copy another line properties to this.
      *
-     * @param {Line} line Object to copy from.
+     * @param {black-engine~Line} line Object to copy from.
      *
-     * @return {Line} This circle.
+     * @return {black-engine~Line} This circle.
      */
     copyFrom(line) {
       return this.set(line.start.clone(), line.end.clone());
     }
 
     /**
-     * equals - Shows whether lines are identical.
+     * Shows whether lines are identical.
      *
-     * @param {Line} line Object to comparison.
+     * @param {black-engine~Line} line Object to comparison.
      * @param {number=} epsilon Compare precision.
      *
      * @return {boolean} True if lines are identical.
@@ -1267,7 +1275,7 @@
     }
 
     /**
-     * left - Finds left X position.
+     * Finds left X position.
      *
      * @return {number} Left X position.
      */
@@ -1275,9 +1283,8 @@
       return Math.min(this.start.x, this.end.x);
     }
 
-
     /**
-     * right - Finds right X position.
+     * Finds right X position.
      *
      * @return {number} Right X position.
      */
@@ -1286,7 +1293,7 @@
     }
 
     /**
-     * top - Finds top Y position.
+     * Finds top Y position.
      *
      * @return {number} Top Y position.
      */
@@ -1295,7 +1302,7 @@
     }
 
     /**
-     * bottom - Finds bottom Y position.
+     * Finds bottom Y position.
      *
      * @return {number} Bottom Y position.
      */
@@ -1304,9 +1311,9 @@
     }
 
     /**
-     * reverse - Replace line start and end points.
+     * Replace line start and end points.
      *
-     * @return {Line} This line.
+     * @return {black-engine~Line} This line.
      */
     reverse() {
       let start = this.start;
@@ -1317,9 +1324,9 @@
     }
 
     /**
-     * normalize - Change line's length to one. Moves end point.
+     * Change line's length to one. Moves end point.
      *
-     * @return {Line} This line.
+     * @return {black-engine~Line} This line.
      */
     normalize() {
       this.end
@@ -1331,9 +1338,9 @@
     }
 
     /**
-     * scale - Change line's length to scaled. Moves end point.
+     * Change line's length to scaled. Moves end point.
      *
-     * @return {Line} This line.
+     * @return {black-engine~Line} This line.
      */
     scale(multiplier) {
       this.end
@@ -1345,16 +1352,16 @@
     }
 
     /**
-     * zero - Description
+     * Returns zero length line at zero position.
      *
-     * @return {Line} Description
+     * @return {black-engine~Line} Description
      */
     zero() {
       return this.set(new Vector(), new Vector());
     }
 
     /**
-     * length - Length of this line.
+     * Length of this line.
      *
      * @return {number} length.
      */
@@ -1363,20 +1370,19 @@
     }
 
     /**
-     * center - Represents center as vector.
+     * Represents center as vector.
      *
-     * @param {Vector=} outVector Object for result.
+     * @param {black-engine~Vector=} outVector Object for result.
      *
-     * @return {Vector} Center point.
+     * @return {black-engine~Vector} Center point.
      */
     center(outVector = undefined) {
       outVector = outVector || new Vector();
       return outVector.set((this.start.x + this.end.x) / 2, (this.start.y + this.end.y) / 2);
     }
 
-
     /**
-     * type - Description
+     * Returns 'line'.
      *
      * @return {string} Description
      */
@@ -1385,7 +1391,7 @@
     }
 
     /**
-     * containsXY - Shows whether point is on line.
+     * Shows whether point is on line.
      *
      * @param {number} x Point position x.
      * @param {number} y Point position y.
@@ -1397,9 +1403,9 @@
     }
 
     /**
-     * contains - Shows whether point is on line.
+     * Shows whether point is on line.
      *
-     * @param {Vector} vector Point to check.
+     * @param {black-engine~Vector} vector Point to check.
      *
      * @return {boolean} True if line contains point.
      */
@@ -1408,9 +1414,9 @@
     }
 
     /**
-     * intersects - Shows whether this line intersects another.
+     * Shows whether this line intersects another.
      *
-     * @param {Line} line Line to check.
+     * @param {black-engine~Line} line Line to check.
      *
      * @return {boolean} True if intersects.
      */
@@ -1437,9 +1443,9 @@
     }
 
     /**
-     * intersects - Shows whether this line intersects circle.
+     * Shows whether this line intersects circle.
      *
-     * @param {Circle} circle Circle to check.
+     * @param {black-engine~Circle} circle Circle to check.
      *
      * @return {boolean} True if intersects.
      */
@@ -1498,7 +1504,7 @@
   }
 
   /**
-   * @type {Line}
+   * @type {black-engine~Line}
    * @nocollapse
    * @ignore
    */
@@ -1549,7 +1555,7 @@
      * @param {number} y Y-component.
      * @param {number} w The width.
      * @param {number} h The height.
-     * @return {Rectangle} This.
+     * @return {black-engine~Rectangle} This.
      */
     set(x, y, w, h) {
       Debug.isNumber(x, y, w, h);
@@ -1565,8 +1571,8 @@
     /**
      * Copies values from given rectangle into this one.
      *
-     * @param {Rectangle} rect The Rectangle to copy values from.
-     * @return {Rectangle} This.
+     * @param {black-engine~Rectangle} rect The Rectangle to copy values from.
+     * @return {black-engine~Rectangle} This.
      */
     copyFrom(rect) {
       this.x = rect.x;
@@ -1580,8 +1586,8 @@
     /**
      * Copies values from this rectangle into given rectangle.
      *
-     * @param {Rectangle} rect The destination rect.
-     * @return {Rectangle} Given rect object.
+     * @param {black-engine~Rectangle} rect The destination rect.
+     * @return {black-engine~Rectangle} Given rect object.
      */
     copyTo(rect) {
       rect.x = this.x;
@@ -1664,14 +1670,14 @@
     /**
      * Get/Sets the top left point for this rectangle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get topLeft() {
       return new Vector(this.x, this.y);
     }
 
     /**
-     * @param {Vector} vector
+     * @param {black-engine~Vector} vector
      */
     set topLeft(vector) {
       this.left = vector.x;
@@ -1681,14 +1687,14 @@
     /**
      * Get/Sets the top right point for this rectangle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get topRight() {
       return new Vector(this.right, this.y);
     }
 
     /**
-     * @param {Vector} vector
+     * @param {black-engine~Vector} vector
      */
     set topRight(vector) {
       this.right = vector.x;
@@ -1698,14 +1704,14 @@
     /**
      * Get/Sets the top left point for this rectangle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get bottomRight() {
       return new Vector(this.right, this.bottom);
     }
 
     /**
-     * @param {Vector} vector
+     * @param {black-engine~Vector} vector
      */
     set bottomRight(vector) {
       this.right = vector.x;
@@ -1715,14 +1721,14 @@
     /**
      * Get/Sets the top left point for this rectangle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get bottomLeft() {
       return new Vector(this.x, this.bottom);
     }
 
     /**
-     * @param {Vector} vector
+     * @param {black-engine~Vector} vector
      */
     set bottomLeft(vector) {
       this.x = vector.x;
@@ -1732,8 +1738,8 @@
     /**
      * Creates a new Rectangle instance with width and height equal to current instance.
      *
-     * @param {Vector=} outVector Resulting rect to save values in.
-     * @return {Vector} New Rectangle instance or `outVector` if passed.
+     * @param {black-engine~Vector=} outVector Resulting rect to save values in.
+     * @return {black-engine~Vector} New Rectangle instance or `outVector` if passed.
      */
     size(outVector = undefined) {
       outVector = outVector || new Vector();
@@ -1743,7 +1749,7 @@
     /**
      * Sets all components of this Rectangle to zero.
      *
-     * @return {Rectangle} This.
+     * @return {black-engine~Rectangle} This.
      */
     zero() {
       return this.set(0, 0, 0, 0);
@@ -1752,7 +1758,7 @@
     /**
      * Compares this Rectangle with a given one.
      *
-     * @param {Rectangle} rect Rect to compare values with.
+     * @param {black-engine~Rectangle} rect Rect to compare values with.
      * @param {number} [epsilon=Number.EPSILON] Comparison threshold.
      * @return {boolean} True if rectangles are equal.
      */
@@ -1777,7 +1783,7 @@
     /**
      * Checks if a given rectangle is inside this rect.
      *
-     * @param {Rectangle} rect Rectangle to check with.
+     * @param {black-engine~Rectangle} rect Rectangle to check with.
      * @return {boolean} True if given rectangle is inside this one.
      */
     contains(rect) {
@@ -1787,7 +1793,7 @@
     /**
      * Checks if this rect intersects with a given rectangle.
      *
-     * @param {Rectangle} rect The rect to check intersection with.
+     * @param {black-engine~Rectangle} rect The rect to check intersection with.
      * @return {boolean} True if intersects.
      */
     intersects(rect) {
@@ -1798,9 +1804,9 @@
     /**
      * Makes rectangle, which represents intersection between this and passed rectangles.
      *
-     * @param {Rectangle} toIntersect Rectangle to intersect with.
-     * @param {Rectangle=} outRect Rectangle to be returned.
-     * @returns {Rectangle}
+     * @param {black-engine~Rectangle} toIntersect Rectangle to intersect with.
+     * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
+     * @returns {black-engine~ectangle}
      */
     intersection(toIntersect, outRect) {
       outRect = outRect || new Rectangle();
@@ -1825,8 +1831,8 @@
     /**
      * Adds given rectangle into this.
      *
-     * @param {Rectangle} toUnion A rectangle object to add to this rect.
-     * @return {Rectangle} New rectangle object that is the union.
+     * @param {black-engine~Rectangle} toUnion A rectangle object to add to this rect.
+     * @return {black-engine~Rectangle} New rectangle object that is the union.
      */
     union(toUnion) {
       let x0 = this.x > toUnion.x ? toUnion.x : this.x;
@@ -1853,7 +1859,7 @@
      * @param {number} y      Y-component
      * @param {number} width  The width.
      * @param {number} height The height.
-     * @return {Rectangle} This.
+     * @return {black-engine~Rectangle} This.
      */
     expand(x, y, width, height) {
       Debug.isNumber(x, y, width, height);
@@ -1888,7 +1894,7 @@
      * 
      * @param {number} x 
      * @param {number} y 
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     expandXY(x, y) {
       if (x < this.x) {
@@ -1915,7 +1921,7 @@
      *
      * @param {number=} [x=0] X-component.
      * @param {number=} [y=0] Y-component.
-     * @return {Rectangle} This.
+     * @return {black-engine~Rectangle} This.
      */
     inflate(x = 0, y = 0) {
       Debug.isNumber(x, y);
@@ -1931,7 +1937,7 @@
     /**
      * Clones this Rectangle object into new one.
      *
-     * @return {Rectangle} New rectangle object.
+     * @return {black-engine~Rectangle} New rectangle object.
      */
     clone() {
       return new Rectangle(this.x, this.y, this.width, this.height);
@@ -1950,8 +1956,8 @@
     /**
      * Returns the center point of this rectangle.
      *
-     * @param {Vector=} outVector The out-Vector to store values in.
-     * @return {Vector} New rectangle object.
+     * @param {black-engine~Vector=} outVector The out-Vector to store values in.
+     * @return {black-engine~Vector} New rectangle object.
      */
     center(outVector = undefined) {
       outVector = outVector || new Vector();
@@ -1963,7 +1969,7 @@
      *
      * @param {number} x Width multiplier.
      * @param {number} y Height multiplier.
-     * @return {Rectangle} This rectangle.
+     * @return {black-engine~Rectangle} This rectangle.
      */
     scale(x, y) {
       this.width *= x;
@@ -1984,7 +1990,7 @@
     /**
      * Gets a list of lines, which make up this rectangle.
      *
-     * @returns {Array<Line>}
+     * @returns {Array<black-engine~Line>}
      */
     get lines() {
       return [
@@ -1996,10 +2002,21 @@
     }
 
     /**
+     * Returns random number within this rectangle.
+     * @returns {number}
+     */
+    get random() {
+      const rx = MathEx.randomBetween(this.x, this.width);
+      const ry = MathEx.randomBetween(this.y, this.height);
+
+      return new Vector(rx, ry);
+    }
+
+    /**
      * Calculates a bonding box enclosing the given list of points.
      * 
      * @param {Array<Vector>} points 
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     static fromPoints(points) {
       let result = new Rectangle();
@@ -2035,7 +2052,7 @@
      * Calculates a bonding box enclosing the given list of x-y pairs.
      * 
      * @param {Array<number>} points 
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     static fromPointsXY(points) {
       let result = new Rectangle();
@@ -2080,7 +2097,7 @@
 
   /**
    * @ignore
-   * @type {Rectangle}
+   * @type {black-engine~Rectangle}
    * @nocollapse
    */
   Rectangle.__cache = new Rectangle();
@@ -2088,7 +2105,7 @@
   /**
    * Recycled rectangles pool.
    *
-   * @type {ObjectPool}
+   * @type {black-engine~ObjectPool}
    * @nocollapse
    */
   Rectangle.pool = new ObjectPool(Rectangle);
@@ -2127,7 +2144,7 @@
      * @param  {number} d  D-component.
      * @param  {number} tx TX-component.
      * @param  {number} ty TY-component.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
       Debug.isNumber(a, b, c, d, tx, ty);
@@ -2149,7 +2166,7 @@
      *
      * @param {number} dx Amount along x-axis.
      * @param {number} dy Amount along y-axis.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     translate(dx, dy) {
       Debug.isNumber(dx, dy);
@@ -2174,7 +2191,7 @@
      *
      * @param {number} x The tx component to update.
      * @param {number} y The ty component to update.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     setTranslation(x, y) {
       Debug.isNumber(x, y);
@@ -2190,7 +2207,7 @@
      *
      * @param  {number} theta     Theta value.
      * @param  {number} scale = 1 Scale value.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     setRotation(theta, scale = 1) {
       Debug.isNumber(theta, scale);
@@ -2208,7 +2225,7 @@
      * Applies rotation to this matrix.
      *
      * @param  {number} angle Angle in radians.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     rotate(angle) {
       Debug.isNumber(angle);
@@ -2235,7 +2252,7 @@
      *
      * @param {number} sx Abscissa of the scaling vector.
      * @param {number} sy Ordinate of the scaling vector.
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     scale(sx, sy) {
       Debug.isNumber(sx, sy);
@@ -2293,8 +2310,8 @@
     /**
      * Concatenates a given matrix with the current one.
      *
-     * @param  {Matrix} b The matrix to be concatenated.
-     * @return {Matrix}   This.
+     * @param  {black-engine~Matrix} b The matrix to be concatenated.
+     * @return {black-engine~Matrix}   This.
      */
     prepend(b) {
       let a = this.data;
@@ -2334,8 +2351,8 @@
     /**
      * Appends values to this matrix.
      *
-     * @param  {Matrix} b The matrix to be appended.
-     * @return {Matrix} This.
+     * @param  {black-engine~Matrix} b The matrix to be appended.
+     * @return {black-engine~Matrix} This.
      */
     append(b) {
       let a = this.data;
@@ -2368,8 +2385,8 @@
      *
      * @param  {number} x          The x- component of a point.
      * @param  {number} y          The y- component of a point.
-     * @param  {Vector=} outVector If given stores resulting values in it.
-     * @return {Vector} Transformed Vector object.
+     * @param  {black-engine~Vector=} outVector If given stores resulting values in it.
+     * @return {black-engine~Vector} Transformed Vector object.
      */
     transformXY(x, y, outVector) {
       Debug.isNumber(x, y);
@@ -2388,8 +2405,8 @@
      *
      * @param  {number} x          The x- component.
      * @param  {number} y          The y- component.
-     * @param  {Vector=} outVector If given stores results in it.
-     * @return {Vector} Just transformed Vector object.
+     * @param  {black-engine~Vector=} outVector If given stores results in it.
+     * @return {black-engine~Vector} Just transformed Vector object.
      */
     transformDirectionXY(x, y, outVector) {
       Debug.isNumber(x, y);
@@ -2406,9 +2423,9 @@
     /**
      * Transforms vector by current matrix object.
      *
-     * @param  {Vector} vector     Vector to apply transformation on.
-     * @param  {Vector=} outVector Out Vector to store results in.
-     * @return {Vector} New transformed vector.
+     * @param  {black-engine~Vector} vector     Vector to apply transformation on.
+     * @param  {black-engine~Vector=} outVector Out Vector to store results in.
+     * @return {black-engine~Vector} New transformed vector.
      */
     transformVector(vector, outVector) {
       outVector = outVector || new Vector();
@@ -2423,9 +2440,9 @@
     /**
      * Transforms rectangle by current matrix object.
      *
-     * @param  {Rectangle} rect         Rectangle to apply transformation on.
-     * @param  {Rectangle|null} outRect When given stores results in it.
-     * @return {Rectangle} Transformed  Rectangle object.
+     * @param  {black-engine~Rectangle} rect         Rectangle to apply transformation on.
+     * @param  {black-engine~Rectangle|null} outRect When given stores results in it.
+     * @return {black-engine~Rectangle} Transformed  Rectangle object.
      */
     transformRect(rect, outRect) {
       outRect = outRect || new Rectangle();
@@ -2462,7 +2479,7 @@
     /**
      * Inverts current matrix.
      *
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     invert() {
       let a = this.data;
@@ -2542,7 +2559,7 @@
     /**
      * Clones the current matrix and returns new cloned object.
      *
-     * @return {Matrix} New cloned object.
+     * @return {black-engine~Matrix} New cloned object.
      */
     clone() {
       let m = new Matrix();
@@ -2554,8 +2571,8 @@
     /**
      * Copies values to given matrix.
      *
-     * @param  {Matrix} matrix The destination matrix.
-     * @return {Matrix} This.
+     * @param  {black-engine~Matrix} matrix The destination matrix.
+     * @return {black-engine~Matrix} This.
      */
     copyTo(matrix) {
       let a = this.data;
@@ -2574,8 +2591,8 @@
     /**
      * Copies values from given matrix into this.
      *
-     * @param  {Matrix} matrix The matrix to copy values from.
-     * @return {Matrix} This.
+     * @param  {black-engine~Matrix} matrix The matrix to copy values from.
+     * @return {black-engine~Matrix} This.
      */
     copyFrom(matrix) {
       return matrix.copyTo(this);
@@ -2584,7 +2601,7 @@
     /**
      * Compares this matrix values with given matrix and checks if they are the same.
      *
-     * @param {Matrix} matrix Matrix object to compare with.
+     * @param {black-engine~Matrix} matrix Matrix object to compare with.
      * @returns {boolean}
      */
     exactEquals(matrix) {
@@ -2600,7 +2617,7 @@
     /**
      * Compares this matrix values with given matrix and checks if they are the same.
      *
-     * @param  {Matrix} matrix                   Matrix object to compare with.
+     * @param  {black-engine~Matrix} matrix                   Matrix object to compare with.
      * @param  {number} epsilon = Number.EPSILON Comparison threshold.
      * @return {boolean} True if equal.
      */
@@ -2639,14 +2656,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   /**
    * @ignore
-   * @type {Matrix}
+   * @type {black-engine~Matrix}
    * @nocollapse
    */
   Matrix.__cache = new Matrix();
 
   /**
    * @ignore
-   * @type {Matrix}
+   * @type {black-engine~Matrix}
    * @nocollapse
    */
   Matrix.__identity = new Matrix();
@@ -2654,7 +2671,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Recycled matrices pool.
    *
-   * @type {ObjectPool}
+   * @type {black-engine~ObjectPool}
    * @nocollapse
    */
   Matrix.pool = new ObjectPool(Matrix);
@@ -2712,7 +2729,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Clones this circle.
      *
-     * @return {Circle} Created circle.
+     * @return {black-engine~Circle} Created circle.
      */
     clone() {
       return new Circle(this.x, this.y, this.r);
@@ -2721,8 +2738,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Copy this properties to another circle.
      *
-     * @param {Circle} circle Object to copy to.
-     * @return {Circle} Passed circle.
+     * @param {black-engine~Circle} circle Object to copy to.
+     * @return {black-engine~Circle} Passed circle.
      */
     copyTo(circle) {
       return circle.set(this.x, this.y, this.r);
@@ -2731,8 +2748,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Copy another circle properties to this.
      *
-     * @param {Circle} circle Object to copy from.
-     * @return {Circle} This circle.
+     * @param {black-engine~Circle} circle Object to copy from.
+     * @return {black-engine~Circle} This circle.
      */
     copyFrom(circle) {
       return this.set(circle.x, circle.y, circle.r);
@@ -2741,7 +2758,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether circles are identical.
      *
-     * @param {Circle} circle Object to comparison.
+     * @param {black-engine~Circle} circle Object to comparison.
      * @param {number=} epsilon Compare precision.
      * @return {boolean} True if circles are identical.
      */
@@ -2764,7 +2781,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether point is in circle.
      *
-     * @param {Vector} vector Point to check.
+     * @param {black-engine~Vector} vector Point to check.
      * @return {boolean} True if circle contains point.
      */
     contains(vector) {
@@ -2775,7 +2792,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Resets all values to zero.
      *
-     * @return {Circle} Returns this.
+     * @return {black-engine~Circle} Returns this.
      */
     zero() {
       return this.set(0, 0, 0);
@@ -2784,7 +2801,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether this circle intersects another.
      *
-     * @param {Circle} circle Circle to check.
+     * @param {black-engine~Circle} circle Circle to check.
      * @return {boolean} True if intersects.
      */
     intersects(circle) {
@@ -2795,7 +2812,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether this circle collide with another.
      *
-     * @param {Circle} circle Circle to check.
+     * @param {black-engine~Circle} circle Circle to check.
      * @return {boolean} True if collide.
      */
     collide(circle) {
@@ -2806,7 +2823,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether this circle overlap another.
      *
-     * @param {Circle} circle Circle to check.
+     * @param {black-engine~Circle} circle Circle to check.
      * @return {boolean} True if overlap.
      */
     overlap(circle) {
@@ -2822,8 +2839,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Represents center as vector.
      *
-     * @param {Vector=} outVector Object for result.
-     * @return {Vector} Center point.
+     * @param {black-engine~Vector=} outVector Object for result.
+     * @return {black-engine~Vector} Center point.
      */
     center(outVector = undefined) {
       outVector = outVector || new Vector();
@@ -2893,7 +2910,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns top point of this circle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get topPoint() {
       return new Vector(this.x, this.top);
@@ -2902,7 +2919,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns bottom point of this circle.
      *
-     * @return {Vector}
+     * @return {black-engine~Vector}
      */
     get bottomPoint() {
       return new Vector(this.x, this.bottom);
@@ -2924,7 +2941,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   /**
    * @ignore
-   * @type {Circle}
+   * @type {black-engine~Circle}
    * @nocollapse
    */
   Circle.__cache = new Circle();
@@ -2936,31 +2953,31 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates new Polygon instance.
      *
-     * @param  {Array<Vector>} vertices = [] Array of vertex points;
+     * @param  {Array<black-engine~Vector>} vertices = [] Array of vertex points;
      */
     constructor(vertices = []) {
 
       /** 
        * @private 
-       * @type {Array<Vector>} 
+       * @type {Array<black-engine~Vector>} 
        */
       this.mVertices = vertices;
 
       /** 
        * @private 
-       * @type {Array<Line>} 
+       * @type {Array<black-engine~Line>} 
        */
       this.mLines = [];
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mBounds = new Rectangle();
 
       /** 
        * @private 
-       * @type {Vector} 
+       * @type {black-engine~Vector} 
        */
       this.mCenter = new Vector();
 
@@ -2971,8 +2988,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Sets new vertices.
      *
-     * @param {Array<Vector>} vertices New points.
-     * @return {Polygon} This polygon.
+     * @param {Array<black-engine~Vector>} vertices New points.
+     * @return {black-engine~Polygon} This polygon.
      */
     set(vertices) {
       this.mVertices = vertices;
@@ -2983,8 +3000,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Copies this properties to another polygon.
      *
-     * @param {Polygon} polygon Object to copy to.
-     * @return {Polygon} Passed polygon.
+     * @param {black-engine~Polygon} polygon Object to copy to.
+     * @return {black-engine~Polygon} Passed polygon.
      */
     copyTo(polygon) {
       let len = this.mVertices.length;
@@ -3000,8 +3017,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Copies another polygon properties to this.
      *
-     * @param {Polygon} polygon Object to copy from.
-     * @return {Polygon} This polygon.
+     * @param {black-engine~Polygon} polygon Object to copy from.
+     * @return {black-engine~Polygon} This polygon.
      */
     copyFrom(polygon) {
       let polygonVertices = polygon.mVertices;
@@ -3018,7 +3035,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Clones this polygon.
      *
-     * @return {Polygon} Created polygon.
+     * @return {black-engine~Polygon} Created polygon.
      */
     clone() {
       let thisVertices = this.mVertices;
@@ -3066,7 +3083,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Shows whether point is within polygon area.
      *
-     * @param {Vector} vector Point to check.
+     * @param {black-engine~Vector} vector Point to check.
      * @return {boolean} True if polygon contains point.
      */
     contains(vector) {
@@ -3109,7 +3126,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks collision between two polygons.
      *
-     * @param {Polygon} polygon Object to check.
+     * @param {black-engine~Polygon} polygon Object to check.
      * @return {boolean} True if polygon collides with another polygon.
      */
     collide(polygon) {
@@ -3136,7 +3153,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks collision between this polygon and circle.
      *
-     * @param {Circle} circle Object to check.
+     * @param {black-engine~Circle} circle Object to check.
      * @return {boolean} True if polygon collides with circle.
      */
     collideCircle(circle) {
@@ -3160,7 +3177,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks collision between this polygon and rectangle.
      *
-     * @param {Rectangle} rectangle Object to check.
+     * @param {black-engine~Rectangle} rectangle Object to check.
      * @return {boolean} True if polygon collides with rectangle.
      */
     collideRectangle(rectangle) {
@@ -3187,7 +3204,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks if this polygon overlaps another.
      *
-     * @param {Polygon} polygon Object to check.
+     * @param {black-engine~Polygon} polygon Object to check.
      * @return {boolean} True if polygon overlaps second.
      */
     overlap(polygon) {
@@ -3218,7 +3235,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks if this polygon overlaps passed circle.
      *
-     * @param {Circle} circle Object to check.
+     * @param {black-engine~Circle} circle Object to check.
      * @return {boolean} True if polygon overlaps circle.
      */
     overlapCircle(circle) {
@@ -3241,7 +3258,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks if this polygon overlaps given rectangle.
      *
-     * @param {Rectangle} rectangle Object to check.
+     * @param {black-engine~Rectangle} rectangle Object to check.
      * @return {boolean} True if polygon overlaps rectangle.
      */
     overlapRectangle(rectangle) {
@@ -3268,7 +3285,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculates center, bounds, and edges of this polygon.
      *
-     * @return {Polygon} This polygon.
+     * @return {black-engine~Polygon} This polygon.
      */
     refresh() {
       let center = this.mCenter;
@@ -3309,7 +3326,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculates center of this polygon.
      *
-     * @return {Polygon} This polygon.
+     * @return {black-engine~Polygon} This polygon.
      */
     refreshCenter() {
       let center = this.mCenter;
@@ -3329,7 +3346,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculates bounds of this polygon.
      *
-     * @return {Polygon} This polygon.
+     * @return {black-engine~Polygon} This polygon.
      */
     refreshBounds() {
       let bounds = this.mBounds;
@@ -3359,7 +3376,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculates edges of this polygon.
      *
-     * @return {Polygon} This polygon.
+     * @return {black-engine~Polygon} This polygon.
      */
     refreshLines() {
       let vertices = this.mVertices;
@@ -3376,7 +3393,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates instance of Polygon.
      *
      * @param {string} path Numbers x y divided with space.
-     * @return {Polygon} Created polygon.
+     * @return {black-engine~Polygon} Created polygon.
      */
     static fromPath(path) {
       let vertices = [];
@@ -3393,7 +3410,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets rotation. Rotates this polygon around it center.
      *
      * @param {number} rotation Angle in radians.
-     * @return {Polygon} This polygon.
+     * @return {black-engine~Polygon} This polygon.
      */
     setRotation(rotation) {
       let center = this.mCenter;
@@ -3415,8 +3432,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Translates this polygon to specified position.
      *
-     * @param {Vector} point Translation vector.
-     * @return {Polygon} This vertices.
+     * @param {black-engine~Vector} point Translation vector.
+     * @return {black-engine~Polygon} This vertices.
      */
     setTranslation(point) {
       let center = this.mCenter;
@@ -3434,7 +3451,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns array of vertices.
      * 
-     * @returns {Array<Vector>}
+     * @returns {Array<black-engine~Vector>}
      */
     get vertices() {
       return this.mVertices;
@@ -3480,7 +3497,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   /**
    * @ignore
-   * @type {Polygon}
+   * @type {black-engine~Polygon}
    * @nocollapse
    */
   Polygon.__cache = new Polygon();
@@ -3503,7 +3520,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<Vector>} 
+       * @type {Array<black-engine~Vector>} 
        */
       this.mLookup = null;
 
@@ -3530,7 +3547,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets new points coordinates.
      *
      * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-     * @return {Curve} This curve.
+     * @return {black-engine~Curve} This curve.
      */
     set(...points) {
       this.mPoints = this.__initPoints(points);
@@ -3585,7 +3602,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Refresh cache (lookup) for fast interpolations.
      *
      * @private
-     * @return {Curve} This curve.
+     * @return {black-engine~Curve} This curve.
      */
     __refreshCache() {
       let lookup = this.mLookup = [];
@@ -3610,7 +3627,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @ignore
      * @private
-     * @return {Curve} This curve.
+     * @return {black-engine~Curve} This curve.
      */
     __refreshEachT() {
       let points = this.mPoints;
@@ -3643,8 +3660,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param  {number} cpEndY
      * @param  {number} endX
      * @param  {number} endY
-     * @param  {Vector=} outVector
-     * @return {Vector} Position on bezier.
+     * @param  {black-engine~Vector=} outVector
+     * @return {black-engine~Vector} Position on bezier.
      */
     static lerp(t, startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY, outVector) {
       let u = 1 - t;
@@ -3677,8 +3694,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Interpolates across whole curve.
      *
      * @param  {number} t Interpolation position (0...1).
-     * @param  {Vector=} outVector Vector to be returned.
-     * @return {Vector} Position on curve.
+     * @param  {black-engine~Vector=} outVector Vector to be returned.
+     * @return {black-engine~Vector} Position on curve.
      */
     interpolate(t, outVector) {
       let res = outVector || new Vector();
@@ -3740,7 +3757,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   /**
    * @ignore
-   * @type {Curve}
+   * @type {black-engine~Curve}
    * @nocollapse
    */
   Curve.__cache = new Curve();
@@ -3776,7 +3793,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    */
   class Message {
     constructor() {
-      /** @type {MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
+      /** @type {black-engine~MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
       this.sender = null;
 
       /** @type {string} The name of message. */
@@ -3791,7 +3808,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {boolean} Specifies if invocation of this message was canceled. */
       this.canceled = false;
 
-      /** @type {MessageType} Message type. See `MessageType` enum. */
+      /** @type {black-engine~MessageType} Message type. See `MessageType` enum. */
       this.type = MessageType.DIRECT;
     }
 
@@ -3818,7 +3835,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @returns {Message}
+     * @returns {black-engine~Message}
      */
     __reset() {
       this.sender = null;
@@ -3900,7 +3917,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Pool for messages.
    *
-   * @type {ObjectPool}
+   * @type {black-engine~ObjectPool}
    * @nocollapse
    *
    */
@@ -3913,18 +3930,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    */
   class MessageBinding {
     /**
-     * @param {MessageDispatcher} owner                The owner of this binding.
+     * @param {black-engine~MessageDispatcher} owner                The owner of this binding.
      * @param {string} name                            Name of the message.
      * @param {Function} callback                      Callback function.
      * @param {boolean} isOnce                         Indicates whenever this binding should be auto destroyed after first execution.
      * @param {*=} [context=null]                      Optional context (usually this).
-     * @param {BindingType} [type=BindingType.REGULAR] Type of the binding.
+     * @param {black-engine~BindingType} [type=BindingType.REGULAR] Type of the binding.
      * @param {?string} [pathPattern=null]             Glob pattern to filter sender by name.
      */
     constructor(owner, name, callback, isOnce, context = null, type = BindingType.REGULAR, pathPattern = null) {
       /** 
        * @ignore 
-       * @type {MessageDispatcher} 
+       * @type {black-engine~MessageDispatcher} 
        */
       this.owner = owner;
 
@@ -3960,13 +3977,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @ignore 
-       * @type {Glob|null} 
+       * @type {black-engine~Glob|null} 
        */
       this.glob = pathPattern == null ? null : new Glob(pathPattern);
 
       /** 
        * @ignore 
-       * @type {BindingType} 
+       * @type {black-engine~BindingType} 
        */
       this.type = type;
     }
@@ -3980,7 +3997,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @returns {MessageBinding}
+     * @returns {black-engine~MessageBinding}
      */
     __reset() {
       this.owner = null;
@@ -3995,32 +4012,37 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   class Black {
     constructor() {
       /**
-       * @type {Engine}
        * Returns current instance of Black Engine.
+       * 
+       * @type {black-engine~Engine}
        */
       this.engine = null;
 
       /**
-       * @type {Input}
        * Returns current instance of Input system.
+       * 
+       * @type {black-engine~Input}
        */
       this.input = null;
 
       /**
-       * @type {MasterAudio}
        * Returns current instance of MasterAudio system.
+       * 
+       * @type {black-engine~MasterAudio}
        */
       this.audio = null;
 
       /**
-       * @type {Time}
        * Returns current instance of Time.
+       * 
+       * @type {black-engine~Time}
        */
       this.time = null;
 
       /**
-       * @type {Device}
        * Returns current instance of Device.
+       * 
+       * @type {black-engine~Device}
        */
       this.device = null;
 
@@ -4028,18 +4050,24 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Default instance. Sprite and other classes uses this instance to find textures by name.
        * It will be automatically assigned when new AssetManager is created.
        * 
-       * @private
-       * @static
-       * @type {AssetManager}
+       * @type {black-engine~AssetManager}
        */
       this.assets = null;
+
+      /**
+       * Active camera instance.
+       * 
+       * @private
+       * @type {black-engine~Camera}
+       */
+      this.mCamera = null;
     }
 
     /**
      * Returns current stage.
      *
      * @readonly
-     * @returns {Stage}
+     * @returns {black-engine~Stage}
      */
     get stage() {
       return this.engine.mStage;
@@ -4049,10 +4077,22 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns current video driver.
      *
      * @readonly
-     * @returns {VideoNullDriver}
+     * @returns {black-engine~VideoNullDriver}
      */
     get driver() {
       return this.engine.mVideo;
+    }
+
+    /**
+     * Returns active camera instance.
+     * 
+     * @returns {black-engine~Camera}
+     */
+    get camera() {
+      if (this.mCamera !== null && this.mCamera.mAdded === true)
+        return this.mCamera;
+
+      return null;
     }
 
     /**
@@ -4090,7 +4130,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} name       Message name.
      * @param {Function} callback Function to be called on message send.
      * @param {*} [context=null]  Object to be used as `this` in callback function.
-     * @return {MessageBinding}
+     * @return {black-engine~MessageBinding}
      */
     on(name, callback, context) {
       return this.__on(name, callback, false, context);
@@ -4129,7 +4169,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} name       Message name.
      * @param {Function} callback Function to be called on message send.
      * @param {*} [context=null]  Object to be used as `this` in callback function.
-     * @return {MessageBinding}
+     * @return {black-engine~MessageBinding}
      */
     once(name, callback, context) {
       return this.__on(name, callback, true, context);
@@ -4163,7 +4203,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns parent MessageDispatcher.
      * 
      * @readonly
-     * @return {MessageDispatcher|null}
+     * @return {black-engine~MessageDispatcher|null}
      */
     get parent() {
       return null;
@@ -4173,7 +4213,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns the stage Game Object to which this belongs to or null if not added onto stage.
      *
      * @readonly
-     * @return {Stage|null}
+     * @return {black-engine~Stage|null}
      */
     get stage() {
       return null;
@@ -4197,7 +4237,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {Function} callback
      * @param {boolean} [isOnce=false]
      * @param {*} [context=null]
-     * @return {MessageBinding}
+     * @return {black-engine~MessageBinding}
      */
     __on(name, callback, isOnce = false, context = null) {
       Debug.assert(name !== null, 'name cannot be null.');
@@ -4233,8 +4273,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * @private
      * @ignore
-     * @param {MessageBinding} binding 
+     * @param {black-engine~MessageBinding} binding 
      */
     __off(binding) {
       if (binding.type === BindingType.REGULAR) {
@@ -4268,8 +4309,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @private
      * @ignore
-     * @param {MessageDispatcher} sender 
-     * @param {Message} message 
+     * @param {black-engine~MessageDispatcher} sender 
+     * @param {black-engine~Message} message 
      * @param {...*} params 
      * @return {void}
      */
@@ -4311,8 +4352,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @private
      * @ignore
-     * @param {MessageDispatcher}  sender
-     * @param {Message}  message
+     * @param {black-engine~MessageDispatcher}  sender
+     * @param {black-engine~Message}  message
      * @param {...*} params
      * @return {void}
      */
@@ -4383,7 +4424,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      * 
      * @param {string} name 
-     * @returns {Message}
+     * @returns {black-engine~Message}
      */
     __draftMessage(name) {
       const message = Message.pool.get();
@@ -4405,7 +4446,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      * @private
      * @param {string|null} path
-     * @param {MessageBinding} binding
+     * @param {black-engine~MessageBinding} binding
      * @returns {boolean}
      */
     __checkPath(path, binding) {
@@ -4472,8 +4513,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param  {string=} family                                             Font name
      * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
      * @param  {number=} [size=14]                                          Text size
-     * @param  {FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
-     * @param  {FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
+     * @param  {black-engine~FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
+     * @param  {black-engine~FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
      * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
      * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
      */
@@ -4490,10 +4531,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {number} */
       this.color = color;
 
-      /** @type {FontStyle} */
+      /** @type {black-engine~FontStyle} */
       this.style = style;
 
-      /** @type {FontWeight} */
+      /** @type {black-engine~FontWeight} */
       this.weight = weight;
 
       /** @type {number} */
@@ -4544,7 +4585,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns default TextStyle instance.
      * 
-     * @returns {TextStyle}
+     * @returns {black-engine~TextStyle}
      */
     static get default() {
       if (defaultStyle === null)
@@ -4589,7 +4630,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @ignore
      * @private
-     * @param {TextStyle} style Default text info with 24 font size.
+     * @param {black-engine~TextStyle} style Default text info with 24 font size.
      */
     constructor(style) {
       if (CONTEXT === null) {
@@ -4615,7 +4656,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {TextStyle} 
+       * @type {black-engine~TextStyle} 
        */
       this.mStyle = style;
 
@@ -4801,7 +4842,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @static
      * @param {string} fontName Name of font.
-     * @returns {FontMetrics}
+     * @returns {black-engine~FontMetrics}
      */
     static get(fontName) {
       let cache = CACHE[fontName];
@@ -4826,25 +4867,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Array of TextSegmentMetricsData objects containing style, bounds and other metrics information for each segment,
-       * @type {Array<TextSegmentMetricsData>}
+       * @type {Array<black-engine~TextSegmentMetricsData>}
        */
       this.segments = []; // TextPartMetricsData
 
       /**
        * The sum bounds, including all segments.
-       * @type {Rectangle}
+       * @type {black-engine~Rectangle}
        */
       this.bounds = new Rectangle();
 
       /**
        * Bounds plus stroke size.
-       * @type {Rectangle}
+       * @type {black-engine~Rectangle}
        */
       this.strokeBounds = null;
 
       /**
        * Bounds of text shadow.
-       * @type {Rectangle}
+       * @type {black-engine~Rectangle}
        */
       this.shadowBounds = null;
 
@@ -4872,7 +4913,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * The style of this segment.
-       * @type {TextStyle}
+       * @type {black-engine~TextStyle}
        */
       this.style = style;
 
@@ -4884,7 +4925,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * The bounds of this segment.
-       * @type {Rectangle}
+       * @type {black-engine~Rectangle}
        */
       this.bounds = bounds;
     }
@@ -4918,9 +4959,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @static
      * @param {string} text                            The text to measure.
      * @param {number} lineHeight                      The height of the line.
-     * @param {...TextStyle} styles The TextStyle object representing text properties and formatting.
+     * @param {...black-engine~TextStyle} styles The TextStyle object representing text properties and formatting.
      * 
-     * @returns {TextMetricsData} Object representing bounds for each rich text part.
+     * @returns {black-engine~extMetricsData} Object representing bounds for each rich text part.
      */
     static measure(text, lineHeight, ...styles) {
       let parts = [];
@@ -5006,9 +5047,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * 
      * @static
      * @param {string} text         The text to measure.
-     * @param {TextStyle} style     The TextStyle object representing text properties and formatting.
-     * @param {?Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
-     * @returns {Rectangle} Bounds of the text;
+     * @param {black-engine~TextStyle} style     The TextStyle object representing text properties and formatting.
+     * @param {?black-engine~Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
+     * @returns {black-engine~Rectangle} Bounds of the text;
      */
     static __measure(text, style, outBounds = null) {
       Debug.assert(style != null, 'Style cannot be null');
@@ -5044,10 +5085,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * 
      * @static
      * @param {string} text 
-     * @param {BitmapFontData} data 
+     * @param {black-engine~BitmapFontData} data 
      * @param {number} lineHeight 
-     * @param {Rectangle} outBounds 
-     * @returns {Rectangle}
+     * @param {black-engine~Rectangle} outBounds 
+     * @returns {black-engine~Rectangle}
      */
     static measureBitmap(text, data, lineHeight, outBounds) {
       outBounds = outBounds || new Rectangle();
@@ -5203,7 +5244,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Base class for custom systems. System is used to listen scene changes.
    *
    * @cat core
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class System extends MessageDispatcher {
     constructor() {
@@ -5254,7 +5295,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * onChildrenAdded
      *
      * @protected
-     * @param {GameObject} gameObject GameObject instance.
+     * @param {black-engine~GameObject} gameObject GameObject instance.
      * @return {void}
      */
     onChildrenAdded(gameObject) { }
@@ -5263,7 +5304,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * onChildrenRemoved
      *
      * @protected
-     * @param {GameObject} gameObject GameObject instance.
+     * @param {black-engine~GameObject} gameObject GameObject instance.
      * @return {void}
      */
     onChildrenRemoved(gameObject) { }
@@ -5272,7 +5313,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * onChildrenRemoved
      *
      * @protected
-     * @param {GameObject} gameObject GameObject instance.
+     * @param {black-engine~GameObject} gameObject GameObject instance.
      * @return {void}
      */
     onChildrenChanged(gameObject) { }
@@ -5281,8 +5322,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * onComponentAdded
      *
      * @protected
-     * @param {GameObject} child GameObject instance.
-     * @param {Component} component Component instance added to game object.
+     * @param {black-engine~GameObject} child GameObject instance.
+     * @param {black-engine~Component} component Component instance added to game object.
      * @return {void} 
      */
     onComponentAdded(child, component) { }
@@ -5291,8 +5332,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * onComponentRemoved
      *
      * @protected
-     * @param {GameObject} child GameObject instance.
-     * @param {Component} component Component instance removed from game object.
+     * @param {black-engine~GameObject} child GameObject instance.
+     * @param {black-engine~Component} component Component instance removed from game object.
      * @return {void}
      */
     onComponentRemoved(child, component) { }
@@ -5322,8 +5363,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
    *
    * @cat core
-   * @fires Viewport#resize
-   * @extends MessageDispatcher
+   * @fires black-engine~Viewport#resize
+   * @extends black-engine~MessageDispatcher
    */
   class Viewport extends MessageDispatcher {
     /**
@@ -5348,11 +5389,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mSize = new Rectangle();
 
-       /** 
+      /** 
        * @private 
        * @type {boolean} 
        */
@@ -5372,7 +5413,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Orientation} 
+       * @type {black-engine~Orientation} 
        */
       this.mOrientation = Orientation.UNIVERSAL;
 
@@ -5444,14 +5485,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets stage orientation.
      *
-     * @returns {Orientation}
+     * @returns {black-engine~Orientation}
      */
     get orientation() {
       return this.mOrientation;
     }
 
     /**
-     * @param {Orientation} value
+     * @param {black-engine~Orientation} value
      * @returns {void}
      */
     set orientation(value) {
@@ -5541,7 +5582,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted every time viewport size has changed.
-       * @event Viewport#resize
+       * @event black-engine~Viewport#resize
        */
       this.post(Message.RESIZE, dispatchSize);
 
@@ -5557,7 +5598,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns the size of a viewport.
      *
-     * @return {Rectangle}
+     * @return {black-engine~Rectangle}
      */
     get size() {
       return this.mSize;
@@ -5620,7 +5661,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat core
    * @unrestricted
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class Component extends MessageDispatcher {
     /**
@@ -5637,7 +5678,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {GameObject|null} 
+       * @type {black-engine~GameObject|null} 
        */
       this.mGameObject = null;
 
@@ -5648,17 +5689,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mAdded = false;
 
       /**
-       * Indicates whenever this modifier is active or not.
+       * Indicates whenever this modifier is enabled or not.
+       * 
        * @type {boolean}
        */
-      this.isActive = true;
+      this.enabled = true;
     }
 
     /**
      * Called when attached to GameObject.
      *
      * @protected
-     * @param  {GameObject} gameObject The owner of this component.
+     * @param  {black-engine~GameObject} gameObject The owner of this component.
      * @return {void}
      */
     onAdded(gameObject) { }
@@ -5667,7 +5709,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when detached from GameObject.
      *
      * @protected
-     * @param  {GameObject} gameObject The owner of this component.
+     * @param  {black-engine~GameObject} gameObject The owner of this component.
      * @return {void}
      */
     onRemoved(gameObject) { }
@@ -5705,7 +5747,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns owner of this component.
      *
      * @readonly
-     * @returns {GameObject}
+     * @returns {black-engine~GameObject}
      */
     get gameObject() {
       return this.mGameObject;
@@ -5714,7 +5756,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns this Component owner GameObject.
      * @readonly
-     * @return {GameObject|null}
+     * @return {black-engine~GameObject|null}
      */
     get parent() {
       return this.mGameObject;
@@ -5725,7 +5767,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @override
      * @readonly
-     * @return {Stage|null}
+     * @return {black-engine~Stage|null}
      */
     get stage() {
       if (this.mGameObject === null)
@@ -5826,11 +5868,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates new instance of texture.
      *
      * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-     * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
-     * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+     * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
+     * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
      * @param {number=} [scale=1]                                                 Inverted scale factor.
-     * @param {Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
-     * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
+     * @param {black-engine~Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
+     * @param {black-engine~Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
      */
     constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
       this.mId = ++__ID;
@@ -5847,12 +5889,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} */
+       * @type {black-engine~Rectangle} */
       this.mRegion = new Rectangle();
 
       /** 
        * @private 
-       * @type {Rectangle} */
+       * @type {black-engine~Rectangle} */
       this.mUntrimmedRegion = new Rectangle();
 
       /** 
@@ -5892,12 +5934,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Vector|null} */
+       * @type {black-engine~Vector|null} */
       this.mRegistrationPoint = registrationPoint;
 
       /** 
        * @private 
-       * @type {Rectangle|null} */
+       * @type {black-engine~Rectangle|null} */
       this.mSlice9borders = slice9borders;
 
       this.set(nativeElement, region, untrimmedRegion, scale);
@@ -5907,8 +5949,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Updates this texture with new native element.
      *
      * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-     * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
-     * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+     * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
+     * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
      * @param {number=} [scale=1]                                                 Inverted scale factor.
      */
     set(nativeElement, region = null, untrimmedRegion = null, scale = 1) {
@@ -5965,7 +6007,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates new texture from Base64 string.
      *
      * @param {string} string Base64 string.
-     * @returns {Texture}
+     * @returns {black-engine~Texture}
      */
     static fromBase64String(string) {
       let imgElement = new Image();
@@ -5978,7 +6020,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {Element} canvas
      * @param {string} type
      * @param {number} quality
-     * @returns {Texture}
+     * @returns {black-engine~Texture}
      */
     static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
       let imgElement = new Image();
@@ -5990,7 +6032,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @param {HTMLCanvasElement} canvas
-     * @returns {Texture|null}
+     * @returns {black-engine~Texture|null}
      */
     static fromCanvas(canvas) {
       return black.driver.getTextureFromCanvas(canvas);
@@ -6030,7 +6072,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * The area of the texture to be drawn.
      *
      * @readonly
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     get region() {
       return this.mRegion;
@@ -6040,7 +6082,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * The original area of the texture.
      *
      * @readonly
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     get untrimmedRegion() {
       return this.mUntrimmedRegion;
@@ -6119,7 +6161,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Anchor of the texture.
      * 
-     * @returns {Vector|null}
+     * @returns {black-engine~Vector|null}
      */
     get registrationPoint() {
       return this.mRegistrationPoint;
@@ -6128,7 +6170,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns slice 9 borders for this texture.
      * 
-     * @returns {Rectangle|null}
+     * @returns {black-engine~Rectangle|null}
      */
     get slice9borders() {
       return this.mSlice9borders;
@@ -6230,7 +6272,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Canvas rendering surface.
    *
-   * @extends RenderTarget
+   * @extends black-engine~RenderTarget
    * @cat drivers.canvas
    */
   class RenderTargetCanvas extends RenderTarget {
@@ -6333,10 +6375,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates new instance of Renderer.
      */
     constructor() {
-      /** @type {DisplayObject|null} */
+      /** @type {black-engine~DisplayObject|null} */
       this.gameObject = null;
 
-      /** @type {Renderer|null} */
+      /** @type {black-engine~Renderer|null} */
       this.parent = null;
 
       /** 
@@ -6371,7 +6413,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @ignore 
-       * @type {BlendMode} 
+       * @type {black-engine~BlendMode} 
        */
       this.blendMode = BlendMode.NORMAL;
 
@@ -6385,8 +6427,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Called when this renderer needs to be rendered.
      *
-     * @param {VideoNullDriver} driver Active video driver.
-     * @param {RenderSession} session Active session.
+     * @param {black-engine~VideoNullDriver} driver Active video driver.
+     * @param {black-engine~RenderSession} session Active session.
      * @returns {void}
      */
     preRender(driver, session) {
@@ -6398,8 +6440,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Called after `preRender` but before `GameObject#onRender`. Used to compute world alpha, color and blend mode.
-     * @param {VideoNullDriver} driver 
-     * @param {RenderSession} session 
+     * @param {black-engine~VideoNullDriver} driver 
+     * @param {black-engine~RenderSession} session 
      */
     begin(driver, session) {
       this.alpha = this.gameObject.mAlpha * this.parent.alpha;
@@ -6410,8 +6452,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Called if `skipSelf` equals to false. Used to upload everything onto gpu.
      * 
-     * @param {VideoNullDriver} driver 
-     * @param {RenderSession} session 
+     * @param {black-engine~VideoNullDriver} driver 
+     * @param {black-engine~RenderSession} session 
      */
     upload(driver, session) {
       let gameObject = /** @type {DisplayObject} */ (this.gameObject);
@@ -6429,8 +6471,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Called if `skipSelf` equals to false.
      *
-     * @param {VideoNullDriver} driver Active video driver.
-     * @param {RenderSession} session
+     * @param {black-engine~VideoNullDriver} driver Active video driver.
+     * @param {black-engine~RenderSession} session
      * @returns {void}
      */
     render(driver, session) {
@@ -6439,8 +6481,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Called after all children objects got rendered.
      * 
-     * @param {VideoNullDriver} driver 
-     * @param {RenderSession} session 
+     * @param {black-engine~VideoNullDriver} driver 
+     * @param {black-engine~RenderSession} session 
      */
     end(driver, session) {
       driver.endClip();
@@ -6452,9 +6494,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Tints given texture with a given color.
      * 
-     * @param {Texture} texture 
+     * @param {black-engine~Texture} texture 
      * @param {number|null} color 
-     * @returns {Texture}
+     * @returns {black-engine~Texture}
      */
     static getColoredTexture(texture, color) {
       if (color === 0xFFFFFF || color === null)
@@ -6491,6 +6533,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @private
    * @static
+   * @type {black-engine~MapMap}
    */
   Renderer.__colorCache = new MapMap();
 
@@ -6504,6 +6547,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   /**
    * Indicates whenever engine should render the stage if nothing were changed in this frame. Default is false.
+   * @type {boolean}
    */
   Renderer.skipUnchangedFrames = false;
 
@@ -6511,7 +6555,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Base class for collider component.
    *
    * @cat colliders
-   * @extends Component
+   * @extends black-engine~Component
    */
   class Collider extends Component {
     /**
@@ -6534,7 +6578,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Global in stage coordinates center.
        * 
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mCenter = new Vector();
 
@@ -6542,7 +6586,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Global in stage coordinates min x and y vertex.
        * 
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mMin = new Vector();
 
@@ -6550,7 +6594,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Global in stage coordinates max x and y vertex. 
        * 
        * @private 
-       * @type {Vector} */
+       * @type {black-engine~Vector} */
       this.mMax = new Vector();
     }
 
@@ -6580,7 +6624,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This component will allow you to subscribe for some input messages.
    *
    * @cat input
-   * @extends Component
+   * @extends black-engine~Component
    */
   class InputComponent extends Component {
     /**
@@ -6625,7 +6669,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat core
    * @unrestricted
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class GameObject extends MessageDispatcher {
     /**
@@ -6648,13 +6692,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<Component>} 
+       * @type {Array<black-engine~Component>} 
        */
       this.mComponents = [];
 
       /** 
        * @protected 
-       * @type {Array<GameObject>} 
+       * @type {Array<black-engine~GameObject>} 
        */
       this.mChildren = [];
 
@@ -6738,37 +6782,37 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mBoundsCache = new Rectangle();
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.mLocalTransform = new Matrix();
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.mWorldTransform = new Matrix();
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.mWorldTransformInverted = new Matrix();
 
       /** 
        * @private 
-       * @type {DirtyFlag} 
+       * @type {black-engine~DirtyFlag} 
        */
       this.mDirty = DirtyFlag.DIRTY;
 
       /** 
        * @protected 
-       * @type {GameObject} 
+       * @type {black-engine~GameObject} 
        */
       this.mParent = null;
 
@@ -6811,7 +6855,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       // cache all colliders for fast access
       /** 
        * @private 
-       * @type {Array<Collider>} 
+       * @type {Array<black-engine~Collider>} 
        */
       this.mCollidersCache = [];
 
@@ -6823,13 +6867,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<GameObject>} 
+       * @type {Array<black-engine~GameObject>} 
        */
       this.mChildrenClone = null;
 
       /** 
        * @private 
-       * @type {Array<Component>} 
+       * @type {Array<black-engine~Component>} 
        */
       this.mComponentClone = null;
     }
@@ -6899,8 +6943,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Sugar method for adding child `GameObjects` or `Components` in a simple manner.
      *
-     * @param {...(GameObject|Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
-     * @return {GameObject} This game object
+     * @param {...(black-engine~GameObject|black-engine~Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
+     * @return {black-engine~GameObject} This game object
      */
     add(...gameObjectsAndOrComponents) {
       for (let i = 0; i < gameObjectsAndOrComponents.length; i++) {
@@ -6919,8 +6963,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
      * children in this GameObject instance.
      *
-     * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
-     * @return {GameObject}
+     * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
+     * @return {black-engine~GameObject}
      */
     addChild(child) {
       return this.addChildAt(child, this.mChildren.length);
@@ -6930,9 +6974,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
      * children in this GameObject instance.
      *
-     * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+     * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
      * @param  {number=} [index=0] The index position to which the child is added.
-     * @return {GameObject} The GameObject instance that you pass in the child parameter.
+     * @return {black-engine~GameObject} The GameObject instance that you pass in the child parameter.
      */
     addChildAt(child, index = 0) {
       Debug.assert(child instanceof GameObject, 'Type error.');
@@ -6961,7 +7005,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @private
      * @ignore
-     * @param {GameObject} value
+     * @param {black-engine~GameObject} value
      * @return {boolean}
      */
     __setParent(value) {
@@ -6981,9 +7025,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Sets the index (layer) of the specified `GameObject` to the specified index (layer).
      *
-     * @param {GameObject} child The `GameObject` instance to change index for.
+     * @param {black-engine~GameObject} child The `GameObject` instance to change index for.
      * @param {number} index Desired index.
-     * @returns {GameObject} The `GameObject` instance that you pass in the child parameter.
+     * @returns {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
      */
     setChildIndex(child, index) {
       let ix = this.mChildren.indexOf(child);
@@ -7009,7 +7053,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Removes this `GameObject` instance from its parent.
      *
-     * @return {GameObject}
+     * @return {black-engine~GameObject}
      */
     removeFromParent() {
       if (this.mParent !== null)
@@ -7022,8 +7066,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Removes specified child `GameObject` instance from children.
      *
-     * @param {GameObject} child `GameObject` instance to remove.
-     * @return {GameObject} The `GameObject` instance that you pass in the child parameter.
+     * @param {black-engine~GameObject} child `GameObject` instance to remove.
+     * @return {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
      */
     removeChild(child) {
       let ix = this.mChildren.indexOf(child);
@@ -7039,7 +7083,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Finds children by name.
      *
      * @param {string} name Name of the child object to find.
-     * @return {GameObject|null} GameObject instance or null if not found.
+     * @return {black-engine~GameObject|null} GameObject instance or null if not found.
      */
     getChildByName(name) {
       for (let i = 0; i < this.mChildren.length; i++) {
@@ -7054,7 +7098,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes `GameObjects` instance from specified index.
      *
      * @param {number} index Index of child. Negative index will remove object from it end.
-     * @return {GameObject|null} The removed `GameObject` instance or null if not found.
+     * @return {black-engine~GameObject|null} The removed `GameObject` instance or null if not found.
      */
     removeChildAt(index) {
       let child = this.mChildren.splice(index, 1)[0];
@@ -7076,7 +7120,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Removes all children objects.
-     * @returns {GameObject} Returns this.
+     * @returns {black-engine~GameObject} Returns this.
      */
     removeAllChildren() {
       while (this.mChildren.length > 0)
@@ -7089,7 +7133,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns `GameObject` at specified index.
      *
      * @param {number} index The index of child `GameObject`.
-     * @return {GameObject} The `GameObject` at specified index.
+     * @return {black-engine~GameObject} The `GameObject` at specified index.
      */
     getChildAt(index) {
       return this.mChildren[index];
@@ -7099,8 +7143,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds Component instance to the end of the list.
      *
      * @throws {Error}
-     * @param  {Component} component The instances of Component to be added,
-     * @return {Component} The `Component` instance you pass in the instances parameter.
+     * @param  {black-engine~Component} component The instances of Component to be added,
+     * @return {black-engine~Component} The `Component` instance you pass in the instances parameter.
      */
     addComponent(component) {
       return this.addComponentAt(component, this.mComponents.length);
@@ -7110,9 +7154,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds Component to the list at given position.
      * 
      * @throws {Error}
-     * @param {Component} component The instances of Component to be added,
+     * @param {black-engine~Component} component The instances of Component to be added,
      * @param {number} [index=0] Position in the list.
-     * @returns {Component} The `Component` instance you pass in the instances parameter.
+     * @returns {black-engine~Component} The `Component` instance you pass in the instances parameter.
      */
     addComponentAt(component, index = 0) {
       Debug.assert(component instanceof Component, 'Type error.');
@@ -7143,7 +7187,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes component at given index.
      * 
      * @param {number} index Negative index will remove component from the end.
-     * @returns {Component|null} Returns removed component of null.
+     * @returns {black-engine~Component|null} Returns removed component of null.
      */
     removeComponentAt(index) {
       let instance = this.mComponents.splice(index, 1)[0];
@@ -7171,8 +7215,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Remove specified component.
      *
-     * @param {Component} instance The `Component` instance.
-     * @returns {Component|null} Returns removed component of null.
+     * @param {black-engine~Component} instance The `Component` instance.
+     * @returns {black-engine~Component|null} Returns removed component of null.
      */
     removeComponent(instance) {
       if (instance == null)
@@ -7189,7 +7233,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Removes all components.
-     * @returns {GameObject} Returns this.
+     * @returns {black-engine~GameObject} Returns this.
      */
     removeAllComponents() {
       while (this.mComponents.length > 0)
@@ -7202,7 +7246,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Get component by type.
      *
      * @param {Function} typeName The component type.
-     * @return {Component|null} The `Component` instance or null if not found.
+     * @return {black-engine~Component|null} The `Component` instance or null if not found.
      */
     getComponent(typeName) {
       for (let i = 0; i < this.mComponents.length; i++) {
@@ -7227,7 +7271,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Retrieves `Component` at given index.
      *
      * @param {number} index Index of component.
-     * @return {Component|null}
+     * @return {black-engine~Component|null}
      */
     getComponentAt(index) {
       if (index >= 0 && index < this.mComponents.length)
@@ -7239,7 +7283,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns local transformation `Matrix`
      *
-     * @return {Matrix}
+     * @return {black-engine~Matrix}
      */
     get localTransformation() {
       if (this.mDirty & DirtyFlag.LOCAL) {
@@ -7286,7 +7330,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
-     * @param {Matrix} value
+     * @param {black-engine~Matrix} value
      * @return {void}
      */
     set localTransformation(value) {
@@ -7330,7 +7374,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets cloned Matrix object which represents object orientation in world space.
      *
-     * @return {Matrix}
+     * @return {black-engine~Matrix}
      */
     get worldTransformation() {
       if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
@@ -7356,7 +7400,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns cloned and inverted Matrix object which represents object orientation in world space
      *
      * @readonly
-     * @return {Matrix}
+     * @return {black-engine~Matrix}
      */
     get worldTransformationInverted() {
       if ((this.mDirty & DirtyFlag.WORLD_INV)) {
@@ -7388,7 +7432,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
           let c = this.mComponentClone[k];
 
-          if (c.mAdded === false || c.isActive === false)
+          if (c.mAdded === false || c.enabled === false)
             continue;
 
           c.onUpdate();
@@ -7420,8 +7464,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
      *
      * @protected
-     * @param {Rectangle=} [outRect=undefined] Rectangle to be returned.
-     * @return {Rectangle} bounds in local space without taking care about transformation matrix
+     * @param {black-engine~Rectangle=} [outRect=undefined] Rectangle to be returned.
+     * @return {black-engine~Rectangle} bounds in local space without taking care about transformation matrix
      */
     onGetLocalBounds(outRect = undefined) {
       outRect = outRect || new Rectangle();
@@ -7436,10 +7480,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * `object.getBounds(object.parent)` - relative to parent.<br>
      * `object.getBounds(objectB)` - relative to objectB space.<br>
      *
-     * @param {GameObject} [space=null] The `GameObject` relative to.
+     * @param {black-engine~GameObject} [space=null] The `GameObject` relative to.
      * @param {boolean} [includeChildren=true] Specifies if include children in calculations.
-     * @param {Rectangle=} [outRect=null] Rectangle to be returned.
-     * @return {Rectangle} Returns bounds of the object with/without all children.
+     * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be returned.
+     * @return {black-engine~Rectangle} Returns bounds of the object with/without all children.
      */
     getBounds(space = null, includeChildren = true, outRect = undefined) {
       outRect = outRect || new Rectangle();
@@ -7497,8 +7541,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns stage relative bounds of this object excluding it's children;
      * 
-     * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
-     * @returns {Rectangle} 
+     * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
+     * @returns {black-engine~Rectangle} 
      */
     getStageBounds(outRect = undefined) {
       outRect = outRect || new Rectangle();
@@ -7517,8 +7561,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Evaluates whether the game object or one of its children intersects with the given point
      *
-     * @param {Vector} localPoint Coordinates vector.
-     * @return {GameObject|null}
+     * @param {black-engine~Vector} localPoint Coordinates vector.
+     * @return {black-engine~GameObject|null}
      */
     hitTest(localPoint) {
       let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
@@ -7548,7 +7592,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @protected
-     * @param {Vector} localPoint 
+     * @param {black-engine~Vector} localPoint 
      * @return {boolean}
      */
     onHitTest(localPoint) {
@@ -7577,7 +7621,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @protected
-     * @param {Vector} localPoint 
+     * @param {black-engine~Vector} localPoint 
      * @return {boolean}
      */
     onHitTestMask(localPoint) {
@@ -7586,7 +7630,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Returns local bounds of this object (without children).
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     get localBounds() {
       return this.getBounds(this, false);
@@ -7594,7 +7638,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Returns parent-relative bounds (including children).
-     * @returns {Rectangle}
+     * @returns {black-engine~Rectangle}
      */
     get bounds() {
       return this.getBounds(this.mParent, true);
@@ -7612,7 +7656,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} [anchorY=0] Anchor Y.
      * @param {boolean} [includeChildren=true] Include children when adjusting pivot?
      *
-     * @return {GameObject} This.
+     * @return {black-engine~GameObject} This.
      */
     setTransform(x = 0, y = 0, r = 0, scaleX = 1, scaleY = 1, anchorX = 0, anchorY = 0, includeChildren = true) {
       this.mX = x;
@@ -7630,9 +7674,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculates GameObject's position relative to another GameObject.
      *
-     * @param {GameObject} gameObject Coordinates vector.
-     * @param {Vector|null} [outVector=null] Vector to be returned.
-     * @return {Vector}
+     * @param {black-engine~GameObject} gameObject Coordinates vector.
+     * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+     * @return {black-engine~Vector}
      */
     relativeTo(gameObject, outVector = null) {
       outVector = outVector || new Vector();
@@ -7649,9 +7693,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculate global position of the object.
      *
-     * @param {Vector} localPoint Coordinates vector.
-     * @param {Vector|null} [outVector=null] Vector to be returned.
-     * @return {Vector}
+     * @param {black-engine~Vector} localPoint Coordinates vector.
+     * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+     * @return {black-engine~Vector}
      */
     localToGlobal(localPoint, outVector = null) {
       return this.worldTransformation.transformVector(localPoint, outVector);
@@ -7660,9 +7704,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Calculate local position of the object
      *
-     * @param {Vector} globalPoint Coordinates vector.
-     * @param {Vector|null} [outVector=null] Vector to be returned.
-     * @return {Vector}
+     * @param {black-engine~Vector} globalPoint Coordinates vector.
+     * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+     * @return {black-engine~Vector}
      */
     globalToLocal(globalPoint, outVector = null) {
       return this.worldTransformationInverted.transformVector(globalPoint, outVector);
@@ -7735,6 +7779,32 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
       this.mY = value;
+      this.setTransformDirty();
+    }
+    
+    /**
+     * Gets/sets object position.
+     * 
+     * NOTE: setting individual values on this vector will give zero results.
+     * @returns {black-engine~Vector}
+     */
+    get xy() {
+      return new Vector(this.mX, this.mY);
+    }
+
+    /**
+     * Gets/sets object position.
+     * 
+     * @param {black-engine~Vector} value
+     * @returns {void}
+     */
+    set xy(value) {
+      if (this.mX === value.x && this.mY === value.y)
+        return;
+
+      this.mX = value.x;
+      this.mY = value.y;
+
       this.setTransformDirty();
     }
 
@@ -7865,7 +7935,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number}  [ax=0.5]               Align along x-axis.
      * @param {number}  [ay=0.5]               Align along y-axis.
      *
-     * @return {GameObject} This.
+     * @return {black-engine~GameObject} This.
      */
     alignAnchor(ax = 0.5, ay = 0.5) {
       Debug.isNumber(ax, ay);
@@ -7883,7 +7953,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @param {number}  [ax=0.5]               Align along x-axis.
      * @param {number}  [ay=0.5]               Align along y-axis.
-     * @return {GameObject} This.
+     * @return {black-engine~GameObject} This.
      */
     alignPivot(ax = 0.5, ay = 0.5) {
       return this.alignPivotOffset(ax, ay);
@@ -7897,7 +7967,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number}  [ay=0.5]               Align along y-axis.
      * @param {boolean} [includeChildren=true] Include children elements when calculating bounds?
      *
-     * @return {GameObject} This.
+     * @return {black-engine~GameObject} This.
      */
     alignPivotOffset(ax = 0.5, ay = 0.5, includeChildren = true) {
       Debug.isNumber(ax, ay);
@@ -8058,7 +8128,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns this GameObject parent GameObject or null.
      * @readonly
-     * @return {GameObject|null}
+     * @return {black-engine~GameObject|null}
      */
     get parent() {
       return this.mParent;
@@ -8068,7 +8138,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns top most parent object or this if there is no parents.
      * 
      * @readonly
-     * @return {GameObject}
+     * @return {black-engine~GameObject}
      */
     get root() {
       let current = this;
@@ -8084,7 +8154,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @override
      * @readonly
-     * @return {Stage|null}
+     * @return {black-engine~Stage|null}
      */
     get stage() {
       return this.mAdded === true ? black.stage : null;
@@ -8136,7 +8206,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.scaleY = value / currentHeight;
     }
 
-
     /**
      * Returns width of this GameObject in local space without including children
      * elements.
@@ -8147,7 +8216,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     get localWidth() {
       return this.getBounds(this, false).width;
     }
-
 
     /**
      * Returns height of this GameObject in local space without including children
@@ -8229,7 +8297,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Waits for given amount of seconds before processing.
      *
      * @param {number} [seconds=1] Duration
-     * @return {function(?):?}
+     * @return {function(*):*}
      */
     wait(seconds = 1) {
       return cb => setTimeout(cb.bind(this, (/** @type {number} */(seconds) * 1000)), (/** @type {number} */(seconds) * 1000));
@@ -8239,7 +8307,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Waits for a specific message.
      *
      * @param {string} message The name of the message to wait for.
-     * @return {function(?):?}
+     * @return {function(*):*}
      */
     waitMessage(message) {
       return cb => this.once(message, cb.bind(this));
@@ -8248,7 +8316,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Marks this GameObject and/or its children elements as dirty.
      *
-     * @param {DirtyFlag} flag The flag or flag bit mask.
+     * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
      * @param {boolean} [includeChildren=true] Specifies if the flag needed for all children.
      * @return {void}
      */
@@ -8269,7 +8337,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @private
      * @ignore
-     * @param {GameObject} go 
+     * @param {black-engine~GameObject} go 
      */
     __updatePivots(go) {
       go.getBounds(go, true, Rectangle.__cache.zero());
@@ -8281,7 +8349,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Marks the GameObject's parent as dirty.
      *
-     * @param {DirtyFlag} flag The flag or flag bit mask.
+     * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
      * @return {void}
      */
     setParentDirty(flag) {
@@ -8355,9 +8423,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      *
      * @param {Array<number>} points
-     * @param {Matrix} worldTransformation
-     * @param {Rectangle=} outRect
-     * @return {Rectangle}
+     * @param {black-engine~Matrix} worldTransformation
+     * @param {black-engine~Rectangle=} outRect
+     * @return {black-engine~Rectangle}
      */
     static getBoundsWithPoints(points, worldTransformation, outRect) {
       outRect = outRect || new Rectangle();
@@ -8391,8 +8459,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns whenever a given GameObject intersects with a point.
      *
-     * @param {GameObject} gameObject GameObject to test.
-     * @param {Vector} point A point to test.
+     * @param {black-engine~GameObject} gameObject GameObject to test.
+     * @param {black-engine~Vector} point A point to test.
      * @return {boolean} True if intersects.
      */
     static intersects(gameObject, point) {
@@ -8407,9 +8475,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns a point where intersection were made in local space.
      *
-     * @param {GameObject} gameObject GameObject to test intersection with.
-     * @param {Vector} point The point to test.
-     * @param {Vector=} outVector If passed point of intersection will be stored in it.
+     * @param {black-engine~GameObject} gameObject GameObject to test intersection with.
+     * @param {black-engine~Vector} point The point to test.
+     * @param {black-engine~Vector=} outVector If passed point of intersection will be stored in it.
      * @return {boolean} True if intersects.
      */
     static intersectsAt(gameObject, point, outVector = undefined) {
@@ -8431,9 +8499,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Checks if GameObject or any of its children elements intersects the given point.
      *
-     * @param {GameObject} gameObject GameObject to test.
-     * @param {Vector} point Point to test.
-     * @return {GameObject|null} Intersecting object or null.
+     * @param {black-engine~GameObject} gameObject GameObject to test.
+     * @param {black-engine~Vector} point Point to test.
+     * @return {black-engine~GameObject|null} Intersecting object or null.
      */
     static intersectsWith(gameObject, point) {
       let obj = null;
@@ -8461,7 +8529,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns all GameObject with given tag.
      *
      * @param {string} tag Tag to find.
-     * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
+     * @returns {Array<black-engine~GameObject>|null} Array of GameObject or null if not found.
      */
     static findWithTag(tag) {
       if (black.engine.mTagCache.hasOwnProperty(tag) === false)
@@ -8473,9 +8541,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns a list of Components.
      *
-     * @param {GameObject} gameObject GameObject to start search from.
-     * @param {function (new:Component)} type Type of Component.
-     * @return {Array<Component>} Array of Component or empty array.
+     * @param {black-engine~GameObject} gameObject GameObject to start search from.
+     * @param {function (new:black-engine~Component)} type Type of Component.
+     * @return {Array<black-engine~Component>} Array of Component or empty array.
      */
     static findComponents(gameObject, type) {
       Debug.assert(gameObject !== null, 'gameObject cannot be null.');
@@ -8504,8 +8572,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Runs action across all GameObjects.
      *
-     * @param {GameObject} gameObject GameObject to start iteration from.
-     * @param {function(GameObject)} action The function to be executed on every GameObject.
+     * @param {black-engine~GameObject} gameObject GameObject to start iteration from.
+     * @param {function(black-engine~GameObject)} action The function to be executed on every GameObject.
      * @return {void}
      */
     static forEach(gameObject, action) {
@@ -8529,9 +8597,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * starting point.
      *
      * @param {string} name      Name to search.
-     * @param {GameObject=} node Starting GameObject.
+     * @param {black-engine~GameObject=} node Starting GameObject.
      *
-     * @return {GameObject} GameObject or null.
+     * @return {black-engine~GameObject} GameObject or null.
      */
     static find(name, node) {
       if (node == null)
@@ -8554,9 +8622,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * starting point.
      *
      * @param {number} id         Id to search.
-     * @param {GameObject=} node  Starting GameObject or null.
+     * @param {black-engine~GameObject=} node  Starting GameObject or null.
      *
-     * @return {GameObject} GameObject or null.
+     * @return {black-engine~GameObject} GameObject or null.
      */
     static findById(id, node) {
       if (node == null)
@@ -8721,6 +8789,432 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
+   * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+   *
+   * @cat display
+   * @extends black-engine~GameObject
+   */
+  class DisplayObject extends GameObject {
+    constructor() {
+      super();
+
+      /** 
+       * @protected 
+       * @type {number} 
+       */
+      this.mAlpha = 1;
+
+      /** 
+       * @protected 
+       * @type {black-engine~BlendMode} 
+       */
+      this.mBlendMode = BlendMode.AUTO;
+
+      /** 
+       * @protected 
+       * @type {boolean} 
+       */
+      this.mVisible = true;
+
+      /** 
+       * @protected 
+       * @type {black-engine~Rectangle} 
+       */
+      this.mClipRect = null;
+
+      /** 
+       * @protected 
+       * @type {black-engine~Renderer|null} 
+       */
+      this.mRenderer = this.getRenderer();
+
+      /** 
+       * @private 
+       * @type {boolean} 
+       */
+      this.mCacheAsBitmap = false;
+
+      /** 
+       * @private 
+       * @type {boolean} 
+       */
+      this.mCacheAsBitmapDynamic = true;
+
+      /** 
+       * @private 
+       * @type {boolean} 
+       */
+      this.mCacheAsBitmapDirty = true;
+
+      /** 
+       * @private 
+       * @type {black-engine~Matrix|null} 
+       */
+      this.mCacheAsBitmapMatrixCache = null;
+
+      /** 
+       * @private 
+       * @type {black-engine~CanvasRenderTexture|null} 
+       */
+      this.mCache = null;
+
+      /** 
+       * @private 
+       * @type {black-engine~Rectangle|null} 
+       */
+      this.mCacheBounds = null;
+
+      /** 
+       * @protected 
+       * @type {?number} 
+       */
+      this.mColor = null;
+
+      /** 
+       * @protected 
+       * @type {boolean} 
+       */
+      this.mSnapToPixels = false;
+    }
+
+    /**
+     * Called at the end of the loop, all renderers are already collected and this object and its children will be
+     * rendered. Should be used to interpolate between last and current state. 
+     * 
+     * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
+     * 
+     * @protected
+     * @return {void}
+     */
+    onRender() { }
+
+    /**
+     * Factory method returns concrete renderer for this Game Object.
+     * 
+     * @returns {black-engine~Renderer}
+     */
+    getRenderer() {
+      return black.driver.getRenderer('DisplayObject', this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onGetLocalBounds(outRect = undefined) {
+      outRect = outRect || new Rectangle();
+
+      if (this.mClipRect !== null) {
+        this.mClipRect.copyTo(outRect);
+        return outRect;
+      }
+
+      return outRect.set(0, 0, 0, 0);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getBounds(space = undefined, includeChildren = true, outRect = undefined) {
+      outRect = outRect || new Rectangle();
+
+      let localBounds = this.onGetLocalBounds();
+
+      if (space == null)
+        space = this.mParent;
+
+      if (space == this) ; else if (space == this.mParent) {
+        if (includeChildren === false || this.mClipRect !== null) {
+          let matrix = Matrix.pool.get();
+          matrix.copyFrom(this.localTransformation);
+          matrix.transformRect(localBounds, outRect);
+          Matrix.pool.release(matrix);
+        }
+        else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
+          let matrix = Matrix.pool.get();
+          matrix.copyFrom(this.localTransformation);
+          matrix.transformRect(localBounds, outRect);
+          Matrix.pool.release(matrix);
+        } else {
+          // Return cached
+          outRect.copyFrom(this.mBoundsCache);
+          return outRect;
+        }
+      } else {
+        let matrix = Matrix.pool.get();
+        matrix.copyFrom(this.worldTransformation);
+        matrix.prepend(space.worldTransformationInverted);
+        matrix.transformRect(localBounds, outRect);
+        Matrix.pool.release(matrix);
+      }
+
+      if (space !== this) {
+        if (this.mClipRect !== null) {
+          outRect.x += this.mPivotX;
+          outRect.y += this.mPivotY;
+        }
+      } else {
+        localBounds.copyTo(outRect);
+      }
+
+      if (this.mClipRect !== null)
+        return outRect;
+
+      if (includeChildren === true) {
+        let childBounds = Rectangle.pool.get();
+
+        for (let i = 0; i < this.mChildren.length; i++) {
+          childBounds.zero();
+
+          this.mChildren[i].getBounds(space, includeChildren, childBounds);
+          outRect.union(childBounds);
+        }
+
+        Rectangle.pool.release(childBounds);
+
+        if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
+          this.mBoundsCache.copyFrom(outRect);
+          this.mDirty ^= DirtyFlag.BOUNDS;
+        }
+      }
+
+      return outRect;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    hitTest(localPoint) {
+      let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
+      let touchable = c !== null && c.touchable;
+      let insideMask = this.onHitTestMask(localPoint);
+
+      if (this.visible === false || touchable === false || insideMask === false)
+        return null;
+
+      let target = null;
+      let numChildren = this.mChildren.length;
+
+      for (let i = numChildren - 1; i >= 0; --i) {
+        let child = this.mChildren[i];
+
+        target = child.hitTest(localPoint);
+
+        if (target !== null)
+          return target;
+      }
+
+      if (this.onHitTest(localPoint) === true)
+        return this;
+
+      return null;
+    }
+
+    /**
+    * @inheritDoc
+    */
+    onHitTestMask(localPoint) {
+      if (this.mClipRect === null)
+        return true;
+
+      let tmpVector = Vector.pool.get();
+      this.worldTransformationInverted.transformVector(localPoint, tmpVector);
+
+      let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
+      Vector.pool.release(tmpVector);
+
+      return contains;
+    }
+
+    /**
+     * Gets/Sets tinting color of the object. Pass `null` to disable tinting. Tinting color will be applied to all children
+     * objects. You can override tint color for children by setting custom value or `null` to inherit color from parent.
+     * @returns {?number}
+     */
+    get color() {
+      return this.mColor;
+    }
+
+    /**
+     * @param {?number} value
+     * @return {void}
+     */
+    set color(value) {
+      if (this.mColor === value)
+        return;
+
+      this.mColor = value;
+      this.setRenderDirty();
+    }
+
+    /**
+     * Gets/Sets whether this container and all it's children should be baked into bitmap. Setting `cacheAsBitmap` onto
+     * Sprites,, TextField's or any other inherited classes will give zero effect.
+     *
+     * @return {boolean} 
+     */
+    get cacheAsBitmap() {
+      return this.mCacheAsBitmap;
+    }
+
+    /**
+     * @param {boolean} value
+     * @return {void}
+     */
+    set cacheAsBitmap(value) {
+      if (value === this.mCacheAsBitmap)
+        return;
+
+      this.mCacheAsBitmap = value;
+
+      if (value === false) {
+        this.mCache = null;
+        this.mCacheAsBitmapDirty = true;
+        this.mCacheAsBitmapMatrixCache = null;
+        this.mCacheBounds = null;
+
+        this.setTransformDirty();
+      }
+    }
+
+    /**
+     * Gets/sets whenever cache as bitmap should be automatically refreshed.
+     * 
+     * @returns {boolean}
+     */
+    get cacheAsBitmapDynamic() {
+      return this.mCacheAsBitmapDynamic;
+    }
+
+    /**
+     * @param {boolean} value
+     * @return {void}
+     */
+    set cacheAsBitmapDynamic(value) {
+      this.mCacheAsBitmapDynamic = value;
+    }
+
+    /**
+     * Gets/Sets the opacity of the object.
+     * Baked objects may change behavior.
+     *
+     * @return {number}
+     */
+    get alpha() {
+      return this.mAlpha;
+    }
+
+    /**
+     * @param {number} value
+     * @return {void}
+     */
+    set alpha(value) {
+      Debug.assert(!isNaN(value), 'Value cannot be NaN');
+
+      if (this.mAlpha === MathEx.clamp(value, 0, 1))
+        return;
+
+      this.mAlpha = MathEx.clamp(value, 0, 1);
+      this.setRenderDirty();
+    }
+
+    /**
+     * Gets/Sets visibility of the object.
+     *
+     * @return {boolean}
+     */
+    get visible() {
+      return this.mVisible;
+    }
+
+    /**
+     * @param {boolean} value
+     * @return {void}
+     */
+    set visible(value) {
+      if (this.mVisible === value)
+        return;
+
+      this.mVisible = value;
+      this.setRenderDirty();
+    }
+
+    /**
+     * Gets/Sets blend mode for the object.
+     *
+     * @return {black-engine~BlendMode}
+     */
+    get blendMode() {
+      return this.mBlendMode;
+    }
+
+    /**
+     * @param {black-engine~BlendMode} value
+     * @return {void}
+     */
+    set blendMode(value) {
+      if (this.mBlendMode === value)
+        return;
+
+      this.mBlendMode = value;
+      this.setRenderDirty();
+    }
+
+    /**
+     * Gets/Sets clipping area for the object.
+     *
+     * @return {black-engine~Rectangle}
+     */
+    get clipRect() {
+      return this.mClipRect;
+    }
+
+    /**
+     * @param {black-engine~Rectangle} value
+     * @return {void}
+     */
+    set clipRect(value) {
+      this.mClipRect = value;
+      this.setRenderDirty();
+    }
+
+    /**
+     * Gets/sets whenever this object x and y value should be rounded.
+     * @returns {boolean}
+     */
+    get snapToPixels() {
+      return this.mSnapToPixels;
+    }
+
+    /**
+     * @param {boolean} value
+     */
+    set snapToPixels(value) {
+      this.mSnapToPixels = value;
+    }
+  }
+
+  /**
+   * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
+   *
+   * @cat display
+   * @extends black-engine~DisplayObject
+   */
+  class Camera extends DisplayObject {
+    constructor() {
+      super();
+
+      black.mCamera = this;
+    }
+
+    get worldTransformation() {
+      let wt = super.worldTransformation.clone();
+      wt.prepend(this.stage.worldTransformationInverted);
+
+      return wt;
+    }
+  }
+
+  /**
    * A input system class is responsible for mouse, touch and keyboard input events.
    * Pointer events works for a single target only.
    * Global Input messages has higher priority.
@@ -8733,10 +9227,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Every object in the display list should be `touchable` in order to receive input messages.
    *
    * @cat input
-   * @fires Input#pointerMove
-   * @fires Input#pointerDown
-   * @fires Input#pointerUp
-   * @extends System
+   * @fires black-engine~Input#pointerMove
+   * @fires black-engine~Input#pointerDown
+   * @fires black-engine~Input#pointerUp
+   * @extends black-engine~System
    */
   class Input extends System {
     /**
@@ -8751,13 +9245,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Vector} 
+       * @type {black-engine~Vector} 
+       */
+      this.mViewportPosition = new Vector();
+
+      /** 
+       * @private 
+       * @type {black-engine~Vector} 
        */
       this.mPointerPosition = new Vector();
 
       /** 
        * @private 
-       * @type {Vector} 
+       * @type {black-engine~Vector} 
        */
       this.mStagePosition = new Vector();
 
@@ -8809,12 +9309,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mIsPointerDown = false;
 
-      /** 
-       * @private 
-       * @type {boolean} 
-       */
-      this.mNeedUpEvent = false;
-
       // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
       /** 
        * @private 
@@ -8824,25 +9318,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {GameObject} 
+       * @type {black-engine~GameObject} 
        */
       this.mTarget = null;
 
       /** 
        * @private 
-       * @type {Component} 
+       * @type {black-engine~Component} 
        */
       this.mTargetComponent = null;
 
       /** 
        * @private 
-       * @type {GameObject} 
+       * @type {black-engine~GameObject} 
        */
       this.mLockedTarget = null;
 
       /** 
        * @private 
-       * @type {Component} 
+       * @type {black-engine~Component} 
        */
       this.mLastInTargetComponent = null;
 
@@ -8865,27 +9359,39 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     __initListeners() {
       this.mKeyEventList = mKeyEventList;
+      let isMouseDevice = false;
 
-      if (window.PointerEvent)
+      if (window.PointerEvent) {
         this.mEventList = mPointerEventList;
-      else if (black.device.isTouch && black.device.isMobile)
+        isMouseDevice = true;
+      }
+      else if (black.device.isTouch && black.device.isMobile) {
         this.mEventList = mTouchEventList;
-      else
+      }
+      else {
         this.mEventList = mMouseEventList;
+        isMouseDevice = true;
+      }
 
       for (let i = 0; i < 3; i++)
         this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-      let listener = null;
-      listener = e => this.__onPointerEventDoc(e);
-      this.mBoundListeners.push({ name: this.mEventList[IX_POINTER_UP], listener: listener });
-      document.addEventListener(this.mEventList[IX_POINTER_UP], listener, false);
+      let addBoundsListener = (target, name, action) => {
+        const listener = e => action.call(this, e);
 
-      for (let i = 0; i < this.mKeyEventList.length; i++) {
-        listener = e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e));
-        this.mBoundListeners.push({ name: this.mKeyEventList[i], listener: listener });
-        document.addEventListener(this.mKeyEventList[i], listener, false);
-      }
+        this.mBoundListeners.push({ name: name, listener: listener });
+        target.addEventListener(name, listener);
+      };
+
+      addBoundsListener(document, this.mEventList[IX_POINTER_MOVE], this.__onPointerEventDoc);
+      addBoundsListener(document, this.mEventList[IX_POINTER_UP], this.__onPointerEventDoc);
+
+      if (isMouseDevice === true)
+        addBoundsListener(window, 'wheel', this.__onPointerEventDoc);
+
+      // handle keyboard listeners
+      for (let i = 0; i < this.mKeyEventList.length; i++)
+        addBoundsListener(document, this.mKeyEventList[i], this.__onKeyEvent);
     }
 
     /**
@@ -8912,12 +9418,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (black.engine.isPaused === true)
         return;
 
-      // dirty check
-      let over = e.target == this.mDom || /** @type {Node})*/ (e.target).parentElement == this.mDom;
+      const over = e.path.indexOf(this.mDom) !== -1;
 
-      if (over === false && this.mNeedUpEvent === true) {
-        this.mNeedUpEvent = false;
-        this.__pushEvent(e);
+      if (e.type === 'wheel') {
+        if (over === true)
+          this.__pushEvent(e);
+      } else {
+        if (over === false && this.mIsPointerDown === true)
+          this.__pushEvent(e);
       }
     }
 
@@ -8934,7 +9442,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       e.preventDefault();
 
       this.__pushEvent(e);
-
       return true;
     }
 
@@ -8951,11 +9458,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       else
         p = this.__getPointerPos(this.mDom, e);
 
-      this.mPointerQueue.push({
-        e: e,
-        x: p.x,
-        y: p.y
-      });
+      this.mPointerQueue.push({ e: e, x: p.x, y: p.y });
     }
 
     /**
@@ -8963,7 +9466,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @private
      * @param {Element} canvas
      * @param {Event} evt
-     * @returns {Vector}
+     * @returns {black-engine~Vector}
      */
     __getPointerPos(canvas, evt) {
       let rect = canvas.getBoundingClientRect();
@@ -8981,7 +9484,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @private
      * @param {Element} canvas
      * @param {TouchEvent} evt
-     * @returns {Vector}
+     * @returns {black-engine~Vector}
      */
     __getTouchPos(canvas, evt) {
       let rect = canvas.getBoundingClientRect();
@@ -8994,6 +9497,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       const rotation = black.engine.viewport.rotation;
       let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
       let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
+
       return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
     }
 
@@ -9011,6 +9515,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       while (this.mPointerQueue.length > 0) {
         const nativeEvent = this.mPointerQueue.shift();
+
         const x = nativeEvent.x;
         const y = nativeEvent.y;
 
@@ -9026,8 +9531,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.mPointerPosition.x = nativeEvent.x;
         this.mPointerPosition.y = nativeEvent.y;
 
-        this.mStagePosition.x = nativeEvent.x;
-        this.mStagePosition.y = nativeEvent.y;
+        this.mViewportPosition.copyFrom(this.mPointerPosition);
+
+        if (black.camera !== null)
+          black.camera.worldTransformation.transformVector(this.mPointerPosition, this.mPointerPosition);
+
+        this.mStagePosition.copyFrom(this.mPointerPosition);
 
         let inv = stage.worldTransformationInverted;
         inv.transformVector(this.mStagePosition, this.mStagePosition);
@@ -9042,7 +9551,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @private
-     * @param {Vector} pos
+     * @param {black-engine~Vector} pos
      */
     __findTarget(pos) {
       let obj = black.stage.hitTest(pos);
@@ -9061,24 +9570,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      * @private
      * @param {Object} nativeEvent
-     * @param {Vector} pos
+     * @param {black-engine~Vector} pos
      * @param {string} type
      */
     __processNativeEvent(nativeEvent, pos, type) {
       if (type === Input.POINTER_DOWN) {
         this.mIsPointerDown = true;
-        this.mNeedUpEvent = true;
       }
       else if (type === Input.POINTER_UP) {
         this.mIsPointerDown = false;
       }
 
-      this.post(type);
+      let delta = 0;
+      if (type === Input.WHEEL)
+        delta = nativeEvent.e.deltaY > 0 ? 1 : -1;
+
+      const info = new PointerInfo(this.mTarget, pos.x, pos.y, nativeEvent.e.button, delta);
+      this.post(type, info);
 
       if (this.mTarget === null && this.mLockedTarget === null)
         return;
-
-      let info = new PointerInfo(this.mTarget, pos.x, pos.y);
 
       if (type === Input.POINTER_DOWN) {
         this.mLockedTarget = this.mTarget;
@@ -9164,7 +9675,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns mouse or touch pointer x-component.
      *
-     * @returns {number} Description
+     * @returns {number}
      */
     get pointerY() {
       return this.mPointerPosition.y;
@@ -9182,16 +9693,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns mouse or touch pointer x-component  relative to stage.
      *
-     * @returns {number} Description
+     * @returns {number}
      */
     get stageY() {
       return this.mStagePosition.y;
     }
 
     /**
-     * Returns mouse or touch pointer position.
+     * Returns mouse or touch pointer position relative to viewport.
      *
-     * @returns {Vector}
+     * @returns {black-engine~Vector}
+     */
+    get viewportPosition() {
+      return this.mViewportPosition;
+    }
+
+    /**
+     * Returns mouse or touch pointer position including active camera transformation.
+     *
+     * @returns {black-engine~Vector}
      */
     get pointerPosition() {
       return this.mPointerPosition;
@@ -9200,7 +9720,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns pointer position relative to the stage.
      * 
-     * @returns {Vector}
+     * @returns {black-engine~Vector}
      */
     get stagePosition() {
       return this.mStagePosition;
@@ -9232,7 +9752,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @const
      */
     static get POINTER_UP() { return 'pointerUp'; }
+
+    /**
+     * @type {string}
+     * @const
+     */
+    static get WHEEL() { return 'wheel'; }
   }
+
+
+  /**
+   * @private
+   * @type {number}
+   * @const
+   */
+  const IX_POINTER_MOVE = 0;
 
   /**
    * @private
@@ -9260,21 +9794,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @type {Array<string>}
    * @const
    */
-  const mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
+  const mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut', 'wheel'];
 
   /**
    * @private
    * @type {Array<string>}
    * @const
    */
-  const mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
+  const mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave', 'wheel'];
 
   /**
    * @private
    * @type {Array<string>}
    * @const
    */
-  const mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+  const mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', 'wheel'];
 
   /**
    * @private
@@ -9308,15 +9842,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates new PointerInfo instance. For internal use only.
      *
-     * @param {GameObject} activeObject `GameObject` the cursor is above.
+     * @param {black-engine~GameObject} activeObject `GameObject` the cursor is above.
      * @param {number} x x-coordinate
      * @param {number} y y-coordinate
+     * @param {number} button active pressed button
      */
-    constructor(activeObject, x, y) {
+    constructor(activeObject, x, y, button, delta = 0) {
 
       /** 
        * @private 
-       * @type {GameObject} 
+       * @type {black-engine~GameObject} 
        */
       this.mActiveObject = activeObject;
 
@@ -9331,13 +9866,41 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @type {number} 
        */
       this.mY = y;
+
+      /** 
+       * @private 
+       * @type {number} 
+       */
+      this.mButton = button;
+
+      /** 
+       * @private 
+       * @type {number} 
+       */
+      this.mDelta = delta;
+    }
+
+    /**
+     * Retruns normalized wheel delta value.
+     * @returns {number}
+     */
+    get delta() {
+      return this.mDelta;
+    }
+
+    /**
+     * Retruns current pressed button.
+     * @returns {number}
+     */
+    get button() {
+      return this.mButton;
     }
 
     /**
      * Returns the object under cursor right now.
      *
      * @readonly
-     * @returns {GameObject}
+     * @returns {black-engine~GameObject}
      */
     get activeObject() {
       return this.mActiveObject;
@@ -9368,8 +9931,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The root container for all renderable objects
    *
    * @cat display
-   * @fires Stage#resize
-   * @extends GameObject
+   * @fires black-engine~Stage#resize
+   * @extends black-engine~GameObject
    */
   class Stage extends GameObject {
     constructor() {
@@ -9383,7 +9946,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {StageScaleMode} 
+       * @type {black-engine~StageScaleMode} 
        */
       this.mScaleMode = StageScaleMode.NORMAL;
 
@@ -9548,14 +10111,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets stage scale mode.
      *
-     * @return {StageScaleMode}
+     * @return {black-engine~StageScaleMode}
      */
     get scaleMode() {
       return this.mScaleMode;
     }
 
     /**
-     * @param {StageScaleMode} value
+     * @param {black-engine~StageScaleMode} value
      * @returns {void}
      */
     set scaleMode(value) {
@@ -9691,9 +10254,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Collider with rectangle shape.
    *
    * @cat colliders
-   * @extends Collider
+   * @extends black-engine~Collider
    */
-
   class BoxCollider extends Collider {
     /**
      * Creates instance of BoxCollider.
@@ -9718,7 +10280,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Local to gameObject. 
        * 
        * @private 
-       * @type {Rectangle}
+       * @type {black-engine~Rectangle}
        */
       this.mRect = new Rectangle();
 
@@ -9726,7 +10288,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Local to rigid body normals. 
        * 
        * @private 
-       * @type {Array<Vector>}
+       * @type {Array<black-engine~Vector>}
        */
       this.mNormals = normals;
 
@@ -9734,21 +10296,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Local to rigid body vertices. 
        * 
        * @private 
-       * @type {Array<Vector>} */
+       * @type {Array<black-engine~Vector>} */
       this.mVertices = vertices;
 
       /**
        * Local to rigid body min x and y vertex. 
        * 
        * @private 
-       * @type {Vector} */
+       * @type {black-engine~Vector} */
       this.mLocalMin = new Vector();
 
       /**
        * Local to rigid body max x and y vertex 
        * 
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mLocalMax = new Vector();
 
@@ -9756,7 +10318,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Local to rigid body center  
        * 
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mLocalCenter = new Vector();
 
@@ -9771,7 +10333,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} y      Y-coordinate.
      * @param {number} width  Rectangle width.
      * @param {number} height Rectangle height.
-     * @returns {BoxCollider}
+     * @returns {black-engine~BoxCollider}
      */
     set(x, y, width, height) {
       this.mRect.set(x, y, width, height);
@@ -9832,7 +10394,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Checks if given global coordinates are located within collider's area.
      *
      * @public
-     * @param {Vector} point Global coordinates.
+     * @param {black-engine~Vector} point Global coordinates.
      *
      * @return {boolean}
      */
@@ -9866,10 +10428,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Collider with circle shape.
    *
    * @cat colliders
-   * @extends Collider
+   * @extends black-engine~Collider
    */
   class CircleCollider extends Collider {
-
     /**
      * Creates new instance of CircleCollider.
      *
@@ -9882,26 +10443,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Circle} */
+       * @type {black-engine~Circle} */
       this.mCircle = new Circle(x, y, radius);  // local to sprite
 
       /**
        * Local to rigid body center.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mLocalCenter = new Vector();
 
       /**
        * Local to rigid body min x and y vertex.
        * @private 
-       * @type {Vector} */
+       * @type {black-engine~Vector} */
       this.mLocalMin = new Vector();
 
       /**
        * Local to rigid body max x and y vertex 
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mLocalMax = new Vector();
 
@@ -9922,7 +10483,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} x      Center coordinate within X-axis.
      * @param {number} y      Center coordinate within Y-axis.
      * @param {number} radius Radius of the circle.
-     * @returns {CircleCollider}
+     * @returns {black-engine~CircleCollider}
      */
     set(x, y, radius) {
       this.mCircle.set(x, y, radius);
@@ -9968,7 +10529,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Checks if given global coordinates are located within collider's area.
      *
      * @public
-     * @param {Vector} point Global coordinates.
+     * @param {black-engine~Vector} point Global coordinates.
      * @returns {boolean}
      */
     containsPoint(point) {
@@ -10001,6 +10562,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A texture allowing game objects to be rendered onto it.
    *
    * @cat textures
+   * @extends black-engine~Texture
    */
   class CanvasRenderTexture extends Texture {
     /**
@@ -10049,7 +10611,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A texture atlas.
    *
    * @cat textures
-   * @extends Texture
+   * @extends black-engine~Texture
    */
   class AtlasTexture extends Texture {
     constructor(nativeElement, jsonObject, scale = 1) {
@@ -10057,7 +10619,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Object.<string, Texture>} 
+       * @type {Object.<string, black-engine~Texture>} 
        */
       this.mSubTextures = {};
 
@@ -10100,7 +10662,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns the texture by a given name.
      *
      * @param {string} name The name of the texture to find.
-     * @return {Texture} The Texture or null if not found.
+     * @return {black-engine~Texture} The Texture or null if not found.
      */
     getTexture(name) {
       /** @type {Texture} */
@@ -10116,8 +10678,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * This method sorts all resulting textures using neutral sort algorith.
      *
      * @param {string|null} [nameMask=null] The mask to filter by.
-     * @param {Array<Texture>|null}         outTextures If passed will be overwritten by result object.
-     * @return {Array<Texture>}             The list of found textures.
+     * @param {Array<black-engine~Texture>|null}         outTextures If passed will be overwritten by result object.
+     * @return {Array<black-engine~Texture>}             The list of found textures.
      */
     getTextures(nameMask = null, outTextures = null) {
       let out = outTextures || [];
@@ -10240,7 +10802,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Base class for loaders.
    *
    * @cat assets.loaders
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class AssetLoader extends MessageDispatcher {
     /**
@@ -10259,7 +10821,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {?|null} 
+       * @type {*|null} 
        */
       this.mData = null;
 
@@ -10286,7 +10848,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * When overridden aborts loading process. Should not be called directly.
      * 
-     * @returns {true}
+     * @returns {void}
      */
     abort() {
       // more than one owner means this loader was used by two assets, eg two assets has same url.
@@ -10321,7 +10883,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns native loaded data object associated with this loader.
      *
-     * @return {?}
+     * @return {*}
      */
     get data() {
       return this.mData;
@@ -10338,7 +10900,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Responsible for loading images.
    *
    * @cat assets.loaders
-   * @extends AssetLoader
+   * @extends black-engine~AssetLoader
    */
   class ImageAssetLoader extends AssetLoader {
     /**
@@ -10380,7 +10942,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * XHRAssetLoader responsible for loading data via XMLHttpRequest.
    *
    * @cat assets.loaders
-   * @extends AssetLoader
+   * @extends black-engine~AssetLoader
    */
   class XHRAssetLoader extends AssetLoader {
     constructor(url) {
@@ -10445,7 +11007,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Responsible for loading local or Google fonts.
    *
    * @cat assets.loaders
-   * @extends AssetLoader
+   * @extends black-engine~AssetLoader
    */
   class FontFaceAssetLoader extends AssetLoader {
     /**
@@ -10496,7 +11058,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FontMetrics|null} 
+       * @type {black-engine~FontMetrics|null} 
        */
       this.metrics = null;
 
@@ -10589,11 +11151,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This is abstract class for custom assets. For example Asset can be used to load video or other data files.
    * Holds information about external assets.
    *
-   * @fires Asset#error
-   * @fires Asset#complete
+   * @fires black-engine~Asset#error
+   * @fires black-engine~Asset#complete
    * 
    * @cat assets
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class Asset extends MessageDispatcher {
     /**
@@ -10618,13 +11180,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {Object|undefined} 
+       * @type {Object|null} 
        */
       this.mData = null;
 
       /** 
        * @protected 
-       * @type {Array<AssetLoader>} 
+       * @type {Array<black-engine~AssetLoader>} 
        */
       this.mLoaders = [];
 
@@ -10642,7 +11204,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<MessageBinding>} 
+       * @type {Array<black-engine~MessageBinding>} 
        */
       this.mBindings = [];
     }
@@ -10650,8 +11212,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Adds given loader to the list. Loader cannot be added to multiply Assets.
      * 
-     * @param {AssetLoader} loader Loader to add.
-     * @returns {AssetLoader}
+     * @param {black-engine~AssetLoader} loader Loader to add.
+     * @returns {black-engine~AssetLoader}
      */
     addLoader(loader) {
       this.mLoaders.push(loader);
@@ -10666,7 +11228,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Called when AssetManager is about to request loaders for this asset.
-     * @param {LoaderFactory} factory 
+     * @param {black-engine~LoaderFactory} factory 
      */
     onLoaderRequested(factory) { }
 
@@ -10687,14 +11249,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @private
-     * @param {Message} m 
+     * @param {black-engine~Message} m 
      */
     __onLoaderError(m) {
       this.abort();
 
       /**
        * Posted when error occurred during loading this asset. 
-       * @event Asset#error
+       * @event black-engine~Asset#error
        */
       this.post(Message.ERROR);
     }
@@ -10732,7 +11294,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted when asset finished loading.
-       * @event Asset#complete
+       * @event black-engine~Asset#complete
        */
       this.post(Message.COMPLETE);
     }
@@ -10758,7 +11320,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns loaded data object associated with this asset.
      *
-     * @return {?}
+     * @return {*}
      */
     get data() {
       return this.mData;
@@ -10776,7 +11338,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns array of loaders.
      * 
-     * @returns {Array<AssetLoader>}
+     * @returns {Array<black-engine~AssetLoader>}
      */
     get loaders() {
       return this.mLoaders;
@@ -10788,7 +11350,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * converting them into Textures.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class TextureAsset extends Asset {
     /**
@@ -10811,7 +11373,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {ImageAssetLoader|null} 
+       * @type {black-engine~ImageAssetLoader|null} 
        */
       this.mImageLoader = null;
     }
@@ -10836,7 +11398,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Single JSON file asset class responsible for loading json file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class JSONAsset extends Asset {
     /**
@@ -10857,7 +11419,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mXHR = null;
     }
@@ -10884,7 +11446,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Single JSON file asset class responsible for loading json file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class XMLAsset extends Asset {
     /**
@@ -10905,7 +11467,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mXHR = null;
     }
@@ -10933,7 +11495,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Note: this class need a body to work properly.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class FontAsset extends Asset {
     /**
@@ -10984,7 +11546,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class AtlasTextureAsset extends Asset {
     /**
@@ -11017,7 +11579,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {ImageAssetLoader|null} 
+       * @type {black-engine~ImageAssetLoader|null} 
        */
       this.mImageLoader = null;
 
@@ -11053,7 +11615,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class BitmapFontAsset extends Asset {
     /**
@@ -11083,7 +11645,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {ImageAssetLoader|null}
+       * @type {black-engine~ImageAssetLoader|null}
        */
       this.mImageLoader = null;
 
@@ -11119,8 +11681,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      *
      * @param {Document} xml
-     * @param {Texture} texture
-     * @returns {BitmapFontData}
+     * @param {black-engine~Texture} texture
+     * @returns {black-engine~BitmapFontData}
      */
     static parse(xml, texture) {
       let data = new BitmapFontData();
@@ -11290,7 +11852,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Allows to distribute sound between left and right channel.
    * 
    * @cat audio.effects
-   * @extends {SoundEffect}
+   * @extends {black-engine~SoundEffect}
    */
   class StereoPanner extends SoundEffect {
     /**
@@ -11373,12 +11935,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The sound
    * 
    * @cat audio
-   * @extends {MessageDispatcher}
+   * @extends {black-engine~MessageDispatcher}
    */
   class SoundInstance extends MessageDispatcher {
     /**
      * Creates instance
-     * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
+     * @param {black-engine~SoundClip} sound `SoundClip` instance taken from `AssetManager`.
      */
     constructor(sound) {
       super();
@@ -11391,13 +11953,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {SoundClip} 
+       * @type {black-engine~SoundClip} 
        */
       this.mSound = sound;
 
       /** 
        * @private 
-       * @type {SoundState} 
+       * @type {black-engine~SoundState} 
        */
       this.mState = SoundState.NEWBORN;
 
@@ -11543,7 +12105,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @returns {SoundInstance}
+     * @returns {black-engine~SoundInstance}
      */
     _play() {
       if (this.mState === SoundState.PLAYING)
@@ -11813,13 +12375,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<SoundInstance>} 
+       * @type {Array<black-engine~SoundInstance>} 
        */
       this.mSounds = [];
 
       /** 
        * @private 
-       * @type {Array<SoundEffect>} 
+       * @type {Array<black-engine~SoundEffect>} 
        */
       this.mEffects = [];
     }
@@ -11828,7 +12390,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Allows the sound to be played on this channel
      * 
      * @public
-     * @param {SoundInstance} soundInstance Concrete SoundInstance.
+     * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
      * @returns {void}
      */
     attachSound(soundInstance) {
@@ -11847,7 +12409,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes given sound instance from this channel
      * 
      * @public
-     * @param {SoundInstance} soundInstance Concrete SoundInstance.
+     * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
      * @returns {void}
      */
     detachSound(soundInstance) {
@@ -11898,8 +12460,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds sound effect to this channel
      * 
      * @public
-     * @param {SoundEffect} effect SoundEffect instance.
-     * @returns {SoundEffect}
+     * @param {black-engine~SoundEffect} effect SoundEffect instance.
+     * @returns {black-engine~SoundEffect}
      */
     addEffect(effect) {
       Debug.assert(effect != null, 'Effect cannot be null');
@@ -11914,8 +12476,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes sound effect from this channel
      * 
      * @public
-     * @param {SoundEffect} effect SoundEffect instance.
-     * @returns {SoundEffect}
+     * @param {black-engine~SoundEffect} effect SoundEffect instance.
+     * @returns {black-engine~SoundEffect}
      */
     removeEffect(effect) {
       Debug.assert(effect != null, 'Effect cannot be null');
@@ -12144,7 +12706,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The class which stores audio buffer of sound atlas and information about sub sound clips.
    * 
    * @cat audio
-   * @extends SoundClip
+   * @extends black-engine~SoundClip
    */
   class SoundAtlasClip extends SoundClip {
 
@@ -12159,7 +12721,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Object<string, SoundClip>} 
+       * @type {Object<string, black-engine~SoundClip>} 
        */
       this.mClips = {};
       
@@ -12175,7 +12737,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {string} name     The name of the sub sound.
      * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
      * @param {number} duration The duration of sub sound.
-     * @returns {SoundClip}     New instance of SoundClip.
+     * @returns {black-engine~SoundClip}     New instance of SoundClip.
      */
     addSubSound(name, offset = 0, duration = NaN) {
       this.mClips[name] = new SoundClip(this.native, offset, duration, true);
@@ -12202,7 +12764,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number=} [volume=1]         The volume level.
      * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
      * @param {number=} [pan=0]            The panning value.
-     * @returns {SoundInstance|null}       New sound instance to be played.
+     * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
      */
     playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
       let clip = this.mClips[name];
@@ -12222,7 +12784,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      * @readonly
-     * @returns {Object<string, SoundClip>}
+     * @returns {Object<string, black-engine~SoundClip>}
      */
     get subSounds() {
       return this.mClips;
@@ -12233,7 +12795,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The sound listener component, which controls one and only instance of AudioContext.listener.
    * 
    * @cat audio
-   * @extends {Component}
+   * @extends {black-engine~Component}
    */
   class SoundListener extends Component {
     /**
@@ -12241,7 +12803,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     constructor() {
       super();
-
     }
 
     /**
@@ -12291,7 +12852,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The main class, which is responsible for audio support.
    * 
    * @cat audio
-   * @extends {System}
+   * @extends {black-engine~System}
    */
   class MasterAudio extends System {
     /**
@@ -12310,19 +12871,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {SoundListener|null} 
+       * @type {black-engine~SoundListener|null} 
        */
       this.mCurrentListener = null;
 
       /** 
        * @private 
-       * @type {Object<string, SoundChannel>} 
+       * @type {Object<string, black-engine~SoundChannel>} 
        */
       this.mChannels = {};
 
       /** 
        * @private 
-       * @type {SoundChannel|null} 
+       * @type {black-engine~SoundChannel|null} 
        */
       this.mMasterChannel = null;
 
@@ -12415,7 +12976,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates or returns the channel with specific name.
      * 
      * @param {string} name The name of channel to create.
-     * @returns {SoundChannel}
+     * @returns {black-engine~SoundChannel}
      */
     createChannel(name) {
       if (this.mChannels[name] == null) {
@@ -12431,7 +12992,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Gets the channel with specific name.
      * 
      * @param {string} name The name of channel to get.
-     * @returns {SoundChannel|null}
+     * @returns {black-engine~SoundChannel|null}
      */
     getChannel(name) {
       return this.mChannels[name];
@@ -12439,8 +13000,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @param {SoundInstance} snd 
-     * @returns {SoundChannel}
+     * @param {black-engine~SoundInstance} snd 
+     * @returns {black-engine~SoundChannel}
      */
     _resolveChannel(snd) {
       for (let chName in this.mChannels)
@@ -12457,7 +13018,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Plays sound on specific channel.
      * 
      * @public
-     * @param {string|SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
+     * @param {string|black-engine~SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
      * @param {string=} [channel='master']       The name of channel to play on.
      * @param {number=} [volume=1]               Volume level.
      * @param {boolean=} [loop=false]            Defines if sound will loop.
@@ -12551,14 +13112,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Gets the master channel.
      * 
      * @readonly
-     * @returns {SoundChannel}
+     * @returns {black-engine~SoundChannel}
      */
     get masterChannel() {
       return this.mMasterChannel;
     }
 
     /**
-     * @param {SoundListener} value
+     * @param {black-engine~SoundListener} value
      * @returns {void}
      */
     set currentListener(value) {
@@ -12569,7 +13130,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Gets/Sets current listener for spatial sound effects.
      * 
      * @public
-     * @returns {SoundListener}
+     * @returns {black-engine~SoundListener}
      */
     get currentListener() {
       return this.mCurrentListener;
@@ -12602,7 +13163,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sound file asset class responsible for loading audio files.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class SoundAsset extends Asset {
     /**
@@ -12630,7 +13191,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mXHR = null;
     }
@@ -12659,7 +13220,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sound file asset class responsible for loading audio atlas files.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
   class SoundAtlasAsset extends Asset {
     /**
@@ -12694,13 +13255,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mAudioXHR = null;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mDataXHR = null;
     }
@@ -12738,8 +13299,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @enum {string}
    */
   const GraphicsCommandType = {
-    LINE_STYLE: 'lineStyle',
-    FILL_STYLE: 'fillStyle',
+    LINE_STYLE        : 'lineStyle',
+    FILL_STYLE        : 'fillStyle',
 
     ARC               : 'arc',
     RECT              : 'rect',
@@ -12754,6 +13315,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     STROKE            : 'stroke',
     BOUNDS            : 'bounds',
 
+    SHADOW_COLOR      : 'shadowColor',
+    SHADOW_BLUR       : 'shadowBlur',
+
     LINE_DASH   : 'setLineDash',
     FILL_GRD    : 'gradientFillStyle',
     FILL_PATTERN: 'patternFillStyle',
@@ -12765,12 +13329,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @cat display
    */
-
   class GraphicsCommand {
     /**
      * Creates new instance of GraphicsCommand
      *
-     * @param {GraphicsCommandType} type
+     * @param {black-engine~GraphicsCommandType} type
      * @param {Array<*>} data
      */
     constructor(type, data) {
@@ -12830,13 +13393,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @cat display
    */
-
   class GraphicsPath {
     /**
      * Creates new instance of GraphicsPath
      */
     constructor() {
-      /** @type {Rectangle|null} */
+      /** @type {Recblack-engine~tangle|null} */
       this.bounds = null;
 
       /** @type {Array<number>} */
@@ -12872,7 +13434,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @cat display
    */
-
   class GraphicsGradient {
     /**
      * Creates new instance of GraphicsGradient
@@ -12906,7 +13467,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @cat display
    */
-
   class GraphicsLinearGradient extends GraphicsGradient {
     /**
      * Creates new instance of GraphicsLinearGradient
@@ -12979,7 +13539,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat display
    */
-
   class GraphicsData {
     /**
      * Creates new instance of GraphicsData
@@ -12987,19 +13546,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor() {
       /** 
        * @private 
-       * @type {Array<GraphicsData>} 
+       * @type {Array<black-engine~GraphicsData>} 
        */
       this.mNodes = [];
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.mTransform = new Matrix();
 
       /** 
        * @private 
-       * @type {Array<GraphicsCommand>} 
+       * @type {Array<black-engine~GraphicsCommand>} 
        */
       this.mCommandQueue = [];
 
@@ -13039,9 +13598,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @protected
      * @param {Object} graphics Object to store bounds by reference.
-     * @param {Matrix} transform Matrix to transform children nodes, for internal use.
+     * @param {black-engine~Matrix} transform Matrix to transform children nodes, for internal use.
      *
-     * @return {Rectangle} Calculated local bounds.
+     * @return {black-engine~Rectangle} Calculated local bounds.
      */
     onGetLocalBounds(graphics, transform) {
       let path = new GraphicsPath();
@@ -13134,8 +13693,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} lineWidth Line width.
      * @param {number=} [color=0] Line color.
      * @param {number=} [alpha=1] Line alpha.
-     * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-     * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
+     * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+     * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
      * @param {number=} [miterLimit=3] Miter limit.
      * @returns {void}
      */
@@ -13147,6 +13706,31 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.__pushCommand(GraphicsCommandType.LINE_STYLE, lineWidth, color, alpha, caps, joints, miterLimit);
     }
 
+    /**
+     * Sets shadow blur level.
+     * 
+     * @param {number} level 
+     * @returns {void}
+     */
+    shadowBlur(level) {
+      Debug.isNumber(level);
+
+      this.__pushCommand(GraphicsCommandType.SHADOW_BLUR, level);
+    }
+
+    /**
+     * Sets shadow color.
+     * 
+     * @param {number} color 
+     * @param {number} alpha 
+     * @returns {void}
+     */
+    shadowColor(color, alpha) {
+      Debug.isNumber(color, alpha);
+
+      this.__pushCommand(GraphicsCommandType.SHADOW_COLOR, color, alpha);
+    }
+    
     /**
      * Sets fill style
      *
@@ -13164,7 +13748,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets fill style to gradient.
      *
      * @public
-     * @param {GraphicsGradient} gradient Fill gradient.
+     * @param {black-engine~GraphicsGradient} gradient Fill gradient.
      *
      * @returns {void}
      */
@@ -13178,7 +13762,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets fill style to pattern.
      *
      * @public
-     * @param {GraphicsPattern} pattern Fill pattern.
+     * @param {black-engine~GraphicsPattern} pattern Fill pattern.
      *
      * @returns {void}
      */
@@ -13408,9 +13992,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} p1
      * @param {number} p2
      * @param {number} p3
-     * @param {Vector=} out
+     * @param {black-engine~Vector=} out
      *
-     * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+     * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
      */
     __bezierRange(p0, p1, p2, p3, out) {
       out = out || new Vector();
@@ -13470,9 +14054,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} p0
      * @param {number} p1
      * @param {number} p2
-     * @param {Vector=} out
+     * @param {black-engine~Vector=} out
      *
-     * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+     * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
      */
     __quadraticRange(p0, p1, p2, out) {
       const a = p2 - p0;
@@ -13544,7 +14128,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @private
      * @ignore
-     * @param {GraphicsCommandType} type
+     * @param {black-engine~GraphicsCommandType} type
      * @param {...*} data
      */
     __pushCommand(type, ...data) {
@@ -13613,7 +14197,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @cat display
    */
-
   class GraphicsPattern {
     /**
      * Creates new instance of GraphicsPattern
@@ -13633,7 +14216,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates copy of this
      *
-     * @return {GraphicsPattern} New instance
+     * @return {black-engine~GraphicsPattern} New instance
      */
     clone() {
       return new GraphicsPattern(this.image, this.repetition);
@@ -13658,9 +14241,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat parsers
    */
-
   class BVGStyle {
-
     /**
      * Creates new instance of BVGStyle.
      */
@@ -13794,13 +14375,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @public 
-       * @type {CapsStyle} 
+       * @type {black-engine~CapsStyle} 
        */
       this.lineCap = CapsStyle.NONE;
 
       /** 
        * @public 
-       * @type {JointStyle} 
+       * @type {black-engine~JointStyle} 
        */
       this.lineJoin = JointStyle.MITER;
 
@@ -13812,7 +14393,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @public 
-       * @type {FillRule} 
+       * @type {black-engine~FillRule} 
        */
       this.fillRule = FillRule.NONE_ZERO;
 
@@ -13829,7 +14410,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Merge parent style to this.
      *
      * @public
-     * @param {BVGStyle} style Parent style
+     * @param {black-engine~BVGStyle} style Parent style
      *
      * @returns {void}
      */
@@ -13903,7 +14484,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @returns {BVGStyle} Created style.
+     * @returns {black-engine~BVGStyle} Created style.
      */
     clone() {
       let s = new BVGStyle();
@@ -13923,422 +14504,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
-   * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
-   *
-   * @cat display
-   * @extends GameObject
-   */
-  class DisplayObject extends GameObject {
-    constructor() {
-      super();
-
-      /** 
-       * @protected 
-       * @type {number} 
-       */
-      this.mAlpha = 1;
-
-      /** 
-       * @protected 
-       * @type {BlendMode} 
-       */
-      this.mBlendMode = BlendMode.AUTO;
-
-      /** 
-       * @protected 
-       * @type {boolean} 
-       */
-      this.mVisible = true;
-
-      /** 
-       * @protected 
-       * @type {Rectangle} 
-       */
-      this.mClipRect = null;
-
-      /** 
-       * @protected 
-       * @type {Renderer|null} 
-       */
-      this.mRenderer = this.getRenderer();
-
-      /** 
-       * @private 
-       * @type {boolean} 
-       */
-      this.mCacheAsBitmap = false;
-
-      /** 
-       * @private 
-       * @type {boolean} 
-       */
-      this.mCacheAsBitmapDynamic = true;
-
-      /** 
-       * @private 
-       * @type {boolean} 
-       */
-      this.mCacheAsBitmapDirty = true;
-
-      /** 
-       * @private 
-       * @type {Matrix|null} 
-       */
-      this.mCacheAsBitmapMatrixCache = null;
-
-      /** 
-       * @private 
-       * @type {CanvasRenderTexture|null} 
-       */
-      this.mCache = null;
-
-      /** 
-       * @private 
-       * @type {Rectangle|null} 
-       */
-      this.mCacheBounds = null;
-
-      /** 
-       * @protected 
-       * @type {?number} 
-       */
-      this.mColor = null;
-
-      /** 
-       * @protected 
-       * @type {boolean} 
-       */
-      this.mSnapToPixels = false;
-    }
-
-    /**
-     * Called at the end of the loop, all renderers are already collected and this object and its children will be
-     * rendered. Should be used to interpolate between last and current state. 
-     * 
-     * NOTE: Adding, removing or changing children elements inside onRender method can lead to unexpected behavior.
-     * 
-     * @protected
-     * @return {void}
-     */
-    onRender() { }
-
-    /**
-     * Factory method returns concrete renderer for this Game Object.
-     * 
-     * @returns {Renderer}
-     */
-    getRenderer() {
-      return black.driver.getRenderer('DisplayObject', this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onGetLocalBounds(outRect = undefined) {
-      outRect = outRect || new Rectangle();
-
-      if (this.mClipRect !== null) {
-        this.mClipRect.copyTo(outRect);
-        return outRect;
-      }
-
-      return outRect.set(0, 0, 0, 0);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    getBounds(space = undefined, includeChildren = true, outRect = undefined) {
-      outRect = outRect || new Rectangle();
-
-      let localBounds = this.onGetLocalBounds();
-
-      if (space == null)
-        space = this.mParent;
-
-      if (space == this) ; else if (space == this.mParent) {
-        if (includeChildren === false || this.mClipRect !== null) {
-          let matrix = Matrix.pool.get();
-          matrix.copyFrom(this.localTransformation);
-          matrix.transformRect(localBounds, outRect);
-          Matrix.pool.release(matrix);
-        }
-        else if (includeChildren === true && this.mDirty & DirtyFlag.BOUNDS) {
-          let matrix = Matrix.pool.get();
-          matrix.copyFrom(this.localTransformation);
-          matrix.transformRect(localBounds, outRect);
-          Matrix.pool.release(matrix);
-        } else {
-          // Return cached
-          outRect.copyFrom(this.mBoundsCache);
-          return outRect;
-        }
-      } else {
-        let matrix = Matrix.pool.get();
-        matrix.copyFrom(this.worldTransformation);
-        matrix.prepend(space.worldTransformationInverted);
-        matrix.transformRect(localBounds, outRect);
-        Matrix.pool.release(matrix);
-      }
-
-      if (space !== this) {
-        if (this.mClipRect !== null) {
-          outRect.x += this.mPivotX;
-          outRect.y += this.mPivotY;
-        }
-      } else {
-        localBounds.copyTo(outRect);
-      }
-
-      if (this.mClipRect !== null)
-        return outRect;
-
-      if (includeChildren === true) {
-        let childBounds = Rectangle.pool.get();
-
-        for (let i = 0; i < this.mChildren.length; i++) {
-          childBounds.zero();
-
-          this.mChildren[i].getBounds(space, includeChildren, childBounds);
-          outRect.union(childBounds);
-        }
-
-        Rectangle.pool.release(childBounds);
-
-        if (space == this.mParent && this.mDirty & DirtyFlag.BOUNDS) {
-          this.mBoundsCache.copyFrom(outRect);
-          this.mDirty ^= DirtyFlag.BOUNDS;
-        }
-      }
-
-      return outRect;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    hitTest(localPoint) {
-      let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
-      let touchable = c !== null && c.touchable;
-      let insideMask = this.onHitTestMask(localPoint);
-
-      if (this.visible === false || touchable === false || insideMask === false)
-        return null;
-
-      let target = null;
-      let numChildren = this.mChildren.length;
-
-      for (let i = numChildren - 1; i >= 0; --i) {
-        let child = this.mChildren[i];
-
-        target = child.hitTest(localPoint);
-
-        if (target !== null)
-          return target;
-      }
-
-      if (this.onHitTest(localPoint) === true)
-        return this;
-
-      return null;
-    }
-
-    /**
-    * @inheritDoc
-    */
-    onHitTestMask(localPoint) {
-      if (this.mClipRect === null)
-        return true;
-
-      let tmpVector = Vector.pool.get();
-      this.worldTransformationInverted.transformVector(localPoint, tmpVector);
-
-      let contains = this.mClipRect.containsXY(tmpVector.x - this.mPivotX, tmpVector.y - this.mPivotY);
-      Vector.pool.release(tmpVector);
-
-      return contains;
-    }
-
-    /**
-     * Gets/Sets tinting color of the object. Pass `null` to disable tinting. Tinting color will be applied to all children
-     * objects. You can override tint color for children by setting custom value or `null` to inherit color from parent.
-     * @returns {?number}
-     */
-    get color() {
-      return this.mColor;
-    }
-
-    /**
-     * @param {?number} value
-     * @return {void}
-     */
-    set color(value) {
-      if (this.mColor === value)
-        return;
-
-      this.mColor = value;
-      this.setRenderDirty();
-    }
-
-    /**
-     * Gets/Sets whether this container and all it's children should be baked into bitmap. Setting `cacheAsBitmap` onto
-     * Sprites,, TextField's or any other inherited classes will give zero effect.
-     *
-     * @return {boolean} 
-     */
-    get cacheAsBitmap() {
-      return this.mCacheAsBitmap;
-    }
-
-    /**
-     * @param {boolean} value
-     * @return {void}
-     */
-    set cacheAsBitmap(value) {
-      if (value === this.mCacheAsBitmap)
-        return;
-
-      this.mCacheAsBitmap = value;
-
-      if (value === false) {
-        this.mCache = null;
-        this.mCacheAsBitmapDirty = true;
-        this.mCacheAsBitmapMatrixCache = null;
-        this.mCacheBounds = null;
-
-        this.setTransformDirty();
-      }
-    }
-
-    /**
-     * Gets/sets whenever cache as bitmap should be automatically refreshed.
-     * 
-     * @returns {boolean}
-     */
-    get cacheAsBitmapDynamic() {
-      return this.mCacheAsBitmapDynamic;
-    }
-
-    /**
-     * @param {boolean} value
-     * @return {void}
-     */
-    set cacheAsBitmapDynamic(value) {
-      this.mCacheAsBitmapDynamic = value;
-    }
-
-    /**
-     * Gets/Sets the opacity of the object.
-     * Baked objects may change behavior.
-     *
-     * @return {number}
-     */
-    get alpha() {
-      return this.mAlpha;
-    }
-
-    /**
-     * @param {number} value
-     * @return {void}
-     */
-    set alpha(value) {
-      Debug.assert(!isNaN(value), 'Value cannot be NaN');
-
-      if (this.mAlpha === MathEx.clamp(value, 0, 1))
-        return;
-
-      this.mAlpha = MathEx.clamp(value, 0, 1);
-      this.setRenderDirty();
-    }
-
-    /**
-     * Gets/Sets visibility of the object.
-     *
-     * @return {boolean}
-     */
-    get visible() {
-      return this.mVisible;
-    }
-
-    /**
-     * @param {boolean} value
-     * @return {void}
-     */
-    set visible(value) {
-      if (this.mVisible === value)
-        return;
-
-      this.mVisible = value;
-      this.setRenderDirty();
-    }
-
-    /**
-     * Gets/Sets blend mode for the object.
-     *
-     * @return {BlendMode}
-     */
-    get blendMode() {
-      return this.mBlendMode;
-    }
-
-    /**
-     * @param {BlendMode} value
-     * @return {void}
-     */
-    set blendMode(value) {
-      if (this.mBlendMode === value)
-        return;
-
-      this.mBlendMode = value;
-      this.setRenderDirty();
-    }
-
-    /**
-     * Gets/Sets clipping area for the object.
-     *
-     * @return {Rectangle}
-     */
-    get clipRect() {
-      return this.mClipRect;
-    }
-
-    /**
-     * @param {Rectangle} value
-     * @return {void}
-     */
-    set clipRect(value) {
-      this.mClipRect = value;
-      this.setRenderDirty();
-    }
-
-    /**
-     * Gets/sets whenever this object x and y value should be rounded.
-     * @returns {boolean}
-     */
-    get snapToPixels() {
-      return this.mSnapToPixels;
-    }
-
-    /**
-     * @param {boolean} value
-     */
-    set snapToPixels(value) {
-      this.mSnapToPixels = value;
-    }
-  }
-
-  /**
    * A basic utility class for drawing shapes.
    *
    * @cat display
-   * @extends DisplayObject
+   * @extends black-engine~DisplayObject
    */
-
   class Graphics extends DisplayObject {
     /**
      * Creates new Graphics instance.
      *
-     * @param {GraphicsData|string|null} graphicsData The id of BVG object.
+     * @param {black-engine~GraphicsData|string|null} graphicsData The id of BVG object.
      * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
      */
     constructor(graphicsData = null, trim = false) {
@@ -14346,7 +14521,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mBounds = new Rectangle();
 
@@ -14355,13 +14530,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        *
        * 
        * @private
-       * @type {Rectangle|null} 
+       * @type {black-engine~Rectangle|null} 
        */
       this.mLocalBounds = null;
 
       /** 
        * @private
-       * @type {GraphicsData|null} 
+       * @type {black-engine~GraphicsData|null} 
        */
       this.mGraphicsData = null;
 
@@ -14442,13 +14617,34 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} lineWidth Line width.
      * @param {number=} [color=0] Line color.
      * @param {number=} [alpha=1] Line alpha.
-     * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-     * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
+     * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+     * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
      * @param {number=} [miterLimit=3] Miter limit.
      * @returns {void}
      */
     lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
       this.mGraphicsData.lineStyle(lineWidth, color, alpha, caps, joints, miterLimit);
+    }
+
+    /**
+     * Sets shadow blur level.
+     * 
+     * @param {number} level 
+     * @returns {void}
+     */
+    shadowBlur(level) {
+      this.mGraphicsData.shadowBlur(level);
+    }
+
+    /**
+     * Sets shadow color.
+     * 
+     * @param {number} color 
+     * @param {number} alpha 
+     * @returns {void}
+     */
+    shadowColor(color, alpha = 1) {
+      this.mGraphicsData.shadowColor(color, alpha);
     }
 
     /**
@@ -14467,7 +14663,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets fill style to gradient.
      *
      * @public
-     * @param {GraphicsGradient} gradient Fill gradient.
+     * @param {black-engine~GraphicsGradient} gradient Fill gradient.
      *
      * @returns {void}
      */
@@ -14479,7 +14675,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets fill style to pattern.
      *
      * @public
-     * @param {GraphicsPattern} pattern Fill pattern.
+     * @param {black-engine~GraphicsPattern} pattern Fill pattern.
      *
      * @returns {void}
      */
@@ -14707,7 +14903,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Creates GraphicsData for Graphics from BVG format.
    *
    * @cat parsers
-   * @extends ParserBase
+   * @extends black-engine~ParserBase
    */
 
   class BVGParser extends ParserBase {
@@ -14724,7 +14920,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @inheritDoc
      *
-     * @return {GraphicsData} Data for Graphics renderer
+     * @return {black-engine~GraphicsData} Data for Graphics renderer
      */
     parse(data) {
       super.parse(data);
@@ -14742,11 +14938,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @private
      * @param {Object} node BVG node.
-     * @param {Array<BVGStyle>} styles Parsed BVG styles.
-     * @param {GraphicsData} parent Parent node.
-     * @param {BVGStyle} parentStyle Style for inheritance.
+     * @param {Array<black-engine~BVGStyle>} styles Parsed BVG styles.
+     * @param {black-engine~GraphicsData} parent Parent node.
+     * @param {black-engine~BVGStyle} parentStyle Style for inheritance.
      *
-     * @returns {GraphicsData} Parsed data root.
+     * @returns {black-engine~GraphicsData} Parsed data root.
      */
     __traverse(node, styles, parent, parentStyle) {
       const defs = this._defs;
@@ -15000,7 +15196,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @private
      *
-     * @returns {Array<BVGStyle>} Parsed data styles.
+     * @returns {Array<black-engine~BVGStyle>} Parsed data styles.
      */
     __parseStyles(styles) {
       if (!styles)
@@ -15024,7 +15220,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @private
      * @param {string} data Path data attribute value
-     * @param {GraphicsData} graphicsData Graphics data to store parsed values to.
+     * @param {black-engine~GraphicsData} graphicsData Graphics data to store parsed values to.
      *
      * @return {void}
      */
@@ -15301,7 +15497,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} x Context target (next) position x.
      * @param {number} y Context target (next) position y.
      *
-     * @returns {Array<Array<number>>|undefined} Array of bezier curves attributes.
+     * @returns {Array<Array<number>>|null} Array of bezier curves attributes.
      */
     __arcToBezier(px, py, rx, ry, xAxisRotation, largeFlag, sweepFlag, x, y) {
       const sinPhi = Math.sin(xAxisRotation * Math.PI / 180);
@@ -15357,9 +15553,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Single JSON file asset class responsible for loading json file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
-
   class BVGAsset extends Asset {
     /**
      * Creates new JSONAsset instance.
@@ -15380,7 +15575,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {GraphicsData|null} 
+       * @type {black-engine~GraphicsData|null} 
        */
       this.mGraphicsData = null;
 
@@ -15419,7 +15614,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Single JSON file asset class responsible for loading json file.
    *
    * @cat assets
-   * @extends Asset
+   * @extends black-engine~Asset
    */
 
   class VectorTextureAsset extends Asset {
@@ -15463,13 +15658,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {GraphicsData|null} 
+       * @type {black-engine~GraphicsData|null} 
        */
       this.mGraphicsData = null;
 
       /** 
        * @private 
-       * @type {XHRAssetLoader|null} 
+       * @type {black-engine~XHRAssetLoader|null} 
        */
       this.mXHR = null;
     }
@@ -15510,7 +15705,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates baked textures from this graphics data.
      *
-     * @return {Object.<string, CanvasRenderTexture>}
+     * @return {Object.<string, black-engine~CanvasRenderTexture>}
      */
     bakeTextures() {
       const textures = {};
@@ -15580,7 +15775,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   class LoaderFactory {
     /**
      * 
-     * @param {AssetManager} assetManager 
+     * @param {black-engine~AssetManager} assetManager 
      */
     constructor(assetManager) {
       this.mAssetManager = assetManager;
@@ -15590,10 +15785,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns an existing instance of the loader if url is already in queue or creates new instance if not.
      * 
      * @param {string} type 
-     * @param {string|LoaderType} url 
+     * @param {string|black-engine~LoaderType} url 
      * @param {...any}
      * 
-     * @returns {AssetLoader}
+     * @returns {black-engine~AssetLoader}
      */
     get(type, url, ...args) {
       let am = this.mAssetManager;
@@ -15612,12 +15807,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Responsible for loading assets and manages its in memory state.
    *
-   * @fires Message.PROGRESS
-   * @fires Message.COMPLETE
-   * @fires Message.ERROR
+   * @fires black-engine~Message.PROGRESS
+   * @fires black-engine~Message.COMPLETE
+   * @fires black-engine~Message.ERROR
    *
    * @cat assets
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class AssetManager extends MessageDispatcher {
     /**
@@ -15668,22 +15863,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<Asset>} 
+       * @type {Array<black-engine~Asset>} 
        */
       this.mQueue = [];
 
       /** 
        * @private 
-       * @type {Object.<string, AssetLoader>} 
+       * @type {Object.<string, black-engine~AssetLoader>} 
        */
       this.mLoadersQueue = {};
 
       /** 
        * @private 
-       * @type {AssetManagerState} 
+       * @type {black-engine~AssetManagerState} 
        */
       this.mState = AssetManagerState.NONE;
 
+      /**
+       * @private
+       * @type {black-engine~LoaderFactory}
+       */
       this.mLoaderFactory = new LoaderFactory(this);
 
       this.mAssets = {};
@@ -15747,7 +15946,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds asset into the loading queue.
      * 
      * @param {string} name 
-     * @param {Asset} asset 
+     * @param {black-engine~Asset} asset 
      * @returns {void}
      */
     enqueueAsset(name, asset) {
@@ -15761,7 +15960,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns new asset instance by given type.
      * 
      * @private
-     * @param {string|AssetType} type 
+     * @param {string|black-engine~AssetType} type 
      * @param  {...any} args 
      */
     __getAsset(type, ...args) {
@@ -15771,7 +15970,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Adds or changes texture to the internal list for future reuse by given name.
      * @param {string} name
-     * @param {Texture} texture
+     * @param {black-engine~Texture} texture
      */
     addTexture(name, texture) {
       this.mTextures[name] = texture;
@@ -15934,6 +16133,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     loadQueue() {
       this.__validateState();
+
+      if (this.mQueue.length === 0) {
+        this.post(Message.COMPLETE);
+        return;
+      }
+
       this.mState = AssetManagerState.LOADING;
 
       for (let i = 0; i < this.mQueue.length; i++) {
@@ -15965,7 +16170,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @protected
      * @ignore
-     * @param {Message} msg
+     * @param {black-engine~Message} msg
      * @return {void}
      */
     onAssetLoaded(msg) {
@@ -16045,10 +16250,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns BitmapFontData object by given name.
      *
      * @param {string} name The name of the Asset to search.
-     * @return {BitmapFontData|null} Returns a BitmapFontData if found or null.
+     * @return {black-engine~BitmapFontData|null} Returns a BitmapFontData if found or null.
      */
     getBitmapFont(name) {
-      /** @type {BitmapFontData} */
+      /** @type {black-engine~BitmapFontData} */
       let font = this.mAssets[AssetType.BITMAP_FONT][name];
 
       if (font != null)
@@ -16062,7 +16267,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns Texture object by given name.
      *
      * @param {string} name The name of the Asset.
-     * @return {Texture|null} Returns a Texture if found or null.
+     * @return {black-engine~Texture|null} Returns a Texture if found or null.
      */
     getTexture(name) {
       let textures = this.mAssets[AssetType.TEXTURE];
@@ -16109,7 +16314,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns Graphics data by given name.
      * @param {string} name 
-     * @returns {GraphicsData}
+     * @returns {black-engine~GraphicsData}
      */
     getGraphicsData(name) {
       let vectors = this.mAssets[AssetType.VECTOR_GRAPHICS];
@@ -16140,7 +16345,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Searches across all loaded images and atlases.
      *
      * @param {string} nameMask The name mask.
-     * @returns {Array<Texture>|null}
+     * @returns {Array<black-engine~Texture>|null}
      */
     getTextures(nameMask) {
       let textures = this.mAssets[AssetType.TEXTURE];
@@ -16213,7 +16418,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns AtlasTexture by given name.
      *
      * @param {string} name The name of the Asset.
-     * @return {AtlasTexture|null} Returns atlas or null.
+     * @return {black-engine~AtlasTexture|null} Returns atlas or null.
      */
     getAtlas(name) {
       let atlasses = this.mAssets[AssetType.TEXTURE_ATLAS];
@@ -16231,7 +16436,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns `SoundClip` by given name.
      *
      * @param {string} name The name of the sound.
-     * @return {SoundClip} Returns sound or null.
+     * @return {black-engine~SoundClip} Returns sound or null.
      */
     getSound(name) {
       let sounds = this.mAssets[AssetType.SOUND];
@@ -16261,7 +16466,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns `SoundAtlasClip` by given name.
      *
      * @param {string} name The name of the sound.
-     * @return {SoundClip} Returns sound or null.
+     * @return {black-engine~SoundClip} Returns sound or null.
      */
     getSoundAtlas(name) {
       if (this.mAssets[AssetType.SOUND_ATLAS] == null)
@@ -16354,7 +16559,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns current state.
      *
-     * @returns {AssetManagerState}
+     * @returns {black-engine~AssetManagerState}
      */
     get state() {
       return this.mState;
@@ -16385,13 +16590,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {Array<Renderer>} */
       this.parentRenderers = [];
 
-      /** @type {Array<Renderer>} */
+      /** @type {Array<black-engine~Renderer>} */
       this.endPassParentRenderers = [];
 
       /** @type {boolean} */
       this.isBackBufferActive = true;
 
-      /** @type {Matrix|null} */
+      /** @type {Mblack-engine~atrix|null} */
       this.customTransform = null;
     }
 
@@ -16409,7 +16614,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Responsible for rendering `TextField` objects by different drivers.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers
    */
   class TextRenderer extends Renderer {
@@ -16423,14 +16628,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        * @ignore 
        */
       this.mTransformCache = new Matrix();
 
       /** 
        * @private 
-       * @type {Matrix|null} 
+       * @type {black-engine~Matrix|null} 
        * @ignore 
        */
       this.mTransform = null;
@@ -16454,15 +16659,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mContext = /** @type {CanvasRenderingContext2D} */ (this.mCanvas.getContext('2d'));
 
-      /** */
+      /** 
+       * @ignore
+       */
       this.mContext.lineJoin = 'round';
 
-      /** */
+      /** 
+       * @ignore
+       */
       this.mContext.miterLimit = 2;
 
       /** 
        * @private 
-       * @type {TextMetricsData|null} 
+       * @type {black-engine~TextMetricsData|null} 
        */
       this.mMetrics = null;
     }
@@ -16502,11 +16711,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @private
-     * @param {TextMetricsData} metrics
-     * @param {TextSegmentMetricsData} segment
+     * @param {black-engine~TextMetricsData} metrics
+     * @param {black-engine~TextSegmentMetricsData} segment
      * @param {CanvasRenderingContext2D} ctx
-     * @param {VideoNullDriver} driver
-     * @param {FontMetrics} fontMetrics
+     * @param {black-engine~VideoNullDriver} driver
+     * @param {black-engine~FontMetrics} fontMetrics
      * @param {boolean} isStroke
      */
     renderSegment(metrics, segment, ctx, driver, fontMetrics, isStroke) {
@@ -16654,7 +16863,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Responsible for rendering `BitmapTextField` objects by different drivers.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers
    */
   class BitmapTextRenderer extends Renderer {
@@ -16680,7 +16889,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @ignore 
-       * @type {Texture|null} 
+       * @type {black-engine~Texture|null} 
        */
       this.texture = null;
     }
@@ -16759,7 +16968,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Responsible for rendering `Graphics` objects by different drivers.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers
    */
   class GraphicsRenderer extends Renderer {
@@ -16771,10 +16980,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `DisplayObject` objects on canvas.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers.canvas
    */
-
   class DisplayObjectRendererCanvas extends Renderer {
     constructor() {
       super();
@@ -16787,19 +16995,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Matrix|null} 
+       * @type {black-engine~Matrix|null} 
        */
       this.mCacheAsBitmapMatrixCache = null;
 
       /** 
        * @private 
-       * @type {CanvasRenderTexture|null} 
+       * @type {black-engine~CanvasRenderTexture|null} 
        */
       this.mCacheTexture = null;
 
       /** 
        * @private 
-       * @type {Rectangle|null} 
+       * @type {black-engine~Rectangle|null} 
        */
       this.mCacheBounds = null;
 
@@ -16813,7 +17021,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Matrix|null} 
+       * @type {black-engine~Matrix|null} 
        */
       this.mBakeInvertedMatrix = null;
     }
@@ -16957,7 +17165,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `TextField` objects on canvas.
    *
-   * @extends TextRenderer
+   * @extends black-engine~TextRenderer
    * @cat drivers.canvas
    */
   class TextRendererCanvas extends TextRenderer {
@@ -16972,7 +17180,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `BitmapTextField` objects on canvas.
    *
-   * @extends BitmapTextRenderer
+   * @extends black-engine~BitmapTextRenderer
    * @cat drivers.canvas
    */
   class BitmapTextRendererCanvas extends BitmapTextRenderer {
@@ -16998,7 +17206,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns random value.
      *
-     * @return {?} Any object.
+     * @return {*} Any object.
      */
     getValue() {}
 
@@ -17006,7 +17214,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns value at given position.
      *
      * @param {number} t Position to get value at.
-     * @return {?} Any object.
+     * @return {*} Any object.
      */
     getValueAt(t) {}
   }
@@ -17015,7 +17223,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A base class for number scatters.
    *
    * @cat scatters
-   * @extends Scatter
+   * @extends black-engine~Scatter
    */
   class FloatScatterBase extends Scatter {
     /**
@@ -17047,7 +17255,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A number scatter for defining a range in 1D space.
    *
    * @cat scatters
-   * @extends FloatScatterBase
+   * @extends black-engine~FloatScatterBase
    */
   class FloatScatter extends FloatScatterBase {
     /**
@@ -17101,8 +17309,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates new FloatScatterBase from a set of numbers.
      *
-     * @param {...number|FloatScatterBase} values Set of values.
-     * @returns {FloatScatterBase}
+     * @param {...number|black-engine~FloatScatterBase} values Set of values.
+     * @returns {black-engine~FloatScatterBase}
      */
     static fromObject(...values) {
       if (values[0] instanceof FloatScatterBase)
@@ -17321,7 +17529,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Particle emitter.
    *
    * @cat particles
-   * @extends DisplayObject
+   * @extends black-engine~DisplayObject
    */
   class Emitter extends DisplayObject {
     /**
@@ -17332,37 +17540,37 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<Texture>} 
+       * @type {Array<black-engine~Texture>} 
        */
       this.mTextures = [];
 
       /** 
        * @private 
-       * @type {Array<Particle>} 
+       * @type {Array<black-engine~Particle>} 
        */
       this.mParticles = [];
 
       /** 
        * @private 
-       * @type {Array<Particle>} 
+       * @type {Array<black-engine~Particle>} 
        */
       this.mRecycled = [];
 
       /** 
        * @private 
-       * @type {Array<Modifier>} 
+       * @type {Array<black-engine~Modifier>} 
        */
       this.mInitializers = [];
 
       /** 
        * @private 
-       * @type {Array<Modifier>} 
+       * @type {Array<black-engine~Modifier>} 
        */
       this.mActions = [];
 
       /** 
        * @private 
-       * @type {GameObject} 
+       * @type {black-engine~GameObject} 
        */
       this.mSpace = null;
 
@@ -17380,13 +17588,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FloatScatter} 
+       * @type {black-engine~FloatScatter} 
        */
       this.mEmitCount = new FloatScatter(10);
 
       /** 
        * @private 
-       * @type {FloatScatter} 
+       * @type {black-engine~FloatScatter} 
        */
       this.mEmitNumRepeats = new FloatScatter(0, Number.MAX_SAFE_INTEGER);
 
@@ -17398,7 +17606,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FloatScatter} 
+       * @type {black-engine~FloatScatter} 
        */
       this.mEmitDuration = new FloatScatter(1 / 60);
 
@@ -17410,7 +17618,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FloatScatter} 
+       * @type {black-engine~FloatScatter} 
        */
       this.mEmitInterval = new FloatScatter(1 / 60);
 
@@ -17422,7 +17630,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FloatScatter} 
+       * @type {black-engine~FloatScatter} 
        */
       this.mEmitDelay = new FloatScatter(1);
 
@@ -17440,25 +17648,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {EmitterState} 
+       * @type {black-engine~EmitterState} 
        */
       this.mState = EmitterState.PENDING;
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.__tmpLocal = new Matrix();
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.__tmpWorld = new Matrix();
 
       /** 
        * @private 
-       * @type {EmitterSortOrder} 
+       * @type {black-engine~EmitterSortOrder} 
        */
       this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
@@ -17550,7 +17758,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * A helper method for quick adding modifiers.
      *
-     * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
+     * @param {...(black-engine~GameObject|black-engine~Component|black-engine~Modifier)} modifiers The list of modifiers.
      * @returns {Emitter}
      */
     add(...modifiers) {
@@ -17568,8 +17776,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Adds modifier to the end of the list.
      *
-     * @param {Modifier} modifier Modifier to add.
-     * @return {Modifier}
+     * @param {black-engine~Modifier} modifier Modifier to add.
+     * @return {black-engine~Modifier}
      */
     addModifier(modifier) {
       if (modifier.isInitializer)
@@ -17583,7 +17791,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Removes given modifier.
      *
-     * @param {Modifier} modifier Modifier to remove.
+     * @param {black-engine~Modifier} modifier Modifier to remove.
      * @return {boolean} True if modifier was removed.
      */
     removeModifier(modifier) {
@@ -17762,7 +17970,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets current emitter state.
      *
-     * @return {EmitterState}
+     * @return {black-engine~EmitterState}
      */
     get state() {
       return this.mState;
@@ -17791,14 +17999,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets the number of particles to be emitted per {@link Emitter#emitInterval}
      *
-     * @return {FloatScatter}
+     * @return {black-engine~FloatScatter}
      */
     get emitCount() {
       return this.mEmitCount;
     }
 
     /**
-     * @param {FloatScatter} value
+     * @param {black-engine~FloatScatter} value
      * @return {void}
      */
     set emitCount(value) {
@@ -17808,14 +18016,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets the number of "durations" to to repeat.
      *
-     * @return {FloatScatter}
+     * @return {black-engine~FloatScatter}
      */
     get emitNumRepeats() {
       return this.mEmitNumRepeats;
     }
 
     /**
-     * @param {FloatScatter} value
+     * @param {black-engine~FloatScatter} value
      * @return {void}
      */
     set emitNumRepeats(value) {
@@ -17826,14 +18034,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets
      *
-     * @return {FloatScatter}
+     * @return {black-engine~FloatScatter}
      */
     get emitDuration() {
       return this.mEmitDuration;
     }
 
     /**
-     * @param {FloatScatter} value
+     * @param {black-engine~FloatScatter} value
      * @return {void}
      */
     set emitDuration(value) {
@@ -17845,14 +18053,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets
      *
-     * @return {FloatScatter}
+     * @return {black-engine~FloatScatter}
      */
     get emitInterval() {
       return this.mEmitInterval;
     }
 
     /**
-     * @param {FloatScatter} value
+     * @param {black-engine~FloatScatter} value
      * @return {void}
      */
     set emitInterval(value) {
@@ -17864,14 +18072,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets
      *
-     * @return {FloatScatter}
+     * @return {black-engine~FloatScatter}
      */
     get emitDelay() {
       return this.mEmitDelay;
     }
 
     /**
-     * @param {FloatScatter} value
+     * @param {black-engine~FloatScatter} value
      * @return {void}
      */
     set emitDelay(value) {
@@ -17883,14 +18091,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets the space where emitting simulation will happen, ignoring space transformation, so all forces are relative to global.
      *
-     * @return {GameObject}
+     * @return {black-engine~GameObject}
      */
     get space() {
       return this.mSpace;
     }
 
     /**
-     * @param {GameObject} gameObject
+     * @param {black-engine~GameObject} gameObject
      * @return {void}
      */
     set space(gameObject) {
@@ -17902,14 +18110,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets a list of textures to use.
      *
-     * @return {Array<Texture>}
+     * @return {Array<black-engine~Texture>}
      */
     get textures() {
       return this.mTextures;
     }
 
     /**
-     * @param {Array<Texture>} value
+     * @param {Array<black-engine~Texture>} value
      * @return {void}
      */
     set textures(value) {
@@ -17943,14 +18151,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets the order in which particles will be sorted when rendering.
      *
-     * @return {EmitterSortOrder}
+     * @return {black-engine~EmitterSortOrder}
      */
     get sortOrder() {
       return this.mSortOrder;
     }
 
     /**
-     * @param {EmitterSortOrder} value
+     * @param {black-engine~EmitterSortOrder} value
      * @return {void}
      */
     set sortOrder(value) {
@@ -17962,7 +18170,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `Particle` objects on canvas.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers.canvas
    */
   class EmitterRendererCanvas extends Renderer {
@@ -17980,13 +18188,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.__tmpLocal = new Matrix();
 
       /** 
        * @private 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.__tmpWorld = new Matrix();
     }
@@ -18023,10 +18231,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @private
-     * @param {Particle} particle
-     * @param {Matrix} localTransform
-     * @param {Matrix} worldTransform
-     * @param {VideoNullDriver} driver
+     * @param {black-engine~Particle} particle
+     * @param {black-engine~Matrix} localTransform
+     * @param {black-engine~Matrix} worldTransform
+     * @param {black-engine~VideoNullDriver} driver
      */
     __renderParticle(particle, localTransform, worldTransform, driver) {
       let gameObject = /** @type {Emitter} */ (this.gameObject);
@@ -18070,7 +18278,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `Sprite` objects on canvas.
    *
-   * @extends Renderer
+   * @extends black-engine~Renderer
    * @cat drivers.canvas
    */
 
@@ -18081,10 +18289,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {CanvasPattern|null} */
       this.pattern = null;
 
-      /** @type {Texture|null} */
+      /** @type {black-engine~Texture|null} */
       this.patternTexture = null;
 
-      /** @type {CanvasRenderTexture|null} */
+      /** @type {black-engine~CanvasRenderTexture|null} */
       this.sliceTextureCache = null;
 
       /** @type {number|null} */
@@ -18093,7 +18301,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {number|null} */
       this.sizeHeightCache = null;
 
-      /** @type {Texture} */
+      /** @type {black-engine~Texture} */
       this.textureCache = null;
     }
 
@@ -18253,7 +18461,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Renders `Graphics` objects on canvas.
    *
-   * @extends GraphicsRenderer
+   * @extends black-engine~GraphicsRenderer
    * @cat drivers.canvas
    */
 
@@ -18280,7 +18488,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Prepare context to draw.
      *
      * @private
-     * @param {VideoNullDriver} driver Driver to draw.
+     * @param {black-engine~VideoNullDriver} driver Driver to draw.
      * @param {number|null=} [color=null] Tint.
      *
      * @return {void}
@@ -18305,10 +18513,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Recursively draws each node of GraphicsData.
      *
      * @private
-     * @param {VideoNullDriver} driver Driver to draw.
+     * @param {black-engine~VideoNullDriver} driver Driver to draw.
      * @param {number|null} color Tint.
-     * @param {GraphicsData} node Commands provider.
-     * @param {Matrix} transform Graphics Data global transformation.
+     * @param {black-engine~GraphicsData} node Commands provider.
+     * @param {black-engine~Matrix} transform Graphics Data global transformation.
      *
      * @return {void}
      */
@@ -18452,6 +18660,17 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
             break;
           }
 
+          case GraphicsCommandType.SHADOW_BLUR: {
+            ctx.shadowBlur = cmd.getNumber(0) * r;
+            break;
+          }
+
+          case GraphicsCommandType.SHADOW_COLOR: {
+            let stringColor = ColorHelper.intToRGBA(color === null ? cmd.getNumber(0) : /** @type {number} */(color), cmd.getNumber(1));
+            ctx.shadowColor = stringColor;
+            break;
+          }
+
           case GraphicsCommandType.BOUNDS: {
             break;
           }
@@ -18462,9 +18681,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
       }
 
-      for (let i = 0, l = node.mNodes.length; i < l; i++) {
+      for (let i = 0, l = node.mNodes.length; i < l; i++)
         this.__renderNode(driver, color, node.mNodes[i], transform);
-      }
     }
   }
 
@@ -18503,31 +18721,31 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {Matrix} Actual object - do not change 
+       * @type {black-engine~Matrix} Actual object - do not change 
        */
       this.mTransform = new Matrix();
 
       /** 
        * @protected 
-       * @type {Matrix} 
+       * @type {black-engine~Matrix} 
        */
       this.mIdentityMatrix = new Matrix();
 
       /** 
        * @protected 
-       * @type {RenderSession} 
+       * @type {black-engine~RenderSession} 
        */
       this.mActiveSession = new RenderSession();
 
       /** 
        * @protected 
-       * @type {Array<RenderSession>} 
+       * @type {Array<black-engine~RenderSession>} 
        */
       this.mSessions = [];
 
       /** 
        * @protected 
-       * @type {?} 
+       * @type {*} 
        */
       this.mLastRenderTexture = null;
 
@@ -18545,7 +18763,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {BlendMode|null} 
+       * @type {black-engine~BlendMode|null} 
        */
       this.mGlobalBlendMode = BlendMode.AUTO;
 
@@ -18557,13 +18775,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @protected 
-       * @type {Renderer} 
+       * @type {black-engine~Renderer} 
        */
       this.mStageRenderer = new Renderer();
 
       /** 
        * @protected 
-       * @type {Object.<string, function(new: Renderer)>} 
+       * @type {Object.<string, function(new: black-engine~Renderer)>} 
        */
       this.mRendererMap = {};
 
@@ -18574,10 +18792,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * A main render function.
      *
      * @public
-     * @param {GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
-     * @param {CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
+     * @param {black-engine~GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
+     * @param {black-engine~CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
      *                                                   onto backbuffer if null.
-     * @param {Matrix} [customTransform=null]            An optional extra offset.
+     * @param {black-engine~Matrix} [customTransform=null]            An optional extra offset.
      */
     render(gameObject, renderTexture = null, customTransform = null) {
     }
@@ -18586,8 +18804,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
      *
      * @param {string} type      The type of the GameObject to find renderer for.
-     * @param {GameObject} owner The owner of this renderer.
-     * @returns {Renderer} New renderer instance.
+     * @param {black-engine~GameObject} owner The owner of this renderer.
+     * @returns {black-engine~Renderer} New renderer instance.
      */
     getRenderer(type, owner) {
       return null;
@@ -18596,7 +18814,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @private
-     * @returns {RenderSession}
+     * @returns {black-engine~RenderSession}
      */
     __saveSession() {
       let session = VideoNullDriver.sessionPool.get();
@@ -18620,9 +18838,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @protected
-     * @param {RenderSession} session
-     * @param {GameObject} gameObject
-     * @param {Renderer} parentRenderer
+     * @param {black-engine~RenderSession} session
+     * @param {black-engine~GameObject} gameObject
+     * @param {black-engine~Renderer} parentRenderer
      * @returns {void}
      */
     __collectParentRenderables(session, gameObject, parentRenderer) {
@@ -18657,7 +18875,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Notifies renderer about new clipping.
      *
      * @protected
-     * @param {Rectangle} clipRect The region to clip.
+     * @param {black-engine~Rectangle} clipRect The region to clip.
      * @param {number} px Pivot-x.
      * @param {number} py Pivot-y.
      */
@@ -18674,8 +18892,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @protected
      * @ignore
-     * @param {Message} msg
-     * @param {Rectangle} rect
+     * @param {black-engine~Message} msg
+     * @param {black-engine~Rectangle} rect
      * @returns {void}
      */
     __onResize(msg, rect) {
@@ -18718,7 +18936,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @param {HTMLCanvasElement} canvas
-     * @return {?Texture}
+     * @return {?black-engine~Texture}
      */
     getTextureFromCanvas(canvas) {
       return null;
@@ -18728,7 +18946,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets world transformation for future use.
      *
      * @public
-     * @param {Matrix} m An transformation matrix to store.
+     * @param {black-engine~Matrix} m An transformation matrix to store.
      * @returns {void}
      */
     setTransform(m) {
@@ -18765,14 +18983,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets/Sets global blending mode. Used to calculate blend mode relative to parent object.
      *
-     * @return {?BlendMode}
+     * @return {?black-engine~BlendMode}
      */
     getGlobalBlendMode() {
       return this.mGlobalBlendMode;
     }
 
     /**
-     * @param {?BlendMode} value
+     * @param {?black-engine~BlendMode} value
      * @return {void}
      */
     setGlobalBlendMode(value) {
@@ -18784,7 +19002,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * method.
      *
      * @public
-     * @param {Texture} texture Instance of the Texture to draw.
+     * @param {black-engine~Texture} texture Instance of the Texture to draw.
      * 
      */
     drawTexture(texture) {
@@ -18794,7 +19012,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Draws texture onto back-buffer with given offset. alpha, blend mode and transformation matrix must be set prior to calling this
      * method.
      *
-     * @param {Texture} texture Instance of the Texture to draw.
+     * @param {black-engine~Texture} texture Instance of the Texture to draw.
      * @param {number} ox Offset along x-axis
      * @param {number} oy Offset along y-axis
      */
@@ -18819,7 +19037,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /** 
      * Returns current rendering context or null.
-     * @returns {?}
+     * @returns {*}
      */
     get context() {
       return null;
@@ -18838,7 +19056,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Recyclable session pool. Do not recycle manually.
    *
-   * @type {ObjectPool}
+   * @type {black-engine~ObjectPool}
    * @nocollapse
    */
   VideoNullDriver.sessionPool = new ObjectPool(RenderSession);
@@ -18846,7 +19064,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Video driver responsible for rendering game objects onto HTML canvas element.
    *
-   * @extends VideoNullDriver
+   * @extends black-engine~VideoNullDriver
    * @cat drivers.canvas
    */
   class CanvasDriver extends VideoNullDriver {
@@ -18949,9 +19167,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @param {GameObject} child 
-     * @param {RenderSession} session 
-     * @param {Renderer} parentRenderer
+     * @param {black-engine~GameObject} child 
+     * @param {black-engine~RenderSession} session 
+     * @param {black-engine~Renderer} parentRenderer
      */
     renderObject(child, session, parentRenderer) {
       let skipChildren = false;
@@ -19011,8 +19229,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * @ignore
      * @protected
-     * @param {Message} msg
-     * @param {Rectangle} rect
+     * @param {black-engine~Message} msg
+     * @param {black-engine~Rectangle} rect
      * @returns {void}
      */
     __onResize(msg, rect) {
@@ -19112,6 +19330,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           transform = transform.clone(); // TODO: too much allocations
           transform.prepend(session.customTransform);
         }
+      }
+
+      if (black.camera !== null) {
+        transform = transform.clone();
+        transform.prepend(black.camera.worldTransformationInverted);
       }
 
       this.mTransform = transform;
@@ -19257,20 +19480,20 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sprite is used to render Texture onto screen.
    *
    * @cat display
-   * @extends DisplayObject
+   * @extends black-engine~DisplayObject
    */
   class Sprite extends DisplayObject {
     /**
      * Creates a new Sprite instance.
      *
-     * @param {Texture|string|null} texture The Texture instance or null.
+     * @param {black-engine~Texture|string|null} texture The Texture instance or null.
      */
     constructor(texture = null, useTextureProps = true) {
       super();
 
       /** 
        * @private 
-       * @type {Texture|null} 
+       * @type {black-engine~Texture|null} 
        */
       this.mTexture = null;
 
@@ -19282,19 +19505,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {TilingInfo|null} 
+       * @type {black-engine~TilingInfo|null} 
        */
       this.mTiling = null;
 
       /** 
        * @private 
-       * @type {Rectangle|null} 
+       * @type {black-engine~Rectangle|null} 
        */
       this.mSlice9grid = null;
 
       /** 
        * @private 
-       * @type {Boolean} 
+       * @type {boolean} 
        */
       this.mUseTextureProps = useTextureProps;
 
@@ -19317,8 +19540,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns a rectangle that completely encloses the object in local coordinate system.
      *
      * @protected
-     * @param {Rectangle=} outRect Rectangle to be returned.
-     * @return {Rectangle} The new Rectangle or outRect if it was passed as a param.
+     * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
+     * @return {black-engine~Rectangle} The new Rectangle or outRect if it was passed as a param.
      */
     onGetLocalBounds(outRect = undefined) {
       outRect = outRect || new Rectangle();
@@ -19339,7 +19562,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns the current Texture on this sprite.
      *
-     * @return {Texture|null} The current texture set on this Sprite or null.
+     * @return {black-engine~Texture|null} The current texture set on this Sprite or null.
      */
     get texture() {
       return this.mTexture;
@@ -19349,7 +19572,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Sets the Texture on this sprite by name.
      * Only Black.assets is used.
      *
-     * @param {Texture|null} texture Texture to apply on.
+     * @param {black-engine~Texture|null} texture Texture to apply on.
      * @return {void}
      */
     set texture(texture) {
@@ -19411,14 +19634,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
      *
-     * @returns {TilingInfo|null}
+     * @returns {black-engine~TilingInfo|null}
      */
     get tiling() {
       return this.mTiling;
     }
 
     /**
-     * @param {TilingInfo|null} value
+     * @param {black-engine~TilingInfo|null} value
      */
     set tiling(value) {
       this.mTiling = value;
@@ -19432,14 +19655,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
      *
-     * @returns {Rectangle|null}
+     * @returns {black-engine~Rectangle|null}
      */
     get slice9grid() {
       return this.mSlice9grid;
     }
 
     /**
-     * @param {Rectangle|null} value
+     * @param {black-engine~Rectangle|null} value
      */
     set slice9grid(value) {
       this.mSlice9grid = value;
@@ -19478,8 +19701,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This class is used to create display text.
    *
    * @cat display.text
-   * @fires TextField#change
-   * @extends DisplayObject
+   * @fires black-engine~TextField#change
+   * @extends black-engine~DisplayObject
    */
   class TextField extends DisplayObject {
     /**
@@ -19489,8 +19712,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param  {string=} family                                             Font name
      * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
      * @param  {number=} [size=14]                                          Text size
-     * @param  {FontStyle=} [style=FontStyle.NORMAL]    Text style eg italic
-     * @param  {FontWeight=} [weight=FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+     * @param  {black-engine~FontStyle=} [style=black-engine~FontStyle.NORMAL]    Text style eg italic
+     * @param  {black-engine~FontWeight=} [weight=black-engine~FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
      * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
      * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
      */
@@ -19505,7 +19728,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mCacheBounds = new Rectangle();
 
@@ -19523,13 +19746,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {TextStyle} 
+       * @type {black-engine~TextStyle} 
        */
       this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
       /** 
        * @private 
-       * @type {Object.<string,TextStyle>} 
+       * @type {Object.<string,black-engine~TextStyle>} 
        */
       this.mStyles = {};
 
@@ -19541,13 +19764,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {FontAlign} 
+       * @type {black-engine~FontAlign} 
        */
       this.mAlign = FontAlign.LEFT;
 
       /** 
        * @private 
-       * @type {FontVerticalAlign} 
+       * @type {black-engine~FontVerticalAlign} 
        */
       this.mVerticalAlign = FontVerticalAlign.MIDDLE;
 
@@ -19565,7 +19788,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mTextBounds = new Rectangle();
 
@@ -19583,13 +19806,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mPadding = new Rectangle(0, 0, 0, 0);
 
       /** 
        * @private 
-       * @type {TextMetricsData|null} 
+       * @type {black-engine~TextMetricsData|null} 
        */
       this.mMetrics = null;
 
@@ -19651,7 +19874,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds or updates given text style by given tag name.
      * 
      * @param {string} name 
-     * @param {TextStyle} style 
+     * @param {black-engine~TextStyle} style 
      */
     setStyle(name, style) {
       Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`);
@@ -19666,7 +19889,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Updates default text style with a given one.
      * 
-     * @param {TextStyle} style 
+     * @param {black-engine~TextStyle} style 
      */
     setDefaultStyle(style) {
       this.mDefaultStyle = style;
@@ -19691,7 +19914,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns text style by given name or null if not found.
      * 
      * @param {string} name 
-     * @return {TextStyle} 
+     * @return {black-engine~TextStyle} 
      */
     getStyle(name) {
       return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
@@ -19700,7 +19923,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns an array of all not default styles.
      * 
-     * @return {Array<TextStyle>} 
+     * @return {Array<black-engine~TextStyle>} 
      */
     getAllStyles() {
       let styles = [];
@@ -19828,14 +20051,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Get/Set text style.
      *
-     * @return {FontStyle}
+     * @return {black-engine~FontStyle}
      */
     get fontStyle() {
       return this.mDefaultStyle.style;
     }
 
     /**
-     * @param {FontStyle} value
+     * @param {black-engine~FontStyle} value
      * @return {void}
      */
     set fontStyle(value) {
@@ -19851,14 +20074,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
      *
-     * @return {FontWeight}
+     * @return {black-engine~FontWeight}
      */
     get weight() {
       return this.mDefaultStyle.weight;
     }
 
     /**
-     * @param {FontWeight} value
+     * @param {black-engine~FontWeight} value
      * @return {void}
      */
     set weight(value) {
@@ -19874,14 +20097,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Specifies the horizontal alignment of the text (left | center | right).
      *
-     * @return {FontAlign}
+     * @return {black-engine~FontAlign}
      */
     get align() {
       return this.mAlign;
     }
 
     /**
-     * @param {FontAlign} value
+     * @param {black-engine~FontAlign} value
      * @return {void}
      */
     set align(value) {
@@ -19897,14 +20120,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Specifies the vertical alignment of the text (top | middle | bottom).
      *
-     * @return {FontVerticalAlign}
+     * @return {black-engine~FontVerticalAlign}
      */
     get vAlign() {
       return this.mVerticalAlign;
     }
 
     /**
-     * @param {FontVerticalAlign} value
+     * @param {black-engine~FontVerticalAlign} value
      * @return {void}
      */
     set vAlign(value) {
@@ -20005,8 +20228,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.setTransformDirty();
     }
 
-    /**Text to be displayed inside this text field.
-
+    /**
+     * Text to be displayed inside this text field.
      * @return {string}
      */
     get text() {
@@ -20028,7 +20251,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posts every time text has been changed.
-       * @event TextField#change
+       * @event black-engine~TextField#change
        */
       this.post(Message.CHANGE);
     }
@@ -20059,14 +20282,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * An extra padding. Also useful for bad prepared fonts.
      *
-     * @return {Rectangle}
+     * @return {black-engine~Rectangle}
      */
     get padding() {
       return this.mPadding;
     }
 
     /**
-     * @param {Rectangle} value
+     * @param {black-engine~Rectangle} value
      * @return {void}
      */
     set padding(value) {
@@ -20230,13 +20453,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This class is used to create display text.
    *
    * @cat display.text
-   * @extends DisplayObject
+   * @extends black-engine~DisplayObject
    */
   class BitmapTextField extends DisplayObject {
     /**
      * Create new instance of BitmapTextField.
      *
-     * @param {string|BitmapFontData} font     The name of the bitmap font
+     * @param {string|black-engine~BitmapFontData} font     The name of the bitmap font
      * @param {string=} text                   Text to be displayed inside this text field
      */
     constructor(font, text = '') {
@@ -20273,13 +20496,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mBounds = new Rectangle();
 
       /** 
        * @private 
-       * @type {Rectangle} 
+       * @type {black-engine~Rectangle} 
        */
       this.mTextBounds = new Rectangle();
 
@@ -20457,7 +20680,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A base class for Vector scatters.
    *
    * @cat scatters
-   * @extends Scatter
+   * @extends black-engine~Scatter
    */
   class VectorScatterBase extends Scatter {
     /**
@@ -20471,7 +20694,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * 
        * @public
        * @readonly
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.value = new Vector();
     }
@@ -20479,7 +20702,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns random value.
      *
-     * @return {Vector}.
+     * @return {black-engine~Vector}.
      */
     getValue() {
       return this.getValueAt(Math.random());
@@ -20519,7 +20742,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A color scatter.
    *
    * @cat scatters
-   * @extends FloatScatterBase
+   * @extends black-engine~FloatScatterBase
    */
   class ColorScatter extends ColorScatterBase {
     /**
@@ -20566,8 +20789,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates new ColorScatterBase from a set of numbers.
      *
-     * @param {...number|ColorScatterBase} values Set of values.
-     * @returns {ColorScatterBase}
+     * @param {...number|black-engine~ColorScatterBase} values Set of values.
+     * @returns {black-engine~ColorScatterBase}
      */
     static fromObject(...values) {
       if (values[0] instanceof ColorScatterBase)
@@ -20581,7 +20804,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A vector scatter for defining a range in 2D space.
    *
    * @cat scatters
-   * @extends VectorScatterBase
+   * @extends black-engine~VectorScatterBase
    */
   class VectorScatter extends VectorScatterBase {
     /**
@@ -20636,7 +20859,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns a random Vector object at given position within a specified range.
      *
      * @override
-     * @return {Vector} Vector object with random values withing defined range.
+     * @return {black-engine~Vector} Vector object with random values withing defined range.
      */
     getValue() {
       this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
@@ -20650,7 +20873,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @override
      * @param {number} t The position.
-     * @return {Vector} Vector object representing values in a range at given position.
+     * @return {black-engine~Vector} Vector object representing values in a range at given position.
      */
     getValueAt(t) {
       if (this.ease !== null)
@@ -20665,8 +20888,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Creates new VectorScatter from a set of numbers.
      *
-     * @param {...number|VectorScatterBase} values Set of values.
-     * @returns {VectorScatterBase}
+     * @param {...number|black-engine~VectorScatterBase} values Set of values.
+     * @returns {black-engine~VectorScatterBase}
      */
     static fromObject(...values) {
       if (values[0] instanceof VectorScatterBase)
@@ -20680,7 +20903,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's starting velocity.
    *
    * @cat scatters
-   * @extends VectorScatterBase
+   * @extends black-engine~VectorScatterBase
    */
   class VectorCurveScatter extends VectorScatterBase {
     /**
@@ -20693,7 +20916,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Curve} 
+       * @type {black-engine~Curve} 
        */
       this.mCurve = new Curve();
       this.mCurve.baked = true;
@@ -20707,7 +20930,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Vector} 
+       * @type {black-engine~Vector} 
        */
       this.mCache = new Vector();
     }
@@ -20735,7 +20958,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @override
      * @param {number} t The position.
-     * @return {Vector} Vector object representing a value on a curve at given position.
+     * @return {black-engine~Vector} Vector object representing a value on a curve at given position.
      */
     getValueAt(t) {
       this.mCurve.interpolate(t, this.mCache);
@@ -20748,7 +20971,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A number scatter for defining a range in a circular shape.
    *
    * @cat scatters
-   * @extends VectorScatterBase
+   * @extends black-engine~VectorScatterBase
    */
   class RadialScatter extends VectorScatterBase {
     /**
@@ -20795,7 +21018,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns a random Vector object at given position within a range specified in the constructor.
      *
      * @override
-     * @return {Vector} Vector object with random values withing defined range.
+     * @return {black-engine~Vector} Vector object with random values withing defined range.
      */
     getValue() {
       return this.getValueAt(Math.random());
@@ -20806,7 +21029,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @override
      * @param {number} t The position.
-     * @return {Vector} Vector object representing values in a range at given position.
+     * @return {black-engine~Vector} Vector object representing values in a range at given position.
      */
     getValueAt(t) {
       const r = this.minRadius + t * (this.maxRadius - this.minRadius);
@@ -20827,7 +21050,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A number scatter for defining a range in 2D space on a curve.
    *
    * @cat scatters
-   * @extends FloatScatterBase
+   * @extends black-engine~FloatScatterBase
    */
   class FloatCurveScatter extends FloatScatterBase {
     /**
@@ -20840,7 +21063,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Curve} 
+       * @type {black-engine~Curve} 
        */
       this.mCurve = new Curve();
       this.mCurve.baked = true;
@@ -20854,7 +21077,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Vector} 
+       * @type {black-engine~Vector} 
        */
       this.mCache = new Vector();
     }
@@ -20896,19 +21119,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Adds acceleration to particles along given direction.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class Acceleration extends Modifier {
     /**
      * Creates new Acceleration instance.
      *
-     * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
+     * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
      */
     constructor(...values) {
       super(false);
 
       /** 
-       * @type {VectorScatterBase} Modifier's object to get values from.
+       * @type {black-engine~VectorScatterBase} Modifier's object to get values from.
        */
       this.scatter = VectorScatter.fromObject(...values);
     }
@@ -20928,18 +21151,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's alpha value according to its energy value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class AlphaOverLife extends Modifier {
     /**
      * Creates new AlphaOverLife instance.
      *
-     * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
+     * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of alpha property.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -20955,18 +21178,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's color value according to its energy value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class ColorOverLife extends Modifier {
     /**
      * Creates new ColorOverLife instance.
      *
-     * @param {...(number|ColorScatterBase)} values A starting and ending values of color property.
+     * @param {...(number|black-engine~ColorScatterBase)} values A starting and ending values of color property.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {ColorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~ColorScatterBase} Modifier's object to get values from.  */
       this.scatter = ColorScatter.fromObject(...values);
     }
 
@@ -20982,18 +21205,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's scale value according to its energy value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class ScaleOverLife extends Modifier {
     /**
      * Creates new ScaleOverTime instance.
      *
-     * @param {...(number|FloatScatterBase)} values A starting and ending values of scale property.
+     * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of scale property.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21009,18 +21232,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's rotation value according to its energy value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class RotationOverLife extends Modifier {
     /**
      * Creates new RotationOverLife instance.
      *
-     * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
+     * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of alpha property.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21036,18 +21259,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets particle's texture according to its energy value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class TextureOverLife extends Modifier {
     /**
      * Creates new TextureOverLife instance.
      *
-     * @param {...(number|FloatScatterBase)} values A starting and ending values of textureIndex property.
+     * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of textureIndex property.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21063,18 +21286,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Changes particle alpha according to its life.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class AnchorOverLife extends Modifier {
     /**
      * Creates new Acceleration instance.
      *
-     * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
+     * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
      */
     constructor(...values) {
       super(false);
 
-      /** @type {VectorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
       this.scatter = VectorScatter.fromObject(...values);
     }
 
@@ -21093,7 +21316,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Rotates particle along velocity vector.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class Oriented extends Modifier {
     /**
@@ -21119,7 +21342,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * @ignore
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class VectorField extends Modifier {
     /**
@@ -21211,18 +21434,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle life value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialLife extends Modifier {
     /**
      * Creates new InitialLife instance.
      *
-     * @param {...(number|FloatScatterBase)} values Min and max values in seconds.
+     * @param {...(number|black-engine~FloatScatterBase)} values Min and max values in seconds.
      */
     constructor(...values) {
       super();
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21238,18 +21461,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle mass value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialMass extends Modifier {
     /**
      * Creates new InitialMass instance.
      *
-     * @param {...(number|FloatScatterBase)} values Min and max values.
+     * @param {...(number|Fblack-engine~loatScatterBase)} values Min and max values.
      */
     constructor(...values) {
       super();
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21265,18 +21488,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle scale value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialScale extends Modifier {
     /**
      * Creates new InitialScale instance.
      *
-     * @param {...(number|FloatScatterBase)} values Min and max values.
+     * @param {...(number|black-engine~FloatScatterBase)} values Min and max values.
      */
     constructor(...values) {
       super();
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21292,18 +21515,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle velocity vector.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialVelocity extends Modifier {
     /**
      * Creates new InitialVelocity instance.
      *
-     * @param {...(number|VectorScatterBase)} values Min and max vectors.
+     * @param {...(number|black-engine~VectorScatterBase)} values Min and max vectors.
      */
     constructor(...values) {
       super();
 
-      /** @type {VectorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
       this.scatter = VectorScatter.fromObject(...values);
     }
 
@@ -21322,18 +21545,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle position.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialPosition extends Modifier {
     /**
      * Creates new InitialPosition instance.
      *
-     * @param {...(number|VectorScatterBase)} values Rectangle coordinates, its width and height.
+     * @param {...(number|black-engine~VectorScatterBase)} values Rectangle coordinates, its width and height.
      */
     constructor(...values) {
       super();
 
-      /** @type {VectorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
       this.scatter = VectorScatter.fromObject(...values);
     }
 
@@ -21351,18 +21574,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle rotation value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialRotation extends Modifier {
     /**
      * Creates new InitialRotation instance.
      *
-     * @param {...(number|FloatScatterBase)} values Min and max values in radians.
+     * @param {...(number|black-engine~FloatScatterBase)} values Min and max values in radians.
      */
     constructor(...values) {
       super();
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21378,18 +21601,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle texture.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialTexture extends Modifier {
     /**
      * Creates new InitialTexture instance.
      *
-     * @param {...(number|FloatScatterBase)} values Min and max indexes from texture list.
+     * @param {...(number|black-engine~FloatScatterBase)} values Min and max indexes from texture list.
      */
     constructor(...values) {
       super();
 
-      /** @type {FloatScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
       this.scatter = FloatScatter.fromObject(...values);
     }
 
@@ -21405,18 +21628,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle color value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialColor extends Modifier {
     /**
      * Creates new InitialLife instance.
      *
-     * @param {...(number|ColorScatterBase)} values Two color values.
+     * @param {...(number|black-engine~ColorScatterBase)} values Two color values.
      */
     constructor(...values) {
       super();
 
-      /** @type {ColorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~ColorScatterBase} Modifier's object to get values from.  */
       this.scatter = ColorScatter.fromObject(...values);
     }
 
@@ -21432,18 +21655,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Sets initial particle scale value.
    *
    * @cat particles.modifiers
-   * @extends Modifier
+   * @extends black-engine~Modifier
    */
   class InitialAnchor extends Modifier {
     /**
      * Creates new InitialScale instance.
      *
-     * @param {...(number|VectorScatterBase)} values
+     * @param {...(number|black-engine~VectorScatterBase)} values
      */
     constructor(...values) {
       super();
 
-      /** @type {VectorScatterBase} Modifier's object to get values from.  */
+      /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
       this.scatter = VectorScatter.fromObject(...values);
     }
 
@@ -22261,7 +22484,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @static
    */
   class Interpolation {
-
     /**
      * Linear interpolation.
      *
@@ -22380,11 +22602,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * 
    * @cat animation
    * @unrestricted
-   * @extends Component
+   * @extends black-engine~Component
    */
   class Tween extends Component {
     /**
      * Creates new instance of Tween Component.
+     * 
      * @param {Object}        values            The values to tween.
      * @param {number}        [duration=0.25]   Duraction in seconds.
      * @param {Object|null}   [properties=null] Tween properties Object.
@@ -22766,7 +22989,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Starts tweening.
      *
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     play() {
       if (!this.mIsPaused) {
@@ -22781,7 +23004,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Stops current tween.
      *
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     stop() {
       if (!this.mIsPlaying)
@@ -22795,7 +23018,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Resets current tween.
      *
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     reset() {
       this.mElapsed = 0;
@@ -22810,7 +23033,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @param {Object} values Values to tween.
      * @param {number} [duration=0.25] Duration in seconds.
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     to(values = {}, duration = 0.250) {
       this.mValues = values;
@@ -22822,7 +23045,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Pauses current tween.
      *
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     pause() {
       if (!this.mIsPlaying)
@@ -22836,7 +23059,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @private
-     * @return {void} Description
+     * @return {void}
      */
     __resume() {
       if (!this.mIsPaused)
@@ -22845,7 +23068,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mIsPaused = false;
       this.mStartTime += black.time.now - this.mPausedTime;
     }
-
 
     /**
      * @inheritDoc
@@ -22860,7 +23082,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Add specified tween object into the queue. The specified tween will be executed after completion of this tween,
      *
-     * @return {Tween} Returns tween to chain.
+     * @return {black-engine~Tween} Returns tween to chain.
      */
     chain(tween) {
       if (!tween) {
@@ -22912,7 +23134,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Switches end values with start values.
      *
      * @param {boolean} asYoyo Indicates wether easing function should be also reversed.
-     * @return {Tween} Returns this.
+     * @return {black-engine~Tween} Returns this.
      */
     reverse(asYoyo = false) {
       if (this.mInitiated) {
@@ -23005,8 +23227,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted on every tween update. 
-       * Note: tween can update object values inside `onRender` method without posting `Tween#update` message.
-       * @event Tween#update
+       * Note: tween can update object values inside `onRender` method without posting `black-engine~Tween#update` message.
+       * @event black-engine~Tween#update
        */
       this.post(Message.UPDATE, this.gameObject);
 
@@ -23020,7 +23242,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
           /**
            * Posted everytime tween is repeating.
-           * @event Tween#loop
+           * @event black-engine~Tween#loop
            */
           this.post('loop', this.gameObject);
         } else {
@@ -23028,7 +23250,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
           /**
            * Posten when tween is finished.
-           * @event Tween#complete
+           * @event black-engine~Tween#complete
            */
           this.post(Message.COMPLETE, this.gameObject);
 
@@ -23051,7 +23273,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         /**
          * Posted when tween started.
-         * @event Tween#start
+         * @event black-engine~Tween#start
          */
         this.post('start', this.gameObject);
 
@@ -23090,16 +23312,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Holds details about sprite animation.
    *
-   * @fires AnimationInfo#complete
+   * @fires black-engine~AnimationInfo#complete
    * @cat animation
    */
   class AnimationInfo {
     /**
      * Creates an instance of Animation class
      *
-     * @param {AnimationController}    controller  Animation controller
+     * @param {black-engine~AnimationController}    controller  Animation controller
      * @param {string}                 name        The name of animation
-     * @param {Array<Texture>}         frames      Array of Textures for this animation
+     * @param {Array<black-engine~Texture>}         frames      Array of Textures for this animation
      * @param {number}                 [fps=14]    Frame rate
      * @param {boolean}                [loop=true] Is animations should be looped
      */
@@ -23108,7 +23330,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * @private
-       * @type {AnimationController}
+       * @type {black-engine~AnimationController}
        */
       this.mController = controller;
 
@@ -23120,7 +23342,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * @private
-       * @type {Array<Texture>}
+       * @type {Array<black-engine~Texture>}
        */
       this.mFrames = frames;
 
@@ -23182,7 +23404,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Plays animation. If Animation is completed, current frame is reset to 0.
      * @ignore
-     * @return {Texture} Returns the current frame Texture.
+     * @return {black-engine~Texture} Returns the current frame Texture.
      */
     __play() {
       if (this.mCompleted === true) {
@@ -23224,7 +23446,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @ignore
-     * @return {Texture|null}
+     * @return {black-engine~Texture|null}
      */
     __update() {
       let t = black.time.now;
@@ -23244,7 +23466,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           /**
            * Post messages when animation reach its end.
            *
-           * @event AnimationInfo#complete
+           * @event black-engine~AnimationInfo#complete
            */
           this.mController.post(Message.COMPLETE, this);
           this.mCompleted = true;
@@ -23298,7 +23520,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Gets array of Texture.
      *
-     * @return {Array<Texture>}
+     * @return {Array<black-engine~Texture>}
      */
     get frames() {
       return this.mFrames;
@@ -23336,7 +23558,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A Component which allows to play sprite animations.
    *
    * @cat animation
-   * @extends Component
+   * @extends black-engine~Component
    */
   class AnimationController extends Component {
     /**
@@ -23347,13 +23569,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * @private
-       * @type {Object<string, AnimationInfo>}
+       * @type {Object<string, black-engine~AnimationInfo>}
        */
       this.mAnimations = {};
 
       /**
        * @private
-       * @type {AnimationInfo|null}
+       * @type {black-engine~AnimationInfo|null}
        */
       this.mCurrentAnim = null;
     }
@@ -23362,7 +23584,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns the AnimationInfo object that exists with the specified name.
      *
      * @param {string} name     The name of the child to return.
-     * @returns {AnimationInfo} Animation object that exists with the specified name.
+     * @returns {black-engine~AnimationInfo} Animation object that exists with the specified name.
      */
     getByName(name) {
       Debug.assert(name !== null, 'Animation must be set first.');
@@ -23395,10 +23617,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
      *
      * @param {string}          name        The name of animation to update
-     * @param {Array<Texture>}  textures    Array of Textures
+     * @param {Array<black-engine~Texture>}  textures    Array of Textures
      * @param {number}          [fps=14]    Frames Per Second
      * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
-     * @return {AnimationInfo} The newly created Animation Object.
+     * @return {black-engine~AnimationInfo} The newly created Animation Object.
      */
     add(name, textures, fps = 14, loop = true) {
       Debug.assert(textures.length > 0, 'Animation cannot be empty.');
@@ -23467,14 +23689,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (newTexture === null)
         return;
 
-      let sprite = /** @type {Sprite} */ (this.gameObject);
+      let sprite = /** @type {black-engine~Sprite} */ (this.gameObject);
       sprite.texture = newTexture;
     }
 
     /**
      * Returns current active animation.
      *
-     * @returns {AnimationInfo|null}
+     * @returns {black-engine~AnimationInfo|null}
      */
     get currentAnimation() {
       return this.mCurrentAnim;
@@ -23485,7 +23707,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Distortion sound effect.
    * 
    * @cat audio.effects
-   * @extends {SoundEffect}
+   * @extends {black-engine~SoundEffect}
    */
   class DistortionEffect extends SoundEffect {
 
@@ -23656,7 +23878,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Equalizer.
    * 
    * @cat audio.effects
-   * @extends {SoundEffect}
+   * @extends {black-engine~SoundEffect}
    */
   class SimpleEQ extends SoundEffect {
     /**
@@ -23795,7 +24017,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Reverberation sound effect.
    * 
    * @cat audio.effects
-   * @extends {SoundEffect}
+   * @extends {black-engine~SoundEffect}
    */
   class ReverbEffect extends SoundEffect {
     /**
@@ -23918,7 +24140,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The sound component.
    * 
    * @cat audio
-   * @extends {Component}
+   * @extends {black-engine~Component}
    */
   class Sound extends Component {
     /**
@@ -23934,7 +24156,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {SoundClip} 
+       * @type {black-engine~SoundClip} 
        */
       this.mSoundClip = black.assets.getSound(name);
 
@@ -23958,13 +24180,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {SoundInstance} 
+       * @type {black-engine~SoundInstance} 
        */
       this.mSoundInstance = null;
 
       /** 
        * @private 
-       * @type {MessageBinding|null}  
+       * @type {black-engine~MessageBinding|null}  
        */
       this.mCompleteBinding = null;
 
@@ -23988,7 +24210,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number=} [volume=1]         The volume level.
      * @param {boolean=} [loop=false]      Specifies if sound repeats infinite times.
      * @param {boolean=} [overwrite=false] If true, stops previously started sound, if there is one.
-     * @returns {SoundInstance}            Newly created sound instance or already playing sound.
+     * @returns {black-engine~SoundInstance}            Newly created sound instance or already playing sound.
      */
     play(volume = 1, loop = false, overwrite = false) {
       overwrite && this.mSoundInstance && this.stop();
@@ -24119,9 +24341,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * RigidBody is used to describe physics properties of game object colliders
    *
    * @cat physics
-   * @extends Component
+   * @extends black-engine~Component
    */
-
   class RigidBody extends Component {
     /**
      * Creates new instance of RigidBody.
@@ -24132,7 +24353,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** 
        * Default collider. Used in case no any custom colliders provided by user.
        * @private 
-       * @type {BoxCollider}
+       * @type {black-engine~BoxCollider}
        */
       this.mCollider = new BoxCollider(0, 0, 0, 0);
 
@@ -24160,28 +24381,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** 
        * All colliding pairs this body participates in.
        * @private 
-       * @type {Array<Pair>} 
+       * @type {Array<black-engine~Pair>} 
        */
       this.mContacts = [];
 
       /**
        * Game object pivot. To track changes and update default collider if needed.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mPivot = new Vector(Number.MAX_VALUE);
 
       /**  
        * Game bounds position. To track changes and update this position, if object was moved without physics.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mCachedPosition = new Vector();
 
       /** 
        * All pairs this body participates in.
        * @public 
-       * @type {Array<Pair>}
+       * @type {Array<black-engine~Pair>}
        */
       this.mPairs = [];
 
@@ -24195,28 +24416,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** 
        * This position in stage coordinates.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mPosition = new Vector();
 
       /** 
        * This velocity to integrate.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mVelocity = new Vector();
 
       /** 
        * Force accumulator.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mForce = new Vector();
 
       /** 
        * Game object transform. To track changes and update this colliders.
        * @private 
-       * @type {Matrix}
+       * @type {black-engine~Matrix}
        */
       this.mTransform = new Matrix(Number.MAX_VALUE);
 
@@ -24556,31 +24777,31 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Vector|null} Box normal 
+       * @type {black-engine~Vector|null} Box normal 
        */
       this.axis = null;
 
       /** 
        * @private 
-       * @type {Array<Vector>|null} Box a vertices 
+       * @type {Array<black-engine~ector>|null} Box a vertices 
        */
       this.verticesA = null;
 
       /** 
        * @private 
-       * @type {Array<Vector>|null} Box b vertices 
+       * @type {Array<black-engine~Vector>|null} Box b vertices 
        */
       this.verticesB = null;
 
       /** 
        * @private 
-       * @type {Range} Range from project box a vertices to axis 
+       * @type {black-engine~Range} Range from project box a vertices to axis 
        */
       this.rangeA = new Range();
 
       /** 
        * @private 
-       * @type {Range} Range from project box b vertices to axis 
+       * @type {black-engine~Range} Range from project box b vertices to axis 
        */
       this.rangeB = new Range();
 
@@ -24596,9 +24817,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @param {Array<Vector>} verticesA box a points
-     * @param {Array<Vector>} verticesB box b points
-     * @param {Vector}        axis One from box normals
+     * @param {Array<black-engine~Vector>} verticesA box a points
+     * @param {Array<black-engine~Vector>} verticesB box b points
+     * @param {black-engine~Vector}        axis One from box normals
      *
      * return {void}
      */
@@ -24739,21 +24960,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Collider from body b.
        * @public 
-       * @type {Collider|null}
+       * @type {black-engine~Collider|null}
        */
       this.b = null;
 
       /**
        * Parent of collider a.
        * @public 
-       * @type {RigidBody|null}
+       * @type {black-engine~RigidBody|null}
        */
       this.bodyA = null;
 
       /**
        * Parent of collider b.
        * @public 
-       * @type {RigidBody|null}
+       * @type {black-engine~RigidBody|null}
        */
       this.bodyB = null;
 
@@ -24816,14 +25037,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Offset within the colliders on preSolve to correct overlap on each iteration.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mOffset = new Vector();
 
       /**
        * Normal collision direction from a to b.
        * @private 
-       * @type {Vector}
+       * @type {black-engine~Vector}
        */
       this.mNormal = new Vector();
 
@@ -24997,8 +25218,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Generates pair id.
      *
      * @public
-     * @param {Collider} a Pair collider
-     * @param {Collider} b Pair collider
+     * @param {black-engine~Collider} a Pair collider
+     * @param {black-engine~Collider} b Pair collider
      *
      * @return {string} Pair unique id
      */
@@ -25061,7 +25282,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * BoxToBoxPair is used to test collision within boxes
    *
    * @cat physics.arcade.pairs
-   * @extends Pair
+   * @extends black-engine~Pair
    */
   class BoxToBoxPair extends Pair {
     /**
@@ -25074,7 +25295,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Collider from body a.
        * 
        * @public 
-       * @type {BoxCollider|null}
+       * @type {black-engine~BoxCollider|null}
        */
       this.a = null;
 
@@ -25082,7 +25303,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * Collider from body b. 
        * 
        * @public 
-       * @type {BoxCollider|null}
+       * @type {black-engine~BoxCollider|null}
        */
       this.b = null;
 
@@ -25095,7 +25316,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Projection keeps range of projected vertices. For each normal from both the colliders.
        * @private 
-       * @type {Array<Projection>}
+       * @type {Array<black-engine~Projection>}
        */
       this.mProjections = projections;
     }
@@ -25105,10 +25326,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @param {BoxCollider} a   Pair collider
-     * @param {BoxCollider} b   Pair collider
-     * @param {RigidBody} bodyA Pair body
-     * @param {RigidBody} bodyB Pair body
+     * @param {black-engine~BoxCollider} a   Pair collider
+     * @param {black-engine~BoxCollider} b   Pair collider
+     * @param {black-engine~RigidBody} bodyA Pair body
+     * @param {black-engine~RigidBody} bodyB Pair body
      *
      * @return {Pair} This
      */
@@ -25226,7 +25447,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * BoxToCirclePair is used to test collision within box - circle colliders.
    *
    * @cat physics.arcade.pairs
-   * @extends Pair
+   * @extends black-engine~Pair
    */
 
   class BoxToCirclePair extends Pair {
@@ -25418,7 +25639,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * CircleToCirclePair is used to test collision within circles colliders.
    *
    * @cat physics.arcade.pairs
-   * @extends Pair
+   * @extends black-engine~Pair
    */
   class CircleToCirclePair extends Pair {
     /**
@@ -25430,14 +25651,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Collider from body a. 
        * @public 
-       * @type {CircleCollider|null}
+       * @type {black-engine~CircleCollider|null}
        */
       this.a = null;
 
       /**
        * Collider from body b. 
        * @public 
-       * @type {CircleCollider|null}
+       * @type {black-engine~CircleCollider|null}
        */
       this.b = null;
     }
@@ -25447,10 +25668,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @param {CircleCollider} a  Pair circle collider
-     * @param {CircleCollider} b  Pair circle collider
-     * @param {RigidBody} bodyA   Pair body
-     * @param {RigidBody} bodyB   Pair body
+     * @param {black-engine~CircleCollider} a  Pair circle collider
+     * @param {black-engine~CircleCollider} b  Pair circle collider
+     * @param {black-engine~RigidBody} bodyA   Pair body
+     * @param {black-engine~RigidBody} bodyB   Pair body
      *
      * @return {Pair} This
      */
@@ -25516,7 +25737,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Test collision in each pair. Sets inCollision flag to false if there is no collision in pair.
      *
-     * @param {Array<Pair>} pairs All the arcade world colliders pairs.
+     * @param {Array<black-engine~Pair>} pairs All the arcade world colliders pairs.
      * @return {void}
      */
     test(pairs) { }
@@ -25526,9 +25747,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Simple AABB physics engine (beta).
    *
    * @cat physics.arcade
-   * @extends System
+   * @extends black-engine~System
    */
-
   class Arcade extends System {
     /**
      * Creates new Arcade instance.
@@ -25539,28 +25759,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Bodies that are on stage.
        * @private 
-       * @type {Array<RigidBody>}
+       * @type {Array<black-engine~RigidBody>}
        */
       this.mBodies = [];
 
       /**
        * Pairs to check collisions within. With colliders which bodies are on stage.
        * @private 
-       * @type {Array<Pair>}
+       * @type {Array<black-engine~Pair>}
        */
       this.mPairs = [];
 
       /**
        * Pairs which are in collision per frame.
        * @private 
-       * @type {Array<Pair>}
+       * @type {Array<black-engine~Pair>}
        */
       this.mContacts = [];
 
       /**
        * Broad collision test instance.
        * @private 
-       * @type {BroadPhase}
+       * @type {black-engine~BroadPhase}
        */
       this.mBroadPhase = new BroadPhase();
 
@@ -25574,28 +25794,28 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Reference to world bounds body.
        * @private 
-       * @type {RigidBody|null}
+       * @type {black-engine~RigidBody|null}
        */
       this.mBoundsBody = null;
 
       /** @private 
-       * @type {BoxCollider} */
+       * @type {black-engine~BoxCollider} */
       this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
 
       /** @private 
-       * @type {BoxCollider} */
+       * @type {black-engine~BoxCollider} */
       this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
 
       /** @private 
-       * @type {BoxCollider} */
+       * @type {black-engine~BoxCollider} */
       this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
 
       /** @private 
-       * @type {BoxCollider} */
+       * @type {black-engine~BoxCollider} */
       this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
       /** @private 
-       * @type {Vector} */
+       * @type {black-engine~Vector} */
       this.mGravity = new Vector(0, 1000);
 
       /**
@@ -25631,8 +25851,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @param {Collider} colliderA Collider to check
-     * @param {Collider} colliderB Collider to check
+     * @param {black-engine~Collider} colliderA Collider to check
+     * @param {black-engine~Collider} colliderB Collider to check
      * @param {Function} cb        Callback
      * @param {Object} ctx         Callback context
      * @param {...*} [args]        Rest arguments
@@ -25662,8 +25882,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      *
      * @public
      *
-     * @param {RigidBody} bodyA         Body to check
-     * @param {RigidBody=} [bodyB=null] Body to check
+     * @param {black-engine~RigidBody} bodyA         Body to check
+     * @param {black-engine~RigidBody=} [bodyB=null] Body to check
      * @param {Function=} [cb=null]     Callback
      * @param {Object=} [ctx=null]      Callback context
      * @param {...*} [args]             Rest arguments
@@ -25756,7 +25976,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds body to arcade world. Start tracking its gameObject colliders.
      *
      * @private
-     * @param {RigidBody} body Body to add
+     * @param {black-engine~RigidBody} body Body to add
      *
      * @return {void}
      */
@@ -25780,8 +26000,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes body from arcade world.
      *
      * @private
-     * @param {RigidBody} body        Body to remove
-     * @param {GameObject} gameObject Body's game object
+     * @param {black-engine~RigidBody} body        Body to remove
+     * @param {black-engine~GameObject} gameObject Body's game object
      *
      * @return {void}
      */
@@ -25805,8 +26025,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Adds collider to arcade world.
      *
      * @private
-     * @param {GameObject} child  Parent of the collider
-     * @param {Collider} collider Collider to add
+     * @param {black-engine~GameObject} child  Parent of the collider
+     * @param {black-engine~Collider} collider Collider to add
      *
      * @return {void}
      */
@@ -25826,8 +26046,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes collider from arcade world.
      *
      * @private
-     * @param {GameObject} child  Parent of the collider
-     * @param {Collider} collider Collider to remove
+     * @param {black-engine~GameObject} child  Parent of the collider
+     * @param {black-engine~Collider} collider Collider to remove
      *
      * @return {void}
      */
@@ -25857,8 +26077,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Generate pairs, passed collider with all present colliders.
      *
      * @private
-     * @param {Collider} collider   Collider to generate with
-     * @param {RigidBody} fromBody  The collider body
+     * @param {black-engine~Collider} collider   Collider to generate with
+     * @param {black-engine~RigidBody} fromBody  The collider body
      *
      * @return {void}
      */
@@ -25887,10 +26107,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates pair and adds it to world.
      *
      * @private
-     * @param {Collider} a      Pair collider
-     * @param {Collider} b      Pair collider
-     * @param {RigidBody} bodyA Pair body
-     * @param {RigidBody} bodyB Pair body
+     * @param {black-engine~Collider} a      Pair collider
+     * @param {black-engine~Collider} b      Pair collider
+     * @param {black-engine~RigidBody} bodyA Pair body
+     * @param {black-engine~RigidBody} bodyB Pair body
      *
      * @return {void}
      */
@@ -25930,7 +26150,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Removes all pairs with given collider.
      *
      * @private
-     * @param {Collider} collider Pairs collider
+     * @param {black-engine~Collider} collider Pairs collider
      *
      * @return {void}
      */
@@ -26256,7 +26476,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    * @cat core
    */
   class SplashScreen extends MessageDispatcher {
@@ -26354,7 +26574,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         /**
          * Posts when splash screen is hidden.
-         * @event SplashScreen#complete
+         * @event black-engine~SplashScreen#complete
          */
         this.post(Message.COMPLETE);
       }, this.mDuration);
@@ -26373,10 +26593,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat timers
    * 
-   * @fires Timer#complete
-   * @fires Timer#tick
+   * @fires black-engine~Timer#complete
+   * @fires black-engine~Timer#tick
    * 
-   * @extends Component
+   * @extends black-engine~Component
    */
   class Timer extends Component {
     constructor(interval = 1, ticksCount = 1, startOnAdded = true) {
@@ -26476,7 +26696,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Start timer.
      *
-     * @return {Timer} Returns this.
+     * @return {black-engine~Timer} Returns this.
      */
     start() {
       this.mIsRunning = true;
@@ -26486,7 +26706,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Stop and reset timer.
      *
-     * @return {Timer} Returns this.
+     * @return {black-engine~Timer} Returns this.
      */
     stop() {
       this.mIsRunning = false;
@@ -26497,7 +26717,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Pauses the timer.
      *
-     * @return {Timer} Returns this.
+     * @return {black-engine~Timer} Returns this.
      */
     pause() {
       this.mIsRunning = false;
@@ -26508,7 +26728,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Reset timer.
      *
      * sets ticks elapsedSeconds and totalElapsedSeconds to 0
-     * @return {Timer} Returns this.
+     * @return {black-engine~Timer} Returns this.
      */
     reset() {
       this.mTick = 0;
@@ -26633,12 +26853,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * The Black class represents the core of the Black Engine.
    *
-   * @fires Engine#paused
-   * @fires Engine#unpaused
-   * @fires Engine#ready
-   * @fires Engine#looped
+   * @fires black-engine~Engine#paused
+   * @fires black-engine~Engine#unpaused
+   * @fires black-engine~Engine#ready
+   * @fires black-engine~Engine#looped
    *
-   * @extends MessageDispatcher
+   * @extends black-engine~MessageDispatcher
    */
   class Engine extends MessageDispatcher {
     /**
@@ -26654,9 +26874,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * new Black('game-container', MyGame, CanvasDriver, [Arcade]);
      * 
      * @param {string}                                                       containerElementId The id of an DOM element.
-     * @param {function(new: GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
-     * @param {function(new: VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
-     * @param {Array<function(new: System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
+     * @param {function(new: black-engine~GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
+     * @param {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+     * @param {Array<function(new: black-engine~System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
      */
     constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
       super();
@@ -26679,13 +26899,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {function(new: VideoNullDriver, HTMLElement, number, number)} 
+       * @type {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)} 
        */
       this.mVideoDriverClass = videoDriverClass;
 
       /** 
        * @private 
-       * @type {Array<function(new: System)>} 
+       * @type {Array<function(new: black-engine~System)>} 
        */
       this.mSystemClasses = systemClasses;
 
@@ -26733,13 +26953,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<System>} 
+       * @type {Array<black-engine~System>} 
        */
       this.mSystems = [];
 
       /** 
        * @private 
-       * @type {GameObject|null} 
+       * @type {black-engine~GameObject|null} 
        */
       this.mGameObject = null;
 
@@ -26769,13 +26989,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Viewport} 
+       * @type {black-engine~Viewport} 
        */
       this.mViewport = null;
 
       /** 
        * @private 
-       * @type {VideoNullDriver} 
+       * @type {black-engine~VideoNullDriver} 
        */
       this.mVideo = null;
 
@@ -26811,13 +27031,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {function(new: GameObject)} 
+       * @type {function(new: black-engine~GameObject)} 
        */
       this.mGameClass = gameClass;
 
       /** 
        * @private 
-       * @type {Stage} 
+       * @type {black-engine~Stage} 
        */
       this.mStage = null;
 
@@ -26883,7 +27103,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted after engine entered paused state.
        *
-       * @event Engine#paused
+       * @event black-engine~Engine#paused
        */
       this.post('paused');
     }
@@ -26907,7 +27127,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted after engine is unpaused.
        *
-       * @event Engine#unpaused
+       * @event black-engine~Engine#unpaused
        */
       this.post('unpaused');
     }
@@ -27002,8 +27222,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @private
-     * @param  {System} system The System object you want to add.
-     * @return {System}
+     * @param  {black-engine~System} system The System object you want to add.
+     * @return {black-engine~System}
      */
     __addSystem(system) {
       this.mSystems.push(system);
@@ -27014,7 +27234,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Gets system by type.
      *
      * @param {Function} typeName The system type.
-     * @return {System|null} The `System` instance or null if not found.
+     * @return {black-engine~System|null} The `System` instance or null if not found.
      */
     getSystem(typeName) {
       for (let i = 0; i < this.mSystems.length; i++) {
@@ -27061,7 +27281,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted when all systems, stage and driver ready to be used. 
        *
-       * @event Engine#ready
+       * @event black-engine~Engine#ready
        */
       this.post(Message.READY);
 
@@ -27162,7 +27382,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
          * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
          * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
          *
-         * @event Engine#looped
+         * @event black-engine~Engine#looped
          */
         this.post('looped', numTicks);
         Debug.warn(`Unable to catch up ${numTicks} update(s).`);
@@ -27241,7 +27461,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when tag changed for specific `GameObject`.
      *
      * @protected
-     * @param {GameObject} child   A game object fired the event.
+     * @param {black-engine~GameObject} child   A game object fired the event.
      * @param {string|null} oldTag Old tag.
      * @param {string|null} newTag New tag.
      * @return {void}
@@ -27267,7 +27487,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when specific game object is added to display list.
      *
      * @protected
-     * @param  {GameObject} child Instance of GameObject.
+     * @param  {black-engine~GameObject} child Instance of GameObject.
      * @return {void}
      */
     onChildrenAdded(child, parent) {
@@ -27304,7 +27524,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when specific game object is changed its index in display list.
      *
      * @protected
-     * @param {GameObject} child Instance of GameObject.
+     * @param {black-engine~GameObject} child Instance of GameObject.
      * @return {void}
      */
     onChildrenChanged(child) {
@@ -27318,7 +27538,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when specific game object is added to display list.
      *
      * @protected
-     * @param  {GameObject} child Instance of GameObject.
+     * @param  {black-engine~GameObject} child Instance of GameObject.
      * @return {void}
      */
     onChildrenRemoved(child) {
@@ -27351,8 +27571,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when specific component is added to GameObject instance.
      *
      * @protected
-     * @param  {GameObject} child Instance of GameObject.
-     * @param  {Component} component Instance of Component added to game object.
+     * @param  {black-engine~GameObject} child Instance of GameObject.
+     * @param  {black-engine~Component} component Instance of Component added to game object.
      * @return {void}
      */
     onComponentAdded(child, component) {
@@ -27372,8 +27592,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called when specific component is removed from its owner.
      *
      * @protected
-     * @param  {GameObject} child Instance of GameObject.
-     * @param  {Component} component Instance of Component removed from game object.
+     * @param  {black-engine~GameObject} child Instance of GameObject.
+     * @param  {black-engine~Component} component Instance of Component removed from game object.
      * @return {void}
      */
     onComponentRemoved(child, component) {
@@ -27413,7 +27633,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
      *
-     * @return {Viewport}
+     * @return {black-engine~Viewport}
      */
     get viewport() {
       return this.mViewport;
@@ -27476,7 +27696,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Returns current stage.
      *
      * @readonly
-     * @returns {Stage}
+     * @returns {black-engine~Stage}
      */
     get stage() {
       return this.mStage;
@@ -27576,6 +27796,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.BoxToBoxPair = BoxToBoxPair;
   exports.BoxToCirclePair = BoxToCirclePair;
   exports.BroadPhase = BroadPhase;
+  exports.Camera = Camera;
   exports.CanvasDriver = CanvasDriver;
   exports.CanvasRenderTexture = CanvasRenderTexture;
   exports.CapsStyle = CapsStyle;

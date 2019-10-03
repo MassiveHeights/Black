@@ -23,7 +23,7 @@ import { Camera } from "../display/Camera";
  * @fires Input#pointerMove
  * @fires Input#pointerDown
  * @fires Input#pointerUp
- * @extends System
+ * @extends black-engine~System
  */
 export class Input extends System {
   /**
@@ -38,19 +38,19 @@ export class Input extends System {
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mViewportPosition = new Vector();
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mPointerPosition = new Vector();
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mStagePosition = new Vector();
 
@@ -111,25 +111,25 @@ export class Input extends System {
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mTarget = null;
 
     /** 
      * @private 
-     * @type {Component} 
+     * @type {black-engine~Component} 
      */
     this.mTargetComponent = null;
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mLockedTarget = null;
 
     /** 
      * @private 
-     * @type {Component} 
+     * @type {black-engine~Component} 
      */
     this.mLastInTargetComponent = null;
 
@@ -259,7 +259,7 @@ export class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {Event} evt
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -277,7 +277,7 @@ export class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {TouchEvent} evt
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -344,7 +344,7 @@ export class Input extends System {
   /**
    * @ignore
    * @private
-   * @param {Vector} pos
+   * @param {black-engine~Vector} pos
    */
   __findTarget(pos) {
     let obj = Black.stage.hitTest(pos);
@@ -363,7 +363,7 @@ export class Input extends System {
    * @ignore
    * @private
    * @param {Object} nativeEvent
-   * @param {Vector} pos
+   * @param {black-engine~Vector} pos
    * @param {string} type
    */
   __processNativeEvent(nativeEvent, pos, type) {
@@ -468,7 +468,7 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer x-component.
    *
-   * @returns {number} Description
+   * @returns {number}
    */
   get pointerY() {
     return this.mPointerPosition.y;
@@ -486,7 +486,7 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer x-component  relative to stage.
    *
-   * @returns {number} Description
+   * @returns {number}
    */
   get stageY() {
     return this.mStagePosition.y;
@@ -495,7 +495,7 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer position relative to viewport.
    *
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   get viewportPosition() {
     return this.mViewportPosition;
@@ -504,7 +504,7 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer position including active camera transformation.
    *
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   get pointerPosition() {
     return this.mPointerPosition;
@@ -513,7 +513,7 @@ export class Input extends System {
   /**
    * Returns pointer position relative to the stage.
    * 
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   get stagePosition() {
     return this.mStagePosition;
@@ -642,7 +642,7 @@ class PointerInfo {
   /**
    * Creates new PointerInfo instance. For internal use only.
    *
-   * @param {GameObject} activeObject `GameObject` the cursor is above.
+   * @param {black-engine~GameObject} activeObject `GameObject` the cursor is above.
    * @param {number} x x-coordinate
    * @param {number} y y-coordinate
    * @param {number} button active pressed button
@@ -651,7 +651,7 @@ class PointerInfo {
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mActiveObject = activeObject;
 
@@ -700,7 +700,7 @@ class PointerInfo {
    * Returns the object under cursor right now.
    *
    * @readonly
-   * @returns {GameObject}
+   * @returns {black-engine~GameObject}
    */
   get activeObject() {
     return this.mActiveObject;

@@ -12,7 +12,7 @@ export class BroadPhase {
   /**
    * Test collision in each pair. Sets inCollision flag to false if there is no collision in pair.
    *
-   * @param {Array<Pair>} pairs All the arcade world colliders pairs.
+   * @param {Array<black-engine~Pair>} pairs All the arcade world colliders pairs.
    * @return {void}
    */
   test(pairs) { }

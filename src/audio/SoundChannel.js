@@ -31,13 +31,13 @@ export class SoundChannel {
 
     /** 
      * @private 
-     * @type {Array<SoundInstance>} 
+     * @type {Array<black-engine~SoundInstance>} 
      */
     this.mSounds = [];
 
     /** 
      * @private 
-     * @type {Array<SoundEffect>} 
+     * @type {Array<black-engine~SoundEffect>} 
      */
     this.mEffects = [];
   }
@@ -46,7 +46,7 @@ export class SoundChannel {
    * Allows the sound to be played on this channel
    * 
    * @public
-   * @param {SoundInstance} soundInstance Concrete SoundInstance.
+   * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
    * @returns {void}
    */
   attachSound(soundInstance) {
@@ -65,7 +65,7 @@ export class SoundChannel {
    * Removes given sound instance from this channel
    * 
    * @public
-   * @param {SoundInstance} soundInstance Concrete SoundInstance.
+   * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
    * @returns {void}
    */
   detachSound(soundInstance) {
@@ -116,8 +116,8 @@ export class SoundChannel {
    * Adds sound effect to this channel
    * 
    * @public
-   * @param {SoundEffect} effect SoundEffect instance.
-   * @returns {SoundEffect}
+   * @param {black-engine~SoundEffect} effect SoundEffect instance.
+   * @returns {black-engine~SoundEffect}
    */
   addEffect(effect) {
     Debug.assert(effect != null, 'Effect cannot be null');
@@ -132,8 +132,8 @@ export class SoundChannel {
    * Removes sound effect from this channel
    * 
    * @public
-   * @param {SoundEffect} effect SoundEffect instance.
-   * @returns {SoundEffect}
+   * @param {black-engine~SoundEffect} effect SoundEffect instance.
+   * @returns {black-engine~SoundEffect}
    */
   removeEffect(effect) {
     Debug.assert(effect != null, 'Effect cannot be null');

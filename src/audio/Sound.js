@@ -10,7 +10,7 @@ import { Message } from "../messages/Message";
  * The sound component.
  * 
  * @cat audio
- * @extends {Component}
+ * @extends {black-engine~Component}
  */
 export class Sound extends Component {
   /**
@@ -26,7 +26,7 @@ export class Sound extends Component {
 
     /** 
      * @private 
-     * @type {SoundClip} 
+     * @type {black-engine~SoundClip} 
      */
     this.mSoundClip = Black.assets.getSound(name);
 
@@ -50,13 +50,13 @@ export class Sound extends Component {
 
     /** 
      * @private 
-     * @type {SoundInstance} 
+     * @type {black-engine~SoundInstance} 
      */
     this.mSoundInstance = null;
 
     /** 
      * @private 
-     * @type {MessageBinding|null}  
+     * @type {black-engine~MessageBinding|null}  
      */
     this.mCompleteBinding = null;
 
@@ -80,7 +80,7 @@ export class Sound extends Component {
    * @param {number=} [volume=1]         The volume level.
    * @param {boolean=} [loop=false]      Specifies if sound repeats infinite times.
    * @param {boolean=} [overwrite=false] If true, stops previously started sound, if there is one.
-   * @returns {SoundInstance}            Newly created sound instance or already playing sound.
+   * @returns {black-engine~SoundInstance}            Newly created sound instance or already playing sound.
    */
   play(volume = 1, loop = false, overwrite = false) {
     overwrite && this.mSoundInstance && this.stop();

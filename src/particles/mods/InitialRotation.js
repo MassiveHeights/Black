@@ -5,18 +5,18 @@ import { FloatScatter } from "../../scatters/FloatScatter";
  * Sets initial particle rotation value.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class InitialRotation extends Modifier {
   /**
    * Creates new InitialRotation instance.
    *
-   * @param {...(number|FloatScatterBase)} values Min and max values in radians.
+   * @param {...(number|black-engine~FloatScatterBase)} values Min and max values in radians.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

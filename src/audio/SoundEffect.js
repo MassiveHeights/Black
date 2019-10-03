@@ -11,7 +11,6 @@ export class SoundEffect {
    * Creates new instance of SoundEffect.
    */
   constructor() {
-
     /** 
      * @protected 
      * @type {AudioNode} 
