@@ -278,6 +278,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * This method called each time object added to stage.
    *
+   * @action
    * @return {void}
    */
   onAdded() { }
@@ -285,6 +286,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Called when object is removed from stage.
    *
+   * @action
    * @return {void}
    */
   onRemoved() { }
@@ -804,6 +806,7 @@ export class GameObject extends MessageDispatcher {
    * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
    * going from top to bottom of the display list.
    * 
+   * @action
    * @protected
    * @return {void}
    */
@@ -812,6 +815,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
    *
+   * @action
    * @protected
    * @param {black-engine~Rectangle=} [outRect=undefined] Rectangle to be returned.
    * @return {black-engine~Rectangle} bounds in local space without taking care about transformation matrix
@@ -942,6 +946,7 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @action
    * @protected
    * @param {black-engine~Vector} localPoint 
    * @return {boolean}
@@ -971,6 +976,7 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @action
    * @protected
    * @param {black-engine~Vector} localPoint 
    * @return {boolean}

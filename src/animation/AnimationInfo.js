@@ -97,6 +97,7 @@ export class AnimationInfo {
 
   /**
    * Plays animation. If Animation is completed, current frame is reset to 0.
+   * 
    * @ignore
    * @return {black-engine~Texture} Returns the current frame Texture.
    */

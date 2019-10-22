@@ -2,6 +2,9 @@ var mInstance = null;
 
 /**
  * Connects all the dots.
+ * 
+ * @static
+ * @staticClass
  */
 class Black {
   constructor() {

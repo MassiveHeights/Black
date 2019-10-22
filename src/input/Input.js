@@ -23,6 +23,11 @@ import { Camera } from "../display/Camera";
  * @fires Input#pointerMove
  * @fires Input#pointerDown
  * @fires Input#pointerUp
+ * 
+ * @fires GameObject#pointerMove
+ * @fires GameObject#pointerDown
+ * @fires GameObject#pointerUp
+ * 
  * @extends black-engine~System
  */
 export class Input extends System {
@@ -633,6 +638,21 @@ const mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
  */
 
 /**
+* Posts when mouse down or touch down event happened.
+* @event GameObject#pointerDown
+*/
+
+/**
+ * Posts when mouse up or touch up event happened.
+ * @event GameObject#pointerUp
+ */
+
+/**
+ * Posts when mouse move or touch move event happened.
+ * @event GameObject#pointerMove
+ */
+
+/**
  * Stores additional information about pointer events.
  *
  * @ignore
@@ -726,4 +746,3 @@ class PointerInfo {
     return this.mY;
   }
 }
-

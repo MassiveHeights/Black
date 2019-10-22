@@ -182,8 +182,6 @@ export class Emitter extends DisplayObject {
    * Starts emitting particles. By default emitter will start emitting automatically.
    */
   play() {
-    console.log(this.mState);
-    
     if (this.mState === EmitterState.EMITTING)
       return;
 
@@ -352,7 +350,6 @@ export class Emitter extends DisplayObject {
         else {
           this.mEmitIntervalLeft -= dt;
           this.mNextUpdateAt = t + this.mEmitIntervalLeft;
-          //console.log(this.mEmitIntervalLeft);
 
           // reset interval
           if (this.mEmitIntervalLeft <= 0)

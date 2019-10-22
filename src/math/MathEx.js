@@ -2,6 +2,7 @@
  * Set of math helper functions.
  *
  * @cat core
+ * @static
  */
 export class MathEx {
   /**

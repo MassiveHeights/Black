@@ -4,6 +4,7 @@ import { Debug } from "./Debug";
  * Provides time related methods.
  *
  * @cat core
+ * 
  * @static
  */
 export class Time {

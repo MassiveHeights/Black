@@ -30,9 +30,9 @@ import { LoaderFactory } from "./LoaderFactory";
 /**
  * Responsible for loading assets and manages its in memory state.
  *
- * @fires Message.PROGRESS
- * @fires Message.COMPLETE
- * @fires Message.ERROR
+ * @fires AssetManager#progress
+ * @fires AssetManager#complete
+ * @fires AssetManager#error
  *
  * @cat assets
  * @extends black-engine~MessageDispatcher
