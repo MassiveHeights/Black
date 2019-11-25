@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.10
+ * Blacksmith 2D v0.5.11
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -155,6 +155,7 @@
    * Set of math helper functions.
    *
    * @cat core
+   * @static
    */
   class MathEx {
     /**
@@ -1806,7 +1807,7 @@
      *
      * @param {black-engine~Rectangle} toIntersect Rectangle to intersect with.
      * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-     * @returns {black-engine~ectangle}
+     * @returns {black-engine~Rectangle}
      */
     intersection(toIntersect, outRect) {
       outRect = outRect || new Rectangle();
@@ -2003,7 +2004,7 @@
 
     /**
      * Returns random number within this rectangle.
-     * @returns {number}
+     * @returns {Vector}
      */
     get random() {
       const rx = MathEx.randomBetween(this.x, this.width);
@@ -2292,7 +2293,7 @@
     /**
      * Resets current matrix to identity state.
      *
-     * @return {Matrix} This.
+     * @return {black-engine~Matrix} This.
      */
     identity() {
       return this.set(1, 0, 0, 1, 0, 0);
@@ -3459,7 +3460,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Returns center points of this polygon.
-     * @returns {Vector}
+     * @returns {black-engine~Vector}
      */
     get center() {
       return this.mCenter;  
@@ -4006,53 +4007,53 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
+  var mInstance = null;
+
   /**
    * Connects all the dots.
+   * 
+   * @static
+   * @staticClass
    */
   class Black {
     constructor() {
+      mInstance = this;
+
       /**
-       * Returns current instance of Black Engine.
-       * 
+       * @private
        * @type {black-engine~Engine}
        */
-      this.engine = null;
+      this.mEngine = null;
 
       /**
-       * Returns current instance of Input system.
-       * 
+       * @private
        * @type {black-engine~Input}
        */
-      this.input = null;
+      this.mInput = null;
 
       /**
-       * Returns current instance of MasterAudio system.
-       * 
+       * @private
        * @type {black-engine~MasterAudio}
        */
-      this.audio = null;
+      this.mAudio = null;
 
       /**
-       * Returns current instance of Time.
-       * 
+       * @private
        * @type {black-engine~Time}
        */
-      this.time = null;
+      this.mTime = null;
 
       /**
-       * Returns current instance of Device.
-       * 
+       * @private
        * @type {black-engine~Device}
        */
-      this.device = null;
+      this.mDevice = null;
 
       /**
-       * Default instance. Sprite and other classes uses this instance to find textures by name.
-       * It will be automatically assigned when new AssetManager is created.
-       * 
+       * @private
        * @type {black-engine~AssetManager}
        */
-      this.assets = null;
+      this.mAssets = null;
 
       /**
        * Active camera instance.
@@ -4062,6 +4063,109 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mCamera = null;
     }
+    
+    /**
+     * Returns current Black Engine instance.
+     * 
+     * @returns {black-engine~Engine}
+     */
+    static get engine() {
+      return mInstance.mEngine;
+    }
+
+    /**
+     * Sets new Engine instance.
+     * @param {black-engine~Engine} value
+     */
+    static set engine(value) {
+      mInstance.mEngine = value;
+    }
+
+    /**
+     * Returns current active Input System instance.
+     * 
+     * @returns {black-engine~Input}
+     */
+    static get input() {
+      return mInstance.mInput;
+    }
+
+    /**
+     * Sets new Input System.
+     * @param {black-engine~Input} value
+     */
+    static set input(value) {
+      mInstance.mInput = value;
+    }
+
+    /**
+     * Returns current active Audio System instance.
+     * 
+     * @returns {black-engine~MasterAudio}
+     */
+    static get audio() {
+      return mInstance.mAudio;
+    }
+
+    /**
+     * Sets new Audio System.
+     * @param {black-engine~MasterAudio} value
+     */
+    static set audio(value) {
+      mInstance.mAudio = value;
+    }
+    
+    /**
+     * Returns current Time management instance.
+     * 
+     * @returns {black-engine~Time}
+     */
+    static get time() {
+      return mInstance.mTime;
+    }
+
+    /**
+     * Sets new Time instance.
+     * @param {black-engine~Time} value
+     */
+    static set time(value) {
+      mInstance.mTime = value;
+    }  
+
+    /**
+     * Returns current Device instance.
+     * 
+     * @returns {black-engine~Device}
+     */
+    static get device() {
+      return mInstance.mDevice;
+    }
+
+    /**
+     * Sets new Device instance.
+     * @param {black-engine~Device} value
+     */
+    static set device(value) {
+      mInstance.mDevice = value;
+    }
+
+    /**
+     * Default AssetManager instance. Sprite and other classes uses this instance to find textures by name.
+     * It will be automatically re-assigned when new AssetManager is created.
+     * 
+     * @returns {black-engine~AssetManager}
+     */
+    static get assets() {
+      return mInstance.mAssets;
+    }
+
+    /**
+     * Sets new AssetManager.
+     * @param {black-engine~AssetManager} value
+     */
+    static set assets(value) {
+      mInstance.mAssets = value;
+    }
 
     /**
      * Returns current stage.
@@ -4069,8 +4173,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @readonly
      * @returns {black-engine~Stage}
      */
-    get stage() {
-      return this.engine.mStage;
+    static get stage() {
+      return mInstance.mEngine.mStage;
     }
 
     /**
@@ -4079,8 +4183,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @readonly
      * @returns {black-engine~VideoNullDriver}
      */
-    get driver() {
-      return this.engine.mVideo;
+    static get driver() {
+      return mInstance.mEngine.mVideo;
     }
 
     /**
@@ -4088,11 +4192,19 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * 
      * @returns {black-engine~Camera}
      */
-    get camera() {
-      if (this.mCamera !== null && this.mCamera.mAdded === true)
-        return this.mCamera;
+    static get camera() {
+      if (mInstance.mCamera !== null && mInstance.mCamera.mAdded === true)
+        return mInstance.mCamera;
 
       return null;
+    }
+
+    /**
+     * Sets default camera;
+     * @param {black-engine~Camera} value
+     */
+    static set camera(value) {
+      mInstance.mCamera = value;
     }
 
     /**
@@ -4104,7 +4216,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
-  const black = new Black();
+  new Black();
 
   /**
    * The MessageDispatcher class is the base class for all classes that posts messages.
@@ -4321,7 +4433,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (this.mBindings === null)
         return;
 
-      if (this.checkForStage === true && this !== black.stage && this.stage === null)
+      if (this.checkForStage === true && this !== Black.stage && this.stage === null)
         return;
 
       let bindings = (this.mBindings[message.name]);
@@ -4336,7 +4448,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         let binding = cloned[i];
 
-        if (this.checkForStage === true && binding.owner.stage === black.stage && binding.owner.stage === null)
+        if (this.checkForStage === true && binding.owner.stage === Black.stage && binding.owner.stage === null)
           continue;
 
         binding.callback.call(binding.context, message, ...params);
@@ -4371,7 +4483,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       for (let i = 0; i < cloned.length; i++) {
         let binding = cloned[i];
 
-        if (this.checkForStage === true && binding.owner.stage === black.stage && binding.owner.stage === null)
+        if (this.checkForStage === true && binding.owner.stage === Black.stage && binding.owner.stage === null)
           continue;
 
         if (!this.__checkPath(sender.path, binding))
@@ -4613,7 +4725,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore 
    * @static 
    * @private
-   * @type {HTMLCanvasElement}
+   * @type {HTMLCanvasElement|OffscreenCanvas}
    */
   let CANVAS = null;
 
@@ -4634,7 +4746,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     constructor(style) {
       if (CONTEXT === null) {
-        if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
+        if (typeof OffscreenCanvas !== 'undefined' && useOffscreenCanvas === true) {
           CANVAS = new OffscreenCanvas(10, 200);
           CONTEXT = CANVAS.getContext('2d');
         } else {
@@ -4727,7 +4839,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
      * @returns {boolean}
      */
-    get useOffscreenCanvas() {
+    static get useOffscreenCanvas() {
       return useOffscreenCanvas;
     }
 
@@ -4735,7 +4847,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {boolean} value
      * @returns {void}
      */
-    set useOffscreenCanvas(value) {
+    static set useOffscreenCanvas(value) {
       useOffscreenCanvas = value;
     }
 
@@ -4936,7 +5048,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @ignore
    * @private
    * @static
-   * @type {HTMLElement|null}
+   * @type {HTMLElement|Element|null}
    */
   let canvasElement = null;
   let context = null;
@@ -4961,7 +5073,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {number} lineHeight                      The height of the line.
      * @param {...black-engine~TextStyle} styles The TextStyle object representing text properties and formatting.
      * 
-     * @returns {black-engine~extMetricsData} Object representing bounds for each rich text part.
+     * @returns {black-engine~TextMetricsData} Object representing bounds for each rich text part.
      */
     static measure(text, lineHeight, ...styles) {
       let parts = [];
@@ -5134,6 +5246,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Provides time related methods.
    *
    * @cat core
+   * 
    * @static
    */
   class Time {
@@ -5363,7 +5476,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * When firing `resize` event stage bounds will be not up to date. Listen for stage's `resize` message instead.
    *
    * @cat core
-   * @fires black-engine~Viewport#resize
+   * @fires Viewport#resize
    * @extends black-engine~MessageDispatcher
    */
   class Viewport extends MessageDispatcher {
@@ -5383,7 +5496,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {HTMLElement|null} 
+       * @type {HTMLElement|Element|null} 
        */
       this.mViewportElement = null;
 
@@ -5441,6 +5554,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mReflect = false;
 
+      /**
+       * @private
+       * @type {Function}
+       */
+      this.mBoundResize;
+
       this.__initialize();
     }
 
@@ -5448,7 +5567,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      */
     __initialize() {
-      this.mViewportElement = document.createElement('div');
+      this.mViewportElement = /** @type {HTMLElement} */ (document.createElement('div'));
       this.mViewportElement.style.position = 'relative';
       this.mContainerElement.appendChild(this.mViewportElement);
 
@@ -5527,7 +5646,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       this.__onResize();
 
-      this.mChecksLeftSeconds -= black.time.delta;
+      this.mChecksLeftSeconds -= Black.time.delta;
     }
 
     /**
@@ -5582,7 +5701,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted every time viewport size has changed.
-       * @event black-engine~Viewport#resize
+       * @event Viewport#resize
        */
       this.post(Message.RESIZE, dispatchSize);
 
@@ -6035,7 +6154,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {black-engine~Texture|null}
      */
     static fromCanvas(canvas) {
-      return black.driver.getTextureFromCanvas(canvas);
+      return Black.driver.getTextureFromCanvas(canvas);
     }
 
     /**
@@ -6319,31 +6438,43 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
-     * @inheritDoc
+     * The width of the surface.
+     * @override
+     * 
+     * @returns {number}
      */
     get width() {
       return this.mCanvas.width;
     }
 
     /**
-     * @inheritDoc
+     * @override
+     * 
+     * @param {number} value
+     * @returns {void}
      */
-    set width(val) {
-      this.mCanvas.width = val;
+    set width(value) {
+      this.mCanvas.width = value;
     }
 
     /**
-     * @inheritDoc
+     * The height of the surface.
+     * @override
+     *
+     * @returns {number}
      */
     get height() {
       return this.mCanvas.height;
     }
 
     /**
-     * @inheritDoc
+     * @override
+     * 
+     * @param {number} value
+     * @returns {void}
      */
-    set height(val) {
-      this.mCanvas.height = val;
+    set height(value) {
+      this.mCanvas.height = value;
     }
 
     /**
@@ -6602,7 +6733,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Checks if given global coordinates are located within collider's area.
      *
      * @public
-     * @param {Vector} point Global coordinates.
+     * @param {black-engine~Vector} point Global coordinates.
      * @returns {boolean}
      */
     containsPoint(point) {
@@ -6614,8 +6745,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Updates min, max, center of this collider, to prepare to collision test
      *
      * @public
-     * @param {Matrix} transform Game object world transformation with zero position.
-     * @param {Vector} position  Rigid body position.
+     * @param {black-engine~Matrix} transform Game object world transformation with zero position.
+     * @param {black-engine~Vector} position  Rigid body position.
      */
     refresh(transform, position) { }
   }
@@ -6913,11 +7044,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     checkStatic(includeChildren = true) {
       if (includeChildren === false)
-        return this.mDirtyFrameNum < black.engine.frameNum;
+        return this.mDirtyFrameNum < Black.engine.frameNum;
 
       let isDynamic = false;
       GameObject.forEach(this, x => {
-        if (x.mDirtyFrameNum >= black.engine.frameNum) {
+        if (x.mDirtyFrameNum >= Black.engine.frameNum) {
           isDynamic = true;
           return true;
         }
@@ -6929,6 +7060,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * This method called each time object added to stage.
      *
+     * @action
      * @return {void}
      */
     onAdded() { }
@@ -6936,6 +7068,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Called when object is removed from stage.
      *
+     * @action
      * @return {void}
      */
     onRemoved() { }
@@ -6995,7 +7128,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       child.removeFromParent();
       child.__setParent(this);
 
-      black.engine.onChildrenAdded(child, this);
+      Black.engine.onChildrenAdded(child, this);
 
       this.mChildOrComponentBeenAdded = true;
 
@@ -7043,7 +7176,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mChildren.splice(index, 0, child);
 
       if (this.stage !== null)
-        black.engine.onChildrenChanged(child);
+        Black.engine.onChildrenChanged(child);
 
       this.setTransformDirty();
 
@@ -7110,7 +7243,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       child.__setParent(null);
 
       if (hadRoot === true)
-        black.engine.onChildrenRemoved(child);
+        Black.engine.onChildrenRemoved(child);
 
       this.setTransformDirty();
       this.mNumChildrenRemoved++;
@@ -7175,8 +7308,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (component instanceof Collider)
         this.mCollidersCache.push(component);
 
-      if (this.stage !== null || black.stage === this)
-        black.engine.onComponentAdded(this, component);
+      if (this.stage !== null || Black.stage === this)
+        Black.engine.onComponentAdded(this, component);
 
       this.mChildOrComponentBeenAdded = true;
 
@@ -7204,8 +7337,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           this.mCollidersCache.splice(colliderIx, 1);
       }
 
-      if (this.stage !== null || black.stage === this)
-        black.engine.onComponentRemoved(this, instance);
+      if (this.stage !== null || Black.stage === this)
+        Black.engine.onComponentRemoved(this, instance);
 
       this.mNumComponentsRemoved++;
 
@@ -7455,6 +7588,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
      * going from top to bottom of the display list.
      * 
+     * @action
      * @protected
      * @return {void}
      */
@@ -7463,6 +7597,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     /**
      * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
      *
+     * @action
      * @protected
      * @param {black-engine~Rectangle=} [outRect=undefined] Rectangle to be returned.
      * @return {black-engine~Rectangle} bounds in local space without taking care about transformation matrix
@@ -7591,6 +7726,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * @action
      * @protected
      * @param {black-engine~Vector} localPoint 
      * @return {boolean}
@@ -7620,6 +7756,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * @action
      * @protected
      * @param {black-engine~Vector} localPoint 
      * @return {boolean}
@@ -8157,7 +8294,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {black-engine~Stage|null}
      */
     get stage() {
-      return this.mAdded === true ? black.stage : null;
+      return this.mAdded === true ? Black.stage : null;
     }
 
     /**
@@ -8266,7 +8403,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mTag = value;
 
       if (this.mAdded)
-        black.engine.onTagUpdated(this, old, value);
+        Black.engine.onTagUpdated(this, old, value);
     }
 
     /**
@@ -8324,11 +8461,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (includeChildren) {
         GameObject.forEach(this, x => {
           x.mDirty |= flag;
-          x.mDirtyFrameNum = black.engine.frameNum;
+          x.mDirtyFrameNum = Black.engine.frameNum;
         });
       } else {
         this.mDirty |= flag;
-        this.mDirtyFrameNum = black.engine.frameNum;
+        this.mDirtyFrameNum = Black.engine.frameNum;
       }
 
       Renderer.__dirty = true;
@@ -8356,7 +8493,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let current = this;
       while (current != null) {
         current.mDirty |= flag;
-        current.mDirtyFrameNum = black.engine.frameNum;
+        current.mDirtyFrameNum = Black.engine.frameNum;
         current = current.mParent;
       }
 
@@ -8532,10 +8669,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {Array<black-engine~GameObject>|null} Array of GameObject or null if not found.
      */
     static findWithTag(tag) {
-      if (black.engine.mTagCache.hasOwnProperty(tag) === false)
+      if (Black.engine.mTagCache.hasOwnProperty(tag) === false)
         return null;
 
-      return black.engine.mTagCache[tag];
+      return Black.engine.mTagCache[tag];
     }
 
     /**
@@ -8578,7 +8715,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     static forEach(gameObject, action) {
       if (gameObject == null)
-        gameObject = black.stage;
+        gameObject = Black.stage;
 
       let r = action(gameObject);
       if (r === true)
@@ -8603,7 +8740,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     static find(name, node) {
       if (node == null)
-        node = black.stage;
+        node = Black.stage;
 
       if (node.name === name)
         return node;
@@ -8628,7 +8765,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     static findById(id, node) {
       if (node == null)
-        node = black.stage;
+        node = Black.stage;
 
       if (node.id === id)
         return node;
@@ -8894,7 +9031,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {black-engine~Renderer}
      */
     getRenderer() {
-      return black.driver.getRenderer('DisplayObject', this);
+      return Black.driver.getRenderer('DisplayObject', this);
     }
 
     /**
@@ -9203,7 +9340,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor() {
       super();
 
-      black.mCamera = this;
+      Black.camera = this;
     }
 
     get worldTransformation() {
@@ -9227,9 +9364,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Every object in the display list should be `touchable` in order to receive input messages.
    *
    * @cat input
-   * @fires black-engine~Input#pointerMove
-   * @fires black-engine~Input#pointerDown
-   * @fires black-engine~Input#pointerUp
+   * @fires Input#pointerMove
+   * @fires Input#pointerDown
+   * @fires Input#pointerUp
+   * 
+   * @fires GameObject#pointerMove
+   * @fires GameObject#pointerDown
+   * @fires GameObject#pointerUp
+   * 
    * @extends black-engine~System
    */
   class Input extends System {
@@ -9241,7 +9383,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       Debug.assert(this.constructor.instance == null, 'Only single instance is allowed');
 
-      black.input = this;
+      Black.input = this;
 
       /** 
        * @private 
@@ -9347,7 +9489,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @ignore
      */
     __initialize() {
-      this.mDom = black.engine.viewport.nativeElement;
+      this.mDom = Black.engine.viewport.nativeElement;
 
       this.__initListeners();
     }
@@ -9365,7 +9507,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.mEventList = mPointerEventList;
         isMouseDevice = true;
       }
-      else if (black.device.isTouch && black.device.isMobile) {
+      else if (Black.device.isTouch && Black.device.isMobile) {
         this.mEventList = mTouchEventList;
       }
       else {
@@ -9401,7 +9543,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {boolean}
      */
     __onKeyEvent(e) {
-      if (black.engine.isPaused === true)
+      if (Black.engine.isPaused === true)
         return false;
 
       this.mKeyQueue.push(e);
@@ -9415,7 +9557,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     __onPointerEventDoc(e) {
-      if (black.engine.isPaused === true)
+      if (Black.engine.isPaused === true)
         return;
 
       const over = e.path.indexOf(this.mDom) !== -1;
@@ -9436,7 +9578,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {boolean}
      */
     __onPointerEvent(e) {
-      if (black.engine.isPaused === true)
+      if (Black.engine.isPaused === true)
         return false;
 
       e.preventDefault();
@@ -9471,7 +9613,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     __getPointerPos(canvas, evt) {
       let rect = canvas.getBoundingClientRect();
 
-      const rotation = black.engine.viewport.rotation;
+      const rotation = Black.engine.viewport.rotation;
 
       let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
       let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
@@ -9494,7 +9636,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let x = touch.clientX;
       let y = touch.clientY;
 
-      const rotation = black.engine.viewport.rotation;
+      const rotation = Black.engine.viewport.rotation;
       let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
       let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
 
@@ -9508,10 +9650,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       // omg, who gave you keyboard?
       this.__updateKeyboard();
 
-      const size = black.engine.viewport.size;
-      const rotation = black.engine.viewport.rotation;
+      const size = Black.engine.viewport.size;
+      const rotation = Black.engine.viewport.rotation;
 
-      let stage = black.stage;
+      let stage = Black.stage;
 
       while (this.mPointerQueue.length > 0) {
         const nativeEvent = this.mPointerQueue.shift();
@@ -9533,8 +9675,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         this.mViewportPosition.copyFrom(this.mPointerPosition);
 
-        if (black.camera !== null)
-          black.camera.worldTransformation.transformVector(this.mPointerPosition, this.mPointerPosition);
+        if (Black.camera !== null)
+          Black.camera.worldTransformation.transformVector(this.mPointerPosition, this.mPointerPosition);
 
         this.mStagePosition.copyFrom(this.mPointerPosition);
 
@@ -9554,7 +9696,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @param {black-engine~Vector} pos
      */
     __findTarget(pos) {
-      let obj = black.stage.hitTest(pos);
+      let obj = Black.stage.hitTest(pos);
 
       if (obj === null) {
         this.mTarget = null;
@@ -9651,7 +9793,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         document.removeEventListener(keyValue.name, keyValue.listener);
       }
 
-      black.input = null;
+      Black.input = null;
     }
 
     /**
@@ -9833,6 +9975,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    */
 
   /**
+  * Posts when mouse down or touch down event happened.
+  * @event GameObject#pointerDown
+  */
+
+  /**
+   * Posts when mouse up or touch up event happened.
+   * @event GameObject#pointerUp
+   */
+
+  /**
+   * Posts when mouse move or touch move event happened.
+   * @event GameObject#pointerMove
+   */
+
+  /**
    * Stores additional information about pointer events.
    *
    * @ignore
@@ -9931,7 +10088,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * The root container for all renderable objects
    *
    * @cat display
-   * @fires black-engine~Stage#resize
+   * @fires Stage#resize
    * @extends black-engine~GameObject
    */
   class Stage extends GameObject {
@@ -9993,12 +10150,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {number} 
        */
-      this.mDPR = black.device.getDevicePixelRatio();
+      this.mDPR = Black.device.getDevicePixelRatio();
 
       this.mAdded = true;
 
       // Fake 
-      if (black.engine.hasSystem(Input)){
+      if (Black.engine.hasSystem(Input)){
         let c = new InputComponent();
         c.mAdded = true;
         this.addComponent(c);
@@ -10023,7 +10180,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     onUpdate() {
-      let size = black.engine.viewport.size;
+      let size = Black.engine.viewport.size;
 
       if (this.mCacheWidth !== size.width || this.mCacheHeight !== size.height) {
         this.mCacheWidth = size.width;
@@ -10046,7 +10203,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     __refresh() {
-      const size = black.engine.viewport.size;
+      const size = Black.engine.viewport.size;
       const windowWidth = size.width;
       const windowHeight = size.height;
 
@@ -10095,7 +10252,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       // TODO: me neither
       // TODO: but its setting Renderer.__dirty which is good
       // TODO: replace with priority message?
-      black.driver.__onResize(null, null);
+      Black.driver.__onResize(null, null);
 
       this.setTransformDirty();
 
@@ -10198,7 +10355,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * Returns local transformation `Matrix`
+     *
      * @override
+     * @return {black-engine~Matrix}
      */
     get localTransformation() {
       return this.mLocalTransform;
@@ -10206,6 +10366,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * @override
+     * @param {black-engine~Matrix} value
+     * @return {void}
      */
     set localTransformation(value) {
       Debug.error('Not allowed.');
@@ -11151,8 +11313,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This is abstract class for custom assets. For example Asset can be used to load video or other data files.
    * Holds information about external assets.
    *
-   * @fires black-engine~Asset#error
-   * @fires black-engine~Asset#complete
+   * @fires Asset#error
+   * @fires Asset#complete
    * 
    * @cat assets
    * @extends black-engine~MessageDispatcher
@@ -11256,7 +11418,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted when error occurred during loading this asset. 
-       * @event black-engine~Asset#error
+       * @event Asset#error
        */
       this.post(Message.ERROR);
     }
@@ -11294,7 +11456,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posted when asset finished loading.
-       * @event black-engine~Asset#complete
+       * @event Asset#complete
        */
       this.post(Message.COMPLETE);
     }
@@ -11815,7 +11977,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Creates new instance of SoundEffect.
      */
     constructor() {
-
       /** 
        * @protected 
        * @type {AudioNode} 
@@ -11865,25 +12026,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {GainNode} 
        */
-      this.mGainL = black.audio._newGainNode();
+      this.mGainL = Black.audio._newGainNode();
 
       /** 
        * @private 
        * @type {GainNode} 
        */
-      this.mGainR = black.audio._newGainNode();
+      this.mGainR = Black.audio._newGainNode();
 
       /** 
        * @private 
        * @type {ChannelSplitterNode} 
        */
-      this.mSplitter = black.audio.context.createChannelSplitter(2);
+      this.mSplitter = Black.audio.context.createChannelSplitter(2);
       
       /** 
        * @private 
        * @type {ChannelMergerNode} 
        */
-      this.mMerger = black.audio.context.createChannelMerger(2);
+      this.mMerger = Black.audio.context.createChannelMerger(2);
 
       this.mSplitter.connect(this.mGainL, 0);
       this.mSplitter.connect(this.mGainR, 1);
@@ -11896,10 +12057,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mValue = 0;
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mInputNode = this.mSplitter;
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mOutputNode = this.mMerger;
     }
 
@@ -12003,7 +12170,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {GainNode} 
        */
-      this.mGainNode = black.audio._newGainNode();
+      this.mGainNode = Black.audio._newGainNode();
 
       /** 
        * @private 
@@ -12044,7 +12211,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     enableSpacePan() {
       if (this.mSpatialPanner == null) {
-        this.mSpatialPanner = black.audio.context.createPanner();
+        this.mSpatialPanner = Black.audio.context.createPanner();
         if (this.mFirstNode) {
           this.mSpatialPanner.connect(this.mFirstNode);
           this.mFirstNode = this.mSpatialPanner;
@@ -12080,7 +12247,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     enableAnalyser() {
       if (this.mAnalyser == null) {
-        this.mAnalyser = black.audio.context.createAnalyser();
+        this.mAnalyser = Black.audio.context.createAnalyser();
         if (this.mFirstNode) {
           this.mAnalyser.connect(this.mFirstNode);
           this.mFirstNode = this.mAnalyser;
@@ -12116,21 +12283,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let duration = this.mSound.isSubClip && !this.mLoop ? this.mSound.duration - this.mPausePosition : undefined;
       this.mGainNode.gain.setValueAtTime(this.mVolume, 0);
 
-      let src = black.audio.context.createBufferSource();
+      let src = Black.audio.context.createBufferSource();
       src.buffer = this.mSound.native;
       src.loop = this.mLoop;
       src.onended = () => this.__onComplete();
       this.mFirstNode && src.connect(this.mFirstNode);
       this.mPlayNode = this.mFirstNode;
-      this.mStartTime = black.audio.context.currentTime - this.mPausePosition;
+      this.mStartTime = Black.audio.context.currentTime - this.mPausePosition;
 
       if (this.mLoop && this.mSound.isSubClip) {
         src.loopStart = this.mSound.offset;
         src.loopEnd = this.mSound.offset + this.mSound.duration;
       }
 
-      src.start(black.audio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
-      black.audio._resolveChannel(this);
+      src.start(Black.audio.context.currentTime, this.mSound.offset + this.mPausePosition, duration);
+      Black.audio._resolveChannel(this);
       this.mSrc = src;
 
       return this;
@@ -12146,7 +12313,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     stop(duration = 0) {
       if (this.mState === SoundState.PLAYING) {
         this.mGainNode.gain.cancelScheduledValues(0);
-        this.mSrc.stop(black.audio.context.currentTime + duration);
+        this.mSrc.stop(Black.audio.context.currentTime + duration);
       }
     }
 
@@ -12190,9 +12357,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       } else {
         this.mGainNode.gain.setValueAtTime(from, 0);
         if (type === 'exp')
-          this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), black.audio.context.currentTime + duration);
+          this.mGainNode.gain.exponentialRampToValueAtTime(Math.max(to, 0.01), Black.audio.context.currentTime + duration);
         else
-          this.mGainNode.gain.linearRampToValueAtTime(to, black.audio.context.currentTime + duration);
+          this.mGainNode.gain.linearRampToValueAtTime(to, Black.audio.context.currentTime + duration);
       }
     }
 
@@ -12221,7 +12388,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     get currentPosition() {
       switch (this.mState) {
         case SoundState.PLAYING:
-          return (black.audio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
+          return (Black.audio.context.currentTime - this.mStartTime) % (this.mSound.duration + 0.01);
         case SoundState.PAUSED:
           return this.mPausePosition;
         case SoundState.COMPLETED:
@@ -12259,7 +12426,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return;
       this.mChannel = value;
       if (this.mState === SoundState.PLAYING) {
-        black.audio._resolveChannel(this);
+        Black.audio._resolveChannel(this);
       }
     }
 
@@ -12371,7 +12538,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {!GainNode} 
        */
-      this.mGain = black.audio._newGainNode();
+      this.mGain = Black.audio._newGainNode();
 
       /** 
        * @private 
@@ -12816,24 +12983,24 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Starts controlling only instance of AudioContext.listener.
      */
     listen() {
-      black.audio.currentListener = this;
+      Black.audio.currentListener = this;
     }
 
     /**
      * Stops controlling AudioContext.listener.
      */
     loose() {
-      black.audio.looseListener();
+      Black.audio.looseListener();
     }
 
     /**
      * @inheritDoc
      */
     onRender() {
-      if (black.audio.currentListener === this) {
-        let listener = black.audio.context.listener;
+      if (Black.audio.currentListener === this) {
+        let listener = Black.audio.context.listener;
         
-        let stage = black.stage;
+        let stage = Black.stage;
         let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
         let px = (pos.x - stage.centerX) / stage.width * 2;
         let py = (pos.y - stage.centerY) / stage.height * 2;
@@ -12861,7 +13028,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor() {
       super();
 
-      black.audio = this;
+      Black.audio = this;
 
       /** 
        * @private 
@@ -12941,7 +13108,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.mContext.close();
       }
 
-      black.audio = null;
+      Black.audio = null;
     }
 
     /**
@@ -13030,7 +13197,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       let sound = null;
       if (nameOrSound.constructor === String)
-        sound = (black.assets.getSound( /** @type {string} */(nameOrSound)));
+        sound = (Black.assets.getSound( /** @type {string} */(nameOrSound)));
 
       return sound.play(channel, volume, loop, pan);
     }
@@ -13175,10 +13342,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor(name, url) {
       super(AssetType.SOUND, name);
 
-      if (black.device.webAudioSupported === false)
+      if (Black.device.webAudioSupported === false)
         return;
 
-      if (black.engine.hasSystem(MasterAudio) === false) {
+      if (Black.engine.hasSystem(MasterAudio) === false) {
         Debug.warn('[SoundAsset] Loading sound files without MasterAudio system.');
         return;
       }
@@ -13210,7 +13377,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     onAllLoaded() {
       let undecodedAudio = /** @type {!ArrayBuffer} */ (this.mXHR.data);
-      black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
+      Black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
         super.ready(new SoundClip(buffer));
       });
     }
@@ -13245,10 +13412,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mDataUrl = dataUrl;
 
-      if (black.device.webAudioSupported === false)
+      if (Black.device.webAudioSupported === false)
         return;
 
-      if (black.engine.hasSystem(MasterAudio) === false) {
+      if (Black.engine.hasSystem(MasterAudio) === false) {
         Debug.warn('[SoundAsset] Loading sound files without MasterAudio system.');
         return;
       }
@@ -13285,7 +13452,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     onAllLoaded() {
       let undecodedAudio = /** @type {!ArrayBuffer} */ (this.mAudioXHR.data);
-      black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
+      Black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
         super.ready(new SoundAtlasClip(buffer, this.mDataXHR.data));
       });
     }
@@ -14561,7 +14728,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (graphicsData === null) {
         this.mGraphicsData = new GraphicsData();
       } else if (typeof graphicsData === 'string') {
-        this.mGraphicsData = black.assets.getGraphicsData(graphicsData);
+        this.mGraphicsData = Black.assets.getGraphicsData(graphicsData);
       } else {
         this.mGraphicsData = graphicsData;
       }
@@ -14581,7 +14748,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     getRenderer() {
-      return black.driver.getRenderer('Graphics', this);
+      return Black.driver.getRenderer('Graphics', this);
     }
 
     /**
@@ -15181,8 +15348,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           const styles = this.__parseStyles(def.s);
           const gData = this.__traverse(def, styles, new GraphicsData(), new BVGStyle());
           const graphics = new Graphics(gData);
-          const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, black.driver.renderScaleFactor);
-          black.driver.render(graphics, renderTexture, new Matrix());
+          const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, Black.driver.renderScaleFactor);
+          Black.driver.render(graphics, renderTexture, new Matrix());
 
           res[id] = new GraphicsPattern(renderTexture.native, def.r);
         }
@@ -15742,10 +15909,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
 
         const graphics = new Graphics(node, name !== this.mGraphicsData.name);
-        const dpr = 1 / black.driver.renderScaleFactor;
+        const dpr = 1 / Black.driver.renderScaleFactor;
         const renderTexture = new CanvasRenderTexture(graphics.width, graphics.height, 1);
 
-        black.driver.render(graphics, renderTexture, new Matrix().scale(dpr, dpr));
+        Black.driver.render(graphics, renderTexture, new Matrix().scale(dpr, dpr));
 
         textures[name] = renderTexture;
       }
@@ -15786,7 +15953,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * 
      * @param {string} type 
      * @param {string|black-engine~LoaderType} url 
-     * @param {...any}
+     * @param {...any} args
      * 
      * @returns {black-engine~AssetLoader}
      */
@@ -15807,9 +15974,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Responsible for loading assets and manages its in memory state.
    *
-   * @fires black-engine~Message.PROGRESS
-   * @fires black-engine~Message.COMPLETE
-   * @fires black-engine~Message.ERROR
+   * @fires AssetManager#progress
+   * @fires AssetManager#complete
+   * @fires AssetManager#error
    *
    * @cat assets
    * @extends black-engine~MessageDispatcher
@@ -15822,8 +15989,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor() {
       super();
 
-      if (black.assets === null)
-        black.assets = this;
+      if (Black.assets === null)
+        Black.assets = this;
 
       /** 
        * @private 
@@ -17121,13 +17288,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     __refreshBitmapCache() {
-      const bounds = this.gameObject.getBounds(black.stage, true);
-      const sf = black.stage.scaleFactor;
-      const fs = black.driver.renderScaleFactor * sf;
+      const bounds = this.gameObject.getBounds(Black.stage, true);
+      const sf = Black.stage.scaleFactor;
+      const fs = Black.driver.renderScaleFactor * sf;
 
       /** @type {Matrix} */
       let m = Matrix.pool.get();
-      m.set(1, 0, 0, 1, ~~(-bounds.x * sf - black.stage.mX), ~~(-bounds.y * sf - black.stage.mY));
+      m.set(1, 0, 0, 1, ~~(-bounds.x * sf - Black.stage.mX), ~~(-bounds.y * sf - Black.stage.mY));
 
       if (this.mIsClipped === true && this.skipChildren === true) {
         m.data[4] += this.gameObject.mPivotX * sf;
@@ -17146,14 +17313,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       else
         this.mCacheTexture.resize(bounds.width, bounds.height, 1);
 
-      black.driver.render(this.gameObject, this.mCacheTexture, m);
+      Black.driver.render(this.gameObject, this.mCacheTexture, m);
       Matrix.pool.release(m);
 
       if (this.mCacheAsBitmapMatrixCache === null)
         this.mCacheAsBitmapMatrixCache = new Matrix();
 
       this.mCacheAsBitmapMatrixCache.copyFrom(m);
-      this.mCacheAsBitmapMatrixCache.scale(1 / black.driver.renderScaleFactor, 1 / black.driver.renderScaleFactor);
+      this.mCacheAsBitmapMatrixCache.scale(1 / Black.driver.renderScaleFactor, 1 / Black.driver.renderScaleFactor);
       this.mCacheAsBitmapMatrixCache.data[4] = -this.mCacheAsBitmapMatrixCache.data[4];
       this.mCacheAsBitmapMatrixCache.data[5] = -this.mCacheAsBitmapMatrixCache.data[5];
 
@@ -17693,8 +17860,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Starts emitting particles. By default emitter will start emitting automatically.
      */
     play() {
-      console.log(this.mState);
-      
       if (this.mState === EmitterState.EMITTING)
         return;
 
@@ -17741,7 +17906,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       while (this.mCurrentPresimulationTime <= this.mPresimulateSeconds) {
         this.onUpdate();
-        this.mCurrentPresimulationTime += black.time.delta;
+        this.mCurrentPresimulationTime += Black.time.delta;
       }
 
       this.mPresimulateSeconds = 0;
@@ -17752,7 +17917,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     getRenderer() {
-      return black.driver.getRenderer('Emitter', this);
+      return Black.driver.getRenderer('Emitter', this);
     }
 
     /**
@@ -17813,7 +17978,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * Hacky method which returns time now or presimulation time depending on a case.
      */
     __getTime() {
-      return black.time.now;
+      return Black.time.now;
     }
 
     /**
@@ -17824,7 +17989,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {void}
      */
     updateNextTick(dt = 0) {
-      let t = black.time.now;
+      let t = Black.time.now;
       let firstEmit = false;
 
       if (this.mState === EmitterState.PENDING) {
@@ -17863,7 +18028,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           else {
             this.mEmitIntervalLeft -= dt;
             this.mNextUpdateAt = t + this.mEmitIntervalLeft;
-            //console.log(this.mEmitIntervalLeft);
 
             // reset interval
             if (this.mEmitIntervalLeft <= 0)
@@ -17882,12 +18046,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (this.mState === EmitterState.PAUSED)
         return;
 
-      let dt = black.time.delta;
+      let dt = Black.time.delta;
 
       // rate logic
       this.updateNextTick(dt);
 
-      if (black.time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
+      if (Black.time.now >= this.mNextUpdateAt && this.mState === EmitterState.EMITTING) {
         this.__create(this.mEmitCount.getValue());
       }
 
@@ -18145,7 +18309,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     set textureNames(value) {
       this.mTextureNames = value;
 
-      this.textures = value.map(x => black.assets.getTexture(x));
+      this.textures = value.map(x => Black.assets.getTexture(x));
     }
 
     /**
@@ -18554,7 +18718,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
             let grd = gradientInfo.native;
 
             if (!grd) {
-              const dpr = black.driver.renderScaleFactor;
+              const dpr = Black.driver.renderScaleFactor;
               const entries = [];
 
               grd = gradientInfo.native = ctx.createLinearGradient(gradientInfo.x0 * dpr, gradientInfo.y0 * dpr,
@@ -18759,7 +18923,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @protected 
        * @type {number} 
        */
-      this.mDevicePixelRatio = black.engine.useHiDPR === true ? black.device.getDevicePixelRatio() : 1;
+      this.mDevicePixelRatio = Black.engine.useHiDPR === true ? Black.device.getDevicePixelRatio() : 1;
 
       /** 
        * @protected 
@@ -18785,7 +18949,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mRendererMap = {};
 
-      black.engine.viewport.on('resize', this.__onResize, this);
+      Black.engine.viewport.on('resize', this.__onResize, this);
     }
 
     /**
@@ -19324,17 +19488,17 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (session.isBackBufferActive === false) {
         if (session.customTransform === null) {
           transform = transform.clone(); // TODO: too much allocations
-          transform.data[4] -= black.stage.mX;
-          transform.data[5] -= black.stage.mY;
+          transform.data[4] -= Black.stage.mX;
+          transform.data[5] -= Black.stage.mY;
         } else {
           transform = transform.clone(); // TODO: too much allocations
           transform.prepend(session.customTransform);
         }
       }
 
-      if (black.camera !== null) {
+      if (Black.camera !== null) {
         transform = transform.clone();
-        transform.prepend(black.camera.worldTransformationInverted);
+        transform.prepend(Black.camera.worldTransformationInverted);
       }
 
       this.mTransform = transform;
@@ -19387,7 +19551,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       // TODO: clear only changed region
       this.mCtx.setTransform(1, 0, 0, 1, 0, 0);
 
-      let viewport = black.engine.viewport;
+      let viewport = Black.engine.viewport;
       if (viewport.isTransparent === false) {
         this.mCtx.fillStyle = ColorHelper.hexColorToString(viewport.backgroundColor);
         this.mCtx.fillRect(0, 0, viewport.size.width * this.mDevicePixelRatio, viewport.size.height * this.mDevicePixelRatio);
@@ -19523,7 +19687,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       if (texture !== null && texture.constructor === String) {
         this.mTextureName = /** @type {string} */ (texture);
-        this.texture = black.assets.getTexture(/** @type {string} */(texture));
+        this.texture = Black.assets.getTexture(/** @type {string} */(texture));
       } else {
         this.texture = /** @type {Texture} */ (texture);
       }
@@ -19533,7 +19697,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     getRenderer() {
-      return black.driver.getRenderer('Sprite', this);
+      return Black.driver.getRenderer('Sprite', this);
     }
 
     /**
@@ -19626,7 +19790,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       }
 
       this.mTextureName = value;
-      this.texture = black.assets.getTexture(/** @type {string} */(value));
+      this.texture = Black.assets.getTexture(/** @type {string} */(value));
     }
 
     /**
@@ -19701,7 +19865,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * This class is used to create display text.
    *
    * @cat display.text
-   * @fires black-engine~TextField#change
+   * @fires TextField#change
    * @extends black-engine~DisplayObject
    */
   class TextField extends DisplayObject {
@@ -19827,7 +19991,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     getRenderer() {
-      return black.driver.getRenderer('Text', this);
+      return Black.driver.getRenderer('Text', this);
     }
 
     /**
@@ -20251,7 +20415,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /**
        * Posts every time text has been changed.
-       * @event black-engine~TextField#change
+       * @event TextField#change
        */
       this.post(Message.CHANGE);
     }
@@ -20466,7 +20630,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       super();
 
       if (font !== null && font.constructor === String)
-        this.mData = black.assets.getBitmapFont(/** @type {string} */(font));
+        this.mData = Black.assets.getBitmapFont(/** @type {string} */(font));
       else
         this.mData = /** @type {BitmapFontData} */ (font);
 
@@ -20523,7 +20687,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     getRenderer() {
-      return black.driver.getRenderer('BitmapText', this);
+      return Black.driver.getRenderer('BitmapText', this);
     }
 
     /**
@@ -21403,7 +21567,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * 
      * @param {number} x
      * @param {number} y
-     * @returns {Vector|null}
+     * @returns {black-engine~Vector|null}
      */
     getVectorAt(x, y) {
       x = Math.floor(x * this.resolution);
@@ -22088,7 +22252,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * A static class with many static easing functions.
    *
    * @cat animation
+   * 
    * @static
+   * @staticClass
    */
   class Ease {
     /**
@@ -22993,7 +23159,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     play() {
       if (!this.mIsPaused) {
-        this.__start(black.time.now);
+        this.__start(Black.time.now);
       } else {
         this.__resume();
       }
@@ -23052,7 +23218,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return this;
 
       this.mIsPaused = true;
-      this.mPausedTime = black.time.now;
+      this.mPausedTime = Black.time.now;
 
       return this;
     }
@@ -23066,7 +23232,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return;
 
       this.mIsPaused = false;
-      this.mStartTime += black.time.now - this.mPausedTime;
+      this.mStartTime += Black.time.now - this.mPausedTime;
     }
 
     /**
@@ -23104,7 +23270,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     onAdded(gameObject) {
       if (this.mPlayOnAdded) {
-        this.__start(black.time.now);
+        this.__start(Black.time.now);
       }
     }
 
@@ -23160,10 +23326,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     onRender() {
-      if (black.engine.numUpdates !== 0)
+      if (Black.engine.numUpdates !== 0)
         return;
 
-      let time = black.time.now;
+      let time = Black.time.now;
 
       if (time < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
         return;
@@ -23197,7 +23363,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @inheritDoc
      */
     onUpdate() {
-      let t = black.time.now;
+      let t = Black.time.now;
 
       if (t < this.mStartTime || this.mIsPlaying === false || this.mIsPaused === true)
         return;
@@ -23228,7 +23394,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted on every tween update. 
        * Note: tween can update object values inside `onRender` method without posting `black-engine~Tween#update` message.
-       * @event black-engine~Tween#update
+       * @event Tween#update
        */
       this.post(Message.UPDATE, this.gameObject);
 
@@ -23242,7 +23408,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
           /**
            * Posted everytime tween is repeating.
-           * @event black-engine~Tween#loop
+           * @event Tween#loop
            */
           this.post('loop', this.gameObject);
         } else {
@@ -23250,7 +23416,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
           /**
            * Posten when tween is finished.
-           * @event black-engine~Tween#complete
+           * @event Tween#complete
            */
           this.post(Message.COMPLETE, this.gameObject);
 
@@ -23273,7 +23439,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         /**
          * Posted when tween started.
-         * @event black-engine~Tween#start
+         * @event Tween#start
          */
         this.post('start', this.gameObject);
 
@@ -23312,7 +23478,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * Holds details about sprite animation.
    *
-   * @fires black-engine~AnimationInfo#complete
+   * @fires AnimationInfo#complete
    * @cat animation
    */
   class AnimationInfo {
@@ -23403,6 +23569,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     /**
      * Plays animation. If Animation is completed, current frame is reset to 0.
+     * 
      * @ignore
      * @return {black-engine~Texture} Returns the current frame Texture.
      */
@@ -23416,7 +23583,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mStopped = false;
       this.mCompleted = false;
 
-      this.mNextFrameAt = black.time.now + this.mFrameDuration - this.mElapsed;
+      this.mNextFrameAt = Black.time.now + this.mFrameDuration - this.mElapsed;
       this.mElapsed = 0;
 
       return this.mFrames[this.mCurrentFrame];
@@ -23441,7 +23608,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     __pause() {
       this.mPaused = true;
-      this.mElapsed = this.mNextFrameAt - black.time.now;
+      this.mElapsed = this.mNextFrameAt - Black.time.now;
     }
 
     /**
@@ -23449,8 +23616,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {black-engine~Texture|null}
      */
     __update() {
-      let t = black.time.now;
-      let dt = black.time.dt;
+      let t = Black.time.now;
+      let dt = Black.time.dt;
       
       if (t < this.mNextFrameAt || this.mPaused === true || this.mStopped === true || this.mCompleted === true)
         return null;
@@ -23466,7 +23633,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           /**
            * Post messages when animation reach its end.
            *
-           * @event black-engine~AnimationInfo#complete
+           * @event AnimationInfo#complete
            */
           this.mController.post(Message.COMPLETE, this);
           this.mCompleted = true;
@@ -23474,7 +23641,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
       }
 
-      this.mNextFrameAt = black.time.now + this.mFrameDuration;
+      this.mNextFrameAt = Black.time.now + this.mFrameDuration;
       return this.mFrames[this.mCurrentFrame];
     }
 
@@ -23498,7 +23665,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mFrameDuration = 1 / this.mFPS;
 
       // update next frame start time
-      this.mNextFrameAt += this.mNextFrameAt - black.time.now;
+      this.mNextFrameAt += this.mNextFrameAt - Black.time.now;
     }
 
     /**
@@ -23723,12 +23890,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {WaveShaperNode} 
        */
-      this.mWaveShaperNode = black.audio.context.createWaveShaper();
+      this.mWaveShaperNode = Black.audio.context.createWaveShaper();
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mInputNode = this.mWaveShaperNode;
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mOutputNode = this.mWaveShaperNode;
 
       /** 
@@ -23904,10 +24077,16 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           this.mFilters[i - 1].connect(/** @type {!AudioNode} */ (this.mFilters[i]));
       }
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mInputNode = this.mFilters[0];
 
-      /** @inheritDoc */
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
       this.mOutputNode = this.mFilters[this.mFilters.length - 1];
 
       // todo: determine correct max value
@@ -23931,7 +24110,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {BiquadFilterNode}
      */
     __createFilter(freq) {
-      let f = black.audio.context.createBiquadFilter();
+      let f = Black.audio.context.createBiquadFilter();
       f.type = 'peaking';
       f.frequency.setValueAtTime(freq, 0);
       f.Q.setValueAtTime(1, 0);
@@ -24028,35 +24207,41 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     constructor(IRBuffer) {
       super();
 
-      /** @inheritDoc */
-      this.mInputNode = black.audio._newGainNode();
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
+      this.mInputNode = Black.audio._newGainNode();
 
-      /** @inheritDoc */
-      this.mOutputNode = black.audio._newGainNode();
+      /** 
+       * @protected 
+       * @type {AudioNode} 
+       */
+      this.mOutputNode = Black.audio._newGainNode();
 
       /** 
        * @private 
        * @type {ConvolverNode} 
        */
-      this.mConvolver = black.audio.context.createConvolver();
+      this.mConvolver = Black.audio.context.createConvolver();
 
       /** 
        * @private 
        * @type {GainNode} 
        */
-      this.mDry = black.audio._newGainNode();
+      this.mDry = Black.audio._newGainNode();
 
       /** 
        * @private 
        * @type {GainNode} 
        */
-      this.mWet = black.audio._newGainNode();
+      this.mWet = Black.audio._newGainNode();
 
       /** 
        * @private 
        * @type {BiquadFilterNode} 
        */
-      this.mTone = black.audio.context.createBiquadFilter();
+      this.mTone = Black.audio.context.createBiquadFilter();
 
       this.mConvolver.buffer = IRBuffer;
 
@@ -24101,7 +24286,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {void}
      */
     set tone(value) {
-      value = MathEx.clamp(value, 10, black.audio.context.sampleRate / 2);
+      value = MathEx.clamp(value, 10, Black.audio.context.sampleRate / 2);
       this.mTone.frequency.setValueAtTime(value, 0);
     }
 
@@ -24158,7 +24343,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @private 
        * @type {black-engine~SoundClip} 
        */
-      this.mSoundClip = black.assets.getSound(name);
+      this.mSoundClip = Black.assets.getSound(name);
 
       /** 
        * @private 
@@ -24268,7 +24453,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     onUpdate() {
       if (this.mSpatialEffect && this.mSoundInstance != null && this.mSoundInstance.isPlaying === true) {
-        const stage = black.stage;
+        const stage = Black.stage;
         const pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
         const px = (pos.x - stage.centerX) / stage.width * 2;
         const py = (pos.y - stage.centerY) / stage.height * 2;
@@ -24667,7 +24852,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
       }
 
-      if (gameObject !== black.stage) {
+      if (gameObject !== Black.stage) {
         const cachedPosition = this.mCachedPosition;
         const prevX = cachedPosition.x;
         const prevY = cachedPosition.y;
@@ -24783,7 +24968,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
-       * @type {Array<black-engine~ector>|null} Box a vertices 
+       * @type {Array<black-engine~Vector>|null} Box a vertices 
        */
       this.verticesA = null;
 
@@ -25110,7 +25295,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       const relVelY = velocityB.y - velocityA.y;
       const relVel = relVelX * normalX + relVelY * normalY;
 
-      const bounceThreshold = Pair.bounceTreshhold * Pair.unitsPerMeter * black.stage.mScaleX;
+      const bounceThreshold = Pair.bounceTreshhold * Pair.unitsPerMeter * Black.stage.mScaleX;
       this.mBias = relVel < -bounceThreshold ? -Math.max(this.bodyA.bounce, this.bodyB.bounce) * relVel : 0;
       this.mMass = 1 / (invMassA + invMassB);
       this.mFriction = Math.min(this.bodyA.friction, this.bodyB.friction);
@@ -26276,7 +26461,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
 
         let isSleeping = true;
-        const sleepThreshold = Pair.sleepThreshold * Pair.unitsPerMeter * black.stage.mScaleX;
+        const sleepThreshold = Pair.sleepThreshold * Pair.unitsPerMeter * Black.stage.mScaleX;
 
         for (let i = 0, l = group.length; i < l; i++) {
           const body = group[i];
@@ -26330,7 +26515,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
       }
 
-      const unitsPerMeterDt = black.stage.mScaleX * Pair.unitsPerMeter * dt;
+      const unitsPerMeterDt = Black.stage.mScaleX * Pair.unitsPerMeter * dt;
 
       for (let i = 0, l = bodies.length; i < l; i++) {
         const body = bodies[i];
@@ -26361,7 +26546,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {void}
      */
     __setBounds() {
-      const bounds = black.stage.bounds;
+      const bounds = Black.stage.bounds;
       const thickness = Number.MAX_SAFE_INTEGER;
 
       this.mBoundsLeft.set(-thickness, 0, thickness, bounds.height);
@@ -26384,17 +26569,17 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           this.mBoundsBody = new RigidBody();
           this.mBoundsBody.isStatic = true;
 
-          black.stage.addComponent(this.mBoundsLeft);
-          black.stage.addComponent(this.mBoundsRight);
-          black.stage.addComponent(this.mBoundsTop);
-          black.stage.addComponent(this.mBoundsBottom);
+          Black.stage.addComponent(this.mBoundsLeft);
+          Black.stage.addComponent(this.mBoundsRight);
+          Black.stage.addComponent(this.mBoundsTop);
+          Black.stage.addComponent(this.mBoundsBottom);
 
           this.__setBounds();
         }
 
-        black.stage.addComponent(this.mBoundsBody);
+        Black.stage.addComponent(this.mBoundsBody);
       } else {
-        black.stage.removeComponent(this.mBoundsBody);
+        Black.stage.removeComponent(this.mBoundsBody);
       }
     }
 
@@ -26511,7 +26696,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       style.innerHTML = css;
       document.getElementsByTagName('head')[0].appendChild(style);
 
-      let container = /** @type {HTMLElement} */ (document.getElementById(black.engine.containerElementId));
+      let container = /** @type {HTMLElement} */ (document.getElementById(Black.engine.containerElementId));
       let oldOverflow = container.style.overflow;
       container.style.overflow = 'hidden';
 
@@ -26574,7 +26759,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
         /**
          * Posts when splash screen is hidden.
-         * @event black-engine~SplashScreen#complete
+         * @event SplashScreen#complete
          */
         this.post(Message.COMPLETE);
       }, this.mDuration);
@@ -26593,8 +26778,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    *
    * @cat timers
    * 
-   * @fires black-engine~Timer#complete
-   * @fires black-engine~Timer#tick
+   * @fires Timer#complete
+   * @fires Timer#tick
    * 
    * @extends black-engine~Component
    */
@@ -26663,13 +26848,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (this.mIsRunning === false)
         return;
 
-      this.mElapsedSeconds += black.time.delta;
-      this.mTotalElapsedSeconds += black.time.delta;
+      this.mElapsedSeconds += Black.time.delta;
+      this.mTotalElapsedSeconds += Black.time.delta;
 
       if (this.mElapsedSeconds >= this.mInterval) {
         this.mElapsedSeconds = 0;
 
-        const ticksPerUpdate = Math.max(1, ~~(black.time.delta / this.mInterval));
+        const ticksPerUpdate = Math.max(1, ~~(Black.time.delta / this.mInterval));
         for (let i = 0; i < ticksPerUpdate; i++) {
           this.mTick++;
 
@@ -26853,10 +27038,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   /**
    * The Black class represents the core of the Black Engine.
    *
-   * @fires black-engine~Engine#paused
-   * @fires black-engine~Engine#unpaused
-   * @fires black-engine~Engine#ready
-   * @fires black-engine~Engine#looped
+   * @fires Engine#paused
+   * @fires Engine#unpaused
+   * @fires Engine#ready
+   * @fires Engine#looped
    *
    * @extends black-engine~MessageDispatcher
    */
@@ -26883,7 +27068,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       this.id = ++ID$3;
 
-      black.engine = this;
+      Black.engine = this;
 
       /** 
        * @private 
@@ -27079,11 +27264,11 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       if (!this.mContainerElement)
         throw new Error('Container element was not found');
 
-      black.device = new Device();
+      Black.device = new Device();
 
       this.mStageWidth = this.mContainerElement.clientWidth;
       this.mStageHeight = this.mContainerElement.clientHeight;
-      this.mUseHiDPR = black.device.isMobile;
+      this.mUseHiDPR = Black.device.isMobile;
 
       this.__bootViewport();
       this.__update = this.__update.bind(this);
@@ -27103,7 +27288,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted after engine entered paused state.
        *
-       * @event black-engine~Engine#paused
+       * @event Engine#paused
        */
       this.post('paused');
     }
@@ -27127,7 +27312,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted after engine is unpaused.
        *
-       * @event black-engine~Engine#unpaused
+       * @event Engine#unpaused
        */
       this.post('unpaused');
     }
@@ -27265,12 +27450,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return;
       }
 
-      black.engine = this;
+      Black.engine = this;
 
       if (this.mIsStarted === true)
         return;
 
-      black.time = new Time();
+      Black.time = new Time();
 
       this.__bootSystems();
       this.__bootStage();
@@ -27281,7 +27466,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /**
        * Posted when all systems, stage and driver ready to be used. 
        *
-       * @event black-engine~Engine#ready
+       * @event Engine#ready
        */
       this.post(Message.READY);
 
@@ -27332,8 +27517,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.mVideo.dispose();
       this.mViewport.dispose();
 
-      black.assets.dispose();
-      black.assets = null;
+      Black.assets.dispose();
+      Black.assets = null;
 
       for (let i = 0; i < this.mSystems.length; i++)
         this.mSystems[i].dispose();
@@ -27342,7 +27527,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       this.mNumUpdates = 0;
       this.mFrameNum = 0;
-      black.engine = null;
+      Black.engine = null;
     }
 
     /**
@@ -27352,7 +27537,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {void}
      */
     __update(timestamp, forceUpdate) {
-      let time = black.time;
+      let time = Black.time;
 
       // Calculate FPS
       if (this.mPaused === true && this.mUnpausing === true) {
@@ -27382,16 +27567,15 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
          * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
          * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
          *
-         * @event black-engine~Engine#looped
+         * @event Engine#looped
          */
         this.post('looped', numTicks);
         Debug.warn(`Unable to catch up ${numTicks} update(s).`);
 
-        numTicks = black.mMaxUpdatesPerFrame;
+        numTicks = this.mMaxUpdatesPerFrame;
       }
 
-
-      black.mNumUpdates = numTicks;
+      this.mNumUpdates = numTicks;
       for (let i = 0; i < numTicks; i++) {
         time.mActualTime += time.delta;
         time.mTime = time.mActualTime;
@@ -27615,7 +27799,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {number}
      */
     get ups() {
-      return black.time.mDeltaTimeMs * 0.001;
+      return Black.time.mDeltaTimeMs * 0.001;
     }
 
     /**
@@ -27626,8 +27810,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       Debug.isNumber(value);
       Debug.assert(value > 0);
 
-      black.time.mDeltaTimeMs = 1000 / value;
-      black.time.mDeltaTime = black.time.mDeltaTimeMs * 0.001;
+      Black.time.mDeltaTimeMs = 1000 / value;
+      Black.time.mDeltaTime = Black.time.mDeltaTimeMs * 0.001;
     }
 
     /**
@@ -27790,7 +27974,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.BitmapTextField = BitmapTextField;
   exports.BitmapTextRenderer = BitmapTextRenderer;
   exports.BitmapTextRendererCanvas = BitmapTextRendererCanvas;
-  exports.Black = black;
+  exports.Black = Black;
   exports.BlendMode = BlendMode;
   exports.BoxCollider = BoxCollider;
   exports.BoxToBoxPair = BoxToBoxPair;

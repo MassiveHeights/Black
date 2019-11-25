@@ -19,7 +19,7 @@ export class LoaderFactory {
    * 
    * @param {string} type 
    * @param {string|black-engine~LoaderType} url 
-   * @param {...any}
+   * @param {...any} args
    * 
    * @returns {black-engine~AssetLoader}
    */

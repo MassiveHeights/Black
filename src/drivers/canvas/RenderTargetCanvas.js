@@ -65,8 +65,8 @@ export class RenderTargetCanvas extends RenderTarget {
    * @param {number} value
    * @returns {void}
    */
-  set width(val) {
-    this.mCanvas.width = val;
+  set width(value) {
+    this.mCanvas.width = value;
   }
 
   /**
@@ -85,8 +85,8 @@ export class RenderTargetCanvas extends RenderTarget {
    * @param {number} value
    * @returns {void}
    */
-  set height(val) {
-    this.mCanvas.height = val;
+  set height(value) {
+    this.mCanvas.height = value;
   }
 
   /**

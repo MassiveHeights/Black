@@ -83,7 +83,7 @@ export class TextSegmentMetricsData {
  * @ignore
  * @private
  * @static
- * @type {HTMLElement|null}
+ * @type {HTMLElement|Element|null}
  */
 let canvasElement = null;
 let context = null;
@@ -108,7 +108,7 @@ export class TextMetricsEx {
    * @param {number} lineHeight                      The height of the line.
    * @param {...black-engine~TextStyle} styles The TextStyle object representing text properties and formatting.
    * 
-   * @returns {black-engine~extMetricsData} Object representing bounds for each rich text part.
+   * @returns {black-engine~TextMetricsData} Object representing bounds for each rich text part.
    */
   static measure(text, lineHeight, ...styles) {
     let parts = [];

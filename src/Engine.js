@@ -549,11 +549,10 @@ export class Engine extends MessageDispatcher {
       this.post('looped', numTicks);
       Debug.warn(`Unable to catch up ${numTicks} update(s).`);
 
-      numTicks = Black.mMaxUpdatesPerFrame;
+      numTicks = this.mMaxUpdatesPerFrame;
     }
 
-
-    Black.mNumUpdates = numTicks;
+    this.mNumUpdates = numTicks;
     for (let i = 0; i < numTicks; i++) {
       time.mActualTime += time.delta;
       time.mTime = time.mActualTime;

@@ -300,7 +300,7 @@ export class Rectangle {
    *
    * @param {black-engine~Rectangle} toIntersect Rectangle to intersect with.
    * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-   * @returns {black-engine~ectangle}
+   * @returns {black-engine~Rectangle}
    */
   intersection(toIntersect, outRect) {
     outRect = outRect || new Rectangle();
@@ -497,7 +497,7 @@ export class Rectangle {
 
   /**
    * Returns random number within this rectangle.
-   * @returns {number}
+   * @returns {Vector}
    */
   get random() {
     const rx = MathEx.randomBetween(this.x, this.width);

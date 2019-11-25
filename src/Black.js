@@ -66,7 +66,7 @@ class Black {
 
   /**
    * Sets new Engine instance.
-   * @param {black-engine~Engine}
+   * @param {black-engine~Engine} value
    */
   static set engine(value) {
     mInstance.mEngine = value;
@@ -83,7 +83,7 @@ class Black {
 
   /**
    * Sets new Input System.
-   * @param {black-engine~Input}
+   * @param {black-engine~Input} value
    */
   static set input(value) {
     mInstance.mInput = value;
@@ -100,7 +100,7 @@ class Black {
 
   /**
    * Sets new Audio System.
-   * @param {black-engine~MasterAudio}
+   * @param {black-engine~MasterAudio} value
    */
   static set audio(value) {
     mInstance.mAudio = value;
@@ -117,7 +117,7 @@ class Black {
 
   /**
    * Sets new Time instance.
-   * @param {black-engine~Time}
+   * @param {black-engine~Time} value
    */
   static set time(value) {
     mInstance.mTime = value;
@@ -134,7 +134,7 @@ class Black {
 
   /**
    * Sets new Device instance.
-   * @param {black-engine~Device}
+   * @param {black-engine~Device} value
    */
   static set device(value) {
     mInstance.mDevice = value;
@@ -152,27 +152,10 @@ class Black {
 
   /**
    * Sets new AssetManager.
-   * @param {black-engine~AssetManager}
+   * @param {black-engine~AssetManager} value
    */
   static set assets(value) {
     mInstance.mAssets = value;
-  }
-
-  /**
-   * Returns current Black Engine instance.
-   * 
-   * @returns {black-engine~Input}
-   */
-  static get input() {
-    return mInstance.mInput;
-  }
-
-  /**
-   * Sets default Input handler.
-   * @param {black-engine~Input}
-   */
-  static set input(value) {
-    mInstance.mInput = value;
   }
 
   /**

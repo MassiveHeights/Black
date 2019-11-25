@@ -30,7 +30,7 @@ export class Viewport extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {HTMLElement|null} 
+     * @type {HTMLElement|Element|null} 
      */
     this.mViewportElement = null;
 
@@ -88,6 +88,12 @@ export class Viewport extends MessageDispatcher {
      */
     this.mReflect = false;
 
+    /**
+     * @private
+     * @type {Function}
+     */
+    this.mBoundResize
+
     this.__initialize();
   }
 
@@ -95,7 +101,7 @@ export class Viewport extends MessageDispatcher {
    * @ignore
    */
   __initialize() {
-    this.mViewportElement = document.createElement('div');
+    this.mViewportElement = /** @type {HTMLElement} */ (document.createElement('div'));
     this.mViewportElement.style.position = 'relative';
     this.mContainerElement.appendChild(this.mViewportElement);
 

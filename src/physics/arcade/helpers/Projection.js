@@ -17,7 +17,7 @@ export class Projection {
 
     /** 
      * @private 
-     * @type {Array<black-engine~ector>|null} Box a vertices 
+     * @type {Array<black-engine~Vector>|null} Box a vertices 
      */
     this.verticesA = null;
 
