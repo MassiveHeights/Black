@@ -6,7 +6,7 @@ import { MathEx } from "../../math/MathEx";
  * Allows to distribute sound between left and right channel.
  * 
  * @cat audio.effects
- * @extends {SoundEffect}
+ * @extends {black-engine~SoundEffect}
  */
 export class StereoPanner extends SoundEffect {
   /**
@@ -50,10 +50,16 @@ export class StereoPanner extends SoundEffect {
      */
     this.mValue = 0;
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = this.mSplitter;
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = this.mMerger;
   }
 

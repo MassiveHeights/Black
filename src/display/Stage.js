@@ -7,13 +7,12 @@ import { Rectangle } from "../geom/Rectangle";
 import { Message } from "../messages/Message";
 import { Debug } from "../core/Debug";
 
-
 /**
  * The root container for all renderable objects
  *
  * @cat display
  * @fires Stage#resize
- * @extends GameObject
+ * @extends black-engine~GameObject
  */
 export class Stage extends GameObject {
   constructor() {
@@ -27,7 +26,7 @@ export class Stage extends GameObject {
 
     /** 
      * @private 
-     * @type {StageScaleMode} 
+     * @type {black-engine~StageScaleMode} 
      */
     this.mScaleMode = StageScaleMode.NORMAL;
 
@@ -78,8 +77,12 @@ export class Stage extends GameObject {
 
     this.mAdded = true;
 
-    if (Black.engine.hasSystem(Input))
-      this.addComponent(new InputComponent());
+    // Fake 
+    if (Black.engine.hasSystem(Input)){
+      let c = new InputComponent()
+      c.mAdded = true;
+      this.addComponent(c);
+    }
   }
 
   /**
@@ -188,14 +191,14 @@ export class Stage extends GameObject {
   /**
    * Gets/Sets stage scale mode.
    *
-   * @return {StageScaleMode}
+   * @return {black-engine~StageScaleMode}
    */
   get scaleMode() {
     return this.mScaleMode;
   }
 
   /**
-   * @param {StageScaleMode} value
+   * @param {black-engine~StageScaleMode} value
    * @returns {void}
    */
   set scaleMode(value) {
@@ -275,7 +278,10 @@ export class Stage extends GameObject {
   }
 
   /**
+   * Returns local transformation `Matrix`
+   *
    * @override
+   * @return {black-engine~Matrix}
    */
   get localTransformation() {
     return this.mLocalTransform;
@@ -283,6 +289,8 @@ export class Stage extends GameObject {
 
   /**
    * @override
+   * @param {black-engine~Matrix} value
+   * @return {void}
    */
   set localTransformation(value) {
     Debug.error('Not allowed.');

@@ -6,9 +6,8 @@ import { Rectangle } from "../geom/Rectangle";
  * Collider with rectangle shape.
  *
  * @cat colliders
- * @extends Collider
+ * @extends black-engine~Collider
  */
-
 export class BoxCollider extends Collider {
   /**
    * Creates instance of BoxCollider.
@@ -33,7 +32,7 @@ export class BoxCollider extends Collider {
      * Local to gameObject. 
      * 
      * @private 
-     * @type {Rectangle}
+     * @type {black-engine~Rectangle}
      */
     this.mRect = new Rectangle();
 
@@ -41,7 +40,7 @@ export class BoxCollider extends Collider {
      * Local to rigid body normals. 
      * 
      * @private 
-     * @type {Array<Vector>}
+     * @type {Array<black-engine~Vector>}
      */
     this.mNormals = normals;
 
@@ -49,21 +48,21 @@ export class BoxCollider extends Collider {
      * Local to rigid body vertices. 
      * 
      * @private 
-     * @type {Array<Vector>} */
+     * @type {Array<black-engine~Vector>} */
     this.mVertices = vertices;
 
     /**
      * Local to rigid body min x and y vertex. 
      * 
      * @private 
-     * @type {Vector} */
+     * @type {black-engine~Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
      * 
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mLocalMax = new Vector();
 
@@ -71,7 +70,7 @@ export class BoxCollider extends Collider {
      * Local to rigid body center  
      * 
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mLocalCenter = new Vector();
 
@@ -86,7 +85,7 @@ export class BoxCollider extends Collider {
    * @param {number} y      Y-coordinate.
    * @param {number} width  Rectangle width.
    * @param {number} height Rectangle height.
-   * @returns {BoxCollider}
+   * @returns {black-engine~BoxCollider}
    */
   set(x, y, width, height) {
     this.mRect.set(x, y, width, height);
@@ -147,7 +146,7 @@ export class BoxCollider extends Collider {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {Vector} point Global coordinates.
+   * @param {black-engine~Vector} point Global coordinates.
    *
    * @return {boolean}
    */

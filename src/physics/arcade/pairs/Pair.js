@@ -71,21 +71,21 @@ export class Pair {
     /**
      * Collider from body b.
      * @public 
-     * @type {Collider|null}
+     * @type {black-engine~Collider|null}
      */
     this.b = null;
 
     /**
      * Parent of collider a.
      * @public 
-     * @type {RigidBody|null}
+     * @type {black-engine~RigidBody|null}
      */
     this.bodyA = null;
 
     /**
      * Parent of collider b.
      * @public 
-     * @type {RigidBody|null}
+     * @type {black-engine~RigidBody|null}
      */
     this.bodyB = null;
 
@@ -148,14 +148,14 @@ export class Pair {
     /**
      * Offset within the colliders on preSolve to correct overlap on each iteration.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mOffset = new Vector();
 
     /**
      * Normal collision direction from a to b.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mNormal = new Vector();
 
@@ -329,8 +329,8 @@ export class Pair {
    * Generates pair id.
    *
    * @public
-   * @param {Collider} a Pair collider
-   * @param {Collider} b Pair collider
+   * @param {black-engine~Collider} a Pair collider
+   * @param {black-engine~Collider} b Pair collider
    *
    * @return {string} Pair unique id
    */

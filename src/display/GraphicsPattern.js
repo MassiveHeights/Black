@@ -4,7 +4,6 @@
  * @ignore
  * @cat display
  */
-
 export class GraphicsPattern {
   /**
    * Creates new instance of GraphicsPattern
@@ -24,7 +23,7 @@ export class GraphicsPattern {
   /**
    * Creates copy of this
    *
-   * @return {GraphicsPattern} New instance
+   * @return {black-engine~GraphicsPattern} New instance
    */
   clone() {
     return new GraphicsPattern(this.image, this.repetition);

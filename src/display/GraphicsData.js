@@ -17,7 +17,6 @@ import { MathEx } from "../math/MathEx";
  *
  * @cat display
  */
-
 export class GraphicsData {
   /**
    * Creates new instance of GraphicsData
@@ -25,19 +24,19 @@ export class GraphicsData {
   constructor() {
     /** 
      * @private 
-     * @type {Array<GraphicsData>} 
+     * @type {Array<black-engine~GraphicsData>} 
      */
     this.mNodes = [];
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.mTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {Array<GraphicsCommand>} 
+     * @type {Array<black-engine~GraphicsCommand>} 
      */
     this.mCommandQueue = [];
 
@@ -77,9 +76,9 @@ export class GraphicsData {
    *
    * @protected
    * @param {Object} graphics Object to store bounds by reference.
-   * @param {Matrix} transform Matrix to transform children nodes, for internal use.
+   * @param {black-engine~Matrix} transform Matrix to transform children nodes, for internal use.
    *
-   * @return {Rectangle} Calculated local bounds.
+   * @return {black-engine~Rectangle} Calculated local bounds.
    */
   onGetLocalBounds(graphics, transform) {
     let path = new GraphicsPath();
@@ -172,8 +171,8 @@ export class GraphicsData {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
@@ -185,6 +184,31 @@ export class GraphicsData {
     this.__pushCommand(GraphicsCommandType.LINE_STYLE, lineWidth, color, alpha, caps, joints, miterLimit);
   }
 
+  /**
+   * Sets shadow blur level.
+   * 
+   * @param {number} level 
+   * @returns {void}
+   */
+  shadowBlur(level) {
+    Debug.isNumber(level);
+
+    this.__pushCommand(GraphicsCommandType.SHADOW_BLUR, level);
+  }
+
+  /**
+   * Sets shadow color.
+   * 
+   * @param {number} color 
+   * @param {number} alpha 
+   * @returns {void}
+   */
+  shadowColor(color, alpha) {
+    Debug.isNumber(color, alpha);
+
+    this.__pushCommand(GraphicsCommandType.SHADOW_COLOR, color, alpha);
+  }
+  
   /**
    * Sets fill style
    *
@@ -202,7 +226,7 @@ export class GraphicsData {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {GraphicsGradient} gradient Fill gradient.
+   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -216,7 +240,7 @@ export class GraphicsData {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {GraphicsPattern} pattern Fill pattern.
+   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */
@@ -446,9 +470,9 @@ export class GraphicsData {
    * @param {number} p1
    * @param {number} p2
    * @param {number} p3
-   * @param {Vector=} out
+   * @param {black-engine~Vector=} out
    *
-   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __bezierRange(p0, p1, p2, p3, out) {
     out = out || new Vector();
@@ -508,9 +532,9 @@ export class GraphicsData {
    * @param {number} p0
    * @param {number} p1
    * @param {number} p2
-   * @param {Vector=} out
+   * @param {black-engine~Vector=} out
    *
-   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __quadraticRange(p0, p1, p2, out) {
     const a = p2 - p0;
@@ -582,7 +606,7 @@ export class GraphicsData {
   /**
    * @private
    * @ignore
-   * @param {GraphicsCommandType} type
+   * @param {black-engine~GraphicsCommandType} type
    * @param {...*} data
    */
   __pushCommand(type, ...data) {

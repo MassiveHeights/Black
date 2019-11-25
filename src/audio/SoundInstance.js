@@ -14,12 +14,12 @@ let ID = 0;
  * The sound
  * 
  * @cat audio
- * @extends {MessageDispatcher}
+ * @extends {black-engine~MessageDispatcher}
  */
 export class SoundInstance extends MessageDispatcher {
   /**
    * Creates instance
-   * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
+   * @param {black-engine~SoundClip} sound `SoundClip` instance taken from `AssetManager`.
    */
   constructor(sound) {
     super();
@@ -32,13 +32,13 @@ export class SoundInstance extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {SoundClip} 
+     * @type {black-engine~SoundClip} 
      */
     this.mSound = sound;
 
     /** 
      * @private 
-     * @type {SoundState} 
+     * @type {black-engine~SoundState} 
      */
     this.mState = SoundState.NEWBORN;
 
@@ -89,7 +89,7 @@ export class SoundInstance extends MessageDispatcher {
      * @type {AudioNode} The node to connect audio source 
      */
     this.mFirstNode = this.mGainNode;
-    
+
     /** 
      * @private 
      * @type {AudioNode} The node the source is connected to 
@@ -184,7 +184,7 @@ export class SoundInstance extends MessageDispatcher {
 
   /**
    * @ignore
-   * @returns {SoundInstance}
+   * @returns {black-engine~SoundInstance}
    */
   _play() {
     if (this.mState === SoundState.PLAYING)
@@ -238,6 +238,7 @@ export class SoundInstance extends MessageDispatcher {
   pause() {
     if (this.mState === SoundState.PLAYING) {
       this.stop();
+
       this.mPausePosition = this.currentPosition;
       this.mState = SoundState.PAUSED;
     }
@@ -250,9 +251,8 @@ export class SoundInstance extends MessageDispatcher {
    * @returns {void}
    */
   resume() {
-    if (this.mState === SoundState.PAUSED) {
+    if (this.mState === SoundState.PAUSED)
       this._play();
-    }
   }
 
   /**
@@ -282,6 +282,7 @@ export class SoundInstance extends MessageDispatcher {
    */
   __onComplete() {
     this.mSrc = null;
+
     if (this.mState !== SoundState.PAUSED) {
       this.mStartTime = 0;
       this.mState = SoundState.COMPLETED;
@@ -396,9 +397,9 @@ export class SoundInstance extends MessageDispatcher {
    * @returns {void}
    */
   set pan(value) {
-    if (value !== 0 && this.mStereoPanner == null) 
+    if (value !== 0 && this.mStereoPanner == null)
       this.enableStereoPan();
-    
+
     if (this.mStereoPanner)
       this.mStereoPanner.pan = value;
   }

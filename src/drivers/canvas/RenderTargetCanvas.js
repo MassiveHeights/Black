@@ -3,7 +3,7 @@ import { RenderTarget } from "../RenderTarget";
 /**
  * Canvas rendering surface.
  *
- * @extends RenderTarget
+ * @extends black-engine~RenderTarget
  * @cat drivers.canvas
  */
 export class RenderTargetCanvas extends RenderTarget {
@@ -50,31 +50,43 @@ export class RenderTargetCanvas extends RenderTarget {
   }
 
   /**
-   * @inheritDoc
+   * The width of the surface.
+   * @override
+   * 
+   * @returns {number}
    */
   get width() {
     return this.mCanvas.width;
   }
 
   /**
-   * @inheritDoc
+   * @override
+   * 
+   * @param {number} value
+   * @returns {void}
    */
-  set width(val) {
-    this.mCanvas.width = val;
+  set width(value) {
+    this.mCanvas.width = value;
   }
 
   /**
-   * @inheritDoc
+   * The height of the surface.
+   * @override
+   *
+   * @returns {number}
    */
   get height() {
     return this.mCanvas.height;
   }
 
   /**
-   * @inheritDoc
+   * @override
+   * 
+   * @param {number} value
+   * @returns {void}
    */
-  set height(val) {
-    this.mCanvas.height = val;
+  set height(value) {
+    this.mCanvas.height = value;
   }
 
   /**

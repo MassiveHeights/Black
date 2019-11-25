@@ -8,24 +8,24 @@ import { Vector } from "./Vector";
 export class Line {
   /**
    * Creates new Line instance.
-   * @param  {Vector} start Start point.
-   * @param  {Vector} end End point.
+   * @param  {black-engine~Vector} start Start point.
+   * @param  {black-engine~Vector} end End point.
    */
   constructor(start, end) {
-    /** @type {Vector} The start point coordinates */
+    /** @type {black-engine~Vector} The start point coordinates */
     this.start = start;
 
-    /** @type {Vector} The end point coordinates */
+    /** @type {black-engine~Vector} The end point coordinates */
     this.end = end;
   }
 
   /**
    * set - Sets new line properties
    *
-   * @param  {Vector} start Start point.
-   * @param  {Vector} end End point.
+   * @param  {black-engine~Vector} start Start point.
+   * @param  {black-engine~Vector} end End point.
    *
-   * @return {Line} This circle.
+   * @return {black-engine~Line} This circle.
    */
   set(start, end) {
     this.start = start;
@@ -35,40 +35,40 @@ export class Line {
   }
 
   /**
-   * clone - Clones this line.
+   * Clones this line.
    *
-   * @return {Line} Created line.
+   * @return {black-engine~Line} Created line.
    */
   clone() {
     return new Line(this.start.clone(), this.end.clone());
   }
 
   /**
-   * copyTo - Copy this properties to another line.
+   * Copy this properties to another line.
    *
-   * @param {Line} line Object to copy to.
+   * @param {black-engine~Line} line Object to copy to.
    *
-   * @return {Line} Passed line.
+   * @return {black-engine~Line} Passed line.
    */
   copyTo(line) {
     return line.set(this.start.clone(), this.end.clone());
   }
 
   /**
-   * copyFrom - Copy another line properties to this.
+   * Copy another line properties to this.
    *
-   * @param {Line} line Object to copy from.
+   * @param {black-engine~Line} line Object to copy from.
    *
-   * @return {Line} This circle.
+   * @return {black-engine~Line} This circle.
    */
   copyFrom(line) {
     return this.set(line.start.clone(), line.end.clone());
   }
 
   /**
-   * equals - Shows whether lines are identical.
+   * Shows whether lines are identical.
    *
-   * @param {Line} line Object to comparison.
+   * @param {black-engine~Line} line Object to comparison.
    * @param {number=} epsilon Compare precision.
    *
    * @return {boolean} True if lines are identical.
@@ -79,7 +79,7 @@ export class Line {
   }
 
   /**
-   * left - Finds left X position.
+   * Finds left X position.
    *
    * @return {number} Left X position.
    */
@@ -87,9 +87,8 @@ export class Line {
     return Math.min(this.start.x, this.end.x);
   }
 
-
   /**
-   * right - Finds right X position.
+   * Finds right X position.
    *
    * @return {number} Right X position.
    */
@@ -98,7 +97,7 @@ export class Line {
   }
 
   /**
-   * top - Finds top Y position.
+   * Finds top Y position.
    *
    * @return {number} Top Y position.
    */
@@ -107,7 +106,7 @@ export class Line {
   }
 
   /**
-   * bottom - Finds bottom Y position.
+   * Finds bottom Y position.
    *
    * @return {number} Bottom Y position.
    */
@@ -116,9 +115,9 @@ export class Line {
   }
 
   /**
-   * reverse - Replace line start and end points.
+   * Replace line start and end points.
    *
-   * @return {Line} This line.
+   * @return {black-engine~Line} This line.
    */
   reverse() {
     let start = this.start;
@@ -129,9 +128,9 @@ export class Line {
   }
 
   /**
-   * normalize - Change line's length to one. Moves end point.
+   * Change line's length to one. Moves end point.
    *
-   * @return {Line} This line.
+   * @return {black-engine~Line} This line.
    */
   normalize() {
     this.end
@@ -143,9 +142,9 @@ export class Line {
   }
 
   /**
-   * scale - Change line's length to scaled. Moves end point.
+   * Change line's length to scaled. Moves end point.
    *
-   * @return {Line} This line.
+   * @return {black-engine~Line} This line.
    */
   scale(multiplier) {
     this.end
@@ -157,16 +156,16 @@ export class Line {
   }
 
   /**
-   * zero - Description
+   * Returns zero length line at zero position.
    *
-   * @return {Line} Description
+   * @return {black-engine~Line} Description
    */
   zero() {
     return this.set(new Vector(), new Vector());
   }
 
   /**
-   * length - Length of this line.
+   * Length of this line.
    *
    * @return {number} length.
    */
@@ -175,20 +174,19 @@ export class Line {
   }
 
   /**
-   * center - Represents center as vector.
+   * Represents center as vector.
    *
-   * @param {Vector=} outVector Object for result.
+   * @param {black-engine~Vector=} outVector Object for result.
    *
-   * @return {Vector} Center point.
+   * @return {black-engine~Vector} Center point.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
     return outVector.set((this.start.x + this.end.x) / 2, (this.start.y + this.end.y) / 2);
   }
 
-
   /**
-   * type - Description
+   * Returns 'line'.
    *
    * @return {string} Description
    */
@@ -197,7 +195,7 @@ export class Line {
   }
 
   /**
-   * containsXY - Shows whether point is on line.
+   * Shows whether point is on line.
    *
    * @param {number} x Point position x.
    * @param {number} y Point position y.
@@ -209,9 +207,9 @@ export class Line {
   }
 
   /**
-   * contains - Shows whether point is on line.
+   * Shows whether point is on line.
    *
-   * @param {Vector} vector Point to check.
+   * @param {black-engine~Vector} vector Point to check.
    *
    * @return {boolean} True if line contains point.
    */
@@ -220,9 +218,9 @@ export class Line {
   }
 
   /**
-   * intersects - Shows whether this line intersects another.
+   * Shows whether this line intersects another.
    *
-   * @param {Line} line Line to check.
+   * @param {black-engine~Line} line Line to check.
    *
    * @return {boolean} True if intersects.
    */
@@ -249,9 +247,9 @@ export class Line {
   }
 
   /**
-   * intersects - Shows whether this line intersects circle.
+   * Shows whether this line intersects circle.
    *
-   * @param {Circle} circle Circle to check.
+   * @param {black-engine~Circle} circle Circle to check.
    *
    * @return {boolean} True if intersects.
    */
@@ -310,7 +308,7 @@ export class Line {
 }
 
 /**
- * @type {Line}
+ * @type {black-engine~Line}
  * @nocollapse
  * @ignore
  */

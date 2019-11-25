@@ -18,7 +18,7 @@ let CONTEXT = null;
  * @ignore 
  * @static 
  * @private
- * @type {HTMLCanvasElement}
+ * @type {HTMLCanvasElement|OffscreenCanvas}
  */
 let CANVAS = null;
 
@@ -35,11 +35,11 @@ export class FontMetrics {
    *
    * @ignore
    * @private
-   * @param {TextStyle} style Default text info with 24 font size.
+   * @param {black-engine~TextStyle} style Default text info with 24 font size.
    */
   constructor(style) {
     if (CONTEXT === null) {
-      if (typeof OffscreenCanvas !== 'undefined' && FontMetrics.useOffscreenCanvas === true) {
+      if (typeof OffscreenCanvas !== 'undefined' && useOffscreenCanvas === true) {
         CANVAS = new OffscreenCanvas(10, 200);
         CONTEXT = CANVAS.getContext('2d');
       } else {
@@ -61,7 +61,7 @@ export class FontMetrics {
 
     /** 
      * @private 
-     * @type {TextStyle} 
+     * @type {black-engine~TextStyle} 
      */
     this.mStyle = style;
 
@@ -132,7 +132,7 @@ export class FontMetrics {
    * Gets/sets if OffscreenCanvas should be used to measure text width. Usefull when running Black Engine inside worker.
    * @returns {boolean}
    */
-  get useOffscreenCanvas() {
+  static get useOffscreenCanvas() {
     return useOffscreenCanvas;
   }
 
@@ -140,7 +140,7 @@ export class FontMetrics {
    * @param {boolean} value
    * @returns {void}
    */
-  set useOffscreenCanvas(value) {
+  static set useOffscreenCanvas(value) {
     useOffscreenCanvas = value;
   }
 
@@ -247,7 +247,7 @@ export class FontMetrics {
    *
    * @static
    * @param {string} fontName Name of font.
-   * @returns {FontMetrics}
+   * @returns {black-engine~FontMetrics}
    */
   static get(fontName) {
     let cache = CACHE[fontName];

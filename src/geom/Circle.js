@@ -53,7 +53,7 @@ export class Circle {
   /**
    * Clones this circle.
    *
-   * @return {Circle} Created circle.
+   * @return {black-engine~Circle} Created circle.
    */
   clone() {
     return new Circle(this.x, this.y, this.r);
@@ -62,8 +62,8 @@ export class Circle {
   /**
    * Copy this properties to another circle.
    *
-   * @param {Circle} circle Object to copy to.
-   * @return {Circle} Passed circle.
+   * @param {black-engine~Circle} circle Object to copy to.
+   * @return {black-engine~Circle} Passed circle.
    */
   copyTo(circle) {
     return circle.set(this.x, this.y, this.r);
@@ -72,8 +72,8 @@ export class Circle {
   /**
    * Copy another circle properties to this.
    *
-   * @param {Circle} circle Object to copy from.
-   * @return {Circle} This circle.
+   * @param {black-engine~Circle} circle Object to copy from.
+   * @return {black-engine~Circle} This circle.
    */
   copyFrom(circle) {
     return this.set(circle.x, circle.y, circle.r);
@@ -82,7 +82,7 @@ export class Circle {
   /**
    * Shows whether circles are identical.
    *
-   * @param {Circle} circle Object to comparison.
+   * @param {black-engine~Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
    * @return {boolean} True if circles are identical.
    */
@@ -105,7 +105,7 @@ export class Circle {
   /**
    * Shows whether point is in circle.
    *
-   * @param {Vector} vector Point to check.
+   * @param {black-engine~Vector} vector Point to check.
    * @return {boolean} True if circle contains point.
    */
   contains(vector) {
@@ -116,7 +116,7 @@ export class Circle {
   /**
    * Resets all values to zero.
    *
-   * @return {Circle} Returns this.
+   * @return {black-engine~Circle} Returns this.
    */
   zero() {
     return this.set(0, 0, 0);
@@ -125,7 +125,7 @@ export class Circle {
   /**
    * Shows whether this circle intersects another.
    *
-   * @param {Circle} circle Circle to check.
+   * @param {black-engine~Circle} circle Circle to check.
    * @return {boolean} True if intersects.
    */
   intersects(circle) {
@@ -136,7 +136,7 @@ export class Circle {
   /**
    * Shows whether this circle collide with another.
    *
-   * @param {Circle} circle Circle to check.
+   * @param {black-engine~Circle} circle Circle to check.
    * @return {boolean} True if collide.
    */
   collide(circle) {
@@ -147,7 +147,7 @@ export class Circle {
   /**
    * Shows whether this circle overlap another.
    *
-   * @param {Circle} circle Circle to check.
+   * @param {black-engine~Circle} circle Circle to check.
    * @return {boolean} True if overlap.
    */
   overlap(circle) {
@@ -163,8 +163,8 @@ export class Circle {
   /**
    * Represents center as vector.
    *
-   * @param {Vector=} outVector Object for result.
-   * @return {Vector} Center point.
+   * @param {black-engine~Vector=} outVector Object for result.
+   * @return {black-engine~Vector} Center point.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -234,7 +234,7 @@ export class Circle {
   /**
    * Returns top point of this circle.
    *
-   * @return {Vector}
+   * @return {black-engine~Vector}
    */
   get topPoint() {
     return new Vector(this.x, this.top);
@@ -243,7 +243,7 @@ export class Circle {
   /**
    * Returns bottom point of this circle.
    *
-   * @return {Vector}
+   * @return {black-engine~Vector}
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
@@ -265,7 +265,7 @@ export class Circle {
 
 /**
  * @ignore
- * @type {Circle}
+ * @type {black-engine~Circle}
  * @nocollapse
  */
 Circle.__cache = new Circle();

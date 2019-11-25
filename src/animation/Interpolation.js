@@ -7,7 +7,6 @@ import { MathEx } from "../math/MathEx";
  * @static
  */
 export class Interpolation {
-
   /**
    * Linear interpolation.
    *

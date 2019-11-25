@@ -11,7 +11,7 @@ import { LoaderType } from "./LoaderType";
  * file.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
 export class AtlasTextureAsset extends Asset {
   /**
@@ -44,7 +44,7 @@ export class AtlasTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {ImageAssetLoader|null} 
+     * @type {black-engine~ImageAssetLoader|null} 
      */
     this.mImageLoader = null;
 

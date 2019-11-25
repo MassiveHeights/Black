@@ -18,7 +18,7 @@ let ID = 0;
  *
  * @cat core
  * @unrestricted
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  */
 export class GameObject extends MessageDispatcher {
   /**
@@ -41,13 +41,13 @@ export class GameObject extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<Component>} 
+     * @type {Array<black-engine~Component>} 
      */
     this.mComponents = [];
 
     /** 
      * @protected 
-     * @type {Array<GameObject>} 
+     * @type {Array<black-engine~GameObject>} 
      */
     this.mChildren = [];
 
@@ -131,37 +131,37 @@ export class GameObject extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mBoundsCache = new Rectangle();
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.mLocalTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.mWorldTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.mWorldTransformInverted = new Matrix();
 
     /** 
      * @private 
-     * @type {DirtyFlag} 
+     * @type {black-engine~DirtyFlag} 
      */
     this.mDirty = DirtyFlag.DIRTY;
 
     /** 
      * @protected 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mParent = null;
 
@@ -204,7 +204,7 @@ export class GameObject extends MessageDispatcher {
     // cache all colliders for fast access
     /** 
      * @private 
-     * @type {Array<Collider>} 
+     * @type {Array<black-engine~Collider>} 
      */
     this.mCollidersCache = [];
 
@@ -216,13 +216,13 @@ export class GameObject extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<GameObject>} 
+     * @type {Array<black-engine~GameObject>} 
      */
     this.mChildrenClone = null;
 
     /** 
      * @private 
-     * @type {Array<Component>} 
+     * @type {Array<black-engine~Component>} 
      */
     this.mComponentClone = null;
   }
@@ -278,6 +278,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * This method called each time object added to stage.
    *
+   * @action
    * @return {void}
    */
   onAdded() { }
@@ -285,6 +286,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Called when object is removed from stage.
    *
+   * @action
    * @return {void}
    */
   onRemoved() { }
@@ -292,8 +294,8 @@ export class GameObject extends MessageDispatcher {
   /**
    * Sugar method for adding child `GameObjects` or `Components` in a simple manner.
    *
-   * @param {...(GameObject|Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
-   * @return {GameObject} This game object
+   * @param {...(black-engine~GameObject|black-engine~Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
+   * @return {black-engine~GameObject} This game object
    */
   add(...gameObjectsAndOrComponents) {
     for (let i = 0; i < gameObjectsAndOrComponents.length; i++) {
@@ -312,8 +314,8 @@ export class GameObject extends MessageDispatcher {
    * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
    * children in this GameObject instance.
    *
-   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
-   * @return {GameObject}
+   * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @return {black-engine~GameObject}
    */
   addChild(child) {
     return this.addChildAt(child, this.mChildren.length);
@@ -323,9 +325,9 @@ export class GameObject extends MessageDispatcher {
    * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
    * children in this GameObject instance.
    *
-   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
    * @param  {number=} [index=0] The index position to which the child is added.
-   * @return {GameObject} The GameObject instance that you pass in the child parameter.
+   * @return {black-engine~GameObject} The GameObject instance that you pass in the child parameter.
    */
   addChildAt(child, index = 0) {
     Debug.assert(child instanceof GameObject, 'Type error.');
@@ -354,7 +356,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {GameObject} value
+   * @param {black-engine~GameObject} value
    * @return {boolean}
    */
   __setParent(value) {
@@ -374,9 +376,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Sets the index (layer) of the specified `GameObject` to the specified index (layer).
    *
-   * @param {GameObject} child The `GameObject` instance to change index for.
+   * @param {black-engine~GameObject} child The `GameObject` instance to change index for.
    * @param {number} index Desired index.
-   * @returns {GameObject} The `GameObject` instance that you pass in the child parameter.
+   * @returns {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
    */
   setChildIndex(child, index) {
     let ix = this.mChildren.indexOf(child);
@@ -402,20 +404,21 @@ export class GameObject extends MessageDispatcher {
   /**
    * Removes this `GameObject` instance from its parent.
    *
-   * @return {void}
+   * @return {black-engine~GameObject}
    */
   removeFromParent() {
     if (this.mParent !== null)
       this.mParent.removeChild(this);
 
     this.setTransformDirty();
+    return this;
   }
 
   /**
    * Removes specified child `GameObject` instance from children.
    *
-   * @param {GameObject} child `GameObject` instance to remove.
-   * @return {GameObject} The `GameObject` instance that you pass in the child parameter.
+   * @param {black-engine~GameObject} child `GameObject` instance to remove.
+   * @return {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
    */
   removeChild(child) {
     let ix = this.mChildren.indexOf(child);
@@ -431,7 +434,7 @@ export class GameObject extends MessageDispatcher {
    * Finds children by name.
    *
    * @param {string} name Name of the child object to find.
-   * @return {GameObject|null} GameObject instance or null if not found.
+   * @return {black-engine~GameObject|null} GameObject instance or null if not found.
    */
   getChildByName(name) {
     for (let i = 0; i < this.mChildren.length; i++) {
@@ -445,21 +448,19 @@ export class GameObject extends MessageDispatcher {
   /**
    * Removes `GameObjects` instance from specified index.
    *
-   * @param {number} index Index of child.
-   * @return {GameObject} The removed `GameObject` instance.
+   * @param {number} index Index of child. Negative index will remove object from it end.
+   * @return {black-engine~GameObject|null} The removed `GameObject` instance or null if not found.
    */
   removeChildAt(index) {
-    if (index < 0 || index > this.numChildren)
-      throw new Error('Child index is out of bounds.');
+    let child = this.mChildren.splice(index, 1)[0];
+    if (child == null)
+      return null;
 
     let hadRoot = this.stage !== null;
 
-    let child = this.mChildren[index];
     child.__setParent(null);
 
-    this.mChildren.splice(index, 1);
-
-    if (hadRoot)
+    if (hadRoot === true)
       Black.engine.onChildrenRemoved(child);
 
     this.setTransformDirty();
@@ -469,10 +470,21 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Removes all children objects.
+   * @returns {black-engine~GameObject} Returns this.
+   */
+  removeAllChildren() {
+    while (this.mChildren.length > 0)
+      this.removeChildAt(0);
+
+    return this;
+  }
+
+  /**
    * Returns `GameObject` at specified index.
    *
    * @param {number} index The index of child `GameObject`.
-   * @return {GameObject} The `GameObject` at specified index.
+   * @return {black-engine~GameObject} The `GameObject` at specified index.
    */
   getChildAt(index) {
     return this.mChildren[index];
@@ -482,8 +494,8 @@ export class GameObject extends MessageDispatcher {
    * Adds Component instance to the end of the list.
    *
    * @throws {Error}
-   * @param  {Component} component The instances of Component to be added,
-   * @return {Component} The `Component` instance you pass in the instances parameter.
+   * @param  {black-engine~Component} component The instances of Component to be added,
+   * @return {black-engine~Component} The `Component` instance you pass in the instances parameter.
    */
   addComponent(component) {
     return this.addComponentAt(component, this.mComponents.length);
@@ -493,9 +505,9 @@ export class GameObject extends MessageDispatcher {
    * Adds Component to the list at given position.
    * 
    * @throws {Error}
-   * @param {Component} component The instances of Component to be added,
+   * @param {black-engine~Component} component The instances of Component to be added,
    * @param {number} [index=0] Position in the list.
-   * @returns {Component} The `Component` instance you pass in the instances parameter.
+   * @returns {black-engine~Component} The `Component` instance you pass in the instances parameter.
    */
   addComponentAt(component, index = 0) {
     Debug.assert(component instanceof Component, 'Type error.');
@@ -514,9 +526,8 @@ export class GameObject extends MessageDispatcher {
     if (component instanceof Collider)
       this.mCollidersCache.push(component);
 
-    if (this.stage !== null || Black.stage === this) {
+    if (this.stage !== null || Black.stage === this)
       Black.engine.onComponentAdded(this, component);
-    }
 
     this.mChildOrComponentBeenAdded = true;
 
@@ -524,33 +535,28 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * Remove specified component.
-   *
-   * @param {Component} instance The `Component` instance.
-   * @return {Component|null}
+   * Removes component at given index.
+   * 
+   * @param {number} index Negative index will remove component from the end.
+   * @returns {black-engine~Component|null} Returns removed component of null.
    */
-  removeComponent(instance) {
-    if (!instance)
+  removeComponentAt(index) {
+    let instance = this.mComponents.splice(index, 1)[0];
+
+    if (instance == null)
       return null;
-
-    Debug.assert(instance instanceof Component, 'Type error.');
-
-    let index = this.mComponents.indexOf(instance);
-    if (index > -1)
-      this.mComponents.splice(index, 1);
 
     // detach game object after or before?
     instance.mGameObject = null;
 
     if (instance instanceof Collider) {
-      let index = this.mCollidersCache.indexOf(instance);
-      if (index > -1)
-        this.mCollidersCache.splice(index, 1);
+      let colliderIx = this.mCollidersCache.indexOf(instance);
+      if (colliderIx > -1)
+        this.mCollidersCache.splice(colliderIx, 1);
     }
 
-    if (this.stage !== null || Black.stage === this) {
+    if (this.stage !== null || Black.stage === this)
       Black.engine.onComponentRemoved(this, instance);
-    }
 
     this.mNumComponentsRemoved++;
 
@@ -558,10 +564,40 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * Remove specified component.
+   *
+   * @param {black-engine~Component} instance The `Component` instance.
+   * @returns {black-engine~Component|null} Returns removed component of null.
+   */
+  removeComponent(instance) {
+    if (instance == null)
+      return null;
+
+    Debug.assert(instance instanceof Component, 'Type error.');
+
+    let index = this.mComponents.indexOf(instance);
+    if (index > -1)
+      return this.removeComponentAt(index);
+
+    return null;
+  }
+
+  /**
+   * Removes all components.
+   * @returns {black-engine~GameObject} Returns this.
+   */
+  removeAllComponents() {
+    while (this.mComponents.length > 0)
+      this.removeComponentAt(0);
+
+    return this;
+  }
+
+  /**
    * Get component by type.
    *
    * @param {Function} typeName The component type.
-   * @return {Component|null} The `Component` instance or null if not found.
+   * @return {black-engine~Component|null} The `Component` instance or null if not found.
    */
   getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
@@ -586,7 +622,7 @@ export class GameObject extends MessageDispatcher {
    * Retrieves `Component` at given index.
    *
    * @param {number} index Index of component.
-   * @return {Component|null}
+   * @return {black-engine~Component|null}
    */
   getComponentAt(index) {
     if (index >= 0 && index < this.mComponents.length)
@@ -598,7 +634,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns local transformation `Matrix`
    *
-   * @return {Matrix}
+   * @return {black-engine~Matrix}
    */
   get localTransformation() {
     if (this.mDirty & DirtyFlag.LOCAL) {
@@ -645,7 +681,7 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @param {Matrix} value
+   * @param {black-engine~Matrix} value
    * @return {void}
    */
   set localTransformation(value) {
@@ -689,7 +725,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Gets cloned Matrix object which represents object orientation in world space.
    *
-   * @return {Matrix}
+   * @return {black-engine~Matrix}
    */
   get worldTransformation() {
     if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
@@ -715,7 +751,7 @@ export class GameObject extends MessageDispatcher {
    * Returns cloned and inverted Matrix object which represents object orientation in world space
    *
    * @readonly
-   * @return {Matrix}
+   * @return {black-engine~Matrix}
    */
   get worldTransformationInverted() {
     if ((this.mDirty & DirtyFlag.WORLD_INV)) {
@@ -747,8 +783,8 @@ export class GameObject extends MessageDispatcher {
 
         let c = this.mComponentClone[k];
 
-        if (c.mAdded === false)
-          break;
+        if (c.mAdded === false || c.enabled === false)
+          continue;
 
         c.onUpdate();
       }
@@ -770,6 +806,7 @@ export class GameObject extends MessageDispatcher {
    * Called at every engine update. The execution order of onFixedUpdate, onUpdate and onPostUpdate is
    * going from top to bottom of the display list.
    * 
+   * @action
    * @protected
    * @return {void}
    */
@@ -778,9 +815,10 @@ export class GameObject extends MessageDispatcher {
   /**
    * Override this method if you need to specify GameObject size. Should be always be a local coordinates.
    *
+   * @action
    * @protected
-   * @param {Rectangle=} [outRect=undefined] Rectangle to be returned.
-   * @return {Rectangle} bounds in local space without taking care about transformation matrix
+   * @param {black-engine~Rectangle=} [outRect=undefined] Rectangle to be returned.
+   * @return {black-engine~Rectangle} bounds in local space without taking care about transformation matrix
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -795,10 +833,10 @@ export class GameObject extends MessageDispatcher {
    * `object.getBounds(object.parent)` - relative to parent.<br>
    * `object.getBounds(objectB)` - relative to objectB space.<br>
    *
-   * @param {GameObject} [space=null] The `GameObject` relative to.
+   * @param {black-engine~GameObject} [space=null] The `GameObject` relative to.
    * @param {boolean} [includeChildren=true] Specifies if include children in calculations.
-   * @param {Rectangle=} [outRect=null] Rectangle to be returned.
-   * @return {Rectangle} Returns bounds of the object with/without all children.
+   * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be returned.
+   * @return {black-engine~Rectangle} Returns bounds of the object with/without all children.
    */
   getBounds(space = null, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -858,8 +896,8 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns stage relative bounds of this object excluding it's children;
    * 
-   * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
-   * @returns {Rectangle} 
+   * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
+   * @returns {black-engine~Rectangle} 
    */
   getStageBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -878,8 +916,8 @@ export class GameObject extends MessageDispatcher {
   /**
    * Evaluates whether the game object or one of its children intersects with the given point
    *
-   * @param {Vector} localPoint Coordinates vector.
-   * @return {GameObject|null}
+   * @param {black-engine~Vector} localPoint Coordinates vector.
+   * @return {black-engine~GameObject|null}
    */
   hitTest(localPoint) {
     let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
@@ -908,8 +946,9 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @action
    * @protected
-   * @param {Vector} localPoint 
+   * @param {black-engine~Vector} localPoint 
    * @return {boolean}
    */
   onHitTest(localPoint) {
@@ -937,8 +976,9 @@ export class GameObject extends MessageDispatcher {
   }
 
   /**
+   * @action
    * @protected
-   * @param {Vector} localPoint 
+   * @param {black-engine~Vector} localPoint 
    * @return {boolean}
    */
   onHitTestMask(localPoint) {
@@ -947,7 +987,7 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Returns local bounds of this object (without children).
-   * @returns {Rectangle}
+   * @returns {black-engine~Rectangle}
    */
   get localBounds() {
     return this.getBounds(this, false);
@@ -955,7 +995,7 @@ export class GameObject extends MessageDispatcher {
 
   /**
    * Returns parent-relative bounds (including children).
-   * @returns {Rectangle}
+   * @returns {black-engine~Rectangle}
    */
   get bounds() {
     return this.getBounds(this.mParent, true);
@@ -973,7 +1013,7 @@ export class GameObject extends MessageDispatcher {
    * @param {number} [anchorY=0] Anchor Y.
    * @param {boolean} [includeChildren=true] Include children when adjusting pivot?
    *
-   * @return {GameObject} This.
+   * @return {black-engine~GameObject} This.
    */
   setTransform(x = 0, y = 0, r = 0, scaleX = 1, scaleY = 1, anchorX = 0, anchorY = 0, includeChildren = true) {
     this.mX = x;
@@ -991,9 +1031,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Calculates GameObject's position relative to another GameObject.
    *
-   * @param {GameObject} gameObject Coordinates vector.
-   * @param {Vector|null} [outVector=null] Vector to be returned.
-   * @return {Vector}
+   * @param {black-engine~GameObject} gameObject Coordinates vector.
+   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+   * @return {black-engine~Vector}
    */
   relativeTo(gameObject, outVector = null) {
     outVector = outVector || new Vector();
@@ -1010,9 +1050,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Calculate global position of the object.
    *
-   * @param {Vector} localPoint Coordinates vector.
-   * @param {Vector|null} [outVector=null] Vector to be returned.
-   * @return {Vector}
+   * @param {black-engine~Vector} localPoint Coordinates vector.
+   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+   * @return {black-engine~Vector}
    */
   localToGlobal(localPoint, outVector = null) {
     return this.worldTransformation.transformVector(localPoint, outVector);
@@ -1021,9 +1061,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Calculate local position of the object
    *
-   * @param {Vector} globalPoint Coordinates vector.
-   * @param {Vector|null} [outVector=null] Vector to be returned.
-   * @return {Vector}
+   * @param {black-engine~Vector} globalPoint Coordinates vector.
+   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
+   * @return {black-engine~Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInverted.transformVector(globalPoint, outVector);
@@ -1096,6 +1136,32 @@ export class GameObject extends MessageDispatcher {
     Debug.assert(!isNaN(value), 'Value cannot be NaN');
 
     this.mY = value;
+    this.setTransformDirty();
+  }
+  
+  /**
+   * Gets/sets object position.
+   * 
+   * NOTE: setting individual values on this vector will give zero results.
+   * @returns {black-engine~Vector}
+   */
+  get xy() {
+    return new Vector(this.mX, this.mY);
+  }
+
+  /**
+   * Gets/sets object position.
+   * 
+   * @param {black-engine~Vector} value
+   * @returns {void}
+   */
+  set xy(value) {
+    if (this.mX === value.x && this.mY === value.y)
+      return;
+
+    this.mX = value.x;
+    this.mY = value.y;
+
     this.setTransformDirty();
   }
 
@@ -1226,7 +1292,7 @@ export class GameObject extends MessageDispatcher {
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
    *
-   * @return {GameObject} This.
+   * @return {black-engine~GameObject} This.
    */
   alignAnchor(ax = 0.5, ay = 0.5) {
     Debug.isNumber(ax, ay);
@@ -1244,7 +1310,7 @@ export class GameObject extends MessageDispatcher {
    *
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
-   * @return {GameObject} This.
+   * @return {black-engine~GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5) {
     return this.alignPivotOffset(ax, ay);
@@ -1258,7 +1324,7 @@ export class GameObject extends MessageDispatcher {
    * @param {number}  [ay=0.5]               Align along y-axis.
    * @param {boolean} [includeChildren=true] Include children elements when calculating bounds?
    *
-   * @return {GameObject} This.
+   * @return {black-engine~GameObject} This.
    */
   alignPivotOffset(ax = 0.5, ay = 0.5, includeChildren = true) {
     Debug.isNumber(ax, ay);
@@ -1419,7 +1485,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns this GameObject parent GameObject or null.
    * @readonly
-   * @return {GameObject|null}
+   * @return {black-engine~GameObject|null}
    */
   get parent() {
     return this.mParent;
@@ -1429,7 +1495,7 @@ export class GameObject extends MessageDispatcher {
    * Returns top most parent object or this if there is no parents.
    * 
    * @readonly
-   * @return {GameObject}
+   * @return {black-engine~GameObject}
    */
   get root() {
     let current = this;
@@ -1445,7 +1511,7 @@ export class GameObject extends MessageDispatcher {
    *
    * @override
    * @readonly
-   * @return {Stage|null}
+   * @return {black-engine~Stage|null}
    */
   get stage() {
     return this.mAdded === true ? Black.stage : null;
@@ -1497,7 +1563,6 @@ export class GameObject extends MessageDispatcher {
       this.scaleY = value / currentHeight;
   }
 
-
   /**
    * Returns width of this GameObject in local space without including children
    * elements.
@@ -1508,7 +1573,6 @@ export class GameObject extends MessageDispatcher {
   get localWidth() {
     return this.getBounds(this, false).width;
   }
-
 
   /**
    * Returns height of this GameObject in local space without including children
@@ -1590,7 +1654,7 @@ export class GameObject extends MessageDispatcher {
    * Waits for given amount of seconds before processing.
    *
    * @param {number} [seconds=1] Duration
-   * @return {function(?):?}
+   * @return {function(*):*}
    */
   wait(seconds = 1) {
     return cb => setTimeout(cb.bind(this, (/** @type {number} */(seconds) * 1000)), (/** @type {number} */(seconds) * 1000));
@@ -1600,7 +1664,7 @@ export class GameObject extends MessageDispatcher {
    * Waits for a specific message.
    *
    * @param {string} message The name of the message to wait for.
-   * @return {function(?):?}
+   * @return {function(*):*}
    */
   waitMessage(message) {
     return cb => this.once(message, cb.bind(this));
@@ -1609,7 +1673,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {DirtyFlag} flag The flag or flag bit mask.
+   * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Specifies if the flag needed for all children.
    * @return {void}
    */
@@ -1630,7 +1694,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {GameObject} go 
+   * @param {black-engine~GameObject} go 
    */
   __updatePivots(go) {
     go.getBounds(go, true, Rectangle.__cache.zero());
@@ -1642,7 +1706,7 @@ export class GameObject extends MessageDispatcher {
   /**
    * Marks the GameObject's parent as dirty.
    *
-   * @param {DirtyFlag} flag The flag or flag bit mask.
+   * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
    * @return {void}
    */
   setParentDirty(flag) {
@@ -1716,9 +1780,9 @@ export class GameObject extends MessageDispatcher {
    * @ignore
    *
    * @param {Array<number>} points
-   * @param {Matrix} worldTransformation
-   * @param {Rectangle=} outRect
-   * @return {Rectangle}
+   * @param {black-engine~Matrix} worldTransformation
+   * @param {black-engine~Rectangle=} outRect
+   * @return {black-engine~Rectangle}
    */
   static getBoundsWithPoints(points, worldTransformation, outRect) {
     outRect = outRect || new Rectangle();
@@ -1754,8 +1818,8 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns whenever a given GameObject intersects with a point.
    *
-   * @param {GameObject} gameObject GameObject to test.
-   * @param {Vector} point A point to test.
+   * @param {black-engine~GameObject} gameObject GameObject to test.
+   * @param {black-engine~Vector} point A point to test.
    * @return {boolean} True if intersects.
    */
   static intersects(gameObject, point) {
@@ -1770,9 +1834,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns a point where intersection were made in local space.
    *
-   * @param {GameObject} gameObject GameObject to test intersection with.
-   * @param {Vector} point The point to test.
-   * @param {Vector=} outVector If passed point of intersection will be stored in it.
+   * @param {black-engine~GameObject} gameObject GameObject to test intersection with.
+   * @param {black-engine~Vector} point The point to test.
+   * @param {black-engine~Vector=} outVector If passed point of intersection will be stored in it.
    * @return {boolean} True if intersects.
    */
   static intersectsAt(gameObject, point, outVector = undefined) {
@@ -1794,9 +1858,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Checks if GameObject or any of its children elements intersects the given point.
    *
-   * @param {GameObject} gameObject GameObject to test.
-   * @param {Vector} point Point to test.
-   * @return {GameObject|null} Intersecting object or null.
+   * @param {black-engine~GameObject} gameObject GameObject to test.
+   * @param {black-engine~Vector} point Point to test.
+   * @return {black-engine~GameObject|null} Intersecting object or null.
    */
   static intersectsWith(gameObject, point) {
     let obj = null;
@@ -1824,7 +1888,7 @@ export class GameObject extends MessageDispatcher {
    * Returns all GameObject with given tag.
    *
    * @param {string} tag Tag to find.
-   * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
+   * @returns {Array<black-engine~GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.engine.mTagCache.hasOwnProperty(tag) === false)
@@ -1836,9 +1900,9 @@ export class GameObject extends MessageDispatcher {
   /**
    * Returns a list of Components.
    *
-   * @param {GameObject} gameObject GameObject to start search from.
-   * @param {function (new:Component)} type Type of Component.
-   * @return {Array<Component>} Array of Component or empty array.
+   * @param {black-engine~GameObject} gameObject GameObject to start search from.
+   * @param {function (new:black-engine~Component)} type Type of Component.
+   * @return {Array<black-engine~Component>} Array of Component or empty array.
    */
   static findComponents(gameObject, type) {
     Debug.assert(gameObject !== null, 'gameObject cannot be null.');
@@ -1867,8 +1931,8 @@ export class GameObject extends MessageDispatcher {
   /**
    * Runs action across all GameObjects.
    *
-   * @param {GameObject} gameObject GameObject to start iteration from.
-   * @param {function(GameObject)} action The function to be executed on every GameObject.
+   * @param {black-engine~GameObject} gameObject GameObject to start iteration from.
+   * @param {function(black-engine~GameObject)} action The function to be executed on every GameObject.
    * @return {void}
    */
   static forEach(gameObject, action) {
@@ -1892,9 +1956,9 @@ export class GameObject extends MessageDispatcher {
    * starting point.
    *
    * @param {string} name      Name to search.
-   * @param {GameObject=} node Starting GameObject.
+   * @param {black-engine~GameObject=} node Starting GameObject.
    *
-   * @return {GameObject} GameObject or null.
+   * @return {black-engine~GameObject} GameObject or null.
    */
   static find(name, node) {
     if (node == null)
@@ -1917,9 +1981,9 @@ export class GameObject extends MessageDispatcher {
    * starting point.
    *
    * @param {number} id         Id to search.
-   * @param {GameObject=} node  Starting GameObject or null.
+   * @param {black-engine~GameObject=} node  Starting GameObject or null.
    *
-   * @return {GameObject} GameObject or null.
+   * @return {black-engine~GameObject} GameObject or null.
    */
   static findById(id, node) {
     if (node == null)

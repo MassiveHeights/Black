@@ -5,18 +5,18 @@ import { VectorScatter } from "../../scatters/VectorScatter";
  * Sets initial particle scale value.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class InitialAnchor extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|VectorScatter)} values
+   * @param {...(number|black-engine~VectorScatterBase)} values
    */
   constructor(...values) {
     super();
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

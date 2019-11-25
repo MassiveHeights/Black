@@ -10,7 +10,7 @@ import { Black } from "../Black";
  * @fires Timer#complete
  * @fires Timer#tick
  * 
- * @extends Component
+ * @extends black-engine~Component
  */
 export class Timer extends Component {
   constructor(interval = 1, ticksCount = 1, startOnAdded = true) {
@@ -110,7 +110,7 @@ export class Timer extends Component {
   /**
    * Start timer.
    *
-   * @return {Timer} Returns this.
+   * @return {black-engine~Timer} Returns this.
    */
   start() {
     this.mIsRunning = true;
@@ -120,7 +120,7 @@ export class Timer extends Component {
   /**
    * Stop and reset timer.
    *
-   * @return {Timer} Returns this.
+   * @return {black-engine~Timer} Returns this.
    */
   stop() {
     this.mIsRunning = false;
@@ -131,7 +131,7 @@ export class Timer extends Component {
   /**
    * Pauses the timer.
    *
-   * @return {Timer} Returns this.
+   * @return {black-engine~Timer} Returns this.
    */
   pause() {
     this.mIsRunning = false;
@@ -142,7 +142,7 @@ export class Timer extends Component {
    * Reset timer.
    *
    * sets ticks elapsedSeconds and totalElapsedSeconds to 0
-   * @return {Timer} Returns this.
+   * @return {black-engine~Timer} Returns this.
    */
   reset() {
     this.mTick = 0;

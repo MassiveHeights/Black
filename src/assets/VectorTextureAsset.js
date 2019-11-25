@@ -14,7 +14,7 @@ import { AssetType } from "./AssetType";
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
 
 export class VectorTextureAsset extends Asset {
@@ -58,13 +58,13 @@ export class VectorTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {GraphicsData|null} 
+     * @type {black-engine~GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
     /** 
      * @private 
-     * @type {XHRAssetLoader|null} 
+     * @type {black-engine~XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -75,6 +75,7 @@ export class VectorTextureAsset extends Asset {
   onLoaderRequested(factory) {
     this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 
@@ -82,7 +83,7 @@ export class VectorTextureAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    const data = /** @type {!Object}*/(this.mXHR.data);
     const parser = new BVGParser();
 
     this.mGraphicsData = parser.parse(data);
@@ -104,7 +105,7 @@ export class VectorTextureAsset extends Asset {
   /**
    * Creates baked textures from this graphics data.
    *
-   * @return {Object.<string, CanvasRenderTexture>}
+   * @return {Object.<string, black-engine~CanvasRenderTexture>}
    */
   bakeTextures() {
     const textures = {};

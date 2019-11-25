@@ -9,7 +9,7 @@ var pool = null;
  * BoxToCirclePair is used to test collision within box - circle colliders.
  *
  * @cat physics.arcade.pairs
- * @extends Pair
+ * @extends black-engine~Pair
  */
 
 export class BoxToCirclePair extends Pair {

@@ -4,7 +4,7 @@ import { AssetLoader } from "./AssetLoader";
  * XHRAssetLoader responsible for loading data via XMLHttpRequest.
  *
  * @cat assets.loaders
- * @extends AssetLoader
+ * @extends black-engine~AssetLoader
  */
 export class XHRAssetLoader extends AssetLoader {
   constructor(url) {

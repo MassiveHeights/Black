@@ -5,18 +5,18 @@ import { FloatScatter } from "../../scatters/FloatScatter";
  * Sets initial particle scale value.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class InitialScale extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|FloatScatter)} values Min and max values.
+   * @param {...(number|black-engine~FloatScatterBase)} values Min and max values.
    */
   constructor(...values) {
     super();
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

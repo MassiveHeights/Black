@@ -16,7 +16,7 @@ import { Message } from "../../messages/Message";
  *
  * @cat display.text
  * @fires TextField#change
- * @extends DisplayObject
+ * @extends black-engine~DisplayObject
  */
 export class TextField extends DisplayObject {
   /**
@@ -26,8 +26,8 @@ export class TextField extends DisplayObject {
    * @param  {string=} family                                             Font name
    * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
    * @param  {number=} [size=14]                                          Text size
-   * @param  {FontStyle=} [style=FontStyle.NORMAL]    Text style eg italic
-   * @param  {FontWeight=} [weight=FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {black-engine~FontStyle=} [style=black-engine~FontStyle.NORMAL]    Text style eg italic
+   * @param  {black-engine~FontWeight=} [weight=black-engine~FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
    * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
    * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
@@ -42,7 +42,7 @@ export class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mCacheBounds = new Rectangle();
 
@@ -60,13 +60,13 @@ export class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {TextStyle} 
+     * @type {black-engine~TextStyle} 
      */
     this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
     /** 
      * @private 
-     * @type {Object.<string,TextStyle>} 
+     * @type {Object.<string,black-engine~TextStyle>} 
      */
     this.mStyles = {};
 
@@ -78,13 +78,13 @@ export class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {FontAlign} 
+     * @type {black-engine~FontAlign} 
      */
     this.mAlign = FontAlign.LEFT;
 
     /** 
      * @private 
-     * @type {FontVerticalAlign} 
+     * @type {black-engine~FontVerticalAlign} 
      */
     this.mVerticalAlign = FontVerticalAlign.MIDDLE;
 
@@ -102,7 +102,7 @@ export class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mTextBounds = new Rectangle();
 
@@ -120,13 +120,13 @@ export class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mPadding = new Rectangle(0, 0, 0, 0);
 
     /** 
      * @private 
-     * @type {TextMetricsData|null} 
+     * @type {black-engine~TextMetricsData|null} 
      */
     this.mMetrics = null;
 
@@ -188,7 +188,7 @@ export class TextField extends DisplayObject {
    * Adds or updates given text style by given tag name.
    * 
    * @param {string} name 
-   * @param {TextStyle} style 
+   * @param {black-engine~TextStyle} style 
    */
   setStyle(name, style) {
     Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`);
@@ -203,7 +203,7 @@ export class TextField extends DisplayObject {
   /**
    * Updates default text style with a given one.
    * 
-   * @param {TextStyle} style 
+   * @param {black-engine~TextStyle} style 
    */
   setDefaultStyle(style) {
     this.mDefaultStyle = style;
@@ -228,7 +228,7 @@ export class TextField extends DisplayObject {
    * Returns text style by given name or null if not found.
    * 
    * @param {string} name 
-   * @return {TextStyle} 
+   * @return {black-engine~TextStyle} 
    */
   getStyle(name) {
     return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
@@ -237,7 +237,7 @@ export class TextField extends DisplayObject {
   /**
    * Returns an array of all not default styles.
    * 
-   * @return {Array<TextStyle>} 
+   * @return {Array<black-engine~TextStyle>} 
    */
   getAllStyles() {
     let styles = [];
@@ -365,14 +365,14 @@ export class TextField extends DisplayObject {
   /**
    * Get/Set text style.
    *
-   * @return {FontStyle}
+   * @return {black-engine~FontStyle}
    */
   get fontStyle() {
     return this.mDefaultStyle.style;
   }
 
   /**
-   * @param {FontStyle} value
+   * @param {black-engine~FontStyle} value
    * @return {void}
    */
   set fontStyle(value) {
@@ -388,14 +388,14 @@ export class TextField extends DisplayObject {
   /**
    * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @return {FontWeight}
+   * @return {black-engine~FontWeight}
    */
   get weight() {
     return this.mDefaultStyle.weight;
   }
 
   /**
-   * @param {FontWeight} value
+   * @param {black-engine~FontWeight} value
    * @return {void}
    */
   set weight(value) {
@@ -411,14 +411,14 @@ export class TextField extends DisplayObject {
   /**
    * Specifies the horizontal alignment of the text (left | center | right).
    *
-   * @return {FontAlign}
+   * @return {black-engine~FontAlign}
    */
   get align() {
     return this.mAlign;
   }
 
   /**
-   * @param {FontAlign} value
+   * @param {black-engine~FontAlign} value
    * @return {void}
    */
   set align(value) {
@@ -434,14 +434,14 @@ export class TextField extends DisplayObject {
   /**
    * Specifies the vertical alignment of the text (top | middle | bottom).
    *
-   * @return {FontVerticalAlign}
+   * @return {black-engine~FontVerticalAlign}
    */
   get vAlign() {
     return this.mVerticalAlign;
   }
 
   /**
-   * @param {FontVerticalAlign} value
+   * @param {black-engine~FontVerticalAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -542,8 +542,8 @@ export class TextField extends DisplayObject {
     this.setTransformDirty();
   }
 
-  /**Text to be displayed inside this text field.
-
+  /**
+   * Text to be displayed inside this text field.
    * @return {string}
    */
   get text() {
@@ -596,14 +596,14 @@ export class TextField extends DisplayObject {
   /**
    * An extra padding. Also useful for bad prepared fonts.
    *
-   * @return {Rectangle}
+   * @return {black-engine~Rectangle}
    */
   get padding() {
     return this.mPadding;
   }
 
   /**
-   * @param {Rectangle} value
+   * @param {black-engine~Rectangle} value
    * @return {void}
    */
   set padding(value) {

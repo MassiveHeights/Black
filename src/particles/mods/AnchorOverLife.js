@@ -5,18 +5,18 @@ import { VectorScatter } from "../../scatters/VectorScatter";
  * Changes particle alpha according to its life.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class AnchorOverLife extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|VectorScatter)} values An VectorScatter which defines acceleration direction.
+   * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {VectorScatter} Modifier's object to get values from.  */
+    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

@@ -1,46 +1,42 @@
-import { Scatter } from "./Scatter";
+import { FloatScatterBase } from "./FloatScatterBase";
 
 /**
  * A number scatter for defining a range in 1D space.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends black-engine~FloatScatterBase
  */
-export class FloatScatter extends Scatter {
+export class FloatScatter extends FloatScatterBase {
   /**
    * Creates new FloatScatter instance.
    *
-   * @param {number}      min             The min value along x-axis.
-   * @param {number}      [max=undefined] The max value along x-axis.
-   * @param {?function(number):number} [ease=null]     Easing function.
+   * @param {number}                   [min=0]  The min value along x-axis.
+   * @param {number}                   [max=null]  The max value along x-axis.
+   * @param {?function(number):number} [ease=null] Easing function. If null linear function is used as default.
    */
-  constructor(min, max = NaN, ease = null) {
+  constructor(min = 0, max = null, ease = null) {
     super();
 
     /**
      * A min value.
+     * 
      * @type {number}
      */
     this.min = min;
 
     /**
      * A max value.
+     * 
      * @type {number}
      */
-    this.max = isNaN(max) ? min : max;
+    this.max = max === null ? min : max;
 
     /**
      * Optional easing function.
+     * 
      * @type {?function(number):number}
      */
     this.ease = ease;
-
-    /**
-     * Cached last value of `getValueAt` result.
-     * @readonly
-     * @type {number}
-     */
-    this.value = 0;
   }
 
   /**
@@ -55,19 +51,20 @@ export class FloatScatter extends Scatter {
       t = this.ease(t);
 
     this.value = this.min + t * (this.max - this.min);
+
     return this.value;
   }
 
   /**
-   * Creates new FloatScatter from a set of numbers.
+   * Creates new FloatScatterBase from a set of numbers.
    *
-   * @param {...number|FloatScatter} values Set of values.
-   * @returns {FloatScatter}
+   * @param {...number|black-engine~FloatScatterBase} values Set of values.
+   * @returns {black-engine~FloatScatterBase}
    */
   static fromObject(...values) {
-    if (values[0] instanceof FloatScatter)
-      return /** @type {FloatScatter} */ (values[0]);
-    
+    if (values[0] instanceof FloatScatterBase)
+      return /** @type {FloatScatterBase} */ (values[0]);
+
     return new FloatScatter(...values);
   }
 }

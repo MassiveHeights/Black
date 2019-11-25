@@ -84,6 +84,7 @@ export { VideoNullDriver } from './drivers/VideoNullDriver';
 export { CanvasDriver } from './drivers/canvas/CanvasDriver';
 
 export { DisplayObject } from './display/DisplayObject';
+export { Camera } from './display/Camera';
 export { GraphicsData } from './display/GraphicsData';
 export { Graphics } from './display/Graphics';
 export { GraphicsPath } from './display/GraphicsPath';
@@ -110,6 +111,10 @@ export { BitmapTextField } from './display/text/BitmapTextField';
 export { Device } from './system/Device';
 
 export { Scatter } from './scatters/Scatter';
+export { FloatScatterBase } from './scatters/FloatScatterBase';
+export { VectorScatterBase } from './scatters/VectorScatterBase';
+export { ColorScatterBase } from './scatters/ColorScatterBase';
+
 export { FloatScatter } from './scatters/FloatScatter';
 export { ColorScatter } from './scatters/ColorScatter';
 export { VectorScatter } from './scatters/VectorScatter';

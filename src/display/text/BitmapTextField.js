@@ -10,13 +10,13 @@ import { TextMetricsEx } from "./TextMetrics";
  * This class is used to create display text.
  *
  * @cat display.text
- * @extends DisplayObject
+ * @extends black-engine~DisplayObject
  */
 export class BitmapTextField extends DisplayObject {
   /**
    * Create new instance of BitmapTextField.
    *
-   * @param {string|BitmapFontData} font     The name of the bitmap font
+   * @param {string|black-engine~BitmapFontData} font     The name of the bitmap font
    * @param {string=} text                   Text to be displayed inside this text field
    */
   constructor(font, text = '') {
@@ -53,13 +53,13 @@ export class BitmapTextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mBounds = new Rectangle();
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mTextBounds = new Rectangle();
 

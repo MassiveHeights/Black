@@ -6,7 +6,7 @@ import { Black } from "../../Black";
  * Reverberation sound effect.
  * 
  * @cat audio.effects
- * @extends {SoundEffect}
+ * @extends {black-engine~SoundEffect}
  */
 export class ReverbEffect extends SoundEffect {
   /**
@@ -17,10 +17,16 @@ export class ReverbEffect extends SoundEffect {
   constructor(IRBuffer) {
     super();
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mInputNode = Black.audio._newGainNode();
 
-    /** @inheritDoc */
+    /** 
+     * @protected 
+     * @type {AudioNode} 
+     */
     this.mOutputNode = Black.audio._newGainNode();
 
     /** 

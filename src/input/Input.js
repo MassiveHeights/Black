@@ -5,6 +5,7 @@ import { Black } from "../Black";
 import { InputComponent } from "./InputComponent";
 import { KeyInfo } from "./KeyInfo";
 import { Device } from "../system/Device";
+import { Camera } from "../display/Camera";
 
 /**
  * A input system class is responsible for mouse, touch and keyboard input events.
@@ -22,7 +23,12 @@ import { Device } from "../system/Device";
  * @fires Input#pointerMove
  * @fires Input#pointerDown
  * @fires Input#pointerUp
- * @extends System
+ * 
+ * @fires GameObject#pointerMove
+ * @fires GameObject#pointerDown
+ * @fires GameObject#pointerUp
+ * 
+ * @extends black-engine~System
  */
 export class Input extends System {
   /**
@@ -37,13 +43,19 @@ export class Input extends System {
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
+     */
+    this.mViewportPosition = new Vector();
+
+    /** 
+     * @private 
+     * @type {black-engine~Vector} 
      */
     this.mPointerPosition = new Vector();
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mStagePosition = new Vector();
 
@@ -95,12 +107,6 @@ export class Input extends System {
      */
     this.mIsPointerDown = false;
 
-    /** 
-     * @private 
-     * @type {boolean} 
-     */
-    this.mNeedUpEvent = false;
-
     // NOTE: we need guarantee that keys are not going to change theirs order when iterating.
     /** 
      * @private 
@@ -110,25 +116,25 @@ export class Input extends System {
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mTarget = null;
 
     /** 
      * @private 
-     * @type {Component} 
+     * @type {black-engine~Component} 
      */
     this.mTargetComponent = null;
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mLockedTarget = null;
 
     /** 
      * @private 
-     * @type {Component} 
+     * @type {black-engine~Component} 
      */
     this.mLastInTargetComponent = null;
 
@@ -151,27 +157,39 @@ export class Input extends System {
    */
   __initListeners() {
     this.mKeyEventList = mKeyEventList;
+    let isMouseDevice = false;
 
-    if (window.PointerEvent)
+    if (window.PointerEvent) {
       this.mEventList = mPointerEventList;
-    else if (Black.device.isTouch && Black.device.isMobile)
+      isMouseDevice = true;
+    }
+    else if (Black.device.isTouch && Black.device.isMobile) {
       this.mEventList = mTouchEventList;
-    else
+    }
+    else {
       this.mEventList = mMouseEventList;
+      isMouseDevice = true;
+    }
 
     for (let i = 0; i < 3; i++)
       this.mDom.addEventListener(this.mEventList[i], e => this.__onPointerEvent(e), false);
 
-    let listener = null;
-    listener = e => this.__onPointerEventDoc(e);
-    this.mBoundListeners.push({ name: this.mEventList[IX_POINTER_UP], listener: listener });
-    document.addEventListener(this.mEventList[IX_POINTER_UP], listener, false);
+    let addBoundsListener = (target, name, action) => {
+      const listener = e => action.call(this, e);
 
-    for (let i = 0; i < this.mKeyEventList.length; i++) {
-      listener = e => this.__onKeyEvent(/** @type{KeyboardEvent}*/(e));
-      this.mBoundListeners.push({ name: this.mKeyEventList[i], listener: listener });
-      document.addEventListener(this.mKeyEventList[i], listener, false);
-    }
+      this.mBoundListeners.push({ name: name, listener: listener });
+      target.addEventListener(name, listener);
+    };
+
+    addBoundsListener(document, this.mEventList[IX_POINTER_MOVE], this.__onPointerEventDoc);
+    addBoundsListener(document, this.mEventList[IX_POINTER_UP], this.__onPointerEventDoc);
+
+    if (isMouseDevice === true)
+      addBoundsListener(window, 'wheel', this.__onPointerEventDoc);
+
+    // handle keyboard listeners
+    for (let i = 0; i < this.mKeyEventList.length; i++)
+      addBoundsListener(document, this.mKeyEventList[i], this.__onKeyEvent);
   }
 
   /**
@@ -198,12 +216,14 @@ export class Input extends System {
     if (Black.engine.isPaused === true)
       return;
 
-    // dirty check
-    let over = e.target == this.mDom || /** @type {Node})*/ (e.target).parentElement == this.mDom;
+    const over = e.path.indexOf(this.mDom) !== -1;
 
-    if (over === false && this.mNeedUpEvent === true) {
-      this.mNeedUpEvent = false;
-      this.__pushEvent(e);
+    if (e.type === 'wheel') {
+      if (over === true)
+        this.__pushEvent(e);
+    } else {
+      if (over === false && this.mIsPointerDown === true)
+        this.__pushEvent(e);
     }
   }
 
@@ -220,7 +240,6 @@ export class Input extends System {
     e.preventDefault();
 
     this.__pushEvent(e);
-
     return true;
   }
 
@@ -237,11 +256,7 @@ export class Input extends System {
     else
       p = this.__getPointerPos(this.mDom, e);
 
-    this.mPointerQueue.push({
-      e: e,
-      x: p.x,
-      y: p.y
-    });
+    this.mPointerQueue.push({ e: e, x: p.x, y: p.y });
   }
 
   /**
@@ -249,7 +264,7 @@ export class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {Event} evt
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -267,7 +282,7 @@ export class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {TouchEvent} evt
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -280,6 +295,7 @@ export class Input extends System {
     const rotation = Black.engine.viewport.rotation;
     let scaleX = (rotation === 0 ? canvas.clientWidth : canvas.clientHeight) / rect.width;
     let scaleY = (rotation === 0 ? canvas.clientHeight : canvas.clientWidth) / rect.height;
+
     return new Vector((x - rect.left) * scaleX, (y - rect.top) * scaleY);
   }
 
@@ -297,6 +313,7 @@ export class Input extends System {
 
     while (this.mPointerQueue.length > 0) {
       const nativeEvent = this.mPointerQueue.shift();
+
       const x = nativeEvent.x;
       const y = nativeEvent.y;
 
@@ -312,8 +329,12 @@ export class Input extends System {
       this.mPointerPosition.x = nativeEvent.x;
       this.mPointerPosition.y = nativeEvent.y;
 
-      this.mStagePosition.x = nativeEvent.x;
-      this.mStagePosition.y = nativeEvent.y;
+      this.mViewportPosition.copyFrom(this.mPointerPosition);
+
+      if (Black.camera !== null)
+        Black.camera.worldTransformation.transformVector(this.mPointerPosition, this.mPointerPosition);
+
+      this.mStagePosition.copyFrom(this.mPointerPosition);
 
       let inv = stage.worldTransformationInverted;
       inv.transformVector(this.mStagePosition, this.mStagePosition);
@@ -328,7 +349,7 @@ export class Input extends System {
   /**
    * @ignore
    * @private
-   * @param {Vector} pos
+   * @param {black-engine~Vector} pos
    */
   __findTarget(pos) {
     let obj = Black.stage.hitTest(pos);
@@ -347,24 +368,26 @@ export class Input extends System {
    * @ignore
    * @private
    * @param {Object} nativeEvent
-   * @param {Vector} pos
+   * @param {black-engine~Vector} pos
    * @param {string} type
    */
   __processNativeEvent(nativeEvent, pos, type) {
     if (type === Input.POINTER_DOWN) {
       this.mIsPointerDown = true;
-      this.mNeedUpEvent = true;
     }
     else if (type === Input.POINTER_UP) {
       this.mIsPointerDown = false;
     }
 
-    this.post(type);
+    let delta = 0;
+    if (type === Input.WHEEL)
+      delta = nativeEvent.e.deltaY > 0 ? 1 : -1;
+
+    const info = new PointerInfo(this.mTarget, pos.x, pos.y, nativeEvent.e.button, delta);
+    this.post(type, info);
 
     if (this.mTarget === null && this.mLockedTarget === null)
       return;
-
-    let info = new PointerInfo(this.mTarget, pos.x, pos.y);
 
     if (type === Input.POINTER_DOWN) {
       this.mLockedTarget = this.mTarget;
@@ -450,7 +473,7 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer x-component.
    *
-   * @returns {number} Description
+   * @returns {number}
    */
   get pointerY() {
     return this.mPointerPosition.y;
@@ -468,16 +491,25 @@ export class Input extends System {
   /**
    * Returns mouse or touch pointer x-component  relative to stage.
    *
-   * @returns {number} Description
+   * @returns {number}
    */
   get stageY() {
     return this.mStagePosition.y;
   }
 
   /**
-   * Returns mouse or touch pointer position.
+   * Returns mouse or touch pointer position relative to viewport.
    *
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
+   */
+  get viewportPosition() {
+    return this.mViewportPosition;
+  }
+
+  /**
+   * Returns mouse or touch pointer position including active camera transformation.
+   *
+   * @returns {black-engine~Vector}
    */
   get pointerPosition() {
     return this.mPointerPosition;
@@ -486,7 +518,7 @@ export class Input extends System {
   /**
    * Returns pointer position relative to the stage.
    * 
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   get stagePosition() {
     return this.mStagePosition;
@@ -518,6 +550,12 @@ export class Input extends System {
    * @const
    */
   static get POINTER_UP() { return 'pointerUp'; }
+
+  /**
+   * @type {string}
+   * @const
+   */
+  static get WHEEL() { return 'wheel'; }
 }
 
 
@@ -561,21 +599,21 @@ const mKeyEventsLookup = ['keyDown', 'keyUp', 'keyPress'];
  * @type {Array<string>}
  * @const
  */
-const mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut'];
+const mInputEventsLookup = ['pointerMove', 'pointerDown', 'pointerUp', 'pointerIn', 'pointerOut', 'wheel'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-const mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave'];
+const mPointerEventList = ['pointermove', 'pointerdown', 'pointerup', 'pointerenter', 'pointerleave', 'wheel'];
 
 /**
  * @private
  * @type {Array<string>}
  * @const
  */
-const mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave'];
+const mMouseEventList = ['mousemove', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', 'wheel'];
 
 /**
  * @private
@@ -600,6 +638,21 @@ const mTouchEventList = ['touchmove', 'touchstart', 'touchend', 'touchenter', 't
  */
 
 /**
+* Posts when mouse down or touch down event happened.
+* @event GameObject#pointerDown
+*/
+
+/**
+ * Posts when mouse up or touch up event happened.
+ * @event GameObject#pointerUp
+ */
+
+/**
+ * Posts when mouse move or touch move event happened.
+ * @event GameObject#pointerMove
+ */
+
+/**
  * Stores additional information about pointer events.
  *
  * @ignore
@@ -609,15 +662,16 @@ class PointerInfo {
   /**
    * Creates new PointerInfo instance. For internal use only.
    *
-   * @param {GameObject} activeObject `GameObject` the cursor is above.
+   * @param {black-engine~GameObject} activeObject `GameObject` the cursor is above.
    * @param {number} x x-coordinate
    * @param {number} y y-coordinate
+   * @param {number} button active pressed button
    */
-  constructor(activeObject, x, y) {
+  constructor(activeObject, x, y, button, delta = 0) {
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mActiveObject = activeObject;
 
@@ -632,13 +686,41 @@ class PointerInfo {
      * @type {number} 
      */
     this.mY = y;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.mButton = button;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.mDelta = delta;
+  }
+
+  /**
+   * Retruns normalized wheel delta value.
+   * @returns {number}
+   */
+  get delta() {
+    return this.mDelta;
+  }
+
+  /**
+   * Retruns current pressed button.
+   * @returns {number}
+   */
+  get button() {
+    return this.mButton;
   }
 
   /**
    * Returns the object under cursor right now.
    *
    * @readonly
-   * @returns {GameObject}
+   * @returns {black-engine~GameObject}
    */
   get activeObject() {
     return this.mActiveObject;
@@ -664,4 +746,3 @@ class PointerInfo {
     return this.mY;
   }
 }
-

@@ -19,8 +19,8 @@ export class TextStyle {
    * @param  {string=} family                                             Font name
    * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
    * @param  {number=} [size=14]                                          Text size
-   * @param  {FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
-   * @param  {FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {black-engine~FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
+   * @param  {black-engine~FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
    * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
    * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
@@ -37,10 +37,10 @@ export class TextStyle {
     /** @type {number} */
     this.color = color;
 
-    /** @type {FontStyle} */
+    /** @type {black-engine~FontStyle} */
     this.style = style;
 
-    /** @type {FontWeight} */
+    /** @type {black-engine~FontWeight} */
     this.weight = weight;
 
     /** @type {number} */
@@ -91,7 +91,7 @@ export class TextStyle {
   /**
    * Returns default TextStyle instance.
    * 
-   * @returns {TextStyle}
+   * @returns {black-engine~TextStyle}
    */
   static get default() {
     if (defaultStyle === null)

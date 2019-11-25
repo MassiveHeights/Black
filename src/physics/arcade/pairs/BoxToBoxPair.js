@@ -8,7 +8,7 @@ var pool = null;
  * BoxToBoxPair is used to test collision within boxes
  *
  * @cat physics.arcade.pairs
- * @extends Pair
+ * @extends black-engine~Pair
  */
 export class BoxToBoxPair extends Pair {
   /**
@@ -21,7 +21,7 @@ export class BoxToBoxPair extends Pair {
      * Collider from body a.
      * 
      * @public 
-     * @type {BoxCollider|null}
+     * @type {black-engine~BoxCollider|null}
      */
     this.a = null;
 
@@ -29,7 +29,7 @@ export class BoxToBoxPair extends Pair {
      * Collider from body b. 
      * 
      * @public 
-     * @type {BoxCollider|null}
+     * @type {black-engine~BoxCollider|null}
      */
     this.b = null;
 
@@ -42,7 +42,7 @@ export class BoxToBoxPair extends Pair {
     /**
      * Projection keeps range of projected vertices. For each normal from both the colliders.
      * @private 
-     * @type {Array<Projection>}
+     * @type {Array<black-engine~Projection>}
      */
     this.mProjections = projections;
   }
@@ -52,10 +52,10 @@ export class BoxToBoxPair extends Pair {
    *
    * @public
    *
-   * @param {BoxCollider} a   Pair collider
-   * @param {BoxCollider} b   Pair collider
-   * @param {RigidBody} bodyA Pair body
-   * @param {RigidBody} bodyB Pair body
+   * @param {black-engine~BoxCollider} a   Pair collider
+   * @param {black-engine~BoxCollider} b   Pair collider
+   * @param {black-engine~RigidBody} bodyA Pair body
+   * @param {black-engine~RigidBody} bodyB Pair body
    *
    * @return {Pair} This
    */

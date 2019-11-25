@@ -11,14 +11,13 @@ import { Matrix } from "../geom/Matrix";
  * A basic utility class for drawing shapes.
  *
  * @cat display
- * @extends DisplayObject
+ * @extends black-engine~DisplayObject
  */
-
 export class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.
    *
-   * @param {GraphicsData|string|null} graphicsData The id of BVG object.
+   * @param {black-engine~GraphicsData|string|null} graphicsData The id of BVG object.
    * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
    */
   constructor(graphicsData = null, trim = false) {
@@ -26,7 +25,7 @@ export class Graphics extends DisplayObject {
 
     /** 
      * @private
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mBounds = new Rectangle();
 
@@ -35,13 +34,13 @@ export class Graphics extends DisplayObject {
      *
      * 
      * @private
-     * @type {Rectangle|null} 
+     * @type {black-engine~Rectangle|null} 
      */
     this.mLocalBounds = null;
 
     /** 
      * @private
-     * @type {GraphicsData|null} 
+     * @type {black-engine~GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
@@ -122,13 +121,34 @@ export class Graphics extends DisplayObject {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
   lineStyle(lineWidth = 0, color = 0, alpha = 1, caps = CapsStyle.NONE, joints = JointStyle.MITER, miterLimit = 3) {
     this.mGraphicsData.lineStyle(lineWidth, color, alpha, caps, joints, miterLimit);
+  }
+
+  /**
+   * Sets shadow blur level.
+   * 
+   * @param {number} level 
+   * @returns {void}
+   */
+  shadowBlur(level) {
+    this.mGraphicsData.shadowBlur(level);
+  }
+
+  /**
+   * Sets shadow color.
+   * 
+   * @param {number} color 
+   * @param {number} alpha 
+   * @returns {void}
+   */
+  shadowColor(color, alpha = 1) {
+    this.mGraphicsData.shadowColor(color, alpha);
   }
 
   /**
@@ -147,7 +167,7 @@ export class Graphics extends DisplayObject {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {GraphicsGradient} gradient Fill gradient.
+   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -159,7 +179,7 @@ export class Graphics extends DisplayObject {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {GraphicsPattern} pattern Fill pattern.
+   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */

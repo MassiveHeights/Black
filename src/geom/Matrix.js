@@ -37,7 +37,7 @@ export class Matrix {
    * @param  {number} d  D-component.
    * @param  {number} tx TX-component.
    * @param  {number} ty TY-component.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     Debug.isNumber(a, b, c, d, tx, ty);
@@ -59,7 +59,7 @@ export class Matrix {
    *
    * @param {number} dx Amount along x-axis.
    * @param {number} dy Amount along y-axis.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   translate(dx, dy) {
     Debug.isNumber(dx, dy);
@@ -84,7 +84,7 @@ export class Matrix {
    *
    * @param {number} x The tx component to update.
    * @param {number} y The ty component to update.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   setTranslation(x, y) {
     Debug.isNumber(x, y);
@@ -100,7 +100,7 @@ export class Matrix {
    *
    * @param  {number} theta     Theta value.
    * @param  {number} scale = 1 Scale value.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   setRotation(theta, scale = 1) {
     Debug.isNumber(theta, scale);
@@ -118,7 +118,7 @@ export class Matrix {
    * Applies rotation to this matrix.
    *
    * @param  {number} angle Angle in radians.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   rotate(angle) {
     Debug.isNumber(angle);
@@ -145,7 +145,7 @@ export class Matrix {
    *
    * @param {number} sx Abscissa of the scaling vector.
    * @param {number} sy Ordinate of the scaling vector.
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   scale(sx, sy) {
     Debug.isNumber(sx, sy);
@@ -185,7 +185,7 @@ export class Matrix {
   /**
    * Resets current matrix to identity state.
    *
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   identity() {
     return this.set(1, 0, 0, 1, 0, 0);
@@ -203,8 +203,8 @@ export class Matrix {
   /**
    * Concatenates a given matrix with the current one.
    *
-   * @param  {Matrix} b The matrix to be concatenated.
-   * @return {Matrix}   This.
+   * @param  {black-engine~Matrix} b The matrix to be concatenated.
+   * @return {black-engine~Matrix}   This.
    */
   prepend(b) {
     let a = this.data;
@@ -244,8 +244,8 @@ export class Matrix {
   /**
    * Appends values to this matrix.
    *
-   * @param  {Matrix} b The matrix to be appended.
-   * @return {Matrix} This.
+   * @param  {black-engine~Matrix} b The matrix to be appended.
+   * @return {black-engine~Matrix} This.
    */
   append(b) {
     let a = this.data;
@@ -278,8 +278,8 @@ export class Matrix {
    *
    * @param  {number} x          The x- component of a point.
    * @param  {number} y          The y- component of a point.
-   * @param  {Vector=} outVector If given stores resulting values in it.
-   * @return {Vector} Transformed Vector object.
+   * @param  {black-engine~Vector=} outVector If given stores resulting values in it.
+   * @return {black-engine~Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
     Debug.isNumber(x, y);
@@ -298,8 +298,8 @@ export class Matrix {
    *
    * @param  {number} x          The x- component.
    * @param  {number} y          The y- component.
-   * @param  {Vector=} outVector If given stores results in it.
-   * @return {Vector} Just transformed Vector object.
+   * @param  {black-engine~Vector=} outVector If given stores results in it.
+   * @return {black-engine~Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
     Debug.isNumber(x, y);
@@ -316,9 +316,9 @@ export class Matrix {
   /**
    * Transforms vector by current matrix object.
    *
-   * @param  {Vector} vector     Vector to apply transformation on.
-   * @param  {Vector=} outVector Out Vector to store results in.
-   * @return {Vector} New transformed vector.
+   * @param  {black-engine~Vector} vector     Vector to apply transformation on.
+   * @param  {black-engine~Vector=} outVector Out Vector to store results in.
+   * @return {black-engine~Vector} New transformed vector.
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
@@ -333,9 +333,9 @@ export class Matrix {
   /**
    * Transforms rectangle by current matrix object.
    *
-   * @param  {Rectangle} rect         Rectangle to apply transformation on.
-   * @param  {Rectangle|null} outRect When given stores results in it.
-   * @return {Rectangle} Transformed  Rectangle object.
+   * @param  {black-engine~Rectangle} rect         Rectangle to apply transformation on.
+   * @param  {black-engine~Rectangle|null} outRect When given stores results in it.
+   * @return {black-engine~Rectangle} Transformed  Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -372,7 +372,7 @@ export class Matrix {
   /**
    * Inverts current matrix.
    *
-   * @return {Matrix} This.
+   * @return {black-engine~Matrix} This.
    */
   invert() {
     let a = this.data;
@@ -452,7 +452,7 @@ export class Matrix {
   /**
    * Clones the current matrix and returns new cloned object.
    *
-   * @return {Matrix} New cloned object.
+   * @return {black-engine~Matrix} New cloned object.
    */
   clone() {
     let m = new Matrix();
@@ -464,8 +464,8 @@ export class Matrix {
   /**
    * Copies values to given matrix.
    *
-   * @param  {Matrix} matrix The destination matrix.
-   * @return {Matrix} This.
+   * @param  {black-engine~Matrix} matrix The destination matrix.
+   * @return {black-engine~Matrix} This.
    */
   copyTo(matrix) {
     let a = this.data;
@@ -484,8 +484,8 @@ export class Matrix {
   /**
    * Copies values from given matrix into this.
    *
-   * @param  {Matrix} matrix The matrix to copy values from.
-   * @return {Matrix} This.
+   * @param  {black-engine~Matrix} matrix The matrix to copy values from.
+   * @return {black-engine~Matrix} This.
    */
   copyFrom(matrix) {
     return matrix.copyTo(this);
@@ -494,7 +494,7 @@ export class Matrix {
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param {Matrix} matrix Matrix object to compare with.
+   * @param {black-engine~Matrix} matrix Matrix object to compare with.
    * @returns {boolean}
    */
   exactEquals(matrix) {
@@ -510,7 +510,7 @@ export class Matrix {
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param  {Matrix} matrix                   Matrix object to compare with.
+   * @param  {black-engine~Matrix} matrix                   Matrix object to compare with.
    * @param  {number} epsilon = Number.EPSILON Comparison threshold.
    * @return {boolean} True if equal.
    */
@@ -549,14 +549,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
 /**
  * @ignore
- * @type {Matrix}
+ * @type {black-engine~Matrix}
  * @nocollapse
  */
 Matrix.__cache = new Matrix();
 
 /**
  * @ignore
- * @type {Matrix}
+ * @type {black-engine~Matrix}
  * @nocollapse
  */
 Matrix.__identity = new Matrix();
@@ -564,7 +564,7 @@ Matrix.__identity = new Matrix();
 /**
  * Recycled matrices pool.
  *
- * @type {ObjectPool}
+ * @type {black-engine~ObjectPool}
  * @nocollapse
  */
 Matrix.pool = new ObjectPool(Matrix);

@@ -9,9 +9,8 @@ import { LoaderType } from "./LoaderType";
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
-
 export class BVGAsset extends Asset {
   /**
    * Creates new JSONAsset instance.
@@ -32,7 +31,7 @@ export class BVGAsset extends Asset {
 
     /** 
      * @private 
-     * @type {GraphicsData|null} 
+     * @type {black-engine~GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
@@ -49,6 +48,7 @@ export class BVGAsset extends Asset {
   onLoaderRequested(factory) {
     this.mXHR = factory.get(LoaderType.XHR, this.mUrl);
     this.mXHR.mimeType = 'application/json';
+    this.mXHR.responseType = 'json';
     this.addLoader(this.mXHR);
   }
 
@@ -56,7 +56,7 @@ export class BVGAsset extends Asset {
    * @inheritDoc
    */
   onAllLoaded() {
-    const data = /** @type {!Object}*/(JSON.parse(/** @type {string} */(this.mXHR.data)));
+    const data = /** @type {!Object}*/(this.mXHR.data);
     const parser = new BVGParser();
 
     this.mGraphicsData = parser.parse(data);

@@ -1,67 +1,201 @@
+var mInstance = null;
+
 /**
  * Connects all the dots.
+ * 
+ * @static
+ * @staticClass
  */
 class Black {
   constructor() {
-    /**
-     * @type {Engine}
-     * Returns current instance of Black Engine.
-     */
-    this.engine = null;
+    mInstance = this;
 
     /**
-     * @type {Input}
-     * Returns current instance of Input system.
+     * @private
+     * @type {black-engine~Engine}
      */
-    this.input = null;
+    this.mEngine = null;
 
     /**
-     * @type {MasterAudio}
-     * Returns current instance of MasterAudio system.
+     * @private
+     * @type {black-engine~Input}
      */
-    this.audio = null;
+    this.mInput = null;
 
     /**
-     * @type {Time}
-     * Returns current instance of Time.
+     * @private
+     * @type {black-engine~MasterAudio}
      */
-    this.time = null;
+    this.mAudio = null;
 
     /**
-     * @type {Device}
-     * Returns current instance of Device.
+     * @private
+     * @type {black-engine~Time}
      */
-    this.device = null;
+    this.mTime = null;
 
     /**
-     * Default instance. Sprite and other classes uses this instance to find textures by name.
-     * It will be automatically assigned when new AssetManager is created.
+     * @private
+     * @type {black-engine~Device}
+     */
+    this.mDevice = null;
+
+    /**
+     * @private
+     * @type {black-engine~AssetManager}
+     */
+    this.mAssets = null;
+
+    /**
+     * Active camera instance.
      * 
      * @private
-     * @static
-     * @type {AssetManager}
+     * @type {black-engine~Camera}
      */
-    this.assets = null;
+    this.mCamera = null;
+  }
+  
+  /**
+   * Returns current Black Engine instance.
+   * 
+   * @returns {black-engine~Engine}
+   */
+  static get engine() {
+    return mInstance.mEngine;
+  }
+
+  /**
+   * Sets new Engine instance.
+   * @param {black-engine~Engine} value
+   */
+  static set engine(value) {
+    mInstance.mEngine = value;
+  }
+
+  /**
+   * Returns current active Input System instance.
+   * 
+   * @returns {black-engine~Input}
+   */
+  static get input() {
+    return mInstance.mInput;
+  }
+
+  /**
+   * Sets new Input System.
+   * @param {black-engine~Input} value
+   */
+  static set input(value) {
+    mInstance.mInput = value;
+  }
+
+  /**
+   * Returns current active Audio System instance.
+   * 
+   * @returns {black-engine~MasterAudio}
+   */
+  static get audio() {
+    return mInstance.mAudio;
+  }
+
+  /**
+   * Sets new Audio System.
+   * @param {black-engine~MasterAudio} value
+   */
+  static set audio(value) {
+    mInstance.mAudio = value;
+  }
+  
+  /**
+   * Returns current Time management instance.
+   * 
+   * @returns {black-engine~Time}
+   */
+  static get time() {
+    return mInstance.mTime;
+  }
+
+  /**
+   * Sets new Time instance.
+   * @param {black-engine~Time} value
+   */
+  static set time(value) {
+    mInstance.mTime = value;
+  }  
+
+  /**
+   * Returns current Device instance.
+   * 
+   * @returns {black-engine~Device}
+   */
+  static get device() {
+    return mInstance.mDevice;
+  }
+
+  /**
+   * Sets new Device instance.
+   * @param {black-engine~Device} value
+   */
+  static set device(value) {
+    mInstance.mDevice = value;
+  }
+
+  /**
+   * Default AssetManager instance. Sprite and other classes uses this instance to find textures by name.
+   * It will be automatically re-assigned when new AssetManager is created.
+   * 
+   * @returns {black-engine~AssetManager}
+   */
+  static get assets() {
+    return mInstance.mAssets;
+  }
+
+  /**
+   * Sets new AssetManager.
+   * @param {black-engine~AssetManager} value
+   */
+  static set assets(value) {
+    mInstance.mAssets = value;
   }
 
   /**
    * Returns current stage.
    *
    * @readonly
-   * @returns {Stage}
+   * @returns {black-engine~Stage}
    */
-  get stage() {
-    return this.engine.mStage;
+  static get stage() {
+    return mInstance.mEngine.mStage;
   }
 
   /**
    * Returns current video driver.
    *
    * @readonly
-   * @returns {VideoNullDriver}
+   * @returns {black-engine~VideoNullDriver}
    */
-  get driver() {
-    return this.engine.mVideo;
+  static get driver() {
+    return mInstance.mEngine.mVideo;
+  }
+
+  /**
+   * Returns active camera instance.
+   * 
+   * @returns {black-engine~Camera}
+   */
+  static get camera() {
+    if (mInstance.mCamera !== null && mInstance.mCamera.mAdded === true)
+      return mInstance.mCamera;
+
+    return null;
+  }
+
+  /**
+   * Sets default camera;
+   * @param {black-engine~Camera} value
+   */
+  static set camera(value) {
+    mInstance.mCamera = value;
   }
 
   /**
@@ -73,5 +207,5 @@ class Black {
   }
 }
 
-const black = new Black();
-export { black as Black };
+new Black();
+export { Black };

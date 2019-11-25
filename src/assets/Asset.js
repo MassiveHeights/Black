@@ -11,7 +11,7 @@ import { MessageBinding } from "../messages/MessageBinding";
  * @fires Asset#complete
  * 
  * @cat assets
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  */
 export class Asset extends MessageDispatcher {
   /**
@@ -36,13 +36,13 @@ export class Asset extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {Object|undefined} 
+     * @type {Object|null} 
      */
     this.mData = null;
 
     /** 
      * @protected 
-     * @type {Array<AssetLoader>} 
+     * @type {Array<black-engine~AssetLoader>} 
      */
     this.mLoaders = [];
 
@@ -60,7 +60,7 @@ export class Asset extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<MessageBinding>} 
+     * @type {Array<black-engine~MessageBinding>} 
      */
     this.mBindings = [];
   }
@@ -68,8 +68,8 @@ export class Asset extends MessageDispatcher {
   /**
    * Adds given loader to the list. Loader cannot be added to multiply Assets.
    * 
-   * @param {AssetLoader} loader Loader to add.
-   * @returns {AssetLoader}
+   * @param {black-engine~AssetLoader} loader Loader to add.
+   * @returns {black-engine~AssetLoader}
    */
   addLoader(loader) {
     this.mLoaders.push(loader);
@@ -84,7 +84,7 @@ export class Asset extends MessageDispatcher {
 
   /**
    * Called when AssetManager is about to request loaders for this asset.
-   * @param {LoaderFactory} factory 
+   * @param {black-engine~LoaderFactory} factory 
    */
   onLoaderRequested(factory) { }
 
@@ -105,7 +105,7 @@ export class Asset extends MessageDispatcher {
 
   /**
    * @private
-   * @param {Message} m 
+   * @param {black-engine~Message} m 
    */
   __onLoaderError(m) {
     this.abort();
@@ -176,7 +176,7 @@ export class Asset extends MessageDispatcher {
   /**
    * Returns loaded data object associated with this asset.
    *
-   * @return {?}
+   * @return {*}
    */
   get data() {
     return this.mData;
@@ -194,7 +194,7 @@ export class Asset extends MessageDispatcher {
   /**
    * Returns array of loaders.
    * 
-   * @returns {Array<AssetLoader>}
+   * @returns {Array<black-engine~AssetLoader>}
    */
   get loaders() {
     return this.mLoaders;

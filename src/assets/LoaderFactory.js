@@ -8,7 +8,7 @@ import { LoaderType } from "./LoaderType";
 export class LoaderFactory {
   /**
    * 
-   * @param {AssetManager} assetManager 
+   * @param {black-engine~AssetManager} assetManager 
    */
   constructor(assetManager) {
     this.mAssetManager = assetManager;
@@ -18,17 +18,20 @@ export class LoaderFactory {
    * Returns an existing instance of the loader if url is already in queue or creates new instance if not.
    * 
    * @param {string} type 
-   * @param {string|LoaderType} url 
-   * @param {...any}
+   * @param {string|black-engine~LoaderType} url 
+   * @param {...any} args
    * 
-   * @returns {AssetLoader}
+   * @returns {black-engine~AssetLoader}
    */
   get(type, url, ...args) {
     let am = this.mAssetManager;
-    let loader = am.mLoadersQueue[url];
+    // TODO: idea is to not create new loader each time it is requested.
+    // But the problem that for example XHR can have different responseTypes.
 
-    if (loader != undefined)
-      return loader;
+    // let loader = am.mLoadersQueue[url];
+
+    // if (loader != undefined)
+    //   return loader;
 
     return new am.mLoaderTypeMap[type](url, ...args);
   }

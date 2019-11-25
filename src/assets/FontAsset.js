@@ -9,7 +9,7 @@ import { LoaderType } from "./LoaderType";
  * Note: this class need a body to work properly.
  *
  * @cat assets
- * @extends Asset
+ * @extends black-engine~Asset
  */
 export class FontAsset extends Asset {
   /**

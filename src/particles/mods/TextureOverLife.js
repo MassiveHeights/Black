@@ -5,18 +5,18 @@ import { FloatScatter } from "../../scatters/FloatScatter";
  * Sets particle's texture according to its energy value.
  *
  * @cat particles.modifiers
- * @extends Modifier
+ * @extends black-engine~Modifier
  */
 export class TextureOverLife extends Modifier {
   /**
    * Creates new TextureOverLife instance.
    *
-   * @param {...(number|FloatScatter)} values A starting and ending values of textureIndex property.
+   * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of textureIndex property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {FloatScatter} Modifier's object to get values from.  */
+    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 

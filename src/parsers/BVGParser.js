@@ -52,7 +52,7 @@ const shapeCmds = {
  * Creates GraphicsData for Graphics from BVG format.
  *
  * @cat parsers
- * @extends ParserBase
+ * @extends black-engine~ParserBase
  */
 
 export class BVGParser extends ParserBase {
@@ -69,7 +69,7 @@ export class BVGParser extends ParserBase {
   /**
    * @inheritDoc
    *
-   * @return {GraphicsData} Data for Graphics renderer
+   * @return {black-engine~GraphicsData} Data for Graphics renderer
    */
   parse(data) {
     super.parse(data);
@@ -87,11 +87,11 @@ export class BVGParser extends ParserBase {
    *
    * @private
    * @param {Object} node BVG node.
-   * @param {Array<BVGStyle>} styles Parsed BVG styles.
-   * @param {GraphicsData} parent Parent node.
-   * @param {BVGStyle} parentStyle Style for inheritance.
+   * @param {Array<black-engine~BVGStyle>} styles Parsed BVG styles.
+   * @param {black-engine~GraphicsData} parent Parent node.
+   * @param {black-engine~BVGStyle} parentStyle Style for inheritance.
    *
-   * @returns {GraphicsData} Parsed data root.
+   * @returns {black-engine~GraphicsData} Parsed data root.
    */
   __traverse(node, styles, parent, parentStyle) {
     const defs = this._defs;
@@ -347,7 +347,7 @@ export class BVGParser extends ParserBase {
    *
    * @private
    *
-   * @returns {Array<BVGStyle>} Parsed data styles.
+   * @returns {Array<black-engine~BVGStyle>} Parsed data styles.
    */
   __parseStyles(styles) {
     if (!styles)
@@ -371,7 +371,7 @@ export class BVGParser extends ParserBase {
    *
    * @private
    * @param {string} data Path data attribute value
-   * @param {GraphicsData} graphicsData Graphics data to store parsed values to.
+   * @param {black-engine~GraphicsData} graphicsData Graphics data to store parsed values to.
    *
    * @return {void}
    */
@@ -648,7 +648,7 @@ export class BVGParser extends ParserBase {
    * @param {number} x Context target (next) position x.
    * @param {number} y Context target (next) position y.
    *
-   * @returns {Array<Array<number>>|undefined} Array of bezier curves attributes.
+   * @returns {Array<Array<number>>|null} Array of bezier curves attributes.
    */
   __arcToBezier(px, py, rx, ry, xAxisRotation, largeFlag, sweepFlag, x, y) {
     const sinPhi = Math.sin(xAxisRotation * Math.PI / 180);

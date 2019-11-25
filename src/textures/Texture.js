@@ -19,11 +19,11 @@ export class Texture {
    * Creates new instance of texture.
    *
    * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-   * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
-   * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+   * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
+   * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
    * @param {number=} [scale=1]                                                 Inverted scale factor.
-   * @param {Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
-   * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
+   * @param {black-engine~Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
+   * @param {black-engine~Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
    */
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
     this.mId = ++__ID;
@@ -40,12 +40,12 @@ export class Texture {
 
     /** 
      * @private 
-     * @type {Rectangle} */
+     * @type {black-engine~Rectangle} */
     this.mRegion = new Rectangle();
 
     /** 
      * @private 
-     * @type {Rectangle} */
+     * @type {black-engine~Rectangle} */
     this.mUntrimmedRegion = new Rectangle();
 
     /** 
@@ -85,12 +85,12 @@ export class Texture {
 
     /** 
      * @private 
-     * @type {Vector|null} */
+     * @type {black-engine~Vector|null} */
     this.mRegistrationPoint = registrationPoint;
 
     /** 
      * @private 
-     * @type {Rectangle|null} */
+     * @type {black-engine~Rectangle|null} */
     this.mSlice9borders = slice9borders;
 
     this.set(nativeElement, region, untrimmedRegion, scale);
@@ -100,8 +100,8 @@ export class Texture {
    * Updates this texture with new native element.
    *
    * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-   * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
-   * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+   * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
+   * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
    * @param {number=} [scale=1]                                                 Inverted scale factor.
    */
   set(nativeElement, region = null, untrimmedRegion = null, scale = 1) {
@@ -158,7 +158,7 @@ export class Texture {
    * Creates new texture from Base64 string.
    *
    * @param {string} string Base64 string.
-   * @returns {Texture}
+   * @returns {black-engine~Texture}
    */
   static fromBase64String(string) {
     let imgElement = new Image();
@@ -171,7 +171,7 @@ export class Texture {
    * @param {Element} canvas
    * @param {string} type
    * @param {number} quality
-   * @returns {Texture}
+   * @returns {black-engine~Texture}
    */
   static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
     let imgElement = new Image();
@@ -183,7 +183,7 @@ export class Texture {
   /**
    * @ignore
    * @param {HTMLCanvasElement} canvas
-   * @returns {Texture|null}
+   * @returns {black-engine~Texture|null}
    */
   static fromCanvas(canvas) {
     return Black.driver.getTextureFromCanvas(canvas);
@@ -223,7 +223,7 @@ export class Texture {
    * The area of the texture to be drawn.
    *
    * @readonly
-   * @returns {Rectangle}
+   * @returns {black-engine~Rectangle}
    */
   get region() {
     return this.mRegion;
@@ -233,7 +233,7 @@ export class Texture {
    * The original area of the texture.
    *
    * @readonly
-   * @returns {Rectangle}
+   * @returns {black-engine~Rectangle}
    */
   get untrimmedRegion() {
     return this.mUntrimmedRegion;
@@ -312,7 +312,7 @@ export class Texture {
   /**
    * Anchor of the texture.
    * 
-   * @returns {Vector|null}
+   * @returns {black-engine~Vector|null}
    */
   get registrationPoint() {
     return this.mRegistrationPoint;
@@ -321,7 +321,7 @@ export class Texture {
   /**
    * Returns slice 9 borders for this texture.
    * 
-   * @returns {Rectangle|null}
+   * @returns {black-engine~Rectangle|null}
    */
   get slice9borders() {
     return this.mSlice9borders;

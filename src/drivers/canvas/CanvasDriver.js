@@ -13,11 +13,12 @@ import { BitmapTextRendererCanvas } from "./BitmapTextRendererCanvas";
 import { GraphicsRendererCanvas } from "./GraphicsRendererCanvas";
 import { Texture } from "../../textures/Texture";
 import { ColorHelper } from "../../utils/ColorHelper";
+import { Camera } from "../../display/Camera";
 
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
  *
- * @extends VideoNullDriver
+ * @extends black-engine~VideoNullDriver
  * @cat drivers.canvas
  */
 export class CanvasDriver extends VideoNullDriver {
@@ -120,9 +121,9 @@ export class CanvasDriver extends VideoNullDriver {
 
   /**
    * @ignore
-   * @param {GameObject} child 
-   * @param {RenderSession} session 
-   * @param {Renderer} parentRenderer
+   * @param {black-engine~GameObject} child 
+   * @param {black-engine~RenderSession} session 
+   * @param {black-engine~Renderer} parentRenderer
    */
   renderObject(child, session, parentRenderer) {
     let skipChildren = false;
@@ -182,8 +183,8 @@ export class CanvasDriver extends VideoNullDriver {
   /**
    * @ignore
    * @protected
-   * @param {Message} msg
-   * @param {Rectangle} rect
+   * @param {black-engine~Message} msg
+   * @param {black-engine~Rectangle} rect
    * @returns {void}
    */
   __onResize(msg, rect) {
@@ -283,6 +284,11 @@ export class CanvasDriver extends VideoNullDriver {
         transform = transform.clone(); // TODO: too much allocations
         transform.prepend(session.customTransform);
       }
+    }
+
+    if (Black.camera !== null) {
+      transform = transform.clone();
+      transform.prepend(Black.camera.worldTransformationInverted);
     }
 
     this.mTransform = transform;

@@ -4,12 +4,28 @@ import { MessageDispatcher } from "../messages/MessageDispatcher";
  * Base class for custom systems. System is used to listen scene changes.
  *
  * @cat core
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  */
 export class System extends MessageDispatcher {
   constructor() {
     super();
   }
+
+  /**
+   * Called when engine is paused.
+   *
+   * @public
+   * @return {void} 
+   */
+  onPause() { }
+
+  /**
+   * Called when engine is resumed.
+   *
+   * @public
+   * @return {void} 
+   */
+  onResume() { }
 
   /**
    * onUpdate
@@ -39,7 +55,7 @@ export class System extends MessageDispatcher {
    * onChildrenAdded
    *
    * @protected
-   * @param {GameObject} gameObject GameObject instance.
+   * @param {black-engine~GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenAdded(gameObject) { }
@@ -48,7 +64,7 @@ export class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {GameObject} gameObject GameObject instance.
+   * @param {black-engine~GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenRemoved(gameObject) { }
@@ -57,7 +73,7 @@ export class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {GameObject} gameObject GameObject instance.
+   * @param {black-engine~GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenChanged(gameObject) { }
@@ -66,8 +82,8 @@ export class System extends MessageDispatcher {
    * onComponentAdded
    *
    * @protected
-   * @param {GameObject} child GameObject instance.
-   * @param {Component} component Component instance added to game object.
+   * @param {black-engine~GameObject} child GameObject instance.
+   * @param {black-engine~Component} component Component instance added to game object.
    * @return {void} 
    */
   onComponentAdded(child, component) { }
@@ -76,8 +92,8 @@ export class System extends MessageDispatcher {
    * onComponentRemoved
    *
    * @protected
-   * @param {GameObject} child GameObject instance.
-   * @param {Component} component Component instance removed from game object.
+   * @param {black-engine~GameObject} child GameObject instance.
+   * @param {black-engine~Component} component Component instance removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) { }

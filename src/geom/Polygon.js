@@ -9,31 +9,31 @@ export class Polygon {
   /**
    * Creates new Polygon instance.
    *
-   * @param  {Array<Vector>} vertices = [] Array of vertex points;
+   * @param  {Array<black-engine~Vector>} vertices = [] Array of vertex points;
    */
   constructor(vertices = []) {
 
     /** 
      * @private 
-     * @type {Array<Vector>} 
+     * @type {Array<black-engine~Vector>} 
      */
     this.mVertices = vertices;
 
     /** 
      * @private 
-     * @type {Array<Line>} 
+     * @type {Array<black-engine~Line>} 
      */
     this.mLines = [];
 
     /** 
      * @private 
-     * @type {Rectangle} 
+     * @type {black-engine~Rectangle} 
      */
     this.mBounds = new Rectangle();
 
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mCenter = new Vector();
 
@@ -44,8 +44,8 @@ export class Polygon {
   /**
    * Sets new vertices.
    *
-   * @param {Array<Vector>} vertices New points.
-   * @return {Polygon} This polygon.
+   * @param {Array<black-engine~Vector>} vertices New points.
+   * @return {black-engine~Polygon} This polygon.
    */
   set(vertices) {
     this.mVertices = vertices;
@@ -56,8 +56,8 @@ export class Polygon {
   /**
    * Copies this properties to another polygon.
    *
-   * @param {Polygon} polygon Object to copy to.
-   * @return {Polygon} Passed polygon.
+   * @param {black-engine~Polygon} polygon Object to copy to.
+   * @return {black-engine~Polygon} Passed polygon.
    */
   copyTo(polygon) {
     let len = this.mVertices.length;
@@ -73,8 +73,8 @@ export class Polygon {
   /**
    * Copies another polygon properties to this.
    *
-   * @param {Polygon} polygon Object to copy from.
-   * @return {Polygon} This polygon.
+   * @param {black-engine~Polygon} polygon Object to copy from.
+   * @return {black-engine~Polygon} This polygon.
    */
   copyFrom(polygon) {
     let polygonVertices = polygon.mVertices;
@@ -91,7 +91,7 @@ export class Polygon {
   /**
    * Clones this polygon.
    *
-   * @return {Polygon} Created polygon.
+   * @return {black-engine~Polygon} Created polygon.
    */
   clone() {
     let thisVertices = this.mVertices;
@@ -139,7 +139,7 @@ export class Polygon {
   /**
    * Shows whether point is within polygon area.
    *
-   * @param {Vector} vector Point to check.
+   * @param {black-engine~Vector} vector Point to check.
    * @return {boolean} True if polygon contains point.
    */
   contains(vector) {
@@ -182,7 +182,7 @@ export class Polygon {
   /**
    * Checks collision between two polygons.
    *
-   * @param {Polygon} polygon Object to check.
+   * @param {black-engine~Polygon} polygon Object to check.
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
@@ -209,7 +209,7 @@ export class Polygon {
   /**
    * Checks collision between this polygon and circle.
    *
-   * @param {Circle} circle Object to check.
+   * @param {black-engine~Circle} circle Object to check.
    * @return {boolean} True if polygon collides with circle.
    */
   collideCircle(circle) {
@@ -233,7 +233,7 @@ export class Polygon {
   /**
    * Checks collision between this polygon and rectangle.
    *
-   * @param {Rectangle} rectangle Object to check.
+   * @param {black-engine~Rectangle} rectangle Object to check.
    * @return {boolean} True if polygon collides with rectangle.
    */
   collideRectangle(rectangle) {
@@ -260,7 +260,7 @@ export class Polygon {
   /**
    * Checks if this polygon overlaps another.
    *
-   * @param {Polygon} polygon Object to check.
+   * @param {black-engine~Polygon} polygon Object to check.
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
@@ -291,7 +291,7 @@ export class Polygon {
   /**
    * Checks if this polygon overlaps passed circle.
    *
-   * @param {Circle} circle Object to check.
+   * @param {black-engine~Circle} circle Object to check.
    * @return {boolean} True if polygon overlaps circle.
    */
   overlapCircle(circle) {
@@ -314,7 +314,7 @@ export class Polygon {
   /**
    * Checks if this polygon overlaps given rectangle.
    *
-   * @param {Rectangle} rectangle Object to check.
+   * @param {black-engine~Rectangle} rectangle Object to check.
    * @return {boolean} True if polygon overlaps rectangle.
    */
   overlapRectangle(rectangle) {
@@ -341,7 +341,7 @@ export class Polygon {
   /**
    * Calculates center, bounds, and edges of this polygon.
    *
-   * @return {Polygon} This polygon.
+   * @return {black-engine~Polygon} This polygon.
    */
   refresh() {
     let center = this.mCenter;
@@ -382,7 +382,7 @@ export class Polygon {
   /**
    * Calculates center of this polygon.
    *
-   * @return {Polygon} This polygon.
+   * @return {black-engine~Polygon} This polygon.
    */
   refreshCenter() {
     let center = this.mCenter;
@@ -402,7 +402,7 @@ export class Polygon {
   /**
    * Calculates bounds of this polygon.
    *
-   * @return {Polygon} This polygon.
+   * @return {black-engine~Polygon} This polygon.
    */
   refreshBounds() {
     let bounds = this.mBounds;
@@ -432,7 +432,7 @@ export class Polygon {
   /**
    * Calculates edges of this polygon.
    *
-   * @return {Polygon} This polygon.
+   * @return {black-engine~Polygon} This polygon.
    */
   refreshLines() {
     let vertices = this.mVertices;
@@ -449,7 +449,7 @@ export class Polygon {
    * Creates instance of Polygon.
    *
    * @param {string} path Numbers x y divided with space.
-   * @return {Polygon} Created polygon.
+   * @return {black-engine~Polygon} Created polygon.
    */
   static fromPath(path) {
     let vertices = [];
@@ -466,7 +466,7 @@ export class Polygon {
    * Sets rotation. Rotates this polygon around it center.
    *
    * @param {number} rotation Angle in radians.
-   * @return {Polygon} This polygon.
+   * @return {black-engine~Polygon} This polygon.
    */
   setRotation(rotation) {
     let center = this.mCenter;
@@ -488,8 +488,8 @@ export class Polygon {
   /**
    * Translates this polygon to specified position.
    *
-   * @param {Vector} point Translation vector.
-   * @return {Polygon} This vertices.
+   * @param {black-engine~Vector} point Translation vector.
+   * @return {black-engine~Polygon} This vertices.
    */
   setTranslation(point) {
     let center = this.mCenter;
@@ -507,7 +507,7 @@ export class Polygon {
   /**
    * Returns array of vertices.
    * 
-   * @returns {Array<Vector>}
+   * @returns {Array<black-engine~Vector>}
    */
   get vertices() {
     return this.mVertices;
@@ -515,7 +515,7 @@ export class Polygon {
 
   /**
    * Returns center points of this polygon.
-   * @returns {Vector}
+   * @returns {black-engine~Vector}
    */
   get center() {
     return this.mCenter;  
@@ -553,7 +553,7 @@ export class Polygon {
 
 /**
  * @ignore
- * @type {Polygon}
+ * @type {black-engine~Polygon}
  * @nocollapse
  */
 Polygon.__cache = new Polygon();

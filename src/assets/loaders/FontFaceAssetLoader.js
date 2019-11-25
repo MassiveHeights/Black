@@ -5,7 +5,7 @@ import { FontMetrics } from "../../display/text/FontMetrics";
  * Responsible for loading local or Google fonts.
  *
  * @cat assets.loaders
- * @extends AssetLoader
+ * @extends black-engine~AssetLoader
  */
 export class FontFaceAssetLoader extends AssetLoader {
   /**
@@ -56,7 +56,7 @@ export class FontFaceAssetLoader extends AssetLoader {
 
     /** 
      * @private 
-     * @type {FontMetrics|null} 
+     * @type {black-engine~FontMetrics|null} 
      */
     this.metrics = null;
 

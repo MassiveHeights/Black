@@ -18,7 +18,7 @@ import { Message } from "../messages/Message";
  * Particle emitter.
  *
  * @cat particles
- * @extends DisplayObject
+ * @extends black-engine~DisplayObject
  */
 export class Emitter extends DisplayObject {
   /**
@@ -29,37 +29,37 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Array<Texture>} 
+     * @type {Array<black-engine~Texture>} 
      */
     this.mTextures = [];
 
     /** 
      * @private 
-     * @type {Array<Particle>} 
+     * @type {Array<black-engine~Particle>} 
      */
     this.mParticles = [];
 
     /** 
      * @private 
-     * @type {Array<Particle>} 
+     * @type {Array<black-engine~Particle>} 
      */
     this.mRecycled = [];
 
     /** 
      * @private 
-     * @type {Array<Modifier>} 
+     * @type {Array<black-engine~Modifier>} 
      */
     this.mInitializers = [];
 
     /** 
      * @private 
-     * @type {Array<Modifier>} 
+     * @type {Array<black-engine~Modifier>} 
      */
     this.mActions = [];
 
     /** 
      * @private 
-     * @type {GameObject} 
+     * @type {black-engine~GameObject} 
      */
     this.mSpace = null;
 
@@ -77,15 +77,15 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {FloatScatter} 
+     * @type {black-engine~FloatScatter} 
      */
     this.mEmitCount = new FloatScatter(10);
 
     /** 
      * @private 
-     * @type {FloatScatter} 
+     * @type {black-engine~FloatScatter} 
      */
-    this.mEmitNumRepeats = new FloatScatter(Infinity);
+    this.mEmitNumRepeats = new FloatScatter(0, Number.MAX_SAFE_INTEGER);
 
     /** 
      * @private 
@@ -95,7 +95,7 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {FloatScatter} 
+     * @type {black-engine~FloatScatter} 
      */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
@@ -107,7 +107,7 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {FloatScatter} 
+     * @type {black-engine~FloatScatter} 
      */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
@@ -119,7 +119,7 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {FloatScatter} 
+     * @type {black-engine~FloatScatter} 
      */
     this.mEmitDelay = new FloatScatter(1);
 
@@ -137,30 +137,80 @@ export class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {EmitterState} 
+     * @type {black-engine~EmitterState} 
      */
     this.mState = EmitterState.PENDING;
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.__tmpLocal = new Matrix();
 
     /** 
      * @private 
-     * @type {Matrix} 
+     * @type {black-engine~Matrix} 
      */
     this.__tmpWorld = new Matrix();
 
     /** 
      * @private 
-     * @type {EmitterSortOrder} 
+     * @type {black-engine~EmitterSortOrder} 
      */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
-    this.mPresimulateSeconds = 5;
+    /**
+     * @private
+     * @type {Array<string>|null}
+     */
+    this.mTextureNames = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mPresimulateSeconds = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.mCurrentPresimulationTime = 0;
+  }
+
+  /**
+   * Starts emitting particles. By default emitter will start emitting automatically.
+   */
+  play() {
+    if (this.mState === EmitterState.EMITTING)
+      return;
+
+    // resume or restart
+    if (this.mState !== EmitterState.PAUSED) {
+      this.mEmitNumRepeatsLeft = this.mEmitNumRepeats.getValue();
+      this.mEmitDurationLeft = this.mEmitDuration.getValue();
+      this.mEmitIntervalLeft = this.mEmitInterval.getValue();
+      this.mEmitDelayLeft = this.mEmitDelay.getValue();
+
+      this.mState = EmitterState.PENDING;
+    }
+  }
+
+  /**
+   * Pauses the emitting process.
+   */
+  pause() {
+    this.mState = EmitterState.PAUSED;
+  }
+
+  /** 
+   * Stops emitting process and destroys all particles.
+   */
+  stop() {
+    this.mParticles = [];
+    this.mRecycled = [];
+
+    this.mState = EmitterState.FINISHED;
   }
 
   /**
@@ -193,18 +243,9 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Sets the internal state to `EmitterState.PENDING`. Use this when you need to restart emitting.
-   *
-   * @returns {void}
-   */
-  resetState() {
-    this.mState = EmitterState.PENDING;
-  }
-
-  /**
    * A helper method for quick adding modifiers.
    *
-   * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
+   * @param {...(black-engine~GameObject|black-engine~Component|black-engine~Modifier)} modifiers The list of modifiers.
    * @returns {Emitter}
    */
   add(...modifiers) {
@@ -220,10 +261,10 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Adds Modifier to the end of the list.
+   * Adds modifier to the end of the list.
    *
-   * @param {Modifier} modifier Modifier to add.
-   * @return {Modifier}
+   * @param {black-engine~Modifier} modifier Modifier to add.
+   * @return {black-engine~Modifier}
    */
   addModifier(modifier) {
     if (modifier.isInitializer)
@@ -232,6 +273,27 @@ export class Emitter extends DisplayObject {
       this.mActions.push(modifier);
 
     return modifier;
+  }
+
+  /**
+   * Removes given modifier.
+   *
+   * @param {black-engine~Modifier} modifier Modifier to remove.
+   * @return {boolean} True if modifier was removed.
+   */
+  removeModifier(modifier) {
+    let array = this.mActions;
+
+    if (modifier.isInitializer)
+      array = this.mInitializers;
+
+    let ix = array.indexOf(modifier);
+    if (ix >= 0) {
+      array.splice(ix, 1);
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -288,7 +350,6 @@ export class Emitter extends DisplayObject {
         else {
           this.mEmitIntervalLeft -= dt;
           this.mNextUpdateAt = t + this.mEmitIntervalLeft;
-          //console.log(this.mEmitIntervalLeft);
 
           // reset interval
           if (this.mEmitIntervalLeft <= 0)
@@ -304,6 +365,9 @@ export class Emitter extends DisplayObject {
    * @inheritDoc
    */
   onUpdate() {
+    if (this.mState === EmitterState.PAUSED)
+      return;
+
     let dt = Black.time.delta;
 
     // rate logic
@@ -318,7 +382,8 @@ export class Emitter extends DisplayObject {
     const plength = this.mParticles.length;
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].preUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].preUpdate(dt);
 
     let particle;
 
@@ -327,7 +392,8 @@ export class Emitter extends DisplayObject {
       particle = this.mParticles[i];
 
       for (let k = 0; k < alength; k++)
-        this.mActions[k].update(this, particle, dt);
+        if (this.mActions[k].isActive === true)
+          this.mActions[k].update(this, particle, dt);
 
       particle.update(dt);
 
@@ -338,7 +404,8 @@ export class Emitter extends DisplayObject {
     }
 
     for (let k = 0; k < alength; k++)
-      this.mActions[k].postUpdate(dt);
+      if (this.mActions[k].isActive === true)
+        this.mActions[k].postUpdate(dt);
 
     // set dummy dirty flag so unchanged frames can be detected
     if (this.mVisible === true && this.mAlpha > 0)
@@ -373,7 +440,8 @@ export class Emitter extends DisplayObject {
       p.reset();
 
       for (let k = 0; k < this.mInitializers.length; k++)
-        this.mInitializers[k].update(this, p, 0);
+        if (this.mInitializers[k].isActive === true)
+          this.mInitializers[k].update(this, p, 0);
 
       if (this.mIsLocal === false) {
         matrix.transformXY(p.x, p.y, Vector.__cache);
@@ -388,7 +456,7 @@ export class Emitter extends DisplayObject {
   /**
    * Gets current emitter state.
    *
-   * @return {EmitterState}
+   * @return {black-engine~EmitterState}
    */
   get state() {
     return this.mState;
@@ -417,14 +485,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets the number of particles to be emitted per {@link Emitter#emitInterval}
    *
-   * @return {FloatScatter}
+   * @return {black-engine~FloatScatter}
    */
   get emitCount() {
     return this.mEmitCount;
   }
 
   /**
-   * @param {FloatScatter} value
+   * @param {black-engine~FloatScatter} value
    * @return {void}
    */
   set emitCount(value) {
@@ -432,16 +500,16 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-   * Gets/Sets the number of "durations" to to repeat. Use `Infinity` to emit particles endlessly.
+   * Gets/Sets the number of "durations" to to repeat.
    *
-   * @return {FloatScatter}
+   * @return {black-engine~FloatScatter}
    */
   get emitNumRepeats() {
     return this.mEmitNumRepeats;
   }
 
   /**
-   * @param {FloatScatter} value
+   * @param {black-engine~FloatScatter} value
    * @return {void}
    */
   set emitNumRepeats(value) {
@@ -452,14 +520,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {FloatScatter}
+   * @return {black-engine~FloatScatter}
    */
   get emitDuration() {
     return this.mEmitDuration;
   }
 
   /**
-   * @param {FloatScatter} value
+   * @param {black-engine~FloatScatter} value
    * @return {void}
    */
   set emitDuration(value) {
@@ -471,14 +539,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {FloatScatter}
+   * @return {black-engine~FloatScatter}
    */
   get emitInterval() {
     return this.mEmitInterval;
   }
 
   /**
-   * @param {FloatScatter} value
+   * @param {black-engine~FloatScatter} value
    * @return {void}
    */
   set emitInterval(value) {
@@ -490,14 +558,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {FloatScatter}
+   * @return {black-engine~FloatScatter}
    */
   get emitDelay() {
     return this.mEmitDelay;
   }
 
   /**
-   * @param {FloatScatter} value
+   * @param {black-engine~FloatScatter} value
    * @return {void}
    */
   set emitDelay(value) {
@@ -509,14 +577,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets the space where emitting simulation will happen, ignoring space transformation, so all forces are relative to global.
    *
-   * @return {GameObject}
+   * @return {black-engine~GameObject}
    */
   get space() {
     return this.mSpace;
   }
 
   /**
-   * @param {GameObject} gameObject
+   * @param {black-engine~GameObject} gameObject
    * @return {void}
    */
   set space(gameObject) {
@@ -528,14 +596,14 @@ export class Emitter extends DisplayObject {
   /**
    * Gets/Sets a list of textures to use.
    *
-   * @return {Array<Texture>}
+   * @return {Array<black-engine~Texture>}
    */
   get textures() {
     return this.mTextures;
   }
 
   /**
-   * @param {Array<Texture>} value
+   * @param {Array<black-engine~Texture>} value
    * @return {void}
    */
   set textures(value) {
@@ -547,26 +615,36 @@ export class Emitter extends DisplayObject {
   }
 
   /**
-  * Sets the list of textures with given string. It uses AssetManager to find textures. Wildcard supported.
-  * 
-  * @param {string} value
-  * @return {void}
-  */
-  set texturesName(value) {
-    this.textures = Black.assets.getTextures(value);
+   * Returns list of textures used by this emitter.
+   * @returns {Array<string>}
+   */
+  get textureNames() {
+    return this.mTextureNames;
+  }
+
+  /**
+    * Sets the list of textures with given string. It uses AssetManager to find textures.
+    * 
+    * @param {Array<string>} value
+    * @return {void}
+    */
+  set textureNames(value) {
+    this.mTextureNames = value;
+
+    this.textures = value.map(x => Black.assets.getTexture(x));
   }
 
   /**
    * Gets/Sets the order in which particles will be sorted when rendering.
    *
-   * @return {EmitterSortOrder}
+   * @return {black-engine~EmitterSortOrder}
    */
   get sortOrder() {
     return this.mSortOrder;
   }
 
   /**
-   * @param {EmitterSortOrder} value
+   * @param {black-engine~EmitterSortOrder} value
    * @return {void}
    */
   set sortOrder(value) {

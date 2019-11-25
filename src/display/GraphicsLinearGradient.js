@@ -6,7 +6,6 @@ import { GraphicsGradient } from "./GraphicsGradient";
  * @ignore
  * @cat display
  */
-
 export class GraphicsLinearGradient extends GraphicsGradient {
   /**
    * Creates new instance of GraphicsLinearGradient

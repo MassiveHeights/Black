@@ -10,7 +10,7 @@
 Black is a highly optimized 2D framework for web, mobile games, and playable ads.  
 
 **Most valuable when size matters**  
-All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts-Blitz) game is only 33KB gzipped for both engine and game code.
+All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts-Blitz) game is only 34KB gzipped for both engine and game code (GCC version).
 
 **Advanced scene graph and rendering pipeline**  
 Dirty flag tracks scene changes and avoids unnecessary calculations and context calls. If no changes were made to the scene since last frame, no rendering will be done. Battery efficient.

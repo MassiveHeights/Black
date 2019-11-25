@@ -5,7 +5,7 @@ import { Message } from "../../messages/Message";
  * Base class for loaders.
  *
  * @cat assets.loaders
- * @extends MessageDispatcher
+ * @extends black-engine~MessageDispatcher
  */
 export class AssetLoader extends MessageDispatcher {
   /**
@@ -24,7 +24,7 @@ export class AssetLoader extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {?|null} 
+     * @type {*|null} 
      */
     this.mData = null;
 
@@ -51,7 +51,7 @@ export class AssetLoader extends MessageDispatcher {
   /**
    * When overridden aborts loading process. Should not be called directly.
    * 
-   * @returns {true}
+   * @returns {void}
    */
   abort() {
     // more than one owner means this loader was used by two assets, eg two assets has same url.
@@ -86,7 +86,7 @@ export class AssetLoader extends MessageDispatcher {
   /**
    * Returns native loaded data object associated with this loader.
    *
-   * @return {?}
+   * @return {*}
    */
   get data() {
     return this.mData;

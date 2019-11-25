@@ -6,12 +6,11 @@ import { GraphicsCommandType } from "./GraphicsCommandType";
  * @ignore
  * @cat display
  */
-
 export class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
    *
-   * @param {GraphicsCommandType} type
+   * @param {black-engine~GraphicsCommandType} type
    * @param {Array<*>} data
    */
   constructor(type, data) {

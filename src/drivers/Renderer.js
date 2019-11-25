@@ -14,10 +14,10 @@ export class Renderer {
    * Creates new instance of Renderer.
    */
   constructor() {
-    /** @type {DisplayObject|null} */
+    /** @type {black-engine~DisplayObject|null} */
     this.gameObject = null;
 
-    /** @type {Renderer|null} */
+    /** @type {black-engine~Renderer|null} */
     this.parent = null;
 
     /** 
@@ -52,7 +52,7 @@ export class Renderer {
 
     /** 
      * @ignore 
-     * @type {BlendMode} 
+     * @type {black-engine~BlendMode} 
      */
     this.blendMode = BlendMode.NORMAL;
 
@@ -66,8 +66,8 @@ export class Renderer {
   /**
    * Called when this renderer needs to be rendered.
    *
-   * @param {VideoNullDriver} driver Active video driver.
-   * @param {RenderSession} session Active session.
+   * @param {black-engine~VideoNullDriver} driver Active video driver.
+   * @param {black-engine~RenderSession} session Active session.
    * @returns {void}
    */
   preRender(driver, session) {
@@ -79,8 +79,8 @@ export class Renderer {
 
   /**
    * Called after `preRender` but before `GameObject#onRender`. Used to compute world alpha, color and blend mode.
-   * @param {VideoNullDriver} driver 
-   * @param {RenderSession} session 
+   * @param {black-engine~VideoNullDriver} driver 
+   * @param {black-engine~RenderSession} session 
    */
   begin(driver, session) {
     this.alpha = this.gameObject.mAlpha * this.parent.alpha;
@@ -91,8 +91,8 @@ export class Renderer {
   /**
    * Called if `skipSelf` equals to false. Used to upload everything onto gpu.
    * 
-   * @param {VideoNullDriver} driver 
-   * @param {RenderSession} session 
+   * @param {black-engine~VideoNullDriver} driver 
+   * @param {black-engine~RenderSession} session 
    */
   upload(driver, session) {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
@@ -110,8 +110,8 @@ export class Renderer {
   /**
    * Called if `skipSelf` equals to false.
    *
-   * @param {VideoNullDriver} driver Active video driver.
-   * @param {RenderSession} session
+   * @param {black-engine~VideoNullDriver} driver Active video driver.
+   * @param {black-engine~RenderSession} session
    * @returns {void}
    */
   render(driver, session) {
@@ -120,8 +120,8 @@ export class Renderer {
   /**
    * Called after all children objects got rendered.
    * 
-   * @param {VideoNullDriver} driver 
-   * @param {RenderSession} session 
+   * @param {black-engine~VideoNullDriver} driver 
+   * @param {black-engine~RenderSession} session 
    */
   end(driver, session) {
     driver.endClip();
@@ -133,9 +133,9 @@ export class Renderer {
   /**
    * Tints given texture with a given color.
    * 
-   * @param {Texture} texture 
+   * @param {black-engine~Texture} texture 
    * @param {number|null} color 
-   * @returns {Texture}
+   * @returns {black-engine~Texture}
    */
   static getColoredTexture(texture, color) {
     if (color === 0xFFFFFF || color === null)
@@ -172,6 +172,7 @@ export class Renderer {
  * @ignore
  * @private
  * @static
+ * @type {black-engine~MapMap}
  */
 Renderer.__colorCache = new MapMap();
 
@@ -185,5 +186,6 @@ Renderer.__dirty = true;
 
 /**
  * Indicates whenever engine should render the stage if nothing were changed in this frame. Default is false.
+ * @type {boolean}
  */
 Renderer.skipUnchangedFrames = false;

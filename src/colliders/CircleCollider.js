@@ -6,10 +6,9 @@ import { Vector } from "../geom/Vector";
  * Collider with circle shape.
  *
  * @cat colliders
- * @extends Collider
+ * @extends black-engine~Collider
  */
 export class CircleCollider extends Collider {
-
   /**
    * Creates new instance of CircleCollider.
    *
@@ -22,26 +21,26 @@ export class CircleCollider extends Collider {
 
     /** 
      * @private 
-     * @type {Circle} */
+     * @type {black-engine~Circle} */
     this.mCircle = new Circle(x, y, radius);  // local to sprite
 
     /**
      * Local to rigid body center.
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mLocalCenter = new Vector();
 
     /**
      * Local to rigid body min x and y vertex.
      * @private 
-     * @type {Vector} */
+     * @type {black-engine~Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
      * @private 
-     * @type {Vector}
+     * @type {black-engine~Vector}
      */
     this.mLocalMax = new Vector();
 
@@ -62,7 +61,7 @@ export class CircleCollider extends Collider {
    * @param {number} x      Center coordinate within X-axis.
    * @param {number} y      Center coordinate within Y-axis.
    * @param {number} radius Radius of the circle.
-   * @returns {CircleCollider}
+   * @returns {black-engine~CircleCollider}
    */
   set(x, y, radius) {
     this.mCircle.set(x, y, radius);
@@ -108,7 +107,7 @@ export class CircleCollider extends Collider {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {Vector} point Global coordinates.
+   * @param {black-engine~Vector} point Global coordinates.
    * @returns {boolean}
    */
   containsPoint(point) {

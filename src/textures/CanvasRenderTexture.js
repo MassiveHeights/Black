@@ -5,6 +5,7 @@ import { RenderTargetCanvas } from "../drivers/canvas/RenderTargetCanvas";
  * A texture allowing game objects to be rendered onto it.
  *
  * @cat textures
+ * @extends black-engine~Texture
  */
 export class CanvasRenderTexture extends Texture {
   /**

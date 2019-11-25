@@ -1,4 +1,4 @@
-import { Scatter } from "./Scatter";
+import { VectorScatterBase } from "./VectorScatterBase";
 import { Curve } from "../geom/Curve";
 import { Vector } from "../geom/Vector";
 
@@ -6,9 +6,9 @@ import { Vector } from "../geom/Vector";
  * Sets particle's starting velocity.
  *
  * @cat scatters
- * @extends Scatter
+ * @extends black-engine~VectorScatterBase
  */
-export class VectorCurveScatter extends Scatter {
+export class VectorCurveScatter extends VectorScatterBase {
   /**
    * Creates new VectorCurveScatter instance.
    *
@@ -19,17 +19,41 @@ export class VectorCurveScatter extends Scatter {
 
     /** 
      * @private 
-     * @type {Curve} 
+     * @type {black-engine~Curve} 
      */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
     this.mCurve.set(...points);
 
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.mPointsCache = points;
+
     /** 
      * @private 
-     * @type {Vector} 
+     * @type {black-engine~Vector} 
      */
     this.mCache = new Vector();
+  }
+
+  /**
+   * Updates curve with new array of points.
+   * 
+   * @param {Array<number>} value
+   */
+  set points(value) {
+    this.mPointsCache = value;
+    this.mCurve.set(...value);
+  }
+
+  /**
+   * Returns list of points.
+   * @returns {Array<number>}
+   */
+  get points() {
+    return this.mPointsCache;
   }
 
   /**
@@ -37,10 +61,11 @@ export class VectorCurveScatter extends Scatter {
    *
    * @override
    * @param {number} t The position.
-   * @return {Vector} Vector object representing a value on a curve at given position.
+   * @return {black-engine~Vector} Vector object representing a value on a curve at given position.
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
+
     return this.mCache;
   }
 }
