@@ -216,7 +216,17 @@ export class Input extends System {
     if (Black.engine.isPaused === true)
       return;
 
-    const over = e.path.indexOf(this.mDom) !== -1;
+    let over = false;
+
+    // IE11 does not have support for `path`
+    let element = e.target;
+    while (element) {
+      if (element === this.mDom) {
+        over = true;
+        break;
+      }
+      element = element.parentElement;
+    }
 
     if (e.type === 'wheel') {
       if (over === true)
