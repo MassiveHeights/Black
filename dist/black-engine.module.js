@@ -4637,6 +4637,9 @@ class TextStyle {
     /** @type {number} */
     this.color = color;
 
+    /** @type {number} */
+    this.alpha = 1;
+
     /** @type {black-engine~FontStyle} */
     this.style = style;
 
@@ -4648,6 +4651,9 @@ class TextStyle {
 
     /** @type {number} */
     this.strokeColor = strokeColor;
+
+    /** @type {number} */
+    this.strokeAlpha = 1;
 
     /** @type {boolean} */
     this.dropShadow = false;
@@ -4668,6 +4674,9 @@ class TextStyle {
     this.shadowBlur = 0;
   }
 
+  /**
+   * @deprecated
+   */
   clone(family = null, color = NaN, size = NaN, style = null, weight = null, strokeThickness = NaN, strokeColor = NaN) {
     let ret = new TextStyle();
     ret.family = family === null ? this.family : family;
@@ -16896,9 +16905,9 @@ class TextRenderer extends Renderer {
 
     if (isStroke === true) {
       ctx.lineWidth = segment.style.strokeThickness;
-      ctx.strokeStyle = ColorHelper.hexColorToString(segment.style.strokeColor);
+      ctx.strokeStyle = ColorHelper.intToRGBA(segment.style.strokeColor, segment.style.strokeAlpha);
     } else {
-      ctx.fillStyle = ColorHelper.hexColorToString(segment.style.color);
+      ctx.fillStyle = ColorHelper.intToRGBA(segment.style.color, segment.style.alpha);
     }
 
     ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
@@ -16910,7 +16919,7 @@ class TextRenderer extends Renderer {
     ly += gameObject.padding.y;
 
     if (gameObject.align === 'center')
-      lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
+      lx += metrics.bounds.width * 0.5 - metrics.lineWidth[segment.lineIndex] * 0.5;
     else if (gameObject.align === 'right')
       lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
@@ -16945,9 +16954,9 @@ class TextRenderer extends Renderer {
       }
 
       let canvasBounds = this.mMetrics.strokeBounds.clone();
-      canvasBounds.scale(scale, scale);
       canvasBounds.union(this.mMetrics.shadowBounds);
       canvasBounds.inflate(gameObject.padding.right, gameObject.padding.bottom);
+      canvasBounds.scale(scale, scale);
 
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
@@ -16963,8 +16972,8 @@ class TextRenderer extends Renderer {
           ctx.save();
           ctx.shadowColor = ColorHelper.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
           ctx.shadowBlur = segments[i].style.shadowBlur;
-          ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
-          ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
+          ctx.shadowOffsetX = segments[i].style.shadowDistanceX * scale;
+          ctx.shadowOffsetY = segments[i].style.shadowDistanceY * scale;
           this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
           ctx.restore();
         }
@@ -20217,6 +20226,29 @@ class TextField extends DisplayObject {
   }
 
   /**
+   * Gets/sets text alpha in range [0..1].
+   *
+   * @return {number}
+   */
+  get textAlpha() {
+    return this.mDefaultStyle.alpha;
+  }
+
+  /**
+   * @param {number} value
+   * @return {void}
+   */
+  set textAlpha(value) {
+    if (this.mDefaultStyle.alpha === value)
+      return;
+
+    this.mDefaultStyle.alpha = value;
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
+  }
+
+  /**
    * Get/Set text style.
    *
    * @return {black-engine~FontStyle}
@@ -20325,6 +20357,26 @@ class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.strokeColor = value;
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
+  }
+
+  /**
+   * Gets/sets  stroke alpha in range [0..1].
+   * @return {number}
+   */
+  get strokeAlpha() {
+    return this.mDefaultStyle.strokeAlpha;
+  }
+
+  /**
+   * @param {number} value
+   * @return {void}
+   */
+  set strokeAlpha(value) {
+    if (this.mDefaultStyle.strokeAlpha === value)
+      return;
+
+    this.mDefaultStyle.strokeAlpha = value;
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 
