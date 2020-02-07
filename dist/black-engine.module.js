@@ -10269,13 +10269,13 @@ class Stage extends GameObject {
 
     this.setTransformDirty();
 
+    this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+
     /**
      * Posts every time stage size is changed.
      * @event Stage#resize
      */
     this.post(Message.RESIZE);
-
-    this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
   }
 
   /**
@@ -20227,6 +20227,7 @@ class TextField extends DisplayObject {
 
   /**
    * Gets/sets text alpha in range [0..1].
+   * NOTE: This property will affect shadow alpha.
    *
    * @return {number}
    */
