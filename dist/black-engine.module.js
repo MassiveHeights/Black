@@ -12175,6 +12175,12 @@ class SoundInstance extends MessageDispatcher {
 
     /** 
      * @private 
+     * @type {number} 
+     */
+    this.mStopPosition = 0;
+
+    /** 
+     * @private 
      * @type {AudioBufferSourceNode} 
      */
     this.mSrc = null;
@@ -12325,8 +12331,12 @@ class SoundInstance extends MessageDispatcher {
    */
   stop(duration = 0) {
     if (this.mState === SoundState.PLAYING) {
+      this.mStopPosition = this.currentPosition;
+
       this.mGainNode.gain.cancelScheduledValues(0);
       this.mSrc.stop(Black.audio.context.currentTime + duration);
+
+      this.mState = SoundState.STOPPED;
     }
   }
 
@@ -12338,9 +12348,9 @@ class SoundInstance extends MessageDispatcher {
    */
   pause() {
     if (this.mState === SoundState.PLAYING) {
-      this.stop();
-
       this.mPausePosition = this.currentPosition;
+      this.stop();
+      
       this.mState = SoundState.PAUSED;
     }
   }
@@ -12406,7 +12416,10 @@ class SoundInstance extends MessageDispatcher {
         return this.mPausePosition;
       case SoundState.COMPLETED:
         return this.mSound.duration;
+      case SoundState.STOPPED:
+        return this.mStopPosition;
     }
+    
     return 0;
   }
 
@@ -16330,21 +16343,22 @@ class AssetManager extends MessageDispatcher {
         item.once(Message.COMPLETE, this.onAssetLoaded, this);
         item.once(Message.ERROR, this.onAssetError, this);
 
-        item.loaders.forEach(x => {
-          this.mLoadersQueue[x.url] = x;
-        });
-
         this.mTotalPending++;
+
+        item.loaders.forEach(x => {
+          //this.mLoadersQueue[x.url] = x;
+          x.load();
+        });
       }
     }
 
     // Loader will notify Asset when its ready. Asset will notify AssetManager.
-    for (const key in this.mLoadersQueue) {
-      if (this.mLoadersQueue.hasOwnProperty(key)) {
-        const loader = this.mLoadersQueue[key];
-        loader.load();
-      }
-    }
+    // for (const key in this.mLoadersQueue) {
+    //   if (this.mLoadersQueue.hasOwnProperty(key)) {
+    //     const loader = this.mLoadersQueue[key];
+    //     loader.load();
+    //   }
+    // }
   }
 
   /**

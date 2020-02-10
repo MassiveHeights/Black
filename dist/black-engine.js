@@ -12181,6 +12181,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
+       * @type {number} 
+       */
+      this.mStopPosition = 0;
+
+      /** 
+       * @private 
        * @type {AudioBufferSourceNode} 
        */
       this.mSrc = null;
@@ -12331,8 +12337,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     stop(duration = 0) {
       if (this.mState === SoundState.PLAYING) {
+        this.mStopPosition = this.currentPosition;
+
         this.mGainNode.gain.cancelScheduledValues(0);
         this.mSrc.stop(Black.audio.context.currentTime + duration);
+
+        this.mState = SoundState.STOPPED;
       }
     }
 
@@ -12344,9 +12354,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     pause() {
       if (this.mState === SoundState.PLAYING) {
-        this.stop();
-
         this.mPausePosition = this.currentPosition;
+        this.stop();
+        
         this.mState = SoundState.PAUSED;
       }
     }
@@ -12412,7 +12422,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           return this.mPausePosition;
         case SoundState.COMPLETED:
           return this.mSound.duration;
+        case SoundState.STOPPED:
+          return this.mStopPosition;
       }
+      
       return 0;
     }
 
@@ -16336,21 +16349,22 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           item.once(Message.COMPLETE, this.onAssetLoaded, this);
           item.once(Message.ERROR, this.onAssetError, this);
 
-          item.loaders.forEach(x => {
-            this.mLoadersQueue[x.url] = x;
-          });
-
           this.mTotalPending++;
+
+          item.loaders.forEach(x => {
+            //this.mLoadersQueue[x.url] = x;
+            x.load();
+          });
         }
       }
 
       // Loader will notify Asset when its ready. Asset will notify AssetManager.
-      for (const key in this.mLoadersQueue) {
-        if (this.mLoadersQueue.hasOwnProperty(key)) {
-          const loader = this.mLoadersQueue[key];
-          loader.load();
-        }
-      }
+      // for (const key in this.mLoadersQueue) {
+      //   if (this.mLoadersQueue.hasOwnProperty(key)) {
+      //     const loader = this.mLoadersQueue[key];
+      //     loader.load();
+      //   }
+      // }
     }
 
     /**

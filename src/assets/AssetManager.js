@@ -373,21 +373,22 @@ export class AssetManager extends MessageDispatcher {
         item.once(Message.COMPLETE, this.onAssetLoaded, this);
         item.once(Message.ERROR, this.onAssetError, this);
 
-        item.loaders.forEach(x => {
-          this.mLoadersQueue[x.url] = x;
-        });
-
         this.mTotalPending++;
+
+        item.loaders.forEach(x => {
+          //this.mLoadersQueue[x.url] = x;
+          x.load();
+        });
       }
     }
 
     // Loader will notify Asset when its ready. Asset will notify AssetManager.
-    for (const key in this.mLoadersQueue) {
-      if (this.mLoadersQueue.hasOwnProperty(key)) {
-        const loader = this.mLoadersQueue[key];
-        loader.load();
-      }
-    }
+    // for (const key in this.mLoadersQueue) {
+    //   if (this.mLoadersQueue.hasOwnProperty(key)) {
+    //     const loader = this.mLoadersQueue[key];
+    //     loader.load();
+    //   }
+    // }
   }
 
   /**
