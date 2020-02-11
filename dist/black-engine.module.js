@@ -12745,303 +12745,6 @@ class SoundChannel {
 }
 
 /**
- * The class which stores audio buffer and its all sounds data.
- * 
- * @cat audio
- */
-class SoundClip {
-  /**
-   * Creates new instance of SoundClip.
-   * 
-   * @param {AudioBuffer} nativeBuffer     Decoded audio buffer.
-   * @param {number=} [offset=0]           Determines at which position of buffer the sound will be played.
-   * @param {number=} [duration=undefined] If undefined, gets duration value from native audio buffer.
-   * @param {boolean=} [isSubClip=false]   Specifies whether this sound clip is part of a sound atlas.
-   */
-  constructor(nativeBuffer, offset = 0, duration = NaN, isSubClip = false) {
-
-    /** 
-     * @private 
-     * @type {AudioBuffer} 
-     */
-    this.mNativeBuffer = nativeBuffer;
-
-    /** 
-     * @private 
-     * @type {number} 
-     */
-    this.mStartOffset = offset;
-
-    /** 
-     * @private 
-     * @type {number} 
-     */
-    this.mDuration = duration || nativeBuffer.duration;
-
-    /** 
-     * @private 
-     * @type {boolean} 
-     */
-    this.mIsSubClip = isSubClip;
-  }
-
-  /**
-   * Creates sound instance and starts to play on specific channel
-   * 
-   * @public
-   * @param {string=} [channel='master'] The name of channel.
-   * @param {number=} [volume=1]         The volume level.
-   * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
-   * @param {number=} [pan=0]            The panning value.
-   * @returns {SoundInstance}            New sound instance to be played.
-   */
-  play(channel = 'master', volume = 1, loop = false, pan = 0) {
-    let instance = new SoundInstance(this);
-    instance.channel = channel;
-    instance.volume = volume;
-    instance.loop = loop;
-    instance.pan = pan;
-    return instance._play();
-  }
-
-  /**
-   * Creates an array of blocks filled with average amplitude gathered in certain interval
-   * 
-   * @public
-   * @param {number} blockNum Number of blocks to divide data to
-   * @returns {Float32Array}
-   */
-  collectWaveData(blockNum) {
-    let channels = [];
-    for (let i = 0; i < this.mNativeBuffer.numberOfChannels; i++)
-      channels[i] = this.mNativeBuffer.getChannelData(i);
-
-    const playPercent = this.mDuration / this.mNativeBuffer.duration;
-    const startPercent = this.mStartOffset / this.mNativeBuffer.duration;
-    const startPos = ~~(channels[0].length * startPercent);
-    const endPos = startPos + ~~(channels[0].length * playPercent);
-    const values = new Float32Array(blockNum);
-    const blockWidth = ~~(channels[0].length * playPercent / blockNum);
-    let dataBlock = [];
-
-    for (let i = startPos, c = 0; i < endPos ; i++) {
-      dataBlock.push(this.__averagePeak(channels, i));
-
-      if (dataBlock.length >= blockWidth) {
-        let max = Math.max(...dataBlock);
-        let min = Math.min(...dataBlock);
-        values[c++] = (max + min) / 2;
-        dataBlock = [];
-      }
-    }
-
-    return values;
-  }
-
-  /**
-   * @ignore
-   * @private
-   * @param {Array<Float32Array>} channels 
-   * @param {number} ix 
-   */
-  __averagePeak(channels, ix) {
-    let sum = 0;
-    channels.forEach(ch => sum += Math.abs(ch[ix]));
-    return sum / channels.length;
-  }
-
-  /**
-   * Gets the decoded audio buffer.
-   * 
-   * @public
-   * @readonly
-   * @returns {AudioBuffer}
-   */
-  get native() {
-    return this.mNativeBuffer;
-  }
-
-  /**
-   * Gets the position in seconds, where the sound should start to play.
-   * 
-   * @public
-   * @readonly
-   * @returns {number}
-   */
-  get offset() {
-    return this.mStartOffset;
-  }
-
-  /**
-   * Gets sound clip duration.
-   * 
-   * @public
-   * @readonly
-   * @returns {number}
-   */
-  get duration() {
-    return this.mDuration;
-  }
-
-  /**
-   * Represents whether this sound clip is a part of sound atlas clip.
-   * 
-   * @public
-   * @readonly
-   * @returns {boolean}
-   */
-  get isSubClip() {
-    return this.mIsSubClip;
-  }
-}
-
-/**
- * The class which stores audio buffer of sound atlas and information about sub sound clips.
- * 
- * @cat audio
- * @extends black-engine~SoundClip
- */
-class SoundAtlasClip extends SoundClip {
-
-  /**
-   * Creates instance of SoundAtlas.
-   * 
-   * @param {AudioBuffer} nativeBuffer Decoded audio buffer.
-   * @param {Object} jsonObject        Data representing sub sounds name, duration and offset.
-   */
-  constructor(nativeBuffer, jsonObject) {
-    super(nativeBuffer);
-
-    /** 
-     * @private 
-     * @type {Object<string, black-engine~SoundClip>} 
-     */
-    this.mClips = {};
-    
-    if (jsonObject !== null)
-      for (let key in jsonObject['sounds'])
-        this.addSubSound(key, jsonObject['sounds'][key][0], jsonObject['sounds'][key][1]);
-  }
-
-  /**
-   * Dynamically sets new sub sound info bypassing json.
-   * 
-   * @public
-   * @param {string} name     The name of the sub sound.
-   * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
-   * @param {number} duration The duration of sub sound.
-   * @returns {black-engine~SoundClip}     New instance of SoundClip.
-   */
-  addSubSound(name, offset = 0, duration = NaN) {
-    this.mClips[name] = new SoundClip(this.native, offset, duration, true);
-    return this.mClips[name];
-  }
-
-  /**
-   * Removes previously added sub sound info.
-   * 
-   * @public
-   * @param {string} name The name of the sub sound.
-   * @returns {void}
-   */
-  removeSubSound(name) {
-    delete this.mClips[name];
-  }
-
-  /**
-   * Directly plays sub sound by given name on specific channel.
-   * 
-   * @public
-   * @param {string} name                The name of the sub sound.
-   * @param {string=} [channel='master'] The name of channel.
-   * @param {number=} [volume=1]         The volume level.
-   * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
-   * @param {number=} [pan=0]            The panning value.
-   * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
-   */
-  playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
-    let clip = this.mClips[name];
-    if (clip == null)
-      return null;
-    
-    let instance = new SoundInstance(clip);
-    instance.channel = channel;
-    instance.volume = volume;
-    instance.loop = loop;
-    instance.pan = pan;
-    return instance._play();
-  }
-
-  /**
-   * The dictionary of sub sounds.
-   *
-   * @public
-   * @readonly
-   * @returns {Object<string, black-engine~SoundClip>}
-   */
-  get subSounds() {
-    return this.mClips;
-  }
-}
-
-/**
- * The sound listener component, which controls one and only instance of AudioContext.listener.
- * 
- * @cat audio
- * @extends {black-engine~Component}
- */
-class SoundListener extends Component {
-  /**
-   * Creates new instance of SoundListener.
-   */
-  constructor() {
-    super();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onRemoved(gameObject) {
-    this.loose();
-  }
-
-  /**
-   * Starts controlling only instance of AudioContext.listener.
-   */
-  listen() {
-    Black.audio.currentListener = this;
-  }
-
-  /**
-   * Stops controlling AudioContext.listener.
-   */
-  loose() {
-    Black.audio.looseListener();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  onRender() {
-    if (Black.audio.currentListener === this) {
-      let listener = Black.audio.context.listener;
-      
-      let stage = Black.stage;
-      let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
-      let px = (pos.x - stage.centerX) / stage.width * 2;
-      let py = (pos.y - stage.centerY) / stage.height * 2;
-      if (listener.positionX != null) {
-        listener.positionX.setValueAtTime(px, 0);
-        listener.positionY.setValueAtTime(py, 0);
-        listener.positionZ.setValueAtTime(1, 0);
-      } else {
-        listener.setPosition(px ,py, 1);
-      }
-    }
-  }
-}
-
-/**
  * The main class, which is responsible for audio support.
  * 
  * @cat audio
@@ -13080,6 +12783,24 @@ class MasterAudio extends System {
      */
     this.mMasterChannel = null;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mIsPendingResume = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mPendingResume = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mResumeTimeout = 0.1;
+
     this.__initialize();
   }
 
@@ -13092,17 +12813,33 @@ class MasterAudio extends System {
 
     if (this.mContext.state === 'running')
       this.mContext.suspend();
+
+    this.mIsPendingResume = false;
   }
 
   /**
    * @inheritDoc
    */
   onResume() {
-    if (this.mContext === null)
+    this.mPendingResume = this.mResumeTimeout;
+    this.mIsPendingResume = true;
+  }
+
+  onUpdate() {
+    if (this.mIsPendingResume)
+      this.mPendingResume -= Black.time.delta;
+    else
       return;
 
-    if (this.mContext.state === 'suspended')
-      this.mContext.resume();
+    if (this.mPendingResume <= 0) {
+      if (this.mContext === null)
+        return;
+
+      if (this.mContext.state === 'suspended' || this.mContext.state === 'interrupted') {
+        this.mContext.resume();
+        this.mIsPendingResume = false;
+      }
+    }
   }
 
   /**
@@ -13133,6 +12870,8 @@ class MasterAudio extends System {
       this.stopAll();
       this.mContext.close();
     }
+
+    this.mIsPendingResume = false;
 
     Black.audio = null;
   }
@@ -13330,6 +13069,25 @@ class MasterAudio extends System {
   }
 
   /**
+   * Gets/Sets current timeout when resuming audio context from sleep.
+   * Recommended value is 100ms for iOS devices running in Safari.
+   * 
+   * @public
+   * @returns {number}
+   */
+  get resumeTimeout() {
+    return this.mResumeTimeout;
+  }
+
+  /**
+   * @param {number} value 
+   * @returns {void}
+   */
+  set resumeTimeout(value) {
+    this.mResumeTimeout = value;
+  }
+
+  /**
    * Resets current listener to default AudioContext listener.
    * 
    * @public
@@ -13349,6 +13107,157 @@ class MasterAudio extends System {
       return this.mContext.createGainNode();
 
     return this.mContext.createGain();
+  }
+}
+
+/**
+ * The class which stores audio buffer and its all sounds data.
+ * 
+ * @cat audio
+ */
+class SoundClip {
+  /**
+   * Creates new instance of SoundClip.
+   * 
+   * @param {AudioBuffer} nativeBuffer     Decoded audio buffer.
+   * @param {number=} [offset=0]           Determines at which position of buffer the sound will be played.
+   * @param {number=} [duration=undefined] If undefined, gets duration value from native audio buffer.
+   * @param {boolean=} [isSubClip=false]   Specifies whether this sound clip is part of a sound atlas.
+   */
+  constructor(nativeBuffer, offset = 0, duration = NaN, isSubClip = false) {
+
+    /** 
+     * @private 
+     * @type {AudioBuffer} 
+     */
+    this.mNativeBuffer = nativeBuffer;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.mStartOffset = offset;
+
+    /** 
+     * @private 
+     * @type {number} 
+     */
+    this.mDuration = duration || nativeBuffer.duration;
+
+    /** 
+     * @private 
+     * @type {boolean} 
+     */
+    this.mIsSubClip = isSubClip;
+  }
+
+  /**
+   * Creates sound instance and starts to play on specific channel
+   * 
+   * @public
+   * @param {string=} [channel='master'] The name of channel.
+   * @param {number=} [volume=1]         The volume level.
+   * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
+   * @param {number=} [pan=0]            The panning value.
+   * @returns {SoundInstance}            New sound instance to be played.
+   */
+  play(channel = 'master', volume = 1, loop = false, pan = 0) {
+    let instance = new SoundInstance(this);
+    instance.channel = channel;
+    instance.volume = volume;
+    instance.loop = loop;
+    instance.pan = pan;
+    return instance._play();
+  }
+
+  /**
+   * Creates an array of blocks filled with average amplitude gathered in certain interval
+   * 
+   * @public
+   * @param {number} blockNum Number of blocks to divide data to
+   * @returns {Float32Array}
+   */
+  collectWaveData(blockNum) {
+    let channels = [];
+    for (let i = 0; i < this.mNativeBuffer.numberOfChannels; i++)
+      channels[i] = this.mNativeBuffer.getChannelData(i);
+
+    const playPercent = this.mDuration / this.mNativeBuffer.duration;
+    const startPercent = this.mStartOffset / this.mNativeBuffer.duration;
+    const startPos = ~~(channels[0].length * startPercent);
+    const endPos = startPos + ~~(channels[0].length * playPercent);
+    const values = new Float32Array(blockNum);
+    const blockWidth = ~~(channels[0].length * playPercent / blockNum);
+    let dataBlock = [];
+
+    for (let i = startPos, c = 0; i < endPos ; i++) {
+      dataBlock.push(this.__averagePeak(channels, i));
+
+      if (dataBlock.length >= blockWidth) {
+        let max = Math.max(...dataBlock);
+        let min = Math.min(...dataBlock);
+        values[c++] = (max + min) / 2;
+        dataBlock = [];
+      }
+    }
+
+    return values;
+  }
+
+  /**
+   * @ignore
+   * @private
+   * @param {Array<Float32Array>} channels 
+   * @param {number} ix 
+   */
+  __averagePeak(channels, ix) {
+    let sum = 0;
+    channels.forEach(ch => sum += Math.abs(ch[ix]));
+    return sum / channels.length;
+  }
+
+  /**
+   * Gets the decoded audio buffer.
+   * 
+   * @public
+   * @readonly
+   * @returns {AudioBuffer}
+   */
+  get native() {
+    return this.mNativeBuffer;
+  }
+
+  /**
+   * Gets the position in seconds, where the sound should start to play.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
+  get offset() {
+    return this.mStartOffset;
+  }
+
+  /**
+   * Gets sound clip duration.
+   * 
+   * @public
+   * @readonly
+   * @returns {number}
+   */
+  get duration() {
+    return this.mDuration;
+  }
+
+  /**
+   * Represents whether this sound clip is a part of sound atlas clip.
+   * 
+   * @public
+   * @readonly
+   * @returns {boolean}
+   */
+  get isSubClip() {
+    return this.mIsSubClip;
   }
 }
 
@@ -13406,6 +13315,95 @@ class SoundAsset extends Asset {
     Black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
       super.ready(new SoundClip(buffer));
     });
+  }
+}
+
+/**
+ * The class which stores audio buffer of sound atlas and information about sub sound clips.
+ * 
+ * @cat audio
+ * @extends black-engine~SoundClip
+ */
+class SoundAtlasClip extends SoundClip {
+
+  /**
+   * Creates instance of SoundAtlas.
+   * 
+   * @param {AudioBuffer} nativeBuffer Decoded audio buffer.
+   * @param {Object} jsonObject        Data representing sub sounds name, duration and offset.
+   */
+  constructor(nativeBuffer, jsonObject) {
+    super(nativeBuffer);
+
+    /** 
+     * @private 
+     * @type {Object<string, black-engine~SoundClip>} 
+     */
+    this.mClips = {};
+    
+    if (jsonObject !== null)
+      for (let key in jsonObject['sounds'])
+        this.addSubSound(key, jsonObject['sounds'][key][0], jsonObject['sounds'][key][1]);
+  }
+
+  /**
+   * Dynamically sets new sub sound info bypassing json.
+   * 
+   * @public
+   * @param {string} name     The name of the sub sound.
+   * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
+   * @param {number} duration The duration of sub sound.
+   * @returns {black-engine~SoundClip}     New instance of SoundClip.
+   */
+  addSubSound(name, offset = 0, duration = NaN) {
+    this.mClips[name] = new SoundClip(this.native, offset, duration, true);
+    return this.mClips[name];
+  }
+
+  /**
+   * Removes previously added sub sound info.
+   * 
+   * @public
+   * @param {string} name The name of the sub sound.
+   * @returns {void}
+   */
+  removeSubSound(name) {
+    delete this.mClips[name];
+  }
+
+  /**
+   * Directly plays sub sound by given name on specific channel.
+   * 
+   * @public
+   * @param {string} name                The name of the sub sound.
+   * @param {string=} [channel='master'] The name of channel.
+   * @param {number=} [volume=1]         The volume level.
+   * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
+   * @param {number=} [pan=0]            The panning value.
+   * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
+   */
+  playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
+    let clip = this.mClips[name];
+    if (clip == null)
+      return null;
+    
+    let instance = new SoundInstance(clip);
+    instance.channel = channel;
+    instance.volume = volume;
+    instance.loop = loop;
+    instance.pan = pan;
+    return instance._play();
+  }
+
+  /**
+   * The dictionary of sub sounds.
+   *
+   * @public
+   * @readonly
+   * @returns {Object<string, black-engine~SoundClip>}
+   */
+  get subSounds() {
+    return this.mClips;
   }
 }
 
@@ -24590,6 +24588,63 @@ class Sound extends Component {
    */
   get spatialEffect() {
     return this.mSpatialEffect;
+  }
+}
+
+/**
+ * The sound listener component, which controls one and only instance of AudioContext.listener.
+ * 
+ * @cat audio
+ * @extends {black-engine~Component}
+ */
+class SoundListener extends Component {
+  /**
+   * Creates new instance of SoundListener.
+   */
+  constructor() {
+    super();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onRemoved(gameObject) {
+    this.loose();
+  }
+
+  /**
+   * Starts controlling only instance of AudioContext.listener.
+   */
+  listen() {
+    Black.audio.currentListener = this;
+  }
+
+  /**
+   * Stops controlling AudioContext.listener.
+   */
+  loose() {
+    Black.audio.looseListener();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  onRender() {
+    if (Black.audio.currentListener === this) {
+      let listener = Black.audio.context.listener;
+      
+      let stage = Black.stage;
+      let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
+      let px = (pos.x - stage.centerX) / stage.width * 2;
+      let py = (pos.y - stage.centerY) / stage.height * 2;
+      if (listener.positionX != null) {
+        listener.positionX.setValueAtTime(px, 0);
+        listener.positionY.setValueAtTime(py, 0);
+        listener.positionZ.setValueAtTime(1, 0);
+      } else {
+        listener.setPosition(px ,py, 1);
+      }
+    }
   }
 }
 
