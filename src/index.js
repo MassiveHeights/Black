@@ -79,7 +79,6 @@ export { SpriteRendererCanvas } from './drivers/canvas/SpriteRendererCanvas';
 export { RenderTargetCanvas } from './drivers/canvas/RenderTargetCanvas';
 export { GraphicsRendererCanvas } from './drivers/canvas/GraphicsRendererCanvas';
 
-
 export { VideoNullDriver } from './drivers/VideoNullDriver';
 export { CanvasDriver } from './drivers/canvas/CanvasDriver';
 
@@ -160,6 +159,8 @@ export { Tween } from './animation/Tween';
 
 export { AnimationInfo } from './animation/AnimationInfo';
 export { AnimationController } from './animation/AnimationController';
+
+export { Spine } from './animation/Spine';
 
 export { MasterAudio } from './audio/MasterAudio';
 
