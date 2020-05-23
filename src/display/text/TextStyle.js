@@ -37,6 +37,9 @@ export class TextStyle {
     /** @type {number} */
     this.color = color;
 
+    /** @type {number} */
+    this.alpha = 1;
+
     /** @type {black-engine~FontStyle} */
     this.style = style;
 
@@ -48,6 +51,9 @@ export class TextStyle {
 
     /** @type {number} */
     this.strokeColor = strokeColor;
+
+    /** @type {number} */
+    this.strokeAlpha = 1;
 
     /** @type {boolean} */
     this.dropShadow = false;
@@ -68,6 +74,9 @@ export class TextStyle {
     this.shadowBlur = 0;
   }
 
+  /**
+   * @deprecated
+   */
   clone(family = null, color = NaN, size = NaN, style = null, weight = null, strokeThickness = NaN, strokeColor = NaN) {
     let ret = new TextStyle();
     ret.family = family === null ? this.family : family;

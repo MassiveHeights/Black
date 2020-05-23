@@ -4643,6 +4643,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       /** @type {number} */
       this.color = color;
 
+      /** @type {number} */
+      this.alpha = 1;
+
       /** @type {black-engine~FontStyle} */
       this.style = style;
 
@@ -4654,6 +4657,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** @type {number} */
       this.strokeColor = strokeColor;
+
+      /** @type {number} */
+      this.strokeAlpha = 1;
 
       /** @type {boolean} */
       this.dropShadow = false;
@@ -4674,6 +4680,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.shadowBlur = 0;
     }
 
+    /**
+     * @deprecated
+     */
     clone(family = null, color = NaN, size = NaN, style = null, weight = null, strokeThickness = NaN, strokeColor = NaN) {
       let ret = new TextStyle();
       ret.family = family === null ? this.family : family;
@@ -10266,13 +10275,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       this.setTransformDirty();
 
+      this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
+
       /**
        * Posts every time stage size is changed.
        * @event Stage#resize
        */
       this.post(Message.RESIZE);
-
-      this.mLocalTransform.set(this.mScaleX, 0, 0, this.mScaleY, this.mX, this.mY);
     }
 
     /**
@@ -12172,6 +12181,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       /** 
        * @private 
+       * @type {number} 
+       */
+      this.mStopPosition = 0;
+
+      /** 
+       * @private 
        * @type {AudioBufferSourceNode} 
        */
       this.mSrc = null;
@@ -12322,8 +12337,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     stop(duration = 0) {
       if (this.mState === SoundState.PLAYING) {
+        this.mStopPosition = this.currentPosition;
+
         this.mGainNode.gain.cancelScheduledValues(0);
         this.mSrc.stop(Black.audio.context.currentTime + duration);
+
+        this.mState = SoundState.STOPPED;
       }
     }
 
@@ -12335,9 +12354,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     pause() {
       if (this.mState === SoundState.PLAYING) {
-        this.stop();
-
         this.mPausePosition = this.currentPosition;
+        this.stop();
+        
         this.mState = SoundState.PAUSED;
       }
     }
@@ -12403,7 +12422,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           return this.mPausePosition;
         case SoundState.COMPLETED:
           return this.mSound.duration;
+        case SoundState.STOPPED:
+          return this.mStopPosition;
       }
+      
       return 0;
     }
 
@@ -12729,303 +12751,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   }
 
   /**
-   * The class which stores audio buffer and its all sounds data.
-   * 
-   * @cat audio
-   */
-  class SoundClip {
-    /**
-     * Creates new instance of SoundClip.
-     * 
-     * @param {AudioBuffer} nativeBuffer     Decoded audio buffer.
-     * @param {number=} [offset=0]           Determines at which position of buffer the sound will be played.
-     * @param {number=} [duration=undefined] If undefined, gets duration value from native audio buffer.
-     * @param {boolean=} [isSubClip=false]   Specifies whether this sound clip is part of a sound atlas.
-     */
-    constructor(nativeBuffer, offset = 0, duration = NaN, isSubClip = false) {
-
-      /** 
-       * @private 
-       * @type {AudioBuffer} 
-       */
-      this.mNativeBuffer = nativeBuffer;
-
-      /** 
-       * @private 
-       * @type {number} 
-       */
-      this.mStartOffset = offset;
-
-      /** 
-       * @private 
-       * @type {number} 
-       */
-      this.mDuration = duration || nativeBuffer.duration;
-
-      /** 
-       * @private 
-       * @type {boolean} 
-       */
-      this.mIsSubClip = isSubClip;
-    }
-
-    /**
-     * Creates sound instance and starts to play on specific channel
-     * 
-     * @public
-     * @param {string=} [channel='master'] The name of channel.
-     * @param {number=} [volume=1]         The volume level.
-     * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
-     * @param {number=} [pan=0]            The panning value.
-     * @returns {SoundInstance}            New sound instance to be played.
-     */
-    play(channel = 'master', volume = 1, loop = false, pan = 0) {
-      let instance = new SoundInstance(this);
-      instance.channel = channel;
-      instance.volume = volume;
-      instance.loop = loop;
-      instance.pan = pan;
-      return instance._play();
-    }
-
-    /**
-     * Creates an array of blocks filled with average amplitude gathered in certain interval
-     * 
-     * @public
-     * @param {number} blockNum Number of blocks to divide data to
-     * @returns {Float32Array}
-     */
-    collectWaveData(blockNum) {
-      let channels = [];
-      for (let i = 0; i < this.mNativeBuffer.numberOfChannels; i++)
-        channels[i] = this.mNativeBuffer.getChannelData(i);
-
-      const playPercent = this.mDuration / this.mNativeBuffer.duration;
-      const startPercent = this.mStartOffset / this.mNativeBuffer.duration;
-      const startPos = ~~(channels[0].length * startPercent);
-      const endPos = startPos + ~~(channels[0].length * playPercent);
-      const values = new Float32Array(blockNum);
-      const blockWidth = ~~(channels[0].length * playPercent / blockNum);
-      let dataBlock = [];
-
-      for (let i = startPos, c = 0; i < endPos ; i++) {
-        dataBlock.push(this.__averagePeak(channels, i));
-
-        if (dataBlock.length >= blockWidth) {
-          let max = Math.max(...dataBlock);
-          let min = Math.min(...dataBlock);
-          values[c++] = (max + min) / 2;
-          dataBlock = [];
-        }
-      }
-
-      return values;
-    }
-
-    /**
-     * @ignore
-     * @private
-     * @param {Array<Float32Array>} channels 
-     * @param {number} ix 
-     */
-    __averagePeak(channels, ix) {
-      let sum = 0;
-      channels.forEach(ch => sum += Math.abs(ch[ix]));
-      return sum / channels.length;
-    }
-
-    /**
-     * Gets the decoded audio buffer.
-     * 
-     * @public
-     * @readonly
-     * @returns {AudioBuffer}
-     */
-    get native() {
-      return this.mNativeBuffer;
-    }
-
-    /**
-     * Gets the position in seconds, where the sound should start to play.
-     * 
-     * @public
-     * @readonly
-     * @returns {number}
-     */
-    get offset() {
-      return this.mStartOffset;
-    }
-
-    /**
-     * Gets sound clip duration.
-     * 
-     * @public
-     * @readonly
-     * @returns {number}
-     */
-    get duration() {
-      return this.mDuration;
-    }
-
-    /**
-     * Represents whether this sound clip is a part of sound atlas clip.
-     * 
-     * @public
-     * @readonly
-     * @returns {boolean}
-     */
-    get isSubClip() {
-      return this.mIsSubClip;
-    }
-  }
-
-  /**
-   * The class which stores audio buffer of sound atlas and information about sub sound clips.
-   * 
-   * @cat audio
-   * @extends black-engine~SoundClip
-   */
-  class SoundAtlasClip extends SoundClip {
-
-    /**
-     * Creates instance of SoundAtlas.
-     * 
-     * @param {AudioBuffer} nativeBuffer Decoded audio buffer.
-     * @param {Object} jsonObject        Data representing sub sounds name, duration and offset.
-     */
-    constructor(nativeBuffer, jsonObject) {
-      super(nativeBuffer);
-
-      /** 
-       * @private 
-       * @type {Object<string, black-engine~SoundClip>} 
-       */
-      this.mClips = {};
-      
-      if (jsonObject !== null)
-        for (let key in jsonObject['sounds'])
-          this.addSubSound(key, jsonObject['sounds'][key][0], jsonObject['sounds'][key][1]);
-    }
-
-    /**
-     * Dynamically sets new sub sound info bypassing json.
-     * 
-     * @public
-     * @param {string} name     The name of the sub sound.
-     * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
-     * @param {number} duration The duration of sub sound.
-     * @returns {black-engine~SoundClip}     New instance of SoundClip.
-     */
-    addSubSound(name, offset = 0, duration = NaN) {
-      this.mClips[name] = new SoundClip(this.native, offset, duration, true);
-      return this.mClips[name];
-    }
-
-    /**
-     * Removes previously added sub sound info.
-     * 
-     * @public
-     * @param {string} name The name of the sub sound.
-     * @returns {void}
-     */
-    removeSubSound(name) {
-      delete this.mClips[name];
-    }
-
-    /**
-     * Directly plays sub sound by given name on specific channel.
-     * 
-     * @public
-     * @param {string} name                The name of the sub sound.
-     * @param {string=} [channel='master'] The name of channel.
-     * @param {number=} [volume=1]         The volume level.
-     * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
-     * @param {number=} [pan=0]            The panning value.
-     * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
-     */
-    playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
-      let clip = this.mClips[name];
-      if (clip == null)
-        return null;
-      
-      let instance = new SoundInstance(clip);
-      instance.channel = channel;
-      instance.volume = volume;
-      instance.loop = loop;
-      instance.pan = pan;
-      return instance._play();
-    }
-
-    /**
-     * The dictionary of sub sounds.
-     *
-     * @public
-     * @readonly
-     * @returns {Object<string, black-engine~SoundClip>}
-     */
-    get subSounds() {
-      return this.mClips;
-    }
-  }
-
-  /**
-   * The sound listener component, which controls one and only instance of AudioContext.listener.
-   * 
-   * @cat audio
-   * @extends {black-engine~Component}
-   */
-  class SoundListener extends Component {
-    /**
-     * Creates new instance of SoundListener.
-     */
-    constructor() {
-      super();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onRemoved(gameObject) {
-      this.loose();
-    }
-
-    /**
-     * Starts controlling only instance of AudioContext.listener.
-     */
-    listen() {
-      Black.audio.currentListener = this;
-    }
-
-    /**
-     * Stops controlling AudioContext.listener.
-     */
-    loose() {
-      Black.audio.looseListener();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onRender() {
-      if (Black.audio.currentListener === this) {
-        let listener = Black.audio.context.listener;
-        
-        let stage = Black.stage;
-        let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
-        let px = (pos.x - stage.centerX) / stage.width * 2;
-        let py = (pos.y - stage.centerY) / stage.height * 2;
-        if (listener.positionX != null) {
-          listener.positionX.setValueAtTime(px, 0);
-          listener.positionY.setValueAtTime(py, 0);
-          listener.positionZ.setValueAtTime(1, 0);
-        } else {
-          listener.setPosition(px ,py, 1);
-        }
-      }
-    }
-  }
-
-  /**
    * The main class, which is responsible for audio support.
    * 
    * @cat audio
@@ -13064,6 +12789,24 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        */
       this.mMasterChannel = null;
 
+      /**
+       * @private
+       * @type {boolean}
+       */
+      this.mIsPendingResume = false;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.mPendingResume = 0;
+
+      /**
+       * @private
+       * @type {number}
+       */
+      this.mResumeTimeout = 0.1;
+
       this.__initialize();
     }
 
@@ -13076,17 +12819,33 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       if (this.mContext.state === 'running')
         this.mContext.suspend();
+
+      this.mIsPendingResume = false;
     }
 
     /**
      * @inheritDoc
      */
     onResume() {
-      if (this.mContext === null)
+      this.mPendingResume = this.mResumeTimeout;
+      this.mIsPendingResume = true;
+    }
+
+    onUpdate() {
+      if (this.mIsPendingResume)
+        this.mPendingResume -= Black.time.delta;
+      else
         return;
 
-      if (this.mContext.state === 'suspended')
-        this.mContext.resume();
+      if (this.mPendingResume <= 0) {
+        if (this.mContext === null)
+          return;
+
+        if (this.mContext.state === 'suspended' || this.mContext.state === 'interrupted') {
+          this.mContext.resume();
+          this.mIsPendingResume = false;
+        }
+      }
     }
 
     /**
@@ -13117,6 +12876,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         this.stopAll();
         this.mContext.close();
       }
+
+      this.mIsPendingResume = false;
 
       Black.audio = null;
     }
@@ -13314,6 +13075,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * Gets/Sets current timeout when resuming audio context from sleep.
+     * Recommended value is 100ms for iOS devices running in Safari.
+     * 
+     * @public
+     * @returns {number}
+     */
+    get resumeTimeout() {
+      return this.mResumeTimeout;
+    }
+
+    /**
+     * @param {number} value 
+     * @returns {void}
+     */
+    set resumeTimeout(value) {
+      this.mResumeTimeout = value;
+    }
+
+    /**
      * Resets current listener to default AudioContext listener.
      * 
      * @public
@@ -13333,6 +13113,157 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return this.mContext.createGainNode();
 
       return this.mContext.createGain();
+    }
+  }
+
+  /**
+   * The class which stores audio buffer and its all sounds data.
+   * 
+   * @cat audio
+   */
+  class SoundClip {
+    /**
+     * Creates new instance of SoundClip.
+     * 
+     * @param {AudioBuffer} nativeBuffer     Decoded audio buffer.
+     * @param {number=} [offset=0]           Determines at which position of buffer the sound will be played.
+     * @param {number=} [duration=undefined] If undefined, gets duration value from native audio buffer.
+     * @param {boolean=} [isSubClip=false]   Specifies whether this sound clip is part of a sound atlas.
+     */
+    constructor(nativeBuffer, offset = 0, duration = NaN, isSubClip = false) {
+
+      /** 
+       * @private 
+       * @type {AudioBuffer} 
+       */
+      this.mNativeBuffer = nativeBuffer;
+
+      /** 
+       * @private 
+       * @type {number} 
+       */
+      this.mStartOffset = offset;
+
+      /** 
+       * @private 
+       * @type {number} 
+       */
+      this.mDuration = duration || nativeBuffer.duration;
+
+      /** 
+       * @private 
+       * @type {boolean} 
+       */
+      this.mIsSubClip = isSubClip;
+    }
+
+    /**
+     * Creates sound instance and starts to play on specific channel
+     * 
+     * @public
+     * @param {string=} [channel='master'] The name of channel.
+     * @param {number=} [volume=1]         The volume level.
+     * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
+     * @param {number=} [pan=0]            The panning value.
+     * @returns {SoundInstance}            New sound instance to be played.
+     */
+    play(channel = 'master', volume = 1, loop = false, pan = 0) {
+      let instance = new SoundInstance(this);
+      instance.channel = channel;
+      instance.volume = volume;
+      instance.loop = loop;
+      instance.pan = pan;
+      return instance._play();
+    }
+
+    /**
+     * Creates an array of blocks filled with average amplitude gathered in certain interval
+     * 
+     * @public
+     * @param {number} blockNum Number of blocks to divide data to
+     * @returns {Float32Array}
+     */
+    collectWaveData(blockNum) {
+      let channels = [];
+      for (let i = 0; i < this.mNativeBuffer.numberOfChannels; i++)
+        channels[i] = this.mNativeBuffer.getChannelData(i);
+
+      const playPercent = this.mDuration / this.mNativeBuffer.duration;
+      const startPercent = this.mStartOffset / this.mNativeBuffer.duration;
+      const startPos = ~~(channels[0].length * startPercent);
+      const endPos = startPos + ~~(channels[0].length * playPercent);
+      const values = new Float32Array(blockNum);
+      const blockWidth = ~~(channels[0].length * playPercent / blockNum);
+      let dataBlock = [];
+
+      for (let i = startPos, c = 0; i < endPos ; i++) {
+        dataBlock.push(this.__averagePeak(channels, i));
+
+        if (dataBlock.length >= blockWidth) {
+          let max = Math.max(...dataBlock);
+          let min = Math.min(...dataBlock);
+          values[c++] = (max + min) / 2;
+          dataBlock = [];
+        }
+      }
+
+      return values;
+    }
+
+    /**
+     * @ignore
+     * @private
+     * @param {Array<Float32Array>} channels 
+     * @param {number} ix 
+     */
+    __averagePeak(channels, ix) {
+      let sum = 0;
+      channels.forEach(ch => sum += Math.abs(ch[ix]));
+      return sum / channels.length;
+    }
+
+    /**
+     * Gets the decoded audio buffer.
+     * 
+     * @public
+     * @readonly
+     * @returns {AudioBuffer}
+     */
+    get native() {
+      return this.mNativeBuffer;
+    }
+
+    /**
+     * Gets the position in seconds, where the sound should start to play.
+     * 
+     * @public
+     * @readonly
+     * @returns {number}
+     */
+    get offset() {
+      return this.mStartOffset;
+    }
+
+    /**
+     * Gets sound clip duration.
+     * 
+     * @public
+     * @readonly
+     * @returns {number}
+     */
+    get duration() {
+      return this.mDuration;
+    }
+
+    /**
+     * Represents whether this sound clip is a part of sound atlas clip.
+     * 
+     * @public
+     * @readonly
+     * @returns {boolean}
+     */
+    get isSubClip() {
+      return this.mIsSubClip;
     }
   }
 
@@ -13390,6 +13321,95 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       Black.audio.context.decodeAudioData(undecodedAudio, (buffer) => {
         super.ready(new SoundClip(buffer));
       });
+    }
+  }
+
+  /**
+   * The class which stores audio buffer of sound atlas and information about sub sound clips.
+   * 
+   * @cat audio
+   * @extends black-engine~SoundClip
+   */
+  class SoundAtlasClip extends SoundClip {
+
+    /**
+     * Creates instance of SoundAtlas.
+     * 
+     * @param {AudioBuffer} nativeBuffer Decoded audio buffer.
+     * @param {Object} jsonObject        Data representing sub sounds name, duration and offset.
+     */
+    constructor(nativeBuffer, jsonObject) {
+      super(nativeBuffer);
+
+      /** 
+       * @private 
+       * @type {Object<string, black-engine~SoundClip>} 
+       */
+      this.mClips = {};
+      
+      if (jsonObject !== null)
+        for (let key in jsonObject['sounds'])
+          this.addSubSound(key, jsonObject['sounds'][key][0], jsonObject['sounds'][key][1]);
+    }
+
+    /**
+     * Dynamically sets new sub sound info bypassing json.
+     * 
+     * @public
+     * @param {string} name     The name of the sub sound.
+     * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
+     * @param {number} duration The duration of sub sound.
+     * @returns {black-engine~SoundClip}     New instance of SoundClip.
+     */
+    addSubSound(name, offset = 0, duration = NaN) {
+      this.mClips[name] = new SoundClip(this.native, offset, duration, true);
+      return this.mClips[name];
+    }
+
+    /**
+     * Removes previously added sub sound info.
+     * 
+     * @public
+     * @param {string} name The name of the sub sound.
+     * @returns {void}
+     */
+    removeSubSound(name) {
+      delete this.mClips[name];
+    }
+
+    /**
+     * Directly plays sub sound by given name on specific channel.
+     * 
+     * @public
+     * @param {string} name                The name of the sub sound.
+     * @param {string=} [channel='master'] The name of channel.
+     * @param {number=} [volume=1]         The volume level.
+     * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
+     * @param {number=} [pan=0]            The panning value.
+     * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
+     */
+    playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
+      let clip = this.mClips[name];
+      if (clip == null)
+        return null;
+      
+      let instance = new SoundInstance(clip);
+      instance.channel = channel;
+      instance.volume = volume;
+      instance.loop = loop;
+      instance.pan = pan;
+      return instance._play();
+    }
+
+    /**
+     * The dictionary of sub sounds.
+     *
+     * @public
+     * @readonly
+     * @returns {Object<string, black-engine~SoundClip>}
+     */
+    get subSounds() {
+      return this.mClips;
     }
   }
 
@@ -16327,21 +16347,22 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
           item.once(Message.COMPLETE, this.onAssetLoaded, this);
           item.once(Message.ERROR, this.onAssetError, this);
 
-          item.loaders.forEach(x => {
-            this.mLoadersQueue[x.url] = x;
-          });
-
           this.mTotalPending++;
+
+          item.loaders.forEach(x => {
+            //this.mLoadersQueue[x.url] = x;
+            x.load();
+          });
         }
       }
 
       // Loader will notify Asset when its ready. Asset will notify AssetManager.
-      for (const key in this.mLoadersQueue) {
-        if (this.mLoadersQueue.hasOwnProperty(key)) {
-          const loader = this.mLoadersQueue[key];
-          loader.load();
-        }
-      }
+      // for (const key in this.mLoadersQueue) {
+      //   if (this.mLoadersQueue.hasOwnProperty(key)) {
+      //     const loader = this.mLoadersQueue[key];
+      //     loader.load();
+      //   }
+      // }
     }
 
     /**
@@ -16902,9 +16923,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
       if (isStroke === true) {
         ctx.lineWidth = segment.style.strokeThickness;
-        ctx.strokeStyle = ColorHelper.hexColorToString(segment.style.strokeColor);
+        ctx.strokeStyle = ColorHelper.intToRGBA(segment.style.strokeColor, segment.style.strokeAlpha);
       } else {
-        ctx.fillStyle = ColorHelper.hexColorToString(segment.style.color);
+        ctx.fillStyle = ColorHelper.intToRGBA(segment.style.color, segment.style.alpha);
       }
 
       ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
@@ -16916,7 +16937,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       ly += gameObject.padding.y;
 
       if (gameObject.align === 'center')
-        lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
+        lx += metrics.bounds.width * 0.5 - metrics.lineWidth[segment.lineIndex] * 0.5;
       else if (gameObject.align === 'right')
         lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
@@ -16951,9 +16972,9 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         }
 
         let canvasBounds = this.mMetrics.strokeBounds.clone();
-        canvasBounds.scale(scale, scale);
         canvasBounds.union(this.mMetrics.shadowBounds);
         canvasBounds.inflate(gameObject.padding.right, gameObject.padding.bottom);
+        canvasBounds.scale(scale, scale);
 
         cvs.width = canvasBounds.width;
         cvs.height = canvasBounds.height;
@@ -16969,8 +16990,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
             ctx.save();
             ctx.shadowColor = ColorHelper.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
             ctx.shadowBlur = segments[i].style.shadowBlur;
-            ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
-            ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
+            ctx.shadowOffsetX = segments[i].style.shadowDistanceX * scale;
+            ctx.shadowOffsetY = segments[i].style.shadowDistanceY * scale;
             this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
             ctx.restore();
           }
@@ -20223,6 +20244,30 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
 
     /**
+     * Gets/sets text alpha in range [0..1].
+     * NOTE: This property will affect shadow alpha.
+     *
+     * @return {number}
+     */
+    get textAlpha() {
+      return this.mDefaultStyle.alpha;
+    }
+
+    /**
+     * @param {number} value
+     * @return {void}
+     */
+    set textAlpha(value) {
+      if (this.mDefaultStyle.alpha === value)
+        return;
+
+      this.mDefaultStyle.alpha = value;
+
+      this.setDirty(DirtyFlag.RENDER_CACHE, false);
+      this.setTransformDirty();
+    }
+
+    /**
      * Get/Set text style.
      *
      * @return {black-engine~FontStyle}
@@ -20331,6 +20376,26 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
         return;
 
       this.mDefaultStyle.strokeColor = value;
+      this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
+    }
+
+    /**
+     * Gets/sets  stroke alpha in range [0..1].
+     * @return {number}
+     */
+    get strokeAlpha() {
+      return this.mDefaultStyle.strokeAlpha;
+    }
+
+    /**
+     * @param {number} value
+     * @return {void}
+     */
+    set strokeAlpha(value) {
+      if (this.mDefaultStyle.strokeAlpha === value)
+        return;
+
+      this.mDefaultStyle.strokeAlpha = value;
       this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
     }
 
@@ -23880,6 +23945,281 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
+  function addTexture(name, texture) {
+    if (!texture)
+      return null;
+
+    let pages = this.pages;
+
+    let page = null;
+    for (let i = 0; i < pages.length; i++) {
+      if (pages[i].baseTexture === texture.baseTexture) {
+        page = pages[i];
+        break;
+      }
+    }
+
+    if (page === null) {
+      page = new spine.TextureAtlasPage();
+      page.name = 'texturePage';
+      page.baseTexture = texture.native;
+      pages.push(page);
+    }
+
+    let region = new spine.TextureAtlasRegion();
+    region.name = name;
+    region.page = page;
+    region.texture = texture;
+    region.index = -1;
+    region.width = texture.width;
+    region.height = texture.height;
+    this.regions.push(region);
+    return region;
+  }
+
+  /**
+   * Esoteric Software SPINE wrapper for Black Engine
+   *
+   * @cat animation
+   * @unrestricted
+   * @nocompile
+   * @extends DisplayObject
+   */
+  class Spine extends DisplayObject {
+    /**
+     * Creates new instance of Spine.
+     */
+    constructor(name, texturesPath = '') {
+      super();
+
+      let json = Black.assets.getJSON(name);
+
+      let fakeLoader = function (path, loaderFunction, callback) {
+        console.log('FAKE LOADER', path);
+      };
+
+      let spineAtlas = new spine.TextureAtlas('', fakeLoader);
+      spineAtlas.addTexture = addTexture;
+
+      let regions = {};
+
+      for (let skinName in json.skins) {
+        let skin = json.skins[skinName];
+
+        for (let slotName in skin) {
+          let slot = skin[slotName];
+
+          for (let entryName in slot) {
+            let attachment = slot[entryName];
+
+            if (attachment.type === 'point')
+              continue;
+
+            if (attachment.type === 'path')
+              continue;
+            
+            if (attachment.type === 'clipping')
+              continue;
+
+            let textureName = attachment.path || entryName;
+
+            if (attachment.name)
+              textureName = attachment.name;
+
+            if (regions[textureName])
+              continue;
+
+            regions[textureName] = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
+          }
+        }
+      }
+
+      let attachmentParser = new spine.AtlasAttachmentLoader(spineAtlas);
+      let spineJsonParser = new spine.SkeletonJson(attachmentParser);
+      let skeletonData = spineJsonParser.readSkeletonData(json);
+
+      this.mSkeleton = new spine.Skeleton(skeletonData);
+      this.mSkeleton.updateWorldTransform();
+
+      this.mStateData = new spine.AnimationStateData(skeletonData);
+
+      this.mState = new spine.AnimationState(this.mStateData);
+
+      this.mTempClipContainers = [];
+      this.mTexturesPath = texturesPath;
+
+      for (let i = 0, len = this.mSkeleton.slots.length; i < len; i++) {
+        let slot = this.mSkeleton.slots[i];
+        let attachment = slot.attachment;
+
+        let slotContainer = new DisplayObject();
+        slot.container = slotContainer;
+
+        this.addChild(slotContainer);
+        this.mTempClipContainers.push(null);
+
+        if (attachment instanceof spine.RegionAttachment) {
+          let spriteName = attachment.region.name;
+
+          let sprite = this._createSprite(slot, attachment, spriteName);
+          slot.currentSprite = sprite;
+          slot.currentSpriteName = spriteName;
+          slotContainer.addChild(sprite);
+        }
+      }
+
+      this.mState.addListener({ complete: x => this.post('animationComplete', x.animation.name) });
+    }
+
+    get skeleton() {
+      return this.mSkeleton;
+    }
+
+    play(name, loop = false) {
+      this.mState.setAnimation(0, name, loop);
+    }
+
+    setMixing(from, to, dur) {
+      this.mStateData.setMix(from, to, dur);
+    }
+
+    setTransition(from, to, loop, dur = 0, viseversaDur = 0) {
+      let h = (t) => {
+        if (t.animation.name === from)
+          this.play(to, loop);
+      };
+
+      this.mState.addListener({ complete: h });
+
+      if (dur > 0)
+        this.mStateData.setMix(from, to, dur);
+      if (viseversaDur > 0)
+        this.mStateData.setMix(to, from, viseversaDur);
+    }
+
+    changeSlotAttachment(slotName, attachmentName) {
+      this.mSkeleton.setAttachment(slotName, attachmentName);
+    }
+
+    onUpdate() {
+      let dt = Black.time.delta;
+      this.mState.update(dt);
+      this.mState.apply(this.mSkeleton);
+      this.mSkeleton.updateWorldTransform();
+      let slots = this.mSkeleton.slots;
+
+      for (let i = 0, n = slots.length; i < n; i++) {
+        let slot = slots[i];
+        let attachment = slot.attachment;
+
+        let sprite = slot.currentSprite;
+        let wrapper = slot.container;
+
+        if (!attachment) {
+          wrapper.visible = false;
+          continue;
+        }
+
+        wrapper.visible = true;
+
+        if (attachment instanceof spine.RegionAttachment) {
+          let region = attachment.region;
+
+          if (region) {
+
+            if (!slot.currentSpriteName || slot.currentSpriteName !== region.name) {
+              let spriteName = region.name;
+              if (slot.currentSprite) {
+                slot.currentSprite.visible = false;
+              }
+              slot.sprites = slot.sprites || {};
+              if (slot.sprites[spriteName] !== undefined) {
+                slot.sprites[spriteName].visible = true;
+              }
+              else {
+                let sprite = this._createSprite(slot, attachment, spriteName);
+                wrapper.addChild(sprite);
+              }
+              slot.currentSprite = slot.sprites[spriteName];
+              slot.currentSpriteName = spriteName;
+              sprite = slot.currentSprite;
+            }
+          }
+
+          let bone = slot.bone;
+          let w = region.width;
+          let h = region.height;
+
+          let regionHeight = region.rotate ? region.width : region.height;
+
+          sprite.scaleX = attachment.scaleX * (attachment.width / region.width);
+          sprite.scaleY = attachment.scaleY * (attachment.height / region.height);
+
+          let radians = -attachment.rotation * Math.PI / 180;
+          sprite.rotation = radians;
+
+          let cos = Math.cos(radians);
+          let sin = Math.sin(radians);
+          let shiftX = -attachment.width / 2 * attachment.scaleX;
+          let shiftY = -attachment.height / 2 * attachment.scaleY;
+          sprite.x = attachment.x + shiftX * cos - shiftY * sin;
+          sprite.y = -attachment.y + shiftX * sin + shiftY * cos;
+
+          wrapper.x = bone.worldX;
+          wrapper.y = -bone.worldY;
+
+          wrapper.rotation = Math.atan2(-bone.c, bone.a);
+
+          let flipX = 1;
+          let flipY = 1;
+
+          let wsx = Math.sqrt(bone.a * bone.a + bone.c * bone.c);
+          let wsy = Math.sqrt(bone.b * bone.b + bone.d * bone.d);
+
+          wrapper.scaleX = wsx * flipX;
+          wrapper.scaleY = wsy * flipY;
+
+          wrapper.alpha = this.mSkeleton.color.a * slot.color.a * attachment.color.a;
+
+        } else if (attachment instanceof spine.PointAttachment) {
+          wrapper.x = slot.bone.worldX + attachment.x;
+          wrapper.y = -slot.bone.worldY - attachment.y;
+        }
+      }
+    }
+
+    _createSprite(slot, attachment, name) {
+      let region = attachment.region;
+      
+      if (slot.tempAttachment === attachment) {
+        region = slot.tempRegion;
+        slot.tempAttachment = null;
+        slot.tempRegion = null;
+      }
+
+      let sprite = new Sprite(this.mTexturesPath + name);
+      sprite.alpha = attachment.color.a;
+      sprite.region = attachment.region;
+      this._setSpriteRegion(attachment, sprite, attachment.region);
+
+      slot.sprites = slot.sprites || {};
+      slot.sprites[name] = sprite;
+      return sprite;
+    }
+
+    _setSpriteRegion(attachment, sprite, region) {
+      sprite.region = region;
+      if (!region.size) {
+        sprite.scaleX = attachment.scaleX * attachment.width / region.width;
+        sprite.scaleY = -attachment.scaleY * attachment.height / region.height;
+      } else {
+        //hacked!
+        sprite.scaleX = region.size.width / region.width;
+        sprite.scaleY = -region.size.height / region.height;
+      }
+    }
+  }
+
   /**
    * Distortion sound effect.
    * 
@@ -24529,6 +24869,63 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      */
     get spatialEffect() {
       return this.mSpatialEffect;
+    }
+  }
+
+  /**
+   * The sound listener component, which controls one and only instance of AudioContext.listener.
+   * 
+   * @cat audio
+   * @extends {black-engine~Component}
+   */
+  class SoundListener extends Component {
+    /**
+     * Creates new instance of SoundListener.
+     */
+    constructor() {
+      super();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onRemoved(gameObject) {
+      this.loose();
+    }
+
+    /**
+     * Starts controlling only instance of AudioContext.listener.
+     */
+    listen() {
+      Black.audio.currentListener = this;
+    }
+
+    /**
+     * Stops controlling AudioContext.listener.
+     */
+    loose() {
+      Black.audio.looseListener();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onRender() {
+      if (Black.audio.currentListener === this) {
+        let listener = Black.audio.context.listener;
+        
+        let stage = Black.stage;
+        let pos = this.gameObject.localToGlobal(stage.globalToLocal(new Vector(this.gameObject.pivotX, this.gameObject.pivotY)));
+        let px = (pos.x - stage.centerX) / stage.width * 2;
+        let py = (pos.y - stage.centerY) / stage.height * 2;
+        if (listener.positionX != null) {
+          listener.positionX.setValueAtTime(px, 0);
+          listener.positionY.setValueAtTime(py, 0);
+          listener.positionZ.setValueAtTime(1, 0);
+        } else {
+          listener.setPosition(px ,py, 1);
+        }
+      }
     }
   }
 
@@ -28100,6 +28497,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.SoundInstance = SoundInstance;
   exports.SoundListener = SoundListener;
   exports.SoundState = SoundState;
+  exports.Spine = Spine;
   exports.SplashScreen = SplashScreen;
   exports.Sprite = Sprite;
   exports.SpriteRendererCanvas = SpriteRendererCanvas;

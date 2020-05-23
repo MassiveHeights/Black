@@ -119,9 +119,9 @@ export class TextRenderer extends Renderer {
 
     if (isStroke === true) {
       ctx.lineWidth = segment.style.strokeThickness;
-      ctx.strokeStyle = ColorHelper.hexColorToString(segment.style.strokeColor);
+      ctx.strokeStyle = ColorHelper.intToRGBA(segment.style.strokeColor, segment.style.strokeAlpha);
     } else {
-      ctx.fillStyle = ColorHelper.hexColorToString(segment.style.color);
+      ctx.fillStyle = ColorHelper.intToRGBA(segment.style.color, segment.style.alpha);
     }
 
     ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
@@ -133,7 +133,7 @@ export class TextRenderer extends Renderer {
     ly += gameObject.padding.y;
 
     if (gameObject.align === 'center')
-      lx += metrics.bounds.width * .5 - metrics.lineWidth[segment.lineIndex] * .5;
+      lx += metrics.bounds.width * 0.5 - metrics.lineWidth[segment.lineIndex] * 0.5;
     else if (gameObject.align === 'right')
       lx += metrics.bounds.width - metrics.lineWidth[segment.lineIndex];
 
@@ -168,9 +168,9 @@ export class TextRenderer extends Renderer {
       }
 
       let canvasBounds = this.mMetrics.strokeBounds.clone();
-      canvasBounds.scale(scale, scale);
       canvasBounds.union(this.mMetrics.shadowBounds);
       canvasBounds.inflate(gameObject.padding.right, gameObject.padding.bottom);
+      canvasBounds.scale(scale, scale);
 
       cvs.width = canvasBounds.width;
       cvs.height = canvasBounds.height;
@@ -186,8 +186,8 @@ export class TextRenderer extends Renderer {
           ctx.save();
           ctx.shadowColor = ColorHelper.intToRGBA(segments[i].style.shadowColor, segments[i].style.shadowAlpha);
           ctx.shadowBlur = segments[i].style.shadowBlur;
-          ctx.shadowOffsetX = segments[i].style.shadowDistanceX;
-          ctx.shadowOffsetY = segments[i].style.shadowDistanceY;
+          ctx.shadowOffsetX = segments[i].style.shadowDistanceX * scale;
+          ctx.shadowOffsetY = segments[i].style.shadowDistanceY * scale;
           this.renderSegment(this.mMetrics, segments[i], ctx, driver, fontMetrics, false);
           ctx.restore();
         }

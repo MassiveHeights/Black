@@ -363,6 +363,30 @@ export class TextField extends DisplayObject {
   }
 
   /**
+   * Gets/sets text alpha in range [0..1].
+   * NOTE: This property will affect shadow alpha.
+   *
+   * @return {number}
+   */
+  get textAlpha() {
+    return this.mDefaultStyle.alpha;
+  }
+
+  /**
+   * @param {number} value
+   * @return {void}
+   */
+  set textAlpha(value) {
+    if (this.mDefaultStyle.alpha === value)
+      return;
+
+    this.mDefaultStyle.alpha = value;
+
+    this.setDirty(DirtyFlag.RENDER_CACHE, false);
+    this.setTransformDirty();
+  }
+
+  /**
    * Get/Set text style.
    *
    * @return {black-engine~FontStyle}
@@ -471,6 +495,26 @@ export class TextField extends DisplayObject {
       return;
 
     this.mDefaultStyle.strokeColor = value;
+    this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
+  }
+
+  /**
+   * Gets/sets  stroke alpha in range [0..1].
+   * @return {number}
+   */
+  get strokeAlpha() {
+    return this.mDefaultStyle.strokeAlpha;
+  }
+
+  /**
+   * @param {number} value
+   * @return {void}
+   */
+  set strokeAlpha(value) {
+    if (this.mDefaultStyle.strokeAlpha === value)
+      return;
+
+    this.mDefaultStyle.strokeAlpha = value;
     this.setDirty(/** @type {DirtyFlag} */(DirtyFlag.RENDER_CACHE | DirtyFlag.RENDER), false);
   }
 

@@ -2,9 +2,6 @@ import { System } from "../core/System";
 import { Debug } from "../core/Debug";
 import { SoundChannel } from "./SoundChannel";
 import { SoundInstance } from "./SoundInstance";
-import { SoundClip } from "./SoundClip";
-import { SoundAtlasClip } from "./SoundAtlasClip";
-import { SoundListener } from "./SoundListener";
 import { Black } from "./../Black";
 
 /**
@@ -46,6 +43,24 @@ export class MasterAudio extends System {
      */
     this.mMasterChannel = null;
 
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.mIsPendingResume = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mPendingResume = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.mResumeTimeout = 0.1;
+
     this.__initialize();
   }
 
@@ -58,17 +73,33 @@ export class MasterAudio extends System {
 
     if (this.mContext.state === 'running')
       this.mContext.suspend();
+
+    this.mIsPendingResume = false;
   }
 
   /**
    * @inheritDoc
    */
   onResume() {
-    if (this.mContext === null)
+    this.mPendingResume = this.mResumeTimeout;
+    this.mIsPendingResume = true;
+  }
+
+  onUpdate() {
+    if (this.mIsPendingResume)
+      this.mPendingResume -= Black.time.delta;
+    else
       return;
 
-    if (this.mContext.state === 'suspended')
-      this.mContext.resume();
+    if (this.mPendingResume <= 0) {
+      if (this.mContext === null)
+        return;
+
+      if (this.mContext.state === 'suspended' || this.mContext.state === 'interrupted') {
+        this.mContext.resume();
+        this.mIsPendingResume = false;
+      }
+    }
   }
 
   /**
@@ -99,6 +130,8 @@ export class MasterAudio extends System {
       this.stopAll();
       this.mContext.close();
     }
+
+    this.mIsPendingResume = false;
 
     Black.audio = null;
   }
@@ -293,6 +326,25 @@ export class MasterAudio extends System {
    */
   get currentListener() {
     return this.mCurrentListener;
+  }
+
+  /**
+   * Gets/Sets current timeout when resuming audio context from sleep.
+   * Recommended value is 100ms for iOS devices running in Safari.
+   * 
+   * @public
+   * @returns {number}
+   */
+  get resumeTimeout() {
+    return this.mResumeTimeout;
+  }
+
+  /**
+   * @param {number} value 
+   * @returns {void}
+   */
+  set resumeTimeout(value) {
+    this.mResumeTimeout = value;
   }
 
   /**

@@ -74,6 +74,12 @@ export class SoundInstance extends MessageDispatcher {
 
     /** 
      * @private 
+     * @type {number} 
+     */
+    this.mStopPosition = 0;
+
+    /** 
+     * @private 
      * @type {AudioBufferSourceNode} 
      */
     this.mSrc = null;
@@ -224,8 +230,12 @@ export class SoundInstance extends MessageDispatcher {
    */
   stop(duration = 0) {
     if (this.mState === SoundState.PLAYING) {
+      this.mStopPosition = this.currentPosition;
+
       this.mGainNode.gain.cancelScheduledValues(0);
       this.mSrc.stop(Black.audio.context.currentTime + duration);
+
+      this.mState = SoundState.STOPPED;
     }
   }
 
@@ -237,9 +247,9 @@ export class SoundInstance extends MessageDispatcher {
    */
   pause() {
     if (this.mState === SoundState.PLAYING) {
-      this.stop();
-
       this.mPausePosition = this.currentPosition;
+      this.stop();
+      
       this.mState = SoundState.PAUSED;
     }
   }
@@ -305,7 +315,10 @@ export class SoundInstance extends MessageDispatcher {
         return this.mPausePosition;
       case SoundState.COMPLETED:
         return this.mSound.duration;
+      case SoundState.STOPPED:
+        return this.mStopPosition;
     }
+    
     return 0;
   }
 
