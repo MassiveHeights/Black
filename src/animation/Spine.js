@@ -1,6 +1,6 @@
 import { Black } from "../Black";
 import { DisplayObject } from "../display/DisplayObject";
-import { Time } from "../core/Time";
+import { Sprite } from "../display/Sprite";
 
 function addTexture(name, texture) {
   if (!texture)
@@ -247,6 +247,7 @@ export class Spine extends DisplayObject {
 
   _createSprite(slot, attachment, name) {
     let region = attachment.region;
+    
     if (slot.tempAttachment === attachment) {
       region = slot.tempRegion;
       slot.tempAttachment = null;

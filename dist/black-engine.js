@@ -19677,7 +19677,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * @cat display
    * @extends black-engine~DisplayObject
    */
-  class Sprite$1 extends DisplayObject {
+  class Sprite extends DisplayObject {
     /**
      * Creates a new Sprite instance.
      *
@@ -24190,6 +24190,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
     _createSprite(slot, attachment, name) {
       let region = attachment.region;
+      
       if (slot.tempAttachment === attachment) {
         region = slot.tempRegion;
         slot.tempAttachment = null;
@@ -28498,7 +28499,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
   exports.SoundState = SoundState;
   exports.Spine = Spine;
   exports.SplashScreen = SplashScreen;
-  exports.Sprite = Sprite$1;
+  exports.Sprite = Sprite;
   exports.SpriteRendererCanvas = SpriteRendererCanvas;
   exports.Stage = Stage;
   exports.StageScaleMode = StageScaleMode;
