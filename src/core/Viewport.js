@@ -92,7 +92,7 @@ export class Viewport extends MessageDispatcher {
      * @private
      * @type {Function}
      */
-    this.mBoundResize
+    this.mBoundResize;
 
     this.__initialize();
   }
