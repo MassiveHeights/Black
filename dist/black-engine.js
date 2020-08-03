@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.11
+ * Blacksmith 2D v0.5.12
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -36,7 +36,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (global = global || self, factory(global['black-engine'] = {}));
-}(this, function (exports) { 'use strict';
+}(this, (function (exports) { 'use strict';
 
   // @ifdef DEBUG
   /**
@@ -13865,9 +13865,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
             break;
           }
-
-          default:
-            break;
         }
       }
 
@@ -15270,8 +15267,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
               }
 
               name === shapeCmds.POLYGON && graphicsData.closePath();
-              break;
-            default:
               break;
           }
           
@@ -23981,8 +23976,6 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    * Esoteric Software SPINE wrapper for Black Engine
    *
    * @cat animation
-   * @unrestricted
-   * @nocompile
    * @extends DisplayObject
    */
   class Spine extends DisplayObject {
@@ -28532,4 +28525,4 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));

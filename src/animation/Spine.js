@@ -38,8 +38,6 @@ function addTexture(name, texture) {
  * Esoteric Software SPINE wrapper for Black Engine
  *
  * @cat animation
- * @unrestricted
- * @nocompile
  * @extends DisplayObject
  */
 export class Spine extends DisplayObject {

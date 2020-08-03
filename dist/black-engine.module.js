@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.11
+ * Blacksmith 2D v0.5.12
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -13859,9 +13859,6 @@ class GraphicsData {
 
           break;
         }
-
-        default:
-          break;
       }
     }
 
@@ -15264,8 +15261,6 @@ class BVGParser extends ParserBase {
             }
 
             name === shapeCmds.POLYGON && graphicsData.closePath();
-            break;
-          default:
             break;
         }
         
@@ -23975,8 +23970,6 @@ function addTexture(name, texture) {
  * Esoteric Software SPINE wrapper for Black Engine
  *
  * @cat animation
- * @unrestricted
- * @nocompile
  * @extends DisplayObject
  */
 class Spine extends DisplayObject {

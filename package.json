@@ -10,7 +10,7 @@
   "directories": {},
   "scripts": {
     "start": "npm run build",
-    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --extra_annotation_name=action --extra_annotation_name=staticClass --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black-engine.js --js_output_file dist/black-engine.min.js",
+    "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --extra_annotation_name=action --extra_annotation_name=staticClass --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black-engine.js --js_output_file dist/black-engine.min.js --externs externs/spine.js",
     "docs": "node scripts/docs.js"
   },
   "repository": {
@@ -21,10 +21,10 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "google-closure-compiler": "^20191111.0.0",
-    "jsdoc": "^3.4.3",
+    "jsdoc": "^3.6.4",
     "jsdoc-to-markdown": "^4.0.1",
     "jsdom": "^11.11.0",
-    "rollup": "^1.10.0",
+    "rollup": "^1.32.1",
     "rollup-plugin-license": "^0.8.1"
   }
 }
