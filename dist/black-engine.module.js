@@ -4629,7 +4629,7 @@ class TextStyle {
     this.name = 'def';
 
     /** @type {string} */
-    this.family = family;
+    this.family = '"' + family + '"';
 
     /** @type {number} */
     this.size = size;
@@ -11249,13 +11249,15 @@ class FontFaceAssetLoader extends AssetLoader {
      * @type {number} 
      */
     this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
-    this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
+    this.mTestingElement.style.fontFamily = '"' + name + '",' + this.mTestingFontName;
 
     /** 
      * @private 
      * @type {number} 
      */
     this.mTimeoutHandle = -1;
+
+    
   }
 
   load() {

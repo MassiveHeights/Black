@@ -4635,7 +4635,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       this.name = 'def';
 
       /** @type {string} */
-      this.family = family;
+      this.family = '"' + family + '"';
 
       /** @type {number} */
       this.size = size;
@@ -11255,13 +11255,15 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
        * @type {number} 
        */
       this.mDefaultFontWidth = this.mTestingElement.offsetWidth;
-      this.mTestingElement.style.fontFamily = name + ',' + this.mTestingFontName;
+      this.mTestingElement.style.fontFamily = '"' + name + '",' + this.mTestingFontName;
 
       /** 
        * @private 
        * @type {number} 
        */
       this.mTimeoutHandle = -1;
+
+      
     }
 
     load() {
