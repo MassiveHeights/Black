@@ -124,7 +124,7 @@ export class TextRenderer extends Renderer {
       ctx.fillStyle = ColorHelper.intToRGBA(segment.style.color, segment.style.alpha);
     }
 
-    ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
+    ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px "${segment.style.family}"`;
 
     let lx = segment.bounds.x - Math.min(metrics.strokeBounds.x, metrics.shadowBounds.x);
     let ly = baseline + segment.bounds.y - Math.min(metrics.strokeBounds.y, metrics.shadowBounds.y);

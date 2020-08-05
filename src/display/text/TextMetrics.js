@@ -222,7 +222,7 @@ export class TextMetricsEx {
     if (style.style === FontStyle.ITALIC)
       extraX = (fontMetrics.bottomNormalized * style.size) / 4;
 
-    context.font = `${style.weight} ${style.style} ${style.size}px ${style.family}`;
+    context.font = `${style.weight} ${style.style} ${style.size}px "${style.family}"`;
     let width = Math.ceil(context.measureText(text).width);
 
     return outBounds.set(0, fontMetrics.baselineNormalized * style.size, width + 2 + extraX, fontMetrics.bottomNormalized * style.size + 2);

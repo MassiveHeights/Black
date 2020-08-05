@@ -4629,7 +4629,7 @@ class TextStyle {
     this.name = 'def';
 
     /** @type {string} */
-    this.family = '"' + family + '"';
+    this.family = family;
 
     /** @type {number} */
     this.size = size;
@@ -4777,7 +4777,7 @@ class FontMetrics {
 
     const drawY = Math.floor(CANVAS.height * 0.7766);
     this.mCtx.clearRect(0, 0, this.mCanvas.width, this.mCanvas.height);
-    this.mCtx.font = `${style.weight} ${style.size}px ${style.family}`;
+    this.mCtx.font = `${style.weight} ${style.size}px "${style.family}"`;
     this.mCtx.fillText('x', 0, drawY, 1);
 
     let data = this.mCtx.getImageData(0, 0, 1, this.mCanvas.height).data;
@@ -5189,7 +5189,7 @@ class TextMetricsEx {
     if (style.style === FontStyle.ITALIC)
       extraX = (fontMetrics.bottomNormalized * style.size) / 4;
 
-    context.font = `${style.weight} ${style.style} ${style.size}px ${style.family}`;
+    context.font = `${style.weight} ${style.style} ${style.size}px "${style.family}"`;
     let width = Math.ceil(context.measureText(text).width);
 
     return outBounds.set(0, fontMetrics.baselineNormalized * style.size, width + 2 + extraX, fontMetrics.bottomNormalized * style.size + 2);
@@ -11262,7 +11262,7 @@ class FontFaceAssetLoader extends AssetLoader {
 
   load() {
     if (this.mIsLocal)
-      this.mLoaderElement.innerHTML += (`\n @font-face {font-family: ${this.mName}; src: url(${this.mUrl});}`);
+      this.mLoaderElement.innerHTML += (`\n @font-face {font-family: "${this.mName}"; src: url(${this.mUrl});}`);
     else
       this.mLoaderElement.href = this.mUrl;
 
@@ -16919,7 +16919,7 @@ class TextRenderer extends Renderer {
       ctx.fillStyle = ColorHelper.intToRGBA(segment.style.color, segment.style.alpha);
     }
 
-    ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px ${segment.style.family}`;
+    ctx.font = `${segment.style.weight} ${segment.style.style} ${segment.style.size}px "${segment.style.family}"`;
 
     let lx = segment.bounds.x - Math.min(metrics.strokeBounds.x, metrics.shadowBounds.x);
     let ly = baseline + segment.bounds.y - Math.min(metrics.strokeBounds.y, metrics.shadowBounds.y);

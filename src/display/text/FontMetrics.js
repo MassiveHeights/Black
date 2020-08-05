@@ -67,7 +67,7 @@ export class FontMetrics {
 
     const drawY = Math.floor(CANVAS.height * 0.7766);
     this.mCtx.clearRect(0, 0, this.mCanvas.width, this.mCanvas.height);
-    this.mCtx.font = `${style.weight} ${style.size}px ${style.family}`;
+    this.mCtx.font = `${style.weight} ${style.size}px "${style.family}"`;
     this.mCtx.fillText('x', 0, drawY, 1);
 
     let data = this.mCtx.getImageData(0, 0, 1, this.mCanvas.height).data;

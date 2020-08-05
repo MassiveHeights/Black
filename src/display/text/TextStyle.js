@@ -29,7 +29,7 @@ export class TextStyle {
     this.name = 'def';
 
     /** @type {string} */
-    this.family = '"' + family + '"';
+    this.family = family;
 
     /** @type {number} */
     this.size = size;
