@@ -3008,9 +3008,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = this.mVertices.length;
       let vertices = [];
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         vertices.push(this.mVertices[i].clone());
-      }
 
       return polygon.set(vertices);
     }
@@ -3026,9 +3025,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = polygonVertices.length;
       let vertices = [];
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         vertices.push(polygonVertices[i].clone());
-      }
 
       return this.set(vertices);
     }
@@ -3043,9 +3041,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = thisVertices.length;
       let vertices = [];
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         vertices.push(thisVertices[i].clone());
-      }
 
       return new Polygon(vertices);
     }
@@ -3088,21 +3085,25 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {boolean} True if polygon contains point.
      */
     contains(vector) {
+      if (vector.x < this.mBounds.x || (this.mBounds.x + this.mBounds.width) < vector.x)
+        return false;
+
+      if (vector.y < this.mBounds.y || (this.mBounds.y + this.mBounds.height) < vector.y)
+        return false;
+
       let center = this.mCenter;
       let lines = this.mLines;
       let len = lines.length;
 
-      if (center.equals(vector)) {
+      if (center.equals(vector))
         return true;
-      }
 
       let intersectionLine = new Line(vector, center.clone());
       let intersects = 0;
       intersectionLine.scale((this.width + this.height) / intersectionLine.length());
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         intersects += lines[i].intersects(intersectionLine) ? 1 : 0;
-      }
 
       return intersects % 2 !== 0;
     }
@@ -3117,9 +3118,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = thisLines.length;
       let perimeter = 0;
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         perimeter += thisLines[i].length();
-      }
 
       return perimeter;
     }
@@ -3131,22 +3131,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {boolean} True if polygon collides with another polygon.
      */
     collide(polygon) {
-      if (!this.mBounds.intersects(polygon.mBounds)) {
+      if (!this.mBounds.intersects(polygon.mBounds))
         return false;
-      }
 
       let thisLines = this.mLines;
       let thisLen = thisLines.length;
       let polygonLines = polygon.mLines;
       let polygonLen = polygonLines.length;
 
-      for (let i = 0; i < thisLen; i++) {
-        for (let j = 0; j < polygonLen; j++) {
-          if (thisLines[i].intersects(polygonLines[j])) {
+      for (let i = 0; i < thisLen; i++)
+        for (let j = 0; j < polygonLen; j++)
+          if (thisLines[i].intersects(polygonLines[j]))
             return true;
-          }
-        }
-      }
 
       return false;
     }
@@ -3161,16 +3157,13 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let bounds = this.mBounds;
       let lines = this.mLines;
 
-      if (bounds.left > circle.right || bounds.right < circle.left || bounds.top > circle.bottom || bounds.bottom < circle.top) {
+      if (bounds.left > circle.right || bounds.right < circle.left || bounds.top > circle.bottom || bounds.bottom < circle.top)
         return false;
-      }
 
       let len = lines.length;
-      for (let i = 0; i < len; i++) {
-        if (lines[i].intersectsCircle(circle)) {
+      for (let i = 0; i < len; i++)
+        if (lines[i].intersectsCircle(circle))
           return true;
-        }
-      }
 
       return false;
     }
@@ -3182,22 +3175,18 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {boolean} True if polygon collides with rectangle.
      */
     collideRectangle(rectangle) {
-      if (!this.mBounds.intersects(rectangle)) {
+      if (!this.mBounds.intersects(rectangle))
         return false;
-      }
 
       let thisLines = this.mLines;
       let thisLen = thisLines.length;
       let rectangleLines = rectangle.lines;
       let rectangleLen = rectangleLines.length;
 
-      for (let i = 0; i < thisLen; i++) {
-        for (let j = 0; j < rectangleLen; j++) {
-          if (thisLines[i].intersects(rectangleLines[j])) {
+      for (let i = 0; i < thisLen; i++)
+        for (let j = 0; j < rectangleLen; j++)
+          if (thisLines[i].intersects(rectangleLines[j]))
             return true;
-          }
-        }
-      }
 
       return false;
     }
@@ -3209,26 +3198,21 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {boolean} True if polygon overlaps second.
      */
     overlap(polygon) {
-      if (this.mBounds.width < polygon.mBounds.width || this.mBounds.height < polygon.mBounds.height) {
+      if (this.mBounds.width < polygon.mBounds.width || this.mBounds.height < polygon.mBounds.height)
         return false;
-      }
 
-      if (!this.contains(polygon.mCenter)) {
+      if (!this.contains(polygon.mCenter))
         return false;
-      }
 
       let thisLines = this.mLines;
       let thisLen = thisLines.length;
       let polygonLines = polygon.mLines;
       let polygonLen = polygonLines.length;
 
-      for (let i = 0; i < thisLen; i++) {
-        for (let j = 0; j < polygonLen; j++) {
-          if (thisLines[i].intersects(polygonLines[j])) {
+      for (let i = 0; i < thisLen; i++)
+        for (let j = 0; j < polygonLen; j++)
+          if (thisLines[i].intersects(polygonLines[j]))
             return false;
-          }
-        }
-      }
 
       return true;
     }
@@ -3240,18 +3224,15 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @return {boolean} True if polygon overlaps circle.
      */
     overlapCircle(circle) {
-      if (!this.containsXY(circle.x, circle.y)) {
+      if (!this.containsXY(circle.x, circle.y))
         return false;
-      }
 
       let thisLines = this.mLines;
       let len = thisLines.length;
 
-      for (let i = 0; i < len; i++) {
-        if (thisLines[i].intersectsCircle(circle)) {
+      for (let i = 0; i < len; i++)
+        if (thisLines[i].intersectsCircle(circle))
           return false;
-        }
-      }
 
       return true;
     }
@@ -3272,13 +3253,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let rectangleLines = rectangle.lines;
       let rectangleLen = rectangleLines.length;
 
-      for (let i = 0; i < thisLen; i++) {
-        for (let j = 0; j < rectangleLen; j++) {
-          if (thisLines[i].intersects(rectangleLines[j])) {
+      for (let i = 0; i < thisLen; i++)
+        for (let j = 0; j < rectangleLen; j++)
+          if (thisLines[i].intersects(rectangleLines[j]))
             return false;
-          }
-        }
-      }
 
       return true;
     }
@@ -3335,9 +3313,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = vertices.length;
       center.set(0, 0);
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         center.add(vertices[i]);
-      }
 
       center.multiplyScalar(1 / vertices.length);
 
@@ -3383,9 +3360,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let vertices = this.mVertices;
       let lines = this.mLines = [];
 
-      for (let i = 0; i < vertices.length; i += 2) {
+      for (let i = 0; i < vertices.length; i += 2)
         lines.push(new Line(vertices[i], vertices[i + 1] || vertices[0]));
-      }
 
       return this;
     }
@@ -3400,9 +3376,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let vertices = [];
       let path2 = path.split(' ');
 
-      for (let i = 0; i < path2.length; i += 2) {
+      for (let i = 0; i < path2.length; i += 2)
         vertices.push(new Vector(Number(path2[i]), Number(path2[i + 1])));
-      }
 
       return new Polygon(vertices);
     }
@@ -3442,9 +3417,8 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let len = vertices.length;
       point.subtract(center);
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         vertices[i].add(point);
-      }
 
       return this.refresh();
     }
@@ -3463,7 +3437,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
      * @returns {black-engine~Vector}
      */
     get center() {
-      return this.mCenter;  
+      return this.mCenter;
     }
 
     // @ifdef DEBUG
@@ -3481,14 +3455,12 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
       let vertices = '';
       let lines = '';
 
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         lines += thisLines[i].toString(digits);
-      }
 
       len = thisVertices.length;
-      for (let i = 0; i < len; i++) {
+      for (let i = 0; i < len; i++)
         vertices += thisVertices[i].toString(digits);
-      }
 
       return `Polygon { vertices: ${vertices}, bounds: ${this.mBounds.toString(digits)}, center: ${this.mCenter.toString()}, lines: ${lines} }`;
     }
