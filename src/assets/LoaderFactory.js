@@ -8,7 +8,7 @@ import { LoaderType } from "./LoaderType";
 export class LoaderFactory {
   /**
    * 
-   * @param {black-engine~AssetManager} assetManager 
+   * @param {AssetManager} assetManager 
    */
   constructor(assetManager) {
     this.mAssetManager = assetManager;
@@ -18,10 +18,10 @@ export class LoaderFactory {
    * Returns an existing instance of the loader if url is already in queue or creates new instance if not.
    * 
    * @param {string} type 
-   * @param {string|black-engine~LoaderType} url 
+   * @param {string|LoaderType} url 
    * @param {...any} args
    * 
-   * @returns {black-engine~AssetLoader}
+   * @returns {AssetLoader}
    */
   get(type, url, ...args) {
     let am = this.mAssetManager;

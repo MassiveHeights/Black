@@ -142,13 +142,13 @@ export class BVGStyle {
 
     /** 
      * @public 
-     * @type {black-engine~CapsStyle} 
+     * @type {CapsStyle} 
      */
     this.lineCap = CapsStyle.NONE;
 
     /** 
      * @public 
-     * @type {black-engine~JointStyle} 
+     * @type {JointStyle} 
      */
     this.lineJoin = JointStyle.MITER;
 
@@ -160,7 +160,7 @@ export class BVGStyle {
 
     /** 
      * @public 
-     * @type {black-engine~FillRule} 
+     * @type {FillRule} 
      */
     this.fillRule = FillRule.NONE_ZERO;
 
@@ -177,7 +177,7 @@ export class BVGStyle {
    * Merge parent style to this.
    *
    * @public
-   * @param {black-engine~BVGStyle} style Parent style
+   * @param {BVGStyle} style Parent style
    *
    * @returns {void}
    */
@@ -251,7 +251,7 @@ export class BVGStyle {
    *
    * @public
    *
-   * @returns {black-engine~BVGStyle} Created style.
+   * @returns {BVGStyle} Created style.
    */
   clone() {
     let s = new BVGStyle();

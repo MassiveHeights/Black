@@ -10,7 +10,7 @@ import { LoaderType } from "./LoaderType";
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 export class BitmapFontAsset extends Asset {
   /**
@@ -40,7 +40,7 @@ export class BitmapFontAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~ImageAssetLoader|null}
+     * @type {ImageAssetLoader|null}
      */
     this.mImageLoader = null;
 
@@ -76,8 +76,8 @@ export class BitmapFontAsset extends Asset {
   /**
    *
    * @param {Document} xml
-   * @param {black-engine~Texture} texture
-   * @returns {black-engine~BitmapFontData}
+   * @param {Texture} texture
+   * @returns {BitmapFontData}
    */
   static parse(xml, texture) {
     let data = new BitmapFontData();

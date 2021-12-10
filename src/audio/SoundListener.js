@@ -6,7 +6,7 @@ import { Vector } from "../geom/Vector";
  * The sound listener component, which controls one and only instance of AudioContext.listener.
  * 
  * @cat audio
- * @extends {black-engine~Component}
+ * @extends {Component}
  */
 export class SoundListener extends Component {
   /**

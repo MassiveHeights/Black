@@ -11,13 +11,13 @@ import { Matrix } from "../geom/Matrix";
  * A basic utility class for drawing shapes.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 export class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.
    *
-   * @param {black-engine~GraphicsData|string|null} graphicsData The id of BVG object.
+   * @param {GraphicsData|string|null} graphicsData The id of BVG object.
    * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
    */
   constructor(graphicsData = null, trim = false) {
@@ -25,7 +25,7 @@ export class Graphics extends DisplayObject {
 
     /** 
      * @private
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mBounds = new Rectangle();
 
@@ -34,13 +34,13 @@ export class Graphics extends DisplayObject {
      *
      * 
      * @private
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mLocalBounds = null;
 
     /** 
      * @private
-     * @type {black-engine~GraphicsData|null} 
+     * @type {GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
@@ -121,8 +121,8 @@ export class Graphics extends DisplayObject {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
@@ -167,7 +167,7 @@ export class Graphics extends DisplayObject {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
+   * @param {GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -179,7 +179,7 @@ export class Graphics extends DisplayObject {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
+   * @param {GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */

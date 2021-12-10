@@ -7,7 +7,7 @@ var pool = null;
  * CircleToCirclePair is used to test collision within circles colliders.
  *
  * @cat physics.arcade.pairs
- * @extends black-engine~Pair
+ * @extends Pair
  */
 export class CircleToCirclePair extends Pair {
   /**
@@ -19,14 +19,14 @@ export class CircleToCirclePair extends Pair {
     /**
      * Collider from body a. 
      * @public 
-     * @type {black-engine~CircleCollider|null}
+     * @type {CircleCollider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b. 
      * @public 
-     * @type {black-engine~CircleCollider|null}
+     * @type {CircleCollider|null}
      */
     this.b = null;
   }
@@ -36,10 +36,10 @@ export class CircleToCirclePair extends Pair {
    *
    * @public
    *
-   * @param {black-engine~CircleCollider} a  Pair circle collider
-   * @param {black-engine~CircleCollider} b  Pair circle collider
-   * @param {black-engine~RigidBody} bodyA   Pair body
-   * @param {black-engine~RigidBody} bodyB   Pair body
+   * @param {CircleCollider} a  Pair circle collider
+   * @param {CircleCollider} b  Pair circle collider
+   * @param {RigidBody} bodyA   Pair body
+   * @param {RigidBody} bodyB   Pair body
    *
    * @return {Pair} This
    */

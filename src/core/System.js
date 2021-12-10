@@ -4,7 +4,7 @@ import { MessageDispatcher } from "../messages/MessageDispatcher";
  * Base class for custom systems. System is used to listen scene changes.
  *
  * @cat core
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class System extends MessageDispatcher {
   constructor() {
@@ -55,7 +55,7 @@ export class System extends MessageDispatcher {
    * onChildrenAdded
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenAdded(gameObject) { }
@@ -64,7 +64,7 @@ export class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenRemoved(gameObject) { }
@@ -73,7 +73,7 @@ export class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenChanged(gameObject) { }
@@ -82,8 +82,8 @@ export class System extends MessageDispatcher {
    * onComponentAdded
    *
    * @protected
-   * @param {black-engine~GameObject} child GameObject instance.
-   * @param {black-engine~Component} component Component instance added to game object.
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance added to game object.
    * @return {void} 
    */
   onComponentAdded(child, component) { }
@@ -92,8 +92,8 @@ export class System extends MessageDispatcher {
    * onComponentRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} child GameObject instance.
-   * @param {black-engine~Component} component Component instance removed from game object.
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) { }

@@ -3,7 +3,7 @@ import { RenderTarget } from "../RenderTarget";
 /**
  * Canvas rendering surface.
  *
- * @extends black-engine~RenderTarget
+ * @extends RenderTarget
  * @cat drivers.canvas
  */
 export class RenderTargetCanvas extends RenderTarget {

@@ -14,25 +14,25 @@ export class TextMetricsData {
 
     /**
      * Array of TextSegmentMetricsData objects containing style, bounds and other metrics information for each segment,
-     * @type {Array<black-engine~TextSegmentMetricsData>}
+     * @type {Array<TextSegmentMetricsData>}
      */
     this.segments = []; // TextPartMetricsData
 
     /**
      * The sum bounds, including all segments.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.bounds = new Rectangle();
 
     /**
      * Bounds plus stroke size.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.strokeBounds = null;
 
     /**
      * Bounds of text shadow.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.shadowBounds = null;
 
@@ -60,7 +60,7 @@ export class TextSegmentMetricsData {
 
     /**
      * The style of this segment.
-     * @type {black-engine~TextStyle}
+     * @type {TextStyle}
      */
     this.style = style;
 
@@ -72,7 +72,7 @@ export class TextSegmentMetricsData {
 
     /**
      * The bounds of this segment.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.bounds = bounds;
   }
@@ -106,9 +106,9 @@ export class TextMetricsEx {
    * @static
    * @param {string} text                            The text to measure.
    * @param {number} lineHeight                      The height of the line.
-   * @param {...black-engine~TextStyle} styles The TextStyle object representing text properties and formatting.
+   * @param {...TextStyle} styles The TextStyle object representing text properties and formatting.
    * 
-   * @returns {black-engine~TextMetricsData} Object representing bounds for each rich text part.
+   * @returns {TextMetricsData} Object representing bounds for each rich text part.
    */
   static measure(text, lineHeight, ...styles) {
     let parts = [];
@@ -195,9 +195,9 @@ export class TextMetricsEx {
    * 
    * @static
    * @param {string} text         The text to measure.
-   * @param {black-engine~TextStyle} style     The TextStyle object representing text properties and formatting.
-   * @param {?black-engine~Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
-   * @returns {black-engine~Rectangle} Bounds of the text;
+   * @param {TextStyle} style     The TextStyle object representing text properties and formatting.
+   * @param {?Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
+   * @returns {Rectangle} Bounds of the text;
    */
   static __measure(text, style, outBounds = null) {
     Debug.assert(style != null, 'Style cannot be null');
@@ -233,10 +233,10 @@ export class TextMetricsEx {
    * 
    * @static
    * @param {string} text 
-   * @param {black-engine~BitmapFontData} data 
+   * @param {BitmapFontData} data 
    * @param {number} lineHeight 
-   * @param {black-engine~Rectangle} outBounds 
-   * @returns {black-engine~Rectangle}
+   * @param {Rectangle} outBounds 
+   * @returns {Rectangle}
    */
   static measureBitmap(text, data, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();

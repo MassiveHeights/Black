@@ -5,7 +5,7 @@ import { SoundInstance } from "./SoundInstance";
  * The class which stores audio buffer of sound atlas and information about sub sound clips.
  * 
  * @cat audio
- * @extends black-engine~SoundClip
+ * @extends SoundClip
  */
 export class SoundAtlasClip extends SoundClip {
 
@@ -20,7 +20,7 @@ export class SoundAtlasClip extends SoundClip {
 
     /** 
      * @private 
-     * @type {Object<string, black-engine~SoundClip>} 
+     * @type {Object<string, SoundClip>} 
      */
     this.mClips = {};
     
@@ -36,7 +36,7 @@ export class SoundAtlasClip extends SoundClip {
    * @param {string} name     The name of the sub sound.
    * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
    * @param {number} duration The duration of sub sound.
-   * @returns {black-engine~SoundClip}     New instance of SoundClip.
+   * @returns {SoundClip}     New instance of SoundClip.
    */
   addSubSound(name, offset = 0, duration = NaN) {
     this.mClips[name] = new SoundClip(this.native, offset, duration, true);
@@ -63,7 +63,7 @@ export class SoundAtlasClip extends SoundClip {
    * @param {number=} [volume=1]         The volume level.
    * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
    * @param {number=} [pan=0]            The panning value.
-   * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
+   * @returns {SoundInstance|null}       New sound instance to be played.
    */
   playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
     let clip = this.mClips[name];
@@ -83,7 +83,7 @@ export class SoundAtlasClip extends SoundClip {
    *
    * @public
    * @readonly
-   * @returns {Object<string, black-engine~SoundClip>}
+   * @returns {Object<string, SoundClip>}
    */
   get subSounds() {
     return this.mClips;

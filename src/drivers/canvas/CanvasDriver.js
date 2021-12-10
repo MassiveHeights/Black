@@ -18,7 +18,7 @@ import { Camera } from "../../display/Camera";
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
  *
- * @extends black-engine~VideoNullDriver
+ * @extends VideoNullDriver
  * @cat drivers.canvas
  */
 export class CanvasDriver extends VideoNullDriver {
@@ -121,9 +121,9 @@ export class CanvasDriver extends VideoNullDriver {
 
   /**
    * @ignore
-   * @param {black-engine~GameObject} child 
-   * @param {black-engine~RenderSession} session 
-   * @param {black-engine~Renderer} parentRenderer
+   * @param {GameObject} child 
+   * @param {RenderSession} session 
+   * @param {Renderer} parentRenderer
    */
   renderObject(child, session, parentRenderer) {
     let skipChildren = false;
@@ -183,8 +183,8 @@ export class CanvasDriver extends VideoNullDriver {
   /**
    * @ignore
    * @protected
-   * @param {black-engine~Message} msg
-   * @param {black-engine~Rectangle} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    * @returns {void}
    */
   __onResize(msg, rect) {

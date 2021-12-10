@@ -8,7 +8,7 @@ import { ObjectPool } from "./../utils/ObjectPool";
  */
 export class Message {
   constructor() {
-    /** @type {black-engine~MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
+    /** @type {MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
     this.sender = null;
 
     /** @type {string} The name of message. */
@@ -23,7 +23,7 @@ export class Message {
     /** @type {boolean} Specifies if invocation of this message was canceled. */
     this.canceled = false;
 
-    /** @type {black-engine~MessageType} Message type. See `MessageType` enum. */
+    /** @type {MessageType} Message type. See `MessageType` enum. */
     this.type = MessageType.DIRECT;
   }
 
@@ -50,7 +50,7 @@ export class Message {
 
   /**
    * @ignore
-   * @returns {black-engine~Message}
+   * @returns {Message}
    */
   __reset() {
     this.sender = null;
@@ -132,7 +132,7 @@ export class Message {
 /**
  * Pool for messages.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  *
  */

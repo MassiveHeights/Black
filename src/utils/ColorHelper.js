@@ -77,7 +77,7 @@ export class ColorHelper {
    * Converts number color to RGB object.
    *
    * @param {number} hex The color to convert.
-   * @returns {black-engine~RGB} The resulting string.
+   * @returns {RGB} The resulting string.
    */
   static hex2rgb(hex) {
     return new RGB(hex >> 16 & 255, hex >> 8 & 255, hex & 255);
@@ -86,7 +86,7 @@ export class ColorHelper {
   /**
    * Converts RGB object into number color.
    *
-   * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
    * @returns {number} The resulting uint.
    */
   static rgb2hex(rgb) {
@@ -96,8 +96,8 @@ export class ColorHelper {
   /**
    * Converts HSV object into RGB object.
    *
-   * @param {black-engine~HSV} hsv The object, which contains 'h', 's' and 'v' properties.
-   * @returns {black-engine~RGB} The resulting RGB object.
+   * @param {HSV} hsv The object, which contains 'h', 's' and 'v' properties.
+   * @returns {RGB} The resulting RGB object.
    */
   static hsv2rgb(hsv) {
     let { h, s, v } = hsv;
@@ -130,8 +130,8 @@ export class ColorHelper {
   /**
    * Converts RGB object into HSV object.
    *
-   * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
-   * @returns {black-engine~HSV} The resulting HSV object.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @returns {HSV} The resulting HSV object.
    */
   static rgb2hsv(rgb) {
     let { r, g, b } = rgb;

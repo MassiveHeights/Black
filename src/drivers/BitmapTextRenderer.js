@@ -5,7 +5,7 @@ import { Texture } from "../textures/Texture";
 /**
  * Responsible for rendering `BitmapTextField` objects by different drivers.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers
  */
 export class BitmapTextRenderer extends Renderer {
@@ -31,7 +31,7 @@ export class BitmapTextRenderer extends Renderer {
 
     /** 
      * @ignore 
-     * @type {black-engine~Texture|null} 
+     * @type {Texture|null} 
      */
     this.texture = null;
   }

@@ -5,7 +5,7 @@ import { ColorHelper } from "../utils/ColorHelper";
  * A color scatter.
  *
  * @cat scatters
- * @extends black-engine~FloatScatterBase
+ * @extends FloatScatterBase
  */
 export class ColorScatter extends ColorScatterBase {
   /**
@@ -52,8 +52,8 @@ export class ColorScatter extends ColorScatterBase {
   /**
    * Creates new ColorScatterBase from a set of numbers.
    *
-   * @param {...number|black-engine~ColorScatterBase} values Set of values.
-   * @returns {black-engine~ColorScatterBase}
+   * @param {...number|ColorScatterBase} values Set of values.
+   * @returns {ColorScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof ColorScatterBase)

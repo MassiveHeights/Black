@@ -7,7 +7,7 @@ import { Debug } from "../core/Debug";
  * Base class for collider component.
  *
  * @cat colliders
- * @extends black-engine~Component
+ * @extends Component
  */
 export class Collider extends Component {
   /**
@@ -30,7 +30,7 @@ export class Collider extends Component {
      * Global in stage coordinates center.
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mCenter = new Vector();
 
@@ -38,7 +38,7 @@ export class Collider extends Component {
      * Global in stage coordinates min x and y vertex.
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mMin = new Vector();
 
@@ -46,7 +46,7 @@ export class Collider extends Component {
      * Global in stage coordinates max x and y vertex. 
      * 
      * @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mMax = new Vector();
   }
 
@@ -54,7 +54,7 @@ export class Collider extends Component {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {black-engine~Vector} point Global coordinates.
+   * @param {Vector} point Global coordinates.
    * @returns {boolean}
    */
   containsPoint(point) {
@@ -66,8 +66,8 @@ export class Collider extends Component {
    * Updates min, max, center of this collider, to prepare to collision test
    *
    * @public
-   * @param {black-engine~Matrix} transform Game object world transformation with zero position.
-   * @param {black-engine~Vector} position  Rigid body position.
+   * @param {Matrix} transform Game object world transformation with zero position.
+   * @param {Vector} position  Rigid body position.
    */
   refresh(transform, position) { }
 }

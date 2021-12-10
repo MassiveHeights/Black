@@ -7,7 +7,7 @@ import { Sprite } from "../display/Sprite";
  * A Component which allows to play sprite animations.
  *
  * @cat animation
- * @extends black-engine~Component
+ * @extends Component
  */
 export class AnimationController extends Component {
   /**
@@ -18,13 +18,13 @@ export class AnimationController extends Component {
 
     /**
      * @private
-     * @type {Object<string, black-engine~AnimationInfo>}
+     * @type {Object<string, AnimationInfo>}
      */
     this.mAnimations = {};
 
     /**
      * @private
-     * @type {black-engine~AnimationInfo|null}
+     * @type {AnimationInfo|null}
      */
     this.mCurrentAnim = null;
   }
@@ -33,7 +33,7 @@ export class AnimationController extends Component {
    * Returns the AnimationInfo object that exists with the specified name.
    *
    * @param {string} name     The name of the child to return.
-   * @returns {black-engine~AnimationInfo} Animation object that exists with the specified name.
+   * @returns {AnimationInfo} Animation object that exists with the specified name.
    */
   getByName(name) {
     Debug.assert(name !== null, 'Animation must be set first.');
@@ -66,10 +66,10 @@ export class AnimationController extends Component {
    * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
    *
    * @param {string}          name        The name of animation to update
-   * @param {Array<black-engine~Texture>}  textures    Array of Textures
+   * @param {Array<Texture>}  textures    Array of Textures
    * @param {number}          [fps=14]    Frames Per Second
    * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
-   * @return {black-engine~AnimationInfo} The newly created Animation Object.
+   * @return {AnimationInfo} The newly created Animation Object.
    */
   add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
@@ -138,14 +138,14 @@ export class AnimationController extends Component {
     if (newTexture === null)
       return;
 
-    let sprite = /** @type {black-engine~Sprite} */ (this.gameObject);
+    let sprite = /** @type {Sprite} */ (this.gameObject);
     sprite.texture = newTexture;
   }
 
   /**
    * Returns current active animation.
    *
-   * @returns {black-engine~AnimationInfo|null}
+   * @returns {AnimationInfo|null}
    */
   get currentAnimation() {
     return this.mCurrentAnim;

@@ -6,7 +6,7 @@ import { Vector } from "../geom/Vector";
  * Sets particle's starting velocity.
  *
  * @cat scatters
- * @extends black-engine~VectorScatterBase
+ * @extends VectorScatterBase
  */
 export class VectorCurveScatter extends VectorScatterBase {
   /**
@@ -19,7 +19,7 @@ export class VectorCurveScatter extends VectorScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Curve} 
+     * @type {Curve} 
      */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
@@ -33,7 +33,7 @@ export class VectorCurveScatter extends VectorScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mCache = new Vector();
   }
@@ -61,7 +61,7 @@ export class VectorCurveScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {black-engine~Vector} Vector object representing a value on a curve at given position.
+   * @return {Vector} Vector object representing a value on a curve at given position.
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);

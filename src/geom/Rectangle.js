@@ -49,7 +49,7 @@ export class Rectangle {
    * @param {number} y Y-component.
    * @param {number} w The width.
    * @param {number} h The height.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   set(x, y, w, h) {
     Debug.isNumber(x, y, w, h);
@@ -65,8 +65,8 @@ export class Rectangle {
   /**
    * Copies values from given rectangle into this one.
    *
-   * @param {black-engine~Rectangle} rect The Rectangle to copy values from.
-   * @return {black-engine~Rectangle} This.
+   * @param {Rectangle} rect The Rectangle to copy values from.
+   * @return {Rectangle} This.
    */
   copyFrom(rect) {
     this.x = rect.x;
@@ -80,8 +80,8 @@ export class Rectangle {
   /**
    * Copies values from this rectangle into given rectangle.
    *
-   * @param {black-engine~Rectangle} rect The destination rect.
-   * @return {black-engine~Rectangle} Given rect object.
+   * @param {Rectangle} rect The destination rect.
+   * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
     rect.x = this.x;
@@ -164,14 +164,14 @@ export class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get topLeft() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set topLeft(vector) {
     this.left = vector.x;
@@ -181,14 +181,14 @@ export class Rectangle {
   /**
    * Get/Sets the top right point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get topRight() {
     return new Vector(this.right, this.y);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set topRight(vector) {
     this.right = vector.x;
@@ -198,14 +198,14 @@ export class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get bottomRight() {
     return new Vector(this.right, this.bottom);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set bottomRight(vector) {
     this.right = vector.x;
@@ -215,14 +215,14 @@ export class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get bottomLeft() {
     return new Vector(this.x, this.bottom);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set bottomLeft(vector) {
     this.x = vector.x;
@@ -232,8 +232,8 @@ export class Rectangle {
   /**
    * Creates a new Rectangle instance with width and height equal to current instance.
    *
-   * @param {black-engine~Vector=} outVector Resulting rect to save values in.
-   * @return {black-engine~Vector} New Rectangle instance or `outVector` if passed.
+   * @param {Vector=} outVector Resulting rect to save values in.
+   * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -243,7 +243,7 @@ export class Rectangle {
   /**
    * Sets all components of this Rectangle to zero.
    *
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   zero() {
     return this.set(0, 0, 0, 0);
@@ -252,7 +252,7 @@ export class Rectangle {
   /**
    * Compares this Rectangle with a given one.
    *
-   * @param {black-engine~Rectangle} rect Rect to compare values with.
+   * @param {Rectangle} rect Rect to compare values with.
    * @param {number} [epsilon=Number.EPSILON] Comparison threshold.
    * @return {boolean} True if rectangles are equal.
    */
@@ -277,7 +277,7 @@ export class Rectangle {
   /**
    * Checks if a given rectangle is inside this rect.
    *
-   * @param {black-engine~Rectangle} rect Rectangle to check with.
+   * @param {Rectangle} rect Rectangle to check with.
    * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
@@ -287,7 +287,7 @@ export class Rectangle {
   /**
    * Checks if this rect intersects with a given rectangle.
    *
-   * @param {black-engine~Rectangle} rect The rect to check intersection with.
+   * @param {Rectangle} rect The rect to check intersection with.
    * @return {boolean} True if intersects.
    */
   intersects(rect) {
@@ -298,9 +298,9 @@ export class Rectangle {
   /**
    * Makes rectangle, which represents intersection between this and passed rectangles.
    *
-   * @param {black-engine~Rectangle} toIntersect Rectangle to intersect with.
-   * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-   * @returns {black-engine~Rectangle}
+   * @param {Rectangle} toIntersect Rectangle to intersect with.
+   * @param {Rectangle=} outRect Rectangle to be returned.
+   * @returns {Rectangle}
    */
   intersection(toIntersect, outRect) {
     outRect = outRect || new Rectangle();
@@ -325,8 +325,8 @@ export class Rectangle {
   /**
    * Adds given rectangle into this.
    *
-   * @param {black-engine~Rectangle} toUnion A rectangle object to add to this rect.
-   * @return {black-engine~Rectangle} New rectangle object that is the union.
+   * @param {Rectangle} toUnion A rectangle object to add to this rect.
+   * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
     let x0 = this.x > toUnion.x ? toUnion.x : this.x;
@@ -353,7 +353,7 @@ export class Rectangle {
    * @param {number} y      Y-component
    * @param {number} width  The width.
    * @param {number} height The height.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
     Debug.isNumber(x, y, width, height);
@@ -388,7 +388,7 @@ export class Rectangle {
    * 
    * @param {number} x 
    * @param {number} y 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   expandXY(x, y) {
     if (x < this.x) {
@@ -415,7 +415,7 @@ export class Rectangle {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] Y-component.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
     Debug.isNumber(x, y);
@@ -431,7 +431,7 @@ export class Rectangle {
   /**
    * Clones this Rectangle object into new one.
    *
-   * @return {black-engine~Rectangle} New rectangle object.
+   * @return {Rectangle} New rectangle object.
    */
   clone() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -450,8 +450,8 @@ export class Rectangle {
   /**
    * Returns the center point of this rectangle.
    *
-   * @param {black-engine~Vector=} outVector The out-Vector to store values in.
-   * @return {black-engine~Vector} New rectangle object.
+   * @param {Vector=} outVector The out-Vector to store values in.
+   * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -463,7 +463,7 @@ export class Rectangle {
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
-   * @return {black-engine~Rectangle} This rectangle.
+   * @return {Rectangle} This rectangle.
    */
   scale(x, y) {
     this.width *= x;
@@ -484,7 +484,7 @@ export class Rectangle {
   /**
    * Gets a list of lines, which make up this rectangle.
    *
-   * @returns {Array<black-engine~Line>}
+   * @returns {Array<Line>}
    */
   get lines() {
     return [
@@ -510,7 +510,7 @@ export class Rectangle {
    * Calculates a bonding box enclosing the given list of points.
    * 
    * @param {Array<Vector>} points 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   static fromPoints(points) {
     let result = new Rectangle();
@@ -546,7 +546,7 @@ export class Rectangle {
    * Calculates a bonding box enclosing the given list of x-y pairs.
    * 
    * @param {Array<number>} points 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   static fromPointsXY(points) {
     let result = new Rectangle();
@@ -591,7 +591,7 @@ export class Rectangle {
 
 /**
  * @ignore
- * @type {black-engine~Rectangle}
+ * @type {Rectangle}
  * @nocollapse
  */
 Rectangle.__cache = new Rectangle();
@@ -599,7 +599,7 @@ Rectangle.__cache = new Rectangle();
 /**
  * Recycled rectangles pool.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 Rectangle.pool = new ObjectPool(Rectangle);

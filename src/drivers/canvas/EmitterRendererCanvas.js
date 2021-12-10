@@ -6,7 +6,7 @@ import { EmitterSortOrder } from "../../particles/EmitterSortOrder";
 /**
  * Renders `Particle` objects on canvas.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers.canvas
  */
 export class EmitterRendererCanvas extends Renderer {
@@ -24,13 +24,13 @@ export class EmitterRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpLocal = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpWorld = new Matrix();
   }
@@ -67,10 +67,10 @@ export class EmitterRendererCanvas extends Renderer {
   /**
    * @ignore
    * @private
-   * @param {black-engine~Particle} particle
-   * @param {black-engine~Matrix} localTransform
-   * @param {black-engine~Matrix} worldTransform
-   * @param {black-engine~VideoNullDriver} driver
+   * @param {Particle} particle
+   * @param {Matrix} localTransform
+   * @param {Matrix} worldTransform
+   * @param {VideoNullDriver} driver
    */
   __renderParticle(particle, localTransform, worldTransform, driver) {
     let gameObject = /** @type {Emitter} */ (this.gameObject);

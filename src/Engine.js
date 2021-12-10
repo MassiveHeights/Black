@@ -20,7 +20,7 @@ let ID = 0;
  * @fires Engine#ready
  * @fires Engine#looped
  *
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class Engine extends MessageDispatcher {
   /**
@@ -36,9 +36,9 @@ export class Engine extends MessageDispatcher {
    * new Black('game-container', MyGame, CanvasDriver, [Arcade]);
    * 
    * @param {string}                                                       containerElementId The id of an DOM element.
-   * @param {function(new: black-engine~GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
-   * @param {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
-   * @param {Array<function(new: black-engine~System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
+   * @param {function(new: GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+   * @param {Array<function(new: System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
    */
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
@@ -61,13 +61,13 @@ export class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)} 
+     * @type {function(new: VideoNullDriver, HTMLElement, number, number)} 
      */
     this.mVideoDriverClass = videoDriverClass;
 
     /** 
      * @private 
-     * @type {Array<function(new: black-engine~System)>} 
+     * @type {Array<function(new: System)>} 
      */
     this.mSystemClasses = systemClasses;
 
@@ -115,13 +115,13 @@ export class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~System>} 
+     * @type {Array<System>} 
      */
     this.mSystems = [];
 
     /** 
      * @private 
-     * @type {black-engine~GameObject|null} 
+     * @type {GameObject|null} 
      */
     this.mGameObject = null;
 
@@ -151,13 +151,13 @@ export class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Viewport} 
+     * @type {Viewport} 
      */
     this.mViewport = null;
 
     /** 
      * @private 
-     * @type {black-engine~VideoNullDriver} 
+     * @type {VideoNullDriver} 
      */
     this.mVideo = null;
 
@@ -193,13 +193,13 @@ export class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {function(new: black-engine~GameObject)} 
+     * @type {function(new: GameObject)} 
      */
     this.mGameClass = gameClass;
 
     /** 
      * @private 
-     * @type {black-engine~Stage} 
+     * @type {Stage} 
      */
     this.mStage = null;
 
@@ -384,8 +384,8 @@ export class Engine extends MessageDispatcher {
 
   /**
    * @private
-   * @param  {black-engine~System} system The System object you want to add.
-   * @return {black-engine~System}
+   * @param  {System} system The System object you want to add.
+   * @return {System}
    */
   __addSystem(system) {
     this.mSystems.push(system);
@@ -396,7 +396,7 @@ export class Engine extends MessageDispatcher {
    * Gets system by type.
    *
    * @param {Function} typeName The system type.
-   * @return {black-engine~System|null} The `System` instance or null if not found.
+   * @return {System|null} The `System` instance or null if not found.
    */
   getSystem(typeName) {
     for (let i = 0; i < this.mSystems.length; i++) {
@@ -622,7 +622,7 @@ export class Engine extends MessageDispatcher {
    * Called when tag changed for specific `GameObject`.
    *
    * @protected
-   * @param {black-engine~GameObject} child   A game object fired the event.
+   * @param {GameObject} child   A game object fired the event.
    * @param {string|null} oldTag Old tag.
    * @param {string|null} newTag New tag.
    * @return {void}
@@ -648,7 +648,7 @@ export class Engine extends MessageDispatcher {
    * Called when specific game object is added to display list.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenAdded(child, parent) {
@@ -685,7 +685,7 @@ export class Engine extends MessageDispatcher {
    * Called when specific game object is changed its index in display list.
    *
    * @protected
-   * @param {black-engine~GameObject} child Instance of GameObject.
+   * @param {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenChanged(child) {
@@ -699,7 +699,7 @@ export class Engine extends MessageDispatcher {
    * Called when specific game object is added to display list.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenRemoved(child) {
@@ -741,8 +741,8 @@ export class Engine extends MessageDispatcher {
    * Called when specific component is added to GameObject instance.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
-   * @param  {black-engine~Component} component Instance of Component added to game object.
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component added to game object.
    * @return {void}
    */
   onComponentAdded(child, component) {
@@ -762,8 +762,8 @@ export class Engine extends MessageDispatcher {
    * Called when specific component is removed from its owner.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
-   * @param  {black-engine~Component} component Instance of Component removed from game object.
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) {
@@ -803,7 +803,7 @@ export class Engine extends MessageDispatcher {
   /**
    * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
    *
-   * @return {black-engine~Viewport}
+   * @return {Viewport}
    */
   get viewport() {
     return this.mViewport;
@@ -866,7 +866,7 @@ export class Engine extends MessageDispatcher {
    * Returns current stage.
    *
    * @readonly
-   * @returns {black-engine~Stage}
+   * @returns {Stage}
    */
   get stage() {
     return this.mStage;

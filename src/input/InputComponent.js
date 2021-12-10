@@ -4,7 +4,7 @@ import { Component } from "../core/Component";
  * This component will allow you to subscribe for some input messages.
  *
  * @cat input
- * @extends black-engine~Component
+ * @extends Component
  */
 export class InputComponent extends Component {
   /**

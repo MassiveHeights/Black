@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.12
+ * Blacksmith 2D v0.5.13
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -612,7 +612,7 @@ class ColorHelper {
    * Converts number color to RGB object.
    *
    * @param {number} hex The color to convert.
-   * @returns {black-engine~RGB} The resulting string.
+   * @returns {RGB} The resulting string.
    */
   static hex2rgb(hex) {
     return new RGB(hex >> 16 & 255, hex >> 8 & 255, hex & 255);
@@ -621,7 +621,7 @@ class ColorHelper {
   /**
    * Converts RGB object into number color.
    *
-   * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
    * @returns {number} The resulting uint.
    */
   static rgb2hex(rgb) {
@@ -631,8 +631,8 @@ class ColorHelper {
   /**
    * Converts HSV object into RGB object.
    *
-   * @param {black-engine~HSV} hsv The object, which contains 'h', 's' and 'v' properties.
-   * @returns {black-engine~RGB} The resulting RGB object.
+   * @param {HSV} hsv The object, which contains 'h', 's' and 'v' properties.
+   * @returns {RGB} The resulting RGB object.
    */
   static hsv2rgb(hsv) {
     let { h, s, v } = hsv;
@@ -665,8 +665,8 @@ class ColorHelper {
   /**
    * Converts RGB object into HSV object.
    *
-   * @param {black-engine~RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
-   * @returns {black-engine~HSV} The resulting HSV object.
+   * @param {RGB} rgb The object, which contains 'r', 'g' and 'b' properties.
+   * @returns {HSV} The resulting HSV object.
    */
   static rgb2hsv(rgb) {
     let { r, g, b } = rgb;
@@ -825,7 +825,7 @@ class Vector {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] y-component
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   set(x = 0, y = 0) {
     Debug.isNumber(x, y);
@@ -839,8 +839,8 @@ class Vector {
   /**
    * Adds two vectors.
    *
-   * @param {black-engine~Vector} vector The vector object to be added to this.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector object to be added to this.
+   * @return {Vector} This.
    */
   add(vector) {
     this.x += vector.x;
@@ -852,8 +852,8 @@ class Vector {
   /**
    * Subtract two vectors.
    *
-   * @param {black-engine~Vector} vector The vector object to be subtracted.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector object to be subtracted.
+   * @return {Vector} This.
    */
   subtract(vector) {
     this.x -= vector.x;
@@ -865,7 +865,7 @@ class Vector {
   /**
    * Returns distance between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to check distance with.
+   * @param {Vector} vector Second vector to check distance with.
    * @return {number} The distance between two vectors.
    */
   distance(vector) {
@@ -878,7 +878,7 @@ class Vector {
   /**
    * Returns the squared distance between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to check distance with.
+   * @param {Vector} vector Second vector to check distance with.
    * @return {number} The distance between two vectors.
    */
   distanceSqr(vector) {
@@ -891,8 +891,8 @@ class Vector {
   /**
    * Multiplies two vectors.
    *
-   * @param {black-engine~Vector} vector A second vector to multiply with.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector A second vector to multiply with.
+   * @return {Vector} This.
    */
   multiply(vector) {
     this.x *= vector.x;
@@ -905,7 +905,7 @@ class Vector {
    * Multiplies this vector by scalar value.
    *
    * @param {number} scalar The values to mul by.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   multiplyScalar(scalar) {
     Debug.isNumber(scalar);
@@ -919,7 +919,7 @@ class Vector {
   /**
    * Find dot product between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to find angle with.
+   * @param {Vector} vector Second vector to find angle with.
    * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
@@ -947,7 +947,7 @@ class Vector {
   /**
    * Creates unit vector out of this one.
    *
-   * @returns {black-engine~Vector} This.
+   * @returns {Vector} This.
    */
   normalize() {
     let sum = this.lengthSqr();
@@ -969,7 +969,7 @@ class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   clamp(min, max) {
     Debug.isNumber(min, max);
@@ -985,7 +985,7 @@ class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   clampLength(min, max) {
     Debug.isNumber(min, max);
@@ -999,9 +999,9 @@ class Vector {
   /**
    * Linearly interpolates between two vectors.
    *
-   * @param {black-engine~Vector} vector The second vector to interpolate values between.
+   * @param {Vector} vector The second vector to interpolate values between.
    * @param {number} t      Alpha value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   lerp(vector, t) {
     Debug.isNumber(t);
@@ -1015,8 +1015,8 @@ class Vector {
   /**
    * Copies this vector values into given vector.
    *
-   * @param {black-engine~Vector} vector The vector to store values in.
-   * @return {black-engine~Vector} Given vector.
+   * @param {Vector} vector The vector to store values in.
+   * @return {Vector} Given vector.
    */
   copyTo(vector) {
     vector.x = this.x;
@@ -1028,8 +1028,8 @@ class Vector {
   /**
    * Copies values from given vector into this.
    *
-   * @param {black-engine~Vector} vector The vector to copy values from.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector to copy values from.
+   * @return {Vector} This.
    */
   copyFrom(vector) {
     this.x = vector.x;
@@ -1041,7 +1041,7 @@ class Vector {
   /**
    * Clones this vector object.
    *
-   * @return {black-engine~Vector} New Vector instance.
+   * @return {Vector} New Vector instance.
    */
   clone() {
     return new Vector(this.x, this.y);
@@ -1050,7 +1050,7 @@ class Vector {
   /**
    * Compares two vectors for equality.
    *
-   * @param {black-engine~Vector} vector Second vector to compare with.
+   * @param {Vector} vector Second vector to compare with.
    * @param {number=} epsilon Threshold.
    * @return {boolean} True if equal.
    */
@@ -1070,9 +1070,9 @@ class Vector {
   /**
    * Rotates this vector around specified point.
    *
-   * @param {black-engine~Vector} vector Center vector.
+   * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
-   * @return {black-engine~Vector} This rotated vector.
+   * @return {Vector} This rotated vector.
    */
   setRotationFrom(vector, rotation) {
     Debug.isNumber(rotation);
@@ -1087,7 +1087,7 @@ class Vector {
    *  Rotates this vector around zero vector.
    *
    * @param {number} rotation Angle in radians.
-   * @return {black-engine~Vector} This rotated vector.
+   * @return {Vector} This rotated vector.
    */
   setRotation(rotation) {
     Debug.isNumber(rotation);
@@ -1101,7 +1101,7 @@ class Vector {
   /**
    * Calculates angle in radians within this and specified vectors.
    *
-   * @param {black-engine~Vector} vector Second vector.
+   * @param {Vector} vector Second vector.
    * @return {number} Angle in radians.
    */
   angleBetween(vector) {
@@ -1120,7 +1120,7 @@ class Vector {
   /**
    * Rotates this vector to normal.
    *
-   * @return {black-engine~Vector} This vector.
+   * @return {Vector} This vector.
    */
   perp() {
     return this.set(this.y, -this.x);
@@ -1130,8 +1130,8 @@ class Vector {
    * Creates new Vector from given angle in radians.
    *
    * @param {number} angle Angle.
-   * @param {black-engine~Vector=} outVector Vector to be returned.
-   * @return {black-engine~Vector} New Vector object.
+   * @param {Vector=} outVector Vector to be returned.
+   * @return {Vector} New Vector object.
    */
   static fromAngle(angle, outVector) {
     Debug.isNumber(angle);
@@ -1150,10 +1150,10 @@ class Vector {
 
   /**
    * @ignore
-   * @param {black-engine~Vector} vectorMin
-   * @param {black-engine~Vector} vectorMax
-   * @param {black-engine~Vector=} outVector
-   * @return {black-engine~Vector}
+   * @param {Vector} vectorMin
+   * @param {Vector} vectorMax
+   * @param {Vector=} outVector
+   * @return {Vector}
    */
   static randomRange(vectorMin, vectorMax, outVector) {
     outVector = outVector || new Vector();
@@ -1178,7 +1178,7 @@ class Vector {
 
 /**
  * @ignore
- * @type {black-engine~Vector}
+ * @type {Vector}
  * @nocollapse
  */
 Vector.__cache = new Vector();
@@ -1186,7 +1186,7 @@ Vector.__cache = new Vector();
 /**
  * Recycled vectors pool.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 Vector.pool = new ObjectPool(Vector);
@@ -1199,24 +1199,24 @@ Vector.pool = new ObjectPool(Vector);
 class Line {
   /**
    * Creates new Line instance.
-   * @param  {black-engine~Vector} start Start point.
-   * @param  {black-engine~Vector} end End point.
+   * @param  {Vector} start Start point.
+   * @param  {Vector} end End point.
    */
   constructor(start, end) {
-    /** @type {black-engine~Vector} The start point coordinates */
+    /** @type {Vector} The start point coordinates */
     this.start = start;
 
-    /** @type {black-engine~Vector} The end point coordinates */
+    /** @type {Vector} The end point coordinates */
     this.end = end;
   }
 
   /**
    * set - Sets new line properties
    *
-   * @param  {black-engine~Vector} start Start point.
-   * @param  {black-engine~Vector} end End point.
+   * @param  {Vector} start Start point.
+   * @param  {Vector} end End point.
    *
-   * @return {black-engine~Line} This circle.
+   * @return {Line} This circle.
    */
   set(start, end) {
     this.start = start;
@@ -1228,7 +1228,7 @@ class Line {
   /**
    * Clones this line.
    *
-   * @return {black-engine~Line} Created line.
+   * @return {Line} Created line.
    */
   clone() {
     return new Line(this.start.clone(), this.end.clone());
@@ -1237,9 +1237,9 @@ class Line {
   /**
    * Copy this properties to another line.
    *
-   * @param {black-engine~Line} line Object to copy to.
+   * @param {Line} line Object to copy to.
    *
-   * @return {black-engine~Line} Passed line.
+   * @return {Line} Passed line.
    */
   copyTo(line) {
     return line.set(this.start.clone(), this.end.clone());
@@ -1248,9 +1248,9 @@ class Line {
   /**
    * Copy another line properties to this.
    *
-   * @param {black-engine~Line} line Object to copy from.
+   * @param {Line} line Object to copy from.
    *
-   * @return {black-engine~Line} This circle.
+   * @return {Line} This circle.
    */
   copyFrom(line) {
     return this.set(line.start.clone(), line.end.clone());
@@ -1259,7 +1259,7 @@ class Line {
   /**
    * Shows whether lines are identical.
    *
-   * @param {black-engine~Line} line Object to comparison.
+   * @param {Line} line Object to comparison.
    * @param {number=} epsilon Compare precision.
    *
    * @return {boolean} True if lines are identical.
@@ -1308,7 +1308,7 @@ class Line {
   /**
    * Replace line start and end points.
    *
-   * @return {black-engine~Line} This line.
+   * @return {Line} This line.
    */
   reverse() {
     let start = this.start;
@@ -1321,7 +1321,7 @@ class Line {
   /**
    * Change line's length to one. Moves end point.
    *
-   * @return {black-engine~Line} This line.
+   * @return {Line} This line.
    */
   normalize() {
     this.end
@@ -1335,7 +1335,7 @@ class Line {
   /**
    * Change line's length to scaled. Moves end point.
    *
-   * @return {black-engine~Line} This line.
+   * @return {Line} This line.
    */
   scale(multiplier) {
     this.end
@@ -1349,7 +1349,7 @@ class Line {
   /**
    * Returns zero length line at zero position.
    *
-   * @return {black-engine~Line} Description
+   * @return {Line} Description
    */
   zero() {
     return this.set(new Vector(), new Vector());
@@ -1367,9 +1367,9 @@ class Line {
   /**
    * Represents center as vector.
    *
-   * @param {black-engine~Vector=} outVector Object for result.
+   * @param {Vector=} outVector Object for result.
    *
-   * @return {black-engine~Vector} Center point.
+   * @return {Vector} Center point.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1400,7 +1400,7 @@ class Line {
   /**
    * Shows whether point is on line.
    *
-   * @param {black-engine~Vector} vector Point to check.
+   * @param {Vector} vector Point to check.
    *
    * @return {boolean} True if line contains point.
    */
@@ -1411,7 +1411,7 @@ class Line {
   /**
    * Shows whether this line intersects another.
    *
-   * @param {black-engine~Line} line Line to check.
+   * @param {Line} line Line to check.
    *
    * @return {boolean} True if intersects.
    */
@@ -1440,7 +1440,7 @@ class Line {
   /**
    * Shows whether this line intersects circle.
    *
-   * @param {black-engine~Circle} circle Circle to check.
+   * @param {Circle} circle Circle to check.
    *
    * @return {boolean} True if intersects.
    */
@@ -1499,7 +1499,7 @@ class Line {
 }
 
 /**
- * @type {black-engine~Line}
+ * @type {Line}
  * @nocollapse
  * @ignore
  */
@@ -1550,7 +1550,7 @@ class Rectangle {
    * @param {number} y Y-component.
    * @param {number} w The width.
    * @param {number} h The height.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   set(x, y, w, h) {
     Debug.isNumber(x, y, w, h);
@@ -1566,8 +1566,8 @@ class Rectangle {
   /**
    * Copies values from given rectangle into this one.
    *
-   * @param {black-engine~Rectangle} rect The Rectangle to copy values from.
-   * @return {black-engine~Rectangle} This.
+   * @param {Rectangle} rect The Rectangle to copy values from.
+   * @return {Rectangle} This.
    */
   copyFrom(rect) {
     this.x = rect.x;
@@ -1581,8 +1581,8 @@ class Rectangle {
   /**
    * Copies values from this rectangle into given rectangle.
    *
-   * @param {black-engine~Rectangle} rect The destination rect.
-   * @return {black-engine~Rectangle} Given rect object.
+   * @param {Rectangle} rect The destination rect.
+   * @return {Rectangle} Given rect object.
    */
   copyTo(rect) {
     rect.x = this.x;
@@ -1665,14 +1665,14 @@ class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get topLeft() {
     return new Vector(this.x, this.y);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set topLeft(vector) {
     this.left = vector.x;
@@ -1682,14 +1682,14 @@ class Rectangle {
   /**
    * Get/Sets the top right point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get topRight() {
     return new Vector(this.right, this.y);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set topRight(vector) {
     this.right = vector.x;
@@ -1699,14 +1699,14 @@ class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get bottomRight() {
     return new Vector(this.right, this.bottom);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set bottomRight(vector) {
     this.right = vector.x;
@@ -1716,14 +1716,14 @@ class Rectangle {
   /**
    * Get/Sets the top left point for this rectangle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get bottomLeft() {
     return new Vector(this.x, this.bottom);
   }
 
   /**
-   * @param {black-engine~Vector} vector
+   * @param {Vector} vector
    */
   set bottomLeft(vector) {
     this.x = vector.x;
@@ -1733,8 +1733,8 @@ class Rectangle {
   /**
    * Creates a new Rectangle instance with width and height equal to current instance.
    *
-   * @param {black-engine~Vector=} outVector Resulting rect to save values in.
-   * @return {black-engine~Vector} New Rectangle instance or `outVector` if passed.
+   * @param {Vector=} outVector Resulting rect to save values in.
+   * @return {Vector} New Rectangle instance or `outVector` if passed.
    */
   size(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1744,7 +1744,7 @@ class Rectangle {
   /**
    * Sets all components of this Rectangle to zero.
    *
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   zero() {
     return this.set(0, 0, 0, 0);
@@ -1753,7 +1753,7 @@ class Rectangle {
   /**
    * Compares this Rectangle with a given one.
    *
-   * @param {black-engine~Rectangle} rect Rect to compare values with.
+   * @param {Rectangle} rect Rect to compare values with.
    * @param {number} [epsilon=Number.EPSILON] Comparison threshold.
    * @return {boolean} True if rectangles are equal.
    */
@@ -1778,7 +1778,7 @@ class Rectangle {
   /**
    * Checks if a given rectangle is inside this rect.
    *
-   * @param {black-engine~Rectangle} rect Rectangle to check with.
+   * @param {Rectangle} rect Rectangle to check with.
    * @return {boolean} True if given rectangle is inside this one.
    */
   contains(rect) {
@@ -1788,7 +1788,7 @@ class Rectangle {
   /**
    * Checks if this rect intersects with a given rectangle.
    *
-   * @param {black-engine~Rectangle} rect The rect to check intersection with.
+   * @param {Rectangle} rect The rect to check intersection with.
    * @return {boolean} True if intersects.
    */
   intersects(rect) {
@@ -1799,9 +1799,9 @@ class Rectangle {
   /**
    * Makes rectangle, which represents intersection between this and passed rectangles.
    *
-   * @param {black-engine~Rectangle} toIntersect Rectangle to intersect with.
-   * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-   * @returns {black-engine~Rectangle}
+   * @param {Rectangle} toIntersect Rectangle to intersect with.
+   * @param {Rectangle=} outRect Rectangle to be returned.
+   * @returns {Rectangle}
    */
   intersection(toIntersect, outRect) {
     outRect = outRect || new Rectangle();
@@ -1826,8 +1826,8 @@ class Rectangle {
   /**
    * Adds given rectangle into this.
    *
-   * @param {black-engine~Rectangle} toUnion A rectangle object to add to this rect.
-   * @return {black-engine~Rectangle} New rectangle object that is the union.
+   * @param {Rectangle} toUnion A rectangle object to add to this rect.
+   * @return {Rectangle} New rectangle object that is the union.
    */
   union(toUnion) {
     let x0 = this.x > toUnion.x ? toUnion.x : this.x;
@@ -1854,7 +1854,7 @@ class Rectangle {
    * @param {number} y      Y-component
    * @param {number} width  The width.
    * @param {number} height The height.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   expand(x, y, width, height) {
     Debug.isNumber(x, y, width, height);
@@ -1889,7 +1889,7 @@ class Rectangle {
    * 
    * @param {number} x 
    * @param {number} y 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   expandXY(x, y) {
     if (x < this.x) {
@@ -1916,7 +1916,7 @@ class Rectangle {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] Y-component.
-   * @return {black-engine~Rectangle} This.
+   * @return {Rectangle} This.
    */
   inflate(x = 0, y = 0) {
     Debug.isNumber(x, y);
@@ -1932,7 +1932,7 @@ class Rectangle {
   /**
    * Clones this Rectangle object into new one.
    *
-   * @return {black-engine~Rectangle} New rectangle object.
+   * @return {Rectangle} New rectangle object.
    */
   clone() {
     return new Rectangle(this.x, this.y, this.width, this.height);
@@ -1951,8 +1951,8 @@ class Rectangle {
   /**
    * Returns the center point of this rectangle.
    *
-   * @param {black-engine~Vector=} outVector The out-Vector to store values in.
-   * @return {black-engine~Vector} New rectangle object.
+   * @param {Vector=} outVector The out-Vector to store values in.
+   * @return {Vector} New rectangle object.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -1964,7 +1964,7 @@ class Rectangle {
    *
    * @param {number} x Width multiplier.
    * @param {number} y Height multiplier.
-   * @return {black-engine~Rectangle} This rectangle.
+   * @return {Rectangle} This rectangle.
    */
   scale(x, y) {
     this.width *= x;
@@ -1985,7 +1985,7 @@ class Rectangle {
   /**
    * Gets a list of lines, which make up this rectangle.
    *
-   * @returns {Array<black-engine~Line>}
+   * @returns {Array<Line>}
    */
   get lines() {
     return [
@@ -2011,7 +2011,7 @@ class Rectangle {
    * Calculates a bonding box enclosing the given list of points.
    * 
    * @param {Array<Vector>} points 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   static fromPoints(points) {
     let result = new Rectangle();
@@ -2047,7 +2047,7 @@ class Rectangle {
    * Calculates a bonding box enclosing the given list of x-y pairs.
    * 
    * @param {Array<number>} points 
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   static fromPointsXY(points) {
     let result = new Rectangle();
@@ -2092,7 +2092,7 @@ class Rectangle {
 
 /**
  * @ignore
- * @type {black-engine~Rectangle}
+ * @type {Rectangle}
  * @nocollapse
  */
 Rectangle.__cache = new Rectangle();
@@ -2100,7 +2100,7 @@ Rectangle.__cache = new Rectangle();
 /**
  * Recycled rectangles pool.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 Rectangle.pool = new ObjectPool(Rectangle);
@@ -2139,7 +2139,7 @@ class Matrix {
    * @param  {number} d  D-component.
    * @param  {number} tx TX-component.
    * @param  {number} ty TY-component.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   set(a = 1, b = 0, c = 0, d = 1, tx = 0, ty = 0) {
     Debug.isNumber(a, b, c, d, tx, ty);
@@ -2161,7 +2161,7 @@ class Matrix {
    *
    * @param {number} dx Amount along x-axis.
    * @param {number} dy Amount along y-axis.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   translate(dx, dy) {
     Debug.isNumber(dx, dy);
@@ -2186,7 +2186,7 @@ class Matrix {
    *
    * @param {number} x The tx component to update.
    * @param {number} y The ty component to update.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   setTranslation(x, y) {
     Debug.isNumber(x, y);
@@ -2202,7 +2202,7 @@ class Matrix {
    *
    * @param  {number} theta     Theta value.
    * @param  {number} scale = 1 Scale value.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   setRotation(theta, scale = 1) {
     Debug.isNumber(theta, scale);
@@ -2220,7 +2220,7 @@ class Matrix {
    * Applies rotation to this matrix.
    *
    * @param  {number} angle Angle in radians.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   rotate(angle) {
     Debug.isNumber(angle);
@@ -2247,7 +2247,7 @@ class Matrix {
    *
    * @param {number} sx Abscissa of the scaling vector.
    * @param {number} sy Ordinate of the scaling vector.
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   scale(sx, sy) {
     Debug.isNumber(sx, sy);
@@ -2287,7 +2287,7 @@ class Matrix {
   /**
    * Resets current matrix to identity state.
    *
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   identity() {
     return this.set(1, 0, 0, 1, 0, 0);
@@ -2305,8 +2305,8 @@ class Matrix {
   /**
    * Concatenates a given matrix with the current one.
    *
-   * @param  {black-engine~Matrix} b The matrix to be concatenated.
-   * @return {black-engine~Matrix}   This.
+   * @param  {Matrix} b The matrix to be concatenated.
+   * @return {Matrix}   This.
    */
   prepend(b) {
     let a = this.data;
@@ -2346,8 +2346,8 @@ class Matrix {
   /**
    * Appends values to this matrix.
    *
-   * @param  {black-engine~Matrix} b The matrix to be appended.
-   * @return {black-engine~Matrix} This.
+   * @param  {Matrix} b The matrix to be appended.
+   * @return {Matrix} This.
    */
   append(b) {
     let a = this.data;
@@ -2380,8 +2380,8 @@ class Matrix {
    *
    * @param  {number} x          The x- component of a point.
    * @param  {number} y          The y- component of a point.
-   * @param  {black-engine~Vector=} outVector If given stores resulting values in it.
-   * @return {black-engine~Vector} Transformed Vector object.
+   * @param  {Vector=} outVector If given stores resulting values in it.
+   * @return {Vector} Transformed Vector object.
    */
   transformXY(x, y, outVector) {
     Debug.isNumber(x, y);
@@ -2400,8 +2400,8 @@ class Matrix {
    *
    * @param  {number} x          The x- component.
    * @param  {number} y          The y- component.
-   * @param  {black-engine~Vector=} outVector If given stores results in it.
-   * @return {black-engine~Vector} Just transformed Vector object.
+   * @param  {Vector=} outVector If given stores results in it.
+   * @return {Vector} Just transformed Vector object.
    */
   transformDirectionXY(x, y, outVector) {
     Debug.isNumber(x, y);
@@ -2418,9 +2418,9 @@ class Matrix {
   /**
    * Transforms vector by current matrix object.
    *
-   * @param  {black-engine~Vector} vector     Vector to apply transformation on.
-   * @param  {black-engine~Vector=} outVector Out Vector to store results in.
-   * @return {black-engine~Vector} New transformed vector.
+   * @param  {Vector} vector     Vector to apply transformation on.
+   * @param  {Vector=} outVector Out Vector to store results in.
+   * @return {Vector} New transformed vector.
    */
   transformVector(vector, outVector) {
     outVector = outVector || new Vector();
@@ -2435,9 +2435,9 @@ class Matrix {
   /**
    * Transforms rectangle by current matrix object.
    *
-   * @param  {black-engine~Rectangle} rect         Rectangle to apply transformation on.
-   * @param  {black-engine~Rectangle|null} outRect When given stores results in it.
-   * @return {black-engine~Rectangle} Transformed  Rectangle object.
+   * @param  {Rectangle} rect         Rectangle to apply transformation on.
+   * @param  {Rectangle|null} outRect When given stores results in it.
+   * @return {Rectangle} Transformed  Rectangle object.
    */
   transformRect(rect, outRect) {
     outRect = outRect || new Rectangle();
@@ -2474,7 +2474,7 @@ class Matrix {
   /**
    * Inverts current matrix.
    *
-   * @return {black-engine~Matrix} This.
+   * @return {Matrix} This.
    */
   invert() {
     let a = this.data;
@@ -2554,7 +2554,7 @@ class Matrix {
   /**
    * Clones the current matrix and returns new cloned object.
    *
-   * @return {black-engine~Matrix} New cloned object.
+   * @return {Matrix} New cloned object.
    */
   clone() {
     let m = new Matrix();
@@ -2566,8 +2566,8 @@ class Matrix {
   /**
    * Copies values to given matrix.
    *
-   * @param  {black-engine~Matrix} matrix The destination matrix.
-   * @return {black-engine~Matrix} This.
+   * @param  {Matrix} matrix The destination matrix.
+   * @return {Matrix} This.
    */
   copyTo(matrix) {
     let a = this.data;
@@ -2586,8 +2586,8 @@ class Matrix {
   /**
    * Copies values from given matrix into this.
    *
-   * @param  {black-engine~Matrix} matrix The matrix to copy values from.
-   * @return {black-engine~Matrix} This.
+   * @param  {Matrix} matrix The matrix to copy values from.
+   * @return {Matrix} This.
    */
   copyFrom(matrix) {
     return matrix.copyTo(this);
@@ -2596,7 +2596,7 @@ class Matrix {
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param {black-engine~Matrix} matrix Matrix object to compare with.
+   * @param {Matrix} matrix Matrix object to compare with.
    * @returns {boolean}
    */
   exactEquals(matrix) {
@@ -2612,7 +2612,7 @@ class Matrix {
   /**
    * Compares this matrix values with given matrix and checks if they are the same.
    *
-   * @param  {black-engine~Matrix} matrix                   Matrix object to compare with.
+   * @param  {Matrix} matrix                   Matrix object to compare with.
    * @param  {number} epsilon = Number.EPSILON Comparison threshold.
    * @return {boolean} True if equal.
    */
@@ -2651,14 +2651,14 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
 
 /**
  * @ignore
- * @type {black-engine~Matrix}
+ * @type {Matrix}
  * @nocollapse
  */
 Matrix.__cache = new Matrix();
 
 /**
  * @ignore
- * @type {black-engine~Matrix}
+ * @type {Matrix}
  * @nocollapse
  */
 Matrix.__identity = new Matrix();
@@ -2666,7 +2666,7 @@ Matrix.__identity = new Matrix();
 /**
  * Recycled matrices pool.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 Matrix.pool = new ObjectPool(Matrix);
@@ -2724,7 +2724,7 @@ class Circle {
   /**
    * Clones this circle.
    *
-   * @return {black-engine~Circle} Created circle.
+   * @return {Circle} Created circle.
    */
   clone() {
     return new Circle(this.x, this.y, this.r);
@@ -2733,8 +2733,8 @@ class Circle {
   /**
    * Copy this properties to another circle.
    *
-   * @param {black-engine~Circle} circle Object to copy to.
-   * @return {black-engine~Circle} Passed circle.
+   * @param {Circle} circle Object to copy to.
+   * @return {Circle} Passed circle.
    */
   copyTo(circle) {
     return circle.set(this.x, this.y, this.r);
@@ -2743,8 +2743,8 @@ class Circle {
   /**
    * Copy another circle properties to this.
    *
-   * @param {black-engine~Circle} circle Object to copy from.
-   * @return {black-engine~Circle} This circle.
+   * @param {Circle} circle Object to copy from.
+   * @return {Circle} This circle.
    */
   copyFrom(circle) {
     return this.set(circle.x, circle.y, circle.r);
@@ -2753,7 +2753,7 @@ class Circle {
   /**
    * Shows whether circles are identical.
    *
-   * @param {black-engine~Circle} circle Object to comparison.
+   * @param {Circle} circle Object to comparison.
    * @param {number=} epsilon Compare precision.
    * @return {boolean} True if circles are identical.
    */
@@ -2776,7 +2776,7 @@ class Circle {
   /**
    * Shows whether point is in circle.
    *
-   * @param {black-engine~Vector} vector Point to check.
+   * @param {Vector} vector Point to check.
    * @return {boolean} True if circle contains point.
    */
   contains(vector) {
@@ -2787,7 +2787,7 @@ class Circle {
   /**
    * Resets all values to zero.
    *
-   * @return {black-engine~Circle} Returns this.
+   * @return {Circle} Returns this.
    */
   zero() {
     return this.set(0, 0, 0);
@@ -2796,7 +2796,7 @@ class Circle {
   /**
    * Shows whether this circle intersects another.
    *
-   * @param {black-engine~Circle} circle Circle to check.
+   * @param {Circle} circle Circle to check.
    * @return {boolean} True if intersects.
    */
   intersects(circle) {
@@ -2807,7 +2807,7 @@ class Circle {
   /**
    * Shows whether this circle collide with another.
    *
-   * @param {black-engine~Circle} circle Circle to check.
+   * @param {Circle} circle Circle to check.
    * @return {boolean} True if collide.
    */
   collide(circle) {
@@ -2818,7 +2818,7 @@ class Circle {
   /**
    * Shows whether this circle overlap another.
    *
-   * @param {black-engine~Circle} circle Circle to check.
+   * @param {Circle} circle Circle to check.
    * @return {boolean} True if overlap.
    */
   overlap(circle) {
@@ -2834,8 +2834,8 @@ class Circle {
   /**
    * Represents center as vector.
    *
-   * @param {black-engine~Vector=} outVector Object for result.
-   * @return {black-engine~Vector} Center point.
+   * @param {Vector=} outVector Object for result.
+   * @return {Vector} Center point.
    */
   center(outVector = undefined) {
     outVector = outVector || new Vector();
@@ -2905,7 +2905,7 @@ class Circle {
   /**
    * Returns top point of this circle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get topPoint() {
     return new Vector(this.x, this.top);
@@ -2914,7 +2914,7 @@ class Circle {
   /**
    * Returns bottom point of this circle.
    *
-   * @return {black-engine~Vector}
+   * @return {Vector}
    */
   get bottomPoint() {
     return new Vector(this.x, this.bottom);
@@ -2936,7 +2936,7 @@ class Circle {
 
 /**
  * @ignore
- * @type {black-engine~Circle}
+ * @type {Circle}
  * @nocollapse
  */
 Circle.__cache = new Circle();
@@ -2948,31 +2948,31 @@ class Polygon {
   /**
    * Creates new Polygon instance.
    *
-   * @param  {Array<black-engine~Vector>} vertices = [] Array of vertex points;
+   * @param  {Array<Vector>} vertices = [] Array of vertex points;
    */
   constructor(vertices = []) {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>} 
+     * @type {Array<Vector>} 
      */
     this.mVertices = vertices;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Line>} 
+     * @type {Array<Line>} 
      */
     this.mLines = [];
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mBounds = new Rectangle();
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mCenter = new Vector();
 
@@ -2983,8 +2983,8 @@ class Polygon {
   /**
    * Sets new vertices.
    *
-   * @param {Array<black-engine~Vector>} vertices New points.
-   * @return {black-engine~Polygon} This polygon.
+   * @param {Array<Vector>} vertices New points.
+   * @return {Polygon} This polygon.
    */
   set(vertices) {
     this.mVertices = vertices;
@@ -2995,8 +2995,8 @@ class Polygon {
   /**
    * Copies this properties to another polygon.
    *
-   * @param {black-engine~Polygon} polygon Object to copy to.
-   * @return {black-engine~Polygon} Passed polygon.
+   * @param {Polygon} polygon Object to copy to.
+   * @return {Polygon} Passed polygon.
    */
   copyTo(polygon) {
     let len = this.mVertices.length;
@@ -3011,8 +3011,8 @@ class Polygon {
   /**
    * Copies another polygon properties to this.
    *
-   * @param {black-engine~Polygon} polygon Object to copy from.
-   * @return {black-engine~Polygon} This polygon.
+   * @param {Polygon} polygon Object to copy from.
+   * @return {Polygon} This polygon.
    */
   copyFrom(polygon) {
     let polygonVertices = polygon.mVertices;
@@ -3028,7 +3028,7 @@ class Polygon {
   /**
    * Clones this polygon.
    *
-   * @return {black-engine~Polygon} Created polygon.
+   * @return {Polygon} Created polygon.
    */
   clone() {
     let thisVertices = this.mVertices;
@@ -3075,7 +3075,7 @@ class Polygon {
   /**
    * Shows whether point is within polygon area.
    *
-   * @param {black-engine~Vector} vector Point to check.
+   * @param {Vector} vector Point to check.
    * @return {boolean} True if polygon contains point.
    */
   contains(vector) {
@@ -3121,7 +3121,7 @@ class Polygon {
   /**
    * Checks collision between two polygons.
    *
-   * @param {black-engine~Polygon} polygon Object to check.
+   * @param {Polygon} polygon Object to check.
    * @return {boolean} True if polygon collides with another polygon.
    */
   collide(polygon) {
@@ -3144,7 +3144,7 @@ class Polygon {
   /**
    * Checks collision between this polygon and circle.
    *
-   * @param {black-engine~Circle} circle Object to check.
+   * @param {Circle} circle Object to check.
    * @return {boolean} True if polygon collides with circle.
    */
   collideCircle(circle) {
@@ -3165,7 +3165,7 @@ class Polygon {
   /**
    * Checks collision between this polygon and rectangle.
    *
-   * @param {black-engine~Rectangle} rectangle Object to check.
+   * @param {Rectangle} rectangle Object to check.
    * @return {boolean} True if polygon collides with rectangle.
    */
   collideRectangle(rectangle) {
@@ -3188,7 +3188,7 @@ class Polygon {
   /**
    * Checks if this polygon overlaps another.
    *
-   * @param {black-engine~Polygon} polygon Object to check.
+   * @param {Polygon} polygon Object to check.
    * @return {boolean} True if polygon overlaps second.
    */
   overlap(polygon) {
@@ -3214,7 +3214,7 @@ class Polygon {
   /**
    * Checks if this polygon overlaps passed circle.
    *
-   * @param {black-engine~Circle} circle Object to check.
+   * @param {Circle} circle Object to check.
    * @return {boolean} True if polygon overlaps circle.
    */
   overlapCircle(circle) {
@@ -3234,7 +3234,7 @@ class Polygon {
   /**
    * Checks if this polygon overlaps given rectangle.
    *
-   * @param {black-engine~Rectangle} rectangle Object to check.
+   * @param {Rectangle} rectangle Object to check.
    * @return {boolean} True if polygon overlaps rectangle.
    */
   overlapRectangle(rectangle) {
@@ -3258,7 +3258,7 @@ class Polygon {
   /**
    * Calculates center, bounds, and edges of this polygon.
    *
-   * @return {black-engine~Polygon} This polygon.
+   * @return {Polygon} This polygon.
    */
   refresh() {
     let center = this.mCenter;
@@ -3299,7 +3299,7 @@ class Polygon {
   /**
    * Calculates center of this polygon.
    *
-   * @return {black-engine~Polygon} This polygon.
+   * @return {Polygon} This polygon.
    */
   refreshCenter() {
     let center = this.mCenter;
@@ -3318,7 +3318,7 @@ class Polygon {
   /**
    * Calculates bounds of this polygon.
    *
-   * @return {black-engine~Polygon} This polygon.
+   * @return {Polygon} This polygon.
    */
   refreshBounds() {
     let bounds = this.mBounds;
@@ -3348,7 +3348,7 @@ class Polygon {
   /**
    * Calculates edges of this polygon.
    *
-   * @return {black-engine~Polygon} This polygon.
+   * @return {Polygon} This polygon.
    */
   refreshLines() {
     let vertices = this.mVertices;
@@ -3364,7 +3364,7 @@ class Polygon {
    * Creates instance of Polygon.
    *
    * @param {string} path Numbers x y divided with space.
-   * @return {black-engine~Polygon} Created polygon.
+   * @return {Polygon} Created polygon.
    */
   static fromPath(path) {
     let vertices = [];
@@ -3380,7 +3380,7 @@ class Polygon {
    * Sets rotation. Rotates this polygon around it center.
    *
    * @param {number} rotation Angle in radians.
-   * @return {black-engine~Polygon} This polygon.
+   * @return {Polygon} This polygon.
    */
   setRotation(rotation) {
     let center = this.mCenter;
@@ -3402,8 +3402,8 @@ class Polygon {
   /**
    * Translates this polygon to specified position.
    *
-   * @param {black-engine~Vector} point Translation vector.
-   * @return {black-engine~Polygon} This vertices.
+   * @param {Vector} point Translation vector.
+   * @return {Polygon} This vertices.
    */
   setTranslation(point) {
     let center = this.mCenter;
@@ -3420,7 +3420,7 @@ class Polygon {
   /**
    * Returns array of vertices.
    * 
-   * @returns {Array<black-engine~Vector>}
+   * @returns {Array<Vector>}
    */
   get vertices() {
     return this.mVertices;
@@ -3428,7 +3428,7 @@ class Polygon {
 
   /**
    * Returns center points of this polygon.
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   get center() {
     return this.mCenter;
@@ -3464,7 +3464,7 @@ class Polygon {
 
 /**
  * @ignore
- * @type {black-engine~Polygon}
+ * @type {Polygon}
  * @nocollapse
  */
 Polygon.__cache = new Polygon();
@@ -3487,7 +3487,7 @@ class Curve {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>} 
+     * @type {Array<Vector>} 
      */
     this.mLookup = null;
 
@@ -3514,7 +3514,7 @@ class Curve {
    * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   set(...points) {
     this.mPoints = this.__initPoints(points);
@@ -3569,7 +3569,7 @@ class Curve {
    * Refresh cache (lookup) for fast interpolations.
    *
    * @private
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   __refreshCache() {
     let lookup = this.mLookup = [];
@@ -3594,7 +3594,7 @@ class Curve {
    *
    * @ignore
    * @private
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   __refreshEachT() {
     let points = this.mPoints;
@@ -3627,8 +3627,8 @@ class Curve {
    * @param  {number} cpEndY
    * @param  {number} endX
    * @param  {number} endY
-   * @param  {black-engine~Vector=} outVector
-   * @return {black-engine~Vector} Position on bezier.
+   * @param  {Vector=} outVector
+   * @return {Vector} Position on bezier.
    */
   static lerp(t, startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY, outVector) {
     let u = 1 - t;
@@ -3661,8 +3661,8 @@ class Curve {
    * Interpolates across whole curve.
    *
    * @param  {number} t Interpolation position (0...1).
-   * @param  {black-engine~Vector=} outVector Vector to be returned.
-   * @return {black-engine~Vector} Position on curve.
+   * @param  {Vector=} outVector Vector to be returned.
+   * @return {Vector} Position on curve.
    */
   interpolate(t, outVector) {
     let res = outVector || new Vector();
@@ -3724,7 +3724,7 @@ class Curve {
 
 /**
  * @ignore
- * @type {black-engine~Curve}
+ * @type {Curve}
  * @nocollapse
  */
 Curve.__cache = new Curve();
@@ -3760,7 +3760,7 @@ const BindingType = {
  */
 class Message {
   constructor() {
-    /** @type {black-engine~MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
+    /** @type {MessageDispatcher} The `MessageDispatcher` object, which posted this message. */
     this.sender = null;
 
     /** @type {string} The name of message. */
@@ -3775,7 +3775,7 @@ class Message {
     /** @type {boolean} Specifies if invocation of this message was canceled. */
     this.canceled = false;
 
-    /** @type {black-engine~MessageType} Message type. See `MessageType` enum. */
+    /** @type {MessageType} Message type. See `MessageType` enum. */
     this.type = MessageType.DIRECT;
   }
 
@@ -3802,7 +3802,7 @@ class Message {
 
   /**
    * @ignore
-   * @returns {black-engine~Message}
+   * @returns {Message}
    */
   __reset() {
     this.sender = null;
@@ -3884,7 +3884,7 @@ class Message {
 /**
  * Pool for messages.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  *
  */
@@ -3897,18 +3897,18 @@ const pool = new ObjectPool(Message);
  */
 class MessageBinding {
   /**
-   * @param {black-engine~MessageDispatcher} owner                The owner of this binding.
+   * @param {MessageDispatcher} owner                The owner of this binding.
    * @param {string} name                            Name of the message.
    * @param {Function} callback                      Callback function.
    * @param {boolean} isOnce                         Indicates whenever this binding should be auto destroyed after first execution.
    * @param {*=} [context=null]                      Optional context (usually this).
-   * @param {black-engine~BindingType} [type=BindingType.REGULAR] Type of the binding.
+   * @param {BindingType} [type=BindingType.REGULAR] Type of the binding.
    * @param {?string} [pathPattern=null]             Glob pattern to filter sender by name.
    */
   constructor(owner, name, callback, isOnce, context = null, type = BindingType.REGULAR, pathPattern = null) {
     /** 
      * @ignore 
-     * @type {black-engine~MessageDispatcher} 
+     * @type {MessageDispatcher} 
      */
     this.owner = owner;
 
@@ -3944,13 +3944,13 @@ class MessageBinding {
 
     /** 
      * @ignore 
-     * @type {black-engine~Glob|null} 
+     * @type {Glob|null} 
      */
     this.glob = pathPattern == null ? null : new Glob(pathPattern);
 
     /** 
      * @ignore 
-     * @type {black-engine~BindingType} 
+     * @type {BindingType} 
      */
     this.type = type;
   }
@@ -3964,7 +3964,7 @@ class MessageBinding {
 
   /**
    * @ignore
-   * @returns {black-engine~MessageBinding}
+   * @returns {MessageBinding}
    */
   __reset() {
     this.owner = null;
@@ -3987,37 +3987,37 @@ class Black {
 
     /**
      * @private
-     * @type {black-engine~Engine}
+     * @type {Engine}
      */
     this.mEngine = null;
 
     /**
      * @private
-     * @type {black-engine~Input}
+     * @type {Input}
      */
     this.mInput = null;
 
     /**
      * @private
-     * @type {black-engine~MasterAudio}
+     * @type {MasterAudio}
      */
     this.mAudio = null;
 
     /**
      * @private
-     * @type {black-engine~Time}
+     * @type {Time}
      */
     this.mTime = null;
 
     /**
      * @private
-     * @type {black-engine~Device}
+     * @type {Device}
      */
     this.mDevice = null;
 
     /**
      * @private
-     * @type {black-engine~AssetManager}
+     * @type {AssetManager}
      */
     this.mAssets = null;
 
@@ -4025,7 +4025,7 @@ class Black {
      * Active camera instance.
      * 
      * @private
-     * @type {black-engine~Camera}
+     * @type {Camera}
      */
     this.mCamera = null;
   }
@@ -4033,7 +4033,7 @@ class Black {
   /**
    * Returns current Black Engine instance.
    * 
-   * @returns {black-engine~Engine}
+   * @returns {Engine}
    */
   static get engine() {
     return mInstance.mEngine;
@@ -4041,7 +4041,7 @@ class Black {
 
   /**
    * Sets new Engine instance.
-   * @param {black-engine~Engine} value
+   * @param {Engine} value
    */
   static set engine(value) {
     mInstance.mEngine = value;
@@ -4050,7 +4050,7 @@ class Black {
   /**
    * Returns current active Input System instance.
    * 
-   * @returns {black-engine~Input}
+   * @returns {Input}
    */
   static get input() {
     return mInstance.mInput;
@@ -4058,7 +4058,7 @@ class Black {
 
   /**
    * Sets new Input System.
-   * @param {black-engine~Input} value
+   * @param {Input} value
    */
   static set input(value) {
     mInstance.mInput = value;
@@ -4067,7 +4067,7 @@ class Black {
   /**
    * Returns current active Audio System instance.
    * 
-   * @returns {black-engine~MasterAudio}
+   * @returns {MasterAudio}
    */
   static get audio() {
     return mInstance.mAudio;
@@ -4075,7 +4075,7 @@ class Black {
 
   /**
    * Sets new Audio System.
-   * @param {black-engine~MasterAudio} value
+   * @param {MasterAudio} value
    */
   static set audio(value) {
     mInstance.mAudio = value;
@@ -4084,7 +4084,7 @@ class Black {
   /**
    * Returns current Time management instance.
    * 
-   * @returns {black-engine~Time}
+   * @returns {Time}
    */
   static get time() {
     return mInstance.mTime;
@@ -4092,7 +4092,7 @@ class Black {
 
   /**
    * Sets new Time instance.
-   * @param {black-engine~Time} value
+   * @param {Time} value
    */
   static set time(value) {
     mInstance.mTime = value;
@@ -4101,7 +4101,7 @@ class Black {
   /**
    * Returns current Device instance.
    * 
-   * @returns {black-engine~Device}
+   * @returns {Device}
    */
   static get device() {
     return mInstance.mDevice;
@@ -4109,7 +4109,7 @@ class Black {
 
   /**
    * Sets new Device instance.
-   * @param {black-engine~Device} value
+   * @param {Device} value
    */
   static set device(value) {
     mInstance.mDevice = value;
@@ -4119,7 +4119,7 @@ class Black {
    * Default AssetManager instance. Sprite and other classes uses this instance to find textures by name.
    * It will be automatically re-assigned when new AssetManager is created.
    * 
-   * @returns {black-engine~AssetManager}
+   * @returns {AssetManager}
    */
   static get assets() {
     return mInstance.mAssets;
@@ -4127,7 +4127,7 @@ class Black {
 
   /**
    * Sets new AssetManager.
-   * @param {black-engine~AssetManager} value
+   * @param {AssetManager} value
    */
   static set assets(value) {
     mInstance.mAssets = value;
@@ -4137,7 +4137,7 @@ class Black {
    * Returns current stage.
    *
    * @readonly
-   * @returns {black-engine~Stage}
+   * @returns {Stage}
    */
   static get stage() {
     return mInstance.mEngine.mStage;
@@ -4147,7 +4147,7 @@ class Black {
    * Returns current video driver.
    *
    * @readonly
-   * @returns {black-engine~VideoNullDriver}
+   * @returns {VideoNullDriver}
    */
   static get driver() {
     return mInstance.mEngine.mVideo;
@@ -4156,7 +4156,7 @@ class Black {
   /**
    * Returns active camera instance.
    * 
-   * @returns {black-engine~Camera}
+   * @returns {Camera}
    */
   static get camera() {
     if (mInstance.mCamera !== null && mInstance.mCamera.mAdded === true)
@@ -4167,7 +4167,7 @@ class Black {
 
   /**
    * Sets default camera;
-   * @param {black-engine~Camera} value
+   * @param {Camera} value
    */
   static set camera(value) {
     mInstance.mCamera = value;
@@ -4208,7 +4208,7 @@ class MessageDispatcher {
    * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
    * @param {*} [context=null]  Object to be used as `this` in callback function.
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   on(name, callback, context) {
     return this.__on(name, callback, false, context);
@@ -4247,7 +4247,7 @@ class MessageDispatcher {
    * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
    * @param {*} [context=null]  Object to be used as `this` in callback function.
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   once(name, callback, context) {
     return this.__on(name, callback, true, context);
@@ -4281,7 +4281,7 @@ class MessageDispatcher {
    * Returns parent MessageDispatcher.
    * 
    * @readonly
-   * @return {black-engine~MessageDispatcher|null}
+   * @return {MessageDispatcher|null}
    */
   get parent() {
     return null;
@@ -4291,7 +4291,7 @@ class MessageDispatcher {
    * Returns the stage Game Object to which this belongs to or null if not added onto stage.
    *
    * @readonly
-   * @return {black-engine~Stage|null}
+   * @return {Stage|null}
    */
   get stage() {
     return null;
@@ -4315,7 +4315,7 @@ class MessageDispatcher {
    * @param {Function} callback
    * @param {boolean} [isOnce=false]
    * @param {*} [context=null]
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   __on(name, callback, isOnce = false, context = null) {
     Debug.assert(name !== null, 'name cannot be null.');
@@ -4353,7 +4353,7 @@ class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageBinding} binding 
+   * @param {MessageBinding} binding 
    */
   __off(binding) {
     if (binding.type === BindingType.REGULAR) {
@@ -4387,8 +4387,8 @@ class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageDispatcher} sender 
-   * @param {black-engine~Message} message 
+   * @param {MessageDispatcher} sender 
+   * @param {Message} message 
    * @param {...*} params 
    * @return {void}
    */
@@ -4430,8 +4430,8 @@ class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageDispatcher}  sender
-   * @param {black-engine~Message}  message
+   * @param {MessageDispatcher}  sender
+   * @param {Message}  message
    * @param {...*} params
    * @return {void}
    */
@@ -4502,7 +4502,7 @@ class MessageDispatcher {
    * @ignore
    * 
    * @param {string} name 
-   * @returns {black-engine~Message}
+   * @returns {Message}
    */
   __draftMessage(name) {
     const message = Message.pool.get();
@@ -4524,7 +4524,7 @@ class MessageDispatcher {
    * @ignore
    * @private
    * @param {string|null} path
-   * @param {black-engine~MessageBinding} binding
+   * @param {MessageBinding} binding
    * @returns {boolean}
    */
   __checkPath(path, binding) {
@@ -4591,8 +4591,8 @@ class TextStyle {
    * @param  {string=} family                                             Font name
    * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
    * @param  {number=} [size=14]                                          Text size
-   * @param  {black-engine~FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
-   * @param  {black-engine~FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {FontStyle=} [style=FontStyle.NORMAL]                        Text style eg italic
+   * @param  {FontWeight=} [weight=FontWeight.NORMAL]                     Font thickness. The value is set from 100 to 900 in increments of 100.
    * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
    * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
@@ -4612,10 +4612,10 @@ class TextStyle {
     /** @type {number} */
     this.alpha = 1;
 
-    /** @type {black-engine~FontStyle} */
+    /** @type {FontStyle} */
     this.style = style;
 
-    /** @type {black-engine~FontWeight} */
+    /** @type {FontWeight} */
     this.weight = weight;
 
     /** @type {number} */
@@ -4672,7 +4672,7 @@ class TextStyle {
   /**
    * Returns default TextStyle instance.
    * 
-   * @returns {black-engine~TextStyle}
+   * @returns {TextStyle}
    */
   static get default() {
     if (defaultStyle === null)
@@ -4717,7 +4717,7 @@ class FontMetrics {
    *
    * @ignore
    * @private
-   * @param {black-engine~TextStyle} style Default text info with 24 font size.
+   * @param {TextStyle} style Default text info with 24 font size.
    */
   constructor(style) {
     if (CONTEXT === null) {
@@ -4743,7 +4743,7 @@ class FontMetrics {
 
     /** 
      * @private 
-     * @type {black-engine~TextStyle} 
+     * @type {TextStyle} 
      */
     this.mStyle = style;
 
@@ -4929,7 +4929,7 @@ class FontMetrics {
    *
    * @static
    * @param {string} fontName Name of font.
-   * @returns {black-engine~FontMetrics}
+   * @returns {FontMetrics}
    */
   static get(fontName) {
     let cache = CACHE[fontName];
@@ -4954,25 +4954,25 @@ class TextMetricsData {
 
     /**
      * Array of TextSegmentMetricsData objects containing style, bounds and other metrics information for each segment,
-     * @type {Array<black-engine~TextSegmentMetricsData>}
+     * @type {Array<TextSegmentMetricsData>}
      */
     this.segments = []; // TextPartMetricsData
 
     /**
      * The sum bounds, including all segments.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.bounds = new Rectangle();
 
     /**
      * Bounds plus stroke size.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.strokeBounds = null;
 
     /**
      * Bounds of text shadow.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.shadowBounds = null;
 
@@ -5000,7 +5000,7 @@ class TextSegmentMetricsData {
 
     /**
      * The style of this segment.
-     * @type {black-engine~TextStyle}
+     * @type {TextStyle}
      */
     this.style = style;
 
@@ -5012,7 +5012,7 @@ class TextSegmentMetricsData {
 
     /**
      * The bounds of this segment.
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.bounds = bounds;
   }
@@ -5046,9 +5046,9 @@ class TextMetricsEx {
    * @static
    * @param {string} text                            The text to measure.
    * @param {number} lineHeight                      The height of the line.
-   * @param {...black-engine~TextStyle} styles The TextStyle object representing text properties and formatting.
+   * @param {...TextStyle} styles The TextStyle object representing text properties and formatting.
    * 
-   * @returns {black-engine~TextMetricsData} Object representing bounds for each rich text part.
+   * @returns {TextMetricsData} Object representing bounds for each rich text part.
    */
   static measure(text, lineHeight, ...styles) {
     let parts = [];
@@ -5134,9 +5134,9 @@ class TextMetricsEx {
    * 
    * @static
    * @param {string} text         The text to measure.
-   * @param {black-engine~TextStyle} style     The TextStyle object representing text properties and formatting.
-   * @param {?black-engine~Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
-   * @returns {black-engine~Rectangle} Bounds of the text;
+   * @param {TextStyle} style     The TextStyle object representing text properties and formatting.
+   * @param {?Rectangle} [outBounds=null] Out param into which bounds of the text will be stored.
+   * @returns {Rectangle} Bounds of the text;
    */
   static __measure(text, style, outBounds = null) {
     Debug.assert(style != null, 'Style cannot be null');
@@ -5172,10 +5172,10 @@ class TextMetricsEx {
    * 
    * @static
    * @param {string} text 
-   * @param {black-engine~BitmapFontData} data 
+   * @param {BitmapFontData} data 
    * @param {number} lineHeight 
-   * @param {black-engine~Rectangle} outBounds 
-   * @returns {black-engine~Rectangle}
+   * @param {Rectangle} outBounds 
+   * @returns {Rectangle}
    */
   static measureBitmap(text, data, lineHeight, outBounds) {
     outBounds = outBounds || new Rectangle();
@@ -5332,7 +5332,7 @@ class Time {
  * Base class for custom systems. System is used to listen scene changes.
  *
  * @cat core
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class System extends MessageDispatcher {
   constructor() {
@@ -5383,7 +5383,7 @@ class System extends MessageDispatcher {
    * onChildrenAdded
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenAdded(gameObject) { }
@@ -5392,7 +5392,7 @@ class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenRemoved(gameObject) { }
@@ -5401,7 +5401,7 @@ class System extends MessageDispatcher {
    * onChildrenRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} gameObject GameObject instance.
+   * @param {GameObject} gameObject GameObject instance.
    * @return {void}
    */
   onChildrenChanged(gameObject) { }
@@ -5410,8 +5410,8 @@ class System extends MessageDispatcher {
    * onComponentAdded
    *
    * @protected
-   * @param {black-engine~GameObject} child GameObject instance.
-   * @param {black-engine~Component} component Component instance added to game object.
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance added to game object.
    * @return {void} 
    */
   onComponentAdded(child, component) { }
@@ -5420,8 +5420,8 @@ class System extends MessageDispatcher {
    * onComponentRemoved
    *
    * @protected
-   * @param {black-engine~GameObject} child GameObject instance.
-   * @param {black-engine~Component} component Component instance removed from game object.
+   * @param {GameObject} child GameObject instance.
+   * @param {Component} component Component instance removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) { }
@@ -5452,7 +5452,7 @@ const Orientation = {
  *
  * @cat core
  * @fires Viewport#resize
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class Viewport extends MessageDispatcher {
   /**
@@ -5477,7 +5477,7 @@ class Viewport extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mSize = new Rectangle();
 
@@ -5501,7 +5501,7 @@ class Viewport extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Orientation} 
+     * @type {Orientation} 
      */
     this.mOrientation = Orientation.UNIVERSAL;
 
@@ -5579,14 +5579,14 @@ class Viewport extends MessageDispatcher {
   /**
    * Gets/Sets stage orientation.
    *
-   * @returns {black-engine~Orientation}
+   * @returns {Orientation}
    */
   get orientation() {
     return this.mOrientation;
   }
 
   /**
-   * @param {black-engine~Orientation} value
+   * @param {Orientation} value
    * @returns {void}
    */
   set orientation(value) {
@@ -5692,7 +5692,7 @@ class Viewport extends MessageDispatcher {
   /**
    * Returns the size of a viewport.
    *
-   * @return {black-engine~Rectangle}
+   * @return {Rectangle}
    */
   get size() {
     return this.mSize;
@@ -5755,7 +5755,7 @@ let ID = 0;
  *
  * @cat core
  * @unrestricted
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class Component extends MessageDispatcher {
   /**
@@ -5772,7 +5772,7 @@ class Component extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~GameObject|null} 
+     * @type {GameObject|null} 
      */
     this.mGameObject = null;
 
@@ -5794,7 +5794,7 @@ class Component extends MessageDispatcher {
    * Called when attached to GameObject.
    *
    * @protected
-   * @param  {black-engine~GameObject} gameObject The owner of this component.
+   * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
   onAdded(gameObject) { }
@@ -5803,7 +5803,7 @@ class Component extends MessageDispatcher {
    * Called when detached from GameObject.
    *
    * @protected
-   * @param  {black-engine~GameObject} gameObject The owner of this component.
+   * @param  {GameObject} gameObject The owner of this component.
    * @return {void}
    */
   onRemoved(gameObject) { }
@@ -5841,7 +5841,7 @@ class Component extends MessageDispatcher {
    * Returns owner of this component.
    *
    * @readonly
-   * @returns {black-engine~GameObject}
+   * @returns {GameObject}
    */
   get gameObject() {
     return this.mGameObject;
@@ -5850,7 +5850,7 @@ class Component extends MessageDispatcher {
   /**
    * Returns this Component owner GameObject.
    * @readonly
-   * @return {black-engine~GameObject|null}
+   * @return {GameObject|null}
    */
   get parent() {
     return this.mGameObject;
@@ -5861,7 +5861,7 @@ class Component extends MessageDispatcher {
    *
    * @override
    * @readonly
-   * @return {black-engine~Stage|null}
+   * @return {Stage|null}
    */
   get stage() {
     if (this.mGameObject === null)
@@ -5962,11 +5962,11 @@ class Texture {
    * Creates new instance of texture.
    *
    * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-   * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
-   * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+   * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
+   * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
    * @param {number=} [scale=1]                                                 Inverted scale factor.
-   * @param {black-engine~Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
-   * @param {black-engine~Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
+   * @param {Vector=} [registrationPoint=null]                                  Default anchor for newly created sprites with the texture.
+   * @param {Rectangle=} [slice9borders=null]                                   Default slice 9 grid for newly created sprites with the texture.
    */
   constructor(nativeElement, region = null, untrimmedRegion = null, scale = 1, registrationPoint = null, slice9borders = null) {
     this.mId = ++__ID;
@@ -5983,12 +5983,12 @@ class Texture {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} */
+     * @type {Rectangle} */
     this.mRegion = new Rectangle();
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} */
+     * @type {Rectangle} */
     this.mUntrimmedRegion = new Rectangle();
 
     /** 
@@ -6028,12 +6028,12 @@ class Texture {
 
     /** 
      * @private 
-     * @type {black-engine~Vector|null} */
+     * @type {Vector|null} */
     this.mRegistrationPoint = registrationPoint;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} */
+     * @type {Rectangle|null} */
     this.mSlice9borders = slice9borders;
 
     this.set(nativeElement, region, untrimmedRegion, scale);
@@ -6043,8 +6043,8 @@ class Texture {
    * Updates this texture with new native element.
    *
    * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} nativeElement The native element to get image data from.
-   * @param {black-engine~Rectangle=} [region=null]                                          The area of texture to be drawn.
-   * @param {black-engine~Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
+   * @param {Rectangle=} [region=null]                                          The area of texture to be drawn.
+   * @param {Rectangle=} [untrimmedRegion=null]                                 The original area of texture.
    * @param {number=} [scale=1]                                                 Inverted scale factor.
    */
   set(nativeElement, region = null, untrimmedRegion = null, scale = 1) {
@@ -6101,7 +6101,7 @@ class Texture {
    * Creates new texture from Base64 string.
    *
    * @param {string} string Base64 string.
-   * @returns {black-engine~Texture}
+   * @returns {Texture}
    */
   static fromBase64String(string) {
     let imgElement = new Image();
@@ -6114,7 +6114,7 @@ class Texture {
    * @param {Element} canvas
    * @param {string} type
    * @param {number} quality
-   * @returns {black-engine~Texture}
+   * @returns {Texture}
    */
   static fromCanvasAsImage(canvas, type = 'image/png', quality = 1) {
     let imgElement = new Image();
@@ -6126,7 +6126,7 @@ class Texture {
   /**
    * @ignore
    * @param {HTMLCanvasElement} canvas
-   * @returns {black-engine~Texture|null}
+   * @returns {Texture|null}
    */
   static fromCanvas(canvas) {
     return Black.driver.getTextureFromCanvas(canvas);
@@ -6166,7 +6166,7 @@ class Texture {
    * The area of the texture to be drawn.
    *
    * @readonly
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   get region() {
     return this.mRegion;
@@ -6176,7 +6176,7 @@ class Texture {
    * The original area of the texture.
    *
    * @readonly
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   get untrimmedRegion() {
     return this.mUntrimmedRegion;
@@ -6255,7 +6255,7 @@ class Texture {
   /**
    * Anchor of the texture.
    * 
-   * @returns {black-engine~Vector|null}
+   * @returns {Vector|null}
    */
   get registrationPoint() {
     return this.mRegistrationPoint;
@@ -6264,7 +6264,7 @@ class Texture {
   /**
    * Returns slice 9 borders for this texture.
    * 
-   * @returns {black-engine~Rectangle|null}
+   * @returns {Rectangle|null}
    */
   get slice9borders() {
     return this.mSlice9borders;
@@ -6366,7 +6366,7 @@ class RenderTarget {
 /**
  * Canvas rendering surface.
  *
- * @extends black-engine~RenderTarget
+ * @extends RenderTarget
  * @cat drivers.canvas
  */
 class RenderTargetCanvas extends RenderTarget {
@@ -6481,10 +6481,10 @@ class Renderer {
    * Creates new instance of Renderer.
    */
   constructor() {
-    /** @type {black-engine~DisplayObject|null} */
+    /** @type {DisplayObject|null} */
     this.gameObject = null;
 
-    /** @type {black-engine~Renderer|null} */
+    /** @type {Renderer|null} */
     this.parent = null;
 
     /** 
@@ -6519,7 +6519,7 @@ class Renderer {
 
     /** 
      * @ignore 
-     * @type {black-engine~BlendMode} 
+     * @type {BlendMode} 
      */
     this.blendMode = BlendMode.NORMAL;
 
@@ -6533,8 +6533,8 @@ class Renderer {
   /**
    * Called when this renderer needs to be rendered.
    *
-   * @param {black-engine~VideoNullDriver} driver Active video driver.
-   * @param {black-engine~RenderSession} session Active session.
+   * @param {VideoNullDriver} driver Active video driver.
+   * @param {RenderSession} session Active session.
    * @returns {void}
    */
   preRender(driver, session) {
@@ -6546,8 +6546,8 @@ class Renderer {
 
   /**
    * Called after `preRender` but before `GameObject#onRender`. Used to compute world alpha, color and blend mode.
-   * @param {black-engine~VideoNullDriver} driver 
-   * @param {black-engine~RenderSession} session 
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
    */
   begin(driver, session) {
     this.alpha = this.gameObject.mAlpha * this.parent.alpha;
@@ -6558,8 +6558,8 @@ class Renderer {
   /**
    * Called if `skipSelf` equals to false. Used to upload everything onto gpu.
    * 
-   * @param {black-engine~VideoNullDriver} driver 
-   * @param {black-engine~RenderSession} session 
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
    */
   upload(driver, session) {
     let gameObject = /** @type {DisplayObject} */ (this.gameObject);
@@ -6577,8 +6577,8 @@ class Renderer {
   /**
    * Called if `skipSelf` equals to false.
    *
-   * @param {black-engine~VideoNullDriver} driver Active video driver.
-   * @param {black-engine~RenderSession} session
+   * @param {VideoNullDriver} driver Active video driver.
+   * @param {RenderSession} session
    * @returns {void}
    */
   render(driver, session) {
@@ -6587,8 +6587,8 @@ class Renderer {
   /**
    * Called after all children objects got rendered.
    * 
-   * @param {black-engine~VideoNullDriver} driver 
-   * @param {black-engine~RenderSession} session 
+   * @param {VideoNullDriver} driver 
+   * @param {RenderSession} session 
    */
   end(driver, session) {
     driver.endClip();
@@ -6600,9 +6600,9 @@ class Renderer {
   /**
    * Tints given texture with a given color.
    * 
-   * @param {black-engine~Texture} texture 
+   * @param {Texture} texture 
    * @param {number|null} color 
-   * @returns {black-engine~Texture}
+   * @returns {Texture}
    */
   static getColoredTexture(texture, color) {
     if (color === 0xFFFFFF || color === null)
@@ -6639,7 +6639,7 @@ class Renderer {
  * @ignore
  * @private
  * @static
- * @type {black-engine~MapMap}
+ * @type {MapMap}
  */
 Renderer.__colorCache = new MapMap();
 
@@ -6661,7 +6661,7 @@ Renderer.skipUnchangedFrames = false;
  * Base class for collider component.
  *
  * @cat colliders
- * @extends black-engine~Component
+ * @extends Component
  */
 class Collider extends Component {
   /**
@@ -6684,7 +6684,7 @@ class Collider extends Component {
      * Global in stage coordinates center.
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mCenter = new Vector();
 
@@ -6692,7 +6692,7 @@ class Collider extends Component {
      * Global in stage coordinates min x and y vertex.
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mMin = new Vector();
 
@@ -6700,7 +6700,7 @@ class Collider extends Component {
      * Global in stage coordinates max x and y vertex. 
      * 
      * @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mMax = new Vector();
   }
 
@@ -6708,7 +6708,7 @@ class Collider extends Component {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {black-engine~Vector} point Global coordinates.
+   * @param {Vector} point Global coordinates.
    * @returns {boolean}
    */
   containsPoint(point) {
@@ -6720,8 +6720,8 @@ class Collider extends Component {
    * Updates min, max, center of this collider, to prepare to collision test
    *
    * @public
-   * @param {black-engine~Matrix} transform Game object world transformation with zero position.
-   * @param {black-engine~Vector} position  Rigid body position.
+   * @param {Matrix} transform Game object world transformation with zero position.
+   * @param {Vector} position  Rigid body position.
    */
   refresh(transform, position) { }
 }
@@ -6730,7 +6730,7 @@ class Collider extends Component {
  * This component will allow you to subscribe for some input messages.
  *
  * @cat input
- * @extends black-engine~Component
+ * @extends Component
  */
 class InputComponent extends Component {
   /**
@@ -6775,7 +6775,7 @@ let ID$1 = 0;
  *
  * @cat core
  * @unrestricted
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class GameObject extends MessageDispatcher {
   /**
@@ -6798,13 +6798,13 @@ class GameObject extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Component>} 
+     * @type {Array<Component>} 
      */
     this.mComponents = [];
 
     /** 
      * @protected 
-     * @type {Array<black-engine~GameObject>} 
+     * @type {Array<GameObject>} 
      */
     this.mChildren = [];
 
@@ -6888,37 +6888,37 @@ class GameObject extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mBoundsCache = new Rectangle();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mLocalTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mWorldTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mWorldTransformInverted = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~DirtyFlag} 
+     * @type {DirtyFlag} 
      */
     this.mDirty = DirtyFlag.DIRTY;
 
     /** 
      * @protected 
-     * @type {black-engine~GameObject} 
+     * @type {GameObject} 
      */
     this.mParent = null;
 
@@ -6961,7 +6961,7 @@ class GameObject extends MessageDispatcher {
     // cache all colliders for fast access
     /** 
      * @private 
-     * @type {Array<black-engine~Collider>} 
+     * @type {Array<Collider>} 
      */
     this.mCollidersCache = [];
 
@@ -6973,13 +6973,13 @@ class GameObject extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~GameObject>} 
+     * @type {Array<GameObject>} 
      */
     this.mChildrenClone = null;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Component>} 
+     * @type {Array<Component>} 
      */
     this.mComponentClone = null;
   }
@@ -7051,8 +7051,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Sugar method for adding child `GameObjects` or `Components` in a simple manner.
    *
-   * @param {...(black-engine~GameObject|black-engine~Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
-   * @return {black-engine~GameObject} This game object
+   * @param {...(GameObject|Component)} gameObjectsAndOrComponents A `GameObject` or `Component` to add.
+   * @return {GameObject} This game object
    */
   add(...gameObjectsAndOrComponents) {
     for (let i = 0; i < gameObjectsAndOrComponents.length; i++) {
@@ -7071,8 +7071,8 @@ class GameObject extends MessageDispatcher {
    * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
    * children in this GameObject instance.
    *
-   * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
-   * @return {black-engine~GameObject}
+   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @return {GameObject}
    */
   addChild(child) {
     return this.addChildAt(child, this.mChildren.length);
@@ -7082,9 +7082,9 @@ class GameObject extends MessageDispatcher {
    * Adds a child `GameObject` instance to this `GameObject` instance. The child is added to the top of all other 
    * children in this GameObject instance.
    *
-   * @param  {black-engine~GameObject} child The GameObject instance to add as a child of this GameObject instance.
+   * @param  {GameObject} child The GameObject instance to add as a child of this GameObject instance.
    * @param  {number=} [index=0] The index position to which the child is added.
-   * @return {black-engine~GameObject} The GameObject instance that you pass in the child parameter.
+   * @return {GameObject} The GameObject instance that you pass in the child parameter.
    */
   addChildAt(child, index = 0) {
     Debug.assert(child instanceof GameObject, 'Type error.');
@@ -7113,7 +7113,7 @@ class GameObject extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~GameObject} value
+   * @param {GameObject} value
    * @return {boolean}
    */
   __setParent(value) {
@@ -7133,9 +7133,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Sets the index (layer) of the specified `GameObject` to the specified index (layer).
    *
-   * @param {black-engine~GameObject} child The `GameObject` instance to change index for.
+   * @param {GameObject} child The `GameObject` instance to change index for.
    * @param {number} index Desired index.
-   * @returns {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
+   * @returns {GameObject} The `GameObject` instance that you pass in the child parameter.
    */
   setChildIndex(child, index) {
     let ix = this.mChildren.indexOf(child);
@@ -7161,7 +7161,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes this `GameObject` instance from its parent.
    *
-   * @return {black-engine~GameObject}
+   * @return {GameObject}
    */
   removeFromParent() {
     if (this.mParent !== null)
@@ -7174,8 +7174,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Removes specified child `GameObject` instance from children.
    *
-   * @param {black-engine~GameObject} child `GameObject` instance to remove.
-   * @return {black-engine~GameObject} The `GameObject` instance that you pass in the child parameter.
+   * @param {GameObject} child `GameObject` instance to remove.
+   * @return {GameObject} The `GameObject` instance that you pass in the child parameter.
    */
   removeChild(child) {
     let ix = this.mChildren.indexOf(child);
@@ -7191,7 +7191,7 @@ class GameObject extends MessageDispatcher {
    * Finds children by name.
    *
    * @param {string} name Name of the child object to find.
-   * @return {black-engine~GameObject|null} GameObject instance or null if not found.
+   * @return {GameObject|null} GameObject instance or null if not found.
    */
   getChildByName(name) {
     for (let i = 0; i < this.mChildren.length; i++) {
@@ -7206,7 +7206,7 @@ class GameObject extends MessageDispatcher {
    * Removes `GameObjects` instance from specified index.
    *
    * @param {number} index Index of child. Negative index will remove object from it end.
-   * @return {black-engine~GameObject|null} The removed `GameObject` instance or null if not found.
+   * @return {GameObject|null} The removed `GameObject` instance or null if not found.
    */
   removeChildAt(index) {
     let child = this.mChildren.splice(index, 1)[0];
@@ -7228,7 +7228,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Removes all children objects.
-   * @returns {black-engine~GameObject} Returns this.
+   * @returns {GameObject} Returns this.
    */
   removeAllChildren() {
     while (this.mChildren.length > 0)
@@ -7241,7 +7241,7 @@ class GameObject extends MessageDispatcher {
    * Returns `GameObject` at specified index.
    *
    * @param {number} index The index of child `GameObject`.
-   * @return {black-engine~GameObject} The `GameObject` at specified index.
+   * @return {GameObject} The `GameObject` at specified index.
    */
   getChildAt(index) {
     return this.mChildren[index];
@@ -7251,8 +7251,8 @@ class GameObject extends MessageDispatcher {
    * Adds Component instance to the end of the list.
    *
    * @throws {Error}
-   * @param  {black-engine~Component} component The instances of Component to be added,
-   * @return {black-engine~Component} The `Component` instance you pass in the instances parameter.
+   * @param  {Component} component The instances of Component to be added,
+   * @return {Component} The `Component` instance you pass in the instances parameter.
    */
   addComponent(component) {
     return this.addComponentAt(component, this.mComponents.length);
@@ -7262,9 +7262,9 @@ class GameObject extends MessageDispatcher {
    * Adds Component to the list at given position.
    * 
    * @throws {Error}
-   * @param {black-engine~Component} component The instances of Component to be added,
+   * @param {Component} component The instances of Component to be added,
    * @param {number} [index=0] Position in the list.
-   * @returns {black-engine~Component} The `Component` instance you pass in the instances parameter.
+   * @returns {Component} The `Component` instance you pass in the instances parameter.
    */
   addComponentAt(component, index = 0) {
     Debug.assert(component instanceof Component, 'Type error.');
@@ -7295,7 +7295,7 @@ class GameObject extends MessageDispatcher {
    * Removes component at given index.
    * 
    * @param {number} index Negative index will remove component from the end.
-   * @returns {black-engine~Component|null} Returns removed component of null.
+   * @returns {Component|null} Returns removed component of null.
    */
   removeComponentAt(index) {
     let instance = this.mComponents.splice(index, 1)[0];
@@ -7323,8 +7323,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Remove specified component.
    *
-   * @param {black-engine~Component} instance The `Component` instance.
-   * @returns {black-engine~Component|null} Returns removed component of null.
+   * @param {Component} instance The `Component` instance.
+   * @returns {Component|null} Returns removed component of null.
    */
   removeComponent(instance) {
     if (instance == null)
@@ -7341,7 +7341,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Removes all components.
-   * @returns {black-engine~GameObject} Returns this.
+   * @returns {GameObject} Returns this.
    */
   removeAllComponents() {
     while (this.mComponents.length > 0)
@@ -7354,7 +7354,7 @@ class GameObject extends MessageDispatcher {
    * Get component by type.
    *
    * @param {Function} typeName The component type.
-   * @return {black-engine~Component|null} The `Component` instance or null if not found.
+   * @return {Component|null} The `Component` instance or null if not found.
    */
   getComponent(typeName) {
     for (let i = 0; i < this.mComponents.length; i++) {
@@ -7379,7 +7379,7 @@ class GameObject extends MessageDispatcher {
    * Retrieves `Component` at given index.
    *
    * @param {number} index Index of component.
-   * @return {black-engine~Component|null}
+   * @return {Component|null}
    */
   getComponentAt(index) {
     if (index >= 0 && index < this.mComponents.length)
@@ -7391,7 +7391,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns local transformation `Matrix`
    *
-   * @return {black-engine~Matrix}
+   * @return {Matrix}
    */
   get localTransformation() {
     if (this.mDirty & DirtyFlag.LOCAL) {
@@ -7438,7 +7438,7 @@ class GameObject extends MessageDispatcher {
   }
 
   /**
-   * @param {black-engine~Matrix} value
+   * @param {Matrix} value
    * @return {void}
    */
   set localTransformation(value) {
@@ -7482,7 +7482,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets cloned Matrix object which represents object orientation in world space.
    *
-   * @return {black-engine~Matrix}
+   * @return {Matrix}
    */
   get worldTransformation() {
     if (this.mDirty & DirtyFlag.ANCHOR && (this.mAnchorX !== null || this.mAnchorY !== null)) {
@@ -7508,7 +7508,7 @@ class GameObject extends MessageDispatcher {
    * Returns cloned and inverted Matrix object which represents object orientation in world space
    *
    * @readonly
-   * @return {black-engine~Matrix}
+   * @return {Matrix}
    */
   get worldTransformationInverted() {
     if ((this.mDirty & DirtyFlag.WORLD_INV)) {
@@ -7574,8 +7574,8 @@ class GameObject extends MessageDispatcher {
    *
    * @action
    * @protected
-   * @param {black-engine~Rectangle=} [outRect=undefined] Rectangle to be returned.
-   * @return {black-engine~Rectangle} bounds in local space without taking care about transformation matrix
+   * @param {Rectangle=} [outRect=undefined] Rectangle to be returned.
+   * @return {Rectangle} bounds in local space without taking care about transformation matrix
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -7590,10 +7590,10 @@ class GameObject extends MessageDispatcher {
    * `object.getBounds(object.parent)` - relative to parent.<br>
    * `object.getBounds(objectB)` - relative to objectB space.<br>
    *
-   * @param {black-engine~GameObject} [space=null] The `GameObject` relative to.
+   * @param {GameObject} [space=null] The `GameObject` relative to.
    * @param {boolean} [includeChildren=true] Specifies if include children in calculations.
-   * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be returned.
-   * @return {black-engine~Rectangle} Returns bounds of the object with/without all children.
+   * @param {Rectangle=} [outRect=null] Rectangle to be returned.
+   * @return {Rectangle} Returns bounds of the object with/without all children.
    */
   getBounds(space = null, includeChildren = true, outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -7651,8 +7651,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns stage relative bounds of this object excluding it's children;
    * 
-   * @param {black-engine~Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
-   * @returns {black-engine~Rectangle} 
+   * @param {Rectangle=} [outRect=null] Rectangle to be store resulting bounds in.
+   * @returns {Rectangle} 
    */
   getStageBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -7671,8 +7671,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Evaluates whether the game object or one of its children intersects with the given point
    *
-   * @param {black-engine~Vector} localPoint Coordinates vector.
-   * @return {black-engine~GameObject|null}
+   * @param {Vector} localPoint Coordinates vector.
+   * @return {GameObject|null}
    */
   hitTest(localPoint) {
     let c = /** @type {InputComponent}*/ (this.getComponent(InputComponent));
@@ -7703,7 +7703,7 @@ class GameObject extends MessageDispatcher {
   /**
    * @action
    * @protected
-   * @param {black-engine~Vector} localPoint 
+   * @param {Vector} localPoint 
    * @return {boolean}
    */
   onHitTest(localPoint) {
@@ -7733,7 +7733,7 @@ class GameObject extends MessageDispatcher {
   /**
    * @action
    * @protected
-   * @param {black-engine~Vector} localPoint 
+   * @param {Vector} localPoint 
    * @return {boolean}
    */
   onHitTestMask(localPoint) {
@@ -7742,7 +7742,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns local bounds of this object (without children).
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   get localBounds() {
     return this.getBounds(this, false);
@@ -7750,7 +7750,7 @@ class GameObject extends MessageDispatcher {
 
   /**
    * Returns parent-relative bounds (including children).
-   * @returns {black-engine~Rectangle}
+   * @returns {Rectangle}
    */
   get bounds() {
     return this.getBounds(this.mParent, true);
@@ -7768,7 +7768,7 @@ class GameObject extends MessageDispatcher {
    * @param {number} [anchorY=0] Anchor Y.
    * @param {boolean} [includeChildren=true] Include children when adjusting pivot?
    *
-   * @return {black-engine~GameObject} This.
+   * @return {GameObject} This.
    */
   setTransform(x = 0, y = 0, r = 0, scaleX = 1, scaleY = 1, anchorX = 0, anchorY = 0, includeChildren = true) {
     this.mX = x;
@@ -7786,9 +7786,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Calculates GameObject's position relative to another GameObject.
    *
-   * @param {black-engine~GameObject} gameObject Coordinates vector.
-   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
-   * @return {black-engine~Vector}
+   * @param {GameObject} gameObject Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
    */
   relativeTo(gameObject, outVector = null) {
     outVector = outVector || new Vector();
@@ -7805,9 +7805,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Calculate global position of the object.
    *
-   * @param {black-engine~Vector} localPoint Coordinates vector.
-   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
-   * @return {black-engine~Vector}
+   * @param {Vector} localPoint Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
    */
   localToGlobal(localPoint, outVector = null) {
     return this.worldTransformation.transformVector(localPoint, outVector);
@@ -7816,9 +7816,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Calculate local position of the object
    *
-   * @param {black-engine~Vector} globalPoint Coordinates vector.
-   * @param {black-engine~Vector|null} [outVector=null] Vector to be returned.
-   * @return {black-engine~Vector}
+   * @param {Vector} globalPoint Coordinates vector.
+   * @param {Vector|null} [outVector=null] Vector to be returned.
+   * @return {Vector}
    */
   globalToLocal(globalPoint, outVector = null) {
     return this.worldTransformationInverted.transformVector(globalPoint, outVector);
@@ -7898,7 +7898,7 @@ class GameObject extends MessageDispatcher {
    * Gets/sets object position.
    * 
    * NOTE: setting individual values on this vector will give zero results.
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   get xy() {
     return new Vector(this.mX, this.mY);
@@ -7907,7 +7907,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Gets/sets object position.
    * 
-   * @param {black-engine~Vector} value
+   * @param {Vector} value
    * @returns {void}
    */
   set xy(value) {
@@ -8047,7 +8047,7 @@ class GameObject extends MessageDispatcher {
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
    *
-   * @return {black-engine~GameObject} This.
+   * @return {GameObject} This.
    */
   alignAnchor(ax = 0.5, ay = 0.5) {
     Debug.isNumber(ax, ay);
@@ -8065,7 +8065,7 @@ class GameObject extends MessageDispatcher {
    *
    * @param {number}  [ax=0.5]               Align along x-axis.
    * @param {number}  [ay=0.5]               Align along y-axis.
-   * @return {black-engine~GameObject} This.
+   * @return {GameObject} This.
    */
   alignPivot(ax = 0.5, ay = 0.5) {
     return this.alignPivotOffset(ax, ay);
@@ -8079,7 +8079,7 @@ class GameObject extends MessageDispatcher {
    * @param {number}  [ay=0.5]               Align along y-axis.
    * @param {boolean} [includeChildren=true] Include children elements when calculating bounds?
    *
-   * @return {black-engine~GameObject} This.
+   * @return {GameObject} This.
    */
   alignPivotOffset(ax = 0.5, ay = 0.5, includeChildren = true) {
     Debug.isNumber(ax, ay);
@@ -8240,7 +8240,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns this GameObject parent GameObject or null.
    * @readonly
-   * @return {black-engine~GameObject|null}
+   * @return {GameObject|null}
    */
   get parent() {
     return this.mParent;
@@ -8250,7 +8250,7 @@ class GameObject extends MessageDispatcher {
    * Returns top most parent object or this if there is no parents.
    * 
    * @readonly
-   * @return {black-engine~GameObject}
+   * @return {GameObject}
    */
   get root() {
     let current = this;
@@ -8266,7 +8266,7 @@ class GameObject extends MessageDispatcher {
    *
    * @override
    * @readonly
-   * @return {black-engine~Stage|null}
+   * @return {Stage|null}
    */
   get stage() {
     return this.mAdded === true ? Black.stage : null;
@@ -8428,7 +8428,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Marks this GameObject and/or its children elements as dirty.
    *
-   * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
+   * @param {DirtyFlag} flag The flag or flag bit mask.
    * @param {boolean} [includeChildren=true] Specifies if the flag needed for all children.
    * @return {void}
    */
@@ -8449,7 +8449,7 @@ class GameObject extends MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~GameObject} go 
+   * @param {GameObject} go 
    */
   __updatePivots(go) {
     go.getBounds(go, true, Rectangle.__cache.zero());
@@ -8461,7 +8461,7 @@ class GameObject extends MessageDispatcher {
   /**
    * Marks the GameObject's parent as dirty.
    *
-   * @param {black-engine~DirtyFlag} flag The flag or flag bit mask.
+   * @param {DirtyFlag} flag The flag or flag bit mask.
    * @return {void}
    */
   setParentDirty(flag) {
@@ -8535,9 +8535,9 @@ class GameObject extends MessageDispatcher {
    * @ignore
    *
    * @param {Array<number>} points
-   * @param {black-engine~Matrix} worldTransformation
-   * @param {black-engine~Rectangle=} outRect
-   * @return {black-engine~Rectangle}
+   * @param {Matrix} worldTransformation
+   * @param {Rectangle=} outRect
+   * @return {Rectangle}
    */
   static getBoundsWithPoints(points, worldTransformation, outRect) {
     outRect = outRect || new Rectangle();
@@ -8571,8 +8571,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns whenever a given GameObject intersects with a point.
    *
-   * @param {black-engine~GameObject} gameObject GameObject to test.
-   * @param {black-engine~Vector} point A point to test.
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point A point to test.
    * @return {boolean} True if intersects.
    */
   static intersects(gameObject, point) {
@@ -8587,9 +8587,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns a point where intersection were made in local space.
    *
-   * @param {black-engine~GameObject} gameObject GameObject to test intersection with.
-   * @param {black-engine~Vector} point The point to test.
-   * @param {black-engine~Vector=} outVector If passed point of intersection will be stored in it.
+   * @param {GameObject} gameObject GameObject to test intersection with.
+   * @param {Vector} point The point to test.
+   * @param {Vector=} outVector If passed point of intersection will be stored in it.
    * @return {boolean} True if intersects.
    */
   static intersectsAt(gameObject, point, outVector = undefined) {
@@ -8611,9 +8611,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Checks if GameObject or any of its children elements intersects the given point.
    *
-   * @param {black-engine~GameObject} gameObject GameObject to test.
-   * @param {black-engine~Vector} point Point to test.
-   * @return {black-engine~GameObject|null} Intersecting object or null.
+   * @param {GameObject} gameObject GameObject to test.
+   * @param {Vector} point Point to test.
+   * @return {GameObject|null} Intersecting object or null.
    */
   static intersectsWith(gameObject, point) {
     let obj = null;
@@ -8641,7 +8641,7 @@ class GameObject extends MessageDispatcher {
    * Returns all GameObject with given tag.
    *
    * @param {string} tag Tag to find.
-   * @returns {Array<black-engine~GameObject>|null} Array of GameObject or null if not found.
+   * @returns {Array<GameObject>|null} Array of GameObject or null if not found.
    */
   static findWithTag(tag) {
     if (Black.engine.mTagCache.hasOwnProperty(tag) === false)
@@ -8653,9 +8653,9 @@ class GameObject extends MessageDispatcher {
   /**
    * Returns a list of Components.
    *
-   * @param {black-engine~GameObject} gameObject GameObject to start search from.
-   * @param {function (new:black-engine~Component)} type Type of Component.
-   * @return {Array<black-engine~Component>} Array of Component or empty array.
+   * @param {GameObject} gameObject GameObject to start search from.
+   * @param {function (new:Component)} type Type of Component.
+   * @return {Array<Component>} Array of Component or empty array.
    */
   static findComponents(gameObject, type) {
     Debug.assert(gameObject !== null, 'gameObject cannot be null.');
@@ -8684,8 +8684,8 @@ class GameObject extends MessageDispatcher {
   /**
    * Runs action across all GameObjects.
    *
-   * @param {black-engine~GameObject} gameObject GameObject to start iteration from.
-   * @param {function(black-engine~GameObject)} action The function to be executed on every GameObject.
+   * @param {GameObject} gameObject GameObject to start iteration from.
+   * @param {function(GameObject)} action The function to be executed on every GameObject.
    * @return {void}
    */
   static forEach(gameObject, action) {
@@ -8709,9 +8709,9 @@ class GameObject extends MessageDispatcher {
    * starting point.
    *
    * @param {string} name      Name to search.
-   * @param {black-engine~GameObject=} node Starting GameObject.
+   * @param {GameObject=} node Starting GameObject.
    *
-   * @return {black-engine~GameObject} GameObject or null.
+   * @return {GameObject} GameObject or null.
    */
   static find(name, node) {
     if (node == null)
@@ -8734,9 +8734,9 @@ class GameObject extends MessageDispatcher {
    * starting point.
    *
    * @param {number} id         Id to search.
-   * @param {black-engine~GameObject=} node  Starting GameObject or null.
+   * @param {GameObject=} node  Starting GameObject or null.
    *
-   * @return {black-engine~GameObject} GameObject or null.
+   * @return {GameObject} GameObject or null.
    */
   static findById(id, node) {
     if (node == null)
@@ -8904,7 +8904,7 @@ class Device {
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
- * @extends black-engine~GameObject
+ * @extends GameObject
  */
 class DisplayObject extends GameObject {
   constructor() {
@@ -8918,7 +8918,7 @@ class DisplayObject extends GameObject {
 
     /** 
      * @protected 
-     * @type {black-engine~BlendMode} 
+     * @type {BlendMode} 
      */
     this.mBlendMode = BlendMode.AUTO;
 
@@ -8930,13 +8930,13 @@ class DisplayObject extends GameObject {
 
     /** 
      * @protected 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mClipRect = null;
 
     /** 
      * @protected 
-     * @type {black-engine~Renderer|null} 
+     * @type {Renderer|null} 
      */
     this.mRenderer = this.getRenderer();
 
@@ -8960,19 +8960,19 @@ class DisplayObject extends GameObject {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix|null} 
+     * @type {Matrix|null} 
      */
     this.mCacheAsBitmapMatrixCache = null;
 
     /** 
      * @private 
-     * @type {black-engine~CanvasRenderTexture|null} 
+     * @type {CanvasRenderTexture|null} 
      */
     this.mCache = null;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mCacheBounds = null;
 
@@ -9003,7 +9003,7 @@ class DisplayObject extends GameObject {
   /**
    * Factory method returns concrete renderer for this Game Object.
    * 
-   * @returns {black-engine~Renderer}
+   * @returns {Renderer}
    */
   getRenderer() {
     return Black.driver.getRenderer('DisplayObject', this);
@@ -9253,14 +9253,14 @@ class DisplayObject extends GameObject {
   /**
    * Gets/Sets blend mode for the object.
    *
-   * @return {black-engine~BlendMode}
+   * @return {BlendMode}
    */
   get blendMode() {
     return this.mBlendMode;
   }
 
   /**
-   * @param {black-engine~BlendMode} value
+   * @param {BlendMode} value
    * @return {void}
    */
   set blendMode(value) {
@@ -9274,14 +9274,14 @@ class DisplayObject extends GameObject {
   /**
    * Gets/Sets clipping area for the object.
    *
-   * @return {black-engine~Rectangle}
+   * @return {Rectangle}
    */
   get clipRect() {
     return this.mClipRect;
   }
 
   /**
-   * @param {black-engine~Rectangle} value
+   * @param {Rectangle} value
    * @return {void}
    */
   set clipRect(value) {
@@ -9309,7 +9309,7 @@ class DisplayObject extends GameObject {
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class Camera extends DisplayObject {
   constructor() {
@@ -9347,7 +9347,7 @@ class Camera extends DisplayObject {
  * @fires GameObject#pointerDown
  * @fires GameObject#pointerUp
  * 
- * @extends black-engine~System
+ * @extends System
  */
 class Input extends System {
   /**
@@ -9362,19 +9362,19 @@ class Input extends System {
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mViewportPosition = new Vector();
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mPointerPosition = new Vector();
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mStagePosition = new Vector();
 
@@ -9435,25 +9435,25 @@ class Input extends System {
 
     /** 
      * @private 
-     * @type {black-engine~GameObject} 
+     * @type {GameObject} 
      */
     this.mTarget = null;
 
     /** 
      * @private 
-     * @type {black-engine~Component} 
+     * @type {Component} 
      */
     this.mTargetComponent = null;
 
     /** 
      * @private 
-     * @type {black-engine~GameObject} 
+     * @type {GameObject} 
      */
     this.mLockedTarget = null;
 
     /** 
      * @private 
-     * @type {black-engine~Component} 
+     * @type {Component} 
      */
     this.mLastInTargetComponent = null;
 
@@ -9593,7 +9593,7 @@ class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {Event} evt
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   __getPointerPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -9611,7 +9611,7 @@ class Input extends System {
    * @private
    * @param {Element} canvas
    * @param {TouchEvent} evt
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   __getTouchPos(canvas, evt) {
     let rect = canvas.getBoundingClientRect();
@@ -9678,7 +9678,7 @@ class Input extends System {
   /**
    * @ignore
    * @private
-   * @param {black-engine~Vector} pos
+   * @param {Vector} pos
    */
   __findTarget(pos) {
     let obj = Black.stage.hitTest(pos);
@@ -9697,7 +9697,7 @@ class Input extends System {
    * @ignore
    * @private
    * @param {Object} nativeEvent
-   * @param {black-engine~Vector} pos
+   * @param {Vector} pos
    * @param {string} type
    */
   __processNativeEvent(nativeEvent, pos, type) {
@@ -9829,7 +9829,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer position relative to viewport.
    *
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   get viewportPosition() {
     return this.mViewportPosition;
@@ -9838,7 +9838,7 @@ class Input extends System {
   /**
    * Returns mouse or touch pointer position including active camera transformation.
    *
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   get pointerPosition() {
     return this.mPointerPosition;
@@ -9847,7 +9847,7 @@ class Input extends System {
   /**
    * Returns pointer position relative to the stage.
    * 
-   * @returns {black-engine~Vector}
+   * @returns {Vector}
    */
   get stagePosition() {
     return this.mStagePosition;
@@ -9984,7 +9984,7 @@ class PointerInfo {
   /**
    * Creates new PointerInfo instance. For internal use only.
    *
-   * @param {black-engine~GameObject} activeObject `GameObject` the cursor is above.
+   * @param {GameObject} activeObject `GameObject` the cursor is above.
    * @param {number} x x-coordinate
    * @param {number} y y-coordinate
    * @param {number} button active pressed button
@@ -9993,7 +9993,7 @@ class PointerInfo {
 
     /** 
      * @private 
-     * @type {black-engine~GameObject} 
+     * @type {GameObject} 
      */
     this.mActiveObject = activeObject;
 
@@ -10042,7 +10042,7 @@ class PointerInfo {
    * Returns the object under cursor right now.
    *
    * @readonly
-   * @returns {black-engine~GameObject}
+   * @returns {GameObject}
    */
   get activeObject() {
     return this.mActiveObject;
@@ -10074,7 +10074,7 @@ class PointerInfo {
  *
  * @cat display
  * @fires Stage#resize
- * @extends black-engine~GameObject
+ * @extends GameObject
  */
 class Stage extends GameObject {
   constructor() {
@@ -10088,7 +10088,7 @@ class Stage extends GameObject {
 
     /** 
      * @private 
-     * @type {black-engine~StageScaleMode} 
+     * @type {StageScaleMode} 
      */
     this.mScaleMode = StageScaleMode.NORMAL;
 
@@ -10253,14 +10253,14 @@ class Stage extends GameObject {
   /**
    * Gets/Sets stage scale mode.
    *
-   * @return {black-engine~StageScaleMode}
+   * @return {StageScaleMode}
    */
   get scaleMode() {
     return this.mScaleMode;
   }
 
   /**
-   * @param {black-engine~StageScaleMode} value
+   * @param {StageScaleMode} value
    * @returns {void}
    */
   set scaleMode(value) {
@@ -10343,7 +10343,7 @@ class Stage extends GameObject {
    * Returns local transformation `Matrix`
    *
    * @override
-   * @return {black-engine~Matrix}
+   * @return {Matrix}
    */
   get localTransformation() {
     return this.mLocalTransform;
@@ -10351,7 +10351,7 @@ class Stage extends GameObject {
 
   /**
    * @override
-   * @param {black-engine~Matrix} value
+   * @param {Matrix} value
    * @return {void}
    */
   set localTransformation(value) {
@@ -10401,7 +10401,7 @@ class Stage extends GameObject {
  * Collider with rectangle shape.
  *
  * @cat colliders
- * @extends black-engine~Collider
+ * @extends Collider
  */
 class BoxCollider extends Collider {
   /**
@@ -10427,7 +10427,7 @@ class BoxCollider extends Collider {
      * Local to gameObject. 
      * 
      * @private 
-     * @type {black-engine~Rectangle}
+     * @type {Rectangle}
      */
     this.mRect = new Rectangle();
 
@@ -10435,7 +10435,7 @@ class BoxCollider extends Collider {
      * Local to rigid body normals. 
      * 
      * @private 
-     * @type {Array<black-engine~Vector>}
+     * @type {Array<Vector>}
      */
     this.mNormals = normals;
 
@@ -10443,21 +10443,21 @@ class BoxCollider extends Collider {
      * Local to rigid body vertices. 
      * 
      * @private 
-     * @type {Array<black-engine~Vector>} */
+     * @type {Array<Vector>} */
     this.mVertices = vertices;
 
     /**
      * Local to rigid body min x and y vertex. 
      * 
      * @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mLocalMax = new Vector();
 
@@ -10465,7 +10465,7 @@ class BoxCollider extends Collider {
      * Local to rigid body center  
      * 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mLocalCenter = new Vector();
 
@@ -10480,7 +10480,7 @@ class BoxCollider extends Collider {
    * @param {number} y      Y-coordinate.
    * @param {number} width  Rectangle width.
    * @param {number} height Rectangle height.
-   * @returns {black-engine~BoxCollider}
+   * @returns {BoxCollider}
    */
   set(x, y, width, height) {
     this.mRect.set(x, y, width, height);
@@ -10541,7 +10541,7 @@ class BoxCollider extends Collider {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {black-engine~Vector} point Global coordinates.
+   * @param {Vector} point Global coordinates.
    *
    * @return {boolean}
    */
@@ -10575,7 +10575,7 @@ class BoxCollider extends Collider {
  * Collider with circle shape.
  *
  * @cat colliders
- * @extends black-engine~Collider
+ * @extends Collider
  */
 class CircleCollider extends Collider {
   /**
@@ -10590,26 +10590,26 @@ class CircleCollider extends Collider {
 
     /** 
      * @private 
-     * @type {black-engine~Circle} */
+     * @type {Circle} */
     this.mCircle = new Circle(x, y, radius);  // local to sprite
 
     /**
      * Local to rigid body center.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mLocalCenter = new Vector();
 
     /**
      * Local to rigid body min x and y vertex.
      * @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mLocalMin = new Vector();
 
     /**
      * Local to rigid body max x and y vertex 
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mLocalMax = new Vector();
 
@@ -10630,7 +10630,7 @@ class CircleCollider extends Collider {
    * @param {number} x      Center coordinate within X-axis.
    * @param {number} y      Center coordinate within Y-axis.
    * @param {number} radius Radius of the circle.
-   * @returns {black-engine~CircleCollider}
+   * @returns {CircleCollider}
    */
   set(x, y, radius) {
     this.mCircle.set(x, y, radius);
@@ -10676,7 +10676,7 @@ class CircleCollider extends Collider {
    * Checks if given global coordinates are located within collider's area.
    *
    * @public
-   * @param {black-engine~Vector} point Global coordinates.
+   * @param {Vector} point Global coordinates.
    * @returns {boolean}
    */
   containsPoint(point) {
@@ -10709,7 +10709,7 @@ class CircleCollider extends Collider {
  * A texture allowing game objects to be rendered onto it.
  *
  * @cat textures
- * @extends black-engine~Texture
+ * @extends Texture
  */
 class CanvasRenderTexture extends Texture {
   /**
@@ -10758,7 +10758,7 @@ class CanvasRenderTexture extends Texture {
  * A texture atlas.
  *
  * @cat textures
- * @extends black-engine~Texture
+ * @extends Texture
  */
 class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
@@ -10766,7 +10766,7 @@ class AtlasTexture extends Texture {
 
     /** 
      * @private 
-     * @type {Object.<string, black-engine~Texture>} 
+     * @type {Object.<string, Texture>} 
      */
     this.mSubTextures = {};
 
@@ -10809,7 +10809,7 @@ class AtlasTexture extends Texture {
    * Returns the texture by a given name.
    *
    * @param {string} name The name of the texture to find.
-   * @return {black-engine~Texture} The Texture or null if not found.
+   * @return {Texture} The Texture or null if not found.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -10825,8 +10825,8 @@ class AtlasTexture extends Texture {
    * This method sorts all resulting textures using neutral sort algorith.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
-   * @param {Array<black-engine~Texture>|null}         outTextures If passed will be overwritten by result object.
-   * @return {Array<black-engine~Texture>}             The list of found textures.
+   * @param {Array<Texture>|null}         outTextures If passed will be overwritten by result object.
+   * @return {Array<Texture>}             The list of found textures.
    */
   getTextures(nameMask = null, outTextures = null) {
     let out = outTextures || [];
@@ -10949,7 +10949,7 @@ const LoaderType = {
  * Base class for loaders.
  *
  * @cat assets.loaders
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class AssetLoader extends MessageDispatcher {
   /**
@@ -11047,7 +11047,7 @@ var alternativeUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIA
  * Responsible for loading images.
  *
  * @cat assets.loaders
- * @extends black-engine~AssetLoader
+ * @extends AssetLoader
  */
 class ImageAssetLoader extends AssetLoader {
   /**
@@ -11089,7 +11089,7 @@ class ImageAssetLoader extends AssetLoader {
  * XHRAssetLoader responsible for loading data via XMLHttpRequest.
  *
  * @cat assets.loaders
- * @extends black-engine~AssetLoader
+ * @extends AssetLoader
  */
 class XHRAssetLoader extends AssetLoader {
   constructor(url) {
@@ -11154,7 +11154,7 @@ class XHRAssetLoader extends AssetLoader {
  * Responsible for loading local or Google fonts.
  *
  * @cat assets.loaders
- * @extends black-engine~AssetLoader
+ * @extends AssetLoader
  */
 class FontFaceAssetLoader extends AssetLoader {
   /**
@@ -11205,7 +11205,7 @@ class FontFaceAssetLoader extends AssetLoader {
 
     /** 
      * @private 
-     * @type {black-engine~FontMetrics|null} 
+     * @type {FontMetrics|null} 
      */
     this.metrics = null;
 
@@ -11304,7 +11304,7 @@ class FontFaceAssetLoader extends AssetLoader {
  * @fires Asset#complete
  * 
  * @cat assets
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class Asset extends MessageDispatcher {
   /**
@@ -11335,7 +11335,7 @@ class Asset extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {Array<black-engine~AssetLoader>} 
+     * @type {Array<AssetLoader>} 
      */
     this.mLoaders = [];
 
@@ -11353,7 +11353,7 @@ class Asset extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~MessageBinding>} 
+     * @type {Array<MessageBinding>} 
      */
     this.mBindings = [];
   }
@@ -11361,8 +11361,8 @@ class Asset extends MessageDispatcher {
   /**
    * Adds given loader to the list. Loader cannot be added to multiply Assets.
    * 
-   * @param {black-engine~AssetLoader} loader Loader to add.
-   * @returns {black-engine~AssetLoader}
+   * @param {AssetLoader} loader Loader to add.
+   * @returns {AssetLoader}
    */
   addLoader(loader) {
     this.mLoaders.push(loader);
@@ -11377,7 +11377,7 @@ class Asset extends MessageDispatcher {
 
   /**
    * Called when AssetManager is about to request loaders for this asset.
-   * @param {black-engine~LoaderFactory} factory 
+   * @param {LoaderFactory} factory 
    */
   onLoaderRequested(factory) { }
 
@@ -11398,7 +11398,7 @@ class Asset extends MessageDispatcher {
 
   /**
    * @private
-   * @param {black-engine~Message} m 
+   * @param {Message} m 
    */
   __onLoaderError(m) {
     this.abort();
@@ -11487,7 +11487,7 @@ class Asset extends MessageDispatcher {
   /**
    * Returns array of loaders.
    * 
-   * @returns {Array<black-engine~AssetLoader>}
+   * @returns {Array<AssetLoader>}
    */
   get loaders() {
     return this.mLoaders;
@@ -11499,7 +11499,7 @@ class Asset extends MessageDispatcher {
  * converting them into Textures.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class TextureAsset extends Asset {
   /**
@@ -11522,7 +11522,7 @@ class TextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~ImageAssetLoader|null} 
+     * @type {ImageAssetLoader|null} 
      */
     this.mImageLoader = null;
   }
@@ -11547,7 +11547,7 @@ class TextureAsset extends Asset {
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class JSONAsset extends Asset {
   /**
@@ -11568,7 +11568,7 @@ class JSONAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -11595,7 +11595,7 @@ class JSONAsset extends Asset {
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class XMLAsset extends Asset {
   /**
@@ -11616,7 +11616,7 @@ class XMLAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -11644,7 +11644,7 @@ class XMLAsset extends Asset {
  * Note: this class need a body to work properly.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class FontAsset extends Asset {
   /**
@@ -11695,7 +11695,7 @@ class FontAsset extends Asset {
  * file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class AtlasTextureAsset extends Asset {
   /**
@@ -11728,7 +11728,7 @@ class AtlasTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~ImageAssetLoader|null} 
+     * @type {ImageAssetLoader|null} 
      */
     this.mImageLoader = null;
 
@@ -11764,7 +11764,7 @@ class AtlasTextureAsset extends Asset {
  * Bitmap Font Asset responsible for loading font image file and corresponding xml file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class BitmapFontAsset extends Asset {
   /**
@@ -11794,7 +11794,7 @@ class BitmapFontAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~ImageAssetLoader|null}
+     * @type {ImageAssetLoader|null}
      */
     this.mImageLoader = null;
 
@@ -11830,8 +11830,8 @@ class BitmapFontAsset extends Asset {
   /**
    *
    * @param {Document} xml
-   * @param {black-engine~Texture} texture
-   * @returns {black-engine~BitmapFontData}
+   * @param {Texture} texture
+   * @returns {BitmapFontData}
    */
   static parse(xml, texture) {
     let data = new BitmapFontData();
@@ -12000,7 +12000,7 @@ class SoundEffect {
  * Allows to distribute sound between left and right channel.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 class StereoPanner extends SoundEffect {
   /**
@@ -12089,12 +12089,12 @@ let ID$2 = 0;
  * The sound
  * 
  * @cat audio
- * @extends {black-engine~MessageDispatcher}
+ * @extends {MessageDispatcher}
  */
 class SoundInstance extends MessageDispatcher {
   /**
    * Creates instance
-   * @param {black-engine~SoundClip} sound `SoundClip` instance taken from `AssetManager`.
+   * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
    */
   constructor(sound) {
     super();
@@ -12107,13 +12107,13 @@ class SoundInstance extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~SoundClip} 
+     * @type {SoundClip} 
      */
     this.mSound = sound;
 
     /** 
      * @private 
-     * @type {black-engine~SoundState} 
+     * @type {SoundState} 
      */
     this.mState = SoundState.NEWBORN;
 
@@ -12265,7 +12265,7 @@ class SoundInstance extends MessageDispatcher {
 
   /**
    * @ignore
-   * @returns {black-engine~SoundInstance}
+   * @returns {SoundInstance}
    */
   _play() {
     if (this.mState === SoundState.PLAYING)
@@ -12542,13 +12542,13 @@ class SoundChannel {
 
     /** 
      * @private 
-     * @type {Array<black-engine~SoundInstance>} 
+     * @type {Array<SoundInstance>} 
      */
     this.mSounds = [];
 
     /** 
      * @private 
-     * @type {Array<black-engine~SoundEffect>} 
+     * @type {Array<SoundEffect>} 
      */
     this.mEffects = [];
   }
@@ -12557,7 +12557,7 @@ class SoundChannel {
    * Allows the sound to be played on this channel
    * 
    * @public
-   * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
+   * @param {SoundInstance} soundInstance Concrete SoundInstance.
    * @returns {void}
    */
   attachSound(soundInstance) {
@@ -12576,7 +12576,7 @@ class SoundChannel {
    * Removes given sound instance from this channel
    * 
    * @public
-   * @param {black-engine~SoundInstance} soundInstance Concrete SoundInstance.
+   * @param {SoundInstance} soundInstance Concrete SoundInstance.
    * @returns {void}
    */
   detachSound(soundInstance) {
@@ -12627,8 +12627,8 @@ class SoundChannel {
    * Adds sound effect to this channel
    * 
    * @public
-   * @param {black-engine~SoundEffect} effect SoundEffect instance.
-   * @returns {black-engine~SoundEffect}
+   * @param {SoundEffect} effect SoundEffect instance.
+   * @returns {SoundEffect}
    */
   addEffect(effect) {
     Debug.assert(effect != null, 'Effect cannot be null');
@@ -12643,8 +12643,8 @@ class SoundChannel {
    * Removes sound effect from this channel
    * 
    * @public
-   * @param {black-engine~SoundEffect} effect SoundEffect instance.
-   * @returns {black-engine~SoundEffect}
+   * @param {SoundEffect} effect SoundEffect instance.
+   * @returns {SoundEffect}
    */
   removeEffect(effect) {
     Debug.assert(effect != null, 'Effect cannot be null');
@@ -12722,7 +12722,7 @@ class SoundChannel {
  * The main class, which is responsible for audio support.
  * 
  * @cat audio
- * @extends {black-engine~System}
+ * @extends {System}
  */
 class MasterAudio extends System {
   /**
@@ -12741,19 +12741,19 @@ class MasterAudio extends System {
 
     /** 
      * @private 
-     * @type {black-engine~SoundListener|null} 
+     * @type {SoundListener|null} 
      */
     this.mCurrentListener = null;
 
     /** 
      * @private 
-     * @type {Object<string, black-engine~SoundChannel>} 
+     * @type {Object<string, SoundChannel>} 
      */
     this.mChannels = {};
 
     /** 
      * @private 
-     * @type {black-engine~SoundChannel|null} 
+     * @type {SoundChannel|null} 
      */
     this.mMasterChannel = null;
 
@@ -12882,7 +12882,7 @@ class MasterAudio extends System {
    * Creates or returns the channel with specific name.
    * 
    * @param {string} name The name of channel to create.
-   * @returns {black-engine~SoundChannel}
+   * @returns {SoundChannel}
    */
   createChannel(name) {
     if (this.mChannels[name] == null) {
@@ -12898,7 +12898,7 @@ class MasterAudio extends System {
    * Gets the channel with specific name.
    * 
    * @param {string} name The name of channel to get.
-   * @returns {black-engine~SoundChannel|null}
+   * @returns {SoundChannel|null}
    */
   getChannel(name) {
     return this.mChannels[name];
@@ -12906,8 +12906,8 @@ class MasterAudio extends System {
 
   /**
    * @ignore
-   * @param {black-engine~SoundInstance} snd 
-   * @returns {black-engine~SoundChannel}
+   * @param {SoundInstance} snd 
+   * @returns {SoundChannel}
    */
   _resolveChannel(snd) {
     for (let chName in this.mChannels)
@@ -12924,7 +12924,7 @@ class MasterAudio extends System {
    * Plays sound on specific channel.
    * 
    * @public
-   * @param {string|black-engine~SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
+   * @param {string|SoundAtlasClip} nameOrSound The name of sound or the instance of SoundInstance.
    * @param {string=} [channel='master']       The name of channel to play on.
    * @param {number=} [volume=1]               Volume level.
    * @param {boolean=} [loop=false]            Defines if sound will loop.
@@ -13018,14 +13018,14 @@ class MasterAudio extends System {
    * Gets the master channel.
    * 
    * @readonly
-   * @returns {black-engine~SoundChannel}
+   * @returns {SoundChannel}
    */
   get masterChannel() {
     return this.mMasterChannel;
   }
 
   /**
-   * @param {black-engine~SoundListener} value
+   * @param {SoundListener} value
    * @returns {void}
    */
   set currentListener(value) {
@@ -13036,7 +13036,7 @@ class MasterAudio extends System {
    * Gets/Sets current listener for spatial sound effects.
    * 
    * @public
-   * @returns {black-engine~SoundListener}
+   * @returns {SoundListener}
    */
   get currentListener() {
     return this.mCurrentListener;
@@ -13239,7 +13239,7 @@ class SoundClip {
  * Sound file asset class responsible for loading audio files.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class SoundAsset extends Asset {
   /**
@@ -13267,7 +13267,7 @@ class SoundAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -13296,7 +13296,7 @@ class SoundAsset extends Asset {
  * The class which stores audio buffer of sound atlas and information about sub sound clips.
  * 
  * @cat audio
- * @extends black-engine~SoundClip
+ * @extends SoundClip
  */
 class SoundAtlasClip extends SoundClip {
 
@@ -13311,7 +13311,7 @@ class SoundAtlasClip extends SoundClip {
 
     /** 
      * @private 
-     * @type {Object<string, black-engine~SoundClip>} 
+     * @type {Object<string, SoundClip>} 
      */
     this.mClips = {};
     
@@ -13327,7 +13327,7 @@ class SoundAtlasClip extends SoundClip {
    * @param {string} name     The name of the sub sound.
    * @param {number} offset   The offset is seconds, where sub sound will be start playing from.
    * @param {number} duration The duration of sub sound.
-   * @returns {black-engine~SoundClip}     New instance of SoundClip.
+   * @returns {SoundClip}     New instance of SoundClip.
    */
   addSubSound(name, offset = 0, duration = NaN) {
     this.mClips[name] = new SoundClip(this.native, offset, duration, true);
@@ -13354,7 +13354,7 @@ class SoundAtlasClip extends SoundClip {
    * @param {number=} [volume=1]         The volume level.
    * @param {boolean=} [loop=false]      Specifies if sound will repeat infinite times.
    * @param {number=} [pan=0]            The panning value.
-   * @returns {black-engine~SoundInstance|null}       New sound instance to be played.
+   * @returns {SoundInstance|null}       New sound instance to be played.
    */
   playSubSound(name, channel = 'master', volume = 1, loop = false, pan = 0) {
     let clip = this.mClips[name];
@@ -13374,7 +13374,7 @@ class SoundAtlasClip extends SoundClip {
    *
    * @public
    * @readonly
-   * @returns {Object<string, black-engine~SoundClip>}
+   * @returns {Object<string, SoundClip>}
    */
   get subSounds() {
     return this.mClips;
@@ -13385,7 +13385,7 @@ class SoundAtlasClip extends SoundClip {
  * Sound file asset class responsible for loading audio atlas files.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class SoundAtlasAsset extends Asset {
   /**
@@ -13420,13 +13420,13 @@ class SoundAtlasAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mAudioXHR = null;
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mDataXHR = null;
   }
@@ -13498,7 +13498,7 @@ class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
    *
-   * @param {black-engine~GraphicsCommandType} type
+   * @param {GraphicsCommandType} type
    * @param {Array<*>} data
    */
   constructor(type, data) {
@@ -13563,7 +13563,7 @@ class GraphicsPath {
    * Creates new instance of GraphicsPath
    */
   constructor() {
-    /** @type {Recblack-engine~tangle|null} */
+    /** @type {Rectangle|null} */
     this.bounds = null;
 
     /** @type {Array<number>} */
@@ -13711,19 +13711,19 @@ class GraphicsData {
   constructor() {
     /** 
      * @private 
-     * @type {Array<black-engine~GraphicsData>} 
+     * @type {Array<GraphicsData>} 
      */
     this.mNodes = [];
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {Array<black-engine~GraphicsCommand>} 
+     * @type {Array<GraphicsCommand>} 
      */
     this.mCommandQueue = [];
 
@@ -13763,9 +13763,9 @@ class GraphicsData {
    *
    * @protected
    * @param {Object} graphics Object to store bounds by reference.
-   * @param {black-engine~Matrix} transform Matrix to transform children nodes, for internal use.
+   * @param {Matrix} transform Matrix to transform children nodes, for internal use.
    *
-   * @return {black-engine~Rectangle} Calculated local bounds.
+   * @return {Rectangle} Calculated local bounds.
    */
   onGetLocalBounds(graphics, transform) {
     let path = new GraphicsPath();
@@ -13855,8 +13855,8 @@ class GraphicsData {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
@@ -13910,7 +13910,7 @@ class GraphicsData {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
+   * @param {GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -13924,7 +13924,7 @@ class GraphicsData {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
+   * @param {GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */
@@ -14154,9 +14154,9 @@ class GraphicsData {
    * @param {number} p1
    * @param {number} p2
    * @param {number} p3
-   * @param {black-engine~Vector=} out
+   * @param {Vector=} out
    *
-   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __bezierRange(p0, p1, p2, p3, out) {
     out = out || new Vector();
@@ -14216,9 +14216,9 @@ class GraphicsData {
    * @param {number} p0
    * @param {number} p1
    * @param {number} p2
-   * @param {black-engine~Vector=} out
+   * @param {Vector=} out
    *
-   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __quadraticRange(p0, p1, p2, out) {
     const a = p2 - p0;
@@ -14290,7 +14290,7 @@ class GraphicsData {
   /**
    * @private
    * @ignore
-   * @param {black-engine~GraphicsCommandType} type
+   * @param {GraphicsCommandType} type
    * @param {...*} data
    */
   __pushCommand(type, ...data) {
@@ -14378,7 +14378,7 @@ class GraphicsPattern {
   /**
    * Creates copy of this
    *
-   * @return {black-engine~GraphicsPattern} New instance
+   * @return {GraphicsPattern} New instance
    */
   clone() {
     return new GraphicsPattern(this.image, this.repetition);
@@ -14537,13 +14537,13 @@ class BVGStyle {
 
     /** 
      * @public 
-     * @type {black-engine~CapsStyle} 
+     * @type {CapsStyle} 
      */
     this.lineCap = CapsStyle.NONE;
 
     /** 
      * @public 
-     * @type {black-engine~JointStyle} 
+     * @type {JointStyle} 
      */
     this.lineJoin = JointStyle.MITER;
 
@@ -14555,7 +14555,7 @@ class BVGStyle {
 
     /** 
      * @public 
-     * @type {black-engine~FillRule} 
+     * @type {FillRule} 
      */
     this.fillRule = FillRule.NONE_ZERO;
 
@@ -14572,7 +14572,7 @@ class BVGStyle {
    * Merge parent style to this.
    *
    * @public
-   * @param {black-engine~BVGStyle} style Parent style
+   * @param {BVGStyle} style Parent style
    *
    * @returns {void}
    */
@@ -14646,7 +14646,7 @@ class BVGStyle {
    *
    * @public
    *
-   * @returns {black-engine~BVGStyle} Created style.
+   * @returns {BVGStyle} Created style.
    */
   clone() {
     let s = new BVGStyle();
@@ -14669,13 +14669,13 @@ class BVGStyle {
  * A basic utility class for drawing shapes.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class Graphics extends DisplayObject {
   /**
    * Creates new Graphics instance.
    *
-   * @param {black-engine~GraphicsData|string|null} graphicsData The id of BVG object.
+   * @param {GraphicsData|string|null} graphicsData The id of BVG object.
    * @param {boolean} trim Flag to determine the passed graphicsData needs trim.
    */
   constructor(graphicsData = null, trim = false) {
@@ -14683,7 +14683,7 @@ class Graphics extends DisplayObject {
 
     /** 
      * @private
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mBounds = new Rectangle();
 
@@ -14692,13 +14692,13 @@ class Graphics extends DisplayObject {
      *
      * 
      * @private
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mLocalBounds = null;
 
     /** 
      * @private
-     * @type {black-engine~GraphicsData|null} 
+     * @type {GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
@@ -14779,8 +14779,8 @@ class Graphics extends DisplayObject {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
@@ -14825,7 +14825,7 @@ class Graphics extends DisplayObject {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
+   * @param {GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -14837,7 +14837,7 @@ class Graphics extends DisplayObject {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
+   * @param {GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */
@@ -15065,7 +15065,7 @@ const shapeCmds = {
  * Creates GraphicsData for Graphics from BVG format.
  *
  * @cat parsers
- * @extends black-engine~ParserBase
+ * @extends ParserBase
  */
 
 class BVGParser extends ParserBase {
@@ -15082,7 +15082,7 @@ class BVGParser extends ParserBase {
   /**
    * @inheritDoc
    *
-   * @return {black-engine~GraphicsData} Data for Graphics renderer
+   * @return {GraphicsData} Data for Graphics renderer
    */
   parse(data) {
     super.parse(data);
@@ -15100,11 +15100,11 @@ class BVGParser extends ParserBase {
    *
    * @private
    * @param {Object} node BVG node.
-   * @param {Array<black-engine~BVGStyle>} styles Parsed BVG styles.
-   * @param {black-engine~GraphicsData} parent Parent node.
-   * @param {black-engine~BVGStyle} parentStyle Style for inheritance.
+   * @param {Array<BVGStyle>} styles Parsed BVG styles.
+   * @param {GraphicsData} parent Parent node.
+   * @param {BVGStyle} parentStyle Style for inheritance.
    *
-   * @returns {black-engine~GraphicsData} Parsed data root.
+   * @returns {GraphicsData} Parsed data root.
    */
   __traverse(node, styles, parent, parentStyle) {
     const defs = this._defs;
@@ -15356,7 +15356,7 @@ class BVGParser extends ParserBase {
    *
    * @private
    *
-   * @returns {Array<black-engine~BVGStyle>} Parsed data styles.
+   * @returns {Array<BVGStyle>} Parsed data styles.
    */
   __parseStyles(styles) {
     if (!styles)
@@ -15380,7 +15380,7 @@ class BVGParser extends ParserBase {
    *
    * @private
    * @param {string} data Path data attribute value
-   * @param {black-engine~GraphicsData} graphicsData Graphics data to store parsed values to.
+   * @param {GraphicsData} graphicsData Graphics data to store parsed values to.
    *
    * @return {void}
    */
@@ -15713,7 +15713,7 @@ class BVGParser extends ParserBase {
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 class BVGAsset extends Asset {
   /**
@@ -15735,7 +15735,7 @@ class BVGAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~GraphicsData|null} 
+     * @type {GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
@@ -15774,7 +15774,7 @@ class BVGAsset extends Asset {
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 
 class VectorTextureAsset extends Asset {
@@ -15818,13 +15818,13 @@ class VectorTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~GraphicsData|null} 
+     * @type {GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -15865,7 +15865,7 @@ class VectorTextureAsset extends Asset {
   /**
    * Creates baked textures from this graphics data.
    *
-   * @return {Object.<string, black-engine~CanvasRenderTexture>}
+   * @return {Object.<string, CanvasRenderTexture>}
    */
   bakeTextures() {
     const textures = {};
@@ -15935,7 +15935,7 @@ const AssetManagerState = {
 class LoaderFactory {
   /**
    * 
-   * @param {black-engine~AssetManager} assetManager 
+   * @param {AssetManager} assetManager 
    */
   constructor(assetManager) {
     this.mAssetManager = assetManager;
@@ -15945,10 +15945,10 @@ class LoaderFactory {
    * Returns an existing instance of the loader if url is already in queue or creates new instance if not.
    * 
    * @param {string} type 
-   * @param {string|black-engine~LoaderType} url 
+   * @param {string|LoaderType} url 
    * @param {...any} args
    * 
-   * @returns {black-engine~AssetLoader}
+   * @returns {AssetLoader}
    */
   get(type, url, ...args) {
     let am = this.mAssetManager;
@@ -15972,7 +15972,7 @@ class LoaderFactory {
  * @fires AssetManager#error
  *
  * @cat assets
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class AssetManager extends MessageDispatcher {
   /**
@@ -16023,25 +16023,25 @@ class AssetManager extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Asset>} 
+     * @type {Array<Asset>} 
      */
     this.mQueue = [];
 
     /** 
      * @private 
-     * @type {Object.<string, black-engine~AssetLoader>} 
+     * @type {Object.<string, AssetLoader>} 
      */
     this.mLoadersQueue = {};
 
     /** 
      * @private 
-     * @type {black-engine~AssetManagerState} 
+     * @type {AssetManagerState} 
      */
     this.mState = AssetManagerState.NONE;
 
     /**
      * @private
-     * @type {black-engine~LoaderFactory}
+     * @type {LoaderFactory}
      */
     this.mLoaderFactory = new LoaderFactory(this);
 
@@ -16106,7 +16106,7 @@ class AssetManager extends MessageDispatcher {
    * Adds asset into the loading queue.
    * 
    * @param {string} name 
-   * @param {black-engine~Asset} asset 
+   * @param {Asset} asset 
    * @returns {void}
    */
   enqueueAsset(name, asset) {
@@ -16120,7 +16120,7 @@ class AssetManager extends MessageDispatcher {
    * Returns new asset instance by given type.
    * 
    * @private
-   * @param {string|black-engine~AssetType} type 
+   * @param {string|AssetType} type 
    * @param  {...any} args 
    */
   __getAsset(type, ...args) {
@@ -16130,7 +16130,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Adds or changes texture to the internal list for future reuse by given name.
    * @param {string} name
-   * @param {black-engine~Texture} texture
+   * @param {Texture} texture
    */
   addTexture(name, texture) {
     this.mTextures[name] = texture;
@@ -16331,7 +16331,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * @protected
    * @ignore
-   * @param {black-engine~Message} msg
+   * @param {Message} msg
    * @return {void}
    */
   onAssetLoaded(msg) {
@@ -16411,10 +16411,10 @@ class AssetManager extends MessageDispatcher {
    * Returns BitmapFontData object by given name.
    *
    * @param {string} name The name of the Asset to search.
-   * @return {black-engine~BitmapFontData|null} Returns a BitmapFontData if found or null.
+   * @return {BitmapFontData|null} Returns a BitmapFontData if found or null.
    */
   getBitmapFont(name) {
-    /** @type {black-engine~BitmapFontData} */
+    /** @type {BitmapFontData} */
     let font = this.mAssets[AssetType.BITMAP_FONT][name];
 
     if (font != null)
@@ -16428,7 +16428,7 @@ class AssetManager extends MessageDispatcher {
    * Returns Texture object by given name.
    *
    * @param {string} name The name of the Asset.
-   * @return {black-engine~Texture|null} Returns a Texture if found or null.
+   * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
     let textures = this.mAssets[AssetType.TEXTURE];
@@ -16475,7 +16475,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Returns Graphics data by given name.
    * @param {string} name 
-   * @returns {black-engine~GraphicsData}
+   * @returns {GraphicsData}
    */
   getGraphicsData(name) {
     let vectors = this.mAssets[AssetType.VECTOR_GRAPHICS];
@@ -16506,7 +16506,7 @@ class AssetManager extends MessageDispatcher {
    * Searches across all loaded images and atlases.
    *
    * @param {string} nameMask The name mask.
-   * @returns {Array<black-engine~Texture>|null}
+   * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
     let textures = this.mAssets[AssetType.TEXTURE];
@@ -16579,7 +16579,7 @@ class AssetManager extends MessageDispatcher {
    * Returns AtlasTexture by given name.
    *
    * @param {string} name The name of the Asset.
-   * @return {black-engine~AtlasTexture|null} Returns atlas or null.
+   * @return {AtlasTexture|null} Returns atlas or null.
    */
   getAtlas(name) {
     let atlasses = this.mAssets[AssetType.TEXTURE_ATLAS];
@@ -16597,7 +16597,7 @@ class AssetManager extends MessageDispatcher {
    * Returns `SoundClip` by given name.
    *
    * @param {string} name The name of the sound.
-   * @return {black-engine~SoundClip} Returns sound or null.
+   * @return {SoundClip} Returns sound or null.
    */
   getSound(name) {
     let sounds = this.mAssets[AssetType.SOUND];
@@ -16627,7 +16627,7 @@ class AssetManager extends MessageDispatcher {
    * Returns `SoundAtlasClip` by given name.
    *
    * @param {string} name The name of the sound.
-   * @return {black-engine~SoundClip} Returns sound or null.
+   * @return {SoundClip} Returns sound or null.
    */
   getSoundAtlas(name) {
     if (this.mAssets[AssetType.SOUND_ATLAS] == null)
@@ -16720,7 +16720,7 @@ class AssetManager extends MessageDispatcher {
   /**
    * Returns current state.
    *
-   * @returns {black-engine~AssetManagerState}
+   * @returns {AssetManagerState}
    */
   get state() {
     return this.mState;
@@ -16751,13 +16751,13 @@ class RenderSession {
     /** @type {Array<Renderer>} */
     this.parentRenderers = [];
 
-    /** @type {Array<black-engine~Renderer>} */
+    /** @type {Array<Renderer>} */
     this.endPassParentRenderers = [];
 
     /** @type {boolean} */
     this.isBackBufferActive = true;
 
-    /** @type {Mblack-engine~atrix|null} */
+    /** @type {Matrix|null} */
     this.customTransform = null;
   }
 
@@ -16775,7 +16775,7 @@ class RenderSession {
 /**
  * Responsible for rendering `TextField` objects by different drivers.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers
  */
 class TextRenderer extends Renderer {
@@ -16789,14 +16789,14 @@ class TextRenderer extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      * @ignore 
      */
     this.mTransformCache = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix|null} 
+     * @type {Matrix|null} 
      * @ignore 
      */
     this.mTransform = null;
@@ -16832,7 +16832,7 @@ class TextRenderer extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~TextMetricsData|null} 
+     * @type {TextMetricsData|null} 
      */
     this.mMetrics = null;
   }
@@ -16872,11 +16872,11 @@ class TextRenderer extends Renderer {
   /**
    * @ignore
    * @private
-   * @param {black-engine~TextMetricsData} metrics
-   * @param {black-engine~TextSegmentMetricsData} segment
+   * @param {TextMetricsData} metrics
+   * @param {TextSegmentMetricsData} segment
    * @param {CanvasRenderingContext2D} ctx
-   * @param {black-engine~VideoNullDriver} driver
-   * @param {black-engine~FontMetrics} fontMetrics
+   * @param {VideoNullDriver} driver
+   * @param {FontMetrics} fontMetrics
    * @param {boolean} isStroke
    */
   renderSegment(metrics, segment, ctx, driver, fontMetrics, isStroke) {
@@ -17024,7 +17024,7 @@ class TextRenderer extends Renderer {
 /**
  * Responsible for rendering `BitmapTextField` objects by different drivers.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers
  */
 class BitmapTextRenderer extends Renderer {
@@ -17050,7 +17050,7 @@ class BitmapTextRenderer extends Renderer {
 
     /** 
      * @ignore 
-     * @type {black-engine~Texture|null} 
+     * @type {Texture|null} 
      */
     this.texture = null;
   }
@@ -17129,7 +17129,7 @@ class BitmapTextRenderer extends Renderer {
 /**
  * Responsible for rendering `Graphics` objects by different drivers.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers
  */
 class GraphicsRenderer extends Renderer {
@@ -17141,7 +17141,7 @@ class GraphicsRenderer extends Renderer {
 /**
  * Renders `DisplayObject` objects on canvas.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers.canvas
  */
 class DisplayObjectRendererCanvas extends Renderer {
@@ -17156,19 +17156,19 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix|null} 
+     * @type {Matrix|null} 
      */
     this.mCacheAsBitmapMatrixCache = null;
 
     /** 
      * @private 
-     * @type {black-engine~CanvasRenderTexture|null} 
+     * @type {CanvasRenderTexture|null} 
      */
     this.mCacheTexture = null;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mCacheBounds = null;
 
@@ -17182,7 +17182,7 @@ class DisplayObjectRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix|null} 
+     * @type {Matrix|null} 
      */
     this.mBakeInvertedMatrix = null;
   }
@@ -17326,7 +17326,7 @@ class DisplayObjectRendererCanvas extends Renderer {
 /**
  * Renders `TextField` objects on canvas.
  *
- * @extends black-engine~TextRenderer
+ * @extends TextRenderer
  * @cat drivers.canvas
  */
 class TextRendererCanvas extends TextRenderer {
@@ -17341,7 +17341,7 @@ class TextRendererCanvas extends TextRenderer {
 /**
  * Renders `BitmapTextField` objects on canvas.
  *
- * @extends black-engine~BitmapTextRenderer
+ * @extends BitmapTextRenderer
  * @cat drivers.canvas
  */
 class BitmapTextRendererCanvas extends BitmapTextRenderer {
@@ -17384,7 +17384,7 @@ class Scatter {
  * A base class for number scatters.
  *
  * @cat scatters
- * @extends black-engine~Scatter
+ * @extends Scatter
  */
 class FloatScatterBase extends Scatter {
   /**
@@ -17416,7 +17416,7 @@ class FloatScatterBase extends Scatter {
  * A number scatter for defining a range in 1D space.
  *
  * @cat scatters
- * @extends black-engine~FloatScatterBase
+ * @extends FloatScatterBase
  */
 class FloatScatter extends FloatScatterBase {
   /**
@@ -17470,8 +17470,8 @@ class FloatScatter extends FloatScatterBase {
   /**
    * Creates new FloatScatterBase from a set of numbers.
    *
-   * @param {...number|black-engine~FloatScatterBase} values Set of values.
-   * @returns {black-engine~FloatScatterBase}
+   * @param {...number|FloatScatterBase} values Set of values.
+   * @returns {FloatScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof FloatScatterBase)
@@ -17690,7 +17690,7 @@ class Particle {
  * Particle emitter.
  *
  * @cat particles
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class Emitter extends DisplayObject {
   /**
@@ -17701,37 +17701,37 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Texture>} 
+     * @type {Array<Texture>} 
      */
     this.mTextures = [];
 
     /** 
      * @private 
-     * @type {Array<black-engine~Particle>} 
+     * @type {Array<Particle>} 
      */
     this.mParticles = [];
 
     /** 
      * @private 
-     * @type {Array<black-engine~Particle>} 
+     * @type {Array<Particle>} 
      */
     this.mRecycled = [];
 
     /** 
      * @private 
-     * @type {Array<black-engine~Modifier>} 
+     * @type {Array<Modifier>} 
      */
     this.mInitializers = [];
 
     /** 
      * @private 
-     * @type {Array<black-engine~Modifier>} 
+     * @type {Array<Modifier>} 
      */
     this.mActions = [];
 
     /** 
      * @private 
-     * @type {black-engine~GameObject} 
+     * @type {GameObject} 
      */
     this.mSpace = null;
 
@@ -17749,13 +17749,13 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~FloatScatter} 
+     * @type {FloatScatter} 
      */
     this.mEmitCount = new FloatScatter(10);
 
     /** 
      * @private 
-     * @type {black-engine~FloatScatter} 
+     * @type {FloatScatter} 
      */
     this.mEmitNumRepeats = new FloatScatter(0, Number.MAX_SAFE_INTEGER);
 
@@ -17767,7 +17767,7 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~FloatScatter} 
+     * @type {FloatScatter} 
      */
     this.mEmitDuration = new FloatScatter(1 / 60);
 
@@ -17779,7 +17779,7 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~FloatScatter} 
+     * @type {FloatScatter} 
      */
     this.mEmitInterval = new FloatScatter(1 / 60);
 
@@ -17791,7 +17791,7 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~FloatScatter} 
+     * @type {FloatScatter} 
      */
     this.mEmitDelay = new FloatScatter(1);
 
@@ -17809,25 +17809,25 @@ class Emitter extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~EmitterState} 
+     * @type {EmitterState} 
      */
     this.mState = EmitterState.PENDING;
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpLocal = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpWorld = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~EmitterSortOrder} 
+     * @type {EmitterSortOrder} 
      */
     this.mSortOrder = EmitterSortOrder.FRONT_TO_BACK;
 
@@ -17917,7 +17917,7 @@ class Emitter extends DisplayObject {
   /**
    * A helper method for quick adding modifiers.
    *
-   * @param {...(black-engine~GameObject|black-engine~Component|black-engine~Modifier)} modifiers The list of modifiers.
+   * @param {...(GameObject|Component|Modifier)} modifiers The list of modifiers.
    * @returns {Emitter}
    */
   add(...modifiers) {
@@ -17935,8 +17935,8 @@ class Emitter extends DisplayObject {
   /**
    * Adds modifier to the end of the list.
    *
-   * @param {black-engine~Modifier} modifier Modifier to add.
-   * @return {black-engine~Modifier}
+   * @param {Modifier} modifier Modifier to add.
+   * @return {Modifier}
    */
   addModifier(modifier) {
     if (modifier.isInitializer)
@@ -17950,7 +17950,7 @@ class Emitter extends DisplayObject {
   /**
    * Removes given modifier.
    *
-   * @param {black-engine~Modifier} modifier Modifier to remove.
+   * @param {Modifier} modifier Modifier to remove.
    * @return {boolean} True if modifier was removed.
    */
   removeModifier(modifier) {
@@ -18128,7 +18128,7 @@ class Emitter extends DisplayObject {
   /**
    * Gets current emitter state.
    *
-   * @return {black-engine~EmitterState}
+   * @return {EmitterState}
    */
   get state() {
     return this.mState;
@@ -18157,14 +18157,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets the number of particles to be emitted per {@link Emitter#emitInterval}
    *
-   * @return {black-engine~FloatScatter}
+   * @return {FloatScatter}
    */
   get emitCount() {
     return this.mEmitCount;
   }
 
   /**
-   * @param {black-engine~FloatScatter} value
+   * @param {FloatScatter} value
    * @return {void}
    */
   set emitCount(value) {
@@ -18174,14 +18174,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets the number of "durations" to to repeat.
    *
-   * @return {black-engine~FloatScatter}
+   * @return {FloatScatter}
    */
   get emitNumRepeats() {
     return this.mEmitNumRepeats;
   }
 
   /**
-   * @param {black-engine~FloatScatter} value
+   * @param {FloatScatter} value
    * @return {void}
    */
   set emitNumRepeats(value) {
@@ -18192,14 +18192,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {black-engine~FloatScatter}
+   * @return {FloatScatter}
    */
   get emitDuration() {
     return this.mEmitDuration;
   }
 
   /**
-   * @param {black-engine~FloatScatter} value
+   * @param {FloatScatter} value
    * @return {void}
    */
   set emitDuration(value) {
@@ -18211,14 +18211,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {black-engine~FloatScatter}
+   * @return {FloatScatter}
    */
   get emitInterval() {
     return this.mEmitInterval;
   }
 
   /**
-   * @param {black-engine~FloatScatter} value
+   * @param {FloatScatter} value
    * @return {void}
    */
   set emitInterval(value) {
@@ -18230,14 +18230,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets
    *
-   * @return {black-engine~FloatScatter}
+   * @return {FloatScatter}
    */
   get emitDelay() {
     return this.mEmitDelay;
   }
 
   /**
-   * @param {black-engine~FloatScatter} value
+   * @param {FloatScatter} value
    * @return {void}
    */
   set emitDelay(value) {
@@ -18249,14 +18249,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets the space where emitting simulation will happen, ignoring space transformation, so all forces are relative to global.
    *
-   * @return {black-engine~GameObject}
+   * @return {GameObject}
    */
   get space() {
     return this.mSpace;
   }
 
   /**
-   * @param {black-engine~GameObject} gameObject
+   * @param {GameObject} gameObject
    * @return {void}
    */
   set space(gameObject) {
@@ -18268,14 +18268,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets a list of textures to use.
    *
-   * @return {Array<black-engine~Texture>}
+   * @return {Array<Texture>}
    */
   get textures() {
     return this.mTextures;
   }
 
   /**
-   * @param {Array<black-engine~Texture>} value
+   * @param {Array<Texture>} value
    * @return {void}
    */
   set textures(value) {
@@ -18309,14 +18309,14 @@ class Emitter extends DisplayObject {
   /**
    * Gets/Sets the order in which particles will be sorted when rendering.
    *
-   * @return {black-engine~EmitterSortOrder}
+   * @return {EmitterSortOrder}
    */
   get sortOrder() {
     return this.mSortOrder;
   }
 
   /**
-   * @param {black-engine~EmitterSortOrder} value
+   * @param {EmitterSortOrder} value
    * @return {void}
    */
   set sortOrder(value) {
@@ -18328,7 +18328,7 @@ class Emitter extends DisplayObject {
 /**
  * Renders `Particle` objects on canvas.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers.canvas
  */
 class EmitterRendererCanvas extends Renderer {
@@ -18346,13 +18346,13 @@ class EmitterRendererCanvas extends Renderer {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpLocal = new Matrix();
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.__tmpWorld = new Matrix();
   }
@@ -18389,10 +18389,10 @@ class EmitterRendererCanvas extends Renderer {
   /**
    * @ignore
    * @private
-   * @param {black-engine~Particle} particle
-   * @param {black-engine~Matrix} localTransform
-   * @param {black-engine~Matrix} worldTransform
-   * @param {black-engine~VideoNullDriver} driver
+   * @param {Particle} particle
+   * @param {Matrix} localTransform
+   * @param {Matrix} worldTransform
+   * @param {VideoNullDriver} driver
    */
   __renderParticle(particle, localTransform, worldTransform, driver) {
     let gameObject = /** @type {Emitter} */ (this.gameObject);
@@ -18436,7 +18436,7 @@ class EmitterRendererCanvas extends Renderer {
 /**
  * Renders `Sprite` objects on canvas.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers.canvas
  */
 
@@ -18447,10 +18447,10 @@ class SpriteRendererCanvas extends Renderer{
     /** @type {CanvasPattern|null} */
     this.pattern = null;
 
-    /** @type {black-engine~Texture|null} */
+    /** @type {Texture|null} */
     this.patternTexture = null;
 
-    /** @type {black-engine~CanvasRenderTexture|null} */
+    /** @type {CanvasRenderTexture|null} */
     this.sliceTextureCache = null;
 
     /** @type {number|null} */
@@ -18459,7 +18459,7 @@ class SpriteRendererCanvas extends Renderer{
     /** @type {number|null} */
     this.sizeHeightCache = null;
 
-    /** @type {black-engine~Texture} */
+    /** @type {Texture} */
     this.textureCache = null;
   }
 
@@ -18619,7 +18619,7 @@ class SpriteRendererCanvas extends Renderer{
 /**
  * Renders `Graphics` objects on canvas.
  *
- * @extends black-engine~GraphicsRenderer
+ * @extends GraphicsRenderer
  * @cat drivers.canvas
  */
 
@@ -18646,7 +18646,7 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * Prepare context to draw.
    *
    * @private
-   * @param {black-engine~VideoNullDriver} driver Driver to draw.
+   * @param {VideoNullDriver} driver Driver to draw.
    * @param {number|null=} [color=null] Tint.
    *
    * @return {void}
@@ -18671,10 +18671,10 @@ class GraphicsRendererCanvas extends GraphicsRenderer {
    * Recursively draws each node of GraphicsData.
    *
    * @private
-   * @param {black-engine~VideoNullDriver} driver Driver to draw.
+   * @param {VideoNullDriver} driver Driver to draw.
    * @param {number|null} color Tint.
-   * @param {black-engine~GraphicsData} node Commands provider.
-   * @param {black-engine~Matrix} transform Graphics Data global transformation.
+   * @param {GraphicsData} node Commands provider.
+   * @param {Matrix} transform Graphics Data global transformation.
    *
    * @return {void}
    */
@@ -18879,25 +18879,25 @@ class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~Matrix} Actual object - do not change 
+     * @type {Matrix} Actual object - do not change 
      */
     this.mTransform = new Matrix();
 
     /** 
      * @protected 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mIdentityMatrix = new Matrix();
 
     /** 
      * @protected 
-     * @type {black-engine~RenderSession} 
+     * @type {RenderSession} 
      */
     this.mActiveSession = new RenderSession();
 
     /** 
      * @protected 
-     * @type {Array<black-engine~RenderSession>} 
+     * @type {Array<RenderSession>} 
      */
     this.mSessions = [];
 
@@ -18921,7 +18921,7 @@ class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~BlendMode|null} 
+     * @type {BlendMode|null} 
      */
     this.mGlobalBlendMode = BlendMode.AUTO;
 
@@ -18933,13 +18933,13 @@ class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~Renderer} 
+     * @type {Renderer} 
      */
     this.mStageRenderer = new Renderer();
 
     /** 
      * @protected 
-     * @type {Object.<string, function(new: black-engine~Renderer)>} 
+     * @type {Object.<string, function(new: Renderer)>} 
      */
     this.mRendererMap = {};
 
@@ -18950,10 +18950,10 @@ class VideoNullDriver {
    * A main render function.
    *
    * @public
-   * @param {black-engine~GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
-   * @param {black-engine~CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
+   * @param {GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
+   * @param {CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
    *                                                   onto backbuffer if null.
-   * @param {black-engine~Matrix} [customTransform=null]            An optional extra offset.
+   * @param {Matrix} [customTransform=null]            An optional extra offset.
    */
   render(gameObject, renderTexture = null, customTransform = null) {
   }
@@ -18962,8 +18962,8 @@ class VideoNullDriver {
    * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
    *
    * @param {string} type      The type of the GameObject to find renderer for.
-   * @param {black-engine~GameObject} owner The owner of this renderer.
-   * @returns {black-engine~Renderer} New renderer instance.
+   * @param {GameObject} owner The owner of this renderer.
+   * @returns {Renderer} New renderer instance.
    */
   getRenderer(type, owner) {
     return null;
@@ -18972,7 +18972,7 @@ class VideoNullDriver {
   /**
    * @ignore
    * @private
-   * @returns {black-engine~RenderSession}
+   * @returns {RenderSession}
    */
   __saveSession() {
     let session = VideoNullDriver.sessionPool.get();
@@ -18996,9 +18996,9 @@ class VideoNullDriver {
   /**
    * @ignore
    * @protected
-   * @param {black-engine~RenderSession} session
-   * @param {black-engine~GameObject} gameObject
-   * @param {black-engine~Renderer} parentRenderer
+   * @param {RenderSession} session
+   * @param {GameObject} gameObject
+   * @param {Renderer} parentRenderer
    * @returns {void}
    */
   __collectParentRenderables(session, gameObject, parentRenderer) {
@@ -19033,7 +19033,7 @@ class VideoNullDriver {
    * Notifies renderer about new clipping.
    *
    * @protected
-   * @param {black-engine~Rectangle} clipRect The region to clip.
+   * @param {Rectangle} clipRect The region to clip.
    * @param {number} px Pivot-x.
    * @param {number} py Pivot-y.
    */
@@ -19050,8 +19050,8 @@ class VideoNullDriver {
   /**
    * @protected
    * @ignore
-   * @param {black-engine~Message} msg
-   * @param {black-engine~Rectangle} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    * @returns {void}
    */
   __onResize(msg, rect) {
@@ -19094,7 +19094,7 @@ class VideoNullDriver {
 
   /**
    * @param {HTMLCanvasElement} canvas
-   * @return {?black-engine~Texture}
+   * @return {?Texture}
    */
   getTextureFromCanvas(canvas) {
     return null;
@@ -19104,7 +19104,7 @@ class VideoNullDriver {
    * Sets world transformation for future use.
    *
    * @public
-   * @param {black-engine~Matrix} m An transformation matrix to store.
+   * @param {Matrix} m An transformation matrix to store.
    * @returns {void}
    */
   setTransform(m) {
@@ -19141,14 +19141,14 @@ class VideoNullDriver {
   /**
    * Gets/Sets global blending mode. Used to calculate blend mode relative to parent object.
    *
-   * @return {?black-engine~BlendMode}
+   * @return {?BlendMode}
    */
   getGlobalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
   /**
-   * @param {?black-engine~BlendMode} value
+   * @param {?BlendMode} value
    * @return {void}
    */
   setGlobalBlendMode(value) {
@@ -19160,7 +19160,7 @@ class VideoNullDriver {
    * method.
    *
    * @public
-   * @param {black-engine~Texture} texture Instance of the Texture to draw.
+   * @param {Texture} texture Instance of the Texture to draw.
    * 
    */
   drawTexture(texture) {
@@ -19170,7 +19170,7 @@ class VideoNullDriver {
    * Draws texture onto back-buffer with given offset. alpha, blend mode and transformation matrix must be set prior to calling this
    * method.
    *
-   * @param {black-engine~Texture} texture Instance of the Texture to draw.
+   * @param {Texture} texture Instance of the Texture to draw.
    * @param {number} ox Offset along x-axis
    * @param {number} oy Offset along y-axis
    */
@@ -19214,7 +19214,7 @@ class VideoNullDriver {
 /**
  * Recyclable session pool. Do not recycle manually.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 VideoNullDriver.sessionPool = new ObjectPool(RenderSession);
@@ -19222,7 +19222,7 @@ VideoNullDriver.sessionPool = new ObjectPool(RenderSession);
 /**
  * Video driver responsible for rendering game objects onto HTML canvas element.
  *
- * @extends black-engine~VideoNullDriver
+ * @extends VideoNullDriver
  * @cat drivers.canvas
  */
 class CanvasDriver extends VideoNullDriver {
@@ -19325,9 +19325,9 @@ class CanvasDriver extends VideoNullDriver {
 
   /**
    * @ignore
-   * @param {black-engine~GameObject} child 
-   * @param {black-engine~RenderSession} session 
-   * @param {black-engine~Renderer} parentRenderer
+   * @param {GameObject} child 
+   * @param {RenderSession} session 
+   * @param {Renderer} parentRenderer
    */
   renderObject(child, session, parentRenderer) {
     let skipChildren = false;
@@ -19387,8 +19387,8 @@ class CanvasDriver extends VideoNullDriver {
   /**
    * @ignore
    * @protected
-   * @param {black-engine~Message} msg
-   * @param {black-engine~Rectangle} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    * @returns {void}
    */
   __onResize(msg, rect) {
@@ -19638,20 +19638,20 @@ class TilingInfo {
  * Sprite is used to render Texture onto screen.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class Sprite extends DisplayObject {
   /**
    * Creates a new Sprite instance.
    *
-   * @param {black-engine~Texture|string|null} texture The Texture instance or null.
+   * @param {Texture|string|null} texture The Texture instance or null.
    */
   constructor(texture = null, useTextureProps = true) {
     super();
 
     /** 
      * @private 
-     * @type {black-engine~Texture|null} 
+     * @type {Texture|null} 
      */
     this.mTexture = null;
 
@@ -19663,13 +19663,13 @@ class Sprite extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~TilingInfo|null} 
+     * @type {TilingInfo|null} 
      */
     this.mTiling = null;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mSlice9grid = null;
 
@@ -19698,8 +19698,8 @@ class Sprite extends DisplayObject {
    * Returns a rectangle that completely encloses the object in local coordinate system.
    *
    * @protected
-   * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-   * @return {black-engine~Rectangle} The new Rectangle or outRect if it was passed as a param.
+   * @param {Rectangle=} outRect Rectangle to be returned.
+   * @return {Rectangle} The new Rectangle or outRect if it was passed as a param.
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -19720,7 +19720,7 @@ class Sprite extends DisplayObject {
   /**
    * Returns the current Texture on this sprite.
    *
-   * @return {black-engine~Texture|null} The current texture set on this Sprite or null.
+   * @return {Texture|null} The current texture set on this Sprite or null.
    */
   get texture() {
     return this.mTexture;
@@ -19730,7 +19730,7 @@ class Sprite extends DisplayObject {
    * Sets the Texture on this sprite by name.
    * Only Black.assets is used.
    *
-   * @param {black-engine~Texture|null} texture Texture to apply on.
+   * @param {Texture|null} texture Texture to apply on.
    * @return {void}
    */
   set texture(texture) {
@@ -19792,14 +19792,14 @@ class Sprite extends DisplayObject {
    *
    * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
    *
-   * @returns {black-engine~TilingInfo|null}
+   * @returns {TilingInfo|null}
    */
   get tiling() {
     return this.mTiling;
   }
 
   /**
-   * @param {black-engine~TilingInfo|null} value
+   * @param {TilingInfo|null} value
    */
   set tiling(value) {
     this.mTiling = value;
@@ -19813,14 +19813,14 @@ class Sprite extends DisplayObject {
    *
    * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
    *
-   * @returns {black-engine~Rectangle|null}
+   * @returns {Rectangle|null}
    */
   get slice9grid() {
     return this.mSlice9grid;
   }
 
   /**
-   * @param {black-engine~Rectangle|null} value
+   * @param {Rectangle|null} value
    */
   set slice9grid(value) {
     this.mSlice9grid = value;
@@ -19860,7 +19860,7 @@ const FontVerticalAlign = {
  *
  * @cat display.text
  * @fires TextField#change
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class TextField extends DisplayObject {
   /**
@@ -19870,8 +19870,8 @@ class TextField extends DisplayObject {
    * @param  {string=} family                                             Font name
    * @param  {number=} [color=0x0]                                        Text color as hexadecimal number eg 0xff0000 (total red)
    * @param  {number=} [size=14]                                          Text size
-   * @param  {black-engine~FontStyle=} [style=black-engine~FontStyle.NORMAL]    Text style eg italic
-   * @param  {black-engine~FontWeight=} [weight=black-engine~FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
+   * @param  {FontStyle=} [style=FontStyle.NORMAL]    Text style eg italic
+   * @param  {FontWeight=} [weight=FontWeight.NORMAL] Font thickness. The value is set from 100 to 900 in increments of 100.
    * @param  {number=} [strokeThickness=0]                                Thickness of the stroke. 0 means that no stroke
    * @param  {number=} [strokeColor=0xffffff]                             Stroke color as hexadecimal number eg 0x00ff00 (total green)
    */
@@ -19886,7 +19886,7 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mCacheBounds = new Rectangle();
 
@@ -19904,13 +19904,13 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~TextStyle} 
+     * @type {TextStyle} 
      */
     this.mDefaultStyle = new TextStyle(family, color, size, style, weight, strokeThickness, strokeColor);
 
     /** 
      * @private 
-     * @type {Object.<string,black-engine~TextStyle>} 
+     * @type {Object.<string,TextStyle>} 
      */
     this.mStyles = {};
 
@@ -19922,13 +19922,13 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~FontAlign} 
+     * @type {FontAlign} 
      */
     this.mAlign = FontAlign.LEFT;
 
     /** 
      * @private 
-     * @type {black-engine~FontVerticalAlign} 
+     * @type {FontVerticalAlign} 
      */
     this.mVerticalAlign = FontVerticalAlign.MIDDLE;
 
@@ -19946,7 +19946,7 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mTextBounds = new Rectangle();
 
@@ -19964,13 +19964,13 @@ class TextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mPadding = new Rectangle(0, 0, 0, 0);
 
     /** 
      * @private 
-     * @type {black-engine~TextMetricsData|null} 
+     * @type {TextMetricsData|null} 
      */
     this.mMetrics = null;
 
@@ -20032,7 +20032,7 @@ class TextField extends DisplayObject {
    * Adds or updates given text style by given tag name.
    * 
    * @param {string} name 
-   * @param {black-engine~TextStyle} style 
+   * @param {TextStyle} style 
    */
   setStyle(name, style) {
     Debug.assert(name !== 'def', `Please use 'setDefaultStyle' instead.`);
@@ -20047,7 +20047,7 @@ class TextField extends DisplayObject {
   /**
    * Updates default text style with a given one.
    * 
-   * @param {black-engine~TextStyle} style 
+   * @param {TextStyle} style 
    */
   setDefaultStyle(style) {
     this.mDefaultStyle = style;
@@ -20072,7 +20072,7 @@ class TextField extends DisplayObject {
    * Returns text style by given name or null if not found.
    * 
    * @param {string} name 
-   * @return {black-engine~TextStyle} 
+   * @return {TextStyle} 
    */
   getStyle(name) {
     return this.mStyles.hasOwnProperty(name) ? this.mStyles[name] : null;
@@ -20081,7 +20081,7 @@ class TextField extends DisplayObject {
   /**
    * Returns an array of all not default styles.
    * 
-   * @return {Array<black-engine~TextStyle>} 
+   * @return {Array<TextStyle>} 
    */
   getAllStyles() {
     let styles = [];
@@ -20233,14 +20233,14 @@ class TextField extends DisplayObject {
   /**
    * Get/Set text style.
    *
-   * @return {black-engine~FontStyle}
+   * @return {FontStyle}
    */
   get fontStyle() {
     return this.mDefaultStyle.style;
   }
 
   /**
-   * @param {black-engine~FontStyle} value
+   * @param {FontStyle} value
    * @return {void}
    */
   set fontStyle(value) {
@@ -20256,14 +20256,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the font thick. The value is set from 100 to 900 in increments of 100.
    *
-   * @return {black-engine~FontWeight}
+   * @return {FontWeight}
    */
   get weight() {
     return this.mDefaultStyle.weight;
   }
 
   /**
-   * @param {black-engine~FontWeight} value
+   * @param {FontWeight} value
    * @return {void}
    */
   set weight(value) {
@@ -20279,14 +20279,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the horizontal alignment of the text (left | center | right).
    *
-   * @return {black-engine~FontAlign}
+   * @return {FontAlign}
    */
   get align() {
     return this.mAlign;
   }
 
   /**
-   * @param {black-engine~FontAlign} value
+   * @param {FontAlign} value
    * @return {void}
    */
   set align(value) {
@@ -20302,14 +20302,14 @@ class TextField extends DisplayObject {
   /**
    * Specifies the vertical alignment of the text (top | middle | bottom).
    *
-   * @return {black-engine~FontVerticalAlign}
+   * @return {FontVerticalAlign}
    */
   get vAlign() {
     return this.mVerticalAlign;
   }
 
   /**
-   * @param {black-engine~FontVerticalAlign} value
+   * @param {FontVerticalAlign} value
    * @return {void}
    */
   set vAlign(value) {
@@ -20484,14 +20484,14 @@ class TextField extends DisplayObject {
   /**
    * An extra padding. Also useful for bad prepared fonts.
    *
-   * @return {black-engine~Rectangle}
+   * @return {Rectangle}
    */
   get padding() {
     return this.mPadding;
   }
 
   /**
-   * @param {black-engine~Rectangle} value
+   * @param {Rectangle} value
    * @return {void}
    */
   set padding(value) {
@@ -20655,13 +20655,13 @@ class TextField extends DisplayObject {
  * This class is used to create display text.
  *
  * @cat display.text
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 class BitmapTextField extends DisplayObject {
   /**
    * Create new instance of BitmapTextField.
    *
-   * @param {string|black-engine~BitmapFontData} font     The name of the bitmap font
+   * @param {string|BitmapFontData} font     The name of the bitmap font
    * @param {string=} text                   Text to be displayed inside this text field
    */
   constructor(font, text = '') {
@@ -20698,13 +20698,13 @@ class BitmapTextField extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mBounds = new Rectangle();
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mTextBounds = new Rectangle();
 
@@ -20882,7 +20882,7 @@ class BitmapTextField extends DisplayObject {
  * A base class for Vector scatters.
  *
  * @cat scatters
- * @extends black-engine~Scatter
+ * @extends Scatter
  */
 class VectorScatterBase extends Scatter {
   /**
@@ -20896,7 +20896,7 @@ class VectorScatterBase extends Scatter {
      * 
      * @public
      * @readonly
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.value = new Vector();
   }
@@ -20904,7 +20904,7 @@ class VectorScatterBase extends Scatter {
   /**
    * Returns random value.
    *
-   * @return {black-engine~Vector}.
+   * @return {Vector}.
    */
   getValue() {
     return this.getValueAt(Math.random());
@@ -20944,7 +20944,7 @@ class ColorScatterBase extends Scatter {
  * A color scatter.
  *
  * @cat scatters
- * @extends black-engine~FloatScatterBase
+ * @extends FloatScatterBase
  */
 class ColorScatter extends ColorScatterBase {
   /**
@@ -20991,8 +20991,8 @@ class ColorScatter extends ColorScatterBase {
   /**
    * Creates new ColorScatterBase from a set of numbers.
    *
-   * @param {...number|black-engine~ColorScatterBase} values Set of values.
-   * @returns {black-engine~ColorScatterBase}
+   * @param {...number|ColorScatterBase} values Set of values.
+   * @returns {ColorScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof ColorScatterBase)
@@ -21006,7 +21006,7 @@ class ColorScatter extends ColorScatterBase {
  * A vector scatter for defining a range in 2D space.
  *
  * @cat scatters
- * @extends black-engine~VectorScatterBase
+ * @extends VectorScatterBase
  */
 class VectorScatter extends VectorScatterBase {
   /**
@@ -21061,7 +21061,7 @@ class VectorScatter extends VectorScatterBase {
    * Returns a random Vector object at given position within a specified range.
    *
    * @override
-   * @return {black-engine~Vector} Vector object with random values withing defined range.
+   * @return {Vector} Vector object with random values withing defined range.
    */
   getValue() {
     this.value.x = Math.random() * (this.maxX - this.minX) + this.minX;
@@ -21075,7 +21075,7 @@ class VectorScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {black-engine~Vector} Vector object representing values in a range at given position.
+   * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
     if (this.ease !== null)
@@ -21090,8 +21090,8 @@ class VectorScatter extends VectorScatterBase {
   /**
    * Creates new VectorScatter from a set of numbers.
    *
-   * @param {...number|black-engine~VectorScatterBase} values Set of values.
-   * @returns {black-engine~VectorScatterBase}
+   * @param {...number|VectorScatterBase} values Set of values.
+   * @returns {VectorScatterBase}
    */
   static fromObject(...values) {
     if (values[0] instanceof VectorScatterBase)
@@ -21105,7 +21105,7 @@ class VectorScatter extends VectorScatterBase {
  * Sets particle's starting velocity.
  *
  * @cat scatters
- * @extends black-engine~VectorScatterBase
+ * @extends VectorScatterBase
  */
 class VectorCurveScatter extends VectorScatterBase {
   /**
@@ -21118,7 +21118,7 @@ class VectorCurveScatter extends VectorScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Curve} 
+     * @type {Curve} 
      */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
@@ -21132,7 +21132,7 @@ class VectorCurveScatter extends VectorScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mCache = new Vector();
   }
@@ -21160,7 +21160,7 @@ class VectorCurveScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {black-engine~Vector} Vector object representing a value on a curve at given position.
+   * @return {Vector} Vector object representing a value on a curve at given position.
    */
   getValueAt(t) {
     this.mCurve.interpolate(t, this.mCache);
@@ -21173,7 +21173,7 @@ class VectorCurveScatter extends VectorScatterBase {
  * A number scatter for defining a range in a circular shape.
  *
  * @cat scatters
- * @extends black-engine~VectorScatterBase
+ * @extends VectorScatterBase
  */
 class RadialScatter extends VectorScatterBase {
   /**
@@ -21220,7 +21220,7 @@ class RadialScatter extends VectorScatterBase {
    * Returns a random Vector object at given position within a range specified in the constructor.
    *
    * @override
-   * @return {black-engine~Vector} Vector object with random values withing defined range.
+   * @return {Vector} Vector object with random values withing defined range.
    */
   getValue() {
     return this.getValueAt(Math.random());
@@ -21231,7 +21231,7 @@ class RadialScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {black-engine~Vector} Vector object representing values in a range at given position.
+   * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
     const r = this.minRadius + t * (this.maxRadius - this.minRadius);
@@ -21252,7 +21252,7 @@ class RadialScatter extends VectorScatterBase {
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
- * @extends black-engine~FloatScatterBase
+ * @extends FloatScatterBase
  */
 class FloatCurveScatter extends FloatScatterBase {
   /**
@@ -21265,7 +21265,7 @@ class FloatCurveScatter extends FloatScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Curve} 
+     * @type {Curve} 
      */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
@@ -21279,7 +21279,7 @@ class FloatCurveScatter extends FloatScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mCache = new Vector();
   }
@@ -21321,19 +21321,19 @@ class FloatCurveScatter extends FloatScatterBase {
  * Adds acceleration to particles along given direction.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class Acceleration extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
+   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
     /** 
-     * @type {black-engine~VectorScatterBase} Modifier's object to get values from.
+     * @type {VectorScatterBase} Modifier's object to get values from.
      */
     this.scatter = VectorScatter.fromObject(...values);
   }
@@ -21353,18 +21353,18 @@ class Acceleration extends Modifier {
  * Sets particle's alpha value according to its energy value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class AlphaOverLife extends Modifier {
   /**
    * Creates new AlphaOverLife instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21380,18 +21380,18 @@ class AlphaOverLife extends Modifier {
  * Sets particle's color value according to its energy value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class ColorOverLife extends Modifier {
   /**
    * Creates new ColorOverLife instance.
    *
-   * @param {...(number|black-engine~ColorScatterBase)} values A starting and ending values of color property.
+   * @param {...(number|ColorScatterBase)} values A starting and ending values of color property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~ColorScatterBase} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 
@@ -21407,18 +21407,18 @@ class ColorOverLife extends Modifier {
  * Sets particle's scale value according to its energy value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class ScaleOverLife extends Modifier {
   /**
    * Creates new ScaleOverTime instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of scale property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of scale property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21434,18 +21434,18 @@ class ScaleOverLife extends Modifier {
  * Sets particle's rotation value according to its energy value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class RotationOverLife extends Modifier {
   /**
    * Creates new RotationOverLife instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of alpha property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of alpha property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21461,18 +21461,18 @@ class RotationOverLife extends Modifier {
  * Sets particle's texture according to its energy value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class TextureOverLife extends Modifier {
   /**
    * Creates new TextureOverLife instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values A starting and ending values of textureIndex property.
+   * @param {...(number|FloatScatterBase)} values A starting and ending values of textureIndex property.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21488,18 +21488,18 @@ class TextureOverLife extends Modifier {
  * Changes particle alpha according to its life.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class AnchorOverLife extends Modifier {
   /**
    * Creates new Acceleration instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
+   * @param {...(number|VectorScatterBase)} values An VectorScatterBase which defines acceleration direction.
    */
   constructor(...values) {
     super(false);
 
-    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -21518,7 +21518,7 @@ class AnchorOverLife extends Modifier {
  * Rotates particle along velocity vector.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class Oriented extends Modifier {
   /**
@@ -21544,7 +21544,7 @@ class Oriented extends Modifier {
 /**
  * @ignore
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class VectorField extends Modifier {
   /**
@@ -21605,7 +21605,7 @@ class VectorField extends Modifier {
    * 
    * @param {number} x
    * @param {number} y
-   * @returns {black-engine~Vector|null}
+   * @returns {Vector|null}
    */
   getVectorAt(x, y) {
     x = Math.floor(x * this.resolution);
@@ -21636,18 +21636,18 @@ class VectorField extends Modifier {
  * Sets initial particle life value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialLife extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values Min and max values in seconds.
+   * @param {...(number|FloatScatterBase)} values Min and max values in seconds.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21663,18 +21663,18 @@ class InitialLife extends Modifier {
  * Sets initial particle mass value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialMass extends Modifier {
   /**
    * Creates new InitialMass instance.
    *
-   * @param {...(number|Fblack-engine~loatScatterBase)} values Min and max values.
+   * @param {...(number|FloatScatterBase)} values Min and max values.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21690,18 +21690,18 @@ class InitialMass extends Modifier {
  * Sets initial particle scale value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialScale extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values Min and max values.
+   * @param {...(number|FloatScatterBase)} values Min and max values.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21717,18 +21717,18 @@ class InitialScale extends Modifier {
  * Sets initial particle velocity vector.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialVelocity extends Modifier {
   /**
    * Creates new InitialVelocity instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values Min and max vectors.
+   * @param {...(number|VectorScatterBase)} values Min and max vectors.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -21747,18 +21747,18 @@ class InitialVelocity extends Modifier {
  * Sets initial particle position.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialPosition extends Modifier {
   /**
    * Creates new InitialPosition instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values Rectangle coordinates, its width and height.
+   * @param {...(number|VectorScatterBase)} values Rectangle coordinates, its width and height.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -21776,18 +21776,18 @@ class InitialPosition extends Modifier {
  * Sets initial particle rotation value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialRotation extends Modifier {
   /**
    * Creates new InitialRotation instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values Min and max values in radians.
+   * @param {...(number|FloatScatterBase)} values Min and max values in radians.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21803,18 +21803,18 @@ class InitialRotation extends Modifier {
  * Sets initial particle texture.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialTexture extends Modifier {
   /**
    * Creates new InitialTexture instance.
    *
-   * @param {...(number|black-engine~FloatScatterBase)} values Min and max indexes from texture list.
+   * @param {...(number|FloatScatterBase)} values Min and max indexes from texture list.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~FloatScatterBase} Modifier's object to get values from.  */
+    /** @type {FloatScatterBase} Modifier's object to get values from.  */
     this.scatter = FloatScatter.fromObject(...values);
   }
 
@@ -21830,18 +21830,18 @@ class InitialTexture extends Modifier {
  * Sets initial particle color value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialColor extends Modifier {
   /**
    * Creates new InitialLife instance.
    *
-   * @param {...(number|black-engine~ColorScatterBase)} values Two color values.
+   * @param {...(number|ColorScatterBase)} values Two color values.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~ColorScatterBase} Modifier's object to get values from.  */
+    /** @type {ColorScatterBase} Modifier's object to get values from.  */
     this.scatter = ColorScatter.fromObject(...values);
   }
 
@@ -21857,18 +21857,18 @@ class InitialColor extends Modifier {
  * Sets initial particle scale value.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 class InitialAnchor extends Modifier {
   /**
    * Creates new InitialScale instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values
+   * @param {...(number|VectorScatterBase)} values
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 
@@ -22806,7 +22806,7 @@ var defaultEase = Ease.smootherStep;
  * 
  * @cat animation
  * @unrestricted
- * @extends black-engine~Component
+ * @extends Component
  */
 class Tween extends Component {
   /**
@@ -23193,7 +23193,7 @@ class Tween extends Component {
   /**
    * Starts tweening.
    *
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   play() {
     if (!this.mIsPaused) {
@@ -23208,7 +23208,7 @@ class Tween extends Component {
   /**
    * Stops current tween.
    *
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   stop() {
     if (!this.mIsPlaying)
@@ -23222,7 +23222,7 @@ class Tween extends Component {
   /**
    * Resets current tween.
    *
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   reset() {
     this.mElapsed = 0;
@@ -23237,7 +23237,7 @@ class Tween extends Component {
    *
    * @param {Object} values Values to tween.
    * @param {number} [duration=0.25] Duration in seconds.
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   to(values = {}, duration = 0.250) {
     this.mValues = values;
@@ -23249,7 +23249,7 @@ class Tween extends Component {
   /**
    * Pauses current tween.
    *
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   pause() {
     if (!this.mIsPlaying)
@@ -23286,7 +23286,7 @@ class Tween extends Component {
   /**
    * Add specified tween object into the queue. The specified tween will be executed after completion of this tween,
    *
-   * @return {black-engine~Tween} Returns tween to chain.
+   * @return {Tween} Returns tween to chain.
    */
   chain(tween) {
     if (!tween) {
@@ -23338,7 +23338,7 @@ class Tween extends Component {
    * Switches end values with start values.
    *
    * @param {boolean} asYoyo Indicates wether easing function should be also reversed.
-   * @return {black-engine~Tween} Returns this.
+   * @return {Tween} Returns this.
    */
   reverse(asYoyo = false) {
     if (this.mInitiated) {
@@ -23431,7 +23431,7 @@ class Tween extends Component {
 
     /**
      * Posted on every tween update. 
-     * Note: tween can update object values inside `onRender` method without posting `black-engine~Tween#update` message.
+     * Note: tween can update object values inside `onRender` method without posting `Tween#update` message.
      * @event Tween#update
      */
     this.post(Message.UPDATE, this.gameObject);
@@ -23523,9 +23523,9 @@ class AnimationInfo {
   /**
    * Creates an instance of Animation class
    *
-   * @param {black-engine~AnimationController}    controller  Animation controller
+   * @param {AnimationController}    controller  Animation controller
    * @param {string}                 name        The name of animation
-   * @param {Array<black-engine~Texture>}         frames      Array of Textures for this animation
+   * @param {Array<Texture>}         frames      Array of Textures for this animation
    * @param {number}                 [fps=14]    Frame rate
    * @param {boolean}                [loop=true] Is animations should be looped
    */
@@ -23534,7 +23534,7 @@ class AnimationInfo {
 
     /**
      * @private
-     * @type {black-engine~AnimationController}
+     * @type {AnimationController}
      */
     this.mController = controller;
 
@@ -23546,7 +23546,7 @@ class AnimationInfo {
 
     /**
      * @private
-     * @type {Array<black-engine~Texture>}
+     * @type {Array<Texture>}
      */
     this.mFrames = frames;
 
@@ -23609,7 +23609,7 @@ class AnimationInfo {
    * Plays animation. If Animation is completed, current frame is reset to 0.
    * 
    * @ignore
-   * @return {black-engine~Texture} Returns the current frame Texture.
+   * @return {Texture} Returns the current frame Texture.
    */
   __play() {
     if (this.mCompleted === true) {
@@ -23651,7 +23651,7 @@ class AnimationInfo {
 
   /**
    * @ignore
-   * @return {black-engine~Texture|null}
+   * @return {Texture|null}
    */
   __update() {
     let t = Black.time.now;
@@ -23725,7 +23725,7 @@ class AnimationInfo {
   /**
    * Gets array of Texture.
    *
-   * @return {Array<black-engine~Texture>}
+   * @return {Array<Texture>}
    */
   get frames() {
     return this.mFrames;
@@ -23763,7 +23763,7 @@ class AnimationInfo {
  * A Component which allows to play sprite animations.
  *
  * @cat animation
- * @extends black-engine~Component
+ * @extends Component
  */
 class AnimationController extends Component {
   /**
@@ -23774,13 +23774,13 @@ class AnimationController extends Component {
 
     /**
      * @private
-     * @type {Object<string, black-engine~AnimationInfo>}
+     * @type {Object<string, AnimationInfo>}
      */
     this.mAnimations = {};
 
     /**
      * @private
-     * @type {black-engine~AnimationInfo|null}
+     * @type {AnimationInfo|null}
      */
     this.mCurrentAnim = null;
   }
@@ -23789,7 +23789,7 @@ class AnimationController extends Component {
    * Returns the AnimationInfo object that exists with the specified name.
    *
    * @param {string} name     The name of the child to return.
-   * @returns {black-engine~AnimationInfo} Animation object that exists with the specified name.
+   * @returns {AnimationInfo} Animation object that exists with the specified name.
    */
   getByName(name) {
     Debug.assert(name !== null, 'Animation must be set first.');
@@ -23822,10 +23822,10 @@ class AnimationController extends Component {
    * Add the Animation object into the list of animations. If animation with given name already exists exception will be thrown.
    *
    * @param {string}          name        The name of animation to update
-   * @param {Array<black-engine~Texture>}  textures    Array of Textures
+   * @param {Array<Texture>}  textures    Array of Textures
    * @param {number}          [fps=14]    Frames Per Second
    * @param {boolean}         [loop=true] Indicated if animation should be started over at the end.
-   * @return {black-engine~AnimationInfo} The newly created Animation Object.
+   * @return {AnimationInfo} The newly created Animation Object.
    */
   add(name, textures, fps = 14, loop = true) {
     Debug.assert(textures.length > 0, 'Animation cannot be empty.');
@@ -23894,14 +23894,14 @@ class AnimationController extends Component {
     if (newTexture === null)
       return;
 
-    let sprite = /** @type {black-engine~Sprite} */ (this.gameObject);
+    let sprite = /** @type {Sprite} */ (this.gameObject);
     sprite.texture = newTexture;
   }
 
   /**
    * Returns current active animation.
    *
-   * @returns {black-engine~AnimationInfo|null}
+   * @returns {AnimationInfo|null}
    */
   get currentAnimation() {
     return this.mCurrentAnim;
@@ -23955,20 +23955,18 @@ class Spine extends DisplayObject {
 
     let json = Black.assets.getJSON(name);
 
-    let fakeLoader = function (path, loaderFunction, callback) {
-      console.log('FAKE LOADER', path);
-    };
+    let fakeLoader = function (path, loaderFunction, callback) { };
 
     let spineAtlas = new spine.TextureAtlas('', fakeLoader);
     spineAtlas.addTexture = addTexture;
 
     let regions = {};
 
-    for (let skinName in json.skins) {
-      let skin = json.skins[skinName];
+    for (let i = 0; i < json.skins.length; i++) {
+      let skin = json.skins[i];
 
-      for (let slotName in skin) {
-        let slot = skin[slotName];
+      for (let slotName in skin.attachments) {
+        let slot = skin.attachments[slotName];
 
         for (let entryName in slot) {
           let attachment = slot[entryName];
@@ -23978,7 +23976,7 @@ class Spine extends DisplayObject {
 
           if (attachment.type === 'path')
             continue;
-          
+
           if (attachment.type === 'clipping')
             continue;
 
@@ -23990,7 +23988,8 @@ class Spine extends DisplayObject {
           if (regions[textureName])
             continue;
 
-          regions[textureName] = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
+          let region = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
+          regions[textureName] = region;
         }
       }
     }
@@ -24108,10 +24107,6 @@ class Spine extends DisplayObject {
         }
 
         let bone = slot.bone;
-        let w = region.width;
-        let h = region.height;
-
-        let regionHeight = region.rotate ? region.width : region.height;
 
         sprite.scaleX = attachment.scaleX * (attachment.width / region.width);
         sprite.scaleY = attachment.scaleY * (attachment.height / region.height);
@@ -24150,10 +24145,7 @@ class Spine extends DisplayObject {
   }
 
   _createSprite(slot, attachment, name) {
-    let region = attachment.region;
-    
     if (slot.tempAttachment === attachment) {
-      region = slot.tempRegion;
       slot.tempAttachment = null;
       slot.tempRegion = null;
     }
@@ -24185,7 +24177,7 @@ class Spine extends DisplayObject {
  * Distortion sound effect.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 class DistortionEffect extends SoundEffect {
 
@@ -24362,7 +24354,7 @@ class DistortionEffect extends SoundEffect {
  * Equalizer.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 class SimpleEQ extends SoundEffect {
   /**
@@ -24507,7 +24499,7 @@ class SimpleEQ extends SoundEffect {
  * Reverberation sound effect.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 class ReverbEffect extends SoundEffect {
   /**
@@ -24636,7 +24628,7 @@ class ReverbEffect extends SoundEffect {
  * The sound component.
  * 
  * @cat audio
- * @extends {black-engine~Component}
+ * @extends {Component}
  */
 class Sound extends Component {
   /**
@@ -24652,7 +24644,7 @@ class Sound extends Component {
 
     /** 
      * @private 
-     * @type {black-engine~SoundClip} 
+     * @type {SoundClip} 
      */
     this.mSoundClip = Black.assets.getSound(name);
 
@@ -24676,13 +24668,13 @@ class Sound extends Component {
 
     /** 
      * @private 
-     * @type {black-engine~SoundInstance} 
+     * @type {SoundInstance} 
      */
     this.mSoundInstance = null;
 
     /** 
      * @private 
-     * @type {black-engine~MessageBinding|null}  
+     * @type {MessageBinding|null}  
      */
     this.mCompleteBinding = null;
 
@@ -24706,7 +24698,7 @@ class Sound extends Component {
    * @param {number=} [volume=1]         The volume level.
    * @param {boolean=} [loop=false]      Specifies if sound repeats infinite times.
    * @param {boolean=} [overwrite=false] If true, stops previously started sound, if there is one.
-   * @returns {black-engine~SoundInstance}            Newly created sound instance or already playing sound.
+   * @returns {SoundInstance}            Newly created sound instance or already playing sound.
    */
   play(volume = 1, loop = false, overwrite = false) {
     overwrite && this.mSoundInstance && this.stop();
@@ -24837,7 +24829,7 @@ class Sound extends Component {
  * The sound listener component, which controls one and only instance of AudioContext.listener.
  * 
  * @cat audio
- * @extends {black-engine~Component}
+ * @extends {Component}
  */
 class SoundListener extends Component {
   /**
@@ -24894,7 +24886,7 @@ class SoundListener extends Component {
  * RigidBody is used to describe physics properties of game object colliders
  *
  * @cat physics
- * @extends black-engine~Component
+ * @extends Component
  */
 class RigidBody extends Component {
   /**
@@ -24906,7 +24898,7 @@ class RigidBody extends Component {
     /** 
      * Default collider. Used in case no any custom colliders provided by user.
      * @private 
-     * @type {black-engine~BoxCollider}
+     * @type {BoxCollider}
      */
     this.mCollider = new BoxCollider(0, 0, 0, 0);
 
@@ -24934,28 +24926,28 @@ class RigidBody extends Component {
     /** 
      * All colliding pairs this body participates in.
      * @private 
-     * @type {Array<black-engine~Pair>} 
+     * @type {Array<Pair>} 
      */
     this.mContacts = [];
 
     /**
      * Game object pivot. To track changes and update default collider if needed.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mPivot = new Vector(Number.MAX_VALUE);
 
     /**  
      * Game bounds position. To track changes and update this position, if object was moved without physics.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mCachedPosition = new Vector();
 
     /** 
      * All pairs this body participates in.
      * @public 
-     * @type {Array<black-engine~Pair>}
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
@@ -24969,28 +24961,28 @@ class RigidBody extends Component {
     /** 
      * This position in stage coordinates.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mPosition = new Vector();
 
     /** 
      * This velocity to integrate.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mVelocity = new Vector();
 
     /** 
      * Force accumulator.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mForce = new Vector();
 
     /** 
      * Game object transform. To track changes and update this colliders.
      * @private 
-     * @type {black-engine~Matrix}
+     * @type {Matrix}
      */
     this.mTransform = new Matrix(Number.MAX_VALUE);
 
@@ -25330,31 +25322,31 @@ class Projection {
 
     /** 
      * @private 
-     * @type {black-engine~Vector|null} Box normal 
+     * @type {Vector|null} Box normal 
      */
     this.axis = null;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>|null} Box a vertices 
+     * @type {Array<Vector>|null} Box a vertices 
      */
     this.verticesA = null;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>|null} Box b vertices 
+     * @type {Array<Vector>|null} Box b vertices 
      */
     this.verticesB = null;
 
     /** 
      * @private 
-     * @type {black-engine~Range} Range from project box a vertices to axis 
+     * @type {Range} Range from project box a vertices to axis 
      */
     this.rangeA = new Range();
 
     /** 
      * @private 
-     * @type {black-engine~Range} Range from project box b vertices to axis 
+     * @type {Range} Range from project box b vertices to axis 
      */
     this.rangeB = new Range();
 
@@ -25370,9 +25362,9 @@ class Projection {
    *
    * @public
    *
-   * @param {Array<black-engine~Vector>} verticesA box a points
-   * @param {Array<black-engine~Vector>} verticesB box b points
-   * @param {black-engine~Vector}        axis One from box normals
+   * @param {Array<Vector>} verticesA box a points
+   * @param {Array<Vector>} verticesB box b points
+   * @param {Vector}        axis One from box normals
    *
    * return {void}
    */
@@ -25513,21 +25505,21 @@ class Pair {
     /**
      * Collider from body b.
      * @public 
-     * @type {black-engine~Collider|null}
+     * @type {Collider|null}
      */
     this.b = null;
 
     /**
      * Parent of collider a.
      * @public 
-     * @type {black-engine~RigidBody|null}
+     * @type {RigidBody|null}
      */
     this.bodyA = null;
 
     /**
      * Parent of collider b.
      * @public 
-     * @type {black-engine~RigidBody|null}
+     * @type {RigidBody|null}
      */
     this.bodyB = null;
 
@@ -25590,14 +25582,14 @@ class Pair {
     /**
      * Offset within the colliders on preSolve to correct overlap on each iteration.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mOffset = new Vector();
 
     /**
      * Normal collision direction from a to b.
      * @private 
-     * @type {black-engine~Vector}
+     * @type {Vector}
      */
     this.mNormal = new Vector();
 
@@ -25771,8 +25763,8 @@ class Pair {
    * Generates pair id.
    *
    * @public
-   * @param {black-engine~Collider} a Pair collider
-   * @param {black-engine~Collider} b Pair collider
+   * @param {Collider} a Pair collider
+   * @param {Collider} b Pair collider
    *
    * @return {string} Pair unique id
    */
@@ -25835,7 +25827,7 @@ var pool$1 = null;
  * BoxToBoxPair is used to test collision within boxes
  *
  * @cat physics.arcade.pairs
- * @extends black-engine~Pair
+ * @extends Pair
  */
 class BoxToBoxPair extends Pair {
   /**
@@ -25848,7 +25840,7 @@ class BoxToBoxPair extends Pair {
      * Collider from body a.
      * 
      * @public 
-     * @type {black-engine~BoxCollider|null}
+     * @type {BoxCollider|null}
      */
     this.a = null;
 
@@ -25856,7 +25848,7 @@ class BoxToBoxPair extends Pair {
      * Collider from body b. 
      * 
      * @public 
-     * @type {black-engine~BoxCollider|null}
+     * @type {BoxCollider|null}
      */
     this.b = null;
 
@@ -25869,7 +25861,7 @@ class BoxToBoxPair extends Pair {
     /**
      * Projection keeps range of projected vertices. For each normal from both the colliders.
      * @private 
-     * @type {Array<black-engine~Projection>}
+     * @type {Array<Projection>}
      */
     this.mProjections = projections;
   }
@@ -25879,10 +25871,10 @@ class BoxToBoxPair extends Pair {
    *
    * @public
    *
-   * @param {black-engine~BoxCollider} a   Pair collider
-   * @param {black-engine~BoxCollider} b   Pair collider
-   * @param {black-engine~RigidBody} bodyA Pair body
-   * @param {black-engine~RigidBody} bodyB Pair body
+   * @param {BoxCollider} a   Pair collider
+   * @param {BoxCollider} b   Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
    *
    * @return {Pair} This
    */
@@ -26000,7 +25992,7 @@ var pool$2 = null;
  * BoxToCirclePair is used to test collision within box - circle colliders.
  *
  * @cat physics.arcade.pairs
- * @extends black-engine~Pair
+ * @extends Pair
  */
 
 class BoxToCirclePair extends Pair {
@@ -26192,7 +26184,7 @@ var pool$3 = null;
  * CircleToCirclePair is used to test collision within circles colliders.
  *
  * @cat physics.arcade.pairs
- * @extends black-engine~Pair
+ * @extends Pair
  */
 class CircleToCirclePair extends Pair {
   /**
@@ -26204,14 +26196,14 @@ class CircleToCirclePair extends Pair {
     /**
      * Collider from body a. 
      * @public 
-     * @type {black-engine~CircleCollider|null}
+     * @type {CircleCollider|null}
      */
     this.a = null;
 
     /**
      * Collider from body b. 
      * @public 
-     * @type {black-engine~CircleCollider|null}
+     * @type {CircleCollider|null}
      */
     this.b = null;
   }
@@ -26221,10 +26213,10 @@ class CircleToCirclePair extends Pair {
    *
    * @public
    *
-   * @param {black-engine~CircleCollider} a  Pair circle collider
-   * @param {black-engine~CircleCollider} b  Pair circle collider
-   * @param {black-engine~RigidBody} bodyA   Pair body
-   * @param {black-engine~RigidBody} bodyB   Pair body
+   * @param {CircleCollider} a  Pair circle collider
+   * @param {CircleCollider} b  Pair circle collider
+   * @param {RigidBody} bodyA   Pair body
+   * @param {RigidBody} bodyB   Pair body
    *
    * @return {Pair} This
    */
@@ -26290,7 +26282,7 @@ class BroadPhase {
   /**
    * Test collision in each pair. Sets inCollision flag to false if there is no collision in pair.
    *
-   * @param {Array<black-engine~Pair>} pairs All the arcade world colliders pairs.
+   * @param {Array<Pair>} pairs All the arcade world colliders pairs.
    * @return {void}
    */
   test(pairs) { }
@@ -26300,7 +26292,7 @@ class BroadPhase {
  * Simple AABB physics engine (beta).
  *
  * @cat physics.arcade
- * @extends black-engine~System
+ * @extends System
  */
 class Arcade extends System {
   /**
@@ -26312,28 +26304,28 @@ class Arcade extends System {
     /**
      * Bodies that are on stage.
      * @private 
-     * @type {Array<black-engine~RigidBody>}
+     * @type {Array<RigidBody>}
      */
     this.mBodies = [];
 
     /**
      * Pairs to check collisions within. With colliders which bodies are on stage.
      * @private 
-     * @type {Array<black-engine~Pair>}
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
     /**
      * Pairs which are in collision per frame.
      * @private 
-     * @type {Array<black-engine~Pair>}
+     * @type {Array<Pair>}
      */
     this.mContacts = [];
 
     /**
      * Broad collision test instance.
      * @private 
-     * @type {black-engine~BroadPhase}
+     * @type {BroadPhase}
      */
     this.mBroadPhase = new BroadPhase();
 
@@ -26347,28 +26339,28 @@ class Arcade extends System {
     /**
      * Reference to world bounds body.
      * @private 
-     * @type {black-engine~RigidBody|null}
+     * @type {RigidBody|null}
      */
     this.mBoundsBody = null;
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
     /**
@@ -26404,8 +26396,8 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {black-engine~Collider} colliderA Collider to check
-   * @param {black-engine~Collider} colliderB Collider to check
+   * @param {Collider} colliderA Collider to check
+   * @param {Collider} colliderB Collider to check
    * @param {Function} cb        Callback
    * @param {Object} ctx         Callback context
    * @param {...*} [args]        Rest arguments
@@ -26435,8 +26427,8 @@ class Arcade extends System {
    *
    * @public
    *
-   * @param {black-engine~RigidBody} bodyA         Body to check
-   * @param {black-engine~RigidBody=} [bodyB=null] Body to check
+   * @param {RigidBody} bodyA         Body to check
+   * @param {RigidBody=} [bodyB=null] Body to check
    * @param {Function=} [cb=null]     Callback
    * @param {Object=} [ctx=null]      Callback context
    * @param {...*} [args]             Rest arguments
@@ -26529,7 +26521,7 @@ class Arcade extends System {
    * Adds body to arcade world. Start tracking its gameObject colliders.
    *
    * @private
-   * @param {black-engine~RigidBody} body Body to add
+   * @param {RigidBody} body Body to add
    *
    * @return {void}
    */
@@ -26553,8 +26545,8 @@ class Arcade extends System {
    * Removes body from arcade world.
    *
    * @private
-   * @param {black-engine~RigidBody} body        Body to remove
-   * @param {black-engine~GameObject} gameObject Body's game object
+   * @param {RigidBody} body        Body to remove
+   * @param {GameObject} gameObject Body's game object
    *
    * @return {void}
    */
@@ -26578,8 +26570,8 @@ class Arcade extends System {
    * Adds collider to arcade world.
    *
    * @private
-   * @param {black-engine~GameObject} child  Parent of the collider
-   * @param {black-engine~Collider} collider Collider to add
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to add
    *
    * @return {void}
    */
@@ -26599,8 +26591,8 @@ class Arcade extends System {
    * Removes collider from arcade world.
    *
    * @private
-   * @param {black-engine~GameObject} child  Parent of the collider
-   * @param {black-engine~Collider} collider Collider to remove
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to remove
    *
    * @return {void}
    */
@@ -26630,8 +26622,8 @@ class Arcade extends System {
    * Generate pairs, passed collider with all present colliders.
    *
    * @private
-   * @param {black-engine~Collider} collider   Collider to generate with
-   * @param {black-engine~RigidBody} fromBody  The collider body
+   * @param {Collider} collider   Collider to generate with
+   * @param {RigidBody} fromBody  The collider body
    *
    * @return {void}
    */
@@ -26660,10 +26652,10 @@ class Arcade extends System {
    * Creates pair and adds it to world.
    *
    * @private
-   * @param {black-engine~Collider} a      Pair collider
-   * @param {black-engine~Collider} b      Pair collider
-   * @param {black-engine~RigidBody} bodyA Pair body
-   * @param {black-engine~RigidBody} bodyB Pair body
+   * @param {Collider} a      Pair collider
+   * @param {Collider} b      Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
    *
    * @return {void}
    */
@@ -26703,7 +26695,7 @@ class Arcade extends System {
    * Removes all pairs with given collider.
    *
    * @private
-   * @param {black-engine~Collider} collider Pairs collider
+   * @param {Collider} collider Pairs collider
    *
    * @return {void}
    */
@@ -27029,7 +27021,7 @@ class Arcade extends System {
 }
 
 /**
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  * @cat core
  */
 class SplashScreen extends MessageDispatcher {
@@ -27149,7 +27141,7 @@ class SplashScreen extends MessageDispatcher {
  * @fires Timer#complete
  * @fires Timer#tick
  * 
- * @extends black-engine~Component
+ * @extends Component
  */
 class Timer extends Component {
   constructor(interval = 1, ticksCount = 1, startOnAdded = true) {
@@ -27249,7 +27241,7 @@ class Timer extends Component {
   /**
    * Start timer.
    *
-   * @return {black-engine~Timer} Returns this.
+   * @return {Timer} Returns this.
    */
   start() {
     this.mIsRunning = true;
@@ -27259,7 +27251,7 @@ class Timer extends Component {
   /**
    * Stop and reset timer.
    *
-   * @return {black-engine~Timer} Returns this.
+   * @return {Timer} Returns this.
    */
   stop() {
     this.mIsRunning = false;
@@ -27270,7 +27262,7 @@ class Timer extends Component {
   /**
    * Pauses the timer.
    *
-   * @return {black-engine~Timer} Returns this.
+   * @return {Timer} Returns this.
    */
   pause() {
     this.mIsRunning = false;
@@ -27281,7 +27273,7 @@ class Timer extends Component {
    * Reset timer.
    *
    * sets ticks elapsedSeconds and totalElapsedSeconds to 0
-   * @return {black-engine~Timer} Returns this.
+   * @return {Timer} Returns this.
    */
   reset() {
     this.mTick = 0;
@@ -27411,7 +27403,7 @@ let ID$3 = 0;
  * @fires Engine#ready
  * @fires Engine#looped
  *
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 class Engine extends MessageDispatcher {
   /**
@@ -27427,9 +27419,9 @@ class Engine extends MessageDispatcher {
    * new Black('game-container', MyGame, CanvasDriver, [Arcade]);
    * 
    * @param {string}                                                       containerElementId The id of an DOM element.
-   * @param {function(new: black-engine~GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
-   * @param {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
-   * @param {Array<function(new: black-engine~System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
+   * @param {function(new: GameObject)}                                    gameClass          Type name of an GameObject to start execution from.
+   * @param {function(new: VideoNullDriver, HTMLElement, number, number)}  videoDriverClass   Type name of an VideoDriver (VideoNullDriver, DOMDriver or CanvasDriver)
+   * @param {Array<function(new: System)>  }                               systemClasses      The list of systems to be initialized with Black engine.
    */
   constructor(containerElementId, gameClass, videoDriverClass, systemClasses = null) {
     super();
@@ -27452,13 +27444,13 @@ class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {function(new: black-engine~VideoNullDriver, HTMLElement, number, number)} 
+     * @type {function(new: VideoNullDriver, HTMLElement, number, number)} 
      */
     this.mVideoDriverClass = videoDriverClass;
 
     /** 
      * @private 
-     * @type {Array<function(new: black-engine~System)>} 
+     * @type {Array<function(new: System)>} 
      */
     this.mSystemClasses = systemClasses;
 
@@ -27506,13 +27498,13 @@ class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~System>} 
+     * @type {Array<System>} 
      */
     this.mSystems = [];
 
     /** 
      * @private 
-     * @type {black-engine~GameObject|null} 
+     * @type {GameObject|null} 
      */
     this.mGameObject = null;
 
@@ -27542,13 +27534,13 @@ class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Viewport} 
+     * @type {Viewport} 
      */
     this.mViewport = null;
 
     /** 
      * @private 
-     * @type {black-engine~VideoNullDriver} 
+     * @type {VideoNullDriver} 
      */
     this.mVideo = null;
 
@@ -27584,13 +27576,13 @@ class Engine extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {function(new: black-engine~GameObject)} 
+     * @type {function(new: GameObject)} 
      */
     this.mGameClass = gameClass;
 
     /** 
      * @private 
-     * @type {black-engine~Stage} 
+     * @type {Stage} 
      */
     this.mStage = null;
 
@@ -27775,8 +27767,8 @@ class Engine extends MessageDispatcher {
 
   /**
    * @private
-   * @param  {black-engine~System} system The System object you want to add.
-   * @return {black-engine~System}
+   * @param  {System} system The System object you want to add.
+   * @return {System}
    */
   __addSystem(system) {
     this.mSystems.push(system);
@@ -27787,7 +27779,7 @@ class Engine extends MessageDispatcher {
    * Gets system by type.
    *
    * @param {Function} typeName The system type.
-   * @return {black-engine~System|null} The `System` instance or null if not found.
+   * @return {System|null} The `System` instance or null if not found.
    */
   getSystem(typeName) {
     for (let i = 0; i < this.mSystems.length; i++) {
@@ -28013,7 +28005,7 @@ class Engine extends MessageDispatcher {
    * Called when tag changed for specific `GameObject`.
    *
    * @protected
-   * @param {black-engine~GameObject} child   A game object fired the event.
+   * @param {GameObject} child   A game object fired the event.
    * @param {string|null} oldTag Old tag.
    * @param {string|null} newTag New tag.
    * @return {void}
@@ -28039,7 +28031,7 @@ class Engine extends MessageDispatcher {
    * Called when specific game object is added to display list.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenAdded(child, parent) {
@@ -28076,7 +28068,7 @@ class Engine extends MessageDispatcher {
    * Called when specific game object is changed its index in display list.
    *
    * @protected
-   * @param {black-engine~GameObject} child Instance of GameObject.
+   * @param {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenChanged(child) {
@@ -28090,7 +28082,7 @@ class Engine extends MessageDispatcher {
    * Called when specific game object is added to display list.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
+   * @param  {GameObject} child Instance of GameObject.
    * @return {void}
    */
   onChildrenRemoved(child) {
@@ -28123,8 +28115,8 @@ class Engine extends MessageDispatcher {
    * Called when specific component is added to GameObject instance.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
-   * @param  {black-engine~Component} component Instance of Component added to game object.
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component added to game object.
    * @return {void}
    */
   onComponentAdded(child, component) {
@@ -28144,8 +28136,8 @@ class Engine extends MessageDispatcher {
    * Called when specific component is removed from its owner.
    *
    * @protected
-   * @param  {black-engine~GameObject} child Instance of GameObject.
-   * @param  {black-engine~Component} component Instance of Component removed from game object.
+   * @param  {GameObject} child Instance of GameObject.
+   * @param  {Component} component Instance of Component removed from game object.
    * @return {void}
    */
   onComponentRemoved(child, component) {
@@ -28185,7 +28177,7 @@ class Engine extends MessageDispatcher {
   /**
    * Returns the current viewport instance. Used to get size of a game screen, or listen for resize messages.
    *
-   * @return {black-engine~Viewport}
+   * @return {Viewport}
    */
   get viewport() {
     return this.mViewport;
@@ -28248,7 +28240,7 @@ class Engine extends MessageDispatcher {
    * Returns current stage.
    *
    * @readonly
-   * @returns {black-engine~Stage}
+   * @returns {Stage}
    */
   get stage() {
     return this.mStage;

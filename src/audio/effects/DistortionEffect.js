@@ -6,7 +6,7 @@ import { MathEx } from "../../math/MathEx";
  * Distortion sound effect.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 export class DistortionEffect extends SoundEffect {
 

@@ -7,7 +7,7 @@ import { Matrix } from "../../geom/Matrix";
 /**
  * Renders `Sprite` objects on canvas.
  *
- * @extends black-engine~Renderer
+ * @extends Renderer
  * @cat drivers.canvas
  */
 
@@ -18,10 +18,10 @@ export class SpriteRendererCanvas extends Renderer{
     /** @type {CanvasPattern|null} */
     this.pattern = null;
 
-    /** @type {black-engine~Texture|null} */
+    /** @type {Texture|null} */
     this.patternTexture = null;
 
-    /** @type {black-engine~CanvasRenderTexture|null} */
+    /** @type {CanvasRenderTexture|null} */
     this.sliceTextureCache = null;
 
     /** @type {number|null} */
@@ -30,7 +30,7 @@ export class SpriteRendererCanvas extends Renderer{
     /** @type {number|null} */
     this.sizeHeightCache = null;
 
-    /** @type {black-engine~Texture} */
+    /** @type {Texture} */
     this.textureCache = null;
   }
 

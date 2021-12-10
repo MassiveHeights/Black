@@ -11,31 +11,31 @@ export class Projection {
 
     /** 
      * @private 
-     * @type {black-engine~Vector|null} Box normal 
+     * @type {Vector|null} Box normal 
      */
     this.axis = null;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>|null} Box a vertices 
+     * @type {Array<Vector>|null} Box a vertices 
      */
     this.verticesA = null;
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>|null} Box b vertices 
+     * @type {Array<Vector>|null} Box b vertices 
      */
     this.verticesB = null;
 
     /** 
      * @private 
-     * @type {black-engine~Range} Range from project box a vertices to axis 
+     * @type {Range} Range from project box a vertices to axis 
      */
     this.rangeA = new Range();
 
     /** 
      * @private 
-     * @type {black-engine~Range} Range from project box b vertices to axis 
+     * @type {Range} Range from project box b vertices to axis 
      */
     this.rangeB = new Range();
 
@@ -51,9 +51,9 @@ export class Projection {
    *
    * @public
    *
-   * @param {Array<black-engine~Vector>} verticesA box a points
-   * @param {Array<black-engine~Vector>} verticesB box b points
-   * @param {black-engine~Vector}        axis One from box normals
+   * @param {Array<Vector>} verticesA box a points
+   * @param {Array<Vector>} verticesB box b points
+   * @param {Vector}        axis One from box normals
    *
    * return {void}
    */

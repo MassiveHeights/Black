@@ -9,7 +9,7 @@ import { LoaderType } from "./LoaderType";
  * converting them into Textures.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 export class TextureAsset extends Asset {
   /**
@@ -32,7 +32,7 @@ export class TextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~ImageAssetLoader|null} 
+     * @type {ImageAssetLoader|null} 
      */
     this.mImageLoader = null;
   }

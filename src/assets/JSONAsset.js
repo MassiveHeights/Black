@@ -7,7 +7,7 @@ import { LoaderType } from "./LoaderType";
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 export class JSONAsset extends Asset {
   /**
@@ -28,7 +28,7 @@ export class JSONAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }

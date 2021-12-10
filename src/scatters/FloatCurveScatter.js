@@ -6,7 +6,7 @@ import { Vector } from "../geom/Vector";
  * A number scatter for defining a range in 2D space on a curve.
  *
  * @cat scatters
- * @extends black-engine~FloatScatterBase
+ * @extends FloatScatterBase
  */
 export class FloatCurveScatter extends FloatScatterBase {
   /**
@@ -19,7 +19,7 @@ export class FloatCurveScatter extends FloatScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Curve} 
+     * @type {Curve} 
      */
     this.mCurve = new Curve();
     this.mCurve.baked = true;
@@ -33,7 +33,7 @@ export class FloatCurveScatter extends FloatScatterBase {
 
     /** 
      * @private 
-     * @type {black-engine~Vector} 
+     * @type {Vector} 
      */
     this.mCache = new Vector();
   }

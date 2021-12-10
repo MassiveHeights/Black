@@ -35,7 +35,7 @@ import { LoaderFactory } from "./LoaderFactory";
  * @fires AssetManager#error
  *
  * @cat assets
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class AssetManager extends MessageDispatcher {
   /**
@@ -86,25 +86,25 @@ export class AssetManager extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Asset>} 
+     * @type {Array<Asset>} 
      */
     this.mQueue = [];
 
     /** 
      * @private 
-     * @type {Object.<string, black-engine~AssetLoader>} 
+     * @type {Object.<string, AssetLoader>} 
      */
     this.mLoadersQueue = {};
 
     /** 
      * @private 
-     * @type {black-engine~AssetManagerState} 
+     * @type {AssetManagerState} 
      */
     this.mState = AssetManagerState.NONE;
 
     /**
      * @private
-     * @type {black-engine~LoaderFactory}
+     * @type {LoaderFactory}
      */
     this.mLoaderFactory = new LoaderFactory(this);
 
@@ -169,7 +169,7 @@ export class AssetManager extends MessageDispatcher {
    * Adds asset into the loading queue.
    * 
    * @param {string} name 
-   * @param {black-engine~Asset} asset 
+   * @param {Asset} asset 
    * @returns {void}
    */
   enqueueAsset(name, asset) {
@@ -183,7 +183,7 @@ export class AssetManager extends MessageDispatcher {
    * Returns new asset instance by given type.
    * 
    * @private
-   * @param {string|black-engine~AssetType} type 
+   * @param {string|AssetType} type 
    * @param  {...any} args 
    */
   __getAsset(type, ...args) {
@@ -193,7 +193,7 @@ export class AssetManager extends MessageDispatcher {
   /**
    * Adds or changes texture to the internal list for future reuse by given name.
    * @param {string} name
-   * @param {black-engine~Texture} texture
+   * @param {Texture} texture
    */
   addTexture(name, texture) {
     this.mTextures[name] = texture;
@@ -394,7 +394,7 @@ export class AssetManager extends MessageDispatcher {
   /**
    * @protected
    * @ignore
-   * @param {black-engine~Message} msg
+   * @param {Message} msg
    * @return {void}
    */
   onAssetLoaded(msg) {
@@ -474,10 +474,10 @@ export class AssetManager extends MessageDispatcher {
    * Returns BitmapFontData object by given name.
    *
    * @param {string} name The name of the Asset to search.
-   * @return {black-engine~BitmapFontData|null} Returns a BitmapFontData if found or null.
+   * @return {BitmapFontData|null} Returns a BitmapFontData if found or null.
    */
   getBitmapFont(name) {
-    /** @type {black-engine~BitmapFontData} */
+    /** @type {BitmapFontData} */
     let font = this.mAssets[AssetType.BITMAP_FONT][name];
 
     if (font != null)
@@ -491,7 +491,7 @@ export class AssetManager extends MessageDispatcher {
    * Returns Texture object by given name.
    *
    * @param {string} name The name of the Asset.
-   * @return {black-engine~Texture|null} Returns a Texture if found or null.
+   * @return {Texture|null} Returns a Texture if found or null.
    */
   getTexture(name) {
     let textures = this.mAssets[AssetType.TEXTURE];
@@ -538,7 +538,7 @@ export class AssetManager extends MessageDispatcher {
   /**
    * Returns Graphics data by given name.
    * @param {string} name 
-   * @returns {black-engine~GraphicsData}
+   * @returns {GraphicsData}
    */
   getGraphicsData(name) {
     let vectors = this.mAssets[AssetType.VECTOR_GRAPHICS];
@@ -569,7 +569,7 @@ export class AssetManager extends MessageDispatcher {
    * Searches across all loaded images and atlases.
    *
    * @param {string} nameMask The name mask.
-   * @returns {Array<black-engine~Texture>|null}
+   * @returns {Array<Texture>|null}
    */
   getTextures(nameMask) {
     let textures = this.mAssets[AssetType.TEXTURE];
@@ -642,7 +642,7 @@ export class AssetManager extends MessageDispatcher {
    * Returns AtlasTexture by given name.
    *
    * @param {string} name The name of the Asset.
-   * @return {black-engine~AtlasTexture|null} Returns atlas or null.
+   * @return {AtlasTexture|null} Returns atlas or null.
    */
   getAtlas(name) {
     let atlasses = this.mAssets[AssetType.TEXTURE_ATLAS];
@@ -660,7 +660,7 @@ export class AssetManager extends MessageDispatcher {
    * Returns `SoundClip` by given name.
    *
    * @param {string} name The name of the sound.
-   * @return {black-engine~SoundClip} Returns sound or null.
+   * @return {SoundClip} Returns sound or null.
    */
   getSound(name) {
     let sounds = this.mAssets[AssetType.SOUND];
@@ -690,7 +690,7 @@ export class AssetManager extends MessageDispatcher {
    * Returns `SoundAtlasClip` by given name.
    *
    * @param {string} name The name of the sound.
-   * @return {black-engine~SoundClip} Returns sound or null.
+   * @return {SoundClip} Returns sound or null.
    */
   getSoundAtlas(name) {
     if (this.mAssets[AssetType.SOUND_ATLAS] == null)
@@ -783,7 +783,7 @@ export class AssetManager extends MessageDispatcher {
   /**
    * Returns current state.
    *
-   * @returns {black-engine~AssetManagerState}
+   * @returns {AssetManagerState}
    */
   get state() {
     return this.mState;

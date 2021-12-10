@@ -7,7 +7,7 @@ import { MathEx } from "../../math/MathEx";
  * Equalizer.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 export class SimpleEQ extends SoundEffect {
   /**

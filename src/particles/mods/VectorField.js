@@ -4,7 +4,7 @@ import { Vector } from "../../geom/Vector";
 /**
  * @ignore
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 export class VectorField extends Modifier {
   /**
@@ -65,7 +65,7 @@ export class VectorField extends Modifier {
    * 
    * @param {number} x
    * @param {number} y
-   * @returns {black-engine~Vector|null}
+   * @returns {Vector|null}
    */
   getVectorAt(x, y) {
     x = Math.floor(x * this.resolution);

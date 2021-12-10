@@ -11,7 +11,7 @@ import { Black } from "../Black";
  *
  * @cat core
  * @fires Viewport#resize
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class Viewport extends MessageDispatcher {
   /**
@@ -36,7 +36,7 @@ export class Viewport extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mSize = new Rectangle();
 
@@ -60,7 +60,7 @@ export class Viewport extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~Orientation} 
+     * @type {Orientation} 
      */
     this.mOrientation = Orientation.UNIVERSAL;
 
@@ -138,14 +138,14 @@ export class Viewport extends MessageDispatcher {
   /**
    * Gets/Sets stage orientation.
    *
-   * @returns {black-engine~Orientation}
+   * @returns {Orientation}
    */
   get orientation() {
     return this.mOrientation;
   }
 
   /**
-   * @param {black-engine~Orientation} value
+   * @param {Orientation} value
    * @returns {void}
    */
   set orientation(value) {
@@ -251,7 +251,7 @@ export class Viewport extends MessageDispatcher {
   /**
    * Returns the size of a viewport.
    *
-   * @return {black-engine~Rectangle}
+   * @return {Rectangle}
    */
   get size() {
     return this.mSize;

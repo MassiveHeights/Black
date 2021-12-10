@@ -13,7 +13,7 @@ import { MathEx } from "../math/MathEx";
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
- * @extends black-engine~GameObject
+ * @extends GameObject
  */
 export class DisplayObject extends GameObject {
   constructor() {
@@ -27,7 +27,7 @@ export class DisplayObject extends GameObject {
 
     /** 
      * @protected 
-     * @type {black-engine~BlendMode} 
+     * @type {BlendMode} 
      */
     this.mBlendMode = BlendMode.AUTO;
 
@@ -39,13 +39,13 @@ export class DisplayObject extends GameObject {
 
     /** 
      * @protected 
-     * @type {black-engine~Rectangle} 
+     * @type {Rectangle} 
      */
     this.mClipRect = null;
 
     /** 
      * @protected 
-     * @type {black-engine~Renderer|null} 
+     * @type {Renderer|null} 
      */
     this.mRenderer = this.getRenderer();
 
@@ -69,19 +69,19 @@ export class DisplayObject extends GameObject {
 
     /** 
      * @private 
-     * @type {black-engine~Matrix|null} 
+     * @type {Matrix|null} 
      */
     this.mCacheAsBitmapMatrixCache = null;
 
     /** 
      * @private 
-     * @type {black-engine~CanvasRenderTexture|null} 
+     * @type {CanvasRenderTexture|null} 
      */
     this.mCache = null;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mCacheBounds = null;
 
@@ -112,7 +112,7 @@ export class DisplayObject extends GameObject {
   /**
    * Factory method returns concrete renderer for this Game Object.
    * 
-   * @returns {black-engine~Renderer}
+   * @returns {Renderer}
    */
   getRenderer() {
     return Black.driver.getRenderer('DisplayObject', this);
@@ -364,14 +364,14 @@ export class DisplayObject extends GameObject {
   /**
    * Gets/Sets blend mode for the object.
    *
-   * @return {black-engine~BlendMode}
+   * @return {BlendMode}
    */
   get blendMode() {
     return this.mBlendMode;
   }
 
   /**
-   * @param {black-engine~BlendMode} value
+   * @param {BlendMode} value
    * @return {void}
    */
   set blendMode(value) {
@@ -385,14 +385,14 @@ export class DisplayObject extends GameObject {
   /**
    * Gets/Sets clipping area for the object.
    *
-   * @return {black-engine~Rectangle}
+   * @return {Rectangle}
    */
   get clipRect() {
     return this.mClipRect;
   }
 
   /**
-   * @param {black-engine~Rectangle} value
+   * @param {Rectangle} value
    * @return {void}
    */
   set clipRect(value) {

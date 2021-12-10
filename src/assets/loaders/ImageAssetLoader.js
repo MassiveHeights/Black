@@ -6,7 +6,7 @@ var alternativeUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIA
  * Responsible for loading images.
  *
  * @cat assets.loaders
- * @extends black-engine~AssetLoader
+ * @extends AssetLoader
  */
 export class ImageAssetLoader extends AssetLoader {
   /**

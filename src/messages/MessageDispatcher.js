@@ -29,7 +29,7 @@ export class MessageDispatcher {
    * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
    * @param {*} [context=null]  Object to be used as `this` in callback function.
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   on(name, callback, context) {
     return this.__on(name, callback, false, context);
@@ -68,7 +68,7 @@ export class MessageDispatcher {
    * @param {string} name       Message name.
    * @param {Function} callback Function to be called on message send.
    * @param {*} [context=null]  Object to be used as `this` in callback function.
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   once(name, callback, context) {
     return this.__on(name, callback, true, context);
@@ -102,7 +102,7 @@ export class MessageDispatcher {
    * Returns parent MessageDispatcher.
    * 
    * @readonly
-   * @return {black-engine~MessageDispatcher|null}
+   * @return {MessageDispatcher|null}
    */
   get parent() {
     return null;
@@ -112,7 +112,7 @@ export class MessageDispatcher {
    * Returns the stage Game Object to which this belongs to or null if not added onto stage.
    *
    * @readonly
-   * @return {black-engine~Stage|null}
+   * @return {Stage|null}
    */
   get stage() {
     return null;
@@ -136,7 +136,7 @@ export class MessageDispatcher {
    * @param {Function} callback
    * @param {boolean} [isOnce=false]
    * @param {*} [context=null]
-   * @return {black-engine~MessageBinding}
+   * @return {MessageBinding}
    */
   __on(name, callback, isOnce = false, context = null) {
     Debug.assert(name !== null, 'name cannot be null.');
@@ -174,7 +174,7 @@ export class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageBinding} binding 
+   * @param {MessageBinding} binding 
    */
   __off(binding) {
     if (binding.type === BindingType.REGULAR) {
@@ -208,8 +208,8 @@ export class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageDispatcher} sender 
-   * @param {black-engine~Message} message 
+   * @param {MessageDispatcher} sender 
+   * @param {Message} message 
    * @param {...*} params 
    * @return {void}
    */
@@ -251,8 +251,8 @@ export class MessageDispatcher {
   /**
    * @private
    * @ignore
-   * @param {black-engine~MessageDispatcher}  sender
-   * @param {black-engine~Message}  message
+   * @param {MessageDispatcher}  sender
+   * @param {Message}  message
    * @param {...*} params
    * @return {void}
    */
@@ -323,7 +323,7 @@ export class MessageDispatcher {
    * @ignore
    * 
    * @param {string} name 
-   * @returns {black-engine~Message}
+   * @returns {Message}
    */
   __draftMessage(name) {
     const message = Message.pool.get();
@@ -345,7 +345,7 @@ export class MessageDispatcher {
    * @ignore
    * @private
    * @param {string|null} path
-   * @param {black-engine~MessageBinding} binding
+   * @param {MessageBinding} binding
    * @returns {boolean}
    */
   __checkPath(path, binding) {

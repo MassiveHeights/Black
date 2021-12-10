@@ -10,7 +10,7 @@ export class GraphicsCommand {
   /**
    * Creates new instance of GraphicsCommand
    *
-   * @param {black-engine~GraphicsCommandType} type
+   * @param {GraphicsCommandType} type
    * @param {Array<*>} data
    */
   constructor(type, data) {

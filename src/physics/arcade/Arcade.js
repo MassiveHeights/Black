@@ -15,7 +15,7 @@ import { Pair } from "./pairs/Pair";
  * Simple AABB physics engine (beta).
  *
  * @cat physics.arcade
- * @extends black-engine~System
+ * @extends System
  */
 export class Arcade extends System {
   /**
@@ -27,28 +27,28 @@ export class Arcade extends System {
     /**
      * Bodies that are on stage.
      * @private 
-     * @type {Array<black-engine~RigidBody>}
+     * @type {Array<RigidBody>}
      */
     this.mBodies = [];
 
     /**
      * Pairs to check collisions within. With colliders which bodies are on stage.
      * @private 
-     * @type {Array<black-engine~Pair>}
+     * @type {Array<Pair>}
      */
     this.mPairs = [];
 
     /**
      * Pairs which are in collision per frame.
      * @private 
-     * @type {Array<black-engine~Pair>}
+     * @type {Array<Pair>}
      */
     this.mContacts = [];
 
     /**
      * Broad collision test instance.
      * @private 
-     * @type {black-engine~BroadPhase}
+     * @type {BroadPhase}
      */
     this.mBroadPhase = new BroadPhase();
 
@@ -62,28 +62,28 @@ export class Arcade extends System {
     /**
      * Reference to world bounds body.
      * @private 
-     * @type {black-engine~RigidBody|null}
+     * @type {RigidBody|null}
      */
     this.mBoundsBody = null;
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsLeft = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsRight = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsTop = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~BoxCollider} */
+     * @type {BoxCollider} */
     this.mBoundsBottom = new BoxCollider(0, 0, 0, 0);
 
     /** @private 
-     * @type {black-engine~Vector} */
+     * @type {Vector} */
     this.mGravity = new Vector(0, 1000);
 
     /**
@@ -119,8 +119,8 @@ export class Arcade extends System {
    *
    * @public
    *
-   * @param {black-engine~Collider} colliderA Collider to check
-   * @param {black-engine~Collider} colliderB Collider to check
+   * @param {Collider} colliderA Collider to check
+   * @param {Collider} colliderB Collider to check
    * @param {Function} cb        Callback
    * @param {Object} ctx         Callback context
    * @param {...*} [args]        Rest arguments
@@ -150,8 +150,8 @@ export class Arcade extends System {
    *
    * @public
    *
-   * @param {black-engine~RigidBody} bodyA         Body to check
-   * @param {black-engine~RigidBody=} [bodyB=null] Body to check
+   * @param {RigidBody} bodyA         Body to check
+   * @param {RigidBody=} [bodyB=null] Body to check
    * @param {Function=} [cb=null]     Callback
    * @param {Object=} [ctx=null]      Callback context
    * @param {...*} [args]             Rest arguments
@@ -244,7 +244,7 @@ export class Arcade extends System {
    * Adds body to arcade world. Start tracking its gameObject colliders.
    *
    * @private
-   * @param {black-engine~RigidBody} body Body to add
+   * @param {RigidBody} body Body to add
    *
    * @return {void}
    */
@@ -268,8 +268,8 @@ export class Arcade extends System {
    * Removes body from arcade world.
    *
    * @private
-   * @param {black-engine~RigidBody} body        Body to remove
-   * @param {black-engine~GameObject} gameObject Body's game object
+   * @param {RigidBody} body        Body to remove
+   * @param {GameObject} gameObject Body's game object
    *
    * @return {void}
    */
@@ -293,8 +293,8 @@ export class Arcade extends System {
    * Adds collider to arcade world.
    *
    * @private
-   * @param {black-engine~GameObject} child  Parent of the collider
-   * @param {black-engine~Collider} collider Collider to add
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to add
    *
    * @return {void}
    */
@@ -314,8 +314,8 @@ export class Arcade extends System {
    * Removes collider from arcade world.
    *
    * @private
-   * @param {black-engine~GameObject} child  Parent of the collider
-   * @param {black-engine~Collider} collider Collider to remove
+   * @param {GameObject} child  Parent of the collider
+   * @param {Collider} collider Collider to remove
    *
    * @return {void}
    */
@@ -345,8 +345,8 @@ export class Arcade extends System {
    * Generate pairs, passed collider with all present colliders.
    *
    * @private
-   * @param {black-engine~Collider} collider   Collider to generate with
-   * @param {black-engine~RigidBody} fromBody  The collider body
+   * @param {Collider} collider   Collider to generate with
+   * @param {RigidBody} fromBody  The collider body
    *
    * @return {void}
    */
@@ -375,10 +375,10 @@ export class Arcade extends System {
    * Creates pair and adds it to world.
    *
    * @private
-   * @param {black-engine~Collider} a      Pair collider
-   * @param {black-engine~Collider} b      Pair collider
-   * @param {black-engine~RigidBody} bodyA Pair body
-   * @param {black-engine~RigidBody} bodyB Pair body
+   * @param {Collider} a      Pair collider
+   * @param {Collider} b      Pair collider
+   * @param {RigidBody} bodyA Pair body
+   * @param {RigidBody} bodyB Pair body
    *
    * @return {void}
    */
@@ -418,7 +418,7 @@ export class Arcade extends System {
    * Removes all pairs with given collider.
    *
    * @private
-   * @param {black-engine~Collider} collider Pairs collider
+   * @param {Collider} collider Pairs collider
    *
    * @return {void}
    */

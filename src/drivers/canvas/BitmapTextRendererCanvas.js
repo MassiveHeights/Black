@@ -4,7 +4,7 @@ import { Renderer } from "../Renderer";
 /**
  * Renders `BitmapTextField` objects on canvas.
  *
- * @extends black-engine~BitmapTextRenderer
+ * @extends BitmapTextRenderer
  * @cat drivers.canvas
  */
 export class BitmapTextRendererCanvas extends BitmapTextRenderer {

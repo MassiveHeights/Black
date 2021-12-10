@@ -14,13 +14,13 @@ export class RenderSession {
     /** @type {Array<Renderer>} */
     this.parentRenderers = [];
 
-    /** @type {Array<black-engine~Renderer>} */
+    /** @type {Array<Renderer>} */
     this.endPassParentRenderers = [];
 
     /** @type {boolean} */
     this.isBackBufferActive = true;
 
-    /** @type {Mblack-engine~atrix|null} */
+    /** @type {Matrix|null} */
     this.customTransform = null;
   }
 

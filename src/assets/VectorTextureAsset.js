@@ -14,7 +14,7 @@ import { AssetType } from "./AssetType";
  * Single JSON file asset class responsible for loading json file.
  *
  * @cat assets
- * @extends black-engine~Asset
+ * @extends Asset
  */
 
 export class VectorTextureAsset extends Asset {
@@ -58,13 +58,13 @@ export class VectorTextureAsset extends Asset {
 
     /** 
      * @private 
-     * @type {black-engine~GraphicsData|null} 
+     * @type {GraphicsData|null} 
      */
     this.mGraphicsData = null;
 
     /** 
      * @private 
-     * @type {black-engine~XHRAssetLoader|null} 
+     * @type {XHRAssetLoader|null} 
      */
     this.mXHR = null;
   }
@@ -105,7 +105,7 @@ export class VectorTextureAsset extends Asset {
   /**
    * Creates baked textures from this graphics data.
    *
-   * @return {Object.<string, black-engine~CanvasRenderTexture>}
+   * @return {Object.<string, CanvasRenderTexture>}
    */
   bakeTextures() {
     const textures = {};

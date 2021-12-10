@@ -14,12 +14,12 @@ let ID = 0;
  * The sound
  * 
  * @cat audio
- * @extends {black-engine~MessageDispatcher}
+ * @extends {MessageDispatcher}
  */
 export class SoundInstance extends MessageDispatcher {
   /**
    * Creates instance
-   * @param {black-engine~SoundClip} sound `SoundClip` instance taken from `AssetManager`.
+   * @param {SoundClip} sound `SoundClip` instance taken from `AssetManager`.
    */
   constructor(sound) {
     super();
@@ -32,13 +32,13 @@ export class SoundInstance extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {black-engine~SoundClip} 
+     * @type {SoundClip} 
      */
     this.mSound = sound;
 
     /** 
      * @private 
-     * @type {black-engine~SoundState} 
+     * @type {SoundState} 
      */
     this.mState = SoundState.NEWBORN;
 
@@ -190,7 +190,7 @@ export class SoundInstance extends MessageDispatcher {
 
   /**
    * @ignore
-   * @returns {black-engine~SoundInstance}
+   * @returns {SoundInstance}
    */
   _play() {
     if (this.mState === SoundState.PLAYING)

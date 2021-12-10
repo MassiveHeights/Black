@@ -18,7 +18,7 @@ export class Curve {
 
     /** 
      * @private 
-     * @type {Array<black-engine~Vector>} 
+     * @type {Array<Vector>} 
      */
     this.mLookup = null;
 
@@ -45,7 +45,7 @@ export class Curve {
    * Sets new points coordinates.
    *
    * @param  {...number} points Coordinates: startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX/start2X, endY/start2Y, cp2StartX, cp2StartX... 8 or 14 or 20...
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   set(...points) {
     this.mPoints = this.__initPoints(points);
@@ -100,7 +100,7 @@ export class Curve {
    * Refresh cache (lookup) for fast interpolations.
    *
    * @private
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   __refreshCache() {
     let lookup = this.mLookup = [];
@@ -125,7 +125,7 @@ export class Curve {
    *
    * @ignore
    * @private
-   * @return {black-engine~Curve} This curve.
+   * @return {Curve} This curve.
    */
   __refreshEachT() {
     let points = this.mPoints;
@@ -158,8 +158,8 @@ export class Curve {
    * @param  {number} cpEndY
    * @param  {number} endX
    * @param  {number} endY
-   * @param  {black-engine~Vector=} outVector
-   * @return {black-engine~Vector} Position on bezier.
+   * @param  {Vector=} outVector
+   * @return {Vector} Position on bezier.
    */
   static lerp(t, startX, startY, cpStartX, cpStartY, cpEndX, cpEndY, endX, endY, outVector) {
     let u = 1 - t;
@@ -192,8 +192,8 @@ export class Curve {
    * Interpolates across whole curve.
    *
    * @param  {number} t Interpolation position (0...1).
-   * @param  {black-engine~Vector=} outVector Vector to be returned.
-   * @return {black-engine~Vector} Position on curve.
+   * @param  {Vector=} outVector Vector to be returned.
+   * @return {Vector} Position on curve.
    */
   interpolate(t, outVector) {
     let res = outVector || new Vector();
@@ -255,7 +255,7 @@ export class Curve {
 
 /**
  * @ignore
- * @type {black-engine~Curve}
+ * @type {Curve}
  * @nocollapse
  */
 Curve.__cache = new Curve();

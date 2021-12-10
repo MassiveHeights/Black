@@ -11,7 +11,7 @@ import { MessageBinding } from "../messages/MessageBinding";
  * @fires Asset#complete
  * 
  * @cat assets
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class Asset extends MessageDispatcher {
   /**
@@ -42,7 +42,7 @@ export class Asset extends MessageDispatcher {
 
     /** 
      * @protected 
-     * @type {Array<black-engine~AssetLoader>} 
+     * @type {Array<AssetLoader>} 
      */
     this.mLoaders = [];
 
@@ -60,7 +60,7 @@ export class Asset extends MessageDispatcher {
 
     /** 
      * @private 
-     * @type {Array<black-engine~MessageBinding>} 
+     * @type {Array<MessageBinding>} 
      */
     this.mBindings = [];
   }
@@ -68,8 +68,8 @@ export class Asset extends MessageDispatcher {
   /**
    * Adds given loader to the list. Loader cannot be added to multiply Assets.
    * 
-   * @param {black-engine~AssetLoader} loader Loader to add.
-   * @returns {black-engine~AssetLoader}
+   * @param {AssetLoader} loader Loader to add.
+   * @returns {AssetLoader}
    */
   addLoader(loader) {
     this.mLoaders.push(loader);
@@ -84,7 +84,7 @@ export class Asset extends MessageDispatcher {
 
   /**
    * Called when AssetManager is about to request loaders for this asset.
-   * @param {black-engine~LoaderFactory} factory 
+   * @param {LoaderFactory} factory 
    */
   onLoaderRequested(factory) { }
 
@@ -105,7 +105,7 @@ export class Asset extends MessageDispatcher {
 
   /**
    * @private
-   * @param {black-engine~Message} m 
+   * @param {Message} m 
    */
   __onLoaderError(m) {
     this.abort();
@@ -194,7 +194,7 @@ export class Asset extends MessageDispatcher {
   /**
    * Returns array of loaders.
    * 
-   * @returns {Array<black-engine~AssetLoader>}
+   * @returns {Array<AssetLoader>}
    */
   get loaders() {
     return this.mLoaders;

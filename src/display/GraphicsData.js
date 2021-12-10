@@ -24,19 +24,19 @@ export class GraphicsData {
   constructor() {
     /** 
      * @private 
-     * @type {Array<black-engine~GraphicsData>} 
+     * @type {Array<GraphicsData>} 
      */
     this.mNodes = [];
 
     /** 
      * @private 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mTransform = new Matrix();
 
     /** 
      * @private 
-     * @type {Array<black-engine~GraphicsCommand>} 
+     * @type {Array<GraphicsCommand>} 
      */
     this.mCommandQueue = [];
 
@@ -76,9 +76,9 @@ export class GraphicsData {
    *
    * @protected
    * @param {Object} graphics Object to store bounds by reference.
-   * @param {black-engine~Matrix} transform Matrix to transform children nodes, for internal use.
+   * @param {Matrix} transform Matrix to transform children nodes, for internal use.
    *
-   * @return {black-engine~Rectangle} Calculated local bounds.
+   * @return {Rectangle} Calculated local bounds.
    */
   onGetLocalBounds(graphics, transform) {
     let path = new GraphicsPath();
@@ -171,8 +171,8 @@ export class GraphicsData {
    * @param {number} lineWidth Line width.
    * @param {number=} [color=0] Line color.
    * @param {number=} [alpha=1] Line alpha.
-   * @param {black-engine~CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
-   * @param {black-engine~JointStyle=} [joints=JointStyle.MITER] Line joints style.
+   * @param {CapsStyle=} [caps=CapsStyle.NONE] Line caps style.
+   * @param {JointStyle=} [joints=JointStyle.MITER] Line joints style.
    * @param {number=} [miterLimit=3] Miter limit.
    * @returns {void}
    */
@@ -226,7 +226,7 @@ export class GraphicsData {
    * Sets fill style to gradient.
    *
    * @public
-   * @param {black-engine~GraphicsGradient} gradient Fill gradient.
+   * @param {GraphicsGradient} gradient Fill gradient.
    *
    * @returns {void}
    */
@@ -240,7 +240,7 @@ export class GraphicsData {
    * Sets fill style to pattern.
    *
    * @public
-   * @param {black-engine~GraphicsPattern} pattern Fill pattern.
+   * @param {GraphicsPattern} pattern Fill pattern.
    *
    * @returns {void}
    */
@@ -470,9 +470,9 @@ export class GraphicsData {
    * @param {number} p1
    * @param {number} p2
    * @param {number} p3
-   * @param {black-engine~Vector=} out
+   * @param {Vector=} out
    *
-   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __bezierRange(p0, p1, p2, p3, out) {
     out = out || new Vector();
@@ -532,9 +532,9 @@ export class GraphicsData {
    * @param {number} p0
    * @param {number} p1
    * @param {number} p2
-   * @param {black-engine~Vector=} out
+   * @param {Vector=} out
    *
-   * @return {black-engine~Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
+   * @return {Vector} Out vector with set x, y as min and max bezier coordinate on passed axis
    */
   __quadraticRange(p0, p1, p2, out) {
     const a = p2 - p0;
@@ -606,7 +606,7 @@ export class GraphicsData {
   /**
    * @private
    * @ignore
-   * @param {black-engine~GraphicsCommandType} type
+   * @param {GraphicsCommandType} type
    * @param {...*} data
    */
   __pushCommand(type, ...data) {

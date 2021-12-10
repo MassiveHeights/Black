@@ -12,7 +12,7 @@ import { Debug } from "../core/Debug";
  *
  * @cat display
  * @fires Stage#resize
- * @extends black-engine~GameObject
+ * @extends GameObject
  */
 export class Stage extends GameObject {
   constructor() {
@@ -26,7 +26,7 @@ export class Stage extends GameObject {
 
     /** 
      * @private 
-     * @type {black-engine~StageScaleMode} 
+     * @type {StageScaleMode} 
      */
     this.mScaleMode = StageScaleMode.NORMAL;
 
@@ -191,14 +191,14 @@ export class Stage extends GameObject {
   /**
    * Gets/Sets stage scale mode.
    *
-   * @return {black-engine~StageScaleMode}
+   * @return {StageScaleMode}
    */
   get scaleMode() {
     return this.mScaleMode;
   }
 
   /**
-   * @param {black-engine~StageScaleMode} value
+   * @param {StageScaleMode} value
    * @returns {void}
    */
   set scaleMode(value) {
@@ -281,7 +281,7 @@ export class Stage extends GameObject {
    * Returns local transformation `Matrix`
    *
    * @override
-   * @return {black-engine~Matrix}
+   * @return {Matrix}
    */
   get localTransformation() {
     return this.mLocalTransform;
@@ -289,7 +289,7 @@ export class Stage extends GameObject {
 
   /**
    * @override
-   * @param {black-engine~Matrix} value
+   * @param {Matrix} value
    * @return {void}
    */
   set localTransformation(value) {

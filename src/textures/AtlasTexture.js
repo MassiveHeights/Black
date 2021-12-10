@@ -7,7 +7,7 @@ import { Debug } from "../core/Debug";
  * A texture atlas.
  *
  * @cat textures
- * @extends black-engine~Texture
+ * @extends Texture
  */
 export class AtlasTexture extends Texture {
   constructor(nativeElement, jsonObject, scale = 1) {
@@ -15,7 +15,7 @@ export class AtlasTexture extends Texture {
 
     /** 
      * @private 
-     * @type {Object.<string, black-engine~Texture>} 
+     * @type {Object.<string, Texture>} 
      */
     this.mSubTextures = {};
 
@@ -58,7 +58,7 @@ export class AtlasTexture extends Texture {
    * Returns the texture by a given name.
    *
    * @param {string} name The name of the texture to find.
-   * @return {black-engine~Texture} The Texture or null if not found.
+   * @return {Texture} The Texture or null if not found.
    */
   getTexture(name) {
     /** @type {Texture} */
@@ -74,8 +74,8 @@ export class AtlasTexture extends Texture {
    * This method sorts all resulting textures using neutral sort algorith.
    *
    * @param {string|null} [nameMask=null] The mask to filter by.
-   * @param {Array<black-engine~Texture>|null}         outTextures If passed will be overwritten by result object.
-   * @return {Array<black-engine~Texture>}             The list of found textures.
+   * @param {Array<Texture>|null}         outTextures If passed will be overwritten by result object.
+   * @return {Array<Texture>}             The list of found textures.
    */
   getTextures(nameMask = null, outTextures = null) {
     let out = outTextures || [];

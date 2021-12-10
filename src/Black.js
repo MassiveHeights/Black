@@ -12,37 +12,37 @@ class Black {
 
     /**
      * @private
-     * @type {black-engine~Engine}
+     * @type {Engine}
      */
     this.mEngine = null;
 
     /**
      * @private
-     * @type {black-engine~Input}
+     * @type {Input}
      */
     this.mInput = null;
 
     /**
      * @private
-     * @type {black-engine~MasterAudio}
+     * @type {MasterAudio}
      */
     this.mAudio = null;
 
     /**
      * @private
-     * @type {black-engine~Time}
+     * @type {Time}
      */
     this.mTime = null;
 
     /**
      * @private
-     * @type {black-engine~Device}
+     * @type {Device}
      */
     this.mDevice = null;
 
     /**
      * @private
-     * @type {black-engine~AssetManager}
+     * @type {AssetManager}
      */
     this.mAssets = null;
 
@@ -50,7 +50,7 @@ class Black {
      * Active camera instance.
      * 
      * @private
-     * @type {black-engine~Camera}
+     * @type {Camera}
      */
     this.mCamera = null;
   }
@@ -58,7 +58,7 @@ class Black {
   /**
    * Returns current Black Engine instance.
    * 
-   * @returns {black-engine~Engine}
+   * @returns {Engine}
    */
   static get engine() {
     return mInstance.mEngine;
@@ -66,7 +66,7 @@ class Black {
 
   /**
    * Sets new Engine instance.
-   * @param {black-engine~Engine} value
+   * @param {Engine} value
    */
   static set engine(value) {
     mInstance.mEngine = value;
@@ -75,7 +75,7 @@ class Black {
   /**
    * Returns current active Input System instance.
    * 
-   * @returns {black-engine~Input}
+   * @returns {Input}
    */
   static get input() {
     return mInstance.mInput;
@@ -83,7 +83,7 @@ class Black {
 
   /**
    * Sets new Input System.
-   * @param {black-engine~Input} value
+   * @param {Input} value
    */
   static set input(value) {
     mInstance.mInput = value;
@@ -92,7 +92,7 @@ class Black {
   /**
    * Returns current active Audio System instance.
    * 
-   * @returns {black-engine~MasterAudio}
+   * @returns {MasterAudio}
    */
   static get audio() {
     return mInstance.mAudio;
@@ -100,7 +100,7 @@ class Black {
 
   /**
    * Sets new Audio System.
-   * @param {black-engine~MasterAudio} value
+   * @param {MasterAudio} value
    */
   static set audio(value) {
     mInstance.mAudio = value;
@@ -109,7 +109,7 @@ class Black {
   /**
    * Returns current Time management instance.
    * 
-   * @returns {black-engine~Time}
+   * @returns {Time}
    */
   static get time() {
     return mInstance.mTime;
@@ -117,7 +117,7 @@ class Black {
 
   /**
    * Sets new Time instance.
-   * @param {black-engine~Time} value
+   * @param {Time} value
    */
   static set time(value) {
     mInstance.mTime = value;
@@ -126,7 +126,7 @@ class Black {
   /**
    * Returns current Device instance.
    * 
-   * @returns {black-engine~Device}
+   * @returns {Device}
    */
   static get device() {
     return mInstance.mDevice;
@@ -134,7 +134,7 @@ class Black {
 
   /**
    * Sets new Device instance.
-   * @param {black-engine~Device} value
+   * @param {Device} value
    */
   static set device(value) {
     mInstance.mDevice = value;
@@ -144,7 +144,7 @@ class Black {
    * Default AssetManager instance. Sprite and other classes uses this instance to find textures by name.
    * It will be automatically re-assigned when new AssetManager is created.
    * 
-   * @returns {black-engine~AssetManager}
+   * @returns {AssetManager}
    */
   static get assets() {
     return mInstance.mAssets;
@@ -152,7 +152,7 @@ class Black {
 
   /**
    * Sets new AssetManager.
-   * @param {black-engine~AssetManager} value
+   * @param {AssetManager} value
    */
   static set assets(value) {
     mInstance.mAssets = value;
@@ -162,7 +162,7 @@ class Black {
    * Returns current stage.
    *
    * @readonly
-   * @returns {black-engine~Stage}
+   * @returns {Stage}
    */
   static get stage() {
     return mInstance.mEngine.mStage;
@@ -172,7 +172,7 @@ class Black {
    * Returns current video driver.
    *
    * @readonly
-   * @returns {black-engine~VideoNullDriver}
+   * @returns {VideoNullDriver}
    */
   static get driver() {
     return mInstance.mEngine.mVideo;
@@ -181,7 +181,7 @@ class Black {
   /**
    * Returns active camera instance.
    * 
-   * @returns {black-engine~Camera}
+   * @returns {Camera}
    */
   static get camera() {
     if (mInstance.mCamera !== null && mInstance.mCamera.mAdded === true)
@@ -192,7 +192,7 @@ class Black {
 
   /**
    * Sets default camera;
-   * @param {black-engine~Camera} value
+   * @param {Camera} value
    */
   static set camera(value) {
     mInstance.mCamera = value;

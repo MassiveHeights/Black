@@ -9,7 +9,7 @@ export class GraphicsPath {
    * Creates new instance of GraphicsPath
    */
   constructor() {
-    /** @type {Recblack-engine~tangle|null} */
+    /** @type {Rectangle|null} */
     this.bounds = null;
 
     /** @type {Array<number>} */

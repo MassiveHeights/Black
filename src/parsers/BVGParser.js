@@ -52,7 +52,7 @@ const shapeCmds = {
  * Creates GraphicsData for Graphics from BVG format.
  *
  * @cat parsers
- * @extends black-engine~ParserBase
+ * @extends ParserBase
  */
 
 export class BVGParser extends ParserBase {
@@ -69,7 +69,7 @@ export class BVGParser extends ParserBase {
   /**
    * @inheritDoc
    *
-   * @return {black-engine~GraphicsData} Data for Graphics renderer
+   * @return {GraphicsData} Data for Graphics renderer
    */
   parse(data) {
     super.parse(data);
@@ -87,11 +87,11 @@ export class BVGParser extends ParserBase {
    *
    * @private
    * @param {Object} node BVG node.
-   * @param {Array<black-engine~BVGStyle>} styles Parsed BVG styles.
-   * @param {black-engine~GraphicsData} parent Parent node.
-   * @param {black-engine~BVGStyle} parentStyle Style for inheritance.
+   * @param {Array<BVGStyle>} styles Parsed BVG styles.
+   * @param {GraphicsData} parent Parent node.
+   * @param {BVGStyle} parentStyle Style for inheritance.
    *
-   * @returns {black-engine~GraphicsData} Parsed data root.
+   * @returns {GraphicsData} Parsed data root.
    */
   __traverse(node, styles, parent, parentStyle) {
     const defs = this._defs;
@@ -347,7 +347,7 @@ export class BVGParser extends ParserBase {
    *
    * @private
    *
-   * @returns {Array<black-engine~BVGStyle>} Parsed data styles.
+   * @returns {Array<BVGStyle>} Parsed data styles.
    */
   __parseStyles(styles) {
     if (!styles)
@@ -371,7 +371,7 @@ export class BVGParser extends ParserBase {
    *
    * @private
    * @param {string} data Path data attribute value
-   * @param {black-engine~GraphicsData} graphicsData Graphics data to store parsed values to.
+   * @param {GraphicsData} graphicsData Graphics data to store parsed values to.
    *
    * @return {void}
    */

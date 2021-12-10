@@ -5,7 +5,7 @@ import { Message } from "../../messages/Message";
  * Base class for loaders.
  *
  * @cat assets.loaders
- * @extends black-engine~MessageDispatcher
+ * @extends MessageDispatcher
  */
 export class AssetLoader extends MessageDispatcher {
   /**

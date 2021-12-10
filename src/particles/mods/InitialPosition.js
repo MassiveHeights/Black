@@ -5,18 +5,18 @@ import { VectorScatter } from "../../scatters/VectorScatter";
  * Sets initial particle position.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 export class InitialPosition extends Modifier {
   /**
    * Creates new InitialPosition instance.
    *
-   * @param {...(number|black-engine~VectorScatterBase)} values Rectangle coordinates, its width and height.
+   * @param {...(number|VectorScatterBase)} values Rectangle coordinates, its width and height.
    */
   constructor(...values) {
     super();
 
-    /** @type {black-engine~VectorScatterBase} Modifier's object to get values from.  */
+    /** @type {VectorScatterBase} Modifier's object to get values from.  */
     this.scatter = VectorScatter.fromObject(...values);
   }
 

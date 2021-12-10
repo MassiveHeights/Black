@@ -33,7 +33,7 @@ export class Vector {
    *
    * @param {number=} [x=0] X-component.
    * @param {number=} [y=0] y-component
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   set(x = 0, y = 0) {
     Debug.isNumber(x, y);
@@ -47,8 +47,8 @@ export class Vector {
   /**
    * Adds two vectors.
    *
-   * @param {black-engine~Vector} vector The vector object to be added to this.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector object to be added to this.
+   * @return {Vector} This.
    */
   add(vector) {
     this.x += vector.x;
@@ -60,8 +60,8 @@ export class Vector {
   /**
    * Subtract two vectors.
    *
-   * @param {black-engine~Vector} vector The vector object to be subtracted.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector object to be subtracted.
+   * @return {Vector} This.
    */
   subtract(vector) {
     this.x -= vector.x;
@@ -73,7 +73,7 @@ export class Vector {
   /**
    * Returns distance between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to check distance with.
+   * @param {Vector} vector Second vector to check distance with.
    * @return {number} The distance between two vectors.
    */
   distance(vector) {
@@ -86,7 +86,7 @@ export class Vector {
   /**
    * Returns the squared distance between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to check distance with.
+   * @param {Vector} vector Second vector to check distance with.
    * @return {number} The distance between two vectors.
    */
   distanceSqr(vector) {
@@ -99,8 +99,8 @@ export class Vector {
   /**
    * Multiplies two vectors.
    *
-   * @param {black-engine~Vector} vector A second vector to multiply with.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector A second vector to multiply with.
+   * @return {Vector} This.
    */
   multiply(vector) {
     this.x *= vector.x;
@@ -113,7 +113,7 @@ export class Vector {
    * Multiplies this vector by scalar value.
    *
    * @param {number} scalar The values to mul by.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   multiplyScalar(scalar) {
     Debug.isNumber(scalar);
@@ -127,7 +127,7 @@ export class Vector {
   /**
    * Find dot product between two vectors.
    *
-   * @param {black-engine~Vector} vector Second vector to find angle with.
+   * @param {Vector} vector Second vector to find angle with.
    * @return {number} A scalar value representing dot product.
    */
   dot(vector) {
@@ -155,7 +155,7 @@ export class Vector {
   /**
    * Creates unit vector out of this one.
    *
-   * @returns {black-engine~Vector} This.
+   * @returns {Vector} This.
    */
   normalize() {
     let sum = this.lengthSqr();
@@ -177,7 +177,7 @@ export class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   clamp(min, max) {
     Debug.isNumber(min, max);
@@ -193,7 +193,7 @@ export class Vector {
    *
    * @param {number} min Min value.
    * @param {number} max Max value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   clampLength(min, max) {
     Debug.isNumber(min, max);
@@ -207,9 +207,9 @@ export class Vector {
   /**
    * Linearly interpolates between two vectors.
    *
-   * @param {black-engine~Vector} vector The second vector to interpolate values between.
+   * @param {Vector} vector The second vector to interpolate values between.
    * @param {number} t      Alpha value.
-   * @return {black-engine~Vector} This.
+   * @return {Vector} This.
    */
   lerp(vector, t) {
     Debug.isNumber(t);
@@ -223,8 +223,8 @@ export class Vector {
   /**
    * Copies this vector values into given vector.
    *
-   * @param {black-engine~Vector} vector The vector to store values in.
-   * @return {black-engine~Vector} Given vector.
+   * @param {Vector} vector The vector to store values in.
+   * @return {Vector} Given vector.
    */
   copyTo(vector) {
     vector.x = this.x;
@@ -236,8 +236,8 @@ export class Vector {
   /**
    * Copies values from given vector into this.
    *
-   * @param {black-engine~Vector} vector The vector to copy values from.
-   * @return {black-engine~Vector} This.
+   * @param {Vector} vector The vector to copy values from.
+   * @return {Vector} This.
    */
   copyFrom(vector) {
     this.x = vector.x;
@@ -249,7 +249,7 @@ export class Vector {
   /**
    * Clones this vector object.
    *
-   * @return {black-engine~Vector} New Vector instance.
+   * @return {Vector} New Vector instance.
    */
   clone() {
     return new Vector(this.x, this.y);
@@ -258,7 +258,7 @@ export class Vector {
   /**
    * Compares two vectors for equality.
    *
-   * @param {black-engine~Vector} vector Second vector to compare with.
+   * @param {Vector} vector Second vector to compare with.
    * @param {number=} epsilon Threshold.
    * @return {boolean} True if equal.
    */
@@ -278,9 +278,9 @@ export class Vector {
   /**
    * Rotates this vector around specified point.
    *
-   * @param {black-engine~Vector} vector Center vector.
+   * @param {Vector} vector Center vector.
    * @param {number} rotation Angle in radians.
-   * @return {black-engine~Vector} This rotated vector.
+   * @return {Vector} This rotated vector.
    */
   setRotationFrom(vector, rotation) {
     Debug.isNumber(rotation);
@@ -295,7 +295,7 @@ export class Vector {
    *  Rotates this vector around zero vector.
    *
    * @param {number} rotation Angle in radians.
-   * @return {black-engine~Vector} This rotated vector.
+   * @return {Vector} This rotated vector.
    */
   setRotation(rotation) {
     Debug.isNumber(rotation);
@@ -309,7 +309,7 @@ export class Vector {
   /**
    * Calculates angle in radians within this and specified vectors.
    *
-   * @param {black-engine~Vector} vector Second vector.
+   * @param {Vector} vector Second vector.
    * @return {number} Angle in radians.
    */
   angleBetween(vector) {
@@ -328,7 +328,7 @@ export class Vector {
   /**
    * Rotates this vector to normal.
    *
-   * @return {black-engine~Vector} This vector.
+   * @return {Vector} This vector.
    */
   perp() {
     return this.set(this.y, -this.x);
@@ -338,8 +338,8 @@ export class Vector {
    * Creates new Vector from given angle in radians.
    *
    * @param {number} angle Angle.
-   * @param {black-engine~Vector=} outVector Vector to be returned.
-   * @return {black-engine~Vector} New Vector object.
+   * @param {Vector=} outVector Vector to be returned.
+   * @return {Vector} New Vector object.
    */
   static fromAngle(angle, outVector) {
     Debug.isNumber(angle);
@@ -358,10 +358,10 @@ export class Vector {
 
   /**
    * @ignore
-   * @param {black-engine~Vector} vectorMin
-   * @param {black-engine~Vector} vectorMax
-   * @param {black-engine~Vector=} outVector
-   * @return {black-engine~Vector}
+   * @param {Vector} vectorMin
+   * @param {Vector} vectorMax
+   * @param {Vector=} outVector
+   * @return {Vector}
    */
   static randomRange(vectorMin, vectorMax, outVector) {
     outVector = outVector || new Vector();
@@ -386,7 +386,7 @@ export class Vector {
 
 /**
  * @ignore
- * @type {black-engine~Vector}
+ * @type {Vector}
  * @nocollapse
  */
 Vector.__cache = new Vector();
@@ -394,7 +394,7 @@ Vector.__cache = new Vector();
 /**
  * Recycled vectors pool.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 Vector.pool = new ObjectPool(Vector);

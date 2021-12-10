@@ -240,7 +240,6 @@ export class Spine extends DisplayObject {
 
   _createSprite(slot, attachment, name) {
     if (slot.tempAttachment === attachment) {
-      region = slot.tempRegion;
       slot.tempAttachment = null;
       slot.tempRegion = null;
     }

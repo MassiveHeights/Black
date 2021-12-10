@@ -5,7 +5,7 @@ import { MathEx } from "../../math/MathEx";
  * Rotates particle along velocity vector.
  *
  * @cat particles.modifiers
- * @extends black-engine~Modifier
+ * @extends Modifier
  */
 export class Oriented extends Modifier {
   /**

@@ -41,25 +41,25 @@ export class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~Matrix} Actual object - do not change 
+     * @type {Matrix} Actual object - do not change 
      */
     this.mTransform = new Matrix();
 
     /** 
      * @protected 
-     * @type {black-engine~Matrix} 
+     * @type {Matrix} 
      */
     this.mIdentityMatrix = new Matrix();
 
     /** 
      * @protected 
-     * @type {black-engine~RenderSession} 
+     * @type {RenderSession} 
      */
     this.mActiveSession = new RenderSession();
 
     /** 
      * @protected 
-     * @type {Array<black-engine~RenderSession>} 
+     * @type {Array<RenderSession>} 
      */
     this.mSessions = [];
 
@@ -83,7 +83,7 @@ export class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~BlendMode|null} 
+     * @type {BlendMode|null} 
      */
     this.mGlobalBlendMode = BlendMode.AUTO;
 
@@ -95,13 +95,13 @@ export class VideoNullDriver {
 
     /** 
      * @protected 
-     * @type {black-engine~Renderer} 
+     * @type {Renderer} 
      */
     this.mStageRenderer = new Renderer();
 
     /** 
      * @protected 
-     * @type {Object.<string, function(new: black-engine~Renderer)>} 
+     * @type {Object.<string, function(new: Renderer)>} 
      */
     this.mRendererMap = {};
 
@@ -112,10 +112,10 @@ export class VideoNullDriver {
    * A main render function.
    *
    * @public
-   * @param {black-engine~GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
-   * @param {black-engine~CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
+   * @param {GameObject} gameObject                    A GameObject instance to render onto RenderTarget.
+   * @param {CanvasRenderTexture} [renderTexture=null] Destination surface to render game object on. Will be rendered
    *                                                   onto backbuffer if null.
-   * @param {black-engine~Matrix} [customTransform=null]            An optional extra offset.
+   * @param {Matrix} [customTransform=null]            An optional extra offset.
    */
   render(gameObject, renderTexture = null, customTransform = null) {
   }
@@ -124,8 +124,8 @@ export class VideoNullDriver {
    * A factory method which returns new Renderer instance based on internal GameObject to Renderer map.
    *
    * @param {string} type      The type of the GameObject to find renderer for.
-   * @param {black-engine~GameObject} owner The owner of this renderer.
-   * @returns {black-engine~Renderer} New renderer instance.
+   * @param {GameObject} owner The owner of this renderer.
+   * @returns {Renderer} New renderer instance.
    */
   getRenderer(type, owner) {
     return null;
@@ -134,7 +134,7 @@ export class VideoNullDriver {
   /**
    * @ignore
    * @private
-   * @returns {black-engine~RenderSession}
+   * @returns {RenderSession}
    */
   __saveSession() {
     let session = VideoNullDriver.sessionPool.get();
@@ -158,9 +158,9 @@ export class VideoNullDriver {
   /**
    * @ignore
    * @protected
-   * @param {black-engine~RenderSession} session
-   * @param {black-engine~GameObject} gameObject
-   * @param {black-engine~Renderer} parentRenderer
+   * @param {RenderSession} session
+   * @param {GameObject} gameObject
+   * @param {Renderer} parentRenderer
    * @returns {void}
    */
   __collectParentRenderables(session, gameObject, parentRenderer) {
@@ -195,7 +195,7 @@ export class VideoNullDriver {
    * Notifies renderer about new clipping.
    *
    * @protected
-   * @param {black-engine~Rectangle} clipRect The region to clip.
+   * @param {Rectangle} clipRect The region to clip.
    * @param {number} px Pivot-x.
    * @param {number} py Pivot-y.
    */
@@ -212,8 +212,8 @@ export class VideoNullDriver {
   /**
    * @protected
    * @ignore
-   * @param {black-engine~Message} msg
-   * @param {black-engine~Rectangle} rect
+   * @param {Message} msg
+   * @param {Rectangle} rect
    * @returns {void}
    */
   __onResize(msg, rect) {
@@ -256,7 +256,7 @@ export class VideoNullDriver {
 
   /**
    * @param {HTMLCanvasElement} canvas
-   * @return {?black-engine~Texture}
+   * @return {?Texture}
    */
   getTextureFromCanvas(canvas) {
     return null;
@@ -266,7 +266,7 @@ export class VideoNullDriver {
    * Sets world transformation for future use.
    *
    * @public
-   * @param {black-engine~Matrix} m An transformation matrix to store.
+   * @param {Matrix} m An transformation matrix to store.
    * @returns {void}
    */
   setTransform(m) {
@@ -303,14 +303,14 @@ export class VideoNullDriver {
   /**
    * Gets/Sets global blending mode. Used to calculate blend mode relative to parent object.
    *
-   * @return {?black-engine~BlendMode}
+   * @return {?BlendMode}
    */
   getGlobalBlendMode() {
     return this.mGlobalBlendMode;
   }
 
   /**
-   * @param {?black-engine~BlendMode} value
+   * @param {?BlendMode} value
    * @return {void}
    */
   setGlobalBlendMode(value) {
@@ -322,7 +322,7 @@ export class VideoNullDriver {
    * method.
    *
    * @public
-   * @param {black-engine~Texture} texture Instance of the Texture to draw.
+   * @param {Texture} texture Instance of the Texture to draw.
    * 
    */
   drawTexture(texture) {
@@ -332,7 +332,7 @@ export class VideoNullDriver {
    * Draws texture onto back-buffer with given offset. alpha, blend mode and transformation matrix must be set prior to calling this
    * method.
    *
-   * @param {black-engine~Texture} texture Instance of the Texture to draw.
+   * @param {Texture} texture Instance of the Texture to draw.
    * @param {number} ox Offset along x-axis
    * @param {number} oy Offset along y-axis
    */
@@ -376,7 +376,7 @@ export class VideoNullDriver {
 /**
  * Recyclable session pool. Do not recycle manually.
  *
- * @type {black-engine~ObjectPool}
+ * @type {ObjectPool}
  * @nocollapse
  */
 VideoNullDriver.sessionPool = new ObjectPool(RenderSession);

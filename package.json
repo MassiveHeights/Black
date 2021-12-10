@@ -1,9 +1,8 @@
 {
   "name": "black-engine",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "description": "",
   "main": "src/index.js",
-  "gcc": "dist/black-engine.gcc.js",
   "module": "dist/black-engine.module.js",
   "jsnext:main": "dist/black-engine.module.js",
   "browser": "dist/black-engine.min.js",
@@ -17,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/MassiveHeights/Black.git"
   },
-  "author": "Massive Heights",
+  "author": "Borna Technology Ltd.",
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "google-closure-compiler": "^20191111.0.0",

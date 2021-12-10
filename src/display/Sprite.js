@@ -8,20 +8,20 @@ import { DirtyFlag } from "../core/DirtyFlag";
  * Sprite is used to render Texture onto screen.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 export class Sprite extends DisplayObject {
   /**
    * Creates a new Sprite instance.
    *
-   * @param {black-engine~Texture|string|null} texture The Texture instance or null.
+   * @param {Texture|string|null} texture The Texture instance or null.
    */
   constructor(texture = null, useTextureProps = true) {
     super();
 
     /** 
      * @private 
-     * @type {black-engine~Texture|null} 
+     * @type {Texture|null} 
      */
     this.mTexture = null;
 
@@ -33,13 +33,13 @@ export class Sprite extends DisplayObject {
 
     /** 
      * @private 
-     * @type {black-engine~TilingInfo|null} 
+     * @type {TilingInfo|null} 
      */
     this.mTiling = null;
 
     /** 
      * @private 
-     * @type {black-engine~Rectangle|null} 
+     * @type {Rectangle|null} 
      */
     this.mSlice9grid = null;
 
@@ -68,8 +68,8 @@ export class Sprite extends DisplayObject {
    * Returns a rectangle that completely encloses the object in local coordinate system.
    *
    * @protected
-   * @param {black-engine~Rectangle=} outRect Rectangle to be returned.
-   * @return {black-engine~Rectangle} The new Rectangle or outRect if it was passed as a param.
+   * @param {Rectangle=} outRect Rectangle to be returned.
+   * @return {Rectangle} The new Rectangle or outRect if it was passed as a param.
    */
   onGetLocalBounds(outRect = undefined) {
     outRect = outRect || new Rectangle();
@@ -90,7 +90,7 @@ export class Sprite extends DisplayObject {
   /**
    * Returns the current Texture on this sprite.
    *
-   * @return {black-engine~Texture|null} The current texture set on this Sprite or null.
+   * @return {Texture|null} The current texture set on this Sprite or null.
    */
   get texture() {
     return this.mTexture;
@@ -100,7 +100,7 @@ export class Sprite extends DisplayObject {
    * Sets the Texture on this sprite by name.
    * Only Black.assets is used.
    *
-   * @param {black-engine~Texture|null} texture Texture to apply on.
+   * @param {Texture|null} texture Texture to apply on.
    * @return {void}
    */
   set texture(texture) {
@@ -162,14 +162,14 @@ export class Sprite extends DisplayObject {
    *
    * NOTE: after changing one of TilingInfo properties make sure to call `setDirty(DirtyFlag.RENDER_CACHE)`.
    *
-   * @returns {black-engine~TilingInfo|null}
+   * @returns {TilingInfo|null}
    */
   get tiling() {
     return this.mTiling;
   }
 
   /**
-   * @param {black-engine~TilingInfo|null} value
+   * @param {TilingInfo|null} value
    */
   set tiling(value) {
     this.mTiling = value;
@@ -183,14 +183,14 @@ export class Sprite extends DisplayObject {
    *
    * NOTE: after changing x, y, width or height of nine slice grid attributes make sure to call `setDirty(DirtyFlag.RENDER_CACHE)` to refresh renderer.
    *
-   * @returns {black-engine~Rectangle|null}
+   * @returns {Rectangle|null}
    */
   get slice9grid() {
     return this.mSlice9grid;
   }
 
   /**
-   * @param {black-engine~Rectangle|null} value
+   * @param {Rectangle|null} value
    */
   set slice9grid(value) {
     this.mSlice9grid = value;

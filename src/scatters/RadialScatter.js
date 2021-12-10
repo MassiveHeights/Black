@@ -4,7 +4,7 @@ import { VectorScatterBase } from "./VectorScatterBase";
  * A number scatter for defining a range in a circular shape.
  *
  * @cat scatters
- * @extends black-engine~VectorScatterBase
+ * @extends VectorScatterBase
  */
 export class RadialScatter extends VectorScatterBase {
   /**
@@ -51,7 +51,7 @@ export class RadialScatter extends VectorScatterBase {
    * Returns a random Vector object at given position within a range specified in the constructor.
    *
    * @override
-   * @return {black-engine~Vector} Vector object with random values withing defined range.
+   * @return {Vector} Vector object with random values withing defined range.
    */
   getValue() {
     return this.getValueAt(Math.random());
@@ -62,7 +62,7 @@ export class RadialScatter extends VectorScatterBase {
    *
    * @override
    * @param {number} t The position.
-   * @return {black-engine~Vector} Vector object representing values in a range at given position.
+   * @return {Vector} Vector object representing values in a range at given position.
    */
   getValueAt(t) {
     const r = this.minRadius + t * (this.maxRadius - this.minRadius);

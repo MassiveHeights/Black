@@ -14,7 +14,7 @@ import { DisplayObject } from "./DisplayObject";
  * The base class for all renderable objects. Adds `alpha` and `visible` properties to GameObject.
  *
  * @cat display
- * @extends black-engine~DisplayObject
+ * @extends DisplayObject
  */
 export class Camera extends DisplayObject {
   constructor() {

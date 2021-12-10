@@ -6,7 +6,7 @@ import { Black } from "../../Black";
  * Reverberation sound effect.
  * 
  * @cat audio.effects
- * @extends {black-engine~SoundEffect}
+ * @extends {SoundEffect}
  */
 export class ReverbEffect extends SoundEffect {
   /**
