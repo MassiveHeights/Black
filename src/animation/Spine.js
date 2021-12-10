@@ -49,20 +49,18 @@ export class Spine extends DisplayObject {
 
     let json = Black.assets.getJSON(name);
 
-    let fakeLoader = function (path, loaderFunction, callback) {
-      console.log('FAKE LOADER', path);
-    };
+    let fakeLoader = function (path, loaderFunction, callback) { };
 
     let spineAtlas = new spine.TextureAtlas('', fakeLoader);
     spineAtlas.addTexture = addTexture;
 
     let regions = {};
 
-    for (let skinName in json.skins) {
-      let skin = json.skins[skinName];
+    for (let i = 0; i < json.skins.length; i++) {
+      let skin = json.skins[i];
 
-      for (let slotName in skin) {
-        let slot = skin[slotName];
+      for (let slotName in skin.attachments) {
+        let slot = skin.attachments[slotName];
 
         for (let entryName in slot) {
           let attachment = slot[entryName];
@@ -72,7 +70,7 @@ export class Spine extends DisplayObject {
 
           if (attachment.type === 'path')
             continue;
-          
+
           if (attachment.type === 'clipping')
             continue;
 
@@ -84,7 +82,8 @@ export class Spine extends DisplayObject {
           if (regions[textureName])
             continue;
 
-          regions[textureName] = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
+          let region = spineAtlas.addTexture(textureName, Black.assets.getTexture(texturesPath + textureName));
+          regions[textureName] = region;
         }
       }
     }
@@ -202,10 +201,6 @@ export class Spine extends DisplayObject {
         }
 
         let bone = slot.bone;
-        let w = region.width;
-        let h = region.height;
-
-        let regionHeight = region.rotate ? region.width : region.height;
 
         sprite.scaleX = attachment.scaleX * (attachment.width / region.width);
         sprite.scaleY = attachment.scaleY * (attachment.height / region.height);
@@ -244,8 +239,6 @@ export class Spine extends DisplayObject {
   }
 
   _createSprite(slot, attachment, name) {
-    let region = attachment.region;
-    
     if (slot.tempAttachment === attachment) {
       region = slot.tempRegion;
       slot.tempAttachment = null;
