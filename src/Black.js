@@ -1,3 +1,4 @@
+/** @type {Black} */
 var mInstance = null;
 
 /**
@@ -8,6 +9,10 @@ var mInstance = null;
  */
 class Black {
   constructor() {
+    /**
+     * @private
+     * @type {Black}
+     */
     mInstance = this;
 
     /**
