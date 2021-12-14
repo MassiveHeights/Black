@@ -1,6 +1,6 @@
 {
   "name": "black-engine",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "description": "",
   "main": "src/index.js",
   "module": "dist/black-engine.module.js",
@@ -25,5 +25,8 @@
     "jsdom": "^11.11.0",
     "rollup": "^1.32.1",
     "rollup-plugin-license": "^0.8.1"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-core": "^4.1.4"
   }
 }

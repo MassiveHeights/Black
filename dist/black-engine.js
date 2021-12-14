@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.13
+ * Blacksmith 2D v0.5.15
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -33,10 +33,10 @@
  */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global['black-engine'] = {}));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@esotericsoftware/spine-core')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@esotericsoftware/spine-core'], factory) :
+  (global = global || self, factory(global['black-engine'] = {}, global.spine));
+}(this, (function (exports, spine) { 'use strict';
 
   // @ifdef DEBUG
   /**
@@ -3979,6 +3979,7 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
     }
   }
 
+  /** @type {Black} */
   var mInstance = null;
 
   /**
@@ -3989,6 +3990,10 @@ Matrix: | ${this.value[2].toFixed(digits)} | ${this.value[3].toFixed(digits)} | 
    */
   class Black {
     constructor() {
+      /**
+       * @private
+       * @type {Black}
+       */
       mInstance = this;
 
       /**

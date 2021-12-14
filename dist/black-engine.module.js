@@ -1,6 +1,6 @@
 /**
  * @preserve
- * Blacksmith 2D v0.5.13
+ * Blacksmith 2D v0.5.15
  * 
  * SIMPLIFIED BSD LICENSE
  * ======================
@@ -31,6 +31,8 @@
  * authors and should not be interpreted as representing official policies, either expressed
  * or implied, of Borna Technology.
  */
+
+import { TextureAtlas, AtlasAttachmentLoader, SkeletonJson, Skeleton, AnimationStateData, AnimationState, RegionAttachment, PointAttachment, TextureAtlasPage, TextureAtlasRegion } from '@esotericsoftware/spine-core';
 
 // @ifdef DEBUG
 /**
@@ -3973,6 +3975,7 @@ class MessageBinding {
   }
 }
 
+/** @type {Black} */
 var mInstance = null;
 
 /**
@@ -3983,6 +3986,10 @@ var mInstance = null;
  */
 class Black {
   constructor() {
+    /**
+     * @private
+     * @type {Black}
+     */
     mInstance = this;
 
     /**
@@ -23923,13 +23930,13 @@ function addTexture(name, texture) {
   }
 
   if (page === null) {
-    page = new spine.TextureAtlasPage();
+    page = new TextureAtlasPage();
     page.name = 'texturePage';
     page.baseTexture = texture.native;
     pages.push(page);
   }
 
-  let region = new spine.TextureAtlasRegion();
+  let region = new TextureAtlasRegion();
   region.name = name;
   region.page = page;
   region.texture = texture;
@@ -23957,7 +23964,7 @@ class Spine extends DisplayObject {
 
     let fakeLoader = function (path, loaderFunction, callback) { };
 
-    let spineAtlas = new spine.TextureAtlas('', fakeLoader);
+    let spineAtlas = new TextureAtlas('', fakeLoader);
     spineAtlas.addTexture = addTexture;
 
     let regions = {};
@@ -23994,16 +24001,16 @@ class Spine extends DisplayObject {
       }
     }
 
-    let attachmentParser = new spine.AtlasAttachmentLoader(spineAtlas);
-    let spineJsonParser = new spine.SkeletonJson(attachmentParser);
+    let attachmentParser = new AtlasAttachmentLoader(spineAtlas);
+    let spineJsonParser = new SkeletonJson(attachmentParser);
     let skeletonData = spineJsonParser.readSkeletonData(json);
 
-    this.mSkeleton = new spine.Skeleton(skeletonData);
+    this.mSkeleton = new Skeleton(skeletonData);
     this.mSkeleton.updateWorldTransform();
 
-    this.mStateData = new spine.AnimationStateData(skeletonData);
+    this.mStateData = new AnimationStateData(skeletonData);
 
-    this.mState = new spine.AnimationState(this.mStateData);
+    this.mState = new AnimationState(this.mStateData);
 
     this.mTempClipContainers = [];
     this.mTexturesPath = texturesPath;
@@ -24018,7 +24025,7 @@ class Spine extends DisplayObject {
       this.addChild(slotContainer);
       this.mTempClipContainers.push(null);
 
-      if (attachment instanceof spine.RegionAttachment) {
+      if (attachment instanceof RegionAttachment) {
         let spriteName = attachment.region.name;
 
         let sprite = this._createSprite(slot, attachment, spriteName);
@@ -24082,7 +24089,7 @@ class Spine extends DisplayObject {
 
       wrapper.visible = true;
 
-      if (attachment instanceof spine.RegionAttachment) {
+      if (attachment instanceof RegionAttachment) {
         let region = attachment.region;
 
         if (region) {
@@ -24137,7 +24144,7 @@ class Spine extends DisplayObject {
 
         wrapper.alpha = this.mSkeleton.color.a * slot.color.a * attachment.color.a;
 
-      } else if (attachment instanceof spine.PointAttachment) {
+      } else if (attachment instanceof PointAttachment) {
         wrapper.x = slot.bone.worldX + attachment.x;
         wrapper.y = -slot.bone.worldY - attachment.y;
       }

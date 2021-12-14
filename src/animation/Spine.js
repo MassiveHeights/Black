@@ -1,6 +1,7 @@
-import { Black } from "../Black";
-import { DisplayObject } from "../display/DisplayObject";
-import { Sprite } from "../display/Sprite";
+import { Black } from '../Black';
+import { DisplayObject } from '../display/DisplayObject';
+import { Sprite } from '../display/Sprite';
+import * as spine from '@esotericsoftware/spine-core';
 
 function addTexture(name, texture) {
   if (!texture)
