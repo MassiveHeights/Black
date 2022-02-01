@@ -731,8 +731,10 @@ export class AssetManager extends MessageDispatcher {
   }
 
   __validateName(type, name) {
-    if (this.mAssets[type] && this.mAssets[type][name])
-      Debug.assert(this.mDictionary[name] == null, 'Asset with such name is already added.');
+    if (this.mAssets[type] == null)
+      return;
+
+    Debug.assert(this.mAssets[type][name] == null, 'Asset with such name is already added.');
   }
 
   /**

@@ -160,8 +160,6 @@ export { Tween } from './animation/Tween';
 export { AnimationInfo } from './animation/AnimationInfo';
 export { AnimationController } from './animation/AnimationController';
 
-export { Spine } from './animation/Spine';
-
 export { MasterAudio } from './audio/MasterAudio';
 
 export { SoundEffect } from './audio/SoundEffect';
