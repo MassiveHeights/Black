@@ -1,6 +1,6 @@
 {
   "name": "black-engine",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "",
   "main": "src/index.js",
   "module": "dist/black-engine.module.js",
