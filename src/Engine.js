@@ -108,6 +108,12 @@ export class Engine extends MessageDispatcher {
     this.mMaxUpdatesPerFrame = 60;
 
     /** 
+     * @private
+     * @type {boolean}
+     */
+    this.mFixedUpdate = true;
+
+    /** 
      * @private 
      * @type {number} 
      */
@@ -531,25 +537,29 @@ export class Engine extends MessageDispatcher {
     if (this.mPaused === true)
       return;
 
-    let numTicks = Math.floor((timestamp - this.mLastUpdateTime) / time.mDeltaTimeMs);
+    let numTicks = 1;
 
-    if (forceUpdate === true)
-      numTicks = 1;
+    if (this.mFixedUpdate === true) {
+      let numTicks = Math.floor((timestamp - this.mLastUpdateTime) / time.mDeltaTimeMs);
 
-    if (numTicks > this.mMaxUpdatesPerFrame) {
-      /**
-       * Posted when engine is not able to achieve desired amount of updates per second. 
-       * 
-       * Usually happens when user switches to another tab in browser or update logic is too heavy to be executed 
-       * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
-       * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
-       *
-       * @event Engine#looped
-       */
-      this.post('looped', numTicks);
-      Debug.warn(`Unable to catch up ${numTicks} update(s).`);
+      if (forceUpdate === true)
+        numTicks = 1;
 
-      numTicks = this.mMaxUpdatesPerFrame;
+      if (numTicks > this.mMaxUpdatesPerFrame) {
+        /**
+         * Posted when engine is not able to achieve desired amount of updates per second. 
+         * 
+         * Usually happens when user switches to another tab in browser or update logic is too heavy to be executed 
+         * withing one update loop. Lowering `Black.ups` value can help if update is heavy. 
+         * Increasing `Black.maxUpdatesPerFrame` can lead to dead lock.
+         *
+         * @event Engine#looped
+         */
+        this.post('looped', numTicks);
+        Debug.warn(`Unable to catch up ${numTicks} update(s).`);
+
+        numTicks = this.mMaxUpdatesPerFrame;
+      }
     }
 
     this.mNumUpdates = numTicks;
@@ -934,5 +944,22 @@ export class Engine extends MessageDispatcher {
    */
   set maxUpdatesPerFrame(value) {
     this.mMaxUpdatesPerFrame = value;
+  }
+
+  /**
+   * Determines whether to use a fixed update or variable update.
+   * @returns {boolean}
+   */
+  get fixedUpdate() {
+    return this.mFixedUpdate;
+  }
+
+  /** 
+   * Determines whether to use a fixed update or variable update.
+   * @param {boolean} value
+   * @returns {void}
+   */
+  set fixedUpdate(value) {
+    this.mFixedUpdate = value;
   }
 }
