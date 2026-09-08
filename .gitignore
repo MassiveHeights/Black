@@ -53,7 +53,9 @@ yarn.lock
 
 # BLACK #
 #########
-docs/*
+# Generated API reference (rebuilt by `npm run docs`, published by CI).
+# Hand-written docs such as docs/Tutorials are tracked.
+docs/api/
 dist-test/*
 /package-lock.json
 .idea

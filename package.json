@@ -10,6 +10,7 @@
   "scripts": {
     "start": "npm run build",
     "build": "rollup -c && java -jar node_modules/google-closure-compiler-java/compiler.jar --extra_annotation_name=cat --extra_annotation_name=action --extra_annotation_name=staticClass --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --language_in=ECMASCRIPT6_STRICT --language_out=ECMASCRIPT5_STRICT --js dist/black-engine.js --js_output_file dist/black-engine.min.js",
+    "examples:index": "node scripts/examples-index.js",
     "docs": "node scripts/docs.js"
   },
   "repository": {

@@ -1,0 +1,1 @@
+{"version":0.1,"styles":["Fff0000 L000000 w5"],"nodes":[{"nodes":[{"name":"svg_1","cmds":"$S0 $e148.50 171 74 38"}]}]}

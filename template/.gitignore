@@ -1,0 +1,51 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+dist/
+
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+#webstorm#
+.idea/
+.editorconfig
+
+# NODEJS #
+##########
+node_modules
+node_modules/*
+build
+build/*
+bak
+dist
+tmp
+*.lock
+/package-lock.json

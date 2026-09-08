@@ -1,16 +1,29 @@
-<br /><br /><br />
 <p align="center">
-  <a href="http://blacksmith2d.io">
-    <img alt="Blacksmith 2D" src="https://blacksmith2d.io/logo/black.svg" width="200" />
+  <a href="https://massiveheights.github.io/Black/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="media/logo/white.png">
+      <img alt="Blacksmith 2D" src="media/logo/black.png" width="180">
+    </picture>
   </a>
 </p>
-<br /><br /><br />
 
-# BLACKSMITH 2D
-Black is a highly optimized 2D framework for web, mobile games, and playable ads.  
+<h1 align="center">BLACKSMITH 2D</h1>
+
+<p align="center">
+  A highly optimized 2D framework for web, mobile games, and playable ads.
+</p>
+
+<p align="center">
+  <a href="https://massiveheights.github.io/Black/examples/">Examples</a> &nbsp;·&nbsp;
+  <a href="docs/Tutorials">Tutorials</a> &nbsp;·&nbsp;
+  <a href="https://massiveheights.github.io/Black/docs/api/">API reference</a> &nbsp;·&nbsp;
+  <a href="template">Game template</a>
+</p>
+
+---
 
 **Most valuable when size matters**  
-All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of [Donuts](http://blacksmith2d.io/Docs/Tutorials/Donuts-Blitz) game is only 34KB gzipped for both engine and game code (GCC version).
+All engine code is written in ES6, fully [GCC](https://developers.google.com/closure/compiler/) typed, allowing to eliminate all dead code from your app. For example the size of the [Donuts](docs/Tutorials/Donuts%20Blitz.md) game is only 34KB gzipped for both engine and game code (GCC version).
 
 **Advanced scene graph and rendering pipeline**  
 Dirty flag tracks scene changes and avoids unnecessary calculations and context calls. If no changes were made to the scene since last frame, no rendering will be done. Battery efficient.
@@ -18,55 +31,100 @@ Dirty flag tracks scene changes and avoids unnecessary calculations and context 
 **Cache as bitmap**  
 Automatically detects changes and updates bitmap cache. Allows to gain even more performance on heavy scenes and runs smoothly on old devices.
 
-For more information about how to use Black Engine, please check the [Blacksmith 2D](http://blacksmith2d.io/) website.
-
 ## FEATURES
-✔️ [Extra lightweight](https://github.com/MassiveHeights/Black#size-and-performance-comparison)  
-✔️ [Display Resolution Awareness](https://blacksmith2d.io/Docs/Examples/Stage/Letterbox)  
-✔️ [Advanced Particle System](https://blacksmith2d.io/Docs/Examples/Particles/Vector-Field)  
-✔️ [Vector Graphics](https://blacksmith2d.io/Docs/Examples/Vector-Graphics/Vector-As-a-Sprite)  
-✔️ [Vector Graphics Baking](https://blacksmith2d.io/Docs/Examples/Vector-Graphics/Vector-As-a-Sprite)  
-✔️ [Smart Cache As Bitmap](https://blacksmith2d.io/Docs/Examples/Sprites/Cache-As-Bitmap)  
-✔️ [Tweens](https://blacksmith2d.io/Docs/Examples/Tweening/Chain)  
-✔️ [Message Dispatcher](https://blacksmith2d.io/Docs/Examples/Input/Layers)  
-✔️ [Sprite Animations](https://blacksmith2d.io/Docs/Examples/Sprites/Sprite-Animation)  
-✔️ [Asset Manager](https://blacksmith2d.io/Docs/Examples/Basics/Load-images-from-atlas)  
-✔️ [Advanced Font Rendering and font metrics](https://blacksmith2d.io/Docs/Examples/Text/Having-fun)  
-✔️ [Texture Atlas](https://blacksmith2d.io/Docs/Examples/Basics/Load-images-from-atlas)  
-✔️ [Input](https://blacksmith2d.io/Docs/Examples/Input/Pointer-Messages)  
-✔️ [Clipping Rectangle](https://blacksmith2d.io/Docs/Examples/Sprites/Clipping-Rectangle)  
-✔️ [Component System](https://blacksmith2d.io/Docs/Examples/Input/Drag-Sprite)  
-✔️ [Audio Support](https://blacksmith2d.io/Docs/Examples/Audio/Spatial-Sound)  
-✔️ [Audio Atlases](https://blacksmith2d.io/Docs/Examples/Audio/Sound-Atlas)  
-✔️ [Bitmap Fonts](https://blacksmith2d.io/Docs/Examples/Text/Bitmap-Font)  
-✔️ [Graphics](https://blacksmith2d.io/Docs/Examples/Graphics/Bezier)  
-✔️ [Battery Efficient](https://blacksmith2d.io/Docs/Examples/Drivers/Skip-Unchanged-Frames)  
-✔️ [Render Texture](https://blacksmith2d.io/Docs/Examples/Drivers/Render-Texture)  
-✔️ [Arcade Physics](https://blacksmith2d.io/Docs/Examples/Arcade-Physics/Mario)  
-✔️ [Texture Wrap and Repeat](https://blacksmith2d.io/Docs/Examples/Sprites/Texture-Repeat)  
-✔️ [Nine slice grid](https://blacksmith2d.io/Docs/Examples/Sprites/Slice-9-Grid)  
+
+Every link below opens a runnable example.
+
+✔️ Extra lightweight  
+✔️ [Display Resolution Awareness](https://massiveheights.github.io/Black/examples/?group=Stage&example=Letterbox.js)  
+✔️ [Advanced Particle System](https://massiveheights.github.io/Black/examples/?group=Particles&example=Vector%20Field.js)  
+✔️ [Vector Graphics](https://massiveheights.github.io/Black/examples/?group=Vector%20Graphics&example=Vector%20As%20a%20Sprite.js)  
+✔️ [Vector Graphics Baking](https://massiveheights.github.io/Black/examples/?group=Vector%20Graphics&example=Vector%20As%20a%20Sprite.js)  
+✔️ [Smart Cache As Bitmap](https://massiveheights.github.io/Black/examples/?group=Sprites&example=Cache%20As%20Bitmap.js)  
+✔️ [Tweens](https://massiveheights.github.io/Black/examples/?group=Tweening&example=Chain.js)  
+✔️ [Message Dispatcher](https://massiveheights.github.io/Black/examples/?group=Input&example=Layers.js)  
+✔️ [Sprite Animations](https://massiveheights.github.io/Black/examples/?group=Sprites&example=Sprite%20Animation.js)  
+✔️ [Asset Manager](https://massiveheights.github.io/Black/examples/?group=Basics&example=Load%20images%20from%20atlas.js)  
+✔️ [Advanced Font Rendering and font metrics](https://massiveheights.github.io/Black/examples/?group=Text&example=Having%20fun.js)  
+✔️ [Texture Atlas](https://massiveheights.github.io/Black/examples/?group=Basics&example=Load%20images%20from%20atlas.js)  
+✔️ [Input](https://massiveheights.github.io/Black/examples/?group=Input&example=Pointer%20Messages.js)  
+✔️ [Clipping Rectangle](https://massiveheights.github.io/Black/examples/?group=Sprites&example=Clipping%20Rectangle.js)  
+✔️ [Component System](https://massiveheights.github.io/Black/examples/?group=Input&example=Drag%20Sprite.js)  
+✔️ [Audio Support](https://massiveheights.github.io/Black/examples/?group=Audio&example=Spatial%20Sound.js)  
+✔️ [Audio Atlases](https://massiveheights.github.io/Black/examples/?group=Audio&example=Sound%20Atlas.js)  
+✔️ [Bitmap Fonts](https://massiveheights.github.io/Black/examples/?group=Text&example=Bitmap%20Font.js)  
+✔️ [Graphics](https://massiveheights.github.io/Black/examples/?group=Graphics&example=Bezier.js)  
+✔️ [Battery Efficient](https://massiveheights.github.io/Black/examples/?group=Drivers&example=Skip%20Unchanged%20Frames.js)  
+✔️ [Render Texture](https://massiveheights.github.io/Black/examples/?group=Drivers&example=Render%20Texture.js)  
+✔️ [Arcade Physics](https://massiveheights.github.io/Black/examples/?group=Arcade%20Physics&example=Mario.js)  
+✔️ [Texture Wrap and Repeat](https://massiveheights.github.io/Black/examples/?group=Sprites&example=Texture%20Repeat.js)  
+✔️ [Nine slice grid](https://massiveheights.github.io/Black/examples/?group=Sprites&example=Slice%209%20Grid.js)  
 ✔️ GCC Ready  
 
 ## GETTING STARTED
-The easiest way to start using Black Engine is by downloading ready-up game template:
+
+The game template lives in this repository under [`template/`](template):
+
 ```
-git clone https://github.com/MassiveHeights/Black-Template
-cd Black-Template
+git clone https://github.com/MassiveHeights/Black
+cd Black/template
 npm install
 npm start
 ```
-Then open `http://127.0.0.1:3000` in browser!
+
+Then open `http://127.0.0.1:3000` in a browser.
+
+Or install the engine on its own:
+
+```
+npm install black-engine
+```
+
+## REPOSITORY LAYOUT
+
+| Path | Contents |
+| --- | --- |
+| [`src/`](src) | Engine source (ES6 modules) |
+| [`dist/`](dist) | Prebuilt UMD, ES module, and minified bundles |
+| [`examples/`](examples) | 91 runnable examples across 18 categories |
+| [`assets/`](assets) | Assets used by the examples |
+| [`docs/Tutorials/`](docs/Tutorials) | Written tutorials |
+| [`template/`](template) | Ready-to-use game template |
+| [`site/`](site) | Landing page for the published site |
+
+## RUNNING THE EXAMPLES LOCALLY
+
+The examples are plain static files, but they load assets over HTTP, so they need a
+local server rather than opening `index.html` from disk:
+
+```
+npx serve .
+```
+
+Then open `http://localhost:3000/examples/`.
+
+After adding or renaming an example, regenerate the sidebar index:
+
+```
+npm run examples:index
+```
+
+## BUILDING
+
+```
+npm run build              # bundles into dist/ (requires Java for the GCC step)
+npm run docs               # regenerates docs/api/ (requires Node 20 or 22)
+npm run examples:index  # regenerates examples/manifest.js and the README indexes
+```
 
 ## SUPPORT
-Feel free to chat with developers directly on [Facebook](https://www.facebook.com/Blacksmith2D/), [Discord](https://discord.gg/HWzzCcy) or [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ). Have other questions? Feel free to contact support by <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.
-Remember to check [Documentation](http://blacksmith2d.io/Docs/) before asking questions.
 
-## CONTRIBUTING TO BLACK ENGINE
-Written something cool using Black Engine? Please tell us about it via <a href="mailto:support@blacksmith2d.io?subject=Hello">email</a>.  
-Found a bug or issue — post them on [Issues](https://github.com/MassiveHeights/Black/issues) page.
+Found a bug or have a question? Open an issue on the
+[Issues](https://github.com/MassiveHeights/Black/issues) page.
 
-## QUICK LINKS
-[Getting Started](http://blacksmith2d.io/Docs/Tutorials/Getting-Started) —
-[Examples](http://blacksmith2d.io/Docs/Examples) —
-[Game Template](http://github.com/MassiveHeights/Black-Template) —
-[EULA](https://github.com/MassiveHeights/Black/blob/master/LICENSE.md) 
+The project is also on [Facebook](https://www.facebook.com/Blacksmith2D/),
+[Discord](https://discord.gg/HWzzCcy) and [Telegram](https://t.me/joinchat/FOkhwRDEhoxI3cNDBdi6fQ).
+
+## LICENSE
+
+See [LICENSE.md](LICENSE.md).

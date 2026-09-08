@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blacksmith 2D</title>
+  <meta name="description" content="Black is a highly optimized 2D framework for web, mobile games, and playable ads.">
+  <link rel="icon" href="media/logo/favicon.png">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #16181d;
+      --muted: #5c6370;
+      --line: #e3e6ea;
+      --card: #fafbfc;
+      --accent: #16181d;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1115;
+        --fg: #e8eaed;
+        --muted: #9aa1ad;
+        --line: #262a31;
+        --card: #161920;
+        --accent: #ffffff;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 72px 24px 96px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    header img {
+      width: 132px;
+      height: auto;
+    }
+
+    h1 {
+      margin: 20px 0 8px;
+      font-size: 34px;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    a.card {
+      display: block;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+
+    a.card:hover {
+      border-color: var(--muted);
+      transform: translateY(-2px);
+    }
+
+    a.card h2 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    a.card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .start h2 {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+
+    pre {
+      margin: 0 0 40px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      overflow-x: auto;
+      font: 13px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: inherit;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="media/logo/white.png">
+        <img src="media/logo/black.png" alt="Blacksmith 2D">
+      </picture>
+      <h1>Blacksmith 2D</h1>
+      <p class="tagline">A highly optimized 2D framework for web, mobile games, and playable ads.</p>
+    </header>
+
+    <div class="cards">
+      <a class="card" href="examples/">
+        <h2>Examples &rarr;</h2>
+        <p>91 runnable examples across 18 categories.</p>
+      </a>
+      <a class="card" href="https://github.com/MassiveHeights/Black/tree/master/docs/Tutorials">
+        <h2>Tutorials &rarr;</h2>
+        <p>Getting started, texture and sound atlases.</p>
+      </a>
+      <a class="card" href="docs/api/">
+        <h2>API reference &rarr;</h2>
+        <p>Generated from the engine source.</p>
+      </a>
+      <a class="card" href="https://github.com/MassiveHeights/Black">
+        <h2>Source &rarr;</h2>
+        <p>Engine, examples, and game template.</p>
+      </a>
+    </div>
+
+    <div class="start">
+      <h2>Get started</h2>
+      <pre>git clone https://github.com/MassiveHeights/Black
+cd Black/template
+npm install
+npm start</pre>
+    </div>
+
+    <footer>
+      <a href="https://github.com/MassiveHeights/Black">GitHub</a>
+      <a href="https://www.npmjs.com/package/black-engine">npm</a>
+      <a href="https://github.com/MassiveHeights/Black/blob/master/LICENSE.md">License</a>
+    </footer>
+  </div>
+</body>
+
+</html>

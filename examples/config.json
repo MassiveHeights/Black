@@ -1,0 +1,14 @@
+{
+  "order": [
+    "Basics",
+    "Sprites",
+    "Text",
+    "Input",
+    "Game Object",
+    "Tweening",
+    "Particles",
+    "Graphics",
+    "Messages",
+    "Arcade Physics"
+  ]
+}

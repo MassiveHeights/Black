@@ -6,8 +6,10 @@ const path = require('path');
 const inputFile = 'src/**/*.js';
 const outputDir = __dirname;
 
-const BASE_URL = '/Docs/API/';
-const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/') + '/';
+// Root-absolute prefix baked into generated links. The Pages workflow sets this
+// from the repository name so a rename does not break every generated page.
+const BASE_URL = process.env.DOCS_BASE_URL || '/docs/api/';
+const OUTPUT_PATH_PREFIX = path.resolve(outputDir, './../docs/api/') + '/';
 //const OUTPUT_PATH_PREFIX = 'd:\\MassiveHeights.Blacksmith\\blacksmith2d.io\\Blacksmith.Homepage\\App_Data\\docs-2\\src\\API\\';
 var events = [];
 var globalModuleListText = '';

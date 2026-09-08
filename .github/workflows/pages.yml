@@ -1,0 +1,76 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; queue at most one more behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # jsdoc 3.6 calls util.isRegExp, which Node removed in v23. Pin to 20.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Regenerate examples index
+        run: npm run examples:index
+
+      # The generated API reference bakes root-absolute links, so it needs the
+      # repository name. Derived here so a rename does not break every page.
+      - name: Build API reference
+        id: apidocs
+        continue-on-error: true
+        run: |
+          export DOCS_BASE_URL="/${GITHUB_REPOSITORY#*/}/docs/api/"
+          echo "Building API reference with base $DOCS_BASE_URL"
+          npm run docs
+
+      - name: Report API reference status
+        if: steps.apidocs.outcome == 'failure'
+        run: echo "::warning::API reference build failed; publishing the site without it."
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp site/index.html _site/index.html
+          cp -r examples assets dist media _site/
+          if [ -d docs/api ]; then
+            mkdir -p _site/docs
+            cp -r docs/api _site/docs/api
+          fi
+          # Serve paths verbatim; Jekyll would drop files whose names start
+          # with characters such as '!' or '_'.
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
