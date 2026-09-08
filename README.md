@@ -16,7 +16,7 @@
 <p align="center">
   <a href="https://massiveheights.github.io/Black/examples/">Examples</a> &nbsp;·&nbsp;
   <a href="docs/Tutorials">Tutorials</a> &nbsp;·&nbsp;
-  <a href="https://massiveheights.github.io/Black/docs/api/">API reference</a> &nbsp;·&nbsp;
+  <a href="https://github.com/MassiveHeights/Black/tree/master/src">Engine source</a> &nbsp;·&nbsp;
   <a href="template">Game template</a>
 </p>
 
@@ -113,9 +113,17 @@ npm run examples:index
 
 ```
 npm run build              # bundles into dist/ (requires Java for the GCC step)
-npm run docs               # regenerates docs/api/ (requires Node 20 or 22)
-npm run examples:index  # regenerates examples/manifest.js and the README indexes
+npm run docs               # regenerates docs/api/ (currently failing, see Known issues)
+npm run examples:index     # regenerates manifest.js and the README indexes
 ```
+
+## KNOWN ISSUES
+
+The API reference generator (`npm run docs`) does not currently run. It uses
+jsdoc 3.6, which crashes on Node 23+ (`util.isRegExp` was removed), and still
+exits non-zero on Node 20 in CI. Until it is fixed, browse the annotated source
+under [`src/`](src) instead. The Pages workflow publishes the site without the
+API reference rather than failing the deploy.
 
 ## SUPPORT
 

@@ -143,7 +143,7 @@ this.sprite.alpha = 0.4; // 40%
 
 ### More Transformation
 
-Explore [the API of Sprite](https://massiveheights.github.io/Black/docs/api/display/Sprite), you will find more transformation there.
+Explore [the API of Sprite](https://github.com/MassiveHeights/Black/blob/master/src/display/Sprite.js), you will find more transformation there.
 
 ## Input
 
@@ -159,7 +159,7 @@ function onUp() {
 }
 ```
 
-See the [Input documentation](https://massiveheights.github.io/Black/docs/api/input) for details.
+See the [Input documentation](https://github.com/MassiveHeights/Black/tree/master/src/input) for details.
 
 ## Game Objects
 
@@ -170,7 +170,7 @@ Game objects are simple objects. They are usually equipped with visual or audibl
 const gameObject = new GameObject();
 ```
 
-See the [GameObject documentation](https://massiveheights.github.io/Black/docs/api/core/GameObject) for more details.
+See the [GameObject documentation](https://github.com/MassiveHeights/Black/blob/master/src/core/GameObject.js) for more details.
 
 ## Components
 
@@ -178,7 +178,7 @@ Component based engine design was originally pioneered in order to avoid annoyin
 
 Get an example adding Tween component at [here](https://massiveheights.github.io/Black/examples/?group=Tweening&example=Basic.js).
 
-See the [Component documentation](https://massiveheights.github.io/Black/docs/api/core/Component) for more details.
+See the [Component documentation](https://github.com/MassiveHeights/Black/blob/master/src/core/Component.js) for more details.
 
 ## Message Passing
 
@@ -187,7 +187,7 @@ The message passing mechanism needs a recipient for every sent message. To send 
 
 Get examples at [here](https://massiveheights.github.io/Black/examples/).
 
-See the [MessageDispatcher documentation](https://massiveheights.github.io/Black/docs/api/core/MessageDispatcher) for more details.
+See the [MessageDispatcher documentation](https://github.com/MassiveHeights/Black/blob/master/src/messages/MessageDispatcher.js) for more details.
 
 ## Tweening
 
@@ -195,7 +195,7 @@ A tween is a concept which allows you to change the values of the properties of 
 
 Get examples at [here](https://massiveheights.github.io/Black/examples/).
 
-See the [Tween documentation](https://massiveheights.github.io/Black/docs/api/animation/Tween) for more details.
+See the [Tween documentation](https://github.com/MassiveHeights/Black/blob/master/src/animation/Tween.js) for more details.
 
 ## Particle System
 
@@ -203,7 +203,7 @@ Emitter is very useful for creating pleasant visual effects, particularly in gam
 
 Get examples with cool effects at [here](https://massiveheights.github.io/Black/examples/).
 
-See [Emitter documentation](https://massiveheights.github.io/Black/docs/api/particles/Emitter) for more details.
+See [Emitter documentation](https://github.com/MassiveHeights/Black/blob/master/src/particles/Emitter.js) for more details.
 
 ## Math Helpers
 
@@ -227,7 +227,7 @@ const max = 10;
 const randomNumber = MathEx.randomBetween(min, max);
 ```
 
-See the [Math documentation](https://massiveheights.github.io/Black/docs/api/core/MathEx) for details.
+See the [Math documentation](https://github.com/MassiveHeights/Black/blob/master/src/math/MathEx.js) for details.
 
 ## The End
 
